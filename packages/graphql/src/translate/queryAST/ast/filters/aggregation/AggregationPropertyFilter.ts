@@ -1,8 +1,9 @@
 import Cypher from "@neo4j/cypher-builder";
-import { AttributeType, type Attribute } from "../../../../../schema-model/attribute/Attribute";
+import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
+import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class AggregationPropertyFilter extends Filter {
     protected attribute: Attribute;
@@ -34,13 +35,14 @@ export class AggregationPropertyFilter extends Filter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const attributeAdapter = new AttributeAdapter(this.attribute);
         const comparisonVar = new Cypher.Variable();
         const property = this.getPropertyRef(queryASTContext);
 
         if (this.aggregationOperator) {
             let propertyExpr: Cypher.Expr = property;
 
-            if (this.attribute.type === AttributeType.String) {
+            if (attributeAdapter.isString()) {
                 propertyExpr = Cypher.size(property);
             }
 
@@ -53,7 +55,7 @@ export class AggregationPropertyFilter extends Filter {
         } else {
             let listExpr: Cypher.Expr;
 
-            if (this.logicalOperator !== "EQUAL" && this.attribute.type === AttributeType.String) {
+            if (this.logicalOperator !== "EQUAL" && attributeAdapter.isString()) {
                 listExpr = Cypher.collect(Cypher.size(property));
             } else {
                 listExpr = Cypher.collect(property);

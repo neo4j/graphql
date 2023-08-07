@@ -185,7 +185,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<${node.name}[]>
+                }): Promise<${normalizedNodeName}[]>
                 public create(args: {
                     input: ${normalizedNodeName}CreateInput[];
                     selectionSet?: string | DocumentNode | SelectionSetNode;

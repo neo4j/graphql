@@ -21,7 +21,7 @@ import type { DirectiveNode, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectVa
 import * as neo4j from "neo4j-driver";
 import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 import { Neo4jGraphQLError } from "../../classes/Error";
-import parseValueNode from "../../schema-model/parser/parse-value-node";
+import { parseValueNode } from "../../schema-model/parser/parse-value-node";
 
 export function parseQueryOptionsDirective({
     directive,
@@ -30,7 +30,7 @@ export function parseQueryOptionsDirective({
     directive: DirectiveNode;
     definition: ObjectTypeDefinitionNode;
 }): QueryOptionsDirective {
-    const limitArgument = directive.arguments?.find((direc) => direc.name.value === "limit");
+    const limitArgument = directive.arguments?.find((argument) => argument.name.value === "limit");
     const limitValue = limitArgument?.value as ObjectValueNode | undefined;
     const defaultLimitArgument = limitValue?.fields.find((field) => field.name.value === "default");
     const maxLimitArgument = limitValue?.fields.find((field) => field.name.value === "max");

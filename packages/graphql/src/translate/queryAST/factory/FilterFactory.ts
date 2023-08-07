@@ -32,7 +32,7 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
 import { ConnectionNodeFilter } from "../ast/filters/connection/ConnectionNodeFilter";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import { AttributeType } from "../../../schema-model/attribute/Attribute";
+import { AttributeType } from "../../../schema-model/attribute/AttributeType";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { isInArray } from "../../../utils/is-in-array";
@@ -40,6 +40,7 @@ import { ConnectionEdgeFilter } from "../ast/filters/connection/ConnectionEdgeFi
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 type AggregateWhereInput = {
     count: number;
@@ -138,26 +139,25 @@ export class FilterFactory {
         isNot: boolean;
         attachedTo?: "node" | "relationship";
     }): PropertyFilter {
+        const attributeAdapter = new AttributeAdapter(attribute);
         const filterOperator = operator || "EQ";
-        switch (attribute.type) {
-            case AttributeType.Duration: {
-                return new DurationFilter({
-                    attribute,
-                    comparisonValue,
-                    isNot,
-                    operator: filterOperator,
-                    attachedTo,
-                });
-            }
-            case AttributeType.Point: {
-                return new PointFilter({
-                    attribute,
-                    comparisonValue,
-                    isNot,
-                    operator: filterOperator,
-                    attachedTo,
-                });
-            }
+        if (attributeAdapter.isDuration()) {
+            return new DurationFilter({
+                attribute,
+                comparisonValue,
+                isNot,
+                operator: filterOperator,
+                attachedTo,
+            });
+        }
+        if (attributeAdapter.isPoint()) {
+            return new PointFilter({
+                attribute,
+                comparisonValue,
+                isNot,
+                operator: filterOperator,
+                attachedTo,
+            });
         }
 
         return new PropertyFilter({
@@ -346,7 +346,7 @@ export class FilterFactory {
 
             // const filterOperator = operator || "EQ";
             const attachedTo = entity instanceof Relationship ? "relationship" : "node";
-            
+
             return new AggregationPropertyFilter({
                 attribute: attr,
                 comparisonValue: value,

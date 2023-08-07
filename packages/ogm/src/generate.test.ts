@@ -2859,7 +2859,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
-              }): Promise<FAQ[]>;
+              }): Promise<Faq[]>;
               public create(args: {
                 input: FaqCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;
@@ -2918,7 +2918,7 @@ describe("generate", () => {
                 args?: any;
                 context?: any;
                 rootValue?: any;
-              }): Promise<FAQEntry[]>;
+              }): Promise<FaqEntry[]>;
               public create(args: {
                 input: FaqEntryCreateInput[];
                 selectionSet?: string | DocumentNode | SelectionSetNode;

@@ -18,15 +18,18 @@
  */
 
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
+import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
 
 export class AttributeField extends Field {
     protected attribute: Attribute;
+    protected attributeAdapter: AttributeAdapter;
 
     constructor({ alias, attribute }: { alias: string; attribute: Attribute }) {
         super(alias);
         this.attribute = attribute;
+        this.attributeAdapter = new AttributeAdapter(attribute);
     }
 
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {

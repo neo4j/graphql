@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import { AttributeField } from "./AttributeField";
+import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class PointAttributeField extends AttributeField {
     private crs: boolean;
@@ -39,13 +40,14 @@ export class PointAttributeField extends AttributeField {
     }
 
     private createPointProjection(variable: Cypher.Variable): Cypher.Expr {
+        const attributeAdapter = new AttributeAdapter(this.attribute);
         const pointProperty = variable.property(this.attribute.name);
 
         const caseStatement = new Cypher.Case().when(Cypher.isNotNull(pointProperty));
 
         // Sadly need to select the whole point object due to the risk of height/z
         // being selected on a 2D point, to which the database will throw an error
-        if (this.attribute.isArray) {
+        if (attributeAdapter.isList()) {
             const arrayProjection = this.createPointArrayProjection(pointProperty);
             return caseStatement.then(arrayProjection).else(Cypher.Null);
         } else {

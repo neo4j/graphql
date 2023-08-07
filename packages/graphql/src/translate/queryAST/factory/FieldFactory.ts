@@ -24,7 +24,7 @@ import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { Relationship } from "../../../schema-model/relationship/Relationship";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import { AttributeType } from "../../../schema-model/attribute/Attribute";
+import { AttributeType, ScalarType } from "../../../schema-model/attribute/AttributeType";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -34,6 +34,7 @@ import { filterTruthy } from "../../../utils/utils";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import { OperationField } from "../ast/fields/OperationField";
 import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -123,8 +124,8 @@ export class FieldFactory {
         field: ResolveTree;
     }): AttributeField {
         const attribute = entity.findAttribute(fieldName);
-
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
+        const attributeAdapter = new AttributeAdapter(attribute);
 
         if (attribute.annotations.cypher) {
             return this.createCypherAttributeField({
@@ -139,26 +140,23 @@ export class FieldFactory {
             // });
         }
 
-        switch (attribute.type) {
-            case AttributeType.Point: {
-                const { crs } = field.fieldsByTypeName[attribute.type] as any;
-                return new PointAttributeField({
-                    attribute,
-                    alias: field.alias,
-                    crs: Boolean(crs),
-                });
-            }
-
-            case AttributeType.DateTime: {
-                return new DateTimeField({
-                    attribute,
-                    alias: field.alias,
-                });
-            }
-            default: {
-                return new AttributeField({ alias: field.alias, attribute });
-            }
+        if (attributeAdapter.isPoint()) {
+            const { crs } = field.fieldsByTypeName[(attribute.type as ScalarType).name] as any;
+            return new PointAttributeField({
+                attribute,
+                alias: field.alias,
+                crs: Boolean(crs),
+            });
         }
+
+        if (attributeAdapter.isDateTime()) {
+            return new DateTimeField({
+                attribute,
+                alias: field.alias,
+            });
+        }
+
+        return new AttributeField({ alias: field.alias, attribute });
     }
 
     private createCypherAttributeField({

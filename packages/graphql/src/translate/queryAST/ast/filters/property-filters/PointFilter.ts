@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { WhereOperator } from "../Filter";
 import { PropertyFilter } from "./PropertyFilter";
 import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
+import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class PointFilter extends PropertyFilter {
     protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {
@@ -43,9 +44,10 @@ export class PointFilter extends PropertyFilter {
         param: Cypher.Param;
         attribute: Attribute;
     }): Cypher.ComparisonOp {
+        const attributeAdapter = new AttributeAdapter(attribute);
         const pointDistance = this.createPointDistanceExpression(property, param);
         const distanceRef = param.property("distance");
-        const isArray = attribute.isArray;
+        const isArray = attributeAdapter.isList();
 
         switch (operator) {
             case "LT":

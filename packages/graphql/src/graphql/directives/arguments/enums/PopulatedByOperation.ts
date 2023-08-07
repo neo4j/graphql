@@ -23,7 +23,7 @@ export const PopulatedByOperationEnum = new GraphQLEnumType({
     name: "PopulatedByOperation",
     description: "*For use in the @populatedBy directive only*",
     values: {
-        CREATE: {},
-        UPDATE: {},
+        CREATE: { value: "CREATE" },
+        UPDATE: { value: "UPDATE"},
     },
 });

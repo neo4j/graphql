@@ -34,7 +34,7 @@ export class DateTimeField extends AttributeField {
     }
 
     private createDateTimeProjection(targetProperty: Cypher.Property): Cypher.Expr {
-        if (this.attribute.isArray) {
+        if (this.attributeAdapter.isList()) {
             return this.createArrayProjection(targetProperty);
         }
         return this.createApocConvertFormat(targetProperty);

@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { KeyAnnotation } from "../annotation/KeyAnnotation";
-import { parseArguments } from "./utils";
+import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
+import { KeyAnnotation } from "../../annotation/KeyAnnotation";
+import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 export function parseKeyAnnotation(directives: readonly DirectiveNode[]): KeyAnnotation {
     let isResolvable = false;
 
     directives.forEach((directive) => {
         // fields is a recognized argument but we don't use it, hence we ignore the non-usage of the variable.
-         
-        const { fields, resolvable, ...unrecognizedArguments } = parseArguments(directive) as {
+        const { fields, resolvable, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
             fields: string;
             resolvable: boolean;
         };
