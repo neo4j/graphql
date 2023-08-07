@@ -146,6 +146,7 @@ export class FilterFactory {
                     comparisonValue,
                     isNot,
                     operator: filterOperator,
+                    attachedTo,
                 });
             }
             case AttributeType.Point: {
@@ -154,6 +155,7 @@ export class FilterFactory {
                     comparisonValue,
                     isNot,
                     operator: filterOperator,
+                    attachedTo,
                 });
             }
         }
