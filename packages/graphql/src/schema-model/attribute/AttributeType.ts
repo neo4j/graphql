@@ -109,9 +109,11 @@ export class ObjectType {
 }
 
 export class ListType {
-    public ofType: Exclude<AttributeType, ListType>;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly ofType: Exclude<AttributeType, ListType>;
+    public readonly isRequired: boolean;
     constructor(ofType: AttributeType, isRequired: boolean) {
+        this.name = `List<${ofType.name}>`;
         if (ofType instanceof ListType) {
             throw new Neo4jGraphQLSchemaValidationError("two-dimensional lists are not supported");
         }
@@ -121,8 +123,8 @@ export class ListType {
 }
 
 export class EnumType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add enum values
 
     constructor(name: string, isRequired: boolean) {
@@ -132,8 +134,8 @@ export class EnumType {
 }
 
 export class UnionType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add implementing types
 
     constructor(name: string, isRequired: boolean) {
@@ -143,8 +145,8 @@ export class UnionType {
 }
 
 export class InterfaceType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add shared fields
 
     constructor(name: string, isRequired: boolean) {

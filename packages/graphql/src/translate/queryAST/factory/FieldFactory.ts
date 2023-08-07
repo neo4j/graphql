@@ -24,7 +24,7 @@ import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { Relationship } from "../../../schema-model/relationship/Relationship";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import { AttributeType, ScalarType } from "../../../schema-model/attribute/AttributeType";
+import { AttributeType, Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType, ScalarType } from "../../../schema-model/attribute/AttributeType";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -140,8 +140,9 @@ export class FieldFactory {
             // });
         }
 
-        if (attributeAdapter.isPoint()) {
-            const { crs } = field.fieldsByTypeName[(attribute.type as ScalarType).name] as any;
+        if (attributeAdapter.isPoint() || attributeAdapter.isListOf(Neo4jGraphQLSpatialType.Point)) {
+            const typeName = attributeAdapter.isList() ? attributeAdapter.type.ofType.name : attribute.type.name;
+            const { crs } = field.fieldsByTypeName[typeName] as any;
             return new PointAttributeField({
                 attribute,
                 alias: field.alias,
@@ -149,7 +150,7 @@ export class FieldFactory {
             });
         }
 
-        if (attributeAdapter.isDateTime()) {
+        if (attributeAdapter.isDateTime() || attributeAdapter.isListOf(Neo4jGraphQLTemporalType.DateTime)) {
             return new DateTimeField({
                 attribute,
                 alias: field.alias,

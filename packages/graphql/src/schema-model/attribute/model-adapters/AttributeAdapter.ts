@@ -181,7 +181,7 @@ export class AttributeAdapter {
         return this.type instanceof ScalarType && this.type.name === Neo4jGraphQLTemporalType.Duration;
     }
 
-    isList(): boolean {
+    isList(): this is AttributeAdapter & { type: ListType } {
         return this.type instanceof ListType;
     }
 

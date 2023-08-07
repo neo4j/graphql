@@ -32,7 +32,11 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
 import { ConnectionNodeFilter } from "../ast/filters/connection/ConnectionNodeFilter";
 import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import { AttributeType } from "../../../schema-model/attribute/AttributeType";
+import {
+    AttributeType,
+    Neo4jGraphQLSpatialType,
+    Neo4jGraphQLTemporalType,
+} from "../../../schema-model/attribute/AttributeType";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { isInArray } from "../../../utils/is-in-array";
@@ -141,7 +145,7 @@ export class FilterFactory {
     }): PropertyFilter {
         const attributeAdapter = new AttributeAdapter(attribute);
         const filterOperator = operator || "EQ";
-        if (attributeAdapter.isDuration()) {
+        if (attributeAdapter.isDuration() || attributeAdapter.isListOf(Neo4jGraphQLTemporalType.Duration)) {
             return new DurationFilter({
                 attribute,
                 comparisonValue,
@@ -150,7 +154,7 @@ export class FilterFactory {
                 attachedTo,
             });
         }
-        if (attributeAdapter.isPoint()) {
+        if (attributeAdapter.isPoint() || attributeAdapter.isListOf(Neo4jGraphQLSpatialType.Point)) {
             return new PointFilter({
                 attribute,
                 comparisonValue,
