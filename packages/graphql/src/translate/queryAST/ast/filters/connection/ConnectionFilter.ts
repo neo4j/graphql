@@ -2,16 +2,11 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { Relationship } from "../../../../../schema-model/relationship/Relationship";
 import type { RelationshipWhereOperator } from "../../../../where/types";
-//import type { ConnectionEdgeFilter } from "./ConnectionEdgeFilter";
-//import type { ConnectionNodeFilter } from "./ConnectionNodeFilter";
 import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { Filter } from "../Filter";
 import { QueryASTContext } from "../../QueryASTContext";
-//import type { QueryASTNode } from "../../QueryASTNode";
 
-export class ConnectionFilter extends Filter {/* 
-    private targetNodeFilters: Filter[] = [];
-    private targetEdgeFilters: Filter[] = []; */
+export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
     private relationship: Relationship;
     private operator: RelationshipWhereOperator;
@@ -31,20 +26,12 @@ export class ConnectionFilter extends Filter {/*
         this.isNot = isNot;
         this.operator = operator || "SOME";
     }
-/*     public addConnectionNodeFilter(nodeFilter: ConnectionNodeFilter): void {
-        this.targetNodeFilters.push(nodeFilter);
-    }
 
-    public addConnectionEdgeFilter(edgeFilter: ConnectionEdgeFilter): void {
-        this.targetEdgeFilters.push(edgeFilter);
-    }
- */
     public addFilters(filters: Filter[]): void {
         this.innerFilters.push(...filters);
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
- 
         //TODO: not concrete entities
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const target = new Cypher.Node({
@@ -72,9 +59,6 @@ export class ConnectionFilter extends Filter {/*
         nestedContext: QueryASTContext
     ): Cypher.Predicate | undefined {
         const connectionFilter = this.innerFilters.map((c) => c.getPredicate(nestedContext));
-        /*         
-        const relationshipPredicates = this.targetEdgeFilters.map((c) => c.getPredicate(relationshipVar));
-        const nodePredicates = this.targetNodeFilters.map((c) => c.getPredicate(relatedNode)); */
         const innerPredicate = Cypher.and(...connectionFilter);
 
         if (!innerPredicate) return undefined;

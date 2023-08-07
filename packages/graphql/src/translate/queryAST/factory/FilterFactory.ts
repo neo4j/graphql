@@ -110,15 +110,15 @@ export class FilterFactory {
                         isNot: connectionWhereField.isNot,
                         filters: targetEdgeFilters,
                     });
-                    return connectionEdgeFilter as Filter;
+                    return connectionEdgeFilter;
                 }
                 if (connectionWhereField.fieldName === "node") {
-                    const targetNodeFilters = this.createNodeFilters(rel.target as ConcreteEntity, value as any);
+                    const targetNodeFilters = this.createNodeFilters(rel.target as ConcreteEntity, value);
                     const connectionNodeFilter = new ConnectionNodeFilter({
                         isNot: connectionWhereField.isNot,
                         filters: targetNodeFilters,
                     });
-                    return connectionNodeFilter as Filter;
+                    return connectionNodeFilter;
                 }
             });
         });
@@ -188,43 +188,6 @@ export class FilterFactory {
         return relationshipFilter;
     }
 
-  /*   private createConnectionFilter(
-        where: ConnectionWhereArg,
-        relationship: Relationship,
-        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): ConnectionFilter {
-        const connectionFilter = new ConnectionFilter({
-            relationship: relationship,
-            isNot: filterOps.isNot,
-            operator: filterOps.operator,
-        });
-
-        const targetNode = relationship.target as ConcreteEntity; // TODO: accept entities
-
-        Object.entries(where).forEach(([key, value]: [string, GraphQLWhereArg | GraphQLWhereArg[]]) => {
-            const connectionWhereField = parseConnectionWhereFields(key);
-            if (connectionWhereField.fieldName === "edge") {
-                const targetEdgeFilters = this.createEdgeFilters(relationship, value);
-                const connectionEdgeFilter = new ConnectionEdgeFilter({
-                    isNot: connectionWhereField.isNot,
-                    filters: targetEdgeFilters,
-                });
-                connectionFilter.addConnectionEdgeFilter(connectionEdgeFilter);
-            }
-            if (connectionWhereField.fieldName === "node") {
-                const targetNodeFilters = this.createNodeFilters(targetNode, value as any);
-                const connectionNodeFilter = new ConnectionNodeFilter({
-                    isNot: connectionWhereField.isNot,
-                    filters: targetNodeFilters,
-                });
-
-                connectionFilter.addConnectionNodeFilter(connectionNodeFilter);
-            }
-        });
-
-        return connectionFilter;
-    }
- */
     public createNodeFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
             if (isInArray(["NOT", "OR", "AND"] as const, key)) {

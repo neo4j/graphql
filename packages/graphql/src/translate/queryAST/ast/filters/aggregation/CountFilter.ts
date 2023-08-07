@@ -24,7 +24,7 @@ export class CountFilter {
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         return this.createBaseOperation({
             operator: this.operator,
-            expr: Cypher.count(queryASTContext.target), // TODO this is not correct
+            expr: Cypher.count(queryASTContext.target),
             param: new Cypher.Param(this.comparisonValue),
         });
     }

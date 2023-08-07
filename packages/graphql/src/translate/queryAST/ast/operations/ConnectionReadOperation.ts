@@ -33,16 +33,10 @@ import { QueryASTContext } from "../QueryASTContext";
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
     private directed: boolean;
-
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
-    
-/*     private nodeFilters: Filter[] = [];
-    private edgeFilters: Filter[] = [];  */
     private filters: Filter[] = [];
-
     private pagination: Pagination | undefined;
-
     private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
     constructor({ relationship, directed }: { relationship: Relationship; directed: boolean }) {
@@ -55,13 +49,6 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
-/*     public setNodeFilters(filters: Filter[]) {
-        this.nodeFilters = filters;
-    }
-
-    public setEdgeFilters(filters: Filter[]) {
-        this.edgeFilters = filters;
-    } */
 
     public setFilters(filters: Filter[]) {
         this.filters = filters;
@@ -91,11 +78,6 @@ export class ConnectionReadOperation extends Operation {
 
         const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
         
-       /*  const nodeFilterPredicates = Cypher.and(...this.nodeFilters.map((f) => f.getPredicate(nestedContext)));
-        const edgeFilterPredicates = Cypher.and(...this.edgeFilters.map((f) => (f as any).getPredicate(nestedContext))); // Any because of relationship predicates 
-        */ 
-       // const filters = Cypher.and(...nodeFilterPredicates, ...edgeFilterPredicates);
-       // const filters = Cypher.and(...[...this.nodeFilters, ...this.edgeFilters].map((f) => f.getPredicate(nestedContext)));
        const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
        const filters = Cypher.and(...predicates);
        const nodeProjectionMap = new Cypher.Map();
@@ -136,14 +118,8 @@ export class ConnectionReadOperation extends Operation {
         edgeProjectionMap.set("node", nodeProjectionMap);
         if (filters) {
             clause.where(filters);
-        } /* 
-        if (edgeFilterPredicates) {
-            clause.where(edgeFilterPredicates);
         }
-        if (filterPredicates) {
-            clause.where(filterPredicates);
-        } */
-
+        
         let sortSubquery: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();

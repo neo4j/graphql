@@ -72,8 +72,6 @@ export class RelationshipFilter extends Filter {
             .withDirection(getRelationshipDirection(this.relationship))
             .withoutVariable()
             .to(nestedContext.target);
-
-        //const pattern = this.createRelationshipPattern(queryASTContext.target, relatedNode);
         
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
         if (!predicate) return undefined;
