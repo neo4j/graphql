@@ -42,12 +42,10 @@ export class PointFilter extends PropertyFilter {
         operator: WhereOperator | "EQ";
         property: Cypher.Expr;
         param: Cypher.Param;
-        attribute: Attribute;
+        attribute: AttributeAdapter;
     }): Cypher.ComparisonOp {
-        const attributeAdapter = new AttributeAdapter(attribute);
         const pointDistance = this.createPointDistanceExpression(property, param);
         const distanceRef = param.property("distance");
-        const isArray = attributeAdapter.isList();
 
         switch (operator) {
             case "LT":
@@ -61,7 +59,7 @@ export class PointFilter extends PropertyFilter {
             case "DISTANCE":
                 return Cypher.eq(pointDistance, distanceRef);
             case "EQ": {
-                if (isArray) {
+                if (attribute.isList()) {
                     const pointList = this.createPointListComprehension(param);
                     return Cypher.eq(property, pointList);
                 }

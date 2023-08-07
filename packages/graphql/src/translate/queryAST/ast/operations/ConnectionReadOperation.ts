@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { Field } from "../fields/Field";
@@ -29,9 +27,11 @@ import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { Sort, SortField } from "../sort/Sort";
 import { QueryASTContext } from "../QueryASTContext";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export class ConnectionReadOperation extends Operation {
-    public readonly relationship: Relationship;
+    public readonly relationship: RelationshipAdapter;
     private directed: boolean;
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
@@ -39,7 +39,7 @@ export class ConnectionReadOperation extends Operation {
     private pagination: Pagination | undefined;
     private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
-    constructor({ relationship, directed }: { relationship: Relationship; directed: boolean }) {
+    constructor({ relationship, directed }: { relationship: RelationshipAdapter; directed: boolean }) {
         super();
         this.relationship = relationship;
         this.directed = directed;
@@ -68,7 +68,7 @@ export class ConnectionReadOperation extends Operation {
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
         if (!parentNode) throw new Error();
-        const node = createNodeFromEntity(this.relationship.target as ConcreteEntity);
+        const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = getRelationshipDirection(this.relationship, this.directed);
 

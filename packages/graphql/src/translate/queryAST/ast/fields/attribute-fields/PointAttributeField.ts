@@ -25,7 +25,7 @@ import { AttributeAdapter } from "../../../../../schema-model/attribute/model-ad
 export class PointAttributeField extends AttributeField {
     private crs: boolean;
 
-    constructor({ attribute, alias, crs }: { attribute: Attribute; alias: string; crs: boolean }) {
+    constructor({ attribute, alias, crs }: { attribute: AttributeAdapter; alias: string; crs: boolean }) {
         super({ alias, attribute });
         this.crs = crs;
     }
@@ -40,14 +40,13 @@ export class PointAttributeField extends AttributeField {
     }
 
     private createPointProjection(variable: Cypher.Variable): Cypher.Expr {
-        const attributeAdapter = new AttributeAdapter(this.attribute);
         const pointProperty = variable.property(this.attribute.name);
 
         const caseStatement = new Cypher.Case().when(Cypher.isNotNull(pointProperty));
 
         // Sadly need to select the whole point object due to the risk of height/z
         // being selected on a 2D point, to which the database will throw an error
-        if (attributeAdapter.isList()) {
+        if (this.attribute.isList()) {
             const arrayProjection = this.createPointArrayProjection(pointProperty);
             return caseStatement.then(arrayProjection).else(Cypher.Null);
         } else {

@@ -1,14 +1,14 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../../../schema-model/relationship/Relationship";
 import type { RelationshipWhereOperator } from "../../../../where/types";
 import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { Filter } from "../Filter";
 import { QueryASTContext } from "../../QueryASTContext";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
-    private relationship: Relationship;
+    private relationship: RelationshipAdapter;
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
@@ -17,7 +17,7 @@ export class ConnectionFilter extends Filter {
         operator,
         isNot,
     }: {
-        relationship: Relationship;
+        relationship: RelationshipAdapter;
         operator: RelationshipWhereOperator | undefined;
         isNot: boolean;
     }) {

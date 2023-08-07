@@ -17,19 +17,16 @@
  * limitations under the License.
  */
 
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
 
 export class AttributeField extends Field {
-    protected attribute: Attribute;
-    protected attributeAdapter: AttributeAdapter;
+    protected attribute: AttributeAdapter;
 
-    constructor({ alias, attribute }: { alias: string; attribute: Attribute }) {
+    constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
         super(alias);
         this.attribute = attribute;
-        this.attributeAdapter = new AttributeAdapter(attribute);
     }
 
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {

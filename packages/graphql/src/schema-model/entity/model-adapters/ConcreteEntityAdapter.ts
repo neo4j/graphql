@@ -135,5 +135,12 @@ export class ConcreteEntityAdapter {
         return this._operations;
     }
 
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+
+    public findRelationship(name: string): RelationshipAdapter | undefined {
+        return this.relationships.get(name);
+    }
     // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
 }

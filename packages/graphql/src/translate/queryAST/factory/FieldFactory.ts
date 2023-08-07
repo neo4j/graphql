@@ -18,13 +18,10 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { Relationship } from "../../../schema-model/relationship/Relationship";
-import type { Attribute } from "../../../schema-model/attribute/Attribute";
-import { AttributeType, Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType, ScalarType } from "../../../schema-model/attribute/AttributeType";
+import {  Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -34,7 +31,9 @@ import { filterTruthy } from "../../../utils/utils";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import { OperationField } from "../ast/fields/OperationField";
 import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
-import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -42,23 +41,23 @@ export class FieldFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    public createFields(entity: ConcreteEntity | Relationship, rawFields: Record<string, ResolveTree>): Field[] {
+    public createFields(entity: ConcreteEntityAdapter | RelationshipAdapter, rawFields: Record<string, ResolveTree>): Field[] {
         return Object.values(rawFields).map((field: ResolveTree) => {
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConnection) {
-                if (entity instanceof Relationship) throw new Error("Cannot create connection field of relationship");
+                if (entity instanceof RelationshipAdapter) throw new Error("Cannot create connection field of relationship");
                 return this.createConnectionField(entity, fieldName, field);
             }
 
             if (isAggregation) {
-                if (entity instanceof Relationship) throw new Error("Cannot create aggregation field of relationship");
+                if (entity instanceof RelationshipAdapter) throw new Error("Cannot create aggregation field of relationship");
 
                 const relationship = entity.findRelationship(fieldName);
                 if (!relationship) throw new Error("Relationship for aggregation not found");
                 return this.createRelationshipAggregationField(relationship, fieldName, field);
             }
 
-            if (entity instanceof ConcreteEntity) {
+            if (entity instanceof ConcreteEntityAdapter) {
                 const relationship = entity.findRelationship(fieldName);
                 if (relationship) {
                     return this.createRelationshipField(entity, relationship, fieldName, field);
@@ -74,7 +73,7 @@ export class FieldFactory {
     }
 
     private createRelationshipAggregationField(
-        relationship: Relationship,
+        relationship: RelationshipAdapter,
         fieldName: string,
         resolveTree: ResolveTree
     ): OperationField {
@@ -92,7 +91,7 @@ export class FieldFactory {
     }
 
     public createAggregationFields(
-        entity: ConcreteEntity | Relationship,
+        entity: ConcreteEntityAdapter | RelationshipAdapter,
         rawFields: Record<string, ResolveTree>
     ): AggregationField[] {
         return filterTruthy(
@@ -119,13 +118,12 @@ export class FieldFactory {
         fieldName,
         field,
     }: {
-        entity: ConcreteEntity | Relationship;
+        entity: ConcreteEntityAdapter | RelationshipAdapter;
         fieldName: string;
         field: ResolveTree;
     }): AttributeField {
         const attribute = entity.findAttribute(fieldName);
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
-        const attributeAdapter = new AttributeAdapter(attribute);
 
         if (attribute.annotations.cypher) {
             return this.createCypherAttributeField({
@@ -140,8 +138,8 @@ export class FieldFactory {
             // });
         }
 
-        if (attributeAdapter.isPoint() || attributeAdapter.isListOf(Neo4jGraphQLSpatialType.Point)) {
-            const typeName = attributeAdapter.isList() ? attributeAdapter.type.ofType.name : attribute.type.name;
+        if (attribute.isPoint() || attribute.isListOf(Neo4jGraphQLSpatialType.Point)) {
+            const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
             const { crs } = field.fieldsByTypeName[typeName] as any;
             return new PointAttributeField({
                 attribute,
@@ -150,7 +148,7 @@ export class FieldFactory {
             });
         }
 
-        if (attributeAdapter.isDateTime() || attributeAdapter.isListOf(Neo4jGraphQLTemporalType.DateTime)) {
+        if (attribute.isDateTime() || attribute.isListOf(Neo4jGraphQLTemporalType.DateTime)) {
             return new DateTimeField({
                 attribute,
                 alias: field.alias,
@@ -166,8 +164,8 @@ export class FieldFactory {
         field,
         attribute,
     }: {
-        entity: ConcreteEntity | Relationship;
-        attribute: Attribute;
+        entity: ConcreteEntityAdapter | RelationshipAdapter;
+        attribute: AttributeAdapter;
         fieldName: string;
         field: ResolveTree;
     }): CypherAttributeField {
@@ -194,7 +192,7 @@ export class FieldFactory {
         });
     }
 
-    private createConnectionField(entity: ConcreteEntity, fieldName: string, field: ResolveTree): OperationField {
+    private createConnectionField(entity: ConcreteEntityAdapter, fieldName: string, field: ResolveTree): OperationField {
         const relationship = entity.findRelationship(fieldName);
         if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
         const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
@@ -206,8 +204,8 @@ export class FieldFactory {
     }
 
     private createRelationshipField(
-        entity: ConcreteEntity,
-        relationship: Relationship,
+        entity: ConcreteEntityAdapter,
+        relationship: RelationshipAdapter,
         fieldName: string,
         field: ResolveTree
     ): OperationField {

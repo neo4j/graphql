@@ -22,9 +22,10 @@ import type { Attribute } from "../../../../../schema-model/attribute/Attribute"
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class PropertyFilter extends Filter {
-    protected attribute: Attribute;
+    protected attribute: AttributeAdapter;
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
     protected isNot: boolean; // _NOT is deprecated
@@ -37,7 +38,7 @@ export class PropertyFilter extends Filter {
         isNot,
         attachedTo,
     }: {
-        attribute: Attribute;
+        attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: FilterOperator;
         isNot: boolean;

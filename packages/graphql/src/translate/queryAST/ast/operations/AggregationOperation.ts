@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { asArray, filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { Filter } from "../filters/Filter";
@@ -28,12 +27,13 @@ import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
-import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { QueryASTContext } from "../QueryASTContext";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
-    public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities
+    public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
     protected directed: boolean;
 
     public fields: AggregationField[] = []; // Aggregation fields
@@ -48,7 +48,7 @@ export class AggregationOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    constructor(entity: ConcreteEntity | Relationship, directed = true) {
+    constructor(entity: ConcreteEntityAdapter | RelationshipAdapter, directed = true) {
         super();
         this.entity = entity;
         this.directed = directed;
@@ -71,7 +71,7 @@ export class AggregationOperation extends Operation {
     }
 
     private createSubquery(
-        entity: Relationship,
+        entity: RelationshipAdapter,
         field: AggregationField,
         pattern: Cypher.Pattern,
         target: Cypher.Variable,
@@ -99,13 +99,13 @@ export class AggregationOperation extends Operation {
 
     private transpileNestedRelationship(
         // Create new Clause per field
-        entity: Relationship,
+        entity: RelationshipAdapter,
         { parentNode }: OperationTranspileOptions
     ): Cypher.Clause[] {
         //TODO: dupe from transpile
         if (!parentNode) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntity);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter);
         const relDirection = getRelationshipDirection(entity, this.directed);
 
         const pattern = new Cypher.Pattern(parentNode)
@@ -157,7 +157,7 @@ export class AggregationOperation extends Operation {
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
-        const clauses = this.transpileNestedRelationship(this.entity as Relationship, { returnVariable, parentNode });
+        const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, { returnVariable, parentNode });
         return {
             clauses,
             projectionExpr: this.aggregationProjectionMap,

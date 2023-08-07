@@ -18,11 +18,9 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { FilterFactory } from "./FilterFactory";
 import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
@@ -30,6 +28,8 @@ import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import type { Integer } from "neo4j-driver";
 import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -44,8 +44,8 @@ export class OperationsFactory {
         this.sortAndPaginationFactory = new SortAndPaginationFactory();
     }
  
-    public createReadOperationAST(entityOrRel: ConcreteEntity | Relationship, resolveTree: ResolveTree): ReadOperation {
-        const entity = (entityOrRel instanceof Relationship ? entityOrRel.target : entityOrRel) as ConcreteEntity;
+    public createReadOperationAST(entityOrRel: ConcreteEntityAdapter | RelationshipAdapter, resolveTree: ResolveTree): ReadOperation {
+        const entity = (entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel) as ConcreteEntityAdapter;
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
 
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
@@ -53,7 +53,7 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields);
 
         let filters: Filter[];
-        if (entityOrRel instanceof Relationship) {
+        if (entityOrRel instanceof RelationshipAdapter) {
             filters = this.filterFactory.createRelationshipFilters(entityOrRel, whereArgs);
         } else {
             filters = this.filterFactory.createNodeFilters(entityOrRel, whereArgs);
@@ -76,8 +76,8 @@ export class OperationsFactory {
     }
 
     // TODO: dupe from read operation
-    public createAggregationOperation(relationship: Relationship, resolveTree: ResolveTree): AggregationOperation {
-        const entity = relationship.target as ConcreteEntity;
+    public createAggregationOperation(relationship: RelationshipAdapter, resolveTree: ResolveTree): AggregationOperation {
+        const entity = relationship.target as ConcreteEntityAdapter;
 
         const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
         const edgeRawFields = {
@@ -95,7 +95,7 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
 
-        const filters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntity, whereArgs); // Aggregation filters only apply to target node
+        const filters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntityAdapter, whereArgs); // Aggregation filters only apply to target node
 
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
@@ -116,7 +116,7 @@ export class OperationsFactory {
         return operation;
     }
 
-    public createConnectionOperationAST(relationship: Relationship, resolveTree: ResolveTree): ConnectionReadOperation {
+    public createConnectionOperationAST(relationship: RelationshipAdapter, resolveTree: ResolveTree): ConnectionReadOperation {
         const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
@@ -149,7 +149,7 @@ export class OperationsFactory {
             });
         }
 
-        const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
+        const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntityAdapter, nodeRawFields);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields);
         
         const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);

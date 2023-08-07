@@ -23,13 +23,11 @@ import type { Attribute } from "../../../../../schema-model/attribute/Attribute"
 import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class AggregationAttributeField extends AggregationField {
-    private attribute: Attribute;
-    private attributeAdapter: AttributeAdapter;
+    private attribute: AttributeAdapter;
 
-    constructor({ alias, attribute }: { alias: string; attribute: Attribute }) {
+    constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
         super(alias);
         this.attribute = attribute;
-        this.attributeAdapter = new AttributeAdapter(attribute);
     }
 
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
@@ -41,7 +39,7 @@ export class AggregationAttributeField extends AggregationField {
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        if (this.attributeAdapter.isString()) {
+        if (this.attribute.isString()) {
             const aggrProp = target.property(this.attribute.name);
             const listVar = new Cypher.NamedVariable("list");
             return new Cypher.With(target)
@@ -55,7 +53,7 @@ export class AggregationAttributeField extends AggregationField {
                     returnVar,
                 ]);
         }
-        if (this.attributeAdapter.isInt() || this.attributeAdapter.isFloat()) {
+        if (this.attribute.isInt() || this.attribute.isFloat()) {
             const aggrProp = target.property(this.attribute.name);
             return new Cypher.Return([
                 new Cypher.Map({
@@ -68,7 +66,7 @@ export class AggregationAttributeField extends AggregationField {
             ]);
         }
 
-        if (this.attributeAdapter.isDateTime()) {
+        if (this.attribute.isDateTime()) {
             const aggrProp = target.property(this.attribute.name);
             return new Cypher.Return([
                 new Cypher.Map({

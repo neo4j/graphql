@@ -6,7 +6,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class AggregationPropertyFilter extends Filter {
-    protected attribute: Attribute;
+    protected attribute: AttributeAdapter;
     protected comparisonValue: unknown;
 
     protected logicalOperator: AggregationLogicalOperator;
@@ -20,7 +20,7 @@ export class AggregationPropertyFilter extends Filter {
         aggregationOperator,
         attachedTo,
     }: {
-        attribute: Attribute;
+        attribute: AttributeAdapter;
         logicalOperator: AggregationLogicalOperator;
         comparisonValue: unknown;
         aggregationOperator: AggregationOperator | undefined;
@@ -35,14 +35,13 @@ export class AggregationPropertyFilter extends Filter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const attributeAdapter = new AttributeAdapter(this.attribute);
         const comparisonVar = new Cypher.Variable();
         const property = this.getPropertyRef(queryASTContext);
 
         if (this.aggregationOperator) {
             let propertyExpr: Cypher.Expr = property;
 
-            if (attributeAdapter.isString()) {
+            if (this.attribute.isString()) {
                 propertyExpr = Cypher.size(property);
             }
 
@@ -55,7 +54,7 @@ export class AggregationPropertyFilter extends Filter {
         } else {
             let listExpr: Cypher.Expr;
 
-            if (this.logicalOperator !== "EQUAL" && attributeAdapter.isString()) {
+            if (this.logicalOperator !== "EQUAL" && this.attribute.isString()) {
                 listExpr = Cypher.collect(Cypher.size(property));
             } else {
                 listExpr = Cypher.collect(property);

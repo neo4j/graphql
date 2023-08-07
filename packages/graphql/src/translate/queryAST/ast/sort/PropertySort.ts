@@ -18,15 +18,15 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
-import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
+import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class PropertySort extends Sort {
-    private attribute: Attribute;
+    private attribute: AttributeAdapter;
     private direction: Cypher.Order;
 
-    constructor({ attribute, direction }: { attribute: Attribute; direction: Cypher.Order }) {
+    constructor({ attribute, direction }: { attribute: AttributeAdapter; direction: Cypher.Order }) {
         super();
         this.attribute = attribute;
         this.direction = direction;
