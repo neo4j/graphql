@@ -29,6 +29,7 @@ import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { QueryASTContext } from "../QueryASTContext";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities
@@ -78,9 +79,10 @@ export class ReadOperation extends Operation {
             .related(relVar)
             .withDirection(relDirection)
             .to(targetNode);
-
+        
         const matchClause = new Cypher.Match(pattern);
-        const filterPredicates = this.getPredicates(targetNode);
+        const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
+        const filterPredicates = this.getPredicates(nestedContext);
         // const projectionFields = this.fields.map((f) => f.getProjectionField(targetNode));
         // const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
 
@@ -130,8 +132,8 @@ export class ReadOperation extends Operation {
         return new Cypher.With([projection, target]).return([aggregationExpr, returnVariable]);
     }
 
-    private getPredicates(target: Cypher.Node): Cypher.Predicate | undefined {
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(target)));
+    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
@@ -139,11 +141,11 @@ export class ReadOperation extends Operation {
             return this.transpileNestedRelationship(this.entity, { returnVariable, parentNode });
         }
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
-
+        const context = new QueryASTContext({ target: node });
         const filterSubqueries = this.filters
             .flatMap((f) => f.getSubqueries(node))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
-        const filterPredicates = this.getPredicates(node);
+        const filterPredicates = this.getPredicates(context);
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(node));
 
         const projectionFields = this.fields.map((f) => f.getProjectionField(node));

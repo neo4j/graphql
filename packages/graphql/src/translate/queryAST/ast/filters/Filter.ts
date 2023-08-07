@@ -19,6 +19,7 @@
 
 import { QueryASTNode } from "../QueryASTNode";
 import type Cypher from "@neo4j/cypher-builder";
+import type { QueryASTContext } from "../QueryASTContext";
 
 export type NumericalWhereOperator = "GT" | "GTE" | "LT" | "LTE";
 export type SpatialWhereOperator = "DISTANCE";
@@ -49,7 +50,8 @@ export function isRelationshipOperator(operator: string): operator is Relationsh
 }
 
 export abstract class Filter extends QueryASTNode {
-    public abstract getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined;
+    
+    public abstract getPredicate(context: QueryASTContext): Cypher.Predicate | undefined;
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
         return [];

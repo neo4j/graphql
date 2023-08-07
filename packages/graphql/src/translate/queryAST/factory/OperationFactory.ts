@@ -43,7 +43,7 @@ export class OperationsFactory {
         this.fieldFactory = new FieldFactory(queryASTFactory);
         this.sortAndPaginationFactory = new SortAndPaginationFactory();
     }
-
+ 
     public createReadOperationAST(entityOrRel: ConcreteEntity | Relationship, resolveTree: ResolveTree): ReadOperation {
         const entity = (entityOrRel instanceof Relationship ? entityOrRel.target : entityOrRel) as ConcreteEntity;
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
@@ -118,9 +118,6 @@ export class OperationsFactory {
 
     public createConnectionOperationAST(relationship: Relationship, resolveTree: ResolveTree): ConnectionReadOperation {
         const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
-        const nodeWhere = whereArgs.node || {};
-        const edgeWhere = whereArgs.edge || {}; // In nested operations
-
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
             ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
@@ -154,11 +151,11 @@ export class OperationsFactory {
 
         const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntity, nodeRawFields);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields);
-        const nodeFilters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntity, nodeWhere);
-        const edgeFilters = this.filterFactory.createRelationshipFilters(relationship, edgeWhere);
+        
+        const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);
         operation.setNodeFields(nodeFields);
-        operation.setNodeFilters(nodeFilters);
-        operation.setEdgeFilters(edgeFilters);
+        operation.setEdgeFields(edgeFields);
+        operation.setFilters(filters)
         operation.setEdgeFields(edgeFields);
         return operation;
     }

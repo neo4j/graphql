@@ -1,6 +1,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class ConnectionEdgeFilter extends Filter {
     private filters: Filter[] = [];
@@ -16,8 +17,8 @@ export class ConnectionEdgeFilter extends Filter {
         return [];
     }
 
-    public getPredicate(relationship: Cypher.Relationship): Cypher.Predicate | undefined {
-        const predicates = this.filters.map((f) => f.getPredicate(relationship));
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const predicates = this.filters.map((f) => f.getPredicate(queryASTContext));
 
         const andPredicate = Cypher.and(...predicates);
 

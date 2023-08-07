@@ -28,19 +28,15 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { Sort, SortField } from "../sort/Sort";
+import { QueryASTContext } from "../QueryASTContext";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: Relationship;
     private directed: boolean;
-
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
-
-    private nodeFilters: Filter[] = [];
-    private edgeFilters: Filter[] = [];
-
+    private filters: Filter[] = [];
     private pagination: Pagination | undefined;
-
     private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
     constructor({ relationship, directed }: { relationship: Relationship; directed: boolean }) {
@@ -52,12 +48,10 @@ export class ConnectionReadOperation extends Operation {
     public setNodeFields(fields: Field[]) {
         this.nodeFields = fields;
     }
-    public setNodeFilters(filters: Filter[]) {
-        this.nodeFilters = filters;
-    }
 
-    public setEdgeFilters(filters: Filter[]) {
-        this.edgeFilters = filters;
+
+    public setFilters(filters: Filter[]) {
+        this.filters = filters;
     }
 
     public setEdgeFields(fields: Field[]) {
@@ -82,10 +76,11 @@ export class ConnectionReadOperation extends Operation {
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
 
-        const filterPredicates = Cypher.and(...this.nodeFilters.map((f) => f.getPredicate(node)));
-        const edgeFilterPredicates = Cypher.and(...this.edgeFilters.map((f) => (f as any).getPredicate(relationship))); // Any because of relationship predicates
-
-        const nodeProjectionMap = new Cypher.Map();
+        const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
+        
+       const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+       const filters = Cypher.and(...predicates);
+       const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
             .map((f) => f.getProjectionField(node))
             .forEach((p) => {
@@ -121,13 +116,10 @@ export class ConnectionReadOperation extends Operation {
             });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
-        if (edgeFilterPredicates) {
-            clause.where(edgeFilterPredicates);
+        if (filters) {
+            clause.where(filters);
         }
-        if (filterPredicates) {
-            clause.where(filterPredicates);
-        }
-
+        
         let sortSubquery: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();

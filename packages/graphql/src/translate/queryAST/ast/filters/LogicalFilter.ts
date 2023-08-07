@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { filterTruthy } from "../../../../utils/utils";
 import type { LogicalOperators } from "./Filter";
 import { Filter } from "./Filter";
+import type { QueryASTContext } from "../QueryASTContext";
 
 export class LogicalFilter extends Filter {
     private operation: LogicalOperators;
@@ -36,8 +37,8 @@ export class LogicalFilter extends Filter {
         return this.children.flatMap((c) => c.getSubqueries(parentNode));
     }
 
-    public getPredicate(target: Cypher.Variable): Cypher.Predicate | undefined {
-        const predicates = filterTruthy(this.children.map((f) => f.getPredicate(target)));
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const predicates = filterTruthy(this.children.map((f) => f.getPredicate(queryASTContext)));
 
         switch (this.operation) {
             case "NOT": {

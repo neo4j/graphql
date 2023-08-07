@@ -22,7 +22,7 @@ import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import type { Filter } from "../ast/filters/Filter";
 import { isRelationshipOperator } from "../ast/filters/Filter";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
@@ -71,8 +71,58 @@ export class FilterFactory {
                 comparisonValue: value,
                 isNot,
                 operator,
+                attachedTo: "relationship",
             });
         });
+    }
+
+    public createConnectionFilter(
+        relationship: Relationship,
+        where: ConnectionWhereArg,
+        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
+    ): ConnectionFilter {
+        const connectionFilter = new ConnectionFilter({
+            relationship: relationship,
+            isNot: filterOps.isNot,
+            operator: filterOps.operator,
+        });
+
+        const filters = this.createConnectionPredicates(relationship, where);
+        connectionFilter.addFilters(filters);
+        return connectionFilter;
+    }
+
+    public createConnectionPredicates(rel: Relationship, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
+        const filters = asArray(where).flatMap((nestedWhere) => {
+            return Object.entries(nestedWhere).map(([key, value]: [string, GraphQLWhereArg]) => {
+                if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+                    const nestedFilters = this.createConnectionPredicates(rel, value);
+                    return new LogicalFilter({
+                        operation: key,
+                        filters: filterTruthy(nestedFilters),
+                    });
+                }
+
+                const connectionWhereField = parseConnectionWhereFields(key);
+                if (connectionWhereField.fieldName === "edge") {
+                    const targetEdgeFilters = this.createEdgeFilters(rel, value);
+                    const connectionEdgeFilter = new ConnectionEdgeFilter({
+                        isNot: connectionWhereField.isNot,
+                        filters: targetEdgeFilters,
+                    });
+                    return connectionEdgeFilter;
+                }
+                if (connectionWhereField.fieldName === "node") {
+                    const targetNodeFilters = this.createNodeFilters(rel.target as ConcreteEntity, value);
+                    const connectionNodeFilter = new ConnectionNodeFilter({
+                        isNot: connectionWhereField.isNot,
+                        filters: targetNodeFilters,
+                    });
+                    return connectionNodeFilter;
+                }
+            });
+        });
+        return filterTruthy(filters);
     }
 
     private createPropertyFilter({
@@ -80,11 +130,13 @@ export class FilterFactory {
         comparisonValue,
         operator,
         isNot,
+        attachedTo,
     }: {
         attribute: Attribute;
         comparisonValue: unknown;
         operator: WhereOperator | undefined;
         isNot: boolean;
+        attachedTo?: "node" | "relationship";
     }): PropertyFilter {
         const filterOperator = operator || "EQ";
         switch (attribute.type) {
@@ -94,6 +146,7 @@ export class FilterFactory {
                     comparisonValue,
                     isNot,
                     operator: filterOperator,
+                    attachedTo,
                 });
             }
             case AttributeType.Point: {
@@ -102,6 +155,7 @@ export class FilterFactory {
                     comparisonValue,
                     isNot,
                     operator: filterOperator,
+                    attachedTo,
                 });
             }
         }
@@ -111,6 +165,7 @@ export class FilterFactory {
             comparisonValue,
             isNot,
             operator: filterOperator,
+            attachedTo,
         });
     }
 
@@ -133,47 +188,10 @@ export class FilterFactory {
         return relationshipFilter;
     }
 
-    private createConnectionFilter(
-        where: ConnectionWhereArg,
-        relationship: Relationship,
-        filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): ConnectionFilter {
-        const connectionFilter = new ConnectionFilter({
-            relationship: relationship,
-            isNot: filterOps.isNot,
-            operator: filterOps.operator,
-        });
-
-        const targetNode = relationship.target as ConcreteEntity; // TODO: accept entities
-
-        Object.entries(where).forEach(([key, value]: [string, GraphQLWhereArg | GraphQLWhereArg[]]) => {
-            const connectionWhereField = parseConnectionWhereFields(key);
-            if (connectionWhereField.fieldName === "edge") {
-                const targetEdgeFilters = this.createEdgeFilters(relationship, value);
-                const connectionEdgeFilter = new ConnectionEdgeFilter({
-                    isNot: connectionWhereField.isNot,
-                    filters: targetEdgeFilters,
-                });
-                connectionFilter.addConnectionEdgeFilter(connectionEdgeFilter);
-            }
-            if (connectionWhereField.fieldName === "node") {
-                const targetNodeFilters = this.createNodeFilters(targetNode, value as any);
-                const connectionNodeFilter = new ConnectionNodeFilter({
-                    isNot: connectionWhereField.isNot,
-                    filters: targetNodeFilters,
-                });
-
-                connectionFilter.addConnectionNodeFilter(connectionNodeFilter);
-            }
-        });
-
-        return connectionFilter;
-    }
-
     public createNodeFilters(entity: ConcreteEntity, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
             if (isInArray(["NOT", "OR", "AND"] as const, key)) {
-                return this.createLogicalFilter(key, value as any, entity);
+                return this.createNodeLogicalFilter(key, value as any, entity);
             }
             const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
             const relationship = entity.findRelationship(fieldName);
@@ -184,7 +202,7 @@ export class FilterFactory {
                     throw new Error(`Invalid operator ${operator} for relationship`);
                 }
 
-                return this.createConnectionFilter(value as ConnectionWhereArg, relationship, {
+                return this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
                     isNot,
                     operator,
                 });
@@ -219,7 +237,7 @@ export class FilterFactory {
         });
     }
 
-    private createEdgeFilters(relationship: Relationship, where: GraphQLWhereArg): Array<Filter> {
+    private createEdgeFilters(relationship: Relationship, where: GraphQLWhereArg): Filter[] {
         const filterASTs = Object.entries(where).map(([prop, value]): Filter => {
             if (["NOT", "OR", "AND"].includes(prop)) {
                 return this.createEdgeLogicalFilter(prop as "NOT" | "OR" | "AND", value, relationship);
@@ -233,13 +251,14 @@ export class FilterFactory {
                 comparisonValue: value,
                 isNot,
                 operator,
+                attachedTo: "relationship",
             });
         });
 
         return filterTruthy(filterASTs);
     }
 
-    private createLogicalFilter(
+    private createNodeLogicalFilter(
         operation: "OR" | "AND" | "NOT",
         where: GraphQLWhereArg[] | GraphQLWhereArg,
         entity: ConcreteEntity
@@ -326,11 +345,14 @@ export class FilterFactory {
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
             // const filterOperator = operator || "EQ";
+            const attachedTo = entity instanceof Relationship ? "relationship" : "node";
+            
             return new AggregationPropertyFilter({
                 attribute: attr,
                 comparisonValue: value,
                 logicalOperator: logicalOperator || "EQUAL",
                 aggregationOperator: aggregationOperator,
+                attachedTo,
             });
         });
     }
@@ -340,12 +362,12 @@ export class FilterFactory {
         where: GraphQLWhereArg[] | GraphQLWhereArg,
         entity: ConcreteEntity | Relationship
     ): LogicalFilter {
-        const nestedFilters = asArray(where).flatMap((nestedWhere) => {
+        const filters = asArray(where).flatMap((nestedWhere) => {
             return this.createAggregationNodeFilters(nestedWhere, entity);
         });
         return new LogicalFilter({
             operation,
-            filters: nestedFilters,
+            filters,
         });
     }
 }

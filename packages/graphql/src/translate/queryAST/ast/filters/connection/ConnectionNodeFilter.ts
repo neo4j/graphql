@@ -1,9 +1,10 @@
 import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "../Filter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class ConnectionNodeFilter extends Filter {
     private filters: Filter[] = [];
-    private isNot: boolean;
+    private isNot: boolean;;
 
     constructor({ isNot, filters }: { isNot: boolean; filters: Filter[] }) {
         super();
@@ -11,13 +12,14 @@ export class ConnectionNodeFilter extends Filter {
         this.filters = filters;
     }
 
-    public getPredicate(node: Cypher.Node): Cypher.Predicate | undefined {
-        const predicates = this.filters.map((f) => f.getPredicate(node));
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const predicates = this.filters.map((f) => f.getPredicate(queryASTContext));
 
         const andPredicate = Cypher.and(...predicates);
         return this.wrapInNotIfNeeded(andPredicate);
     }
 
+    
     private wrapInNotIfNeeded(predicate: Cypher.Predicate | undefined): Cypher.Predicate | undefined {
         if (!predicate) return undefined;
         if (this.isNot) return Cypher.not(predicate);

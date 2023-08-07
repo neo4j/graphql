@@ -1,5 +1,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { FilterOperator } from "../Filter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class CountFilter {
     protected comparisonValue: unknown;
@@ -19,11 +20,11 @@ export class CountFilter {
         this.operator = operator;
         this.isNot = isNot;
     }
-
-    public getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined {
+    
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         return this.createBaseOperation({
             operator: this.operator,
-            expr: Cypher.count(variable),
+            expr: Cypher.count(queryASTContext.target),
             param: new Cypher.Param(this.comparisonValue),
         });
     }

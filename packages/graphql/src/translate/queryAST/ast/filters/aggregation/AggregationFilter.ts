@@ -6,6 +6,7 @@ import { getRelationshipDirection } from "../../../utils/get-relationship-direct
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { LogicalFilter } from "../LogicalFilter";
+import { QueryASTContext } from "../../QueryASTContext";
 
 export class AggregationFilter extends Filter {
     private relationship: Relationship;
@@ -48,10 +49,12 @@ export class AggregationFilter extends Filter {
             .related(relationshipTarget)
             .withDirection(getRelationshipDirection(this.relationship))
             .to(relatedNode);
+        
+        const nestedContext = new QueryASTContext({ target: relatedNode, relationship: relationshipTarget, source: parentNode });
 
-        const predicates = Cypher.or(...this.filters.map((f) => f.getPredicate(relatedNode)));
-        const nodePredicates = Cypher.or(...this.nodeFilters.map((f) => f.getPredicate(relatedNode)));
-        const edgePredicates = Cypher.or(...this.edgeFilters.map((f) => f.getPredicate(relationshipTarget)));
+        const predicates = Cypher.or(...this.filters.map((f) => f.getPredicate(nestedContext)));
+        const nodePredicates = Cypher.or(...this.nodeFilters.map((f) => f.getPredicate(nestedContext)));
+        const edgePredicates = Cypher.or(...this.edgeFilters.map((f) => f.getPredicate(nestedContext)));
 
         const returnColumns: Cypher.ProjectionColumn[] = [];
 
@@ -78,7 +81,7 @@ export class AggregationFilter extends Filter {
         return [subquery];
     }
 
-    public getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined {
+    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const trueLiteral = new Cypher.Literal(true);
         const subqueryPredicates = this.subqueryVariables.map((v) => Cypher.eq(v, trueLiteral));
         return Cypher.and(...subqueryPredicates);

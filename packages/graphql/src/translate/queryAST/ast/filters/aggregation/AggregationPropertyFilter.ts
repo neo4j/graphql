@@ -2,6 +2,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { AttributeType, type Attribute } from "../../../../../schema-model/attribute/Attribute";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
 import { Filter } from "../Filter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class AggregationPropertyFilter extends Filter {
     protected attribute: Attribute;
@@ -9,28 +10,32 @@ export class AggregationPropertyFilter extends Filter {
 
     protected logicalOperator: AggregationLogicalOperator;
     private aggregationOperator: AggregationOperator | undefined;
+    protected attachedTo: "node" | "relationship";
 
     constructor({
         attribute,
         logicalOperator,
         comparisonValue,
         aggregationOperator,
+        attachedTo,
     }: {
         attribute: Attribute;
         logicalOperator: AggregationLogicalOperator;
         comparisonValue: unknown;
         aggregationOperator: AggregationOperator | undefined;
+        attachedTo?: "node" | "relationship";
     }) {
         super();
         this.attribute = attribute;
         this.comparisonValue = comparisonValue;
         this.logicalOperator = logicalOperator;
         this.aggregationOperator = aggregationOperator;
+        this.attachedTo = attachedTo ?? "node";
     }
 
-    public getPredicate(variable: Cypher.Variable): Cypher.Predicate | undefined {
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const comparisonVar = new Cypher.Variable();
-        const property = variable.property(this.attribute.name);
+        const property = this.getPropertyRef(queryASTContext);
 
         if (this.aggregationOperator) {
             let propertyExpr: Cypher.Expr = property;
@@ -61,6 +66,16 @@ export class AggregationPropertyFilter extends Filter {
             });
 
             return Cypher.any(comparisonVar, listExpr, comparisonOperation);
+        }
+    }
+
+    private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
+        if (this.attachedTo === "node") {
+            return queryASTContext.target.property(this.attribute.name);
+        } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
+            return queryASTContext.relationship.property(this.attribute.name);
+        } else {
+            throw new Error("Transpilation error");
         }
     }
 
