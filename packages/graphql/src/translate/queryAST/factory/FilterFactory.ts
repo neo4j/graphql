@@ -43,7 +43,7 @@ import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 type AggregateWhereInput = {
     count: number;
@@ -347,7 +347,7 @@ export class FilterFactory {
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
             // const filterOperator = operator || "EQ";
-            const attachedTo = entity instanceof Relationship ? "relationship" : "node";
+            const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
 
             return new AggregationPropertyFilter({
                 attribute: attr,
