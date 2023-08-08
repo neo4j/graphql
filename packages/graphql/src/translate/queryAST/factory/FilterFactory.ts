@@ -21,7 +21,6 @@ import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import type { Filter } from "../ast/filters/Filter";
 import { isRelationshipOperator } from "../ast/filters/Filter";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { Relationship } from "../../../schema-model/relationship/Relationship";
 import { parseAggregationWhereFields, parseConnectionWhereFields, parseWhereField } from "./parsers/parse-where-field";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
@@ -30,13 +29,9 @@ import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
 import { ConnectionNodeFilter } from "../ast/filters/connection/ConnectionNodeFilter";
-import {
-    Neo4jGraphQLSpatialType,
-    Neo4jGraphQLTemporalType,
-} from "../../../schema-model/attribute/AttributeType";
+import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
-import { isInArray } from "../../../utils/is-in-array";
 import { ConnectionEdgeFilter } from "../ast/filters/connection/ConnectionEdgeFilter";
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
@@ -44,6 +39,7 @@ import { AggregationPropertyFilter } from "../ast/filters/aggregation/Aggregatio
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { isLogicalOperator } from "../../utils/logical-operators";
 
 type AggregateWhereInput = {
     count: number;
@@ -64,8 +60,8 @@ export class FilterFactory {
 
     public createRelationshipFilters(relationship: RelationshipAdapter, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
-            if (["NOT", "OR", "AND"].includes(key)) {
-                return this.createEdgeLogicalFilter(key as "NOT" | "OR" | "AND", value as any, relationship);
+            if (isLogicalOperator(key)) {
+                return this.createEdgeLogicalFilter(key, value as any, relationship);
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
             const attr = relationship.findAttribute(fieldName);
@@ -99,7 +95,7 @@ export class FilterFactory {
     public createConnectionPredicates(rel: RelationshipAdapter, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
         const filters = asArray(where).flatMap((nestedWhere) => {
             return Object.entries(nestedWhere).map(([key, value]: [string, GraphQLWhereArg]) => {
-                if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+                if (isLogicalOperator(key)) {
                     const nestedFilters = this.createConnectionPredicates(rel, value);
                     return new LogicalFilter({
                         operation: key,
@@ -192,7 +188,7 @@ export class FilterFactory {
 
     public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Array<Filter> {
         return Object.entries(where).map(([key, value]): Filter => {
-            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+            if (isLogicalOperator(key)) {
                 return this.createNodeLogicalFilter(key, value as any, entity);
             }
             const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
@@ -240,13 +236,13 @@ export class FilterFactory {
     }
 
     private createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
-        const filterASTs = Object.entries(where).map(([prop, value]): Filter => {
-            if (["NOT", "OR", "AND"].includes(prop)) {
-                return this.createEdgeLogicalFilter(prop as "NOT" | "OR" | "AND", value, relationship);
+        const filterASTs = Object.entries(where).map(([key, value]): Filter => {
+            if (isLogicalOperator(key)) {
+                return this.createEdgeLogicalFilter(key, value, relationship);
             }
-            const { fieldName, operator, isNot } = parseWhereField(prop);
+            const { fieldName, operator, isNot } = parseWhereField(key);
             const attribute = relationship.findAttribute(fieldName);
-            if (!attribute) throw new Error(`no filter attribute ${prop}`);
+            if (!attribute) throw new Error(`no filter attribute ${key}`);
 
             return this.createPropertyFilter({
                 attribute,
@@ -292,7 +288,7 @@ export class FilterFactory {
         const aggregationFilter = new AggregationFilter(relationship);
 
         Object.entries(where).forEach(([key, value]): CountFilter | undefined => {
-            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+            if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {
                     return this.createAggregationFilters(nestedWhere, relationship);
                 });
@@ -339,7 +335,7 @@ export class FilterFactory {
         entity: ConcreteEntityAdapter | RelationshipAdapter
     ): Array<AggregationPropertyFilter | LogicalFilter> {
         return Object.entries(where).map(([key, value]) => {
-            if (isInArray(["NOT", "OR", "AND"] as const, key)) {
+            if (isLogicalOperator(key)) {
                 return this.createAggregateLogicalFilter(key, value, entity);
             }
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);

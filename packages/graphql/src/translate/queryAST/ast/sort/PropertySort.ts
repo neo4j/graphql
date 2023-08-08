@@ -33,11 +33,11 @@ export class PropertySort extends Sort {
     }
 
     public getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[] {
-        const nodeProperty = variable.property(this.attribute.name); // getDBName?
+        const nodeProperty = variable.property(this.attribute.databaseName); // getDBName?
         return [[nodeProperty, this.direction]];
     }
 
     public getProjectionField(): string | Record<string, Cypher.Expr> {
-        return this.attribute.name;
+        return this.attribute.databaseName;
     }
 }

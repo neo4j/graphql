@@ -18,9 +18,8 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import { AttributeField } from "./AttributeField";
-import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class PointAttributeField extends AttributeField {
     private crs: boolean;
@@ -40,7 +39,7 @@ export class PointAttributeField extends AttributeField {
     }
 
     private createPointProjection(variable: Cypher.Variable): Cypher.Expr {
-        const pointProperty = variable.property(this.attribute.name);
+        const pointProperty = variable.property(this.attribute.databaseName);
 
         const caseStatement = new Cypher.Case().when(Cypher.isNotNull(pointProperty));
 

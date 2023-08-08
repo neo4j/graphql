@@ -40,7 +40,7 @@ export class AggregationAttributeField extends AggregationField {
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
         if (this.attribute.isString()) {
-            const aggrProp = target.property(this.attribute.name);
+            const aggrProp = target.property(this.attribute.databaseName);
             const listVar = new Cypher.NamedVariable("list");
             return new Cypher.With(target)
                 .orderBy([Cypher.size(aggrProp), "DESC"])
@@ -54,7 +54,7 @@ export class AggregationAttributeField extends AggregationField {
                 ]);
         }
         if (this.attribute.isInt() || this.attribute.isFloat()) {
-            const aggrProp = target.property(this.attribute.name);
+            const aggrProp = target.property(this.attribute.databaseName);
             return new Cypher.Return([
                 new Cypher.Map({
                     min: Cypher.min(aggrProp),
@@ -67,7 +67,7 @@ export class AggregationAttributeField extends AggregationField {
         }
 
         if (this.attribute.isDateTime()) {
-            const aggrProp = target.property(this.attribute.name);
+            const aggrProp = target.property(this.attribute.databaseName);
             return new Cypher.Return([
                 new Cypher.Map({
                     min: this.createDatetimeProjection(Cypher.min(aggrProp)),

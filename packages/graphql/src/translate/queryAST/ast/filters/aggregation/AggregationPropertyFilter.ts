@@ -72,9 +72,9 @@ export class AggregationPropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            return queryASTContext.target.property(this.attribute.name);
+            return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
-            return queryASTContext.relationship.property(this.attribute.name);
+            return queryASTContext.relationship.property(this.attribute.databaseName);
         } else {
             throw new Error("Transpilation error");
         }

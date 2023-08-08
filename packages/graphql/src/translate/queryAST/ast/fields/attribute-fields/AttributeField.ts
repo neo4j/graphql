@@ -30,18 +30,18 @@ export class AttributeField extends Field {
     }
 
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
-        return target.property(this.attribute.name);
+        return target.property(this.attribute.databaseName);
     }
 
     public getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
-        const variableProperty = variable.property(this.attribute.name);
+        const variableProperty = variable.property(this.attribute.databaseName);
         return this.createAttributeProperty(variableProperty);
     }
 
     private createAttributeProperty(variableProperty: Cypher.Property): string | Record<string, Cypher.Expr> {
-        if (this.alias !== this.attribute.name) {
+        if (this.alias !== this.attribute.databaseName) {
             return { [this.alias]: variableProperty };
         }
-        return this.attribute.name;
+        return this.attribute.databaseName;
     }
 }

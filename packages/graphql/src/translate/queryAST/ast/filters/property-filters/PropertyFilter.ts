@@ -18,7 +18,6 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
@@ -53,7 +52,6 @@ export class PropertyFilter extends Filter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
-        //const prop = target.property(this.attribute.name);
         const prop = this.getPropertyRef(queryASTContext);
 
         if (this.comparisonValue === null) {
@@ -67,9 +65,9 @@ export class PropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            return queryASTContext.target.property(this.attribute.name);
+            return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
-            return queryASTContext.relationship.property(this.attribute.name);
+            return queryASTContext.relationship.property(this.attribute.databaseName);
         } else {
             throw new Error("Transpilation error");
         }
