@@ -42,6 +42,7 @@ export function aggregateResolver({ node }: { node: Node }) {
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
 
         return Object.values(executeResult.records[0] || {})[0];

@@ -36,6 +36,7 @@ export function deleteResolver({ node, composer }: { node: Node; composer: Schem
             params,
             defaultAccessMode: "WRITE",
             context,
+            info,
         });
 
         publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);

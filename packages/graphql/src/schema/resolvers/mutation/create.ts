@@ -36,6 +36,7 @@ export function createResolver({ node }: { node: Node }) {
             params,
             defaultAccessMode: "WRITE",
             context,
+            info,
         });
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(

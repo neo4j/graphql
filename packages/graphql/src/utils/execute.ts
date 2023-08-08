@@ -21,6 +21,7 @@ import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
 import { DEBUG_EXECUTE } from "../constants";
 import type { Context } from "../types";
+import type { GraphQLResolveInfo } from "graphql";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -36,13 +37,15 @@ async function execute({
     params,
     defaultAccessMode,
     context,
+    info,
 }: {
     cypher: string;
     params: any;
     defaultAccessMode: SessionMode;
     context: Context;
+    info?: GraphQLResolveInfo;
 }): Promise<ExecuteResult> {
-    const result = await context.executor.execute(cypher, params, defaultAccessMode, context.info);
+    const result = await context.executor.execute(cypher, params, defaultAccessMode, info);
 
     if (!result) {
         throw new Error("Unable to execute query against Neo4j database");

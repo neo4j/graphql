@@ -49,6 +49,7 @@ export function cypherResolver({
             params,
             defaultAccessMode: "WRITE",
             context,
+            info,
         });
 
         const values = executeResult.result.records.map((record) => {

@@ -36,6 +36,7 @@ export function findResolver({ node }: { node: Node }) {
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
 
         return executeResult.records.map((x) => x.this);

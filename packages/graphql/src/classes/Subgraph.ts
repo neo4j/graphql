@@ -145,6 +145,7 @@ export class Subgraph {
                 params,
                 defaultAccessMode: "READ",
                 context,
+                info,
             });
 
             return executeResult.records[0]?.this;

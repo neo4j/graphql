@@ -66,6 +66,7 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
 
         let obj = null;

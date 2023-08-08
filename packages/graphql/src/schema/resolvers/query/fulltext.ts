@@ -38,6 +38,7 @@ export function fulltextResolver(
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
         return executeResult.records;
     }
