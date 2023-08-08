@@ -47,7 +47,7 @@ visit the [Contributing Guide](./CONTRIBUTING.md).
 ## Media
 
 Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for
-[NODES 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j
+[NODES 2023](https://dev.neo4j.com/44xcEfm) to view even more Neo4j
 GraphQL content.
 
 1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
