@@ -172,21 +172,25 @@ export class FilterFactory {
         relationship: RelationshipAdapter,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
     ): RelationshipFilter {
+        const isNull = where === null;
+        const isNot = isNull ? !filterOps.isNot : filterOps.isNot;
+
         const relationshipFilter = new RelationshipFilter({
             relationship: relationship,
-            isNot: filterOps.isNot,
+            isNot,
             operator: filterOps.operator || "SOME",
         });
 
-        const targetNode = relationship.target as ConcreteEntityAdapter; // TODO: accept entities
-        const targetNodeFilters = this.createNodeFilters(targetNode, where);
-
-        relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+        if (!isNull) {
+            const targetNode = relationship.target as ConcreteEntityAdapter; // TODO: accept entities
+            const targetNodeFilters = this.createNodeFilters(targetNode, where);
+            relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+        }
 
         return relationshipFilter;
     }
 
-    public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Array<Filter> {
+    public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Filter[] {
         return Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
                 return this.createNodeLogicalFilter(key, value as any, entity);

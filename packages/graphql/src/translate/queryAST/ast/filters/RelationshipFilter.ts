@@ -72,7 +72,7 @@ export class RelationshipFilter extends Filter {
             .withDirection(getRelationshipDirection(this.relationship))
             .withoutVariable()
             .to(nestedContext.target);
-        
+
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
         if (!predicate) return undefined;
         return this.wrapInNotIfNeeded(predicate);
@@ -80,21 +80,23 @@ export class RelationshipFilter extends Filter {
 
     private createRelationshipOperation(
         pattern: Cypher.Pattern,
-        queryASTContext: QueryASTContext,
+        queryASTContext: QueryASTContext
     ): Cypher.Predicate | undefined {
         const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
         const innerPredicate = Cypher.and(...predicates);
 
-        if (!innerPredicate) return undefined;
+       // if (!innerPredicate) return undefined;
 
         switch (this.operator) {
             case "ALL": {
+                if (!innerPredicate) return undefined;
                 const match = new Cypher.Match(pattern).where(innerPredicate);
                 const negativeMatch = new Cypher.Match(pattern).where(Cypher.not(innerPredicate));
                 // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
                 return Cypher.and(new Cypher.Exists(match), Cypher.not(new Cypher.Exists(negativeMatch)));
             }
             case "SINGLE": {
+                if (!innerPredicate) return undefined;
                 const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
                     innerPredicate
                 );
@@ -116,8 +118,14 @@ export class RelationshipFilter extends Filter {
                 //     preComputedSubqueries: Cypher.concat(matchStatement),
                 // };
             }
+            case "NONE": {
+                return undefined;
+            }
             default: {
-                const match = new Cypher.Match(pattern).where(innerPredicate);
+                const match = new Cypher.Match(pattern);
+                if (innerPredicate) {
+                    return new Cypher.Exists(match.where(innerPredicate));
+                }
                 return new Cypher.Exists(match);
             }
         }
