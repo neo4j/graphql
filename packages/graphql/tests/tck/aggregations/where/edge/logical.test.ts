@@ -61,16 +61,16 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this0.someFloat) WHERE var4 = $param1) AS var5
-            }
-            WITH *
-            WHERE (var3 = true AND var5 = true)
-            RETURN this { .content } AS this"
-        `);
+"MATCH (this:Post)
+CALL {
+    WITH this
+    MATCH (this)<-[this0:LIKES]-(this1:User)
+    RETURN (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AND any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
+}
+WITH *
+WHERE var4 = true
+RETURN this { .content } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -92,16 +92,16 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3, any(var4 IN collect(this0.someFloat) WHERE var4 = $param1) AS var5
-            }
-            WITH *
-            WHERE (var3 = true OR var5 = true)
-            RETURN this { .content } AS this"
-        `);
+"MATCH (this:Post)
+CALL {
+    WITH this
+    MATCH (this)<-[this0:LIKES]-(this1:User)
+    RETURN (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) OR any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
+}
+WITH *
+WHERE var4 = true
+RETURN this { .content } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -123,16 +123,16 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AS var3
-            }
-            WITH *
-            WHERE NOT (var3 = true)
-            RETURN this { .content } AS this"
-        `);
+"MATCH (this:Post)
+CALL {
+    WITH this
+    MATCH (this)<-[this0:LIKES]-(this1:User)
+    RETURN NOT (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0)) AS var3
+}
+WITH *
+WHERE var3 = true
+RETURN this { .content } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
