@@ -24,6 +24,8 @@ import { annotationToKey } from "./annotation/Annotation";
 import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
+import { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
+
 export type Operations = {
     Query?: Operation;
     Mutation?: Operation;
@@ -52,6 +54,7 @@ export class Neo4jGraphQLSchemaModel {
             acc.set(entity.name, entity);
             return acc;
         }, new Map<string, Entity>());
+
         this.concreteEntities = concreteEntities;
         this.compositeEntities = compositeEntities;
         this.operations = operations;
@@ -63,6 +66,11 @@ export class Neo4jGraphQLSchemaModel {
 
     public getEntity(name: string): Entity | undefined {
         return this.entities.get(name);
+    }
+
+    public getConcreteEntityAdapter(name: string): ConcreteEntityAdapter | undefined {
+        const concreteEntity = this.concreteEntities.find((entity) => entity.name === name);
+        return concreteEntity ? new ConcreteEntityAdapter(concreteEntity) : undefined;
     }
 
     public getEntitiesByLabels(labels: string[]): ConcreteEntity[] {

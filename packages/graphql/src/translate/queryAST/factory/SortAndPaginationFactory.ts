@@ -17,23 +17,23 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
 
 export class SortAndPaginationFactory {
-    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntity | Relationship): PropertySort[] {
+    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter| RelationshipAdapter): PropertySort[] {
         return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 
     public createConnectionSortFields(
         options: ConnectionSortArg,
-        relationship: Relationship
+        relationship: RelationshipAdapter
     ): { edge: Sort[]; node: Sort[] } {
-        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target as ConcreteEntity);
+        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target as ConcreteEntityAdapter);
         const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
         return {
             edge: edgeSortFields,
@@ -50,7 +50,7 @@ export class SortAndPaginationFactory {
         }
     }
 
-    private createPropertySort(optionArg: GraphQLSortArg, entity: ConcreteEntity | Relationship): PropertySort[] {
+    private createPropertySort(optionArg: GraphQLSortArg, entity: ConcreteEntityAdapter | RelationshipAdapter): PropertySort[] {
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) throw new Error(`no filter attribute ${fieldName}`);

@@ -24,16 +24,22 @@ import type { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
+export type QueryDirection = "DEFAULT_DIRECTED" | "DEFAULT_UNDIRECTED" | "DIRECTED_ONLY" | "UNDIRECTED_ONLY";
+export type NestedOperation = "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
 
 export class Relationship {
-    public readonly name: string;
-    public readonly type: string;
+    public readonly name: string; // name of the relationship field, e.g. friends
+    public readonly type: string; // name of the relationship type, e.g. "IS_FRIENDS_WITH"
     public readonly attributes: Map<string, Attribute> = new Map();
-    public readonly source: ConcreteEntity; // Origin field of relationship
+    public readonly source: ConcreteEntity;
     public readonly target: Entity;
     public readonly direction: RelationshipDirection;
     public readonly isArray: boolean;
+    public readonly queryDirection: QueryDirection;
+    public readonly nestedOperations: NestedOperation[];
+    public readonly aggregate: boolean;
 
+    // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
         return `${this.source.name}${upperFirst(this.name)}Connection`;
@@ -44,15 +50,6 @@ export class Relationship {
         return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 
-    /**Note: Required for now to infer the types without ResolveTree */
-    public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
-        const nestedFieldStr = upperFirst(nestedField || "");
-        const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
-        return `${this.source.name}${upperFirst(this.target.name)}${upperFirst(
-            this.name
-        )}${nestedFieldStr}${aggregationStr}Selection`;
-    }
-
     constructor({
         name,
         type,
@@ -61,6 +58,9 @@ export class Relationship {
         target,
         direction,
         isArray,
+        queryDirection,
+        nestedOperations,
+        aggregate,
     }: {
         name: string;
         type: string;
@@ -69,6 +69,9 @@ export class Relationship {
         target: Entity;
         direction: RelationshipDirection;
         isArray: boolean;
+        queryDirection: QueryDirection;
+        nestedOperations: NestedOperation[];
+        aggregate: boolean;
     }) {
         this.type = type;
         this.source = source;
@@ -76,6 +79,9 @@ export class Relationship {
         this.name = name;
         this.direction = direction;
         this.isArray = isArray;
+        this.queryDirection = queryDirection;
+        this.nestedOperations = nestedOperations;
+        this.aggregate = aggregate;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -91,6 +97,9 @@ export class Relationship {
             target: this.target,
             direction: this.direction,
             isArray: this.isArray,
+            queryDirection: this.queryDirection,
+            nestedOperations: this.nestedOperations,
+            aggregate: this.aggregate,
         });
     }
 

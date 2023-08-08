@@ -18,10 +18,10 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-export function createNodeFromEntity(entity: ConcreteEntity, name?: string): Cypher.Node {
+export function createNodeFromEntity(entity: ConcreteEntityAdapter, name?: string): Cypher.Node {
     if (name) {
         return new Cypher.NamedNode(name, { labels: entity.labels });
     }
@@ -30,7 +30,7 @@ export function createNodeFromEntity(entity: ConcreteEntity, name?: string): Cyp
     });
 }
 
-export function createRelationshipFromEntity(rel: Relationship, name?: string): Cypher.Relationship {
+export function createRelationshipFromEntity(rel: RelationshipAdapter, name?: string): Cypher.Relationship {
     if (name) {
         return new Cypher.NamedRelationship(name, { type: rel.type });
     }

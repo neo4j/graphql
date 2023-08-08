@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 // Should Cypher be an operation?
 export class CypherAttributeField extends AttributeField {
@@ -32,7 +32,7 @@ export class CypherAttributeField extends AttributeField {
         projection,
     }: {
         alias: string;
-        attribute: Attribute;
+        attribute: AttributeAdapter;
         projection: Record<string, string> | undefined;
     }) {
         super({ alias, attribute });

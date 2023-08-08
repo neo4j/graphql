@@ -22,19 +22,19 @@ import { AttributeField } from "./AttributeField";
 
 export class DateTimeField extends AttributeField {
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
-        const targetProperty = target.property(this.attribute.name);
+        const targetProperty = target.property(this.attribute.databaseName);
 
         return this.createDateTimeProjection(targetProperty);
     }
 
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
-        const targetProperty = variable.property(this.attribute.name);
+        const targetProperty = variable.property(this.attribute.databaseName);
         const fieldExpr = this.createDateTimeProjection(targetProperty);
         return { [this.alias]: fieldExpr };
     }
 
     private createDateTimeProjection(targetProperty: Cypher.Property): Cypher.Expr {
-        if (this.attribute.isArray) {
+        if (this.attribute.isList()) {
             return this.createArrayProjection(targetProperty);
         }
         return this.createApocConvertFormat(targetProperty);

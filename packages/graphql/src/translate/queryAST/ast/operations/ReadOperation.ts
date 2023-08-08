@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { Field } from "../fields/Field";
@@ -30,9 +29,11 @@ import type { PropertySort } from "../sort/PropertySort";
 import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import { QueryASTContext } from "../QueryASTContext";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class ReadOperation extends Operation {
-    public readonly entity: ConcreteEntity | Relationship; // TODO: normal entities
+    public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
     protected directed: boolean;
 
     public fields: Field[] = [];
@@ -42,7 +43,7 @@ export class ReadOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    constructor(entity: ConcreteEntity | Relationship, directed = true) {
+    constructor(entity: ConcreteEntityAdapter | RelationshipAdapter, directed = true) {
         super();
         this.entity = entity;
         this.directed = directed;
@@ -65,13 +66,13 @@ export class ReadOperation extends Operation {
     }
 
     private transpileNestedRelationship(
-        entity: Relationship,
+        entity: RelationshipAdapter,
         { returnVariable, parentNode }: OperationTranspileOptions
     ): OperationTranspileResult {
         //TODO: dupe from transpile
         if (!parentNode) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntity);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter);
         const relDirection = getRelationshipDirection(entity, this.directed);
 
         const pattern = new Cypher.Pattern(parentNode)
@@ -137,7 +138,7 @@ export class ReadOperation extends Operation {
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
-        if (this.entity instanceof Relationship) {
+        if (this.entity instanceof RelationshipAdapter) {
             return this.transpileNestedRelationship(this.entity, { returnVariable, parentNode });
         }
         const node = createNodeFromEntity(this.entity, this.nodeAlias);

@@ -1,15 +1,15 @@
 import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "../Filter";
-import type { Relationship } from "../../../../../schema-model/relationship/Relationship";
 import type { CountFilter } from "./CountFilter";
 import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { LogicalFilter } from "../LogicalFilter";
 import { QueryASTContext } from "../../QueryASTContext";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class AggregationFilter extends Filter {
-    private relationship: Relationship;
+    private relationship: RelationshipAdapter;
 
     private filters: Array<CountFilter | LogicalFilter> = [];
     private nodeFilters: Array<AggregationPropertyFilter | LogicalFilter> = [];
@@ -17,7 +17,7 @@ export class AggregationFilter extends Filter {
 
     private subqueryVariables: Array<Cypher.Variable> = [];
 
-    constructor(relationship: Relationship) {
+    constructor(relationship: RelationshipAdapter) {
         super();
         this.relationship = relationship;
     }

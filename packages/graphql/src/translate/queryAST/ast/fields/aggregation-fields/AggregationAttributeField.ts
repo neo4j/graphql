@@ -19,12 +19,13 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { AggregationField } from "./AggregationField";
-import { AttributeType, type Attribute } from "../../../../../schema-model/attribute/Attribute";
+import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
+import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class AggregationAttributeField extends AggregationField {
-    private attribute: Attribute;
+    private attribute: AttributeAdapter;
 
-    constructor({ alias, attribute }: { alias: string; attribute: Attribute }) {
+    constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
         super(alias);
         this.attribute = attribute;
     }
@@ -38,47 +39,44 @@ export class AggregationAttributeField extends AggregationField {
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        switch (this.attribute.type) {
-            case AttributeType.String: {
-                const aggrProp = target.property(this.attribute.name);
-                const listVar = new Cypher.NamedVariable("list");
-                return new Cypher.With(target)
-                    .orderBy([Cypher.size(aggrProp), "DESC"])
-                    .with([Cypher.collect(aggrProp), listVar])
-                    .return([
-                        new Cypher.Map({
-                            longest: Cypher.head(listVar),
-                            shortest: Cypher.last(listVar),
-                        }),
-                        returnVar,
-                    ]);
-            }
-            case AttributeType.Int:
-            case AttributeType.Float: {
-                const aggrProp = target.property(this.attribute.name);
-                return new Cypher.Return([
+        if (this.attribute.isString()) {
+            const aggrProp = target.property(this.attribute.databaseName);
+            const listVar = new Cypher.NamedVariable("list");
+            return new Cypher.With(target)
+                .orderBy([Cypher.size(aggrProp), "DESC"])
+                .with([Cypher.collect(aggrProp), listVar])
+                .return([
                     new Cypher.Map({
-                        min: Cypher.min(aggrProp),
-                        max: Cypher.max(aggrProp),
-                        average: Cypher.avg(aggrProp),
-                        sum: Cypher.sum(aggrProp),
+                        longest: Cypher.head(listVar),
+                        shortest: Cypher.last(listVar),
                     }),
                     returnVar,
                 ]);
-            }
-            case AttributeType.DateTime: {
-                const aggrProp = target.property(this.attribute.name);
-                return new Cypher.Return([
-                    new Cypher.Map({
-                        min: this.createDatetimeProjection(Cypher.min(aggrProp)),
-                        max: this.createDatetimeProjection(Cypher.max(aggrProp)),
-                    }),
-                    returnVar,
-                ]);
-            }
-            default:
-                throw new Error(`Invalid aggregation type ${this.attribute.type}`);
         }
+        if (this.attribute.isInt() || this.attribute.isFloat()) {
+            const aggrProp = target.property(this.attribute.databaseName);
+            return new Cypher.Return([
+                new Cypher.Map({
+                    min: Cypher.min(aggrProp),
+                    max: Cypher.max(aggrProp),
+                    average: Cypher.avg(aggrProp),
+                    sum: Cypher.sum(aggrProp),
+                }),
+                returnVar,
+            ]);
+        }
+
+        if (this.attribute.isDateTime()) {
+            const aggrProp = target.property(this.attribute.databaseName);
+            return new Cypher.Return([
+                new Cypher.Map({
+                    min: this.createDatetimeProjection(Cypher.min(aggrProp)),
+                    max: this.createDatetimeProjection(Cypher.max(aggrProp)),
+                }),
+                returnVar,
+            ]);
+        }
+        throw new Error(`Invalid aggregation type ${this.attribute.type.name}`);
     }
 
     private createDatetimeProjection(expr: Cypher.Expr) {

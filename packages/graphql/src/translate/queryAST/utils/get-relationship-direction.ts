@@ -18,9 +18,9 @@ export type RelationshipDirection = "IN" | "OUT";
  * limitations under the License.
  */
 
-import type { Relationship } from "../../../schema-model/relationship/Relationship";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-export function getRelationshipDirection(relationship: Relationship, directed = true): "left" | "right" | "undirected" {
+export function getRelationshipDirection(relationship: RelationshipAdapter, directed = true): "left" | "right" | "undirected" {
     if (!directed) return "undirected";
 
     switch (relationship.direction) {

@@ -18,16 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Relationship } from "../../../../schema-model/relationship/Relationship";
 import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import { QueryASTContext } from "../QueryASTContext";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class RelationshipFilter extends Filter {
     private targetNodeFilters: Filter[] = [];
-    private relationship: Relationship;
+    private relationship: RelationshipAdapter;
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
@@ -36,7 +36,7 @@ export class RelationshipFilter extends Filter {
         operator,
         isNot,
     }: {
-        relationship: Relationship;
+        relationship: RelationshipAdapter;
         operator: RelationshipWhereOperator;
         isNot: boolean;
     }) {
