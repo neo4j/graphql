@@ -76,8 +76,7 @@ export class AggregationAttributeField extends AggregationField {
                 returnVar,
             ]);
         }
-        // TODO: Remove this casting and add a proper getName method to AttributeType
-        throw new Error(`Invalid aggregation type ${(this.attribute.type as { name: string }).name}`);
+        throw new Error(`Invalid aggregation type ${this.attribute.type.name}`);
     }
 
     private createDatetimeProjection(expr: Cypher.Expr) {
