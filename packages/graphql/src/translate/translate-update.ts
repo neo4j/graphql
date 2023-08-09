@@ -66,7 +66,7 @@ export default async function translateUpdate({
     const createStrs: string[] = [];
     let deleteStr = "";
     let projAuth: Cypher.Clause | undefined = undefined;
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
+    let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;

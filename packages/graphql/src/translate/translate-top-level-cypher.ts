@@ -170,8 +170,6 @@ export function translateTopLevelCypher({
         );
     }
 
-    const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-
     // Null default argument values are not passed into the resolve tree therefore these are not being passed to
     // `apocParams` below causing a runtime error when executing.
     const nullArgumentValues = field.arguments.reduce(
@@ -183,18 +181,13 @@ export function translateTopLevelCypher({
     );
 
     const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
-        (result: { strs: string[]; params: { [key: string]: unknown } }, entry) => ({
-            strs: [...result.strs, `${entry[0]}: $${entry[0]}`],
+        (result: { params: { [key: string]: unknown } }, entry) => ({
             params: { ...result.params, [entry[0]]: entry[1] },
         }),
-        { strs: initApocParamsStrs, params }
+        { params }
     );
 
-    if (statement.includes("$jwt")) {
-        apocParams.strs.push("jwt: $jwt");
-    }
-
-    params = { ...params, ...apocParams.params };
+    params = { ...params, ...apocParams.params, ...(context.cypherParams || {}) };
 
     if (type === "Query") {
         const cypherStatement = createCypherDirectiveSubquery({
