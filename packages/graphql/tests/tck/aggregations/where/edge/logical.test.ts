@@ -61,16 +61,16 @@ describe("Cypher Aggregations where edge with Logical AND + OR + NOT", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Post)
-CALL {
-    WITH this
-    MATCH (this)<-[this0:LIKES]-(this1:User)
-    RETURN (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AND any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
-}
-WITH *
-WHERE var4 = true
-RETURN this { .content } AS this"
-`);
+            "MATCH (this:Post)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:User)
+                RETURN (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) AND any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
+            }
+            WITH *
+            WHERE var4 = true
+            RETURN this { .content } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -92,16 +92,16 @@ RETURN this { .content } AS this"
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Post)
-CALL {
-    WITH this
-    MATCH (this)<-[this0:LIKES]-(this1:User)
-    RETURN (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) OR any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
-}
-WITH *
-WHERE var4 = true
-RETURN this { .content } AS this"
-`);
+            "MATCH (this:Post)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:User)
+                RETURN (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0) OR any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
+            }
+            WITH *
+            WHERE var4 = true
+            RETURN this { .content } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -123,21 +123,56 @@ RETURN this { .content } AS this"
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Post)
-CALL {
-    WITH this
-    MATCH (this)<-[this0:LIKES]-(this1:User)
-    RETURN NOT (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0)) AS var3
-}
-WITH *
-WHERE var3 = true
-RETURN this { .content } AS this"
-`);
+            "MATCH (this:Post)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:User)
+                RETURN NOT (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0)) AS var3
+            }
+            WITH *
+            WHERE var3 = true
+            RETURN this { .content } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": 10
             }"
         `);
+    });
+
+    test("OR NOT", async () => {
+        const query = gql`
+            {
+                posts(
+                    where: {
+                        likesAggregate: { edge: { OR: [{ NOT: { someFloat_EQUAL: 10 } }, { someFloat_EQUAL: 11 }] } }
+                    }
+                ) {
+                    content
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:User)
+                RETURN (NOT (any(var2 IN collect(this0.someFloat) WHERE var2 = $param0)) OR any(var3 IN collect(this0.someFloat) WHERE var3 = $param1)) AS var4
+            }
+            WITH *
+            WHERE var4 = true
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": 10,
+                    \\"param1\\": 11
+                }"
+            `);
     });
 });
