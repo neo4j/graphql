@@ -376,13 +376,15 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm), true);
 
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type TestLabel @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            "type TestLabel {
             	strProp: String!
             }
 
-            type TestLabel2 @node(labels: [\\"TestLabel2\\", \\"TestLabel3\\"]) @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            type TestLabel2 @node(labels: [\\"TestLabel2\\", \\"TestLabel3\\"]) {
             	singleProp: BigInt!
-            }"
+            }
+
+            extend schema @mutation(operations: [])"
         `);
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
