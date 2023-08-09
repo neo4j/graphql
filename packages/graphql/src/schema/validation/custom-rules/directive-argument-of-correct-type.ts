@@ -51,7 +51,10 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 "authorization",
                 "authentication",
             ].reduce<string | undefined>((genericDirective, oneOfAuthorizationDirectives) => {
-                if (directiveNode.name.value.toLowerCase().includes(oneOfAuthorizationDirectives)) {
+                if (
+                    !genericDirective &&
+                    directiveNode.name.value.toLowerCase().includes(oneOfAuthorizationDirectives.toLowerCase())
+                ) {
                     genericDirective = oneOfAuthorizationDirectives;
                 }
                 return genericDirective;
@@ -65,7 +68,7 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 return;
             }
 
-            let directiveName: string | undefined;
+            let directiveName: string;
             let directiveDefinition: Maybe<GraphQLDirective>;
             if (oneOfAuthorizationDirectives) {
                 directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
@@ -80,9 +83,9 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                 return;
             }
             const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveName}`];
-            directiveNode.arguments?.forEach((argument) => {
+            for (const argument of directiveNode.arguments || []) {
                 const argumentDefinition = findArgumentDefinitionNodeByName(
-                    (directiveDefinition as GraphQLDirective).args,
+                    directiveDefinition.args,
                     argument.name.value
                 );
                 if (!argumentDefinition) {
@@ -96,12 +99,12 @@ export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): A
                             path: [...pathToHere, argument.name.value, ...errorPath],
                             errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
                             extensions: {
-                                exception: { code: VALIDATION_ERROR_CODES[(directiveName as string).toUpperCase()] },
+                                exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
                             },
                         })
                     );
                 }
-            });
+            }
         },
     };
 }

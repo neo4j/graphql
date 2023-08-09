@@ -229,7 +229,7 @@ function assertValidGlobalID({
     );
     if (isNotUnique) {
         throw new DocumentValidationError(
-            `Invalid global id field: Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique.`,
+            `Invalid global ID field - global argument is set to true requires the unique argument be set to true.`,
             ["@id", "unique"]
         );
     }
