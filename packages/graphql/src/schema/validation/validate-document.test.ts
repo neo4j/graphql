@@ -2857,7 +2857,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Invalid global id field: Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique.'
+                "Invalid global ID field - global argument is set to true requires the unique argument be set to true."
             );
             expect(errors[0]).toHaveProperty("path", ["Movie", "imdbid", "@id", "unique"]);
         });
@@ -2877,7 +2877,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Invalid global id field: Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique.'
+                "Invalid global ID field - global argument is set to true requires the unique argument be set to true."
             );
             expect(errors[0]).toHaveProperty("path", ["Movie", "id", "@id", "unique"]);
             expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
