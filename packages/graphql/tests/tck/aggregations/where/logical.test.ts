@@ -173,10 +173,10 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) > $param0 AND count(this1) < $param1) AS var2, (count(this1) > $param2 OR count(this1) < $param3) AS var3
+                RETURN ((count(this1) > $param0 AND count(this1) < $param1) AND (count(this1) > $param2 OR count(this1) < $param3)) AS var2
             }
             WITH *
-            WHERE (var2 = true AND var3 = true)
+            WHERE var2 = true
             RETURN this { .content } AS this"
         `);
 
@@ -196,6 +196,63 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 },
                 \\"param3\\": {
                     \\"low\\": 20,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("OR with multiple count", async () => {
+        const query = gql`
+            {
+                posts(
+                    where: {
+                        likesAggregate: {
+                            count_GT: 10
+                            count_LT: 20
+                            OR: [{ count_GT: 10 }, { count_LT: 20 }, { count_LT: 54 }]
+                        }
+                    }
+                ) {
+                    content
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Post)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:LIKES]-(this1:User)
+                RETURN (count(this1) < $param0 AND count(this1) > $param1 AND (count(this1) > $param2 OR count(this1) < $param3 OR count(this1) < $param4)) AS var2
+            }
+            WITH *
+            WHERE var2 = true
+            RETURN this { .content } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 20,
+                    \\"high\\": 0
+                },
+                \\"param1\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"param2\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"param3\\": {
+                    \\"low\\": 20,
+                    \\"high\\": 0
+                },
+                \\"param4\\": {
+                    \\"low\\": 54,
                     \\"high\\": 0
                 }
             }"
