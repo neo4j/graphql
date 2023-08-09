@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
+import dotProp from "dot-prop";
 import { Neo4jGraphQLError } from "./Error";
 import type { Context } from "../types";
-import ContextParser from "../utils/context-parser";
 import Cypher from "@neo4j/cypher-builder";
 
 export interface NodeDirectiveConstructor {
@@ -48,29 +48,19 @@ export class NodeDirective {
 
     private mapLabelsWithContext(labels: string[], context: Context): string[] {
         return labels.map((label: string) => {
-            const jwtPath = ContextParser.parseTag(label, "jwt");
-            let ctxPath = ContextParser.parseTag(label, "context");
-
-            if (jwtPath) {
-                ctxPath = `jwt.${jwtPath}`;
-            }
-
-            if (ctxPath) {
-                let mappedLabel = ContextParser.getProperty(ctxPath, context);
-                if (mappedLabel) {
-                    return mappedLabel;
+            if (label.startsWith("$")) {
+                // Trim $context. OR $ off the beginning of the string
+                const path = label.substring(label.startsWith("$context") ? 9 : 1);
+                // Search for the key at the root of the context
+                let labelValue = dotProp.get<string>(context, path);
+                if (!labelValue) {
+                    // Search for the key in cypherParams
+                    labelValue = dotProp.get<string>(context.cypherParams, path);
                 }
-
-                // Try the new authorization path - this will become default in 4.0.0
-                if (jwtPath) {
-                    ctxPath = `authorization.jwt.${jwtPath}`;
-                    mappedLabel = ContextParser.getProperty(ctxPath, context);
-                    if (mappedLabel) {
-                        return mappedLabel;
-                    }
+                if (!labelValue) {
+                    throw new Error(`Label value not found in context.`);
                 }
-
-                throw new Error(`Label value not found in context.`);
+                return labelValue;
             }
 
             return label;
