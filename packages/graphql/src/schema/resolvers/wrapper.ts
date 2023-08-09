@@ -96,12 +96,12 @@ export const wrapResolver =
         if (!context.jwt) {
             if (authorization) {
                 try {
-                    const jwt = await authorization.decode(context);
+                    context.jwt = await authorization.decode(context);
                     const isAuthenticated = true;
                     context.authorization = {
                         isAuthenticated,
-                        jwt,
-                        jwtParam: new Cypher.NamedParam("jwt", jwt),
+                        jwt: context.jwt,
+                        jwtParam: new Cypher.NamedParam("jwt", context.jwt),
                         isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
                         claims: jwtPayloadFieldsMap,
                     };

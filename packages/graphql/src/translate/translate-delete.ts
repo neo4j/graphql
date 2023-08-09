@@ -33,7 +33,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     const varName = "this";
     let matchAndWhereStr = "";
     let deleteStr = "";
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
+    let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};
 
     const withVars = [varName];
 

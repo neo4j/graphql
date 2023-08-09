@@ -25,7 +25,6 @@ import { GraphQLNode } from "./GraphQLNode";
 import generateRelationshipPropsName from "./utils/generate-relationship-props-name";
 import { RelationshipPropertiesDirective } from "./directives/RelationshipProperties";
 import createRelationshipFields from "./utils/create-relationship-fields";
-import { ExcludeDirective } from "./directives/Exclude";
 import generateGraphQLSafeName from "./utils/generate-graphql-safe-name";
 import nodeKey from "../../utils/node-key";
 
@@ -35,15 +34,19 @@ type GraphQLNodeMap = {
 
 export default function graphqlFormatter(neo4jStruct: Neo4jStruct, readonly = false): string {
     const { nodes, relationships } = neo4jStruct;
-    const bareNodes = transformNodes(nodes, readonly);
+    const bareNodes = transformNodes(nodes);
     const withRelationships = hydrateWithRelationships(bareNodes, relationships);
     const sorted = Object.keys(withRelationships).sort((a, b) => {
         return withRelationships[a].typeName > withRelationships[b].typeName ? 1 : -1;
     });
-    return sorted.map((typeName) => withRelationships[typeName].toString()).join("\n\n");
+    const sortedWithRelationships = sorted.map((typeName) => withRelationships[typeName].toString());
+    if (readonly) {
+        sortedWithRelationships.push("extend schema @mutation(operations: [])");
+    }
+    return sortedWithRelationships.join("\n\n");
 }
 
-function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
+function transformNodes(nodes: NodeMap): GraphQLNodeMap {
     const out = {};
     const takenTypeNames: string[] = [];
     Object.keys(nodes).forEach((nodeType) => {
@@ -67,13 +70,6 @@ function transformNodes(nodes: NodeMap, readonly: boolean): GraphQLNodeMap {
 
         if (nodeDirective.toString().length) {
             node.addDirective(nodeDirective);
-        }
-        if (readonly) {
-            const excludeDirective = new ExcludeDirective();
-            excludeDirective.addOperation("CREATE");
-            excludeDirective.addOperation("DELETE");
-            excludeDirective.addOperation("UPDATE");
-            node.addDirective(excludeDirective);
         }
 
         const fields = createNodeFields(neo4jNode.properties, node.typeName);
