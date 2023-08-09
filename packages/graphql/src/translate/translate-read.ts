@@ -191,7 +191,7 @@ export function translateRead(
         projectionSubqueries,
         projectionClause
     );
-    const result = readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
+    const result = readQuery.build(undefined, context.cypherParams ? { ...context.cypherParams } : {});
 
     return result;
 }

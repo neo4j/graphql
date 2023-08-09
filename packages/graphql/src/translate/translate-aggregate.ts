@@ -28,7 +28,7 @@ import { compileCypher } from "../utils/compile-cypher";
 function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
+    let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};
     const cypherStrs: Cypher.Clause[] = [];
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = context.resolveTree.args.where as GraphQLWhereArg | undefined;
