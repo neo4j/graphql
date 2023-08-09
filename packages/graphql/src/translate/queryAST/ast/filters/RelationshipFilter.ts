@@ -116,9 +116,6 @@ export class RelationshipFilter extends Filter {
                 //     preComputedSubqueries: Cypher.concat(matchStatement),
                 // };
             }
-            case "NONE": {
-                return undefined;
-            }
             default: {
                 const match = new Cypher.Match(pattern);
                 if (innerPredicate) {
