@@ -85,8 +85,6 @@ export class RelationshipFilter extends Filter {
         const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
         const innerPredicate = Cypher.and(...predicates);
 
-       // if (!innerPredicate) return undefined;
-
         switch (this.operator) {
             case "ALL": {
                 if (!innerPredicate) return undefined;
