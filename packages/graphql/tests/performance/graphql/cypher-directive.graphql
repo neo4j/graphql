@@ -1,4 +1,4 @@
-query TopLevelCypherDirective {
+query TopLevelCypherDirective_skip {
     customCypher {
         name
         born
