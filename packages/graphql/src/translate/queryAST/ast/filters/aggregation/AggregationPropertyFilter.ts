@@ -1,16 +1,15 @@
 import Cypher from "@neo4j/cypher-builder";
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
-import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class AggregationPropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
     protected comparisonValue: unknown;
 
     protected logicalOperator: AggregationLogicalOperator;
-    private aggregationOperator: AggregationOperator | undefined;
+    protected aggregationOperator: AggregationOperator | undefined;
     protected attachedTo: "node" | "relationship";
 
     constructor({
@@ -46,11 +45,7 @@ export class AggregationPropertyFilter extends Filter {
             }
 
             const aggrOperation = this.getAggregateOperation(propertyExpr, this.aggregationOperator);
-            return this.createBaseOperation({
-                operator: this.logicalOperator,
-                property: aggrOperation,
-                param: new Cypher.Param(this.comparisonValue),
-            });
+            return this.getOperation(aggrOperation);
         } else {
             let listExpr: Cypher.Expr;
 
@@ -60,14 +55,17 @@ export class AggregationPropertyFilter extends Filter {
                 listExpr = Cypher.collect(property);
             }
 
-            const comparisonOperation = this.createBaseOperation({
-                operator: this.logicalOperator,
-                property: comparisonVar,
-                param: new Cypher.Param(this.comparisonValue),
-            });
-
+            const comparisonOperation = this.getOperation(comparisonVar);
             return Cypher.any(comparisonVar, listExpr, comparisonOperation);
         }
+    }
+
+    protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {
+        return this.createBaseOperation({
+            operator: this.logicalOperator,
+            property: expr,
+            param: new Cypher.Param(this.comparisonValue),
+        });
     }
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {

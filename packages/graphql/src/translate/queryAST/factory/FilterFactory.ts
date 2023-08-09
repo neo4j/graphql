@@ -40,6 +40,7 @@ import type { AttributeAdapter } from "../../../schema-model/attribute/model-ada
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { isLogicalOperator } from "../../utils/logical-operators";
+import { AggregationDurationFilter } from "../ast/filters/aggregation/AggregationDurationPropertyFilter";
 
 type AggregateWhereInput = {
     count: number;
@@ -338,12 +339,24 @@ export class FilterFactory {
             if (isLogicalOperator(key)) {
                 return this.createAggregateLogicalFilter(key, value, entity);
             }
+            // NOTE: if aggregationOperator is undefined, maybe we could return a normal PropertyFilter instead
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);
+
             const attr = entity.findAttribute(fieldName);
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
             // const filterOperator = operator || "EQ";
             const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
+
+            if (attr.isDuration() || attr.isListOf(Neo4jGraphQLTemporalType.Duration)) {
+                return new AggregationDurationFilter({
+                    attribute: attr,
+                    comparisonValue: value,
+                    logicalOperator: logicalOperator || "EQUAL",
+                    aggregationOperator: aggregationOperator,
+                    attachedTo,
+                });
+            }
 
             return new AggregationPropertyFilter({
                 attribute: attr,
