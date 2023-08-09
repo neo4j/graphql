@@ -51,12 +51,7 @@ export class NodeDirective {
             if (label.startsWith("$")) {
                 // Trim $context. OR $ off the beginning of the string
                 const path = label.substring(label.startsWith("$context") ? 9 : 1);
-                // Search for the key at the root of the context
-                let labelValue = dotProp.get<string>(context, path);
-                if (!labelValue) {
-                    // Search for the key in cypherParams
-                    labelValue = dotProp.get<string>(context.cypherParams, path);
-                }
+                const labelValue = this.searchLabel(context, path);
                 if (!labelValue) {
                     throw new Error(`Label value not found in context.`);
                 }
@@ -65,6 +60,16 @@ export class NodeDirective {
 
             return label;
         });
+    }
+
+    private searchLabel(context, path): string | undefined {
+        // Search for the key at the root of the context
+        let labelValue = dotProp.get<string>(context, path);
+        if (!labelValue) {
+            // Search for the key in cypherParams
+            labelValue = dotProp.get<string>(context.cypherParams, path);
+        }
+        return labelValue;
     }
 
     private escapeLabel(label: string): string {
