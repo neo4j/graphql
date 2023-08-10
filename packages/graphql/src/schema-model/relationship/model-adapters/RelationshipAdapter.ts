@@ -112,16 +112,16 @@ export class RelationshipAdapter {
                 return "undirected";
             }
             case "DEFAULT_DIRECTED": {
-                if (directed === undefined) {
-                    return this.cypherDirectionFromRelDirection();
-                }
-                return directed ? this.cypherDirectionFromRelDirection() : "undirected";
-            }
-            case "DEFAULT_UNDIRECTED": {
-                if (directed === undefined) {
+                if (directed === false) {
                     return "undirected";
                 }
-                return directed ? this.cypherDirectionFromRelDirection() : "undirected";
+                return this.cypherDirectionFromRelDirection();
+            }
+            case "DEFAULT_UNDIRECTED": {
+                if (directed === true) {
+                    return this.cypherDirectionFromRelDirection();
+                }
+                return "undirected";
             }
         }
     }
