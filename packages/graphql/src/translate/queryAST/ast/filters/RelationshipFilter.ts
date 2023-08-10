@@ -21,7 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
-import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
@@ -69,7 +68,7 @@ export class RelationshipFilter extends Filter {
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
             .withoutLabels()
             .related(nestedContext.relationship)
-            .withDirection(getRelationshipDirection(this.relationship))
+            .withDirection(this.relationship.getCypherDirection())
             .withoutVariable()
             .to(nestedContext.target);
 

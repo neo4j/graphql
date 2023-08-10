@@ -25,7 +25,6 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
-import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -106,7 +105,7 @@ export class AggregationOperation extends Operation {
         if (!parentNode) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter);
-        const relDirection = getRelationshipDirection(entity, this.directed);
+        const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(parentNode)
             .withoutLabels()
