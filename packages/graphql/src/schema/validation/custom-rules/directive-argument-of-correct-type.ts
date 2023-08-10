@@ -118,15 +118,14 @@ function assertArgumentType(argumentNode: ArgumentNode, inputValueDefinition: Gr
     const argValue = valueFromASTUntyped(argumentNode.value);
 
     let isValid = true;
-    let errorMsg, errorPath;
+    let errorMsg = "";
+    let errorPath: readonly (string | number)[] = [];
 
-    const onError = (_path: ReadonlyArray<string | number>, _invalidValue: unknown, error: Error) => {
+    coerceInputValue(argValue, argType, (path, _invalidValue, error) => {
         isValid = false;
         errorMsg = error.message;
-        errorPath = _path;
-    };
-
-    coerceInputValue(argValue, argType, onError);
+        errorPath = path;
+    });
 
     return { isValid, errorMsg, errorPath };
 }
