@@ -352,7 +352,7 @@ export default function createProjectionAndParams({
     }
     let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
 
-    if (context.fulltextIndex) {
+    if (context.fulltext) {
         return createFulltextProjection({
             resolveTree,
             node,
@@ -500,7 +500,7 @@ function createFulltextProjection({
         };
     }
 
-    const nodeContext = { ...context, fulltextIndex: false };
+    const nodeContext = { ...context, fulltext: undefined };
 
     return createProjectionAndParams({
         resolveTree: nodeResolveTree,

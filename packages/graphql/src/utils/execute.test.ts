@@ -18,7 +18,6 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { Neo4jGraphQL } from "../classes";
 import execute from "./execute";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
@@ -84,18 +83,11 @@ describe("execute", () => {
                     _config: {},
                 };
 
-                // @ts-ignore
-                const neoSchema: Neo4jGraphQL = {
-                    // @ts-ignore
-                    options: {},
-                };
-
                 const executeResult = await execute({
                     cypher,
                     params,
                     defaultAccessMode,
                     context: new ContextBuilder({
-                        neoSchema,
                         executor: new Executor({
                             executionContext: driver,
                             sessionConfig: {
@@ -170,18 +162,11 @@ describe("execute", () => {
                 _config: {},
             };
 
-            // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
-                // @ts-ignore
-                options: {},
-            };
-
             const executeResult = await execute({
                 cypher,
                 params,
                 defaultAccessMode,
                 context: new ContextBuilder({
-                    neoSchema,
                     executor: new Executor({
                         executionContext: driver,
                         sessionConfig: {
@@ -260,18 +245,11 @@ describe("execute", () => {
                 _config: {},
             };
 
-            // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
-                // @ts-ignore
-                options: {},
-            };
-
             const executeResult = await execute({
                 cypher: inputCypher,
                 params,
                 defaultAccessMode,
                 context: new ContextBuilder({
-                    neoSchema,
                     executor: new Executor({
                         executionContext: driver,
                         sessionConfig: {

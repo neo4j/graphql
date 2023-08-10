@@ -22,13 +22,13 @@ import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context, FulltextIndex } from "../../../types";
+import type { Context, FulltextContext } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import Cypher from "@neo4j/cypher-builder";
 
 export function fulltextResolver(
     { node }: { node: Node },
-    index: FulltextIndex
+    index: FulltextContext
 ): ObjectTypeComposerFieldConfigDefinition<any, any, any> {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = createFulltextContext(index, args, _context, info);
@@ -58,7 +58,12 @@ export function fulltextResolver(
     };
 }
 
-function createFulltextContext(index: FulltextIndex, args: any, _context: unknown, info: GraphQLResolveInfo): Context {
+function createFulltextContext(
+    index: FulltextContext,
+    args: any,
+    _context: unknown,
+    info: GraphQLResolveInfo
+): Context {
     const context = _context as Context;
     context.resolveTree = getNeo4jResolveTree(info, { args });
     context.resolveTree.args.options = {
@@ -66,7 +71,7 @@ function createFulltextContext(index: FulltextIndex, args: any, _context: unknow
         limit: context.resolveTree.args.limit,
         offset: context.resolveTree.args.offset,
     };
-    context.fulltextIndex = index;
-    context.fulltextIndex.scoreVariable = new Cypher.Variable();
+    context.fulltext = index;
+    context.fulltext.scoreVariable = new Cypher.Variable();
     return context;
 }

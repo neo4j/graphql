@@ -21,7 +21,6 @@ import type * as neo4j from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { GraphQLResolveInfo } from "graphql";
 import { GraphQLSchema } from "graphql";
-import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import type { Context } from "../../../src/types";
 import { Builder } from "./builder";
@@ -34,11 +33,7 @@ import type { CompositeEntity } from "../../../src/schema-model/entity/Composite
 export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
         super({
-            driver: {} as neo4j.Driver,
             resolveTree: {} as ResolveTree,
-            neoSchema: new Neo4jGraphQL({
-                typeDefs: "",
-            }),
             nodes: [],
             relationships: [],
             schemaModel: new Neo4jGraphQLSchemaModel({

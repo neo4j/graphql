@@ -49,7 +49,7 @@ export class CallbackBucket {
                 const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as (
                     parent?: Record<string, unknown>,
                     args?: Record<string, never>,
-                    context?: Record<string, unknown>
+                    context?: Context
                 ) => Promise<any>;
                 const param = await callbackFunction(cb.parent, {}, this.context);
 

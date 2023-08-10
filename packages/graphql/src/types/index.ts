@@ -55,19 +55,20 @@ export interface Context extends Neo4jGraphQLContext {
     extensions?: Record<string, any>;
     authorization: AuthorizationContext;
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
-    [k: string]: any;
+    fulltext?: FulltextContext;
 }
 
-export type FulltextIndex = {
+export type FulltextContext = {
     name: string | undefined;
     fields: string[];
     queryType: string;
     queryName: string | undefined;
     indexName: string | undefined; // TODO: not undefined once name is removed.
+    scoreVariable: Cypher.Variable;
 };
 
 export type FullText = {
-    indexes: FulltextIndex[];
+    indexes: FulltextContext[];
 };
 
 /**
@@ -420,7 +421,7 @@ export type CallbackReturnValue = string | number | boolean | undefined | null;
 export type Neo4jGraphQLCallback = (
     parent: Record<string, unknown>,
     args: Record<string, never>,
-    context: Record<string, unknown>
+    context: Context
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;

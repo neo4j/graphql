@@ -86,7 +86,7 @@ export function createMatchClause({
         whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Param(label), Cypher.labels(matchNode));
         });
-    } else if (context.fulltextIndex) {
+    } else if (context.fulltext) {
         ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, where, node, context));
         where = where?.[node.singular];
     }
@@ -172,13 +172,17 @@ function createFulltextMatchClause(
     matchClause: Cypher.Yield;
     whereOperators: Cypher.Predicate[];
 } {
+    if (!context.fulltext) {
+        throw new Error("Full-text context not defined");
+    }
+
     // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-    const indexName = context.fulltextIndex.indexName || context.fulltextIndex.name;
+    const indexName = context.fulltext.indexName || context.fulltext.name;
     if (indexName === undefined) {
         throw new Error("The name of the fulltext index should be defined using the indexName argument.");
     }
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
-    const scoreVar = context.fulltextIndex.scoreVariable;
+    const scoreVar = context.fulltext.scoreVariable;
 
     const matchClause = Cypher.db.index.fulltext
         .queryNodes(indexName, phraseParam)

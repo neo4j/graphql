@@ -73,7 +73,6 @@ describe("TreeDescriptor Parser", () => {
 
         movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         context = new ContextBuilder({
-            neoSchema: { nodes, relationships },
             nodes,
             relationships,
             schema,
@@ -105,7 +104,6 @@ describe("TreeDescriptor Parser", () => {
         };
         const movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         const context = new ContextBuilder({
-            neoSchema: { nodes, relationships },
             nodes,
             relationships,
             schema,
@@ -326,7 +324,6 @@ describe("TreeDescriptor Parser", () => {
         };
         const movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         const context = new ContextBuilder({
-            neoSchema: { nodes, relationships },
             nodes,
             relationships,
             schema,
