@@ -64,8 +64,6 @@ export const wrapResolver =
     (next) =>
     // TODO: type this as Neo4jGraphQLContext
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
-        const callbacks = features.populatedBy?.callbacks;
-
         if (debug.enabled) {
             const query = print(info.operation);
 
@@ -84,13 +82,10 @@ export const wrapResolver =
             context.executionContext = driver;
         }
 
-        context.info = info;
-
         context.nodes = nodes;
         context.relationships = relationships;
         context.schemaModel = schemaModel;
         context.subscriptionsEnabled = Boolean(features.subscriptions);
-        context.callbacks = callbacks;
         context.features = features;
 
         if (!context.jwt) {

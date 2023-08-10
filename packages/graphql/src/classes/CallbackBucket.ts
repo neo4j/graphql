@@ -46,7 +46,9 @@ export class CallbackBucket {
 
         await Promise.all(
             this.callbacks.map(async (cb) => {
-                const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as (
+                const callbackFunction = (this.context?.features.populatedBy?.callbacks as Neo4jGraphQLCallbacks)[
+                    cb.functionName
+                ] as (
                     parent?: Record<string, unknown>,
                     args?: Record<string, never>,
                     context?: Context

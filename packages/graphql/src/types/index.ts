@@ -19,7 +19,7 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { DirectiveNode, GraphQLResolveInfo, GraphQLSchema, InputValueDefinitionNode, TypeNode } from "graphql";
+import type { DirectiveNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
@@ -43,16 +43,12 @@ type AuthorizationContext = {
 
 export interface Context extends Neo4jGraphQLContext {
     resolveTree: ResolveTree;
-    info: GraphQLResolveInfo;
     nodes: Node[];
     relationships: Relationship[];
     schemaModel: Neo4jGraphQLSchemaModel;
-    schema: GraphQLSchema;
-    callbacks?: Neo4jGraphQLCallbacks;
     features: ContextFeatures;
     subscriptionsEnabled: boolean;
     executor: Executor;
-    extensions?: Record<string, any>;
     authorization: AuthorizationContext;
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     fulltext?: FulltextContext;

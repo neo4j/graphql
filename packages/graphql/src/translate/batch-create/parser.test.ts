@@ -29,7 +29,6 @@ describe("TreeDescriptor Parser", () => {
     let typeDefs;
     let movieNode;
     let context;
-    let schema;
     let nodes;
     let relationships;
 
@@ -67,7 +66,7 @@ describe("TreeDescriptor Parser", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        schema = await neoSchema.getSchema();
+        await neoSchema.getSchema();
         nodes = neoSchema["nodes"];
         relationships = neoSchema["relationships"];
 
@@ -75,7 +74,6 @@ describe("TreeDescriptor Parser", () => {
         context = new ContextBuilder({
             nodes,
             relationships,
-            schema,
         }).instance();
     });
 
@@ -106,7 +104,6 @@ describe("TreeDescriptor Parser", () => {
         const context = new ContextBuilder({
             nodes,
             relationships,
-            schema,
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(
@@ -326,7 +323,6 @@ describe("TreeDescriptor Parser", () => {
         const context = new ContextBuilder({
             nodes,
             relationships,
-            schema,
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(
