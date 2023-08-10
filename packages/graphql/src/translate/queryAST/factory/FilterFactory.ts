@@ -28,11 +28,9 @@ import type { RelationshipWhereOperator, WhereOperator } from "../../where/types
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
-import { ConnectionNodeFilter } from "../ast/filters/connection/ConnectionNodeFilter";
 import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
-import { ConnectionEdgeFilter } from "../ast/filters/connection/ConnectionEdgeFilter";
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
@@ -95,31 +93,23 @@ export class FilterFactory {
 
     public createConnectionPredicates(rel: RelationshipAdapter, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
         const filters = asArray(where).flatMap((nestedWhere) => {
-            return Object.entries(nestedWhere).map(([key, value]: [string, GraphQLWhereArg]) => {
+            return Object.entries(nestedWhere).flatMap(([key, value]: [string, GraphQLWhereArg]) => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = this.createConnectionPredicates(rel, value);
-                    return new LogicalFilter({
-                        operation: key,
-                        filters: filterTruthy(nestedFilters),
-                    });
+                    return [
+                        new LogicalFilter({
+                            operation: key,
+                            filters: filterTruthy(nestedFilters),
+                        }),
+                    ];
                 }
 
                 const connectionWhereField = parseConnectionWhereFields(key);
                 if (connectionWhereField.fieldName === "edge") {
-                    const targetEdgeFilters = this.createEdgeFilters(rel, value);
-                    const connectionEdgeFilter = new ConnectionEdgeFilter({
-                        isNot: connectionWhereField.isNot,
-                        filters: targetEdgeFilters,
-                    });
-                    return connectionEdgeFilter;
+                    return this.createEdgeFilters(rel, value);
                 }
                 if (connectionWhereField.fieldName === "node") {
-                    const targetNodeFilters = this.createNodeFilters(rel.target as ConcreteEntityAdapter, value);
-                    const connectionNodeFilter = new ConnectionNodeFilter({
-                        isNot: connectionWhereField.isNot,
-                        filters: targetNodeFilters,
-                    });
-                    return connectionNodeFilter;
+                    return this.createNodeFilters(rel.target as ConcreteEntityAdapter, value);
                 }
             });
         });
