@@ -289,54 +289,54 @@ export class FilterFactory {
         });
     }
 
-    private addAggregationNestedFilters(
-        aggregationFilter: AggregationFilter,
+    private getAggregationNestedFilters(
         where: AggregateWhereInput,
         relationship: RelationshipAdapter
-    ): void {
-        Object.entries(where).forEach(([key, value]): void => {
-            if (isLogicalOperator(key)) {
-                const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                    return this.createAggregationFilter(nestedWhere, relationship);
-                });
-                const logicalFilter = new LogicalFilter({
-                    operation: key,
-                    filters: nestedFilters,
-                });
+    ): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> {
+        return Object.entries(where).flatMap(
+            ([key, value]): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> => {
+                if (isLogicalOperator(key)) {
+                    const nestedFilters = asArray(value).flatMap((nestedWhere) => {
+                        return this.getAggregationNestedFilters(nestedWhere, relationship);
+                    });
+                    const logicalFilter = new LogicalFilter({
+                        operation: key,
+                        filters: nestedFilters,
+                    });
+                    return [logicalFilter];
+                }
+                const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
-                aggregationFilter.addFilters(logicalFilter);
-            }
-            const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
+                const filterOperator = operator || "EQ";
+                if (fieldName === "count") {
+                    const countFilter = new CountFilter({
+                        operator: filterOperator,
+                        isNot,
+                        comparisonValue: value,
+                    });
+                    return [countFilter];
+                }
 
-            const filterOperator = operator || "EQ";
-            if (fieldName === "count") {
-                const countFilter = new CountFilter({
-                    operator: filterOperator,
-                    isNot,
-                    comparisonValue: value,
-                });
-                aggregationFilter.addFilters(countFilter);
-                return;
-            }
+                if (fieldName === "node") {
+                    return this.createAggregationNodeFilters(
+                        value as Record<string, any>,
+                        relationship.target as ConcreteEntityAdapter
+                    );
+                }
 
-            if (fieldName === "node") {
-                const nodeFilter = this.createAggregationNodeFilters(
-                    value as Record<string, any>,
-                    relationship.target as ConcreteEntityAdapter
-                );
-                aggregationFilter.addFilters(...nodeFilter);
-            }
+                if (fieldName === "edge") {
+                    return this.createAggregationNodeFilters(value as Record<string, any>, relationship);
+                }
 
-            if (fieldName === "edge") {
-                const edgeFilter = this.createAggregationNodeFilters(value as Record<string, any>, relationship);
-                aggregationFilter.addFilters(...edgeFilter);
+                throw new Error(`Aggregation filter not found ${key}`);
             }
-        });
+        );
     }
 
     private createAggregationFilter(where: AggregateWhereInput, relationship: RelationshipAdapter): AggregationFilter {
         const aggregationFilter = new AggregationFilter(relationship);
-        this.addAggregationNestedFilters(aggregationFilter, where, relationship);
+        const nestedFilters = this.getAggregationNestedFilters(where, relationship);
+        aggregationFilter.addFilters(...nestedFilters);
 
         return aggregationFilter;
     }

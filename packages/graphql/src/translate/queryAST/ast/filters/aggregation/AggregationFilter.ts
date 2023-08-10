@@ -46,7 +46,7 @@ export class AggregationFilter extends Filter {
             source: parentNode,
         });
 
-        const predicates = Cypher.or(...this.filters.map((f) => f.getPredicate(nestedContext)));
+        const predicates = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
 
         const returnColumns: Cypher.ProjectionColumn[] = [];
 
