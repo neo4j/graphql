@@ -18,7 +18,6 @@
  */
 
 import { createNodeFromEntity } from "../../utils/create-node-from-entity";
-import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
@@ -49,7 +48,6 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
-
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
@@ -70,17 +68,17 @@ export class ConnectionReadOperation extends Operation {
         if (!parentNode) throw new Error();
         const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
-        const relDirection = getRelationshipDirection(this.relationship, this.directed);
+        const relDirection = this.relationship.getCypherDirection(this.directed);
 
         const clause = new Cypher.Match(
             new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
 
         const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
-        
-       const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-       const filters = Cypher.and(...predicates);
-       const nodeProjectionMap = new Cypher.Map();
+
+        const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+        const filters = Cypher.and(...predicates);
+        const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
             .map((f) => f.getProjectionField(node))
             .forEach((p) => {
@@ -119,7 +117,7 @@ export class ConnectionReadOperation extends Operation {
         if (filters) {
             clause.where(filters);
         }
-        
+
         let sortSubquery: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();

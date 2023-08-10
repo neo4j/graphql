@@ -1,7 +1,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { RelationshipWhereOperator } from "../../../../where/types";
-import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { Filter } from "../Filter";
 import { QueryASTContext } from "../../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -40,15 +39,15 @@ export class ConnectionFilter extends Filter {
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
         });
-        
+
         const pattern = new Cypher.Pattern(queryASTContext.target)
             .withoutLabels()
             .related(relationship)
-            .withDirection(getRelationshipDirection(this.relationship))
+            .withDirection(this.relationship.getCypherDirection())
             .to(target);
 
-        const nestedContext = new QueryASTContext({target, relationship, source: queryASTContext.target, })
-       
+        const nestedContext = new QueryASTContext({ target, relationship, source: queryASTContext.target });
+
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
         if (!predicate) return undefined;
         return this.wrapInNotIfNeeded(predicate);

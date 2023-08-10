@@ -1,7 +1,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "../Filter";
 import type { CountFilter } from "./CountFilter";
-import { getRelationshipDirection } from "../../../utils/get-relationship-direction";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { LogicalFilter } from "../LogicalFilter";
@@ -37,7 +36,7 @@ export class AggregationFilter extends Filter {
         const pattern = new Cypher.Pattern(parentNode)
             .withoutLabels()
             .related(relationshipTarget)
-            .withDirection(getRelationshipDirection(this.relationship))
+            .withDirection(this.relationship.getCypherDirection())
             .to(relatedNode);
 
         const nestedContext = new QueryASTContext({
