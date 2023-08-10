@@ -11,9 +11,7 @@ import type { RelationshipAdapter } from "../../../../../schema-model/relationsh
 export class AggregationFilter extends Filter {
     private relationship: RelationshipAdapter;
 
-    private filters: Array<CountFilter | LogicalFilter> = [];
-    private nodeFilters: Array<AggregationPropertyFilter | LogicalFilter> = [];
-    private edgeFilters: Array<AggregationPropertyFilter | LogicalFilter> = [];
+    private filters: Array<AggregationPropertyFilter | CountFilter | LogicalFilter> = [];
 
     private subqueryVariables: Array<Cypher.Variable> = [];
 
@@ -22,16 +20,8 @@ export class AggregationFilter extends Filter {
         this.relationship = relationship;
     }
 
-    public addFilter(filter: CountFilter | LogicalFilter) {
-        this.filters.push(filter);
-    }
-
-    public addNodeFilters(filters: Array<AggregationPropertyFilter | LogicalFilter>) {
-        this.nodeFilters.push(...filters);
-    }
-
-    public addEdgeFilters(filters: Array<AggregationPropertyFilter | LogicalFilter>) {
-        this.edgeFilters.push(...filters);
+    public addFilters(...filter: Array<AggregationPropertyFilter | CountFilter | LogicalFilter>) {
+        this.filters.push(...filter);
     }
 
     public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
@@ -49,12 +39,14 @@ export class AggregationFilter extends Filter {
             .related(relationshipTarget)
             .withDirection(getRelationshipDirection(this.relationship))
             .to(relatedNode);
-        
-        const nestedContext = new QueryASTContext({ target: relatedNode, relationship: relationshipTarget, source: parentNode });
+
+        const nestedContext = new QueryASTContext({
+            target: relatedNode,
+            relationship: relationshipTarget,
+            source: parentNode,
+        });
 
         const predicates = Cypher.or(...this.filters.map((f) => f.getPredicate(nestedContext)));
-        const nodePredicates = Cypher.or(...this.nodeFilters.map((f) => f.getPredicate(nestedContext)));
-        const edgePredicates = Cypher.or(...this.edgeFilters.map((f) => f.getPredicate(nestedContext)));
 
         const returnColumns: Cypher.ProjectionColumn[] = [];
 
@@ -62,16 +54,6 @@ export class AggregationFilter extends Filter {
             const newVar = new Cypher.Variable();
             this.subqueryVariables.push(newVar);
             returnColumns.push([predicates, newVar]);
-        }
-        if (nodePredicates) {
-            const newVar = new Cypher.Variable();
-            this.subqueryVariables.push(newVar);
-            returnColumns.push([nodePredicates, newVar]);
-        }
-        if (edgePredicates) {
-            const newVar = new Cypher.Variable();
-            this.subqueryVariables.push(newVar);
-            returnColumns.push([edgePredicates, newVar]);
         }
 
         if (returnColumns.length === 0) return []; // Maybe throw?

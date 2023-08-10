@@ -74,7 +74,7 @@ export class AggregationPropertyFilter extends Filter {
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);
         } else {
-            throw new Error("Transpilation error");
+            throw new Error("Transpilation error, relationship on filter not available");
         }
     }
 
