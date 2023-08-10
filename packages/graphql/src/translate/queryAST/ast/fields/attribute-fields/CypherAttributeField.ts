@@ -71,11 +71,14 @@ export class CypherAttributeField extends AttributeField {
             returnProjection = Cypher.head(returnProjection);
         }
 
-        const subquery = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery))
-            .innerWith(node)
-            .with([returnVar, this.customCypherVar])
-            .return([returnProjection, this.customCypherVar]);
+        const callClause = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery)).innerWith(node);
 
-        return [subquery];
+        if (this.attribute.isScalar() || this.attribute.isEnum()) {
+            callClause.unwind([returnVar, this.customCypherVar]);
+        } else {
+            callClause.with([returnVar, this.customCypherVar]);
+        }
+
+        return [Cypher.concat(callClause, new Cypher.Return([returnProjection, this.customCypherVar]))];
     }
 }
