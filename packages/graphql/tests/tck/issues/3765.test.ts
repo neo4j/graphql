@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
 
-describe("Logical operator behavior mixing implicit/explicit", () => {
+describe("https://github.com/neo4j/graphql/issues/3765", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
