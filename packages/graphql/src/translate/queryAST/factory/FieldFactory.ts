@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import {  Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
+import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -41,16 +41,21 @@ export class FieldFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    public createFields(entity: ConcreteEntityAdapter | RelationshipAdapter, rawFields: Record<string, ResolveTree>): Field[] {
+    public createFields(
+        entity: ConcreteEntityAdapter | RelationshipAdapter,
+        rawFields: Record<string, ResolveTree>
+    ): Field[] {
         return Object.values(rawFields).map((field: ResolveTree) => {
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConnection) {
-                if (entity instanceof RelationshipAdapter) throw new Error("Cannot create connection field of relationship");
+                if (entity instanceof RelationshipAdapter)
+                    throw new Error("Cannot create connection field of relationship");
                 return this.createConnectionField(entity, fieldName, field);
             }
 
             if (isAggregation) {
-                if (entity instanceof RelationshipAdapter) throw new Error("Cannot create aggregation field of relationship");
+                if (entity instanceof RelationshipAdapter)
+                    throw new Error("Cannot create aggregation field of relationship");
 
                 const relationship = entity.findRelationship(fieldName);
                 if (!relationship) throw new Error("Relationship for aggregation not found");
@@ -169,13 +174,9 @@ export class FieldFactory {
         fieldName: string;
         field: ResolveTree;
     }): CypherAttributeField {
-        // console.log(fieldName);
-        // console.log(field.fieldsByTypeName);
-
         const fields = Object.values(field.fieldsByTypeName)[0]; // TODO: use actual Field type
 
         // TODO: get the actual entity related to this attribute!!
-        console.log(fields, attribute);
 
         let cypherProjection: Record<string, string> | undefined; //Alias-value of cypher projection
         if (fields) {
@@ -192,7 +193,11 @@ export class FieldFactory {
         });
     }
 
-    private createConnectionField(entity: ConcreteEntityAdapter, fieldName: string, field: ResolveTree): OperationField {
+    private createConnectionField(
+        entity: ConcreteEntityAdapter,
+        fieldName: string,
+        field: ResolveTree
+    ): OperationField {
         const relationship = entity.findRelationship(fieldName);
         if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
         const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);

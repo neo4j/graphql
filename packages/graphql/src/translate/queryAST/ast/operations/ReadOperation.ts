@@ -26,7 +26,6 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { PropertySort } from "../sort/PropertySort";
-import { Relationship } from "../../../../schema-model/relationship/Relationship";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -80,7 +79,7 @@ export class ReadOperation extends Operation {
             .related(relVar)
             .withDirection(relDirection)
             .to(targetNode);
-        
+
         const matchClause = new Cypher.Match(pattern);
         const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const filterPredicates = this.getPredicates(nestedContext);
