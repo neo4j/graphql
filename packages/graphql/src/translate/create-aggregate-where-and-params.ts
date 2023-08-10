@@ -77,8 +77,7 @@ export function aggregatePreComputedWhereFields({
         refNode,
         relationship,
         aggregationTarget,
-        cypherRelation,
-        context
+        cypherRelation
     );
 
     const predicateVariable = new Cypher.Variable();
@@ -98,8 +97,7 @@ function aggregateWhere(
     refNode: Node,
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
-    cypherRelation: Cypher.Relationship,
-    context: Context
+    cypherRelation: Cypher.Relationship
 ): Cypher.Predicate[] {
     const innerPredicatesRes: Cypher.Predicate[] = [];
     Object.entries(aggregateWhereInput).forEach(([key, value]) => {
@@ -111,7 +109,7 @@ function aggregateWhere(
             const refNodeOrRelation = key === "edge" ? relationship : refNode;
             if (!refNodeOrRelation) throw new Error(`Edge filter ${key} on undefined relationship`);
 
-            const innerPredicates = aggregateEntityWhere(value, refNodeOrRelation, target, context);
+            const innerPredicates = aggregateEntityWhere(value, refNodeOrRelation, target);
 
             innerPredicatesRes.push(...innerPredicates);
         } else if (isLogicalOperator(key)) {
@@ -122,8 +120,7 @@ function aggregateWhere(
                     refNode,
                     relationship,
                     aggregationTarget,
-                    cypherRelation,
-                    context
+                    cypherRelation
                 );
                 logicalPredicates.push(...innerPredicates);
             });
@@ -157,15 +154,14 @@ function createCountPredicateAndProjection(
 function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
-    target: Cypher.Node | Cypher.Relationship,
-    context: Context
+    target: Cypher.Node | Cypher.Relationship
 ): Cypher.Predicate[] {
     const innerPredicatesRes: Cypher.Predicate[] = [];
     Object.entries(aggregateEntityWhereInput).forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const logicalPredicates: Cypher.Predicate[] = [];
             asArray(value).forEach((whereInput) => {
-                const innerPredicates = aggregateEntityWhere(whereInput, refNodeOrRelation, target, context);
+                const innerPredicates = aggregateEntityWhere(whereInput, refNodeOrRelation, target);
                 logicalPredicates.push(...innerPredicates);
             });
             const logicalPredicate = getLogicalPredicate(key, logicalPredicates);
