@@ -63,10 +63,10 @@ describe("Cypher Aggregations where with count and node", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) = $param0 AS var2, any(var3 IN collect(this1.name) WHERE var3 = $param1) AS var4
+                RETURN (count(this1) = $param0 AND any(var2 IN collect(this1.name) WHERE var2 = $param1)) AS var3
             }
             WITH *
-            WHERE (var2 = true AND var4 = true)
+            WHERE var3 = true
             RETURN this { .content } AS this"
         `);
 
@@ -101,10 +101,10 @@ describe("Cypher Aggregations where with count and node", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) = $param0 AS var2, any(var3 IN collect(this1.name) WHERE var3 = $param1) AS var4, any(var5 IN collect(this0.someString) WHERE var5 = $param2) AS var6
+                RETURN (count(this1) = $param0 AND any(var2 IN collect(this1.name) WHERE var2 = $param1) AND any(var3 IN collect(this0.someString) WHERE var3 = $param2)) AS var4
             }
             WITH *
-            WHERE (var2 = true AND var4 = true AND var6 = true)
+            WHERE var4 = true
             RETURN this { .content } AS this"
         `);
 
@@ -145,10 +145,10 @@ describe("Cypher Aggregations where with count and node", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) = $param0 AS var2, count(this1) > $param1 AS var3, count(this1) < $param2 AS var4, any(var5 IN collect(this1.name) WHERE var5 = $param3) AS var6, any(var7 IN collect(this0.someString) WHERE var7 = $param4) AS var8
+                RETURN (count(this1) = $param0 AND (count(this1) > $param1 AND count(this1) < $param2) AND any(var2 IN collect(this1.name) WHERE var2 = $param3) AND any(var3 IN collect(this0.someString) WHERE var3 = $param4)) AS var4
             }
             WITH *
-            WHERE (var2 = true AND (var3 = true AND var4 = true) AND var6 = true AND var8 = true)
+            WHERE var4 = true
             RETURN this { .content } AS this"
         `);
 

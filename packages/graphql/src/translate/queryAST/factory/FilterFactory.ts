@@ -28,11 +28,9 @@ import type { RelationshipWhereOperator, WhereOperator } from "../../where/types
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
-import { ConnectionNodeFilter } from "../ast/filters/connection/ConnectionNodeFilter";
 import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
-import { ConnectionEdgeFilter } from "../ast/filters/connection/ConnectionEdgeFilter";
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
@@ -95,31 +93,23 @@ export class FilterFactory {
 
     public createConnectionPredicates(rel: RelationshipAdapter, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
         const filters = asArray(where).flatMap((nestedWhere) => {
-            return Object.entries(nestedWhere).map(([key, value]: [string, GraphQLWhereArg]) => {
+            return Object.entries(nestedWhere).flatMap(([key, value]: [string, GraphQLWhereArg]) => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = this.createConnectionPredicates(rel, value);
-                    return new LogicalFilter({
-                        operation: key,
-                        filters: filterTruthy(nestedFilters),
-                    });
+                    return [
+                        new LogicalFilter({
+                            operation: key,
+                            filters: filterTruthy(nestedFilters),
+                        }),
+                    ];
                 }
 
                 const connectionWhereField = parseConnectionWhereFields(key);
                 if (connectionWhereField.fieldName === "edge") {
-                    const targetEdgeFilters = this.createEdgeFilters(rel, value);
-                    const connectionEdgeFilter = new ConnectionEdgeFilter({
-                        isNot: connectionWhereField.isNot,
-                        filters: targetEdgeFilters,
-                    });
-                    return connectionEdgeFilter;
+                    return this.createEdgeFilters(rel, value);
                 }
                 if (connectionWhereField.fieldName === "node") {
-                    const targetNodeFilters = this.createNodeFilters(rel.target as ConcreteEntityAdapter, value);
-                    const connectionNodeFilter = new ConnectionNodeFilter({
-                        isNot: connectionWhereField.isNot,
-                        filters: targetNodeFilters,
-                    });
-                    return connectionNodeFilter;
+                    return this.createNodeFilters(rel.target as ConcreteEntityAdapter, value);
                 }
             });
         });
@@ -224,7 +214,7 @@ export class FilterFactory {
                     // if (operator && !isRelationshipOperator(operator)) {
                     //     throw new Error(`Invalid operator ${operator} for relationship`);
                     // }
-                    return this.createAggregationFilters(value as AggregateWhereInput, relationship);
+                    return this.createAggregationFilter(value as AggregateWhereInput, relationship);
                 }
 
                 if (relationship) {
@@ -299,20 +289,22 @@ export class FilterFactory {
         });
     }
 
-    private createAggregationFilters(where: AggregateWhereInput, relationship: RelationshipAdapter): AggregationFilter {
-        const aggregationFilter = new AggregationFilter(relationship);
-
-        Object.entries(where).forEach(([key, value]): CountFilter | undefined => {
+    private addAggregationNestedFilters(
+        aggregationFilter: AggregationFilter,
+        where: AggregateWhereInput,
+        relationship: RelationshipAdapter
+    ): void {
+        Object.entries(where).forEach(([key, value]): void => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                    return this.createAggregationFilters(nestedWhere, relationship);
+                    return this.createAggregationFilter(nestedWhere, relationship);
                 });
                 const logicalFilter = new LogicalFilter({
                     operation: key,
                     filters: nestedFilters,
                 });
 
-                aggregationFilter.addFilter(logicalFilter);
+                aggregationFilter.addFilters(logicalFilter);
             }
             const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
@@ -323,7 +315,7 @@ export class FilterFactory {
                     isNot,
                     comparisonValue: value,
                 });
-                aggregationFilter.addFilter(countFilter);
+                aggregationFilter.addFilters(countFilter);
                 return;
             }
 
@@ -332,15 +324,19 @@ export class FilterFactory {
                     value as Record<string, any>,
                     relationship.target as ConcreteEntityAdapter
                 );
-                aggregationFilter.addNodeFilters(nodeFilter);
+                aggregationFilter.addFilters(...nodeFilter);
             }
 
             if (fieldName === "edge") {
                 const edgeFilter = this.createAggregationNodeFilters(value as Record<string, any>, relationship);
-                aggregationFilter.addEdgeFilters(edgeFilter);
+                aggregationFilter.addFilters(...edgeFilter);
             }
-            // const relationship = entity.findRelationship(fieldName);
         });
+    }
+
+    private createAggregationFilter(where: AggregateWhereInput, relationship: RelationshipAdapter): AggregationFilter {
+        const aggregationFilter = new AggregationFilter(relationship);
+        this.addAggregationNestedFilters(aggregationFilter, where, relationship);
 
         return aggregationFilter;
     }
