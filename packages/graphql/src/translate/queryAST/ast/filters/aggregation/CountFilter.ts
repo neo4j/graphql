@@ -1,8 +1,9 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { FilterOperator } from "../Filter";
+import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 
-export class CountFilter {
+export class CountFilter extends Filter {
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
     protected isNot: boolean; // _NOT is deprecated
@@ -16,11 +17,12 @@ export class CountFilter {
         isNot: boolean;
         comparisonValue: unknown;
     }) {
+        super();
         this.comparisonValue = comparisonValue;
         this.operator = operator;
         this.isNot = isNot;
     }
-    
+
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         return this.createBaseOperation({
             operator: this.operator,
