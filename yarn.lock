@@ -4314,7 +4314,7 @@ __metadata:
     graphiql-explorer: 0.9.0
     graphql: 16.7.1
     graphql-query-complexity: 0.12.0
-    html-inline-script-webpack-plugin: 3.2.0
+    html-inline-script-webpack-plugin: 3.2.1
     html-webpack-inline-source-plugin: 0.0.10
     html-webpack-plugin: 5.5.3
     jest: 29.6.2
@@ -16977,13 +16977,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-inline-script-webpack-plugin@npm:3.2.0":
-  version: 3.2.0
-  resolution: "html-inline-script-webpack-plugin@npm:3.2.0"
+"html-inline-script-webpack-plugin@npm:3.2.1":
+  version: 3.2.1
+  resolution: "html-inline-script-webpack-plugin@npm:3.2.1"
   peerDependencies:
     html-webpack-plugin: ^5.0.0
     webpack: ^5.0.0
-  checksum: cf0e7f61a6a80515ed2150af33429c274e22410b3b882f6b86c7e585e28177954fa7a9182c91c40b825b4e3b51750eea8946e6df93b54bd93518ada6f9f88f59
+  checksum: 9538de26273527d81dc6bca5b1d6469034ce4e71d7f05219122a4292148340483f8f91f642cb7101f74c3475f5473aded293a9867410d448ff2a569623d333fa
   languageName: node
   linkType: hard
 
