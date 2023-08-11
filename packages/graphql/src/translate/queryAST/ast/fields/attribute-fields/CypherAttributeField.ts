@@ -50,7 +50,7 @@ export class CypherAttributeField extends AttributeField {
         const innerAlias = new Cypher.With([node, "this"]);
         const cypherSubquery = new Cypher.RawCypher(cypherAnnotation.statement);
 
-        const columnName = "a"; // TODO: after schema model refactor is merged
+        const columnName = cypherAnnotation.columnName;
         const returnVar = new Cypher.NamedNode(columnName);
 
         let projection: Cypher.Expr = this.customCypherVar;
@@ -66,11 +66,19 @@ export class CypherAttributeField extends AttributeField {
             }
         }
 
-        const subquery = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery))
-            .innerWith(node)
-            .with([returnVar, this.customCypherVar])
-            .return([Cypher.head(Cypher.collect(projection)), this.customCypherVar]);
+        let returnProjection: Cypher.Expr = Cypher.collect(projection);
+        if (!this.attribute.isList()) {
+            returnProjection = Cypher.head(returnProjection);
+        }
 
-        return [subquery];
+        const callClause = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery)).innerWith(node);
+
+        if (this.attribute.isScalar() || this.attribute.isEnum()) {
+            callClause.unwind([returnVar, this.customCypherVar]);
+        } else {
+            callClause.with([returnVar, this.customCypherVar]);
+        }
+
+        return [Cypher.concat(callClause, new Cypher.Return([returnProjection, this.customCypherVar]))];
     }
 }

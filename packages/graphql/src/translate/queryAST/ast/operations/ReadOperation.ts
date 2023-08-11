@@ -62,7 +62,7 @@ export class ReadOperation extends Operation {
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
-    
+
     private transpileNestedRelationship(
         entity: RelationshipAdapter,
         { returnVariable, parentNode }: OperationTranspileOptions
@@ -78,7 +78,7 @@ export class ReadOperation extends Operation {
             .related(relVar)
             .withDirection(relDirection)
             .to(targetNode);
-        
+
         const matchClause = new Cypher.Match(pattern);
         const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const filterPredicates = this.getPredicates(nestedContext);
