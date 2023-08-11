@@ -137,10 +137,6 @@ export class FieldFactory {
                 field,
                 attribute,
             });
-            // return new CypherAttributeField({
-            //     attribute,
-            //     alias: field.alias,
-            // });
         }
 
         if (attribute.isPoint() || attribute.isListOf(Neo4jGraphQLSpatialType.Point)) {

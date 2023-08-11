@@ -78,6 +78,11 @@ export class ConnectionReadOperation extends Operation {
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const filters = Cypher.and(...predicates);
+
+        const nodeProjectionSubqueries = this.nodeFields
+            .flatMap((f) => f.getSubqueries(node))
+            .map((sq) => new Cypher.Call(sq).innerWith(node));
+
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
             .map((f) => f.getProjectionField(node))
@@ -146,7 +151,14 @@ export class ConnectionReadOperation extends Operation {
             }),
             returnVariable,
         ]);
-        const subClause = Cypher.concat(clause, extraWithOrder, projectionClauses, sortSubquery, returnClause);
+        const subClause = Cypher.concat(
+            clause,
+            extraWithOrder,
+            ...nodeProjectionSubqueries,
+            projectionClauses,
+            sortSubquery,
+            returnClause
+        );
 
         return {
             clauses: [subClause],
