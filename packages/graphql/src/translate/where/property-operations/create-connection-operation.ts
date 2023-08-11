@@ -28,6 +28,7 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationPredicate } from "./create-relationship-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createConnectionOperation({
     connectionField,
@@ -40,7 +41,7 @@ export function createConnectionOperation({
 }: {
     connectionField: ConnectionField;
     value: any;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     operator: string | undefined;
     useExistExpr?: boolean;
@@ -125,7 +126,7 @@ export function createConnectionWherePropertyOperation({
     checkParameterExistence,
 }: {
     whereInput: ConnectionWhereArg;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     edge: Relationship;
     edgeRef: Cypher.Variable;

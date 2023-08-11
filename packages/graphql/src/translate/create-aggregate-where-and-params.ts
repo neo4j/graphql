@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField, Context, GraphQLWhereArg, PredicateReturn } from "../types";
+import type { RelationField, GraphQLWhereArg, PredicateReturn } from "../types";
 import type { AggregationFieldRegexGroups } from "./where/utils";
 import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
 import {
@@ -31,6 +31,7 @@ import { isLogicalOperator, getLogicalPredicate } from "./utils/logical-operator
 import mapToDbProperty from "../utils/map-to-db-property";
 import { asArray } from "../utils/utils";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 type WhereFilter = Record<string, any>;
 
@@ -54,7 +55,7 @@ export function aggregatePreComputedWhereFields({
     value: GraphQLWhereArg;
     relationField: RelationField;
     relationship: Relationship | undefined;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     matchNode: Cypher.Variable;
 }): PredicateReturn {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;

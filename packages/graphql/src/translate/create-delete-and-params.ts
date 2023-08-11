@@ -18,7 +18,6 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { Context } from "../types";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { META_CYPHER_VARIABLE } from "../constants";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
@@ -28,6 +27,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     strs: string[];
@@ -51,7 +51,7 @@ function createDeleteAndParams({
     chainStr?: string;
     node: Node;
     withVars: string[];
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parameterPrefix: string;
     recursing?: boolean;
 }): [string, any] {

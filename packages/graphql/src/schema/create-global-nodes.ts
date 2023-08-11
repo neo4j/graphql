@@ -22,6 +22,7 @@ import type { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } 
 import { nodeDefinitions } from "graphql-relay";
 import type { Context, Node } from "../types";
 import { globalNodeResolver } from "./resolvers/query/global-node";
+import type { Neo4jGraphQLComposedContext } from "./resolvers/wrapper";
 
 // returns true if globalNodeFields added or false if not
 export function addGlobalNodeFields(nodes: Node[], composer: SchemaComposer): boolean {
@@ -29,7 +30,7 @@ export function addGlobalNodeFields(nodes: Node[], composer: SchemaComposer): bo
 
     if (globalNodes.length === 0) return false;
 
-    const fetchById = (id: string, context: Context, info: GraphQLResolveInfo) => {
+    const fetchById = (id: string, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) => {
         const resolver = globalNodeResolver({ nodes: globalNodes });
         return resolver.resolve(null, { id }, context, info);
     };

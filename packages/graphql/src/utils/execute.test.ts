@@ -95,7 +95,6 @@ describe("execute", () => {
                                 bookmarks,
                             },
                         }),
-                        info: undefined,
                     }).instance(),
                 });
 
@@ -175,7 +174,6 @@ describe("execute", () => {
                         },
                         cypherQueryOptions: {},
                     }),
-                    info: undefined,
                 }).instance(),
             });
 
@@ -267,7 +265,6 @@ describe("execute", () => {
                             replan: "default",
                         },
                     }),
-                    info: undefined,
                 }).instance(),
             });
 

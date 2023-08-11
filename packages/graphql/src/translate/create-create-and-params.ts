@@ -20,7 +20,6 @@
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes/Error";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -33,6 +32,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     creates: string[];
@@ -59,7 +59,7 @@ function createCreateAndParams({
     input: any;
     varName: string;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     withVars: string[];
     includeRelationshipValidation?: boolean;

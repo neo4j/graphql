@@ -19,8 +19,8 @@
 
 import dotProp from "dot-prop";
 import { Neo4jGraphQLError } from "./Error";
-import type { Context } from "../types";
 import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 
 export interface NodeDirectiveConstructor {
     labels?: string[];
@@ -33,7 +33,7 @@ export class NodeDirective {
         this.labels = input.labels || [];
     }
 
-    public getLabelsString(typeName: string, context: Context): string {
+    public getLabelsString(typeName: string, context: Neo4jGraphQLContext): string {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
@@ -41,12 +41,12 @@ export class NodeDirective {
         return `:${labels.join(":")}`;
     }
 
-    public getLabels(typeName: string, context: Context): string[] {
+    public getLabels(typeName: string, context: Neo4jGraphQLContext): string[] {
         const labels = !this.labels.length ? [typeName] : this.labels;
         return this.mapLabelsWithContext(labels, context);
     }
 
-    private mapLabelsWithContext(labels: string[], context: Context): string[] {
+    private mapLabelsWithContext(labels: string[], context: Neo4jGraphQLContext): string[] {
         return labels.map((label: string) => {
             if (label.startsWith("$")) {
                 // Trim $context. OR $ off the beginning of the string

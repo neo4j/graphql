@@ -93,31 +93,6 @@ describe("wrapper test", () => {
         expect(resolver).toHaveBeenCalledTimes(1);
     });
 
-    test("should NOT initialise neo4jDatabaseInfo if version is present in the Context", async () => {
-        const resolverDecorator = wrapResolver(wrapResolverArgs);
-        const resolvedResult = "Resolved value";
-        executeRead.mockReturnValueOnce({
-            records: [["4.5.0", "enterprise"]],
-        });
-        const contextVersion = new Neo4jDatabaseInfo("1.1.0", "enterprise");
-        const resolver = jest.fn((_root, _args, context: Context) => {
-            expect(context).toBeDefined();
-            expect(context.neo4jDatabaseInfo).toBeDefined();
-            expect(context.neo4jDatabaseInfo).toStrictEqual(contextVersion);
-            return resolvedResult;
-        });
-        const wrappedResolver = resolverDecorator(resolver);
-        const res = await wrappedResolver(
-            {},
-            {},
-            { neo4jDatabaseInfo: contextVersion } as Context,
-            {} as GraphQLResolveInfo
-        );
-        expect(res).toBe(resolvedResult);
-        expect(executeRead).toHaveBeenCalledTimes(0);
-        expect(resolver).toHaveBeenCalledTimes(1);
-    });
-
     test("should not invoke dbms.components if neo4jDatabaseInfo is already initialised", async () => {
         const resolverDecorator = wrapResolver(wrapResolverArgs);
         const resolvedResult = "Resolved value";

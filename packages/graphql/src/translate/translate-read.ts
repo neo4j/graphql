@@ -20,12 +20,13 @@
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateRead(
     {
@@ -33,7 +34,7 @@ export function translateRead(
         context,
         isRootConnectionField,
     }: {
-        context: Context;
+        context: Neo4jGraphQLTranslationContext;
         node: Node;
         isRootConnectionField?: boolean;
     },

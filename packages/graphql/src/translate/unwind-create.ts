@@ -18,7 +18,6 @@
  */
 
 import type { Node } from "../classes";
-import type { Context } from "../types";
 import type { GraphQLCreateInput } from "./batch-create/types";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import { mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
@@ -29,12 +28,13 @@ import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export default async function unwindCreate({
     context,
     node,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     if (context.subscriptionsEnabled) {

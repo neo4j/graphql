@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { WhereRegexGroups } from "./utils";
 import { whereRegEx } from "./utils";
 import { createBaseOperation } from "./property-operations/create-comparison-operation";
-import type { Context } from "../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 /** Translates a property into its predicate filter */
 export function createParameterWhere({
@@ -31,7 +31,7 @@ export function createParameterWhere({
 }: {
     key: string;
     value: any;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
 }): Cypher.Predicate | undefined {
     const match = whereRegEx.exec(key);
     if (!match) {

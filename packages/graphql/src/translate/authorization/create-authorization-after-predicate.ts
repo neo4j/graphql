@@ -19,11 +19,12 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AuthorizationAnnotation } from "../../schema-model/annotation/AuthorizationAnnotation";
-import type { Node, Context, PredicateReturn } from "../../types";
+import type { Node, PredicateReturn } from "../../types";
 import type { AuthorizationOperation } from "../../types/authorization";
 import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { NodeMap } from "./types/node-map";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 function createNodePredicate({
     context,
@@ -33,7 +34,7 @@ function createNodePredicate({
     fieldName,
     conditionForEvaluation,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     variable: Cypher.Node;
     node: Node;
     operations: AuthorizationOperation[];
@@ -73,7 +74,7 @@ function createNodeAuthorizationPredicate({
     fieldName,
     conditionForEvaluation,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     entity: ConcreteEntity;
     variable: Cypher.Node;
@@ -105,7 +106,7 @@ export function createAuthorizationAfterPredicate({
     operations,
     conditionForEvaluation,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     nodes: NodeMap[];
     operations: AuthorizationOperation[];
     conditionForEvaluation?: Cypher.Predicate;
