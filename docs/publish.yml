@@ -14,6 +14,8 @@ content:
     - '!**/_includes/*'
     - '!**/readme.adoc'
     - '!**/README.adoc'
+  - url: https://github.com/neo4j/docs-graphql.git
+    branches: main
 ui:
   bundle:
     url: https://s3-eu-west-1.amazonaws.com/static-content.neo4j.com/build/ui-bundle-latest.zip
