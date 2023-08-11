@@ -24,10 +24,7 @@ import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
-import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
-import type { Executor } from "../classes/Executor";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
-import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
@@ -40,19 +37,6 @@ export type AuthorizationContext = {
     isAuthenticatedParam: Cypher.Param;
     claims?: Map<string, string>;
 };
-
-export interface Context extends Neo4jGraphQLContext {
-    resolveTree: ResolveTree;
-    nodes: Node[];
-    relationships: Relationship[];
-    schemaModel: Neo4jGraphQLSchemaModel;
-    features: ContextFeatures;
-    subscriptionsEnabled: boolean;
-    executor: Executor;
-    authorization: AuthorizationContext;
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
-    fulltext?: FulltextContext;
-}
 
 export type FulltextContext = {
     name: string | undefined;
@@ -417,7 +401,7 @@ export type CallbackReturnValue = string | number | boolean | undefined | null;
 export type Neo4jGraphQLCallback = (
     parent: Record<string, unknown>,
     args: Record<string, never>,
-    context: Context
+    context: Neo4jGraphQLContext
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;

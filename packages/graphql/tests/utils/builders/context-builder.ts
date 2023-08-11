@@ -20,16 +20,16 @@
 import type * as neo4j from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
-import type { Context } from "../../../src/types";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
 import { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../src/schema-model/entity/ConcreteEntity";
 import type { CompositeEntity } from "../../../src/schema-model/entity/CompositeEntity";
+import type { Neo4jGraphQLTranslationContext } from "../../../src/types/neo4j-graphql-translation-context";
 
-export class ContextBuilder extends Builder<Context, Context> {
-    constructor(newOptions: Partial<Context> = {}) {
+export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4jGraphQLTranslationContext> {
+    constructor(newOptions: Partial<Neo4jGraphQLTranslationContext> = {}) {
         super({
             resolveTree: {} as ResolveTree,
             nodes: [],
@@ -54,12 +54,12 @@ export class ContextBuilder extends Builder<Context, Context> {
         });
     }
 
-    public with(newOptions: Partial<Context>): ContextBuilder {
+    public with(newOptions: Partial<Neo4jGraphQLTranslationContext>): ContextBuilder {
         this.options = { ...this.options, ...newOptions };
         return this;
     }
 
-    public instance(): Context {
+    public instance(): Neo4jGraphQLTranslationContext {
         return this.options;
     }
 }

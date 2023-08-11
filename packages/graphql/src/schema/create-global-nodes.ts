@@ -20,7 +20,7 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
 import { nodeDefinitions } from "graphql-relay";
-import type { Context, Node } from "../types";
+import type { Node } from "../types";
 import { globalNodeResolver } from "./resolvers/query/global-node";
 import type { Neo4jGraphQLComposedContext } from "./resolvers/wrapper";
 
@@ -41,7 +41,11 @@ export function addGlobalNodeFields(nodes: Node[], composer: SchemaComposer): bo
 
     composer.createInterfaceTC(nodeInterface);
     composer.Query.addFields({
-        node: nodeField as ObjectTypeComposerFieldConfigAsObjectDefinition<null, Context, { id: string }>,
+        node: nodeField as ObjectTypeComposerFieldConfigAsObjectDefinition<
+            null,
+            Neo4jGraphQLComposedContext,
+            { id: string }
+        >,
     });
     return true;
 }

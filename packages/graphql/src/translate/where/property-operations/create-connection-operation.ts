@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
+import type { ConnectionField, ConnectionWhereArg, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 import type { WhereOperator } from "../types";
 // Recursive function
