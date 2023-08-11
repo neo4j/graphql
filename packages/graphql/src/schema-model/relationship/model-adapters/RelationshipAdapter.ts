@@ -97,6 +97,38 @@ export class RelationshipAdapter {
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
     }
+    /**
+     * translation-only
+     *
+     * @param directed the direction asked during the query, for instance "friends(directed: true)"
+     * @returns the direction to use in the CypherBuilder
+     **/
+    public getCypherDirection(directed?: boolean): "left" | "right" | "undirected" {
+        switch (this.queryDirection) {
+            case "DIRECTED_ONLY": {
+                return this.cypherDirectionFromRelDirection();
+            }
+            case "UNDIRECTED_ONLY": {
+                return "undirected";
+            }
+            case "DEFAULT_DIRECTED": {
+                if (directed === false) {
+                    return "undirected";
+                }
+                return this.cypherDirectionFromRelDirection();
+            }
+            case "DEFAULT_UNDIRECTED": {
+                if (directed === true) {
+                    return this.cypherDirectionFromRelDirection();
+                }
+                return "undirected";
+            }
+        }
+    }
+
+    private cypherDirectionFromRelDirection(): "left" | "right" {
+        return this.direction === "IN" ? "left" : "right";
+    }
 
     // construct the target entity only when requested
     get target(): Entity {
