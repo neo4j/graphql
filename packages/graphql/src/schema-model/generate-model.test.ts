@@ -594,7 +594,8 @@ describe("GraphQL adapters", () => {
 
         test("List", () => {
             expect(favoriteColors.isList()).toBe(true);
-            expect(favoriteColors.isString()).toBe(false);
+            expect(favoriteColors.isString()).toBe(true);
+            expect(favoriteColors.isString(false)).toBe(false);
         });
 
         test("on extended entity", () => {

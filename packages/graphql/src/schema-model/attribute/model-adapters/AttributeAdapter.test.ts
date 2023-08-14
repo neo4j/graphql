@@ -302,6 +302,7 @@ describe("Attribute", () => {
                     })
                 );
                 expect(attribute.isString(true)).toBe(true);
+                expect(attribute.isString(false)).toBe(false);
             });
 
             test("type assertion, should return false if it's a list of a different type", () => {
@@ -315,6 +316,7 @@ describe("Attribute", () => {
                     })
                 );
                 expect(attribute.isInt(true)).toBe(false);
+                expect(attribute.isInt(false)).toBe(false);
             });
         });
     });
