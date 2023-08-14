@@ -141,67 +141,67 @@ export class AttributeAdapter {
         return this.type;
     }
 
-    isBoolean(includeLists = true): this is this & { type: ScalarType } {
+    isBoolean(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Boolean;
     }
 
-    isID(includeLists = true): this is this & { type: ScalarType } {
+    isID(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.ID;
     }
 
-    isInt(includeLists = true): this is this & { type: ScalarType } {
+    isInt(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Int;
     }
 
-    isFloat(includeLists = true): this is this & { type: ScalarType } {
+    isFloat(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Float;
     }
 
-    isString(includeLists = true): this is this & { type: ScalarType } {
+    isString(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.String;
     }
 
-    isCartesianPoint(includeLists = true): this is this & { type: Neo4jCartesianPointType } {
+    isCartesianPoint(includeLists = true):boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof Neo4jCartesianPointType;
     }
 
-    isPoint(includeLists = true): this is this & { type: Neo4jPointType } {
+    isPoint(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof Neo4jPointType;
     }
 
-    isBigInt(includeLists = true): this is this & { type: ScalarType } {
+    isBigInt(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLNumberType.BigInt;
     }
 
-    isDate(includeLists = true): this is this & { type: ScalarType } {
+    isDate(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Date;
     }
 
-    isDateTime(includeLists = true): this is this & { type: ScalarType } {
+    isDateTime(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.DateTime;
     }
 
-    isLocalDateTime(includeLists = true): this is this & { type: ScalarType } {
+    isLocalDateTime(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.LocalDateTime;
     }
 
-    isTime(includeLists = true): this is this & { type: ScalarType } {
+    isTime(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Time;
     }
 
-    isLocalTime(includeLists = true): this is this & { type: ScalarType } {
+    isLocalTime(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.LocalTime;
     }
@@ -211,17 +211,17 @@ export class AttributeAdapter {
         return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.Duration;
     }
 
-    isObject(includeLists = true): this is this & { type: ObjectType } {
+    isObject(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof ObjectType;
     }
 
-    isEnum(includeLists = true): this is this & { type: EnumType } {
+    isEnum(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof EnumType;
     }
 
-    isInterface(includeLists = true): this is this & { type: InterfaceType } {
+    isInterface(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof InterfaceType;
     }
@@ -235,7 +235,7 @@ export class AttributeAdapter {
         return this.type instanceof ListType;
     }
 
-    isUserScalar(includeLists = true): this is this & { type: UserScalarType } {
+    isUserScalar(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof UserScalarType;
     }
@@ -244,7 +244,7 @@ export class AttributeAdapter {
         return this.type.isRequired;
     }
 
-    isListElementRequired(): this is this & { type: ListType } {
+    isListElementRequired(): boolean {
         if (!(this.type instanceof ListType)) {
             return false;
         }
@@ -254,7 +254,7 @@ export class AttributeAdapter {
     /**
      *  START of category assertions
      */
-    isGraphQLBuiltInScalar(includeLists = true): this is this & { type: ScalarType } {
+    isGraphQLBuiltInScalar(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type.name in GraphQLBuiltInScalarType;
     }
@@ -264,7 +264,7 @@ export class AttributeAdapter {
         return type.name in Neo4jGraphQLSpatialType;
     }
 
-    isTemporal(includeLists = true): this is this & { type: ScalarType; name: Neo4jGraphQLTemporalType } {
+    isTemporal(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type.name in Neo4jGraphQLTemporalType;
     }
