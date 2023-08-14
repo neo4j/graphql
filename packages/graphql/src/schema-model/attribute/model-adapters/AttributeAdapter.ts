@@ -206,7 +206,7 @@ export class AttributeAdapter {
         return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.LocalTime;
     }
 
-    isDuration(includeLists = true): this is this & { type: ScalarType; name: Neo4jGraphQLTemporalType.Duration } {
+    isDuration(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.Duration;
     }
@@ -226,7 +226,7 @@ export class AttributeAdapter {
         return type instanceof InterfaceType;
     }
 
-    isUnion(includeLists = true): this is this & { type: UnionType } {
+    isUnion(includeLists = true): boolean {
         const type = this.getTypeForAssertion(includeLists);
         return type instanceof UnionType;
     }
