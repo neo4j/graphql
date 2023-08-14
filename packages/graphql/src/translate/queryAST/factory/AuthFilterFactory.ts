@@ -19,8 +19,11 @@
 
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { FilterFactory } from "./FilterFactory";
-import type { WhereOperator } from "../../where/types";
+import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
 import { AuthPropertyFilter } from "../ast/filters/authorization-filters/AuthPropertyFilter";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
+import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
 
 export class AuthFilterFactory extends FilterFactory {
     protected createPropertyFilter({
@@ -63,5 +66,13 @@ export class AuthFilterFactory extends FilterFactory {
             operator: filterOperator,
             attachedTo,
         });
+    }
+
+    protected createRelationshipFilterTreeNode(options: {
+        relationship: RelationshipAdapter;
+        isNot: boolean;
+        operator: RelationshipWhereOperator;
+    }): RelationshipFilter {
+        return new AuthRelationshipFilter(options);
     }
 }

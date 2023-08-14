@@ -66,7 +66,7 @@ export class ReadOperation extends Operation {
     }
 
     public addAuthFilters(...filters: Filter[]) {
-        this.filters.push(...filters);
+        this.authFilters.push(...filters);
     }
 
     private transpileNestedRelationship(
@@ -88,6 +88,7 @@ export class ReadOperation extends Operation {
         const matchClause = new Cypher.Match(pattern);
         const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const filterPredicates = this.getPredicates(nestedContext);
+        const authFilterSubqueries = this.authFilters.flatMap((f) => f.getSubqueries(targetNode));
         // const projectionFields = this.fields.map((f) => f.getProjectionField(targetNode));
         // const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
 
@@ -96,8 +97,10 @@ export class ReadOperation extends Operation {
         //     Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
         // );
 
+        let withWhere: Cypher.Clause | undefined;
         if (filterPredicates) {
-            matchClause.where(filterPredicates);
+            withWhere = new Cypher.With("*").where(filterPredicates);
+            // matchClause.where(filterPredicates);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
 
@@ -109,7 +112,7 @@ export class ReadOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(targetNode, sortClause);
         }
-        const clause = Cypher.concat(matchClause, subqueries, sortClause, ret);
+        const clause = Cypher.concat(matchClause, ...authFilterSubqueries, withWhere, subqueries, sortClause, ret);
 
         return {
             clauses: [clause],
@@ -165,7 +168,7 @@ export class ReadOperation extends Operation {
 
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
-
+        // TODO: add auth subqueries
         if (filterSubqueries.length > 0) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
             filterSubqueryWith = new Cypher.With("*");

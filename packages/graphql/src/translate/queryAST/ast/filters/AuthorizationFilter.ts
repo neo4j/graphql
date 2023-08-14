@@ -58,6 +58,6 @@ export class AuthorizationFilter extends Filter {
     }
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
-        return [];
+        return this.children.flatMap((c) => c.getSubqueries(_parentNode));
     }
 }

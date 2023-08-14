@@ -56,6 +56,10 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
+    public addAuthFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
+    }
+
     public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
         this.sortFields.push(sortElement);
     }
@@ -77,6 +81,10 @@ export class ConnectionReadOperation extends Operation {
         const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+
+        // TODO: explicitly say this subquery should not be wrapped in a call
+        const filtersSubqueries = this.filters.flatMap((f) => f.getSubqueries(node));
+
         const filters = Cypher.and(...predicates);
 
         const nodeProjectionSubqueries = this.nodeFields
@@ -119,8 +127,15 @@ export class ConnectionReadOperation extends Operation {
             });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
+
+        let withWhere: Cypher.Clause | undefined;
         if (filters) {
-            clause.where(filters);
+            if (filtersSubqueries.length > 0) {
+                // This is to avoid unnecessary With *
+                withWhere = new Cypher.With("*").where(filters);
+            } else {
+                clause.where(filters);
+            }
         }
 
         let sortSubquery: Cypher.With | undefined;
@@ -153,6 +168,8 @@ export class ConnectionReadOperation extends Operation {
         ]);
         const subClause = Cypher.concat(
             clause,
+            ...filtersSubqueries,
+            withWhere,
             extraWithOrder,
             ...nodeProjectionSubqueries,
             projectionClauses,

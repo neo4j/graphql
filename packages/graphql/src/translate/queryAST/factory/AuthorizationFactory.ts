@@ -24,13 +24,13 @@ import { AuthorizationFilter } from "../ast/filters/AuthorizationFilter";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
-import type { FilterFactory } from "./FilterFactory";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
+import type { AuthFilterFactory } from "./AuthFilterFactory";
 
 export class AuthorizationFactory {
-    private filterFactory: FilterFactory;
+    private filterFactory: AuthFilterFactory;
 
-    constructor(filterFactory: FilterFactory) {
+    constructor(filterFactory: AuthFilterFactory) {
         this.filterFactory = filterFactory;
     }
 
@@ -55,7 +55,6 @@ export class AuthorizationFactory {
 
         return rulesMatchingOperations.flatMap((rule) => {
             const populatedWhere = populateWhereParams({ where: rule.where, context });
-
             const nestedFilters = this.filterFactory.createNodeFilters(entity, populatedWhere.node);
             return new AuthorizationFilter({
                 requireAuthentication: rule.requireAuthentication,

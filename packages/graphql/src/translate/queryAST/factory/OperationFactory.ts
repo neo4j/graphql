@@ -177,11 +177,17 @@ export class OperationsFactory {
             context
         );
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(
+            relationship.target as ConcreteEntityAdapter,
+            ["READ"],
+            context
+        );
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
+        operation.addAuthFilters(...authFilters);
         operation.setEdgeFields(edgeFields);
         return operation;
     }
