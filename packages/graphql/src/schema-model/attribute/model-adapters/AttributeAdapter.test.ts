@@ -22,9 +22,10 @@ import {
     GraphQLBuiltInScalarType,
     InterfaceType,
     ListType,
+    Neo4jCartesianPointType,
     Neo4jGraphQLNumberType,
-    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
+    Neo4jPointType,
     ObjectType,
     ScalarType,
     UnionType,
@@ -100,7 +101,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: [],
-                    type: new ScalarType(Neo4jGraphQLSpatialType.CartesianPoint, true),
+                    type: new Neo4jCartesianPointType(true),
                 })
             );
 
@@ -112,7 +113,7 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: [],
-                    type: new ScalarType(Neo4jGraphQLSpatialType.Point, true),
+                    type: new Neo4jPointType(true),
                 })
             );
 
@@ -262,7 +263,7 @@ describe("Attribute", () => {
         });
 
         describe("List", () => {
-            test("isList", () => {
+            test("isList should return true if attribute is a list", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
                 const attribute = new AttributeAdapter(
@@ -276,7 +277,7 @@ describe("Attribute", () => {
                 expect(attribute.isList()).toBe(true);
             });
 
-            test("isListOf, should return false if attribute it's not a list", () => {
+            test("isList should return false if attribute is not a list", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
                 const attribute = new AttributeAdapter(
@@ -287,10 +288,10 @@ describe("Attribute", () => {
                     })
                 );
 
-                expect(attribute.isListOf(stringType)).toBe(false);
+                expect(attribute.isList()).toBe(false);
             });
 
-            test("isListOf(Attribute), should return false if it's a list of a different type", () => {
+            test("type assertion, should return true if it's a list of a the same type.", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
                 const attribute = new AttributeAdapter(
@@ -300,11 +301,10 @@ describe("Attribute", () => {
                         type: new ListType(stringType, true),
                     })
                 );
-                const intType = new ScalarType(GraphQLBuiltInScalarType.Int, true);
-                expect(attribute.isListOf(intType)).toBe(false);
+                expect(attribute.isString(true)).toBe(true);
             });
 
-            test("isListOf(Attribute), should return true if it's a list of a the same type.", () => {
+            test("type assertion, should return false if it's a list of a different type", () => {
                 const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
 
                 const attribute = new AttributeAdapter(
@@ -314,34 +314,7 @@ describe("Attribute", () => {
                         type: new ListType(stringType, true),
                     })
                 );
-                const stringType2 = new ScalarType(GraphQLBuiltInScalarType.String, true);
-                expect(attribute.isListOf(stringType2)).toBe(true);
-            });
-
-            test("isListOf(string), should return false if it's a list of a different type", () => {
-                const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
-
-                const attribute = new AttributeAdapter(
-                    new Attribute({
-                        name: "test",
-                        annotations: [],
-                        type: new ListType(stringType, true),
-                    })
-                );
-                expect(attribute.isListOf(GraphQLBuiltInScalarType.Int)).toBe(false);
-            });
-
-            test("isListOf(string), should return true if it's a list of a the same type.", () => {
-                const stringType = new ScalarType(GraphQLBuiltInScalarType.String, true);
-
-                const attribute = new AttributeAdapter(
-                    new Attribute({
-                        name: "test",
-                        annotations: [],
-                        type: new ListType(stringType, true),
-                    })
-                );
-                expect(attribute.isListOf(GraphQLBuiltInScalarType.String)).toBe(true);
+                expect(attribute.isInt(true)).toBe(false);
             });
         });
     });
@@ -356,7 +329,16 @@ describe("Attribute", () => {
                 })
             );
 
+            const nonBuiltInScalar = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(Neo4jGraphQLNumberType.BigInt, true),
+                })
+            );
+
             expect(attribute.isGraphQLBuiltInScalar()).toBe(true);
+            expect(nonBuiltInScalar.isGraphQLBuiltInScalar()).toBe(false);
         });
 
         test("isSpatial", () => {
@@ -364,11 +346,19 @@ describe("Attribute", () => {
                 new Attribute({
                     name: "test",
                     annotations: [],
-                    type: new ScalarType(Neo4jGraphQLSpatialType.CartesianPoint, true),
+                    type: new Neo4jCartesianPointType(true),
+                })
+            );
+            const nonSpatial = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                 })
             );
 
             expect(attribute.isSpatial()).toBe(true);
+            expect(nonSpatial.isSpatial()).toBe(false);
         });
 
         test("isTemporal", () => {
@@ -380,7 +370,16 @@ describe("Attribute", () => {
                 })
             );
 
+            const nonTemporal = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                })
+            );
+
             expect(attribute.isTemporal()).toBe(true);
+            expect(nonTemporal.isTemporal()).toBe(false);
         });
 
         test("isAbstract", () => {
@@ -392,7 +391,16 @@ describe("Attribute", () => {
                 })
             );
 
+            const nonAbstract = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                })
+            );
+
             expect(attribute.isAbstract()).toBe(true);
+            expect(nonAbstract.isAbstract()).toBe(false);
         });
     });
 
