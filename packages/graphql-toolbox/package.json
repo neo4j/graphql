@@ -31,6 +31,9 @@
             "allGraphs"
         ]
     },
+    "resolutions": {
+        "re-resizable": "6.9.9"
+    },
     "scripts": {
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
         "start": "cross-env NODE_ENV=development webpack serve",
