@@ -20,8 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { WhereOperator } from "../Filter";
 import { PropertyFilter } from "./PropertyFilter";
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class PointFilter extends PropertyFilter {
     protected getOperation(prop: Cypher.Property): Cypher.ComparisonOp {

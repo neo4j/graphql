@@ -36,6 +36,8 @@ export class ReadOperation extends Operation {
 
     public fields: Field[] = [];
     protected filters: Filter[] = [];
+    protected authFilters: Filter[] = []; // This is separate to maitain order
+
     protected pagination: Pagination | undefined;
     protected sortFields: PropertySort[] = [];
 
@@ -61,6 +63,10 @@ export class ReadOperation extends Operation {
 
     public setFilters(filters: Filter[]) {
         this.filters = filters;
+    }
+
+    public addAuthFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
     }
 
     private transpileNestedRelationship(
@@ -132,7 +138,7 @@ export class ReadOperation extends Operation {
     }
 
     private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
+        return Cypher.and(...[...this.filters, ...this.authFilters].map((f) => f.getPredicate(queryASTContext)));
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {

@@ -116,7 +116,7 @@ export class FilterFactory {
         return filterTruthy(filters);
     }
 
-    private createPropertyFilter({
+    protected createPropertyFilter({
         attribute,
         comparisonValue,
         operator,
