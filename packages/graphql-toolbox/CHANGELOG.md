@@ -1,5 +1,11 @@
 # @neo4j/graphql-toolbox
 
+## 2.0.6
+
+### Patch Changes
+
+-   [#3784](https://github.com/neo4j/graphql/pull/3784) [`4f58486ba`](https://github.com/neo4j/graphql/commit/4f58486ba166c34d1afaa334bf6c655173101ff0) Thanks [@mjfwebb](https://github.com/mjfwebb)! - fix: ensure no additional commas are added to the editor value
+
 ## 2.0.5
 
 ### Patch Changes
