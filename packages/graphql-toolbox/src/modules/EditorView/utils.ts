@@ -22,8 +22,8 @@ import type { GraphQLSchema } from "graphql";
 import { parse } from "graphql";
 import { getComplexity, simpleEstimator } from "graphql-query-complexity";
 import pluginBabel from "prettier/plugins/babel";
-import pluginGraphQL from "prettier/plugins/graphql";
 import pluginEstree from "prettier/plugins/estree.mjs"; // Explicitly import .mjs file
+import pluginGraphQL from "prettier/plugins/graphql";
 import prettier from "prettier/standalone";
 
 export enum ParserOptions {
@@ -33,6 +33,7 @@ export enum ParserOptions {
 
 export const formatCode = (editorView: EditorView, parserOption: ParserOptions): void => {
     const selection = editorView.state.selection;
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     const value = editorView.state.doc.toString();
 
     let options = {};
