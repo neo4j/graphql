@@ -24,7 +24,7 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import type { FulltextIndex } from "../../../../types";
+import type { FulltextContext } from "../../../../types";
 import { DocumentValidationError } from "../utils/document-validation-error";
 
 export function verifyFulltext({
@@ -43,7 +43,7 @@ export function verifyFulltext({
         // delegate to DirectiveArgumentOfCorrectType rule
         return;
     }
-    const indexesValue = parseValueNode(indexesArg.value) as FulltextIndex[];
+    const indexesValue = parseValueNode(indexesArg.value) as FulltextContext[];
     const compatibleFields = traversedDef.fields?.filter((f) => {
         if (f.type.kind === Kind.NON_NULL_TYPE) {
             const innerType = f.type.type;
