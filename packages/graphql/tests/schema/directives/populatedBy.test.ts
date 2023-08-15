@@ -68,7 +68,9 @@ describe("@populatedBy tests", () => {
                 const typeDefs = gql`
                     type Movie {
                         id: ID
-                        callback1: String! @populatedBy(operations: [CREATE], callback: "callback1") @id
+                        callback1: String!
+                            @populatedBy(operations: [CREATE], callback: "callback1")
+                            @id(autogenerate: false)
                     }
                 `;
 
@@ -587,7 +589,9 @@ describe("@populatedBy tests", () => {
 
                     interface RelProperties @relationshipProperties {
                         id: ID!
-                        callback1: String! @populatedBy(operations: [CREATE], callback: "callback4") @id
+                        callback1: String!
+                            @populatedBy(operations: [CREATE], callback: "callback4")
+                            @id(autogenerate: false)
                     }
 
                     type Genre {

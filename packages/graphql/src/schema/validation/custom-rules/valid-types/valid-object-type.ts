@@ -53,4 +53,9 @@ function assertValidType(type: ObjectTypeDefinitionNode | InterfaceTypeDefinitio
     if (!type.fields || !type.fields.length) {
         throw new DocumentValidationError("Objects and Interfaces must have one or more fields.", []);
     }
+    const privateFieldsCount = type.fields.filter((f) => f.directives?.find((d) => d.name.value === "private")).length;
+    const fieldsCount = type.fields.length;
+    if (privateFieldsCount === fieldsCount) {
+        throw new DocumentValidationError("Objects and Interfaces must have one or more fields.", []);
+    }
 }

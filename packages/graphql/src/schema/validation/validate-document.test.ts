@@ -2260,6 +2260,37 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["IUser", "name"]);
             });
         });
+        test("should throw cannot auto-generate a non ID field", () => {
+            const doc = gql`
+                type Movie {
+                    name: String! @id
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty("message", "Cannot autogenerate a non ID field.");
+            expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@id", "autogenerate"]);
+        });
+
+        test("should throw cannot auto-generate an array", () => {
+            const doc = gql`
+                type Movie {
+                    name: [ID] @id
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
+            expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@id", "autogenerate"]);
+        });
 
         describe("@timestamp", () => {
             test("@timestamp valid", () => {
@@ -2286,6 +2317,22 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
                 expect(errors[0]).toHaveProperty("path", ["User", "lastSeenAt", "@timestamp"]);
+            });
+
+            test("should throw cannot timestamp on array of DateTime", () => {
+                const doc = gql`
+                    type Movie {
+                        name: [DateTime] @timestamp(operations: [CREATE])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
+                expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@timestamp"]);
             });
             test("@timestamp cannot timestamp temporal fields lacking time zone information", () => {
                 const doc = gql`
@@ -2403,6 +2450,99 @@ describe("validation 2.0", () => {
             });
         });
         describe("invalid", () => {
+            test("@unique can't be used with @relationship", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @unique
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @unique"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
+            });
+
+            // TODO: fix this
+            test.skip("@authentication can't be used with @relationship", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @authentication
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
+            });
+
+            // TODO: fix this
+            test.skip("@authorization can't be used with @relationship", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID
+                        actors: [Actor!]!
+                            @relationship(type: "ACTED_IN", direction: OUT)
+                            @authorization(validate: [{ where: { id: "1" } }])
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
+            });
             test("@cypher with @relationship on Field", () => {
                 const doc = gql`
                     type User {
@@ -2718,6 +2858,72 @@ describe("validation 2.0", () => {
     });
 
     describe("global @id", () => {
+        describe("global nodes", () => {
+            test("should throw error if more than one @id directive field has the global argument set to true", () => {
+                const doc = gql`
+                    type User {
+                        email: ID! @id(global: true)
+                        name: ID! @id(global: true)
+                    }
+                `;
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@id", "global"]);
+            });
+            test("should throw if an @id directive has the global argument set to true, but the unique argument set to false", () => {
+                const doc = gql`
+                    type User {
+                        email: ID! @id(global: true, unique: false)
+                    }
+                `;
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid global ID field - global argument is set to true requires the unique argument be set to true."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "email", "@id", "unique"]);
+            });
+            test("should throw if a type already contains an id field", () => {
+                const doc = gql`
+                    type User {
+                        id: ID!
+                        email: ID! @id(global: true)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "id"]);
+            });
+            test("should not throw if a type already contains an id field but the field is aliased", () => {
+                const doc = gql`
+                    type User {
+                        dbId: ID! @id(global: true) @alias(property: "id")
+                    }
+                `;
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
         test("only one field can be global @id", () => {
             const doc = gql`
                 type Movie {
@@ -3047,6 +3253,54 @@ describe("validation 2.0", () => {
     });
 
     describe("Objects and Interfaces must have one or more fields", () => {
+        describe("@private", () => {
+            test("should throw error if @private would leave no fields in interface", () => {
+                const interfaceTypes = gql`
+                    interface UserInterface {
+                        private: String @private
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type User implements UserInterface {
+                        id: ID
+                        password: String @private
+                        private: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
+            });
+
+            test("should throw error if @private would leave no fields in object", () => {
+                const doc = gql`
+                    type User {
+                        password: String @private
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
+            });
+        });
         test("Objects must have one or more fields", () => {
             const doc = gql`
                 type Movie
@@ -3146,6 +3400,163 @@ describe("validation 2.0", () => {
 
     describe("@relationshipProperties", () => {
         describe("invalid", () => {
+            // TODO: fix this
+            test.skip("should throw error if @authentication is used on relationship properties interface", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @authentication @relationshipProperties {
+                        screenTime: Int
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
+                );
+                expect(errors[0]).toHaveProperty("path", ["HasPost", "cursor"]);
+            });
+            // TODO: fix this
+            test.skip("should throw error if @authentication is used on relationship property", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @relationshipProperties {
+                        screenTime: Int @authentication
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
+                );
+                expect(errors[0]).toHaveProperty("path", ["HasPost", "cursor"]);
+            });
+
+            test("should throw error if @relationship is used on relationship property", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @relationshipProperties {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Cannot use the @relationship directive on relationship properties."
+                );
+                expect(errors[0]).toHaveProperty("path", ["ActedIn", "actors"]);
+            });
+
+            test("should throw error if @cypher is used on relationship property", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @relationshipProperties {
+                        id: ID @cypher(statement: "RETURN id(this) as id", columnName: "id")
+                        roles: [String]
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Cannot use the @cypher directive on relationship properties."
+                );
+                expect(errors[0]).toHaveProperty("path", ["ActedIn", "id"]);
+            });
+
             test("@relationshipProperties reserved field name", () => {
                 const interfaceTypes = gql`
                     interface HasPost @relationshipProperties {
@@ -3387,6 +3798,82 @@ describe("validation 2.0", () => {
     });
 
     describe("Reserved Type Name", () => {
+        test("should throw when using 'node' as a relationship property", () => {
+            const interfaceTypes = gql`
+                interface ActedIn @relationshipProperties {
+                    node: ID
+                }
+            `;
+            const doc = gql`
+                ${interfaceTypes}
+                type Movie {
+                    id: ID
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const enums = [] as EnumTypeDefinitionNode[];
+            const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+            const unions = [] as UnionTypeDefinitionNode[];
+            const objects = [] as ObjectTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    features: {},
+                });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid @relationshipProperties field: Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"
+            );
+        });
+
+        test("should throw when using 'cursor' as a relationship property", () => {
+            const interfaceTypes = gql`
+                interface ActedIn @relationshipProperties {
+                    cursor: ID
+                }
+            `;
+            const doc = gql`
+                ${interfaceTypes}
+                type Movie {
+                    id: ID
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const enums = [] as EnumTypeDefinitionNode[];
+            const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+            const unions = [] as UnionTypeDefinitionNode[];
+            const objects = [] as ObjectTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    features: {},
+                });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
+            );
+        });
+
         test("PageInfo type", () => {
             const doc = gql`
                 type PageInfo {

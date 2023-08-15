@@ -22,20 +22,6 @@ import { parse } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 
 describe("getFieldTypeMeta", () => {
-    test("should throw Matrix arrays not supported", () => {
-        const typeDefs = `
-            type User {
-                name: [[String]]!
-            }
-          `;
-
-        const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
-
-        const field = node.fields?.[0] as FieldDefinitionNode;
-
-        expect(() => getFieldTypeMeta(field.type)).toThrow("Matrix arrays not supported");
-    });
-
     test("should return NonNullType ListType type name", () => {
         const typeDefs = `
             type User {

@@ -22,7 +22,6 @@ import type {
     DefinitionNode,
     DocumentNode,
     GraphQLScalarType,
-    InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
@@ -41,7 +40,6 @@ import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { augmentFulltextSchema } from "./augment/fulltext";
-import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
 import type Relationship from "../classes/Relationship";
@@ -61,7 +59,6 @@ import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDefinitionNodes } from "./get-definition-nodes";
-import { isRootType } from "../utils/is-root-type";
 
 // GraphQL type imports
 import type { Subgraph } from "../classes/Subgraph";
@@ -196,29 +193,6 @@ function makeAugmentedSchema(
     const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        const authDirective = (relationship.directives || []).find((x) =>
-            ["auth", "authorization", "authentication"].includes(x.name.value)
-        );
-        if (authDirective) {
-            throw new Error("Cannot have @auth directive on relationship properties interface");
-        }
-
-        relationship.fields?.forEach((field) => {
-            constants.RESERVED_INTERFACE_FIELDS.forEach(([fieldName, message]) => {
-                if (field.name.value === fieldName) {
-                    throw new Error(message);
-                }
-            });
-
-            const forbiddenDirectives = ["auth", "authorization", "authentication", "relationship", "cypher"];
-            forbiddenDirectives.forEach((directive) => {
-                const found = (field.directives || []).find((x) => x.name.value === directive);
-                if (found) {
-                    throw new Error(`Cannot have @${directive} directive on relationship property`);
-                }
-            });
-        });
-
         const relFields = getObjFieldMeta({
             enums: enumTypes,
             interfaces: filteredInterfaceTypes,
@@ -828,11 +802,7 @@ function makeAugmentedSchema(
     });
 
     unionTypes.forEach((union) => {
-        if (!union.types) {
-            throw new Error(`Union ${union.name.value} has no types`);
-        }
-
-        const fields = union.types.reduce((f: Record<string, string>, type) => {
+        const fields = union.types!.reduce((f: Record<string, string>, type) => {
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
@@ -927,21 +897,6 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
 
     let parsedDoc = parse(generatedTypeDefs);
-
-    const emptyObjectsInterfaces = parsedDoc.definitions
-        .filter(
-            (x): x is InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode =>
-                (x.kind === Kind.OBJECT_TYPE_DEFINITION && !isRootType(x)) || x.kind === Kind.INTERFACE_TYPE_DEFINITION
-        )
-        .filter((x) => !x.fields?.length);
-
-    if (emptyObjectsInterfaces.length) {
-        throw new Error(
-            `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
-                .map((x) => x.name.value)
-                .join(", ")}`
-        );
-    }
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);

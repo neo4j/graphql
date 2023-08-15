@@ -39,13 +39,11 @@ export function verifyId({
         return;
     }
     const autogenerateArg = directiveNode.arguments?.find((x) => x.name.value === "autogenerate");
-    if (!autogenerateArg) {
-        // delegate to DirectiveArgumentOfCorrectType rule
-        return;
-    }
-    const autogenerate = parseValueNode(autogenerateArg.value);
-    if (!autogenerate) {
-        return;
+    if (autogenerateArg) {
+        const autogenerate = parseValueNode(autogenerateArg.value);
+        if (!autogenerate) {
+            return;
+        }
     }
 
     if (traversedDef.type.kind === Kind.LIST_TYPE) {

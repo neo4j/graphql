@@ -26,7 +26,7 @@ export const idDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         autogenerate: {
-            defaultValue: false,
+            defaultValue: true,
             type: new GraphQLNonNull(GraphQLBoolean),
         },
         unique: {
