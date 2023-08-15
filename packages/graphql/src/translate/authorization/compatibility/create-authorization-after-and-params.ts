@@ -18,11 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Context, Node } from "../../../types";
+import type { Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { createAuthorizationAfterPredicate } from "../create-authorization-after-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export type AuthorizationAfterAndParams = {
     cypher: string;
@@ -50,7 +51,7 @@ export function createAuthorizationAfterAndParams({
     nodes,
     operations,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     nodes: StringNodeMap[];
     operations: AuthorizationOperation[];
 }): AuthorizationAfterAndParams | undefined {

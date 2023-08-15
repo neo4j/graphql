@@ -19,7 +19,8 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node, Relationship } from "../../classes";
-import type { Context, RelationField, ConnectionField } from "../../types";
+import type { RelationField, ConnectionField } from "../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export enum AggregationType {
     Int = "IntAggregateSelection",
@@ -41,11 +42,17 @@ export function getFieldType(field: ResolveTree): AggregationType | undefined {
     return undefined;
 }
 
-export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
+export function getReferenceNode(
+    context: Neo4jGraphQLTranslationContext,
+    relationField: RelationField
+): Node | undefined {
     return context.nodes.find((x) => x.name === relationField.typeMeta.name);
 }
 
-export function getReferenceRelation(context: Context, connectionField: ConnectionField): Relationship | undefined {
+export function getReferenceRelation(
+    context: Neo4jGraphQLTranslationContext,
+    connectionField: ConnectionField
+): Relationship | undefined {
     return context.relationships.find((x) => x.name === connectionField.relationshipTypeName);
 }
 

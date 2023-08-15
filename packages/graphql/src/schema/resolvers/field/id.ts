@@ -20,7 +20,7 @@
 import type { GraphQLResolveInfo } from "graphql";
 import { defaultFieldResolver } from "./defaultField";
 import { isNeoInt } from "../../../utils/utils";
-import type { Context } from "../../../types";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 function serializeValue(value) {
     if (isNeoInt(value)) {
@@ -34,7 +34,7 @@ function serializeValue(value) {
     return value;
 }
 
-export function idResolver(source, args, context: Context, info: GraphQLResolveInfo) {
+export function idResolver(source, args, context: Neo4jGraphQLContext, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
 
     if (Array.isArray(value)) {

@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import type { Context, PredicateReturn } from "../../types";
+import type { PredicateReturn } from "../../types";
 import type { Node } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export type AggregationAuth = {
     params: Record<string, string>;
@@ -33,7 +34,7 @@ export function createFieldAggregationAuth({
     subqueryNodeAlias,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     subqueryNodeAlias: Cypher.Node;
 }): PredicateReturn | undefined {
     const authPredicates: Cypher.Predicate[] = [];

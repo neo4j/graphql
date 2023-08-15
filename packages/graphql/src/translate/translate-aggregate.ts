@@ -19,13 +19,20 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
+import type { BaseField, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
-function translateAggregate({ node, context }: { node: Node; context: Context }): [Cypher.Clause, any] {
+function translateAggregate({
+    node,
+    context,
+}: {
+    node: Node;
+    context: Neo4jGraphQLTranslationContext;
+}): [Cypher.Clause, any] {
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};

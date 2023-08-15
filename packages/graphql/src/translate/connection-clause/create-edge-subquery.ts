@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
+import type { ConnectionField, ConnectionWhereArg, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
 import Cypher from "@neo4j/cypher-builder";
@@ -29,6 +29,7 @@ import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -45,7 +46,7 @@ export function createEdgeSubquery({
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;

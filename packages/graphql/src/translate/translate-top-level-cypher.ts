@@ -17,28 +17,25 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { Context, CypherField } from "../types";
+import type { CypherField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
 import { compileCypher } from "../utils/compile-cypher";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateTopLevelCypher({
     context,
-    info,
     field,
     args,
     type,
     statement,
 }: {
-    context: Context;
-    info: GraphQLResolveInfo;
+    context: Neo4jGraphQLTranslationContext;
     field: CypherField;
     args: any;
     statement: string;
@@ -66,7 +63,6 @@ export function translateTopLevelCypher({
         }
     }
 
-    context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
     let params = {
         ...args,
