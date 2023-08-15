@@ -75,7 +75,7 @@ export class AttributeAdapter {
         ];
      */
     isMutable(): boolean {
-        if (
+        return (
             (this.isTemporal() ||
                 this.isEnum() ||
                 this.isInterface() ||
@@ -84,10 +84,7 @@ export class AttributeAdapter {
                 this.isScalar() ||
                 this.isObject()) &&
             !this.isCypher()
-        ) {
-            return true;
-        }
-        return false;
+        );
     }
 
     isUnique(): boolean {
@@ -288,15 +285,12 @@ export class AttributeAdapter {
      * Returns true for both built-in and user-defined scalars
      **/
     isScalar(options = this.assertionOptions): boolean {
-        if (
+        return (
             this.isGraphQLBuiltInScalar(options) ||
             this.isTemporal(options) ||
             this.isBigInt(options) ||
             this.isUserScalar(options)
-        ) {
-            return true;
-        }
-        return false;
+        );
     }
 
     isNumeric(options = this.assertionOptions): boolean {

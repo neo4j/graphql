@@ -47,7 +47,7 @@ export class Relationship {
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get relationshipFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Relationship`; 
+        return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 
     constructor({
