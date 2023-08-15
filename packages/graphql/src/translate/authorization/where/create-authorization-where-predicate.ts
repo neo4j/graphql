@@ -20,13 +20,14 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../classes";
 import type { AuthorizationWhere } from "../../../schema-model/annotation/AuthorizationAnnotation";
-import type { Context, GraphQLWhereArg, PredicateReturn } from "../../../types";
+import type { GraphQLWhereArg, PredicateReturn } from "../../../types";
 import { asArray } from "../../../utils/utils";
 import type { LogicalOperator } from "../../utils/logical-operators";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import { createJwtPayloadWherePredicate } from "./create-authorization-jwt-payload-predicate";
 import { populateWhereParams } from "../utils/populate-where-params";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createAuthorizationWherePredicate({
     where,
@@ -35,7 +36,7 @@ export function createAuthorizationWherePredicate({
     target,
 }: {
     where: AuthorizationWhere;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     target: Cypher.Variable;
 }): PredicateReturn {
@@ -114,7 +115,7 @@ function createNestedPredicate({
     target,
 }: {
     key: LogicalOperator;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     value: Array<GraphQLWhereArg>;
     node: Node;
     target: Cypher.Variable;

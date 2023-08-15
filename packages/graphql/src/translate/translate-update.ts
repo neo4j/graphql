@@ -18,7 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { Context, CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
+import type { CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
@@ -35,13 +35,14 @@ import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export default async function translateUpdate({
     node,
     context,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
 }): Promise<[string, any]> {
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;

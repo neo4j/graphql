@@ -18,7 +18,7 @@
  */
 
 import type { Node } from "../classes";
-import type { Context, GraphQLWhereArg } from "../types";
+import type { GraphQLWhereArg } from "../types";
 import { META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -26,8 +26,15 @@ import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
-export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
+export function translateDelete({
+    context,
+    node,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    node: Node;
+}): Cypher.CypherResult {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -92,7 +99,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     return result;
 }
 
-function getDeleteReturn(context: Context): Array<string> {
+function getDeleteReturn(context: Neo4jGraphQLTranslationContext): Array<string> {
     return context.subscriptionsEnabled
         ? [
               `WITH collect(${META_CYPHER_VARIABLE}) AS ${META_CYPHER_VARIABLE}`,

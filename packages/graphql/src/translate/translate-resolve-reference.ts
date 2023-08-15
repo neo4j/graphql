@@ -19,17 +19,17 @@
 
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { Context } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateResolveReference({
     node,
     context,
     reference,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     reference: any;
 }): Cypher.CypherResult {

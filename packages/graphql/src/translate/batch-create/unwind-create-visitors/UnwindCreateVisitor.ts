@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, PredicateReturn, RelationField } from "../../../types";
+import type { PredicateReturn, RelationField } from "../../../types";
 import type { CallbackBucket } from "../../../classes/CallbackBucket";
 import type {
     Visitor,
@@ -36,6 +36,7 @@ import mapToDbProperty from "../../../utils/map-to-db-property";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthorizationAfterPredicate } from "../../authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "../../authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
@@ -48,12 +49,12 @@ type UnwindCreateEnvironment = Record<GraphQLInputASTNodeRef, UnwindCreateScopeD
 export class UnwindCreateVisitor implements Visitor {
     unwindVar: Cypher.Variable;
     callbackBucket: CallbackBucket;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     rootNode: Cypher.Node | undefined;
     clause: Cypher.Clause | undefined;
     environment: UnwindCreateEnvironment;
 
-    constructor(unwindVar: Cypher.Variable, callbackBucket: CallbackBucket, context: Context) {
+    constructor(unwindVar: Cypher.Variable, callbackBucket: CallbackBucket, context: Neo4jGraphQLTranslationContext) {
         this.unwindVar = unwindVar;
         this.callbackBucket = callbackBucket;
         this.context = context;
@@ -267,7 +268,11 @@ export class UnwindCreateVisitor implements Visitor {
         );
     }
 
-    private getAuthNodeClause(node: Node, context: Context, nodeRef: Cypher.Node): Cypher.Clause | undefined {
+    private getAuthNodeClause(
+        node: Node,
+        context: Neo4jGraphQLTranslationContext,
+        nodeRef: Cypher.Node
+    ): Cypher.Clause | undefined {
         const authorizationPredicateReturn = createAuthorizationAfterPredicate({
             context,
             nodes: [

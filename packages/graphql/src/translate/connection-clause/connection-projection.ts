@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
-import type { ConnectionField, ConnectionSortArg, Context, CypherFieldReferenceMap } from "../../types";
+import type { ConnectionField, ConnectionSortArg, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 
 import createProjectionAndParams from "../create-projection-and-params";
@@ -27,6 +27,7 @@ import type Relationship from "../../classes/Relationship";
 import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export function createEdgeProjection({
     resolveTree,
@@ -43,7 +44,7 @@ export function createEdgeProjection({
     field: ConnectionField;
     relationshipRef: Cypher.Relationship;
     relatedNodeVariableName: Cypher.Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     relatedNode: Node;
     resolveType?: boolean;
     extraFields?: Array<string>;
