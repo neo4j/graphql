@@ -301,8 +301,8 @@ describe("Attribute", () => {
                         type: new ListType(stringType, true),
                     })
                 );
-                expect(attribute.isString(true)).toBe(true);
-                expect(attribute.isString(false)).toBe(false);
+                expect(attribute.isString({includeLists: true})).toBe(true);
+                expect(attribute.isString({includeLists: false})).toBe(false);
             });
 
             test("type assertion, should return false if it's a list of a different type", () => {
@@ -315,8 +315,8 @@ describe("Attribute", () => {
                         type: new ListType(stringType, true),
                     })
                 );
-                expect(attribute.isInt(true)).toBe(false);
-                expect(attribute.isInt(false)).toBe(false);
+                expect(attribute.isInt({includeLists: true})).toBe(false);
+                expect(attribute.isInt({includeLists: false})).toBe(false);
             });
         });
     });

@@ -49,7 +49,7 @@ export class AttributeAdapter {
     public databaseName: string;
     private assertionOptions: {
         includeLists: boolean;
-    }
+    };
     constructor(attribute: Attribute) {
         this.name = attribute.name;
         this.type = attribute.type;
@@ -57,7 +57,7 @@ export class AttributeAdapter {
         this.databaseName = attribute.databaseName;
         this.assertionOptions = {
             includeLists: true,
-        }
+        };
     }
 
     /**
@@ -107,7 +107,14 @@ export class AttributeAdapter {
        ...this.pointFields,]
      */
     isConstrainable(): boolean {
-        return this.isGraphQLBuiltInScalar() || this.isScalar() || this.isEnum() || this.isTemporal() || this.isPoint();
+        return (
+            this.isGraphQLBuiltInScalar() ||
+            this.isUserScalar() ||
+            this.isEnum() ||
+            this.isTemporal() ||
+            this.isPoint() ||
+            this.isCartesianPoint()
+        );
     }
 
     /**
@@ -171,7 +178,7 @@ export class AttributeAdapter {
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.String;
     }
 
-    isCartesianPoint(options = this.assertionOptions):boolean {
+    isCartesianPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof Neo4jCartesianPointType;
     }
@@ -281,7 +288,12 @@ export class AttributeAdapter {
      * Returns true for both built-in and user-defined scalars
      **/
     isScalar(options = this.assertionOptions): boolean {
-        if (this.isGraphQLBuiltInScalar(options) || this.isTemporal(options) || this.isBigInt(options) || this.isUserScalar(options)) {
+        if (
+            this.isGraphQLBuiltInScalar(options) ||
+            this.isTemporal(options) ||
+            this.isBigInt(options) ||
+            this.isUserScalar(options)
+        ) {
             return true;
         }
         return false;
