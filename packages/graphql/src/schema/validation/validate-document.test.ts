@@ -2439,6 +2439,82 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "post"]);
             });
 
+            test("@cypher with inherited @relationship on Field", () => {
+                const doc = gql`
+                    interface Person {
+                        post: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type User implements Person {
+                        id: ID
+                        post: [Post!]!
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1})-[:HAS_POST]->(p:Post) RETURN p
+                                """
+                                columnName: "p"
+                            )
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
+            });
+
+            test("@cypher with inherited @relationship on Field reverse order", () => {
+                const doc = gql`
+                    type User implements Person {
+                        id: ID
+                        post: [Post!]!
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1})-[:HAS_POST]->(p:Post) RETURN p
+                                """
+                                columnName: "p"
+                            )
+                    }
+                    interface Person {
+                        post: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @cypher"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Person", "post"]);
+            });
+
             test("@cypher double", () => {
                 const doc = gql`
                     type User {

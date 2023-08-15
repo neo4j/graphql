@@ -31,7 +31,6 @@ import { DocumentValidationError } from "../utils/document-validation-error";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
-    relationshipTypeToDirectionAndFieldTypeMap: Map<string, [string, string][]>,
     interfaceToImplementationsMap: Map<string, Set<string>>,
     extra?: {
         enums: EnumTypeDefinitionNode[];

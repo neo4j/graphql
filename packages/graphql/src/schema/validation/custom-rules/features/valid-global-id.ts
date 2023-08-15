@@ -21,11 +21,15 @@ import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, InterfaceType
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import {
+    getInheritedTypeNames,
+    hydrateInterfaceWithImplementedTypesMap,
+} from "../utils/interface-to-implementing-types";
 import { getPathToNode } from "../utils/path-parser";
 
 export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
     const typeNameToGlobalId = new Map<string, boolean>();
-    const interfaceToImplementingTypes = new Map<string, string[]>();
+    const interfaceToImplementingTypes = new Map<string, Set<string>>();
     const typeNameToAliasedFields = new Map<string, Set<string>>();
     const addToAliasedFieldsMap = function (typeName: string, fieldName?: string) {
         const x = typeNameToAliasedFields.get(typeName) || new Set<string>();
@@ -82,10 +86,7 @@ export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
 
         ObjectTypeDefinition: {
             enter(objectType: ObjectTypeDefinitionNode) {
-                objectType.interfaces?.forEach((i) => {
-                    const implementedTypes = interfaceToImplementingTypes.get(i.name.value) || [];
-                    interfaceToImplementingTypes.set(i.name.value, implementedTypes.concat(objectType.name.value));
-                });
+                hydrateInterfaceWithImplementedTypesMap(objectType, interfaceToImplementingTypes);
             },
             leave(objectType: ObjectTypeDefinitionNode) {
                 addToAliasedFieldsMap(objectType.name.value);
@@ -158,22 +159,10 @@ function getUnaliasedFieldNamedID(mainType: ObjectTypeDefinitionNode | Interface
     return;
 }
 
-function getInheritedTypeNames(
-    mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
-    interfaceToImplementingTypes: Map<string, string[]>
-): string[] | undefined {
-    if (mainType.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-        return interfaceToImplementingTypes.get(mainType.name.value);
-    }
-    if (mainType.kind === Kind.OBJECT_TYPE_DEFINITION) {
-        return mainType.interfaces?.map((i) => i.name.value);
-    }
-}
-
 function hasGlobalIDField(
     mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     typeNameToGlobalId: Map<string, boolean>,
-    interfaceToImplementingTypes: Map<string, string[]>
+    interfaceToImplementingTypes: Map<string, Set<string>>
 ): boolean {
     if (typeNameToGlobalId.get(mainType.name.value)) {
         return true;
@@ -213,7 +202,7 @@ function assertValidGlobalID({
     directiveNode: DirectiveNode;
     typeDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     typeNameToGlobalId: Map<string, boolean>;
-    interfaceToImplementingTypes: Map<string, string[]>;
+    interfaceToImplementingTypes: Map<string, Set<string>>;
 }) {
     if (hasGlobalIDField(typeDef, typeNameToGlobalId, interfaceToImplementingTypes)) {
         throw new DocumentValidationError(
