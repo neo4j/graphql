@@ -18,7 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { RelationField, Context } from "../types";
+import type { RelationField } from "../types";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
@@ -27,6 +27,7 @@ import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     disconnects: string[];
@@ -51,7 +52,7 @@ function createDisconnectAndParams({
     varName: string;
     relationField: RelationField;
     parentVar: string;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;

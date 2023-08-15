@@ -861,7 +861,6 @@ describe("Node", () => {
                     jwt: {
                         movielabel: "Movie",
                     },
-                    myKey: "key",
                 })
                 .instance();
 
@@ -881,14 +880,10 @@ describe("Node", () => {
                 })
                 .instance();
 
-            const context = new ContextBuilder()
-                .with({
-                    myKey: "Movie",
-                })
-                .instance();
+            const context = new ContextBuilder().instance();
 
-            const labels = node.getLabels(context);
-            const labelString = node.getLabelString(context);
+            const labels = node.getLabels({ ...context, myKey: "Movie" } as Record<string, any>);
+            const labelString = node.getLabelString({ ...context, myKey: "Movie" } as Record<string, any>);
 
             expect(labels).toEqual(["Movie"]);
             expect(labelString).toBe(":Movie");
@@ -908,7 +903,6 @@ describe("Node", () => {
                     jwt: {
                         movielabel: "Movie",
                     },
-                    myKey: "key",
                 })
                 .instance();
 

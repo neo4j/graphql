@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { RelationField, Context, PrimitiveField, PredicateReturn } from "../types";
+import type { RelationField, PrimitiveField, PredicateReturn } from "../types";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
@@ -32,6 +32,7 @@ import { createAuthorizationBeforePredicate } from "./authorization/create-autho
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 type CreateOrConnectInput = {
     where?: {
@@ -60,7 +61,7 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     withVars: string[];
     callbackBucket: CallbackBucket;
 }): Cypher.CypherResult {
@@ -141,7 +142,7 @@ function createConnectOrCreatePartialStatement({
     relationField: RelationField;
     refNode: Node;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     withVars: string[];
 }): Cypher.Clause {
@@ -222,7 +223,7 @@ function mergeStatement({
     input: CreateOrConnectInput;
     refNode: Node;
     parentRefNode: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     relationField: RelationField;
     parentNode: Cypher.Node;
     varName: string;
@@ -318,7 +319,7 @@ function createAuthorizationBeforeConnectOrCreate({
     sourceNode,
     sourceName,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     sourceNode: Node;
     sourceName: string;
     targetNode: Node;
@@ -363,7 +364,7 @@ function createAuthorizationAfterConnectOrCreate({
     targetNode,
     targetName,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     sourceNode: Node;
     sourceName: string;
     targetNode: Node;

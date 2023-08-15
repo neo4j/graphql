@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import type { Context, GraphQLWhereArg } from "../types";
+import type { GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../types/authorization";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -33,7 +34,7 @@ export function translateTopLevelMatch({
     where,
 }: {
     matchNode: Cypher.Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
@@ -63,7 +64,7 @@ export function createMatchClause({
     where,
 }: {
     matchNode: Cypher.Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
@@ -86,7 +87,7 @@ export function createMatchClause({
         whereOperators = node.getLabels(context).map((label) => {
             return Cypher.in(new Cypher.Param(label), Cypher.labels(matchNode));
         });
-    } else if (context.fulltextIndex) {
+    } else if (context.fulltext) {
         ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, where, node, context));
         where = where?.[node.singular];
     }
@@ -167,18 +168,22 @@ function createFulltextMatchClause(
     matchNode: Cypher.Node,
     whereInput: GraphQLWhereArg | undefined,
     node: Node,
-    context: Context
+    context: Neo4jGraphQLTranslationContext
 ): {
     matchClause: Cypher.Yield;
     whereOperators: Cypher.Predicate[];
 } {
+    if (!context.fulltext) {
+        throw new Error("Full-text context not defined");
+    }
+
     // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-    const indexName = context.fulltextIndex.indexName || context.fulltextIndex.name;
+    const indexName = context.fulltext.indexName || context.fulltext.name;
     if (indexName === undefined) {
         throw new Error("The name of the fulltext index should be defined using the indexName argument.");
     }
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
-    const scoreVar = context.fulltextIndex.scoreVariable;
+    const scoreVar = context.fulltext.scoreVariable;
 
     const matchClause = Cypher.db.index.fulltext
         .queryNodes(indexName, phraseParam)

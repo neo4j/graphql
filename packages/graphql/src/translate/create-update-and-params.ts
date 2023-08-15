@@ -20,7 +20,7 @@
 import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
-import type { BaseField, Context } from "../types";
+import type { BaseField } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -45,6 +45,7 @@ import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     strs: string[];
@@ -78,7 +79,7 @@ export default function createUpdateAndParams({
     chainStr?: string;
     node: Node;
     withVars: string[];
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     parameterPrefix: string;
     includeRelationshipValidation?: boolean;

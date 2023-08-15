@@ -18,9 +18,9 @@
  */
 
 import createWhereAndParams from "./create-where-and-params";
-import type { Context } from "../../types";
 import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 describe("createWhereAndParams", () => {
     test("should be a function", () => {
@@ -59,10 +59,12 @@ describe("createWhereAndParams", () => {
             id: node.toGlobalId("some title"),
         };
 
-        // @ts-ignore
-        const context: Context = { neoSchema: { nodes: [] } };
-
-        const result = createWhereAndParams({ whereInput, varName, node, context });
+        const result = createWhereAndParams({
+            whereInput,
+            varName,
+            node,
+            context: {} as Neo4jGraphQLTranslationContext,
+        });
 
         expect(result[0]).toBe(`WHERE this.title = $this_param0`);
         expect(result[1]).toBe("");

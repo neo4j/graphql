@@ -18,10 +18,11 @@
  */
 
 import type { Node, Relationship } from "../../classes";
-import type { ConnectionWhereArg, Context } from "../../types";
+import type { ConnectionWhereArg } from "../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 import { compileCypher } from "../../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export default function createConnectionWhereAndParams({
     whereInput,
@@ -33,7 +34,7 @@ export default function createConnectionWhereAndParams({
     parameterPrefix,
 }: {
     whereInput: ConnectionWhereArg;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     nodeVariable: string;
     relationship: Relationship;

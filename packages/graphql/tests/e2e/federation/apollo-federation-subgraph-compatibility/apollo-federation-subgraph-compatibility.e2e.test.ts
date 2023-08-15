@@ -132,10 +132,10 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             typeDefs: products,
             resolvers: {
                 User: {
-                    averageProductsCreatedPerYear: (_source, _args, context) => {
+                    averageProductsCreatedPerYear: (_source, _args, _context, info) => {
                         return Math.floor(
-                            context.resolveTree.args.representations[0].totalProductsCreated /
-                                context.resolveTree.args.representations[0].yearsOfEmployment
+                            info.variableValues.representations[0].totalProductsCreated /
+                                info.variableValues.representations[0].yearsOfEmployment
                         );
                     },
                 },

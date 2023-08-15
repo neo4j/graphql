@@ -47,6 +47,8 @@ export interface Neo4jGraphQLContext {
      * A decoded JWT payload which can be provided for use in authentication and authorization.
      * Takes precedence over {@link token} if both are present in the context.
      *
+     * Will be populated with the decoded {@link token} if authorization has been enabled in the library.
+     *
      * @example
      * ```
      * {

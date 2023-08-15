@@ -21,21 +21,24 @@ import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context } from "../../../types";
+import type { Neo4jGraphQLComposedContext } from "../wrapper";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function findResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
-        const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info, { args });
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
 
-        const { cypher, params } = translateRead({ context, node });
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
 
         const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
 
         return executeResult.records.map((x) => x.this);

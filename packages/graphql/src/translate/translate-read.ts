@@ -20,12 +20,13 @@
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateRead(
     {
@@ -33,7 +34,7 @@ export function translateRead(
         context,
         isRootConnectionField,
     }: {
-        context: Context;
+        context: Neo4jGraphQLTranslationContext;
         node: Node;
         isRootConnectionField?: boolean;
     },
@@ -83,7 +84,7 @@ export function translateRead(
 
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
-    if (context.fulltextIndex) {
+    if (context.fulltext) {
         optionsInput.sort = optionsInput.sort?.[node?.singular] || optionsInput.sort;
     }
 
@@ -102,7 +103,7 @@ export function translateRead(
             target: matchNode,
             projectionClause: orderClause as Cypher.With,
             nodeField: node.singular,
-            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+            fulltextScoreVariable: context.fulltext?.scoreVariable,
             cypherFields: node.cypherFields,
             cypherFieldAliasMap,
             graphElement: node,
@@ -115,10 +116,10 @@ export function translateRead(
 
     let returnClause = new Cypher.Return([projectionExpression, varName]);
 
-    if (context.fulltextIndex?.scoreVariable) {
+    if (context.fulltext?.scoreVariable) {
         returnClause = new Cypher.Return(
             [projectionExpression, varName],
-            [context.fulltextIndex?.scoreVariable, SCORE_FIELD]
+            [context.fulltext?.scoreVariable, SCORE_FIELD]
         );
     }
 
@@ -140,7 +141,7 @@ export function translateRead(
                 target: matchNode,
                 projectionClause: orderClause as Cypher.With,
                 nodeField: node.singular,
-                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+                fulltextScoreVariable: context.fulltext?.scoreVariable,
                 cypherFields: node.cypherFields,
                 cypherFieldAliasMap,
                 graphElement: node,

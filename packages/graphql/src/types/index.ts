@@ -19,21 +19,18 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { DirectiveNode, GraphQLResolveInfo, GraphQLSchema, InputValueDefinitionNode, TypeNode } from "graphql";
+import type { DirectiveNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
-import type { Neo4jDatabaseInfo, Node, Relationship } from "../classes";
-import type { Executor } from "../classes/Executor";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
-import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
 
-type AuthorizationContext = {
+export type AuthorizationContext = {
     jwt?: JwtPayload;
     jwtParam: Cypher.Param;
     isAuthenticated: boolean;
@@ -41,33 +38,17 @@ type AuthorizationContext = {
     claims?: Map<string, string>;
 };
 
-export interface Context extends Neo4jGraphQLContext {
-    resolveTree: ResolveTree;
-    info: GraphQLResolveInfo;
-    nodes: Node[];
-    relationships: Relationship[];
-    schemaModel: Neo4jGraphQLSchemaModel;
-    schema: GraphQLSchema;
-    callbacks?: Neo4jGraphQLCallbacks;
-    features: ContextFeatures;
-    subscriptionsEnabled: boolean;
-    executor: Executor;
-    extensions?: Record<string, any>;
-    authorization: AuthorizationContext;
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
-    [k: string]: any;
-}
-
-export type FulltextIndex = {
+export type FulltextContext = {
     name: string | undefined;
     fields: string[];
     queryType: string;
     queryName: string | undefined;
     indexName: string | undefined; // TODO: not undefined once name is removed.
+    scoreVariable: Cypher.Variable;
 };
 
 export type FullText = {
-    indexes: FulltextIndex[];
+    indexes: FulltextContext[];
 };
 
 /**
@@ -420,7 +401,7 @@ export type CallbackReturnValue = string | number | boolean | undefined | null;
 export type Neo4jGraphQLCallback = (
     parent: Record<string, unknown>,
     args: Record<string, never>,
-    context: Record<string, unknown>
+    context: Neo4jGraphQLContext
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
