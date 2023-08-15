@@ -83,12 +83,7 @@ describe("createCreateAndParams", () => {
             pointFields: [],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
         const context = new ContextBuilder({
-            neoSchema,
             schemaModel: new Neo4jGraphQLSchemaModel({
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],

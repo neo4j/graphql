@@ -65,7 +65,10 @@ export async function translateQuery(
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.4");
-    let contextValue: Record<string, any> = { executionContext: driverBuilder.instance(), neo4jDatabaseInfo };
+    let contextValue: Record<string, any> = {
+        executionContext: driverBuilder.instance(),
+        neo4jDatabaseInfo,
+    };
 
     if (options?.token) {
         contextValue.token = options.token;

@@ -18,13 +18,14 @@
  */
 
 import type { Node } from "../../../classes";
-import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
 import { compileCypher } from "../../../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createProjectionSubquery({
     parentNode,
@@ -45,7 +46,7 @@ export function createProjectionSubquery({
     parentNode: Cypher.Node;
     whereInput?: GraphQLWhereArg;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     nestedProjection: Cypher.Expr;
     nestedSubqueries: Cypher.Clause[];
     targetNode: Cypher.Node;

@@ -19,9 +19,16 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import dotProp from "dot-prop";
-import type { Context, GraphQLWhereArg } from "../../../types";
+import type { GraphQLWhereArg } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-export function populateWhereParams({ where, context }: { where: GraphQLWhereArg; context: Context }): GraphQLWhereArg {
+export function populateWhereParams({
+    where,
+    context,
+}: {
+    where: GraphQLWhereArg;
+    context: Neo4jGraphQLTranslationContext;
+}): GraphQLWhereArg {
     const parsed: GraphQLWhereArg = {};
 
     Object.entries(where).forEach(([k, v]) => {
