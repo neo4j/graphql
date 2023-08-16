@@ -24,8 +24,92 @@ import { AuthPropertyFilter } from "../ast/filters/authorization-filters/AuthPro
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
+import type { Filter } from "../ast/filters/Filter";
+import type { Context, GraphQLWhereArg } from "../../../types";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { AuthorizationOperation } from "../../../types/authorization";
+import { isLogicalOperator } from "../../utils/logical-operators";
+import Cypher from "@neo4j/cypher-builder";
+import { JWTPayload } from "jose";
+import { parseWhereField } from "./parsers/parse-where-field";
+import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
 
 export class AuthFilterFactory extends FilterFactory {
+    // PopulatedWhere has the values as Cypher variables
+    public createAuthFilters({
+        entity,
+        operations,
+        context,
+        populatedWhere,
+    }: {
+        entity: ConcreteEntityAdapter;
+        operations: AuthorizationOperation[];
+        context: Context;
+        populatedWhere: GraphQLWhereArg;
+    }): Filter[] {
+        const nestedFilters: Filter[] = Object.entries(populatedWhere).flatMap(([key, value]): Filter[] => {
+            if (isLogicalOperator(key)) {
+                // return this.createEdgeLogicalFilter(key, value as any, relationship);
+            }
+
+            if (key === "node") {
+                return this.createNodeFilters(entity, value);
+                // nestedFilters.push(...this.createNodeFilters(entity, populatedWhere.node));
+            } else if (key === "jwt") {
+                return this.createJWTFilters(context.authorization.jwtParam, value);
+            }
+
+            return [];
+        });
+
+        // LogicalFilters
+
+        return nestedFilters;
+    }
+
+    private createJWTFilters(jwtPayload: Cypher.Param, where: Record<string, unknown>): Filter[] {
+        return Object.entries(where).map(([key, value]) => {
+            const { fieldName, operator } = parseWhereField(key);
+            if (!fieldName) {
+                throw new Error(`Failed to find field name in filter: ${key}`);
+            }
+
+            if (!operator) {
+                throw new Error(`Failed to find operator in filter: ${key}`);
+            }
+            return new JWTFilter({
+                operator: operator || "EQ",
+                JWTClaim: jwtPayload.property(fieldName),
+                comparisonValue: value,
+            });
+
+            // const match = whereRegEx.exec(key);
+            // if (!match) {
+            //     throw new Error(`Failed to match key in filter: ${key}`);
+            // }
+
+            // const { fieldName, operator } = match?.groups as WhereRegexGroups;
+        });
+
+        // JWT ROLES CLAIM
+        // // TODO: this is specific to authorization,
+        // // but this function has arguments which would indicate it should be generic
+        // const mappedJwtClaim = context.authorization.claims?.get(fieldName);
+
+        // let target: Cypher.Property | undefined;
+
+        // if (mappedJwtClaim) {
+        //     // TODO: validate browser compatibility for Toolbox (https://caniuse.com/?search=Lookbehind)
+        //     let paths = mappedJwtClaim.split(/(?<!\\)\./);
+
+        //     paths = paths.map((p) => p.replaceAll(/\\\./g, "."));
+
+        //     target = context.authorization.jwtParam.property(...paths);
+        // } else {
+        //     target = context.authorization.jwtParam.property(fieldName);
+        // }
+    }
+
     protected createPropertyFilter({
         attribute,
         comparisonValue,

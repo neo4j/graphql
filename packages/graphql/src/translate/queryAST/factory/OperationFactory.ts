@@ -74,7 +74,9 @@ export class OperationsFactory {
         }
         operation.setFields(fields);
         operation.setFilters(filters);
-        operation.addAuthFilters(...authFilters);
+        if (authFilters) {
+            operation.setAuthFilters(authFilters);
+        }
 
         const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
         if (options) {
@@ -187,7 +189,9 @@ export class OperationsFactory {
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
-        operation.addAuthFilters(...authFilters);
+        if (authFilters) {
+            operation.setAuthFilters(authFilters);
+        }
         operation.setEdgeFields(edgeFields);
         return operation;
     }

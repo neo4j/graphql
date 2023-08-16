@@ -35,6 +35,7 @@ export class Relationship {
     public readonly target: Entity;
     public readonly direction: RelationshipDirection;
     public readonly isArray: boolean;
+    public readonly isNullable: boolean;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
@@ -61,6 +62,7 @@ export class Relationship {
         queryDirection,
         nestedOperations,
         aggregate,
+        isNullable,
     }: {
         name: string;
         type: string;
@@ -72,6 +74,7 @@ export class Relationship {
         queryDirection: QueryDirection;
         nestedOperations: NestedOperation[];
         aggregate: boolean;
+        isNullable: boolean;
     }) {
         this.type = type;
         this.source = source;
@@ -82,6 +85,7 @@ export class Relationship {
         this.queryDirection = queryDirection;
         this.nestedOperations = nestedOperations;
         this.aggregate = aggregate;
+        this.isNullable = isNullable;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -100,6 +104,7 @@ export class Relationship {
             queryDirection: this.queryDirection,
             nestedOperations: this.nestedOperations,
             aggregate: this.aggregate,
+            isNullable: this.isNullable,
         });
     }
 

@@ -26,6 +26,7 @@ import type { AuthorizationOperation } from "../../../types/authorization";
 import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
 import type { AuthFilterFactory } from "./AuthFilterFactory";
+import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 
 export class AuthorizationFactory {
     private filterFactory: AuthFilterFactory;
@@ -47,20 +48,73 @@ export class AuthorizationFactory {
         entity: ConcreteEntityAdapter,
         operations: AuthorizationOperation[],
         context: Context
-    ): AuthorizationFilter[] {
+    ): AuthorizationFilters | undefined {
         const entityAuth = entity.annotations.authorization;
-        if (!entityAuth) return [];
+        if (!entityAuth) return undefined;
 
         const rulesMatchingOperations = findMatchingRules(entityAuth.validate ?? [], operations);
+        const rulesMatchingWhereOperations = findMatchingRules(entityAuth.filter ?? [], operations);
 
-        return rulesMatchingOperations.flatMap((rule) => {
+        const validationFilers = rulesMatchingOperations.flatMap((rule) => {
             const populatedWhere = populateWhereParams({ where: rule.where, context });
-            const nestedFilters = this.filterFactory.createNodeFilters(entity, populatedWhere.node);
+            const nestedFilters = this.filterFactory.createAuthFilters({
+                entity,
+                operations,
+                context,
+                populatedWhere,
+            });
+
             return new AuthorizationFilter({
                 requireAuthentication: rule.requireAuthentication,
                 filters: nestedFilters,
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
         });
+        const whereFilters = rulesMatchingWhereOperations.flatMap((rule) => {
+            const populatedWhere = populateWhereParams({ where: rule.where, context });
+            const nestedFilters = this.filterFactory.createAuthFilters({
+                entity,
+                operations,
+                context,
+                populatedWhere,
+            });
+
+            return new AuthorizationFilter({
+                requireAuthentication: rule.requireAuthentication,
+                filters: nestedFilters,
+                isAuthenticatedParam: context.authorization.isAuthenticatedParam,
+            });
+        });
+
+        return new AuthorizationFilters({
+            validationFilters: validationFilers,
+            whereFilters: whereFilters,
+        });
     }
+    // public createEntityAuthFilters(
+    //     entity: ConcreteEntityAdapter,
+    //     operations: AuthorizationOperation[],
+    //     context: Context
+    // ): AuthorizationFilter[] {
+    //     const entityAuth = entity.annotations.authorization;
+    //     if (!entityAuth) return [];
+
+    //     const rulesMatchingOperations = findMatchingRules(entityAuth.validate ?? [], operations);
+
+    //     return rulesMatchingOperations.flatMap((rule) => {
+    //         const populatedWhere = populateWhereParams({ where: rule.where, context });
+    //         const nestedFilters = this.filterFactory.createAuthFilters({
+    //             entity,
+    //             operations,
+    //             context,
+    //             populatedWhere,
+    //         });
+
+    //         return new AuthorizationFilter({
+    //             requireAuthentication: rule.requireAuthentication,
+    //             filters: nestedFilters,
+    //             isAuthenticatedParam: context.authorization.isAuthenticatedParam,
+    //         });
+    //     });
+    // }
 }

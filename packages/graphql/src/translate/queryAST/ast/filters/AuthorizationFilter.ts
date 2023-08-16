@@ -20,8 +20,8 @@
 import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "./Filter";
 import type { QueryASTContext } from "../QueryASTContext";
-import { AUTH_FORBIDDEN_ERROR } from "../../../../constants";
 
+// Deprecated
 export class AuthorizationFilter extends Filter {
     // private operation: LogicalOperators;
     public children: Filter[];
@@ -54,7 +54,8 @@ export class AuthorizationFilter extends Filter {
             ...this.children.map((c) => c.getPredicate(context))
         );
         if (!innerPredicate) return undefined;
-        return Cypher.apoc.util.validatePredicate(Cypher.not(innerPredicate), AUTH_FORBIDDEN_ERROR);
+        return innerPredicate;
+        // return Cypher.apoc.util.validatePredicate(Cypher.not(innerPredicate), AUTH_FORBIDDEN_ERROR);
     }
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {

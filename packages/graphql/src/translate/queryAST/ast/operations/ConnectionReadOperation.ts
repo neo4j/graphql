@@ -28,6 +28,7 @@ import type { Sort, SortField } from "../sort/Sort";
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter;
@@ -56,8 +57,9 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    public addAuthFilters(...filters: Filter[]) {
-        this.filters.push(...filters);
+    public setAuthFilters(filter: AuthorizationFilters) {
+        // TODO: auth filter separate
+        this.filters.push(filter);
     }
 
     public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
