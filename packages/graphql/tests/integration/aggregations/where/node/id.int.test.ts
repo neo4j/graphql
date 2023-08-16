@@ -41,13 +41,13 @@ describe("aggregations-where-node-id", () => {
 
         const typeDefs = `
             type User {
-                id: ID
-                testString: String!
+                id: ID @filterable(byAggregate: true)
+                testString: String! @filterable(byAggregate: true)
             }
 
             type Post {
               testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
+              likes: [User!]! @relationship(type: "LIKES", direction: IN) @filterable(byAggregate: true)
             }
         `;
 

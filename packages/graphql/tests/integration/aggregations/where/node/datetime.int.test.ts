@@ -26,10 +26,22 @@ import { Neo4jGraphQL } from "../../../../../src/classes";
 describe("aggregations-where-node-datetime", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        typeDefs = `
+            type User {
+                testString: String! @filterable(byAggregate: true)
+                someDateTime: DateTime! @filterable(byAggregate: true)
+            }
+
+            type Post {
+              testString: String!
+              likes: [User!]! @relationship(type: "LIKES", direction: IN) @filterable(byAggregate: true)
+            }
+        `;
     });
 
     afterAll(async () => {
@@ -38,18 +50,6 @@ describe("aggregations-where-node-datetime", () => {
 
     test("should return posts where a like DateTime is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someDateTime: DateTime!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -105,18 +105,6 @@ describe("aggregations-where-node-datetime", () => {
 
     test("should return posts where a like DateTime is GT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someDateTime: DateTime!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -175,18 +163,6 @@ describe("aggregations-where-node-datetime", () => {
     test("should return posts where a like DateTime is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someDateTime: DateTime!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -241,18 +217,6 @@ describe("aggregations-where-node-datetime", () => {
 
     test("should return posts where a like DateTime is LT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someDateTime: DateTime!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -310,18 +274,6 @@ describe("aggregations-where-node-datetime", () => {
 
     test("should return posts where a like DateTime is LTE than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someDateTime: DateTime!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",

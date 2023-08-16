@@ -55,18 +55,18 @@ describe("Connect using aggregate where", () => {
         likeInterface = new UniqueType("LikeEdge");
         typeDefs = `
             type ${userType.name} {
-                name: String!
-                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
+                name: String! @filterable(byAggregate: true)
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}") @filterable(byAggregate: true)
             }
     
             type ${postType.name} {
                 id: ID
                 content: String!
-                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
+                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}") @filterable(byAggregate: true)
             }
 
             interface ${likeInterface.name} @relationshipProperties {
-                likedAt: DateTime
+                likedAt: DateTime @filterable(byAggregate: true)
             }
         `;
 
@@ -380,24 +380,24 @@ describe("Connect UNIONs using aggregate where", () => {
         typeDefs = `
             type ${userType.name} {
                 name: String!
-                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}") @filterable(byAggregate: true)
             }
 
             type ${specialUserType.name} {
                 specialName: String!
-                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
+                likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}") @filterable(byAggregate: true)
             }
 
             union ${userUnion.name} = ${userType.name} | ${specialUserType.name}
     
             type ${postType.name} {
                 id: ID
-                content: String!
-                likes: [${userUnion.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
+                content: String! @filterable(byAggregate: true)
+                likes: [${userUnion.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}") @filterable(byAggregate: true)
             }
 
             interface ${likeInterface.name} @relationshipProperties {
-                likedAt: DateTime
+                likedAt: DateTime @filterable(byAggregate: true)
             }
         `;
 

@@ -26,12 +26,24 @@ import { Neo4jGraphQL } from "../../../../../src/classes";
 describe("aggregations-where-node-bigint", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let typeDefs: string;
 
     const bigInt = "2147483647";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        typeDefs = `
+        type User {
+            testString: String! @filterable(byAggregate: true)
+            someBigInt: BigInt @filterable(byAggregate: true)
+        }
+
+        type Post {
+          testString: String!
+          likes: [User!]! @relationship(type: "LIKES", direction: IN) @filterable(byAggregate: true)
+        }
+        `;
     });
 
     afterAll(async () => {
@@ -40,18 +52,6 @@ describe("aggregations-where-node-bigint", () => {
 
     test("should return posts where a like BigInt is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someBigInt: BigInt
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -105,18 +105,6 @@ describe("aggregations-where-node-bigint", () => {
 
     test("should return posts where a like BigInt is GT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someBigInt: BigInt
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -174,18 +162,6 @@ describe("aggregations-where-node-bigint", () => {
     test("should return posts where a like BigInt is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someBigInt: BigInt
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -238,18 +214,6 @@ describe("aggregations-where-node-bigint", () => {
 
     test("should return posts where a like BigInt is LT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someBigInt: BigInt
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -305,18 +269,6 @@ describe("aggregations-where-node-bigint", () => {
 
     test("should return posts where a like BigInt is LTE than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someBigInt: BigInt
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN)
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",

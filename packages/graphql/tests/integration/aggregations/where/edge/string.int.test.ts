@@ -27,10 +27,26 @@ import { UniqueType } from "../../../../utils/graphql-types";
 describe("aggregations-where-edge-string", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        typeDefs = `
+        type User {
+            testString: String!
+        }
+
+        type Post {
+          testString: String!
+          likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes") @filterable(byAggregate: true)
+          someStringAlias: String @alias(property: "_someStringAlias") @filterable(byAggregate: true)
+        }
+
+        interface Likes @relationshipProperties {
+            testString: String @filterable(byAggregate: true)
+        }
+    `;
     });
 
     afterAll(async () => {
@@ -39,22 +55,6 @@ describe("aggregations-where-edge-string", () => {
 
     test("should return posts where a edge like String is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-              someStringAlias: String @alias(property: "_someStringAlias")
-            }
-
-            interface Likes @relationshipProperties {
-                testString: String
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -107,21 +107,6 @@ describe("aggregations-where-edge-string", () => {
 
     test("should return posts where a edge like String is GT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                testString: String
-            }
-        `;
 
         const length = 5;
         const gtLength = length - 1;
@@ -179,21 +164,6 @@ describe("aggregations-where-edge-string", () => {
     test("should return posts where a edge like String is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                testString: String
-            }
-        `;
-
         const length = 5;
 
         const testString = generate({
@@ -249,21 +219,6 @@ describe("aggregations-where-edge-string", () => {
     test("should return posts where a edge like String is LT than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                testString: String
-            }
-        `;
-
         const length = 5;
 
         const testString = generate({
@@ -318,21 +273,6 @@ describe("aggregations-where-edge-string", () => {
 
     test("should return posts where a edge like String is LTE than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                testString: String
-            }
-        `;
 
         const length = 5;
 
@@ -391,21 +331,6 @@ describe("aggregations-where-edge-string", () => {
             "should return posts where the %s edge like String is EQUAL to",
             async (shortestFilter) => {
                 const session = await neo4j.getSession();
-
-                const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
 
                 const testString = generate({
                     charset: "alphabetic",
@@ -483,21 +408,6 @@ describe("aggregations-where-edge-string", () => {
             async (longestFilter) => {
                 const session = await neo4j.getSession();
 
-                const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
-
                 const testString = generate({
                     charset: "alphabetic",
                     readable: true,
@@ -574,21 +484,6 @@ describe("aggregations-where-edge-string", () => {
             async (averageFilter) => {
                 const session = await neo4j.getSession();
 
-                const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
-
                 const testString = generate({
                     charset: "alphabetic",
                     readable: true,
@@ -661,21 +556,6 @@ describe("aggregations-where-edge-string", () => {
 
         test("should return posts where the average of edge like Strings is GT than", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
 
             const testString = generate({
                 charset: "alphabetic",
@@ -750,21 +630,6 @@ describe("aggregations-where-edge-string", () => {
         test("should return posts where the average of edge like Strings is GTE than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
@@ -836,21 +701,6 @@ describe("aggregations-where-edge-string", () => {
 
         test("should return posts where the average of edge like Strings is LT than", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
 
             const testString = generate({
                 charset: "alphabetic",
@@ -924,21 +774,6 @@ describe("aggregations-where-edge-string", () => {
 
         test("should return posts where the average of edge like Strings is LTE than", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    testString: String
-                }
-            `;
 
             const testString = generate({
                 charset: "alphabetic",
@@ -1022,10 +857,10 @@ describe("aggregations-where-edge-string", () => {
             }
             type ${Post} {
                 content: String
-                likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes") @filterable(byAggregate: true)
             }
             interface Likes @relationshipProperties {
-                someStringAlias: String @alias(property: "_someStringAlias")
+                someStringAlias: String @alias(property: "_someStringAlias") @filterable(byAggregate: true)
             }
         `;
 

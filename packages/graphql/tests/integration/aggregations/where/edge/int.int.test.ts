@@ -27,10 +27,24 @@ import Neo4j from "../../../neo4j";
 describe("aggregations-where-edge-int", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-
+    let typeDefs: string;
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        typeDefs = `
+        type User {
+            testString: String!
+        }
+
+        type Post {
+          testString: String!
+          likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes") @filterable(byAggregate: true)
+        }
+
+        interface Likes @relationshipProperties {
+            someInt: Int @filterable(byAggregate: true)
+        }
+    `;
     });
 
     afterAll(async () => {
@@ -39,21 +53,6 @@ describe("aggregations-where-edge-int", () => {
 
     test("should return posts where a edge like Int is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someInt: Int
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -104,21 +103,6 @@ describe("aggregations-where-edge-int", () => {
 
     test("should return posts where a edge like Float is GT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someInt: Int
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -171,22 +155,6 @@ describe("aggregations-where-edge-int", () => {
     test("should return posts where a edge like Float is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someInt: Int
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -236,22 +204,6 @@ describe("aggregations-where-edge-int", () => {
 
     test("should return posts where a edge like Float is LT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-                someInt: Int!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someInt: Int
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -304,21 +256,6 @@ describe("aggregations-where-edge-int", () => {
     test("should return posts where a edge like Float is LTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someInt: Int
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -367,21 +304,6 @@ describe("aggregations-where-edge-int", () => {
     });
 
     describe("AVERAGE", () => {
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-                testString: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someInt: Int
-            }
-        `;
-
         const someInt1 = 1;
         const someInt2 = 2;
         const someInt3 = 3;
@@ -641,21 +563,6 @@ describe("aggregations-where-edge-int", () => {
     describe("sum", () => {
         test("should return posts where the sum of a edge like Int's is EQUAL to", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes @relationshipProperties {
-                    someInt: Int
-                }
-            `;
 
             const testString = generate({
                 charset: "alphabetic",

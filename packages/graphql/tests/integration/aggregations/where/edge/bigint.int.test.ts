@@ -26,12 +26,27 @@ import { Neo4jGraphQL } from "../../../../../src/classes";
 describe("aggregations-where-edge-bigint", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let typeDefs: string;
 
     const bigInt = "2147483647";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        typeDefs = `
+        type User {
+            testString: String!
+        }
+
+        type Post {
+          testString: String!
+          likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes") @filterable(byAggregate: true)
+        }
+
+        interface Likes @relationshipProperties {
+            someBigInt: BigInt @filterable(byAggregate: true)
+        }
+    `;
     });
 
     afterAll(async () => {
@@ -40,21 +55,6 @@ describe("aggregations-where-edge-bigint", () => {
 
     test("should return posts where a edge like BigInt is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someBigInt: BigInt
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -107,21 +107,6 @@ describe("aggregations-where-edge-bigint", () => {
 
     test("should return posts where a edge like BigInt is GT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someBigInt: BigInt
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -178,21 +163,6 @@ describe("aggregations-where-edge-bigint", () => {
     test("should return posts where a edge like BigInt is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someBigInt: BigInt
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -244,21 +214,6 @@ describe("aggregations-where-edge-bigint", () => {
 
     test("should return posts where a edge like BigInt is LT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someBigInt: BigInt
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -313,21 +268,6 @@ describe("aggregations-where-edge-bigint", () => {
 
     test("should return posts where a edge like BigInt is LTE than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someBigInt: BigInt
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",

@@ -58,13 +58,13 @@ describe("Delete using top level aggregate where", () => {
 
         const typeDefs = `
             type ${userType.name} {
-                testString: String!
+                testString: String! @filterable(byAggregate: true)
             }
 
             type ${postType.name} {
                 id: ID!
                 content: String!
-                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN)
+                likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN) @filterable(byAggregate: true)
             }
         `;
 

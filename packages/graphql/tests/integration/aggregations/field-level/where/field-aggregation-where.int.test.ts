@@ -41,14 +41,14 @@ describe("Field Level Aggregations Where", () => {
         typeDefs = `
         type ${typeMovie.name} @query(aggregate: true) {
             title: String
-            actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn", aggregate: true)
+            actors: [${typePerson.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn", aggregate: true) @filterable(byAggregate: true)
         }
 
         type ${typePerson.name} {
             name: String
             age: Int
             born: DateTime
-            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn", aggregate: true)
+            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn", aggregate: true) @filterable(byAggregate: true)
         }
 
         interface ActedIn @relationshipProperties {

@@ -26,10 +26,25 @@ import { Neo4jGraphQL } from "../../../../../src/classes";
 describe("aggregations-where-edge-datetime", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let typeDefs: string;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        typeDefs = `
+        type User {
+            testString: String!
+        }
+
+        type Post {
+          testString: String!
+          likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes") @filterable(byAggregate: true)
+        }
+
+        interface Likes @relationshipProperties {
+            someDateTime: DateTime @filterable(byAggregate: true)
+        }
+    `;
     });
 
     afterAll(async () => {
@@ -38,21 +53,6 @@ describe("aggregations-where-edge-datetime", () => {
 
     test("should return posts where a edge like DateTime is EQUAL to", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -107,21 +107,6 @@ describe("aggregations-where-edge-datetime", () => {
 
     test("should return posts where a edge like DateTime is GT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -179,21 +164,6 @@ describe("aggregations-where-edge-datetime", () => {
     test("should return posts where a edge like DateTime is GTE than", async () => {
         const session = await neo4j.getSession();
 
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
@@ -247,21 +217,6 @@ describe("aggregations-where-edge-datetime", () => {
 
     test("should return posts where a edge like DateTime is LT than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",
@@ -318,21 +273,6 @@ describe("aggregations-where-edge-datetime", () => {
 
     test("should return posts where a edge like DateTime is LTE than", async () => {
         const session = await neo4j.getSession();
-
-        const typeDefs = `
-            type User {
-                testString: String!
-            }
-
-            type Post {
-              testString: String!
-              likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-            }
-
-            interface Likes @relationshipProperties {
-                someDateTime: DateTime
-            }
-        `;
 
         const testString = generate({
             charset: "alphabetic",

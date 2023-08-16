@@ -46,11 +46,11 @@ describe("aggregations-where-edge-duration", () => {
 
         type ${Post} {
             content: String!
-            likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+            likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes") @filterable(byAggregate: true)
         }
 
         interface Likes @relationshipProperties {
-            someDuration: Duration!
+            someDuration: Duration! @filterable(byAggregate: true)
         }
     `;
 
