@@ -19,7 +19,7 @@
 
 import type { Context } from "../../../types";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { AuthorizationFilter } from "../ast/filters/AuthorizationFilter";
+import { AuthorizationRuleFilter } from "../ast/filters/authorization-filters/AuthorizationRuleFilter";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
@@ -53,7 +53,7 @@ export class AuthorizationFactory {
                 populatedWhere,
             });
 
-            return new AuthorizationFilter({
+            return new AuthorizationRuleFilter({
                 requireAuthentication: rule.requireAuthentication,
                 filters: nestedFilters,
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
@@ -68,7 +68,7 @@ export class AuthorizationFactory {
                 populatedWhere,
             });
 
-            return new AuthorizationFilter({
+            return new AuthorizationRuleFilter({
                 requireAuthentication: rule.requireAuthentication,
                 filters: nestedFilters,
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,

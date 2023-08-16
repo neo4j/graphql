@@ -18,11 +18,11 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { Filter } from "./Filter";
-import type { QueryASTContext } from "../QueryASTContext";
+import { Filter } from "../Filter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 // Deprecated
-export class AuthorizationFilter extends Filter {
+export class AuthorizationRuleFilter extends Filter {
     // private operation: LogicalOperators;
     public children: Filter[];
     private requireAuthentication: boolean;

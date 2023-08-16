@@ -21,23 +21,29 @@ import Cypher from "@neo4j/cypher-builder";
 import { AUTH_FORBIDDEN_ERROR } from "../../../../../constants";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { Filter } from "../Filter";
+import type { AuthorizationRuleFilter } from "./AuthorizationRuleFilter";
 
-// Deprecated
 export class AuthorizationFilters extends Filter {
-    private validationFilters: Filter[] = [];
-    private whereFilters: Filter[] = [];
+    private validationFilters: AuthorizationRuleFilter[] = [];
+    private whereFilters: AuthorizationRuleFilter[] = [];
 
-    constructor({ validationFilters, whereFilters }: { validationFilters: Filter[]; whereFilters: Filter[] }) {
+    constructor({
+        validationFilters,
+        whereFilters,
+    }: {
+        validationFilters: AuthorizationRuleFilter[];
+        whereFilters: AuthorizationRuleFilter[];
+    }) {
         super();
         this.validationFilters = validationFilters;
         this.whereFilters = whereFilters;
     }
 
-    public addValidationFilter(filter: Filter) {
+    public addValidationFilter(filter: AuthorizationRuleFilter) {
         this.validationFilters.push(filter);
     }
 
-    public addWhereFilter(filter: Filter) {
+    public addWhereFilter(filter: AuthorizationRuleFilter) {
         this.whereFilters.push(filter);
     }
 
