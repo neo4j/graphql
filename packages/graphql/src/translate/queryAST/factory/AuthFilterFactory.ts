@@ -20,7 +20,7 @@
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { FilterFactory } from "./FilterFactory";
 import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
-import { AuthPropertyFilter } from "../ast/filters/authorization-filters/AuthPropertyFilter";
+import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamPropertyFilter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
@@ -30,9 +30,9 @@ import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-a
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import Cypher from "@neo4j/cypher-builder";
-import { JWTPayload } from "jose";
 import { parseWhereField } from "./parsers/parse-where-field";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
+import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -122,7 +122,7 @@ export class AuthFilterFactory extends FilterFactory {
         operator: WhereOperator | undefined;
         isNot: boolean;
         attachedTo?: "node" | "relationship";
-    }): AuthPropertyFilter {
+    }): PropertyFilter {
         const filterOperator = operator || "EQ";
         // if (attribute.isDuration() || attribute.isListOf(Neo4jGraphQLTemporalType.Duration)) {
         //     return new DurationFilter({
@@ -143,13 +143,28 @@ export class AuthFilterFactory extends FilterFactory {
         //     });
         // }
 
-        return new AuthPropertyFilter({
-            attribute,
-            comparisonValue,
-            isNot,
-            operator: filterOperator,
-            attachedTo,
-        });
+        const isCypherVariable =
+            comparisonValue instanceof Cypher.Variable ||
+            comparisonValue instanceof Cypher.Property ||
+            comparisonValue instanceof Cypher.Param;
+
+        if (isCypherVariable) {
+            return new ParamPropertyFilter({
+                attribute,
+                comparisonValue: comparisonValue,
+                isNot,
+                operator: filterOperator,
+                attachedTo,
+            });
+        } else {
+            return new PropertyFilter({
+                attribute,
+                comparisonValue: comparisonValue,
+                isNot,
+                operator: filterOperator,
+                attachedTo,
+            });
+        }
     }
 
     protected createRelationshipFilterTreeNode(options: {

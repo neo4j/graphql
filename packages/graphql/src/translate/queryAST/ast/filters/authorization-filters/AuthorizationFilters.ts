@@ -33,13 +33,6 @@ export class AuthorizationFilters extends Filter {
         this.whereFilters = whereFilters;
     }
 
-    // // private operation: LogicalOperators;
-    // public children: Filter[];
-    // private requireAuthentication: boolean;
-    // private isAuthenticatedParam: Cypher.Param;
-
-    // constructor({});
-
     public addValidationFilter(filter: Filter) {
         this.validationFilters.push(filter);
     }
@@ -49,19 +42,8 @@ export class AuthorizationFilters extends Filter {
     }
 
     public getPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
-        // let authenticationPredicate: Cypher.Predicate | undefined;
-
         const validateInnerPredicate = Cypher.or(...this.validationFilters.map((f) => f.getPredicate(context)));
         const wherePredicate = Cypher.or(...this.whereFilters.map((f) => f.getPredicate(context)));
-        // if (this.requireAuthentication) {
-        //     authenticationPredicate = Cypher.eq(this.isAuthenticatedParam, Cypher.true); // TODO: use it in the context
-        // }
-
-        // const innerPredicate = Cypher.and(
-        //     authenticationPredicate,
-        //     ...this.children.map((c) => c.getPredicate(context))
-        // );
-        // if (!innerPredicate) return undefined;
 
         let validatePredicate: Cypher.Predicate | undefined;
         if (validateInnerPredicate) {

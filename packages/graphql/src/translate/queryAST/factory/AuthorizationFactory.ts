@@ -19,9 +19,7 @@
 
 import type { Context } from "../../../types";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { AuthorizationFilter } from "../ast/filters/AuthorizationFilter";
-import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
@@ -33,15 +31,6 @@ export class AuthorizationFactory {
 
     constructor(filterFactory: AuthFilterFactory) {
         this.filterFactory = filterFactory;
-    }
-
-    public createFieldsAuthFilters(
-        entity: ConcreteEntityAdapter | RelationshipAdapter,
-        rawFields: Record<string, ResolveTree>
-    ): AuthorizationFilter[] {
-        console.log(rawFields);
-
-        return [];
     }
 
     public createEntityAuthFilters(
@@ -56,7 +45,7 @@ export class AuthorizationFactory {
         const rulesMatchingWhereOperations = findMatchingRules(entityAuth.filter ?? [], operations);
 
         const validationFilers = rulesMatchingOperations.flatMap((rule) => {
-            const populatedWhere = populateWhereParams({ where: rule.where, context });
+            const populatedWhere = populateWhereParams({ where: rule.where, context }); // TODO: move this to the filterFactory?
             const nestedFilters = this.filterFactory.createAuthFilters({
                 entity,
                 operations,
@@ -91,30 +80,4 @@ export class AuthorizationFactory {
             whereFilters: whereFilters,
         });
     }
-    // public createEntityAuthFilters(
-    //     entity: ConcreteEntityAdapter,
-    //     operations: AuthorizationOperation[],
-    //     context: Context
-    // ): AuthorizationFilter[] {
-    //     const entityAuth = entity.annotations.authorization;
-    //     if (!entityAuth) return [];
-
-    //     const rulesMatchingOperations = findMatchingRules(entityAuth.validate ?? [], operations);
-
-    //     return rulesMatchingOperations.flatMap((rule) => {
-    //         const populatedWhere = populateWhereParams({ where: rule.where, context });
-    //         const nestedFilters = this.filterFactory.createAuthFilters({
-    //             entity,
-    //             operations,
-    //             context,
-    //             populatedWhere,
-    //         });
-
-    //         return new AuthorizationFilter({
-    //             requireAuthentication: rule.requireAuthentication,
-    //             filters: nestedFilters,
-    //             isAuthenticatedParam: context.authorization.isAuthenticatedParam,
-    //         });
-    //     });
-    // }
 }

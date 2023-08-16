@@ -66,8 +66,6 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         }
 
         if (!this.relationship.isArray && this.relationship.isNullable) {
-            // single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND $param4 IN $jwt.roles))
-
             // TODO: same as in subquery
             const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
                 .withoutLabels()
