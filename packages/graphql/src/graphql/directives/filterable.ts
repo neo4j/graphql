@@ -32,7 +32,7 @@ export const filterableDirective = new GraphQLDirective({
         byAggregate: {
             description: "Generates filters for aggregate value based on this field",
             type: new GraphQLNonNull(GraphQLBoolean),
-            defaultValue: false,
+            defaultValue: true,
         },
     },
 });

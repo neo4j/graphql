@@ -682,7 +682,7 @@ function parseSettableDirective(directive: DirectiveNode | undefined): SettableO
 function parseFilterableDirective(directive: DirectiveNode | undefined): FilterableOptions {
     const defaultArguments = {
         byValue: true,
-        byAggregate: directive === undefined ? true : false,
+        byAggregate: false,
     };
 
     const args: Partial<FilterableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
