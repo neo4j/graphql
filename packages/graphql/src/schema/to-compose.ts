@@ -22,7 +22,7 @@ import type { Directive, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDef
 import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { DEPRECATE_NOT } from "./constants";
 import getFieldTypeMeta from "./get-field-type-meta";
-import parseValueNode from "./parse-value-node";
+import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 

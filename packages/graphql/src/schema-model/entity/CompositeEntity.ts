@@ -24,6 +24,8 @@ import type { Entity } from "./Entity";
 export class CompositeEntity implements Entity {
     public readonly name: string;
     public concreteEntities: ConcreteEntity[];
+    // TODO: add type interface or union, and for interface add fields
+    // TODO: add annotations
 
     constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntity[] }) {
         this.name = name;

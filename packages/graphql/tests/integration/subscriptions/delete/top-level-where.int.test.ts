@@ -21,7 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import Neo4j from "../../neo4j";
 
@@ -30,7 +30,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
     let session: Session;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     let userType: UniqueType;
     let postType: UniqueType;
@@ -56,7 +56,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         postType = new UniqueType("Post");
 
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
 
         const typeDefs = `
             type ${userType.name} {
@@ -119,7 +119,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -153,7 +153,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -187,7 +187,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -230,7 +230,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -273,7 +273,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -316,7 +316,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
@@ -359,7 +359,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();

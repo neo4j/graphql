@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context, PredicateReturn } from "../../types";
+import type { GraphQLWhereArg, PredicateReturn } from "../../types";
 import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
@@ -25,6 +25,7 @@ import { createPropertyWhere } from "./property-operations/create-property-where
 import type { LogicalOperator } from "../utils/logical-operators";
 import { isLogicalOperator, getLogicalPredicate } from "../utils/logical-operators";
 import { asArray, filterTruthy } from "../../utils/utils";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 /** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
 export function createWherePredicate({
@@ -33,12 +34,14 @@ export function createWherePredicate({
     context,
     element,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     element: GraphElement;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const whereFields = Object.entries(whereInput);
     const predicates: Cypher.Predicate[] = [];
@@ -51,6 +54,8 @@ export function createWherePredicate({
                 targetElement,
                 context,
                 value: asArray(value),
+                useExistExpr,
+                checkParameterExistence,
             });
             if (predicate) {
                 predicates.push(predicate);
@@ -66,6 +71,7 @@ export function createWherePredicate({
             targetElement,
             context,
             useExistExpr,
+            checkParameterExistence,
         });
         if (predicate) {
             predicates.push(predicate);
@@ -87,12 +93,16 @@ function createNestedPredicate({
     targetElement,
     context,
     value,
+    useExistExpr,
+    checkParameterExistence,
 }: {
     key: LogicalOperator;
     element: GraphElement;
     targetElement: Cypher.Variable;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     value: Array<GraphQLWhereArg>;
+    useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const nested: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
@@ -103,6 +113,8 @@ function createNestedPredicate({
             element,
             targetElement,
             context,
+            useExistExpr,
+            checkParameterExistence,
         });
         if (predicate) {
             nested.push(predicate);

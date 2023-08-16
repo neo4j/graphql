@@ -69,8 +69,15 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     writeTransaction: (cb: any) => {
                         return cb({ run: runMock });
                     },
+                    executeRead: (cb: any) => {
+                        return cb({ run: runMock });
+                    },
+                    executeWrite: (cb: any) => {
+                        return cb({ run: runMock });
+                    },
                     close: () => true,
                     lastBookmark: () => [],
+                    lastBookmarks: () => [],
                 } as unknown as Session;
             },
         });

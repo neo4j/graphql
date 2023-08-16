@@ -68,7 +68,7 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -80,7 +80,7 @@ describe("Cypher directive", () => {
                 WITH m AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:\`ACTED_IN\`]-(this2:\`Actor\`)
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH { node: { __resolveType: \\"Actor\\", __id: id(this2) } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount

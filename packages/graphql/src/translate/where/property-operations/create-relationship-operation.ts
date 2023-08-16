@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
+import type { GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
@@ -27,6 +27,7 @@ import type { WhereOperator } from "../types";
 import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createRelationshipOperation({
     relationField,
@@ -36,14 +37,16 @@ export function createRelationshipOperation({
     value,
     isNot,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     relationField: RelationField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -83,6 +86,7 @@ export function createRelationshipOperation({
         whereInput: value,
         whereOperator: operator as WhereOperator,
         useExistExpr,
+        checkParameterExistence,
     });
 }
 
@@ -98,18 +102,20 @@ export function createRelationPredicate({
     whereOperator,
     refEdge,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     parentNode: Cypher.Node;
     targetNode: Cypher.Node;
     targetPattern: Cypher.Pattern;
     targetRelationship: Cypher.Relationship;
     refNode: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     relationField: RelationField;
     whereInput: GraphQLWhereArg;
     whereOperator: WhereOperator;
     refEdge?: Relationship;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     let labelsOfNodesImplementingInterface: string[] | undefined;
     let labels = refNode.getLabels(context);
@@ -151,6 +157,7 @@ export function createRelationPredicate({
               targetNode,
               edgeRef: targetRelationship,
               useExistExpr,
+              checkParameterExistence,
           })
         : createWherePredicate({
               whereInput,
@@ -158,6 +165,7 @@ export function createRelationPredicate({
               element: refNode,
               context,
               useExistExpr,
+              checkParameterExistence,
           });
 
     if (orOperatorMultipleNodeLabels) {
@@ -181,6 +189,7 @@ export function createRelationPredicate({
             context,
             refNode,
             refEdge,
+            checkParameterExistence,
         });
     }
 
@@ -285,6 +294,7 @@ function createRelationPredicateWithSubqueries({
     context,
     whereInput,
     refEdge,
+    checkParameterExistence,
 }: {
     parentNode: Cypher.Node;
     targetNode: Cypher.Node;
@@ -294,9 +304,10 @@ function createRelationPredicateWithSubqueries({
     innerOperation: Cypher.Predicate;
     listPredicateStr: ListPredicate;
     refNode: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     whereInput: any;
     refEdge?: Relationship;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const matchPattern = new Cypher.Match(targetPattern);
     const subqueryWith = new Cypher.With("*");
@@ -325,12 +336,14 @@ function createRelationPredicateWithSubqueries({
                       node: refNode,
                       targetNode,
                       edgeRef: targetRelationship,
+                      checkParameterExistence,
                   })
                 : createWherePredicate({
                       whereInput,
                       targetElement: targetNode,
                       element: refNode,
                       context,
+                      checkParameterExistence,
                   });
 
             if (notNoneInnerPredicates.predicate && notNoneInnerPredicates.preComputedSubqueries) {
@@ -347,6 +360,7 @@ function createRelationPredicateWithSubqueries({
                         refNode,
                         context,
                         refEdge,
+                        checkParameterExistence,
                     });
                 return {
                     predicate: Cypher.and(notExistsPredicate, Cypher.eq(returnVar, new Cypher.Literal(true))),

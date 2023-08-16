@@ -101,7 +101,7 @@ describe("Connections Filtering", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 movieTitle,
             },
@@ -150,7 +150,7 @@ describe("Connections Filtering", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)?.[movieType.plural]).toEqual([
@@ -204,7 +204,7 @@ describe("Connections Filtering", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)?.[movieType.plural]).toEqual([
@@ -258,7 +258,7 @@ describe("Connections Filtering", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(result.errors).toBeFalsy();
         expect((result?.data as any)?.[movieType.plural]).toEqual([

@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import type { Context, PredicateReturn } from "../../../types";
+import type { PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import type { GraphElement, Neo4jDatabaseInfo } from "../../../classes";
+import type { GraphElement } from "../../../classes";
 import { Node } from "../../../classes";
 import type { WhereRegexGroups } from "../utils";
 import { whereRegEx } from "../utils";
@@ -33,6 +33,7 @@ import { createComparisonOperation } from "./create-comparison-operation";
 
 import { createRelationshipOperation } from "./create-relationship-operation";
 import { aggregatePreComputedWhereFields } from "../../create-aggregate-where-and-params";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({
@@ -42,13 +43,15 @@ export function createPropertyWhere({
     targetElement,
     context,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     key: string;
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const match = whereRegEx.exec(key);
     if (!match) {
@@ -126,6 +129,7 @@ export function createPropertyWhere({
                 value,
                 isNot,
                 useExistExpr,
+                checkParameterExistence,
             });
         }
 
@@ -138,6 +142,7 @@ export function createPropertyWhere({
                 parentNode: targetElement as Cypher.Node,
                 operator,
                 useExistExpr,
+                checkParameterExistence,
             });
         }
 
@@ -157,24 +162,24 @@ export function createPropertyWhere({
         (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
     );
 
+    const param =
+        value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
+            ? value
+            : new Cypher.Param(value);
+
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
         // When dealing with authorization input, references to JWT will already be a param
         // TODO: Pre-parse all where input in a manner similar to populateWhereParams, which substitutes all values for params
-        param:
-            value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
-                ? value
-                : new Cypher.Param(value),
+        param,
         operator,
         durationField,
         pointField,
-        // Casting because this is definitely assigned in the wrapper
-        neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
     });
-    if (isNot) {
-        return {
-            predicate: Cypher.not(comparisonOp),
-        };
-    }
-    return { predicate: comparisonOp };
+
+    const comparison = isNot ? Cypher.not(comparisonOp) : comparisonOp;
+
+    const predicate = checkParameterExistence ? Cypher.and(Cypher.isNotNull(param), comparison) : comparison;
+
+    return { predicate };
 }

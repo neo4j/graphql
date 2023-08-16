@@ -26,7 +26,6 @@ import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
-import type { ArrayPopTest } from "./types";
 
 describe("array-pop", () => {
     let driver: Driver;
@@ -57,7 +56,7 @@ describe("array-pop", () => {
     const initialLocalTimeValue = `${faker.date.past().toISOString().split("T")[1]?.split("Z")[0]}000000`;
     const initialLocalDateTimeValue = `${faker.date.past().toISOString().split("Z")[0]}000000`;
 
-    test.each<ArrayPopTest>([
+    test.each([
         {
             inputType: "Int",
             initialValue: `[100]`,
@@ -108,7 +107,7 @@ describe("array-pop", () => {
             initialValue: `["${initialLocalDateTimeValue}"]`,
             expectedOutputValue: [],
         },
-    ])(
+    ] as const)(
         "should pop a single $inputType element from an array of a single $inputType element",
         async ({ inputType, initialValue, expectedOutputValue }) => {
             const typeMovie = new UniqueType("Movie");
@@ -146,7 +145,7 @@ describe("array-pop", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -161,7 +160,7 @@ describe("array-pop", () => {
         }
     );
 
-    test.each<ArrayPopTest>([
+    test.each([
         {
             inputType: "Int",
             initialValue: `[100, 200]`,
@@ -212,7 +211,7 @@ describe("array-pop", () => {
             initialValue: `["${initialLocalDateTimeValue}", "${initialLocalDateTimeValue}"]`,
             expectedOutputValue: [initialLocalDateTimeValue],
         },
-    ])(
+    ] as const)(
         "should pop a single $inputType element from an array of two $inputType elements",
         async ({ inputType, initialValue, expectedOutputValue }) => {
             const typeMovie = new UniqueType("Movie");
@@ -250,7 +249,7 @@ describe("array-pop", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -265,7 +264,7 @@ describe("array-pop", () => {
         }
     );
 
-    test.each<ArrayPopTest>([
+    test.each([
         {
             inputType: "Int",
             initialValue: `[100, 200]`,
@@ -316,7 +315,7 @@ describe("array-pop", () => {
             initialValue: `["${initialLocalDateTimeValue}", "${initialLocalDateTimeValue}"]`,
             expectedOutputValue: [],
         },
-    ])(
+    ] as const)(
         "should pop two $inputType elements from an array of two $inputType elements",
         async ({ inputType, initialValue, expectedOutputValue }) => {
             const typeMovie = new UniqueType("Movie");
@@ -354,7 +353,7 @@ describe("array-pop", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -439,7 +438,7 @@ describe("array-pop", () => {
         const gqlCreateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 title: movieTitle,
                 longitude: point.longitude,
@@ -472,7 +471,7 @@ describe("array-pop", () => {
         const gqlUpdateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { elementsToPop },
         });
 
@@ -555,7 +554,7 @@ describe("array-pop", () => {
         const gqlCreateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 title: movieTitle,
                 x: cartesianPoint.x,
@@ -586,7 +585,7 @@ describe("array-pop", () => {
         const gqlUpdateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { elementsToPop },
         });
 
@@ -639,7 +638,7 @@ describe("array-pop", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {
@@ -714,7 +713,7 @@ describe("array-pop", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { numberToPop: 1, id },
         });
 
@@ -794,7 +793,7 @@ describe("array-pop", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, numberToPop: 1 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -882,7 +881,7 @@ describe("array-pop", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, numberToPop: 1 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

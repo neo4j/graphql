@@ -68,15 +68,15 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`SomeNode\`)
+            "MATCH (this:SomeNode)
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_OTHER_NODES\`]->(this1:\`OtherNode\`)
+                MATCH (this)-[this0:HAS_OTHER_NODES]->(this1:OtherNode)
                 CALL {
                     WITH this1
                     CALL {
                         WITH *
-                        MATCH (this1)-[this2:\`HAS_INTERFACE_NODES\`]->(this3:\`MyImplementation\`)
+                        MATCH (this1)-[this2:HAS_INTERFACE_NODES]->(this3:MyImplementation)
                         WITH this3 { __resolveType: \\"MyImplementation\\", __id: id(this1), .id } AS this3
                         RETURN this3 AS var4
                     }

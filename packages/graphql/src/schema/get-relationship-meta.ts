@@ -20,7 +20,8 @@
 import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import { relationshipDirective } from "../graphql/directives/relationship";
-import { getArgumentValues } from "../utils/get-argument-values";
+import { parseArguments } from "../schema-model/parser/parse-arguments";
+
 import Cypher from "@neo4j/cypher-builder";
 
 type RelationshipDirection = "IN" | "OUT";
@@ -58,7 +59,7 @@ function getRelationshipMeta(
 }
 
 function getRelationshipDirectiveArguments(directiveNode: DirectiveNode) {
-    return getArgumentValues(relationshipDirective, directiveNode);
+    return parseArguments(relationshipDirective, directiveNode);
 }
 
 export default getRelationshipMeta;

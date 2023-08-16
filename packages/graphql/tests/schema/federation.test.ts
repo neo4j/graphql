@@ -70,7 +70,7 @@ describe("Apollo Federation", () => {
             directive @shareable on FIELD_DEFINITION | OBJECT
 
             type CreateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -86,7 +86,7 @@ describe("Apollo Federation", () => {
             }
 
             type DeleteInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -325,7 +325,7 @@ describe("Apollo Federation", () => {
             }
 
             type UpdateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -636,7 +636,7 @@ describe("Apollo Federation", () => {
             directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
 
             type CreateInfo @federation__shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -652,7 +652,7 @@ describe("Apollo Federation", () => {
             }
 
             type DeleteInfo @federation__shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -885,7 +885,7 @@ describe("Apollo Federation", () => {
             }
 
             type UpdateInfo @federation__shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

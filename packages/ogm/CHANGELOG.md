@@ -1,5 +1,62 @@
 # @neo4j/graphql-ogm
 
+## 4.0.0-beta.1
+
+### Patch Changes
+
+-   Updated dependencies [[`be5dcdcde`](https://github.com/neo4j/graphql/commit/be5dcdcdec49adb6748dd8fc34b0b6f3e6d783fa)]:
+    -   @neo4j/graphql@4.0.0-beta.1
+
+## 4.0.0-beta.0
+
+### Major Changes
+
+-   [#3673](https://github.com/neo4j/graphql/pull/3673) [`aa11d5251`](https://github.com/neo4j/graphql/commit/aa11d525111cfda005581ed2327407b9c9c319f9) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Programmatic toggling of debug logging is now done using the `debug` option of the constructor.
+
+-   [#3645](https://github.com/neo4j/graphql/pull/3645) [`7df67be49`](https://github.com/neo4j/graphql/commit/7df67be4991b8829acbd00651c66b41558729008) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The minimum version of `neo4j-driver` is now `5.8.0`, please upgrade. The `boomkark` field in the selection set has been marked as deprecated and will be removed in version `5.0.0` of the library.
+
+-   [#3671](https://github.com/neo4j/graphql/pull/3671) [`b3951fa81`](https://github.com/neo4j/graphql/commit/b3951fa81232a968fe492a4b10ea54afc604e2d2) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove `nodes` from the public API of the `OGM` class.
+
+-   [#3687](https://github.com/neo4j/graphql/pull/3687) [`1ad4328e4`](https://github.com/neo4j/graphql/commit/1ad4328e4bba39801aa96bf961e6e5c5a2a9ce8d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Validation of type definitions is now configured using the `validate` boolean option in the constructor, which defaults to `true`.
+
+-   [#2598](https://github.com/neo4j/graphql/pull/2598) [`257aa4c97`](https://github.com/neo4j/graphql/commit/257aa4c97a0d367063725dff703fdd30f0f8ecb5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove all arguments from IExecutableSchemaDefinition apart from `typeDefs` and `resolvers`. This is to simplify the API and to remove any unexpected behaviours from arguments which we blindly pass through.
+
+-   [#3674](https://github.com/neo4j/graphql/pull/3674) [`59e369992`](https://github.com/neo4j/graphql/commit/59e369992b2226a3c5feec72f2799e2b30765819) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `cypherQueryOptions` moved into context-only, as a per-request option.
+
+### Patch Changes
+
+-   Updated dependencies [[`ea1bae3c3`](https://github.com/neo4j/graphql/commit/ea1bae3c3b8ec53febfa056c5fec25aa9b0c5c2a), [`0fb2592b4`](https://github.com/neo4j/graphql/commit/0fb2592b4271adc02f4bbbf6e467eec5f7742be1), [`c9ee9e757`](https://github.com/neo4j/graphql/commit/c9ee9e757427f512950ec58aad7e30923b297a05), [`4a78e7a8d`](https://github.com/neo4j/graphql/commit/4a78e7a8d70d3ff1ebaff8ba63ce1f9e5849d8e6), [`8d3aff007`](https://github.com/neo4j/graphql/commit/8d3aff007c0d5428313cef23602e9a4ef5ef3792), [`b3951fa81`](https://github.com/neo4j/graphql/commit/b3951fa81232a968fe492a4b10ea54afc604e2d2), [`2167c9ac1`](https://github.com/neo4j/graphql/commit/2167c9ac10b178ad881b12310fc798fc1f77b262), [`29d68ad51`](https://github.com/neo4j/graphql/commit/29d68ad515bcd2ee573d40387978250f92f83fe9), [`395e12f14`](https://github.com/neo4j/graphql/commit/395e12f14e0e7fffe50e3841ca5e69da459855d2), [`15a7f0418`](https://github.com/neo4j/graphql/commit/15a7f04188bcc676477ec562e24b27851a927905), [`93b9d806b`](https://github.com/neo4j/graphql/commit/93b9d806b12c79dae7491b901378acf9d43f1c06), [`d4aea32c6`](https://github.com/neo4j/graphql/commit/d4aea32c66aa1dcbf7b3399165adf74fed36e92e), [`5ea18136e`](https://github.com/neo4j/graphql/commit/5ea18136e36303efc0806cc7027b7dfce13e1fa4), [`aa11d5251`](https://github.com/neo4j/graphql/commit/aa11d525111cfda005581ed2327407b9c9c319f9), [`f1225baa7`](https://github.com/neo4j/graphql/commit/f1225baa75c71ad82e36e9fb250477382eb6757c), [`7df67be49`](https://github.com/neo4j/graphql/commit/7df67be4991b8829acbd00651c66b41558729008), [`7743399d3`](https://github.com/neo4j/graphql/commit/7743399d320b26126bb6e83bcd498c1c78517a83), [`e5b53a597`](https://github.com/neo4j/graphql/commit/e5b53a5976a2880e0efdecddcddcfb427015c823), [`3896544b5`](https://github.com/neo4j/graphql/commit/3896544b50939df38a792bcd9b41bc77f25bc5a9), [`8f0656b35`](https://github.com/neo4j/graphql/commit/8f0656b35b86a1d4966dea8cdb2a8ee5a3505dd6), [`c9f35f10c`](https://github.com/neo4j/graphql/commit/c9f35f10c0fde1af7b82a3adbd7137955705495a), [`1ad4328e4`](https://github.com/neo4j/graphql/commit/1ad4328e4bba39801aa96bf961e6e5c5a2a9ce8d), [`2ab3d5212`](https://github.com/neo4j/graphql/commit/2ab3d521277d66afd7acaea00aa56d44f10480bd), [`257aa4c97`](https://github.com/neo4j/graphql/commit/257aa4c97a0d367063725dff703fdd30f0f8ecb5), [`ce84c47cc`](https://github.com/neo4j/graphql/commit/ce84c47cc610366def7d3abd9227ecb5244ef9d1), [`5b5f08ce7`](https://github.com/neo4j/graphql/commit/5b5f08ce764f431fa685c8320351236a9aaf57a0), [`9f5a44545`](https://github.com/neo4j/graphql/commit/9f5a445455280abfcf862c2cf23ce44e7a11bc0d), [`9f3a9374e`](https://github.com/neo4j/graphql/commit/9f3a9374e5272577f2453cd3704c6924526f8b45), [`59e369992`](https://github.com/neo4j/graphql/commit/59e369992b2226a3c5feec72f2799e2b30765819)]:
+    -   @neo4j/graphql@4.0.0-beta.0
+
+## 3.24.1
+
+### Patch Changes
+
+-   Updated dependencies [[`be5dcdcde`](https://github.com/neo4j/graphql/commit/be5dcdcdec49adb6748dd8fc34b0b6f3e6d783fa)]:
+    -   @neo4j/graphql@3.24.1
+
+## 3.24.0
+
+### Minor Changes
+
+-   [#3639](https://github.com/neo4j/graphql/pull/3639) [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Encourages switching from `driverConfig` to `sessionConfig` in both constructor and context. Can be used to switch database, and to use impersonation and user switching.
+
+### Patch Changes
+
+-   [#3607](https://github.com/neo4j/graphql/pull/3607) [`12ee8b8f4`](https://github.com/neo4j/graphql/commit/12ee8b8f48043d3bf8cd7a0df4b001340e90c0c0) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Ignore the schema configuration directives for OGM purposes. Fix #3591
+
+-   Updated dependencies [[`c55a2b6fd`](https://github.com/neo4j/graphql/commit/c55a2b6fd36f9eb2ba5f51be3f21e97b68789fcc), [`cd884be5c`](https://github.com/neo4j/graphql/commit/cd884be5c07870ea778f5d81db5c55d45eca6dc3), [`09cc28ef2`](https://github.com/neo4j/graphql/commit/09cc28ef26f13c46c220bd160d68c5f6c4668f39)]:
+    -   @neo4j/graphql@3.24.0
+
+## 3.23.1
+
+### Patch Changes
+
+-   [#3601](https://github.com/neo4j/graphql/pull/3601) [`5556221c8`](https://github.com/neo4j/graphql/commit/5556221c82c8bf676e72bf6f3113473e271df1fb) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Ignore `@authentication`, `@authorization` and `subscriptionsAuthorization` directives in the OGM.
+
+-   Updated dependencies [[`0a5e91bb2`](https://github.com/neo4j/graphql/commit/0a5e91bb2d7db61802ffe31517f60949884f4be5)]:
+    -   @neo4j/graphql@3.23.1
+
 ## 3.23.0
 
 ### Minor Changes

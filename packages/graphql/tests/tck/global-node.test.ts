@@ -38,7 +38,6 @@ describe("Global nodes", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
         const query = gql`
             query Node($id: ID!) {
@@ -59,7 +58,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -78,7 +77,6 @@ describe("Global nodes", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
         const query = gql`
             query Node($id: ID!) {
@@ -97,7 +95,7 @@ describe("Global nodes", () => {
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name, dbId: this.id } AS this"
         `);
@@ -123,7 +121,6 @@ describe("Global nodes", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
 
         const query = gql`
@@ -142,7 +139,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name } AS this"
         `);
@@ -163,7 +160,6 @@ describe("Global nodes", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
 
         const query = gql`
@@ -185,7 +181,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.dbId = $param0
             RETURN this { .dbId, .name } AS this"
         `);

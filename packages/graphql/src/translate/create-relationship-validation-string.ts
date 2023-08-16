@@ -19,7 +19,7 @@
 
 import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
-import type { Context } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 function createRelationshipValidationString({
     node,
@@ -28,7 +28,7 @@ function createRelationshipValidationString({
     relationshipFieldNotOverwritable,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     varName: string;
     relationshipFieldNotOverwritable?: string;
 }): string {
@@ -60,7 +60,7 @@ function createRelationshipValidationString({
                         context
                     )})`,
                     `\tWITH count(${relVarname}) as c, other`,
-                    `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
+                    `\tWHERE apoc.util.validatePredicate(NOT (${predicate}), '${errorMsg}', [0])`,
                     `\tRETURN collect(c) AS ${relVarname}_ignored`,
                     `}`,
                 ].join("\n");
@@ -78,7 +78,7 @@ function createRelationshipValidationString({
                 `\tWITH ${varName}`,
                 `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
                 `\tWITH count(${relVarname}) as c`,
-                `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
+                `\tWHERE apoc.util.validatePredicate(NOT (${predicate}), '${errorMsg}', [0])`,
                 `\tRETURN c AS ${relVarname}_ignored`,
                 `}`,
             ].join("\n");

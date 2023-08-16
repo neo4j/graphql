@@ -78,16 +78,16 @@ describe("Cypher Auth Projection On Connections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_POST\`]->(this1:\`Post\`)
-                OPTIONAL MATCH (this1)<-[:\`HAS_POST\`]-(this2:\`User\`)
+                MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -102,8 +102,7 @@ describe("Cypher Auth Projection On Connections", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                },
-                \\"jwtDefault\\": {}
+                }
             }"
         `);
     });
@@ -137,20 +136,20 @@ describe("Cypher Auth Projection On Connections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:\`HAS_POST\`]->(this1:\`Post\`)
-                OPTIONAL MATCH (this1)<-[:\`HAS_POST\`]-(this2:\`User\`)
+                MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
                 WITH *, count(this2) AS creatorCount
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND this2.id = coalesce($jwt.sub, $jwtDefault))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Post\`)<-[this3:\`HAS_POST\`]-(this4:\`User\`)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this4.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MATCH (this1:Post)<-[this3:HAS_POST]-(this4:User)
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { node: { name: this4.name } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -170,8 +169,7 @@ describe("Cypher Auth Projection On Connections", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                },
-                \\"jwtDefault\\": {}
+                }
             }"
         `);
     });

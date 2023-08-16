@@ -21,13 +21,13 @@ import * as semver from "semver";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import type { Session, Driver } from "neo4j-driver";
 import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
-import type { Context } from "../../types";
+import type { Neo4jGraphQLComposedContext } from "./wrapper";
 import { wrapSubscription } from "./wrapper";
 
 describe("wrapper test", () => {
     let fakeSession: Session;
     let fakeDriver: Driver;
-    const readTransaction = jest.fn();
+    const executeRead = jest.fn();
     let wrapResolverArgs: Parameters<typeof wrapResolver>[0];
     let wrapResolver;
 
@@ -35,16 +35,16 @@ describe("wrapper test", () => {
         const module = await import("./wrapper");
         wrapResolver = module.wrapResolver;
         jest.resetModules();
-        readTransaction.mockReset();
+        executeRead.mockReset();
         // @ts-ignore
         fakeSession = {
-            readTransaction: readTransaction as any,
+            executeRead: executeRead as any,
             // @ts-ignore
             run: () => ({
                 // @ts-ignore
                 records: [],
             }),
-            lastBookmark: () => [],
+            lastBookmarks: () => [],
             // @ts-ignore
             close: () => undefined,
         };
@@ -76,12 +76,10 @@ describe("wrapper test", () => {
     test("should initialise neo4jDatabaseInfo, by using dbms.components, if it's not initialised (no version in the Context)", async () => {
         const resolverDecorator = wrapResolver(wrapResolverArgs);
         const resolvedResult = "Resolved value";
-        readTransaction.mockReturnValueOnce({
-            result: {
-                records: [["4.4.0", "enterprise"]],
-            },
+        executeRead.mockReturnValueOnce({
+            records: [["4.4.0", "enterprise"]],
         });
-        const resolver = jest.fn((_root, _args, context: Context) => {
+        const resolver = jest.fn((_root, _args, context: Neo4jGraphQLComposedContext) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo?.edition).toBe("enterprise");
@@ -89,60 +87,35 @@ describe("wrapper test", () => {
             return resolvedResult;
         });
         const wrappedResolver = resolverDecorator(resolver);
-        const res = await wrappedResolver({}, {}, {} as Context, {} as GraphQLResolveInfo);
+        const res = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
         expect(res).toBe(resolvedResult);
-        expect(readTransaction).toHaveBeenCalledTimes(1);
-        expect(resolver).toHaveBeenCalledTimes(1);
-    });
-
-    test("should NOT initialise neo4jDatabaseInfo if version is present in the Context", async () => {
-        const resolverDecorator = wrapResolver(wrapResolverArgs);
-        const resolvedResult = "Resolved value";
-        readTransaction.mockReturnValueOnce({
-            records: [["4.5.0", "enterprise"]],
-        });
-        const contextVersion = new Neo4jDatabaseInfo("1.1.0", "enterprise");
-        const resolver = jest.fn((_root, _args, context: Context) => {
-            expect(context).toBeDefined();
-            expect(context.neo4jDatabaseInfo).toBeDefined();
-            expect(context.neo4jDatabaseInfo).toStrictEqual(contextVersion);
-            return resolvedResult;
-        });
-        const wrappedResolver = resolverDecorator(resolver);
-        const res = await wrappedResolver(
-            {},
-            {},
-            { neo4jDatabaseInfo: contextVersion } as Context,
-            {} as GraphQLResolveInfo
-        );
-        expect(res).toBe(resolvedResult);
-        expect(readTransaction).toHaveBeenCalledTimes(0);
+        expect(executeRead).toHaveBeenCalledTimes(1);
         expect(resolver).toHaveBeenCalledTimes(1);
     });
 
     test("should not invoke dbms.components if neo4jDatabaseInfo is already initialised", async () => {
         const resolverDecorator = wrapResolver(wrapResolverArgs);
         const resolvedResult = "Resolved value";
-        const resolver = (_root, _args, context: Context) => {
+        const resolver = (_root, _args, context: Neo4jGraphQLComposedContext) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo).toEqual(new Neo4jDatabaseInfo("4.3.0", "enterprise"));
             return resolvedResult;
         };
 
-        readTransaction.mockReturnValueOnce({
-            result: { records: [["4.3.0", "enterprise"]] },
+        executeRead.mockReturnValueOnce({
+            records: [["4.3.0", "enterprise"]],
         });
         const wrappedResolver = resolverDecorator(resolver);
-        const firstRes = await wrappedResolver({}, {}, {} as Context, {} as GraphQLResolveInfo);
+        const firstRes = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
         expect(firstRes).toBe(resolvedResult);
-        expect(readTransaction).toHaveBeenCalledTimes(1);
-        readTransaction.mockReturnValueOnce({
-            result: { records: [["4.4.0", "enterprise"]] },
+        expect(executeRead).toHaveBeenCalledTimes(1);
+        executeRead.mockReturnValueOnce({
+            records: [["4.4.0", "enterprise"]],
         });
-        const secondRes = await wrappedResolver({}, {}, {} as Context, {} as GraphQLResolveInfo);
+        const secondRes = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
         expect(secondRes).toBe(resolvedResult);
-        expect(readTransaction).toHaveBeenCalledTimes(1);
+        expect(executeRead).toHaveBeenCalledTimes(1);
     });
 });
 
@@ -161,14 +134,14 @@ describe("subscription wrapper test", () => {
 
         const resolverDecorator = wrapSubscription(args);
         const resolvedResult = "Resolved value";
-        const resolver = (_root, _args, context: Context) => {
+        const resolver = (_root, _args, context: Neo4jGraphQLComposedContext) => {
             expect(context).toBeDefined();
             expect(context.jwt).toEqual({ sub: "test" });
             return resolvedResult;
         };
 
         const wrappedResolver = resolverDecorator(resolver);
-        const context = { jwt: { sub: "test" } } as Context;
+        const context = { jwt: { sub: "test" } } as Neo4jGraphQLComposedContext;
         const res = await wrappedResolver({}, {}, context, {} as GraphQLResolveInfo);
         expect(res).toBe(resolvedResult);
     });

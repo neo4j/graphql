@@ -21,9 +21,7 @@ import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
     EnumTypeDefinitionNode,
-    FloatValueNode,
     InterfaceTypeDefinitionNode,
-    IntValueNode,
     ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
@@ -62,11 +60,11 @@ import type {
     SettableOptions,
     FilterableOptions,
 } from "../types";
-import parseValueNode from "./parse-value-node";
+import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
 import { getPopulatedByMeta } from "./get-populated-by-meta";
-import { parseArguments } from "../schema-model/parser/utils";
+import { parseArgumentsFromUnknownDirective } from "../schema-model/parser/parse-arguments";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -92,7 +90,6 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
-    validateResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -100,7 +97,6 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
-    validateResolvers?: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }): ObjectFields {
@@ -136,7 +132,6 @@ function getObjFieldMeta({
                 objects,
                 interfaces,
                 unions,
-                validateResolvers,
                 customResolvers,
                 interfaceField,
             });
@@ -238,13 +233,13 @@ function getObjFieldMeta({
 
                 const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
 
-                if (typeMeta.originalType?.kind === "NonNullType") {
-                    if (typeMeta.originalType?.type.kind === "ListType") {
-                        if (typeMeta.originalType?.type.type.kind !== "NonNullType") {
+                if (typeMeta.originalType?.kind === Kind.NON_NULL_TYPE) {
+                    if (typeMeta.originalType?.type.kind === Kind.LIST_TYPE) {
+                        if (typeMeta.originalType?.type.type.kind !== Kind.NON_NULL_TYPE) {
                             throw new Error(msg);
                         }
                     }
-                } else if (typeMeta.originalType?.kind === "ListType") {
+                } else if (typeMeta.originalType?.kind === Kind.LIST_TYPE) {
                     throw new Error(msg);
                 }
 
@@ -550,31 +545,33 @@ function getObjFieldMeta({
                     if (defaultDirective) {
                         const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: string) => {
-                            if (value?.kind !== kind) {
-                                throw new Error(
-                                    `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                                );
-                            }
-                        };
+                        const typeError = `Default value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`;
 
                         switch (baseField.typeMeta.name) {
                             case "ID":
                             case "String":
-                                checkKind(Kind.STRING);
-                                primitiveField.defaultValue = (value as StringValueNode).value;
+                                if (value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = value.value;
                                 break;
                             case "Boolean":
-                                checkKind(Kind.BOOLEAN);
-                                primitiveField.defaultValue = (value as BooleanValueNode).value;
+                                if (value?.kind !== Kind.BOOLEAN) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = value.value;
                                 break;
                             case "Int":
-                                checkKind(Kind.INT);
-                                primitiveField.defaultValue = parseInt((value as IntValueNode).value, 10);
+                                if (value?.kind !== Kind.INT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseInt(value.value, 10);
                                 break;
                             case "Float":
-                                checkKind(Kind.FLOAT);
-                                primitiveField.defaultValue = parseFloat((value as FloatValueNode).value);
+                                if (value?.kind !== Kind.FLOAT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.defaultValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
@@ -586,31 +583,33 @@ function getObjFieldMeta({
                     if (coalesceDirective) {
                         const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        const checkKind = (kind: string) => {
-                            if (value?.kind !== kind) {
-                                throw new Error(
-                                    `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                                );
-                            }
-                        };
+                        const typeError = `coalesce() value for ${obj.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`;
 
                         switch (baseField.typeMeta.name) {
                             case "ID":
                             case "String":
-                                checkKind(Kind.STRING);
-                                primitiveField.coalesceValue = `"${(value as StringValueNode).value}"`;
+                                if (value?.kind !== Kind.STRING) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = `"${value.value}"`;
                                 break;
                             case "Boolean":
-                                checkKind(Kind.BOOLEAN);
-                                primitiveField.coalesceValue = (value as BooleanValueNode).value;
+                                if (value?.kind !== Kind.BOOLEAN) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = value.value;
                                 break;
                             case "Int":
-                                checkKind(Kind.INT);
-                                primitiveField.coalesceValue = parseInt((value as IntValueNode).value, 10);
+                                if (value?.kind !== Kind.INT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = parseInt(value.value, 10);
                                 break;
                             case "Float":
-                                checkKind(Kind.FLOAT);
-                                primitiveField.coalesceValue = parseFloat((value as FloatValueNode).value);
+                                if (value?.kind !== Kind.FLOAT) {
+                                    throw new Error(typeError);
+                                }
+                                primitiveField.coalesceValue = parseFloat(value.value);
                                 break;
                             default:
                                 throw new Error(
@@ -658,7 +657,7 @@ function parseSelectableDirective(directive: DirectiveNode | undefined): Selecta
         onAggregate: true,
     };
 
-    const args: Partial<SelectableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<SelectableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         onRead: args.onRead ?? defaultArguments.onRead,
@@ -672,7 +671,7 @@ function parseSettableDirective(directive: DirectiveNode | undefined): SettableO
         onUpdate: true,
     };
 
-    const args: Partial<SettableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<SettableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         onCreate: args.onCreate ?? defaultArguments.onCreate,
@@ -686,7 +685,7 @@ function parseFilterableDirective(directive: DirectiveNode | undefined): Filtera
         byAggregate: directive === undefined ? true : false,
     };
 
-    const args: Partial<FilterableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<FilterableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         byValue: args.byValue ?? defaultArguments.byValue,

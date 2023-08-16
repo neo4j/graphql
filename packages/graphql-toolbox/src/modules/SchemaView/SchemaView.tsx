@@ -122,12 +122,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                     typeDefs,
                     driver: auth.driver,
                     features,
-                    config: {
-                        enableDebug: useStore.getState().enableDebug,
-                        driverConfig: {
-                            database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
-                        },
-                    },
+                    debug: useStore.getState().enableDebug,
                 };
 
                 const neoSchema = new Neo4jGraphQL(options);
@@ -193,6 +188,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
 
     const onSubmit = () => {
         if (!editorView) return;
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         const value = editorView?.state.doc.toString();
         if (value) {
             buildSchema(value).catch(() => null);

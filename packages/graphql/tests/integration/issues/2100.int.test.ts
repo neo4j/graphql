@@ -27,7 +27,6 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     let token: string;
 
     const BacentaType = new UniqueType("Bacenta");
@@ -110,7 +109,6 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 RETURN p;
                 `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -163,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();
@@ -217,7 +215,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 variableValues: {
                     id: 1,
                 },
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();

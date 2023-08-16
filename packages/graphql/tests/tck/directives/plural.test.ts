@@ -50,7 +50,7 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tech\`)
+            "MATCH (this:Tech)
             RETURN this { .name } AS this"
         `);
 
@@ -69,7 +69,7 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tech\`)
+            "MATCH (this:Tech)
             RETURN { count: count(this) }"
         `);
 
@@ -93,7 +93,7 @@ describe("Plural directive", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Tech\`)
+                CREATE (create_this1:Tech)
                 SET
                     create_this1.name = create_var0.name
                 RETURN create_this1
@@ -127,7 +127,7 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tech\`)
+            "MATCH (this:Tech)
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -152,7 +152,7 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tech\`)
+            "MATCH (this:Tech)
             WHERE this.name = $param0
             DETACH DELETE this"
         `);
@@ -176,7 +176,7 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tech\`)
+            "MATCH (this:Tech)
             RETURN this { .name } AS this"
         `);
 

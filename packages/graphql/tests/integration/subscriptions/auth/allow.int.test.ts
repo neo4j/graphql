@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { TestSubscriptionsMechanism } from "../../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
@@ -31,7 +31,7 @@ describe("auth/allow", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
     const secret = "secret";
 
     let userType: UniqueType;
@@ -53,7 +53,7 @@ describe("auth/allow", () => {
         commentType = new UniqueType("Comment");
 
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
     });
 
     afterEach(async () => {
@@ -105,7 +105,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -159,7 +159,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -224,7 +224,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -293,7 +293,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -360,7 +360,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -431,7 +431,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -512,7 +512,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -569,7 +569,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -626,7 +626,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -693,7 +693,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -762,7 +762,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -818,7 +818,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -892,7 +892,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -961,7 +961,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1051,7 +1051,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1121,7 +1121,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1210,7 +1210,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

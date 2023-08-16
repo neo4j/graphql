@@ -19,7 +19,6 @@
 
 import type { DocumentNode, GraphQLArgs } from "graphql";
 import { graphql } from "graphql";
-import type { IncomingMessage } from "http";
 import { Neo4jError } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
@@ -57,20 +56,19 @@ export async function translateQuery(
     neoSchema: Neo4jGraphQL,
     query: DocumentNode,
     options?: {
-        req?: IncomingMessage;
         token?: string;
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
         contextValues?: Record<string, any>;
+        subgraph?: boolean;
     }
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.4");
-    let contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo };
-
-    if (options?.req) {
-        contextValue.req = options.req;
-    }
+    let contextValue: Record<string, any> = {
+        executionContext: driverBuilder.instance(),
+        neo4jDatabaseInfo,
+    };
 
     if (options?.token) {
         contextValue.token = options.token;
@@ -81,7 +79,7 @@ export async function translateQuery(
     }
 
     const graphqlArgs: GraphQLArgs = {
-        schema: await neoSchema.getSchema(),
+        schema: await (options?.subgraph ? neoSchema.getSubgraphSchema() : neoSchema.getSchema()),
         source: getQuerySource(query),
         contextValue,
     };

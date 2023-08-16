@@ -22,13 +22,13 @@ import { Neo4jGraphQL } from "../../../src";
 import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@filterable directive", () => {
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
     });
 
     describe("on SCALAR", () => {
@@ -1265,7 +1265,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -1276,7 +1276,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -1686,7 +1686,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -2071,7 +2071,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -2082,7 +2082,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -2492,7 +2492,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -2867,7 +2867,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -2878,7 +2878,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -3260,7 +3260,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -3648,7 +3648,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -3659,7 +3659,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -3980,7 +3980,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -4367,7 +4367,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -4378,7 +4378,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -4788,7 +4788,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -5175,7 +5175,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -5186,7 +5186,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -5568,7 +5568,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -5955,7 +5955,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -5966,7 +5966,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -6287,7 +6287,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -6675,7 +6675,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -6686,7 +6686,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -7097,7 +7097,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -7485,7 +7485,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -7496,7 +7496,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -7907,7 +7907,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -8295,7 +8295,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -8306,7 +8306,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -8717,7 +8717,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -9455,7 +9455,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -9466,7 +9466,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -9887,7 +9887,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -10625,7 +10625,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -10636,7 +10636,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -11057,7 +11057,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!
@@ -11795,7 +11795,7 @@ describe("@filterable directive", () => {
                     }
 
                     type CreateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       relationshipsCreated: Int!
                     }
@@ -11806,7 +11806,7 @@ describe("@filterable directive", () => {
                     }
 
                     type DeleteInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
@@ -12227,7 +12227,7 @@ describe("@filterable directive", () => {
                     }
 
                     type UpdateInfo {
-                      bookmark: String
+                      bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
                       nodesDeleted: Int!
                       relationshipsCreated: Int!

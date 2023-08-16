@@ -19,13 +19,12 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { ContextBuilder } from "../../../../tests/utils/builders/context-builder";
-import type { Context } from "../../../types";
 import { populateWhereParams } from "./populate-where-params";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 describe("populateWhereParams", () => {
-    let context: Context;
+    let context: Neo4jGraphQLTranslationContext;
     let jwtParam: Cypher.Param;
-    let jwtDefault: Cypher.Param;
 
     beforeAll(() => {
         const jwt = {
@@ -39,14 +38,12 @@ describe("populateWhereParams", () => {
         };
 
         jwtParam = new Cypher.Param(jwt);
-        jwtDefault = new Cypher.Param({});
 
         context = new ContextBuilder({
             authorization: {
                 jwtParam,
                 isAuthenticated: true,
                 isAuthenticatedParam: new Cypher.Param(true),
-                jwtDefault,
             },
         }).instance();
     });
@@ -57,7 +54,7 @@ describe("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: Cypher.coalesce(jwtParam.property("sub"), jwtDefault),
+            id: jwtParam.property("sub"),
         });
     });
 
@@ -67,7 +64,7 @@ describe("populateWhereParams", () => {
         };
 
         expect(populateWhereParams({ where, context })).toEqual({
-            id: Cypher.coalesce(jwtParam.property("some", "other", "claim"), jwtDefault),
+            id: jwtParam.property("some", "other", "claim"),
         });
     });
 
@@ -80,7 +77,7 @@ describe("populateWhereParams", () => {
 
         expect(populateWhereParams({ where, context })).toEqual({
             user: {
-                id: Cypher.coalesce(jwtParam.property("sub"), jwtDefault),
+                id: jwtParam.property("sub"),
             },
         });
     });
@@ -105,12 +102,12 @@ describe("populateWhereParams", () => {
             AND: [
                 {
                     user: {
-                        id: Cypher.coalesce(jwtParam.property("sub"), jwtDefault),
+                        id: jwtParam.property("sub"),
                     },
                 },
                 {
                     user: {
-                        role_IN: Cypher.coalesce(jwtParam.property("roles"), jwtDefault),
+                        role_IN: jwtParam.property("roles"),
                     },
                 },
             ],
@@ -159,26 +156,26 @@ describe("populateWhereParams", () => {
                             AND: [
                                 {
                                     user: {
-                                        id: Cypher.coalesce(jwtParam.property("sub"), jwtDefault),
+                                        id: jwtParam.property("sub"),
                                     },
                                 },
                                 {
                                     user: {
-                                        role_IN: Cypher.coalesce(jwtParam.property("roles"), jwtDefault),
+                                        role_IN: jwtParam.property("roles"),
                                     },
                                 },
                             ],
                         },
                         {
                             user: {
-                                role_IN: Cypher.coalesce(jwtParam.property("roles"), jwtDefault),
+                                role_IN: jwtParam.property("roles"),
                             },
                         },
                     ],
                 },
                 {
                     user: {
-                        role_IN: Cypher.coalesce(jwtParam.property("roles"), jwtDefault),
+                        role_IN: jwtParam.property("roles"),
                     },
                 },
             ],

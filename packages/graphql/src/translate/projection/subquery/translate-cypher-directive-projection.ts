@@ -19,11 +19,12 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../../../classes";
-import type { GraphQLSortArg, Context, CypherField, CypherFieldReferenceMap } from "../../../types";
+import type { GraphQLSortArg, CypherField, CypherFieldReferenceMap } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import createProjectionAndParams from "../../create-projection-and-params";
 import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 import { compileCypher } from "../../../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -43,7 +44,7 @@ export function translateCypherDirectiveProjection({
     res,
     cypherFieldAliasMap,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     cypherField: CypherField;
     field: ResolveTree;
     node: Node;

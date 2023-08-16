@@ -19,9 +19,16 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import dotProp from "dot-prop";
-import type { Context, GraphQLWhereArg } from "../../../types";
+import type { GraphQLWhereArg } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-export function populateWhereParams({ where, context }: { where: GraphQLWhereArg; context: Context }): GraphQLWhereArg {
+export function populateWhereParams({
+    where,
+    context,
+}: {
+    where: GraphQLWhereArg;
+    context: Neo4jGraphQLTranslationContext;
+}): GraphQLWhereArg {
     const parsed: GraphQLWhereArg = {};
 
     Object.entries(where).forEach(([k, v]) => {
@@ -39,12 +46,7 @@ export function populateWhereParams({ where, context }: { where: GraphQLWhereArg
 
                 const jwtProperty = context.authorization.jwtParam.property(...(mappedPath || path).split("."));
 
-                // coalesce jwt parameter values to be an empty map which can be evaluated in a boolean expression
-                // this is because comparing against null will always produce null, which results in errors in apoc.util.validatePredicate
-                // comparing a node property against a map will always results in false, because maps cannot be used as properties
-                const coalesce = Cypher.coalesce(jwtProperty, context.authorization.jwtDefault);
-
-                parsed[k] = coalesce;
+                parsed[k] = jwtProperty;
             } else if (v.startsWith("$context")) {
                 const path = v.substring(9);
                 const contextValueParameter = new Cypher.Param(dotProp.get(context, path));

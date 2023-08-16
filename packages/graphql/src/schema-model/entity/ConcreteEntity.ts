@@ -47,7 +47,6 @@ export class ConcreteEntity implements Entity {
     }) {
         this.name = name;
         this.labels = new Set(labels);
-
         for (const attribute of attributes) {
             this.addAttribute(attribute);
         }

@@ -21,13 +21,13 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
-import { TestSubscriptionsMechanism } from "../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../utils/TestSubscriptionsEngine";
 
 describe("Subscriptions", () => {
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
     });
 
     test("Subscriptions", async () => {
@@ -163,7 +163,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -174,7 +174,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -597,7 +597,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -922,7 +922,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -933,7 +933,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -1299,7 +1299,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -1357,7 +1357,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -1378,7 +1378,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -2356,7 +2356,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -2741,7 +2741,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -2752,7 +2752,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -3180,7 +3180,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -3327,7 +3327,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -3338,7 +3338,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -3675,7 +3675,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -4041,13 +4041,13 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -4113,7 +4113,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -4245,7 +4245,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -4266,7 +4266,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -5187,7 +5187,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -5262,7 +5262,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -5308,11 +5308,6 @@ describe("Subscriptions", () => {
             input CreatureDisconnectInput {
               _on: CreatureImplementationsDisconnectInput
               movies: CreatureMoviesDisconnectFieldInput
-            }
-
-            interface CreatureEventPayload {
-              movies: Production!
-              moviesConnection: CreatureMoviesConnection!
             }
 
             input CreatureImplementationsConnectInput {
@@ -5412,7 +5407,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -5603,7 +5598,6 @@ describe("Subscriptions", () => {
             }
 
             type PersonCreatedEvent {
-              createdPerson: PersonEventPayload!
               event: EventType!
               timestamp: Float!
             }
@@ -5613,7 +5607,6 @@ describe("Subscriptions", () => {
             }
 
             type PersonDeletedEvent {
-              deletedPerson: PersonEventPayload!
               event: EventType!
               timestamp: Float!
             }
@@ -5625,11 +5618,6 @@ describe("Subscriptions", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
-            }
-
-            type PersonEventPayload implements CreatureEventPayload {
-              movies: Production!
-              moviesConnection: CreatureMoviesConnection!
             }
 
             input PersonMoviesConnectFieldInput {
@@ -5684,8 +5672,6 @@ describe("Subscriptions", () => {
             type PersonRelationshipCreatedEvent {
               createdRelationship: PersonConnectedRelationships!
               event: EventType!
-              person: PersonEventPayload!
-              relationshipFieldName: String!
               timestamp: Float!
             }
 
@@ -5699,8 +5685,6 @@ describe("Subscriptions", () => {
             type PersonRelationshipDeletedEvent {
               deletedRelationship: PersonConnectedRelationships!
               event: EventType!
-              person: PersonEventPayload!
-              relationshipFieldName: String!
               timestamp: Float!
             }
 
@@ -5721,9 +5705,7 @@ describe("Subscriptions", () => {
 
             type PersonUpdatedEvent {
               event: EventType!
-              previousState: PersonEventPayload!
               timestamp: Float!
-              updatedPerson: PersonEventPayload!
             }
 
             input PersonWhere {
@@ -5818,8 +5800,6 @@ describe("Subscriptions", () => {
             }
 
             interface ProductionEventPayload {
-              director: Creature!
-              directorConnection: ProductionDirectorConnection!
               id: ID
             }
 
@@ -5929,10 +5909,6 @@ describe("Subscriptions", () => {
               director: SeriesDirectorConnectFieldInput
             }
 
-            type SeriesConnectedRelationships {
-              director: SeriesDirectorConnectedRelationship
-            }
-
             type SeriesConnection {
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
@@ -5965,10 +5941,6 @@ describe("Subscriptions", () => {
             input SeriesDirectorConnectFieldInput {
               connect: CreatureConnectInput
               where: CreatureConnectWhere
-            }
-
-            type SeriesDirectorConnectedRelationship {
-              node: CreatureEventPayload!
             }
 
             input SeriesDirectorCreateFieldInput {
@@ -6029,7 +6001,6 @@ describe("Subscriptions", () => {
             }
 
             type SeriesRelationshipCreatedEvent {
-              createdRelationship: SeriesConnectedRelationships!
               event: EventType!
               relationshipFieldName: String!
               series: SeriesEventPayload!
@@ -6044,7 +6015,6 @@ describe("Subscriptions", () => {
             }
 
             type SeriesRelationshipDeletedEvent {
-              deletedRelationship: SeriesConnectedRelationships!
               event: EventType!
               relationshipFieldName: String!
               series: SeriesEventPayload!
@@ -6179,7 +6149,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

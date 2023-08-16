@@ -16,33 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, ValueNode } from "graphql";
-import { Kind } from "graphql";
 
-export function parseArguments(directive: DirectiveNode): Record<string, unknown> {
-    return (directive.arguments || [])?.reduce((acc, argument) => {
-        acc[argument.name.value] = getArgumentValueByType(argument.value);
-        return acc;
-    }, {});
-}
 
-function getArgumentValueByType(argumentValue: ValueNode): unknown {
-    switch (argumentValue.kind) {
-        case Kind.STRING:
-        case Kind.INT:
-        case Kind.FLOAT:
-        case Kind.BOOLEAN:
-        case Kind.ENUM:
-            return argumentValue.value;
-        case Kind.NULL:
-            return null;
-        case Kind.LIST:
-            return argumentValue.values.map((v) => getArgumentValueByType(v));
-        case Kind.OBJECT: {
-            return argumentValue.fields.reduce((acc, field) => {
-                acc[field.name.value] = getArgumentValueByType(field.value);
-                return acc;
-            }, {});
-        }
-    }
+import type { DirectiveNode } from "graphql";
+
+export function findDirective(directives: readonly DirectiveNode[] = [], name: string): DirectiveNode | undefined {
+    return directives.find((d) => {
+        return d.name.value === name;
+    });
 }

@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
 import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -37,6 +37,7 @@ import { translateCypherDirectiveProjection } from "./projection/subquery/transl
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -69,7 +70,7 @@ export default function createProjectionAndParams({
 }: {
     resolveTree: ResolveTree;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;
@@ -352,7 +353,7 @@ export default function createProjectionAndParams({
     }
     let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
 
-    if (context.fulltextIndex) {
+    if (context.fulltext) {
         return createFulltextProjection({
             resolveTree,
             node,
@@ -481,7 +482,7 @@ function createFulltextProjection({
 }: {
     resolveTree: ResolveTree;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;
@@ -500,7 +501,7 @@ function createFulltextProjection({
         };
     }
 
-    const nodeContext = { ...context, fulltextIndex: false };
+    const nodeContext = { ...context, fulltext: undefined };
 
     return createProjectionAndParams({
         resolveTree: nodeResolveTree,

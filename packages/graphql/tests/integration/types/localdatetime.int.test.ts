@@ -72,7 +72,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, localDT },
                 });
 
@@ -136,7 +136,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, localDTs },
                 });
 
@@ -225,7 +225,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, localDT },
                 });
 
@@ -297,7 +297,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { localDT },
                 });
 
@@ -397,7 +397,7 @@ describe("LocalDateTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                            contextValue: neo4j.getContextValues(),
                             variableValues: {
                                 where: { id_IN: [futureId, presentId, pastId], [`localDT_${filter}`]: present },
                             },
@@ -533,7 +533,7 @@ describe("LocalDateTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                            contextValue: neo4j.getContextValues(),
                             variableValues: {
                                 futureId,
                                 presentId,

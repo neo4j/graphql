@@ -19,7 +19,6 @@
 
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
-import type { Neo4jGraphQL } from "../classes";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { defaultNestedOperations } from "../graphql/directives/relationship";
@@ -91,14 +90,7 @@ describe("createDisconnectAndParams", () => {
             interfaces: [],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-            relationships: [],
-        };
-
         const context = new ContextBuilder({
-            neoSchema,
             nodes: [node],
             relationships: [],
             neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),

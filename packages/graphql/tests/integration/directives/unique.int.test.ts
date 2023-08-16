@@ -101,7 +101,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         await expect(
             neoSchema.assertIndexesAndConstraints({
                 driver,
-                driverConfig: { database: databaseName },
+                sessionConfig: { database: databaseName },
                 options: { create: true },
             })
         ).resolves.not.toThrow();
@@ -139,8 +139,8 @@ describe("assertIndexesAndConstraints/unique", () => {
             schema,
             source: mutation,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
             variableValues: {
                 isbn,
@@ -158,8 +158,8 @@ describe("assertIndexesAndConstraints/unique", () => {
             schema,
             source: mutation,
             contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
+                executionContext: driver,
+                sessionConfig: { database: databaseName },
             },
             variableValues: {
                 isbn,
@@ -192,7 +192,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.isbn`);
         });
 
@@ -216,7 +216,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.internationalStandardBookNumber`);
         });
 
@@ -252,7 +252,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -288,7 +288,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -314,7 +314,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -360,7 +360,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -423,7 +423,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 await expect(
                     neoSchema.assertIndexesAndConstraints({
                         driver,
-                        driverConfig: { database: databaseName },
+                        sessionConfig: { database: databaseName },
                     })
                 ).resolves.not.toThrow();
             } finally {
@@ -467,7 +467,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 await expect(
                     neoSchema.assertIndexesAndConstraints({
                         driver,
-                        driverConfig: { database: databaseName },
+                        sessionConfig: { database: databaseName },
                         options: { create: true },
                     })
                 ).resolves.not.toThrow();
@@ -555,8 +555,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                     schema: generatedSchema,
                     source: mutation,
                     contextValue: {
-                        driver,
-                        driverConfig: { database: databaseName },
+                        executionContext: driver,
+                        sessionConfig: { database: databaseName },
                     },
                 });
 
@@ -564,8 +564,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                     schema: generatedSchema,
                     source: query,
                     contextValue: {
-                        driver,
-                        driverConfig: { database: databaseName },
+                        executionContext: driver,
+                        sessionConfig: { database: databaseName },
                     },
                 });
 
@@ -655,8 +655,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                     schema: generatedSchema,
                     source: createMutation,
                     contextValue: {
-                        driver,
-                        driverConfig: { database: databaseName },
+                        executionContext: driver,
+                        sessionConfig: { database: databaseName },
                     },
                 });
 
@@ -664,8 +664,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                     schema: generatedSchema,
                     source: updateMutation,
                     contextValue: {
-                        driver,
-                        driverConfig: { database: databaseName },
+                        executionContext: driver,
+                        sessionConfig: { database: databaseName },
                     },
                 });
 
@@ -673,8 +673,8 @@ describe("assertIndexesAndConstraints/unique", () => {
                     schema: generatedSchema,
                     source: query,
                     contextValue: {
-                        driver,
-                        driverConfig: { database: databaseName },
+                        executionContext: driver,
+                        sessionConfig: { database: databaseName },
                     },
                 });
 
@@ -717,7 +717,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.id`);
         });
 
@@ -741,7 +741,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.identifier`);
         });
 
@@ -765,7 +765,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -789,7 +789,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await neoSchema.getSchema();
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -825,7 +825,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -861,7 +861,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
 
             await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -887,7 +887,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -933,7 +933,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -982,7 +982,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -1028,7 +1028,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({
                     driver,
-                    driverConfig: { database: databaseName },
+                    sessionConfig: { database: databaseName },
                     options: { create: true },
                 })
             ).resolves.not.toThrow();
@@ -1088,7 +1088,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 await expect(
                     neoSchema.assertIndexesAndConstraints({
                         driver,
-                        driverConfig: { database: databaseName },
+                        sessionConfig: { database: databaseName },
                     })
                 ).resolves.not.toThrow();
             } finally {
@@ -1132,7 +1132,7 @@ describe("assertIndexesAndConstraints/unique", () => {
                 await expect(
                     neoSchema.assertIndexesAndConstraints({
                         driver,
-                        driverConfig: { database: databaseName },
+                        sessionConfig: { database: databaseName },
                         options: { create: true },
                     })
                 ).resolves.not.toThrow();

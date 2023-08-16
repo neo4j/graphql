@@ -21,6 +21,7 @@ import { generate } from "randomstring";
 import pluralize from "pluralize";
 import camelcase from "camelcase";
 import { upperFirst } from "../../src/utils/upper-first";
+import { leadingUnderscores } from "../../src/utils/leading-underscore";
 
 type UniqueTypeOperations = {
     create: string;
@@ -62,7 +63,7 @@ export class UniqueType {
     public get singular(): string {
         const singular = camelcase(this.name);
 
-        return `${this.leadingUnderscores(this.name)}${singular}`;
+        return `${leadingUnderscores(this.name)}${singular}`;
     }
 
     public get operations(): UniqueTypeOperations {
@@ -97,11 +98,6 @@ export class UniqueType {
         return this.name;
     }
 
-    private leadingUnderscores(name: string): string {
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        return match?.[1] || "";
-    }
 }
 
 /** Generates unique type

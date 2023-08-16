@@ -93,7 +93,7 @@ describe("Relationship properties - delete", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName1 },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -181,7 +181,7 @@ describe("Relationship properties - delete", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();

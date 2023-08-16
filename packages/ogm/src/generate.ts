@@ -24,7 +24,6 @@ import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
 import type { OGM } from "./index";
-import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
 
 export interface IGenerateOptions {
@@ -80,7 +79,7 @@ function createAggregationInput({
     typeName: string;
     aggregateSelections?: Record<string, any>;
     input: string;
-}) {
+}): [string, Record<string, any>] {
     const interfaceStrs = [`export interface ${typeName} {`];
 
     const [, start] = input.split(basedOnSearch);
@@ -123,7 +122,7 @@ function createAggregationInput({
 
 function hasConnectOrCreate(node: any, ogm: OGM): boolean {
     for (const relation of node.relationFields) {
-        const refNode = getReferenceNode(ogm, relation);
+        const refNode = ogm["nodes"].find((x) => x.name === relation.typeMeta.name);
         if (refNode && refNode.uniqueFields.length > 0) {
             return true;
         }
@@ -158,7 +157,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};
 
-    options.ogm.nodes.forEach((node) => {
+    options.ogm["nodes"].forEach((node) => {
         const modelName = `${node.name}Model`;
         const hasFulltextArg = Boolean(node.fulltextDirective);
 
@@ -186,7 +185,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
                     args?: any;
                     context?: any;
                     rootValue?: any;
-                }): Promise<${node.name}[]>
+                }): Promise<${normalizedNodeName}[]>
                 public create(args: {
                     input: ${normalizedNodeName}CreateInput[];
                     selectionSet?: string | DocumentNode | SelectionSetNode;

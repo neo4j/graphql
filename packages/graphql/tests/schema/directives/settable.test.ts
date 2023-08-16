@@ -21,13 +21,13 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@settable", () => {
-    let subscriptionMechanism: TestSubscriptionsMechanism;
+    let subscriptionMechanism: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        subscriptionMechanism = new TestSubscriptionsMechanism();
+        subscriptionMechanism = new TestSubscriptionsEngine();
     });
 
     test("Disable create fields", async () => {
@@ -46,7 +46,7 @@ describe("@settable", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -57,7 +57,7 @@ describe("@settable", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -174,7 +174,7 @@ describe("@settable", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -204,7 +204,7 @@ describe("@settable", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -215,7 +215,7 @@ describe("@settable", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -332,7 +332,7 @@ describe("@settable", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -363,7 +363,7 @@ describe("@settable", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -374,7 +374,7 @@ describe("@settable", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -554,7 +554,7 @@ describe("@settable", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -849,7 +849,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -860,7 +860,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -993,7 +993,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -1279,7 +1279,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -1290,7 +1290,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -1423,7 +1423,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -1715,7 +1715,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -1726,7 +1726,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -2025,7 +2025,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -2325,7 +2325,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -2336,7 +2336,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -2635,7 +2635,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -2897,7 +2897,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -2913,7 +2913,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -3143,7 +3143,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -3393,7 +3393,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -3409,7 +3409,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -3639,7 +3639,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -3895,7 +3895,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -3911,7 +3911,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -4307,7 +4307,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -4579,7 +4579,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -4595,7 +4595,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -4991,7 +4991,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -5199,7 +5199,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -5215,7 +5215,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -5496,7 +5496,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -5694,7 +5694,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -5710,7 +5710,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -5980,7 +5980,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -6186,7 +6186,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -6202,7 +6202,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -6854,7 +6854,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -7068,7 +7068,7 @@ describe("@settable", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -7084,7 +7084,7 @@ describe("@settable", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -7748,7 +7748,7 @@ describe("@settable", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!

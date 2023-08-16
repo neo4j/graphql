@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, Context, PredicateReturn } from "../../../types";
+import type { ConnectionField, ConnectionWhereArg, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 import type { WhereOperator } from "../types";
 // Recursive function
@@ -28,6 +28,7 @@ import { asArray, filterTruthy } from "../../../utils/utils";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationPredicate } from "./create-relationship-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createConnectionOperation({
     connectionField,
@@ -36,13 +37,15 @@ export function createConnectionOperation({
     parentNode,
     operator,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     connectionField: ConnectionField;
     value: any;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     operator: string | undefined;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     let nodeEntries: Record<string, any>;
 
@@ -99,6 +102,7 @@ export function createConnectionOperation({
             whereOperator: operator as WhereOperator,
             refEdge: contextRelationship,
             useExistExpr,
+            checkParameterExistence,
         });
 
         operations.push(predicate);
@@ -119,14 +123,16 @@ export function createConnectionWherePropertyOperation({
     node,
     edge,
     useExistExpr = true,
+    checkParameterExistence,
 }: {
     whereInput: ConnectionWhereArg;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     edge: Relationship;
     edgeRef: Cypher.Variable;
     targetNode: Cypher.Node;
     useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
 }): PredicateReturn {
     const preComputedSubqueriesResult: (Cypher.CompositeClause | undefined)[] = [];
     const params: (Cypher.Predicate | undefined)[] = [];
@@ -142,6 +148,7 @@ export function createConnectionWherePropertyOperation({
                     node,
                     edge,
                     useExistExpr,
+                    checkParameterExistence,
                 });
                 subOperations.push(predicate);
                 if (preComputedSubqueries && !preComputedSubqueries.empty)
@@ -161,6 +168,7 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: edge,
                 useExistExpr,
+                checkParameterExistence,
             });
 
             params.push(result);
@@ -189,6 +197,7 @@ export function createConnectionWherePropertyOperation({
                 context,
                 element: node,
                 useExistExpr,
+                checkParameterExistence,
             });
 
             // NOTE: _NOT is handled by the size()=0

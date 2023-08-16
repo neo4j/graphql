@@ -105,7 +105,7 @@ describe(`Field Level Authorization Where Requests`, () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+            contextValue: neo4j.getContextValues({ token }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({

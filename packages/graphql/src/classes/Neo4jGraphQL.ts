@@ -19,15 +19,7 @@
 
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import Debug from "debug";
-import type {
-    DriverConfig,
-    CypherQueryOptions,
-    Neo4jGraphQLPlugins,
-    Neo4jFeaturesSettings,
-    StartupValidationConfig,
-    ContextFeatures,
-    Neo4jGraphQLSubscriptionsMechanism,
-} from "../types";
+import type { Neo4jFeaturesSettings, ContextFeatures, Neo4jGraphQLSubscriptionsEngine } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
 import type Relationship from "./Relationship";
@@ -41,7 +33,7 @@ import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import type { ExecutorConstructorParam } from "./Executor";
+import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
 import { Executor } from "./Executor";
 import { generateModel } from "../schema-model/generate-model";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
@@ -51,52 +43,31 @@ import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schem
 import type { TypeSource } from "@graphql-tools/utils";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import type { DocumentNode, GraphQLSchema } from "graphql";
-import type { Driver } from "neo4j-driver";
+import type { Driver, SessionConfig } from "neo4j-driver";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
-import { Neo4jGraphQLSubscriptionsDefaultMechanism } from "./Neo4jGraphQLSubscriptionsDefaultMechanism";
-
-export interface Neo4jGraphQLConfig {
-    driverConfig?: DriverConfig;
-    enableDebug?: boolean;
-    startupValidation?: StartupValidationConfig;
-    queryOptions?: CypherQueryOptions;
-}
-
-export type ValidationConfig = {
-    validateTypeDefs: boolean;
-    validateResolvers: boolean;
-    validateDuplicateRelationshipFields: boolean;
-};
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeSource;
     resolvers?: IExecutableSchemaDefinition["resolvers"];
     features?: Neo4jFeaturesSettings;
-    config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Neo4jGraphQLPlugins;
+    debug?: boolean;
+    validate?: boolean;
 }
-
-export const defaultValidationConfig: ValidationConfig = {
-    validateTypeDefs: true,
-    validateResolvers: true,
-    validateDuplicateRelationshipFields: true,
-};
 
 class Neo4jGraphQL {
     private typeDefs: TypeSource;
     private resolvers?: IExecutableSchemaDefinition["resolvers"];
 
-    private config: Neo4jGraphQLConfig;
     private driver?: Driver;
     private features: ContextFeatures;
 
     private _nodes?: Node[];
     private _relationships?: Relationship[];
-    private plugins?: Neo4jGraphQLPlugins;
 
     private jwtFieldsMap?: Map<string, string>;
 
@@ -112,16 +83,20 @@ class Neo4jGraphQL {
 
     private authorization?: Neo4jGraphQLAuthorization;
 
+    private debug?: boolean;
+    private validate: boolean;
+
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, features, typeDefs, resolvers } = input;
+        const { driver, features, typeDefs, resolvers, debug, validate = true } = input;
 
         this.driver = driver;
-        this.config = config;
-        this.plugins = plugins;
         this.features = this.parseNeo4jFeatures(features);
 
         this.typeDefs = typeDefs;
         this.resolvers = resolvers;
+
+        this.debug = debug;
+        this.validate = validate;
 
         this.checkEnableDebug();
 
@@ -130,22 +105,6 @@ class Neo4jGraphQL {
 
             this.authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
         }
-    }
-
-    public get nodes(): Node[] {
-        if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` before accessing `nodes`");
-        }
-
-        return this._nodes;
-    }
-
-    public get relationships(): Relationship[] {
-        if (!this._relationships) {
-            throw new Error("You must await `.getSchema()` before accessing `relationships`");
-        }
-
-        return this._relationships;
     }
 
     public async getSchema(): Promise<GraphQLSchema> {
@@ -176,80 +135,77 @@ class Neo4jGraphQL {
         return this.subgraphSchema;
     }
 
-    public async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
-        const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.config?.driverConfig;
+    public async checkNeo4jCompat({
+        driver,
+        sessionConfig,
+    }: {
+        driver?: Driver;
+        sessionConfig?: Neo4jGraphQLSessionConfig;
+    } = {}): Promise<void> {
+        const neo4jDriver = driver || this.driver;
 
-        if (!driver) {
+        if (!neo4jDriver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, driverConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
-        return checkNeo4jCompat({ driver, driverConfig, dbInfo: this.dbInfo });
+        return checkNeo4jCompat({
+            driver: neo4jDriver,
+            sessionConfig,
+            dbInfo: this.dbInfo,
+        });
     }
 
-    public async assertIndexesAndConstraints(
-        input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
-    ): Promise<void> {
+    public async assertIndexesAndConstraints({
+        driver,
+        sessionConfig,
+        options,
+    }: {
+        driver?: Driver;
+        sessionConfig?: Neo4jGraphQLSessionConfig;
+        options?: AssertIndexesAndConstraintsOptions;
+    } = {}): Promise<void> {
         if (!(this.executableSchema || this.subgraphSchema)) {
             throw new Error("You must await `.getSchema()` before `.assertIndexesAndConstraints()`");
         }
 
         await (this.executableSchema || this.subgraphSchema);
 
-        const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.config?.driverConfig;
+        const neo4jDriver = driver || this.driver;
 
-        if (!driver) {
+        if (!neo4jDriver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
         if (!this.dbInfo) {
-            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, driverConfig);
+            this.dbInfo = await this.getNeo4jDatabaseInfo(neo4jDriver, sessionConfig);
         }
 
         await assertIndexesAndConstraints({
-            driver,
-            driverConfig,
+            driver: neo4jDriver,
+            sessionConfig,
             nodes: this.nodes,
-            options: input.options,
+            options: options,
         });
     }
 
-    public neo4jValidateGraphQLDocument(): { isValid: boolean; validationErrors: string[] } {
-        try {
-            const initialDocument = this.getDocument(this.typeDefs);
-
-            validateDocument({ document: initialDocument, features: this.features });
-
-            const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
-            const { jwt } = typesExcludedFromGeneration;
-
-            const { typeDefs } = makeAugmentedSchema(document, {
-                features: this.features,
-                // enableRegex: false,
-                validateResolvers: true,
-                generateSubscriptions: true,
-                userCustomResolvers: undefined,
-            });
-
-            validateUserDefinition({
-                userDocument: document,
-                augmentedDocument: typeDefs,
-                jwt: jwt?.type,
-            });
-        } catch (error) {
-            // TODO: include path here
-            if (error instanceof Error) {
-                const validationErrors = error.message.split("\n\n");
-                return { isValid: false, validationErrors };
-            }
-            return { isValid: false, validationErrors: [] };
+    private get nodes(): Node[] {
+        if (!this._nodes) {
+            throw new Error("You must await `.getSchema()` before accessing `nodes`");
         }
-        return { isValid: true, validationErrors: [] };
+
+        return this._nodes;
+    }
+
+    private get relationships(): Relationship[] {
+        if (!this._relationships) {
+            throw new Error("You must await `.getSchema()` before accessing `relationships`");
+        }
+
+        return this._relationships;
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
@@ -263,8 +219,8 @@ class Neo4jGraphQL {
     }
 
     private checkEnableDebug(): void {
-        if (this.config.enableDebug === true || this.config.enableDebug === false) {
-            if (this.config.enableDebug) {
+        if (this.debug === true || this.debug === false) {
+            if (this.debug) {
                 Debug.enable(DEBUG_ALL);
             } else {
                 Debug.disable();
@@ -276,18 +232,11 @@ class Neo4jGraphQL {
         return mergeTypeDefs(typeDefs);
     }
 
-    private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
+    private async getNeo4jDatabaseInfo(driver: Driver, sessionConfig?: SessionConfig): Promise<Neo4jDatabaseInfo> {
         const executorConstructorParam: ExecutorConstructorParam = {
             executionContext: driver,
+            sessionConfig,
         };
-
-        if (driverConfig?.database) {
-            executorConstructorParam.database = driverConfig?.database;
-        }
-
-        if (driverConfig?.bookmarks) {
-            executorConstructorParam.bookmarks = driverConfig?.bookmarks;
-        }
 
         return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
     }
@@ -297,18 +246,11 @@ class Neo4jGraphQL {
             throw new Error("Schema Model is not defined");
         }
 
-        const config = {
-            ...this.config,
-            callbacks: this.features?.populatedBy?.callbacks,
-        };
-
         const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
-            config,
             nodes: this.nodes,
             relationships: this.relationships,
             schemaModel: this.schemaModel,
-            plugins: this.plugins,
             features: this.features,
             authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,
@@ -344,9 +286,9 @@ class Neo4jGraphQL {
     }
 
     private parseNeo4jFeatures(features: Neo4jFeaturesSettings | undefined): ContextFeatures {
-        let subscriptionPlugin: Neo4jGraphQLSubscriptionsMechanism | undefined;
+        let subscriptionPlugin: Neo4jGraphQLSubscriptionsEngine | undefined;
         if (features?.subscriptions === true) {
-            subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultMechanism();
+            subscriptionPlugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
         } else {
             subscriptionPlugin = features?.subscriptions || undefined;
         }
@@ -370,10 +312,8 @@ class Neo4jGraphQL {
         return new Promise((resolve) => {
             const initialDocument = this.getDocument(this.typeDefs);
 
-            const validationConfig = this.parseStartupValidationConfig();
-
-            if (validationConfig.validateTypeDefs) {
-                validateDocument({ document: initialDocument, validationConfig, features: this.features });
+            if (this.validate) {
+                validateDocument({ document: initialDocument, features: this.features });
             }
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
@@ -386,12 +326,11 @@ class Neo4jGraphQL {
 
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
                 features: this.features,
-                validateResolvers: validationConfig.validateResolvers,
                 generateSubscriptions: Boolean(this.features?.subscriptions),
                 userCustomResolvers: this.resolvers,
             });
 
-            if (validationConfig.validateTypeDefs) {
+            if (this.validate) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
             }
 
@@ -416,12 +355,9 @@ class Neo4jGraphQL {
 
         const { directives, types } = subgraph.getValidationDefinitions();
 
-        const validationConfig = this.parseStartupValidationConfig();
-
-        if (validationConfig.validateTypeDefs) {
+        if (this.validate) {
             validateDocument({
                 document: initialDocument,
-                validationConfig,
                 features: this.features,
                 additionalDirectives: directives,
                 additionalTypes: types,
@@ -438,15 +374,12 @@ class Neo4jGraphQL {
 
         const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
             features: this.features,
-            validateResolvers: validationConfig.validateResolvers,
             generateSubscriptions: Boolean(this.features?.subscriptions),
             userCustomResolvers: this.resolvers,
             subgraph,
         });
 
-        if (validationConfig.validateTypeDefs) {
-            // validateUserDefinition(document, typeDefs, directives, types);
-            // if (validateTypeDefs) {
+        if (this.validate) {
             validateUserDefinition({
                 userDocument: document,
                 augmentedDocument: typeDefs,
@@ -468,27 +401,6 @@ class Neo4jGraphQL {
         });
 
         return this.composeSchema(schema);
-    }
-
-    private parseStartupValidationConfig(): ValidationConfig {
-        const validationConfig: ValidationConfig = { ...defaultValidationConfig };
-
-        if (this.config?.startupValidation === false) {
-            return {
-                validateTypeDefs: false,
-                validateResolvers: false,
-                validateDuplicateRelationshipFields: false,
-            };
-        }
-
-        if (typeof this.config?.startupValidation === "object") {
-            if (this.config?.startupValidation.typeDefs === false) validationConfig.validateTypeDefs = false;
-            if (this.config?.startupValidation.resolvers === false) validationConfig.validateResolvers = false;
-            if (this.config?.startupValidation.noDuplicateRelationshipFields === false)
-                validationConfig.validateDuplicateRelationshipFields = false;
-        }
-
-        return validationConfig;
     }
 
     private subscriptionMechanismSetup(): Promise<void> {

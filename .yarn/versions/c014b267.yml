@@ -1,8 +1,6 @@
 undecided:
-  - graphql-manual
   - neo-push-client
   - neo-push-server
   - "@neo4j/graphql"
-  - "@neo4j/graphql-plugin-auth"
   - "@neo4j/introspector"
   - "@neo4j/package-tests"

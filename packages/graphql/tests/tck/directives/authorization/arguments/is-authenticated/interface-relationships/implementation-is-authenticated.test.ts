@@ -83,7 +83,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Post\`)
+                CREATE (create_this1:Post)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.content = create_var0.content
@@ -125,7 +125,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Comment\`)
+                CREATE (create_this1:Comment)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.content = create_var0.content
@@ -164,7 +164,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -196,7 +196,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Comment\`)
+            "MATCH (this:Comment)
             WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -228,7 +228,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH this
             CALL {
             	WITH this
@@ -240,7 +240,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
-            			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content0_node)
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		}
             	}
             WITH this, this_connect_content0_node
@@ -256,7 +256,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
-            			MERGE (this)-[:\`HAS_CONTENT\`]->(this_connect_content1_node)
+            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
             		}
             	}
             WITH this, this_connect_content1_node
@@ -290,11 +290,11 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH this
             CALL {
             WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:\`HAS_CONTENT\`]->(this_disconnect_content0:Comment)
+            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -305,7 +305,7 @@ describe("Cypher Auth isAuthenticated", () => {
             }
             CALL {
             	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:\`HAS_CONTENT\`]->(this_disconnect_content0:Post)
+            OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -349,7 +349,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             DETACH DELETE this"
         `);
 
@@ -371,7 +371,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Comment\`)
+            "MATCH (this:Comment)
             DETACH DELETE this"
         `);
 
@@ -393,11 +393,11 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH *
             CALL {
             WITH *
-            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:\`HAS_CONTENT\`]->(this_content_Comment0:Comment)
+            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
@@ -408,7 +408,7 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH *
             CALL {
             WITH *
-            OPTIONAL MATCH (this)-[this_content_Post0_relationship:\`HAS_CONTENT\`]->(this_content_Post0:Post)
+            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete

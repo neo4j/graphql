@@ -20,11 +20,11 @@
 import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
-import type { BaseField, Context } from "../types";
+import type { BaseField } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
@@ -45,6 +45,7 @@ import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     strs: string[];
@@ -54,8 +55,6 @@ interface Res {
 
 interface UpdateMeta {
     preArrayMethodValidationStrs: [string, string][];
-    preAuthStrs: string[];
-    postAuthStrs: string[];
     authorizationBeforeSubqueries: string[];
     authorizationBeforePredicates: string[];
     authorizationAfterSubqueries: string[];
@@ -80,7 +79,7 @@ export default function createUpdateAndParams({
     chainStr?: string;
     node: Node;
     withVars: string[];
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     parameterPrefix: string;
     includeRelationshipValidation?: boolean;
@@ -664,8 +663,6 @@ export default function createUpdateAndParams({
         strs: [],
         meta: {
             preArrayMethodValidationStrs: [],
-            preAuthStrs: [],
-            postAuthStrs: [],
             authorizationBeforeSubqueries: [],
             authorizationBeforePredicates: [],
             authorizationAfterSubqueries: [],
@@ -675,9 +672,6 @@ export default function createUpdateAndParams({
     });
     const { strs, meta } = reducedUpdate;
     let params = reducedUpdate.params;
-
-    let preAuthStrs: string[] = [];
-    let postAuthStrs: string[] = [];
 
     const authorizationBeforeStrs = meta.authorizationBeforePredicates;
     const authorizationBeforeSubqueries = meta.authorizationBeforeSubqueries;
@@ -705,52 +699,37 @@ export default function createUpdateAndParams({
         }
     }
 
-    if (meta) {
-        preAuthStrs = [...preAuthStrs, ...meta.preAuthStrs];
-        postAuthStrs = [...postAuthStrs, ...meta.postAuthStrs];
-    }
+    const preUpdatePredicates = authorizationBeforeStrs;
 
-    let preArrayMethodValidationStr = "";
-    let preAuthStr = "";
-    let postAuthStr = "";
+    const preArrayMethodValidationStr = "";
     const relationshipValidationStr = includeRelationshipValidation
         ? createRelationshipValidationStr({ node, context, varName })
         : "";
-
-    const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (meta.preArrayMethodValidationStrs.length) {
         const nullChecks = meta.preArrayMethodValidationStrs.map((validationStr) => `${validationStr[0]} IS NULL`);
         const propertyNames = meta.preArrayMethodValidationStrs.map((validationStr) => validationStr[1]);
 
-        preArrayMethodValidationStr = `CALL apoc.util.validate(${nullChecks.join(" OR ")}, "${pluralize(
-            "Property",
-            propertyNames.length
-        )} ${propertyNames.map(() => "%s").join(", ")} cannot be NULL", [${wrapStringInApostrophes(propertyNames).join(
-            ", "
-        )}])`;
+        preUpdatePredicates.push(
+            `apoc.util.validatePredicate(${nullChecks.join(" OR ")}, "${pluralize(
+                "Property",
+                propertyNames.length
+            )} ${propertyNames.map(() => "%s").join(", ")} cannot be NULL", [${wrapStringInApostrophes(
+                propertyNames
+            ).join(", ")}])`
+        );
     }
 
-    if (preAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT (${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
-        preAuthStr = `${withStr}\n${apocStr}`;
-    }
-
-    if (postAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT (${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
-        postAuthStr = `${withStr}\n${apocStr}`;
-    }
-
-    let authorizationBeforeStr = "";
+    let preUpdatePredicatesStr = "";
     let authorizationAfterStr = "";
 
-    if (authorizationBeforeStrs.length) {
+    if (preUpdatePredicates.length) {
         if (authorizationBeforeSubqueries.length) {
-            authorizationBeforeStr = `${withStr}\n${authorizationBeforeSubqueries.join(
+            preUpdatePredicatesStr = `${withStr}\n${authorizationBeforeSubqueries.join(
                 "\n"
-            )}\nWITH *\nWHERE ${authorizationBeforeStrs.join(" AND ")}`;
+            )}\nWITH *\nWHERE ${preUpdatePredicates.join(" AND ")}`;
         } else {
-            authorizationBeforeStr = `${withStr}\nWHERE ${authorizationBeforeStrs.join(" AND ")}`;
+            preUpdatePredicatesStr = `${withStr}\nWHERE ${preUpdatePredicates.join(" AND ")}`;
         }
     }
 
@@ -775,12 +754,10 @@ export default function createUpdateAndParams({
     }
     return [
         [
-            authorizationBeforeStr,
-            preAuthStr,
+            preUpdatePredicatesStr,
             preArrayMethodValidationStr,
             ...statements,
             authorizationAfterStr,
-            postAuthStr,
             ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
         params,

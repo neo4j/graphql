@@ -69,7 +69,7 @@ describe("Cypher Aggregations Many", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { id: { shortest: min(this.id), longest: max(this.id) }, title: { shortest:
                                         reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
                                             CASE

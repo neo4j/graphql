@@ -41,7 +41,6 @@ visit the [Contributing Guide](./CONTRIBUTING.md).
 2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
    interactions with the database
 3. [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
-4. [`@neo4j/graphql-plugin-auth`](./packages/graphql-plugin-auth) - Auth decode plugins for @neo4j/graphql
 5. [`@neo4j/graphql-toolbox`](./packages/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j Desktop.
 
 ## Media
@@ -56,13 +55,3 @@ GraphQL content.
 4. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
 5. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
 6. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
-
-## Hiring
-
-Love this project and want to work on it full-time? We're hiring!
-
-We're currently looking for backend, full-stack and DevOps engineers to join the
-GraphQL Team at Neo4j.
-
-Search for "GraphQL Team" at <https://neo4j.com/careers/> or
-[drop us an email](mailto:team-graphql@neo4j.com) if you're interested.

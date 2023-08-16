@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsMechanism } from "../../utils/TestSubscriptionsMechanism";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -27,10 +27,10 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 describe("Subscriptions metadata on create", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsMechanism;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsMechanism();
+        plugin = new TestSubscriptionsEngine();
         typeDefs = gql`
             type Actor {
                 id: String!
@@ -78,7 +78,7 @@ describe("Subscriptions metadata on create", () => {
             SET this0.id = $this0_id
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0
             WITH this0, meta
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this0.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, meta AS this0_meta
             }
             CALL {
@@ -87,11 +87,11 @@ describe("Subscriptions metadata on create", () => {
             SET this1.id = $this1_id
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this1
             WITH this1, meta
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this1.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
-            RETURN [ this0 { .id }, this1 { .id } ] AS data, meta"
+            RETURN [this0 { .id }, this1 { .id }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -102,7 +102,6 @@ describe("Subscriptions metadata on create", () => {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"jwtDefault\\": {},
                 \\"this1_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"

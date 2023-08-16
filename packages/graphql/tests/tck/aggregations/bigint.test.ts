@@ -52,7 +52,7 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`File\`)
+            "MATCH (this:File)
             RETURN { size: { min: min(this.size) } }"
         `);
 
@@ -73,7 +73,7 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`File\`)
+            "MATCH (this:File)
             RETURN { size: { max: max(this.size) } }"
         `);
 
@@ -94,7 +94,7 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`File\`)
+            "MATCH (this:File)
             RETURN { size: { average: avg(this.size) } }"
         `);
 
@@ -115,7 +115,7 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`File\`)
+            "MATCH (this:File)
             RETURN { size: { sum: sum(this.size) } }"
         `);
 
@@ -139,7 +139,7 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`File\`)
+            "MATCH (this:File)
             RETURN { size: { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } }"
         `);
 

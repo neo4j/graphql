@@ -18,7 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { Context, CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
+import type { CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
@@ -35,13 +35,14 @@ import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export default async function translateUpdate({
     node,
     context,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
 }): Promise<[string, any]> {
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
@@ -66,7 +67,7 @@ export default async function translateUpdate({
     const createStrs: string[] = [];
     let deleteStr = "";
     let projAuth: Cypher.Clause | undefined = undefined;
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
+    let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
@@ -208,10 +209,23 @@ export default async function translateUpdate({
                 if (!relationField.typeMeta.array) {
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
+
+                    const validatePredicates: string[] = [];
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        connectStrs.push(validateRelationshipExistence);
+                        const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name}))`;
+                        validatePredicates.push(validateRelationshipExistence);
                     });
+
+                    if (validatePredicates.length) {
+                        connectStrs.push("WITH *");
+                        connectStrs.push(
+                            `WHERE apoc.util.validatePredicate(${validatePredicates.join(
+                                " OR "
+                            )},'Relationship field "%s.%s" cannot have more than one node linked',["${
+                                relationField.connectionPrefix
+                            }","${relationField.fieldName}"])`
+                        );
+                    }
                 }
 
                 const connectAndParams = createConnectAndParams({
@@ -339,23 +353,27 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        // const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        // createStrs.push(validateRelationshipExistence);
+                        createStrs.push("WITH *");
+
+                        const validatePredicateTemplate = (condition: string) =>
+                            `WHERE apoc.util.validatePredicate(${condition},'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+
                         const singleCardinalityValidationTemplate = (nodeName) =>
-                            `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                            `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName}))`;
+
                         if (relationField.union && relationField.union.nodes) {
                             const validateRelationshipExistence = relationField.union.nodes.map(
                                 singleCardinalityValidationTemplate
                             );
-                            createStrs.push(...validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence.join(" OR ")));
                         } else if (relationField.interface && relationField.interface.implementations) {
                             const validateRelationshipExistence = relationField.interface.implementations.map(
                                 singleCardinalityValidationTemplate
                             );
-                            createStrs.push(...validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence.join(" OR ")));
                         } else {
                             const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
-                            createStrs.push(validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence));
                         }
                     }
 

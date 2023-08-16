@@ -22,7 +22,6 @@ import type { DirectiveNode, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
     ConnectionField,
-    Context,
     CustomEnumField,
     CustomScalarField,
     CypherField,
@@ -44,6 +43,8 @@ import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import type { SchemaConfiguration } from "../schema/schema-configuration";
+import { leadingUnderscores } from "../utils/leading-underscore";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -73,27 +74,11 @@ export interface NodeConstructor extends GraphElementConstructor {
     globalIdFieldIsInt?: boolean;
 }
 
-type MutableField =
-    | PrimitiveField
-    | CustomScalarField
-    | CustomEnumField
-    | UnionField
-    | ObjectField
-    | TemporalField
-    | PointField
-    | CypherField;
+type MutableField = PrimitiveField | CustomScalarField | CustomEnumField | UnionField | TemporalField | CypherField;
 
-type AuthableField =
-    | PrimitiveField
-    | CustomScalarField
-    | CustomEnumField
-    | UnionField
-    | ObjectField
-    | TemporalField
-    | PointField
-    | CypherField;
+type AuthableField = PrimitiveField | CustomScalarField | CustomEnumField | UnionField | TemporalField | CypherField;
 
-type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField;
 
 export type RootTypeFieldNames = {
     create: string;
@@ -185,8 +170,8 @@ class Node extends GraphElement {
             ...this.temporalFields,
             ...this.enumFields,
             ...this.objectFields,
-            ...this.scalarFields,
-            ...this.primitiveFields,
+            ...this.scalarFields, // these are just custom scalars
+            ...this.primitiveFields, // these are instead built-in scalars
             ...this.interfaceFields,
             ...this.objectFields,
             ...this.unionFields,
@@ -195,6 +180,7 @@ class Node extends GraphElement {
     }
 
     /** Fields you can apply auth allow and bind to */
+    // Maybe we can remove this as they may not be used anymore in the new auth system
     public get authableFields(): AuthableField[] {
         return [
             ...this.primitiveFields,
@@ -297,11 +283,11 @@ class Node extends GraphElement {
         };
     }
 
-    public getLabelString(context: Context): string {
+    public getLabelString(context: Neo4jGraphQLContext): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    public getLabels(context: Context): string[] {
+    public getLabels(context: Neo4jGraphQLContext): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
@@ -334,20 +320,14 @@ class Node extends GraphElement {
     private generateSingular(): string {
         const singular = camelcase(this.name);
 
-        return `${this.leadingUnderscores(this.name)}${singular}`;
+        return `${leadingUnderscores(this.name)}${singular}`;
     }
 
     private generatePlural(inputPlural: string | undefined): string {
         const name = inputPlural || this.plural || this.name;
         const plural = inputPlural || this.plural ? camelcase(name) : pluralize(camelcase(name));
 
-        return `${this.leadingUnderscores(name)}${plural}`;
-    }
-
-    private leadingUnderscores(name: string): string {
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        return match?.[1] || "";
+        return `${leadingUnderscores(name)}${plural}`;
     }
 }
 

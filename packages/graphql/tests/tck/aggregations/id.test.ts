@@ -52,7 +52,7 @@ describe("Cypher Aggregations ID", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { id: { shortest: min(this.id) } }"
         `);
 
@@ -73,7 +73,7 @@ describe("Cypher Aggregations ID", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { id: { longest: max(this.id) } }"
         `);
 
@@ -95,7 +95,7 @@ describe("Cypher Aggregations ID", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             RETURN { id: { shortest: min(this.id), longest: max(this.id) } }"
         `);
 

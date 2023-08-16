@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Bacenta\`)
+            "MATCH (this:Bacenta)
             WHERE this.id = $param0
             CALL {
                 WITH this
@@ -139,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 }
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this2:\`BUSSED_ON\`]->(this3:\`TimeGraph\`)
+                    MATCH (this0)-[this2:BUSSED_ON]->(this3:TimeGraph)
                     WITH this3 { .date } AS this3
                     RETURN head(collect(this3)) AS var4
                 }

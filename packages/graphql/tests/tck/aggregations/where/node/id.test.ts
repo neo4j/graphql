@@ -57,10 +57,10 @@ describe("Cypher Aggregations where node with ID", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this1.id) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -87,10 +87,10 @@ describe("Cypher Aggregations where node with ID", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`LIKES\`]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this1._someIdAlias) WHERE var2 = $param0) AS var3
             }
             WITH *

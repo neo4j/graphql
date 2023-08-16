@@ -76,7 +76,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             RETURN { _id: { _shortest: min(this.id), _longest: max(this.id) }, _title: { _shortest:
                                         reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
                                             CASE
@@ -125,7 +125,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`:\`Person\`:\`Alien\`)
+            "MATCH (this:Actor:Person:Alien)
             RETURN { _id: { _shortest: min(this.id), _longest: max(this.id) }, _name: { _shortest:
                                         reduce(aggVar = collect(this.name)[0], current IN collect(this.name) |
                                             CASE

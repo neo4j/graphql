@@ -82,9 +82,9 @@ describe("Node Directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Person\`)
+            "MATCH (this:Person)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND this.id = coalesce($jwt.sub, $jwtDefault)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
         `);
 
@@ -96,8 +96,7 @@ describe("Node Directive", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"jwtDefault\\": {}
+                }
             }"
         `);
     });
@@ -115,8 +114,8 @@ describe("Node Directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Comment\`)
-            OPTIONAL MATCH (this)<-[:\`HAS_POST\`]-(this0:\`Person\`)
+            "MATCH (this:Comment)
+            OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:Person)
             WITH *, count(this0) AS creatorCount
             WITH *
             WHERE ((creatorCount <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
