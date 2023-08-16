@@ -36,14 +36,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             source: _parentNode,
         });
 
-        //TODO: not concrete entities
-
-        const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
-            .withoutLabels()
-            .related(nestedContext.relationship)
-            .withDirection(this.relationship.getCypherDirection())
-            .withoutVariable()
-            .to(nestedContext.target);
+        const pattern = this.getPattern(nestedContext);
 
         if (!this.relationship.isArray && this.relationship.isNullable) {
             return [];
@@ -59,6 +52,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             relationship: this.relationshipVar,
             target: this.relatedNode,
         });
+
         const innerPredicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
         let innerPredicate = Cypher.and(...innerPredicates);
         if (innerPredicate) {
@@ -66,13 +60,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         }
 
         if (!this.relationship.isArray && this.relationship.isNullable) {
-            // TODO: same as in subquery
-            const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
-                .withoutLabels()
-                .related(nestedContext.relationship)
-                .withDirection(this.relationship.getCypherDirection())
-                .withoutVariable()
-                .to(nestedContext.target);
+            const pattern = this.getPattern(nestedContext);
 
             const comprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
             if (innerPredicate) comprehension.where(innerPredicate);
@@ -95,5 +83,14 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         return new Cypher.Relationship({
             type: this.relationship.type,
         });
+    }
+
+    private getPattern(context: QueryASTContext): Cypher.Pattern {
+        return new Cypher.Pattern(context.source as Cypher.Node)
+            .withoutLabels()
+            .related(context.relationship)
+            .withDirection(this.relationship.getCypherDirection())
+            .withoutVariable()
+            .to(context.target);
     }
 }
