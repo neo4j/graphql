@@ -115,11 +115,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
-            type GenreAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input GenreConnectInput {
               product: [GenreProductConnectFieldInput!]
             }
@@ -512,16 +507,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Movie implements INode & IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
-              genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               id: String!
               name: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -570,18 +558,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type MovieEventPayload implements IProductEventPayload {
               id: String!
               name: String!
-            }
-
-            input MovieGenreAggregateInput {
-              AND: [MovieGenreAggregateInput!]
-              NOT: MovieGenreAggregateInput
-              OR: [MovieGenreAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieGenreNodeAggregationWhereInput
             }
 
             input MovieGenreConnectFieldInput {
@@ -642,56 +618,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               connect: MovieGenreConnectFieldInput
               connectOrCreate: MovieGenreConnectOrCreateFieldInput
               create: MovieGenreCreateFieldInput
-            }
-
-            type MovieGenreGenreAggregationSelection {
-              count: Int!
-              node: MovieGenreGenreNodeAggregateSelection
-            }
-
-            type MovieGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input MovieGenreNodeAggregationWhereInput {
-              AND: [MovieGenreNodeAggregationWhereInput!]
-              NOT: MovieGenreNodeAggregationWhereInput
-              OR: [MovieGenreNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieGenreRelationship {
@@ -818,7 +744,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               genre: GenreWhere
-              genreAggregate: MovieGenreAggregateInput
               genreConnection: MovieGenreConnectionWhere
               genreConnection_NOT: MovieGenreConnectionWhere
               genre_NOT: GenreWhere
@@ -872,28 +797,18 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements INode & IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
-              genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesGenreConnectionSort!], where: SeriesGenreConnectionWhere): SeriesGenreConnection!
               id: String!
               name: String!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectInput {
@@ -948,18 +863,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type SeriesEventPayload implements IProductEventPayload {
               id: String!
               name: String!
-            }
-
-            input SeriesGenreAggregateInput {
-              AND: [SeriesGenreAggregateInput!]
-              NOT: SeriesGenreAggregateInput
-              OR: [SeriesGenreAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: SeriesGenreNodeAggregationWhereInput
             }
 
             input SeriesGenreConnectFieldInput {
@@ -1020,56 +923,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               connect: SeriesGenreConnectFieldInput
               connectOrCreate: SeriesGenreConnectOrCreateFieldInput
               create: SeriesGenreCreateFieldInput
-            }
-
-            type SeriesGenreGenreAggregationSelection {
-              count: Int!
-              node: SeriesGenreGenreNodeAggregateSelection
-            }
-
-            type SeriesGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input SeriesGenreNodeAggregationWhereInput {
-              AND: [SeriesGenreNodeAggregationWhereInput!]
-              NOT: SeriesGenreNodeAggregationWhereInput
-              OR: [SeriesGenreNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type SeriesGenreRelationship {
@@ -1196,7 +1049,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               genre: GenreWhere
-              genreAggregate: SeriesGenreAggregateInput
               genreConnection: SeriesGenreConnectionWhere
               genreConnection_NOT: SeriesGenreConnectionWhere
               genre_NOT: GenreWhere
@@ -1227,11 +1079,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type Subscription {
@@ -1361,11 +1208,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input GenreConnectInput {
@@ -1831,16 +1673,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Movie implements IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
-              genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               name: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input MovieConnectInput {
@@ -1891,70 +1726,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            input MovieGenreAggregateInput {
-              AND: [MovieGenreAggregateInput!]
-              NOT: MovieGenreAggregateInput
-              OR: [MovieGenreAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieGenreNodeAggregationWhereInput
-            }
-
             type MovieGenreConnectedRelationship {
               node: GenreEventPayload!
-            }
-
-            type MovieGenreGenreAggregationSelection {
-              count: Int!
-              node: MovieGenreGenreNodeAggregateSelection
-            }
-
-            type MovieGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input MovieGenreNodeAggregationWhereInput {
-              AND: [MovieGenreNodeAggregationWhereInput!]
-              NOT: MovieGenreNodeAggregationWhereInput
-              OR: [MovieGenreNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input MovieGenreRelationshipSubscriptionWhere {
@@ -2062,7 +1835,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               genre: GenreWhere
-              genreAggregate: MovieGenreAggregateInput
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: GenreWhere
@@ -2116,28 +1888,18 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements IProduct {
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
-              genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
               id: String!
               name: String!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input SeriesConnectInput {
@@ -2194,70 +1956,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            input SeriesGenreAggregateInput {
-              AND: [SeriesGenreAggregateInput!]
-              NOT: SeriesGenreAggregateInput
-              OR: [SeriesGenreAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: SeriesGenreNodeAggregationWhereInput
-            }
-
             type SeriesGenreConnectedRelationship {
               node: GenreEventPayload!
-            }
-
-            type SeriesGenreGenreAggregationSelection {
-              count: Int!
-              node: SeriesGenreGenreNodeAggregateSelection
-            }
-
-            type SeriesGenreGenreNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
-            }
-
-            input SeriesGenreNodeAggregationWhereInput {
-              AND: [SeriesGenreNodeAggregationWhereInput!]
-              NOT: SeriesGenreNodeAggregationWhereInput
-              OR: [SeriesGenreNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             input SeriesGenreRelationshipSubscriptionWhere {
@@ -2365,7 +2065,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               genre: GenreWhere
-              genreAggregate: SeriesGenreAggregateInput
               genreConnection: IProductGenreConnectionWhere
               genreConnection_NOT: IProductGenreConnectionWhere
               genre_NOT: GenreWhere
@@ -2396,11 +2095,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type Subscription {
@@ -2530,11 +2224,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
-              name: StringAggregateSelectionNonNullable!
             }
 
             input GenreConnectInput {
@@ -2883,12 +2572,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-            }
-
             input MovieCreateInput {
               id: String!
               name: String!
@@ -3025,13 +2708,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
@@ -3039,12 +2719,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genre: Genre!
               id: String!
               name: String!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              id: StringAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
             }
 
             type SeriesConnection {
@@ -3166,11 +2840,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
             }
 
             type Subscription {

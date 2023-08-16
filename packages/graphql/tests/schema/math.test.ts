@@ -523,18 +523,6 @@ describe("Algebraic", () => {
               directs: [DirectorDirectsDeleteFieldInput!]
             }
 
-            input DirectorDirectsAggregateInput {
-              AND: [DirectorDirectsAggregateInput!]
-              NOT: DirectorDirectsAggregateInput
-              OR: [DirectorDirectsAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: DirectorDirectsNodeAggregationWhereInput
-            }
-
             input DirectorDirectsConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -579,38 +567,6 @@ describe("Algebraic", () => {
             input DirectorDirectsFieldInput {
               connect: [DirectorDirectsConnectFieldInput!]
               create: [DirectorDirectsCreateFieldInput!]
-            }
-
-            input DirectorDirectsNodeAggregationWhereInput {
-              AND: [DirectorDirectsNodeAggregationWhereInput!]
-              NOT: DirectorDirectsNodeAggregationWhereInput
-              OR: [DirectorDirectsNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              viewers_AVERAGE_EQUAL: Float
-              viewers_AVERAGE_GT: Float
-              viewers_AVERAGE_GTE: Float
-              viewers_AVERAGE_LT: Float
-              viewers_AVERAGE_LTE: Float
-              viewers_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              viewers_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              viewers_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              viewers_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              viewers_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              viewers_MAX_EQUAL: Int
-              viewers_MAX_GT: Int
-              viewers_MAX_GTE: Int
-              viewers_MAX_LT: Int
-              viewers_MAX_LTE: Int
-              viewers_MIN_EQUAL: Int
-              viewers_MIN_GT: Int
-              viewers_MIN_GTE: Int
-              viewers_MIN_LT: Int
-              viewers_MIN_LTE: Int
-              viewers_SUM_EQUAL: Int
-              viewers_SUM_GT: Int
-              viewers_SUM_GTE: Int
-              viewers_SUM_LT: Int
-              viewers_SUM_LTE: Int
             }
 
             type DirectorDirectsRelationship {
@@ -670,7 +626,6 @@ describe("Algebraic", () => {
               NOT: DirectorWhere
               OR: [DirectorWhere!]
               directs: MovieWhere @deprecated(reason: \\"Use \`directs_SOME\` instead.\\")
-              directsAggregate: DirectorDirectsAggregateInput
               directsConnection: DirectorDirectsConnectionWhere @deprecated(reason: \\"Use \`directsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
@@ -741,18 +696,6 @@ describe("Algebraic", () => {
               directedBy: MovieDirectedByDeleteFieldInput
             }
 
-            input MovieDirectedByAggregateInput {
-              AND: [MovieDirectedByAggregateInput!]
-              NOT: MovieDirectedByAggregateInput
-              OR: [MovieDirectedByAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieDirectedByNodeAggregationWhereInput
-            }
-
             input MovieDirectedByConnectFieldInput {
               connect: DirectorConnectInput
               \\"\\"\\"
@@ -797,47 +740,6 @@ describe("Algebraic", () => {
             input MovieDirectedByFieldInput {
               connect: MovieDirectedByConnectFieldInput
               create: MovieDirectedByCreateFieldInput
-            }
-
-            input MovieDirectedByNodeAggregationWhereInput {
-              AND: [MovieDirectedByNodeAggregationWhereInput!]
-              NOT: MovieDirectedByNodeAggregationWhereInput
-              OR: [MovieDirectedByNodeAggregationWhereInput!]
-              lastName_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_LENGTH_EQUAL: Float
-              lastName_AVERAGE_LENGTH_GT: Float
-              lastName_AVERAGE_LENGTH_GTE: Float
-              lastName_AVERAGE_LENGTH_LT: Float
-              lastName_AVERAGE_LENGTH_LTE: Float
-              lastName_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_LENGTH_EQUAL: Int
-              lastName_LONGEST_LENGTH_GT: Int
-              lastName_LONGEST_LENGTH_GTE: Int
-              lastName_LONGEST_LENGTH_LT: Int
-              lastName_LONGEST_LENGTH_LTE: Int
-              lastName_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              lastName_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_LENGTH_EQUAL: Int
-              lastName_SHORTEST_LENGTH_GT: Int
-              lastName_SHORTEST_LENGTH_GTE: Int
-              lastName_SHORTEST_LENGTH_LT: Int
-              lastName_SHORTEST_LENGTH_LTE: Int
-              lastName_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              lastName_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieDirectedByRelationship {
@@ -901,7 +803,6 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               directedBy: DirectorWhere
-              directedByAggregate: MovieDirectedByAggregateInput
               directedByConnection: MovieDirectedByConnectionWhere
               directedByConnection_NOT: MovieDirectedByConnectionWhere
               directedBy_NOT: DirectorWhere
@@ -1111,7 +1012,6 @@ describe("Algebraic", () => {
               viewers_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               viewers_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               workers: PersonWhere @deprecated(reason: \\"Use \`workers_SOME\` instead.\\")
-              workersAggregate: MovieWorkersAggregateInput
               workersConnection: MovieWorkersConnectionWhere @deprecated(reason: \\"Use \`workersConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
@@ -1139,18 +1039,6 @@ describe("Algebraic", () => {
               workers_SINGLE: PersonWhere
               \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
               workers_SOME: PersonWhere
-            }
-
-            input MovieWorkersAggregateInput {
-              AND: [MovieWorkersAggregateInput!]
-              NOT: MovieWorkersAggregateInput
-              OR: [MovieWorkersAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieWorkersNodeAggregationWhereInput
             }
 
             input MovieWorkersConnectFieldInput {
@@ -1197,47 +1085,6 @@ describe("Algebraic", () => {
             input MovieWorkersFieldInput {
               connect: [MovieWorkersConnectFieldInput!]
               create: [MovieWorkersCreateFieldInput!]
-            }
-
-            input MovieWorkersNodeAggregationWhereInput {
-              AND: [MovieWorkersNodeAggregationWhereInput!]
-              NOT: MovieWorkersNodeAggregationWhereInput
-              OR: [MovieWorkersNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieWorkersRelationship {
@@ -1649,19 +1496,6 @@ describe("Algebraic", () => {
               title: String!
             }
 
-            input MovieActorsAggregateInput {
-              AND: [MovieActorsAggregateInput!]
-              NOT: MovieActorsAggregateInput
-              OR: [MovieActorsAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: MovieActorsEdgeAggregationWhereInput
-              node: MovieActorsNodeAggregationWhereInput
-            }
-
             input MovieActorsConnectFieldInput {
               connect: [PersonConnectInput!]
               edge: ActedInCreateInput
@@ -1708,81 +1542,9 @@ describe("Algebraic", () => {
               where: MovieActorsConnectionWhere
             }
 
-            input MovieActorsEdgeAggregationWhereInput {
-              AND: [MovieActorsEdgeAggregationWhereInput!]
-              NOT: MovieActorsEdgeAggregationWhereInput
-              OR: [MovieActorsEdgeAggregationWhereInput!]
-              pay_AVERAGE_EQUAL: Float
-              pay_AVERAGE_GT: Float
-              pay_AVERAGE_GTE: Float
-              pay_AVERAGE_LT: Float
-              pay_AVERAGE_LTE: Float
-              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_MAX_EQUAL: Float
-              pay_MAX_GT: Float
-              pay_MAX_GTE: Float
-              pay_MAX_LT: Float
-              pay_MAX_LTE: Float
-              pay_MIN_EQUAL: Float
-              pay_MIN_GT: Float
-              pay_MIN_GTE: Float
-              pay_MIN_LT: Float
-              pay_MIN_LTE: Float
-              pay_SUM_EQUAL: Float
-              pay_SUM_GT: Float
-              pay_SUM_GTE: Float
-              pay_SUM_LT: Float
-              pay_SUM_LTE: Float
-            }
-
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
-            }
-
-            input MovieActorsNodeAggregationWhereInput {
-              AND: [MovieActorsNodeAggregationWhereInput!]
-              NOT: MovieActorsNodeAggregationWhereInput
-              OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -1862,7 +1624,6 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -1937,19 +1698,6 @@ describe("Algebraic", () => {
               name: String!
             }
 
-            input PersonActedInMoviesAggregateInput {
-              AND: [PersonActedInMoviesAggregateInput!]
-              NOT: PersonActedInMoviesAggregateInput
-              OR: [PersonActedInMoviesAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: PersonActedInMoviesEdgeAggregationWhereInput
-              node: PersonActedInMoviesNodeAggregationWhereInput
-            }
-
             input PersonActedInMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput
@@ -1996,81 +1744,9 @@ describe("Algebraic", () => {
               where: PersonActedInMoviesConnectionWhere
             }
 
-            input PersonActedInMoviesEdgeAggregationWhereInput {
-              AND: [PersonActedInMoviesEdgeAggregationWhereInput!]
-              NOT: PersonActedInMoviesEdgeAggregationWhereInput
-              OR: [PersonActedInMoviesEdgeAggregationWhereInput!]
-              pay_AVERAGE_EQUAL: Float
-              pay_AVERAGE_GT: Float
-              pay_AVERAGE_GTE: Float
-              pay_AVERAGE_LT: Float
-              pay_AVERAGE_LTE: Float
-              pay_EQUAL: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_GTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LT: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_LTE: Float @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              pay_MAX_EQUAL: Float
-              pay_MAX_GT: Float
-              pay_MAX_GTE: Float
-              pay_MAX_LT: Float
-              pay_MAX_LTE: Float
-              pay_MIN_EQUAL: Float
-              pay_MIN_GT: Float
-              pay_MIN_GTE: Float
-              pay_MIN_LT: Float
-              pay_MIN_LTE: Float
-              pay_SUM_EQUAL: Float
-              pay_SUM_GT: Float
-              pay_SUM_GTE: Float
-              pay_SUM_LT: Float
-              pay_SUM_LTE: Float
-            }
-
             input PersonActedInMoviesFieldInput {
               connect: [PersonActedInMoviesConnectFieldInput!]
               create: [PersonActedInMoviesCreateFieldInput!]
-            }
-
-            input PersonActedInMoviesNodeAggregationWhereInput {
-              AND: [PersonActedInMoviesNodeAggregationWhereInput!]
-              NOT: PersonActedInMoviesNodeAggregationWhereInput
-              OR: [PersonActedInMoviesNodeAggregationWhereInput!]
-              title_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              title_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              title_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              title_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              title_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              title_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
-              title_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type PersonActedInMoviesRelationship implements ActedIn {
@@ -2150,7 +1826,6 @@ describe("Algebraic", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               actedInMovies: MovieWhere @deprecated(reason: \\"Use \`actedInMovies_SOME\` instead.\\")
-              actedInMoviesAggregate: PersonActedInMoviesAggregateInput
               actedInMoviesConnection: PersonActedInMoviesConnectionWhere @deprecated(reason: \\"Use \`actedInMoviesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter

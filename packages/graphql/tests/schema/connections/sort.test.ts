@@ -115,17 +115,6 @@ describe("Sort", () => {
               sort: [Node1Sort!]
             }
 
-            input Node1RelatedToAggregateInput {
-              AND: [Node1RelatedToAggregateInput!]
-              NOT: Node1RelatedToAggregateInput
-              OR: [Node1RelatedToAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-            }
-
             input Node1RelatedToConnectFieldInput {
               connect: [Node2ConnectInput!]
               \\"\\"\\"
@@ -217,7 +206,6 @@ describe("Sort", () => {
               property_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               property_STARTS_WITH: String
               relatedTo: Node2Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
-              relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
@@ -288,18 +276,6 @@ describe("Sort", () => {
               offset: Int
             }
 
-            input Node2RelatedToAggregateInput {
-              AND: [Node2RelatedToAggregateInput!]
-              NOT: Node2RelatedToAggregateInput
-              OR: [Node2RelatedToAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: Node2RelatedToNodeAggregationWhereInput
-            }
-
             input Node2RelatedToConnectFieldInput {
               connect: [Node1ConnectInput!]
               \\"\\"\\"
@@ -346,47 +322,6 @@ describe("Sort", () => {
               create: [Node2RelatedToCreateFieldInput!]
             }
 
-            input Node2RelatedToNodeAggregationWhereInput {
-              AND: [Node2RelatedToNodeAggregationWhereInput!]
-              NOT: Node2RelatedToNodeAggregationWhereInput
-              OR: [Node2RelatedToNodeAggregationWhereInput!]
-              property_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_LENGTH_EQUAL: Float
-              property_AVERAGE_LENGTH_GT: Float
-              property_AVERAGE_LENGTH_GTE: Float
-              property_AVERAGE_LENGTH_LT: Float
-              property_AVERAGE_LENGTH_LTE: Float
-              property_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              property_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              property_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              property_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_LENGTH_EQUAL: Int
-              property_LONGEST_LENGTH_GT: Int
-              property_LONGEST_LENGTH_GTE: Int
-              property_LONGEST_LENGTH_LT: Int
-              property_LONGEST_LENGTH_LTE: Int
-              property_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              property_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              property_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_LENGTH_EQUAL: Int
-              property_SHORTEST_LENGTH_GT: Int
-              property_SHORTEST_LENGTH_GTE: Int
-              property_SHORTEST_LENGTH_LT: Int
-              property_SHORTEST_LENGTH_LTE: Int
-              property_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              property_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-            }
-
             type Node2RelatedToRelationship {
               cursor: String!
               node: Node1!
@@ -418,7 +353,6 @@ describe("Sort", () => {
               NOT: Node2Where
               OR: [Node2Where!]
               relatedTo: Node1Where @deprecated(reason: \\"Use \`relatedTo_SOME\` instead.\\")
-              relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere @deprecated(reason: \\"Use \`relatedToConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter

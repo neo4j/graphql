@@ -171,18 +171,6 @@ describe("162", () => {
               tigerConnection(after: String, directed: Boolean = true, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
-            input TigerJawLevel2Part1AggregateInput {
-              AND: [TigerJawLevel2Part1AggregateInput!]
-              NOT: TigerJawLevel2Part1AggregateInput
-              OR: [TigerJawLevel2Part1AggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: TigerJawLevel2Part1NodeAggregationWhereInput
-            }
-
             input TigerJawLevel2Part1ConnectFieldInput {
               connect: TigerJawLevel2Part1ConnectInput
               \\"\\"\\"
@@ -255,13 +243,6 @@ describe("162", () => {
               create: TigerJawLevel2Part1CreateFieldInput
             }
 
-            input TigerJawLevel2Part1NodeAggregationWhereInput {
-              AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              NOT: TigerJawLevel2Part1NodeAggregationWhereInput
-              OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-            }
-
             input TigerJawLevel2Part1Options {
               limit: Int
               offset: Int
@@ -285,18 +266,6 @@ describe("162", () => {
             \\"\\"\\"
             input TigerJawLevel2Part1Sort {
               id: SortDirection
-            }
-
-            input TigerJawLevel2Part1TigerAggregateInput {
-              AND: [TigerJawLevel2Part1TigerAggregateInput!]
-              NOT: TigerJawLevel2Part1TigerAggregateInput
-              OR: [TigerJawLevel2Part1TigerAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
             }
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
@@ -340,37 +309,6 @@ describe("162", () => {
             input TigerJawLevel2Part1TigerFieldInput {
               connect: TigerJawLevel2Part1TigerConnectFieldInput
               create: TigerJawLevel2Part1TigerCreateFieldInput
-            }
-
-            input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
-              AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
-              NOT: TigerJawLevel2Part1TigerNodeAggregationWhereInput
-              OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
-              x_AVERAGE_EQUAL: Float
-              x_AVERAGE_GT: Float
-              x_AVERAGE_GTE: Float
-              x_AVERAGE_LT: Float
-              x_AVERAGE_LTE: Float
-              x_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              x_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              x_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              x_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              x_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              x_MAX_EQUAL: Int
-              x_MAX_GT: Int
-              x_MAX_GTE: Int
-              x_MAX_LT: Int
-              x_MAX_LTE: Int
-              x_MIN_EQUAL: Int
-              x_MIN_GT: Int
-              x_MIN_GTE: Int
-              x_MIN_LT: Int
-              x_MIN_LTE: Int
-              x_SUM_EQUAL: Int
-              x_SUM_GT: Int
-              x_SUM_GTE: Int
-              x_SUM_LT: Int
-              x_SUM_LTE: Int
             }
 
             type TigerJawLevel2Part1TigerRelationship {
@@ -424,7 +362,6 @@ describe("162", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               tiger: TigerWhere
-              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
               tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
               tiger_NOT: TigerWhere
@@ -467,7 +404,6 @@ describe("162", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               part1: TigerJawLevel2Part1Where
-              part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
               part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
               part1_NOT: TigerJawLevel2Part1Where

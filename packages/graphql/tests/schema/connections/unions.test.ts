@@ -309,19 +309,6 @@ describe("Unions", () => {
               title: String!
             }
 
-            input BookAuthorAggregateInput {
-              AND: [BookAuthorAggregateInput!]
-              NOT: BookAuthorAggregateInput
-              OR: [BookAuthorAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: BookAuthorEdgeAggregationWhereInput
-              node: BookAuthorNodeAggregationWhereInput
-            }
-
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -368,81 +355,9 @@ describe("Unions", () => {
               where: BookAuthorConnectionWhere
             }
 
-            input BookAuthorEdgeAggregationWhereInput {
-              AND: [BookAuthorEdgeAggregationWhereInput!]
-              NOT: BookAuthorEdgeAggregationWhereInput
-              OR: [BookAuthorEdgeAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
-            }
-
             input BookAuthorFieldInput {
               connect: [BookAuthorConnectFieldInput!]
               create: [BookAuthorCreateFieldInput!]
-            }
-
-            input BookAuthorNodeAggregationWhereInput {
-              AND: [BookAuthorNodeAggregationWhereInput!]
-              NOT: BookAuthorNodeAggregationWhereInput
-              OR: [BookAuthorNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type BookAuthorRelationship implements Wrote {
@@ -521,7 +436,6 @@ describe("Unions", () => {
               NOT: BookWhere
               OR: [BookWhere!]
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
-              authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
@@ -600,19 +514,6 @@ describe("Unions", () => {
               subject: String!
             }
 
-            input JournalAuthorAggregateInput {
-              AND: [JournalAuthorAggregateInput!]
-              NOT: JournalAuthorAggregateInput
-              OR: [JournalAuthorAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: JournalAuthorEdgeAggregationWhereInput
-              node: JournalAuthorNodeAggregationWhereInput
-            }
-
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -659,81 +560,9 @@ describe("Unions", () => {
               where: JournalAuthorConnectionWhere
             }
 
-            input JournalAuthorEdgeAggregationWhereInput {
-              AND: [JournalAuthorEdgeAggregationWhereInput!]
-              NOT: JournalAuthorEdgeAggregationWhereInput
-              OR: [JournalAuthorEdgeAggregationWhereInput!]
-              words_AVERAGE_EQUAL: Float
-              words_AVERAGE_GT: Float
-              words_AVERAGE_GTE: Float
-              words_AVERAGE_LT: Float
-              words_AVERAGE_LTE: Float
-              words_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              words_MAX_EQUAL: Int
-              words_MAX_GT: Int
-              words_MAX_GTE: Int
-              words_MAX_LT: Int
-              words_MAX_LTE: Int
-              words_MIN_EQUAL: Int
-              words_MIN_GT: Int
-              words_MIN_GTE: Int
-              words_MIN_LT: Int
-              words_MIN_LTE: Int
-              words_SUM_EQUAL: Int
-              words_SUM_GT: Int
-              words_SUM_GTE: Int
-              words_SUM_LT: Int
-              words_SUM_LTE: Int
-            }
-
             input JournalAuthorFieldInput {
               connect: [JournalAuthorConnectFieldInput!]
               create: [JournalAuthorCreateFieldInput!]
-            }
-
-            input JournalAuthorNodeAggregationWhereInput {
-              AND: [JournalAuthorNodeAggregationWhereInput!]
-              NOT: JournalAuthorNodeAggregationWhereInput
-              OR: [JournalAuthorNodeAggregationWhereInput!]
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
             type JournalAuthorRelationship implements Wrote {
@@ -812,7 +641,6 @@ describe("Unions", () => {
               NOT: JournalWhere
               OR: [JournalWhere!]
               author: AuthorWhere @deprecated(reason: \\"Use \`author_SOME\` instead.\\")
-              authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere @deprecated(reason: \\"Use \`authorConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter

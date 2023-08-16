@@ -162,18 +162,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               node: ResourceWhere!
             }
 
-            input ResourceContainedByAggregateInput {
-              AND: [ResourceContainedByAggregateInput!]
-              NOT: ResourceContainedByAggregateInput
-              OR: [ResourceContainedByAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: ResourceContainedByNodeAggregationWhereInput
-            }
-
             input ResourceContainedByConnectFieldInput {
               connect: [ResourceConnectInput!]
               \\"\\"\\"
@@ -228,78 +216,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               connect: [ResourceContainedByConnectFieldInput!]
               connectOrCreate: [ResourceContainedByConnectOrCreateFieldInput!]
               create: [ResourceContainedByCreateFieldInput!]
-            }
-
-            input ResourceContainedByNodeAggregationWhereInput {
-              AND: [ResourceContainedByNodeAggregationWhereInput!]
-              NOT: ResourceContainedByNodeAggregationWhereInput
-              OR: [ResourceContainedByNodeAggregationWhereInput!]
-              createdAt_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              createdAt_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              createdAt_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              createdAt_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              createdAt_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              createdAt_MAX_EQUAL: DateTime
-              createdAt_MAX_GT: DateTime
-              createdAt_MAX_GTE: DateTime
-              createdAt_MAX_LT: DateTime
-              createdAt_MAX_LTE: DateTime
-              createdAt_MIN_EQUAL: DateTime
-              createdAt_MIN_GT: DateTime
-              createdAt_MIN_GTE: DateTime
-              createdAt_MIN_LT: DateTime
-              createdAt_MIN_LTE: DateTime
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_AVERAGE_LT: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_EQUAL: String @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LONGEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_LONGEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LONGEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              name_SHORTEST_EQUAL: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_GTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
-              updatedAt_EQUAL: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              updatedAt_GT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              updatedAt_GTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              updatedAt_LT: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              updatedAt_LTE: DateTime @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              updatedAt_MAX_EQUAL: DateTime
-              updatedAt_MAX_GT: DateTime
-              updatedAt_MAX_GTE: DateTime
-              updatedAt_MAX_LT: DateTime
-              updatedAt_MAX_LTE: DateTime
-              updatedAt_MIN_EQUAL: DateTime
-              updatedAt_MIN_GT: DateTime
-              updatedAt_MIN_GTE: DateTime
-              updatedAt_MIN_LT: DateTime
-              updatedAt_MIN_LTE: DateTime
             }
 
             type ResourceContainedByRelationship {
@@ -414,7 +330,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceWhere
               OR: [ResourceWhere!]
               containedBy: ResourceWhere @deprecated(reason: \\"Use \`containedBy_SOME\` instead.\\")
-              containedByAggregate: ResourceContainedByAggregateInput
               containedByConnection: ResourceContainedByConnectionWhere @deprecated(reason: \\"Use \`containedByConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter

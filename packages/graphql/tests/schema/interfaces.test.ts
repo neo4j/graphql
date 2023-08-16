@@ -112,25 +112,6 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            input MovieMoviesAggregateInput {
-              AND: [MovieMoviesAggregateInput!]
-              NOT: MovieMoviesAggregateInput
-              OR: [MovieMoviesAggregateInput!]
-              count: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: MovieMoviesNodeAggregationWhereInput
-            }
-
-            input MovieMoviesNodeAggregationWhereInput {
-              AND: [MovieMoviesNodeAggregationWhereInput!]
-              NOT: MovieMoviesNodeAggregationWhereInput
-              OR: [MovieMoviesNodeAggregationWhereInput!]
-              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-            }
-
             interface MovieNode {
               customQuery: [Movie]
               id: ID
@@ -242,7 +223,6 @@ describe("Interfaces", () => {
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
               movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
-              moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
