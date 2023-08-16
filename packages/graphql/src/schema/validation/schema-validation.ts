@@ -92,7 +92,7 @@ export function validateUserDefinition({
     rules?: readonly SDLValidationRule[];
     jwt?: ObjectTypeDefinitionNode;
 }): void {
-    rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType];
+    rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType()];
     let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwt);
 
     const schemaToExtend = new GraphQLSchema({

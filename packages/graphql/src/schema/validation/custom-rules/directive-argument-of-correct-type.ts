@@ -33,79 +33,84 @@ import type { AssertionResponse } from "./utils/document-validation-error";
 import { createGraphQLError } from "./utils/document-validation-error";
 import { getPathToNode } from "./utils/path-parser";
 
-export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
-    // TODO: find a way to scope this schema instead of creating the whole document
-    // should only contain dynamic directives and their associated types (typeWhere + jwt payload)
-    let schema: GraphQLSchema | undefined;
-    const getSchemaFromDocument = (): GraphQLSchema => {
-        if (!schema) {
-            schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
-        }
-        return schema;
-    };
-
-    return {
-        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-            const oneOfAuthorizationDirectives = [
-                "subscriptionsAuthorization",
-                "authorization",
-                "authentication",
-            ].reduce<string | undefined>((genericDirective, oneOfAuthorizationDirectives) => {
-                if (
-                    !genericDirective &&
-                    directiveNode.name.value.toLowerCase().includes(oneOfAuthorizationDirectives.toLowerCase())
-                ) {
-                    genericDirective = oneOfAuthorizationDirectives;
-                }
-                return genericDirective;
-            }, undefined);
-            const otherDirectives = ["fulltext", "relationship", "node", "customResolver", "cypher"].find(
-                (applicableDirectiveName) =>
-                    directiveNode.name.value.toLowerCase() === applicableDirectiveName.toLowerCase()
-            );
-
-            if (!oneOfAuthorizationDirectives && !otherDirectives) {
-                return;
+export function DirectiveArgumentOfCorrectType(includeAuthorizationDirectives: boolean = true) {
+    return function (context: SDLValidationContext): ASTVisitor {
+        // TODO: find a way to scope this schema instead of creating the whole document
+        // should only contain dynamic directives and their associated types (typeWhere + jwt payload)
+        let schema: GraphQLSchema | undefined;
+        const getSchemaFromDocument = (): GraphQLSchema => {
+            if (!schema) {
+                schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
             }
+            return schema;
+        };
 
-            let directiveName: string;
-            let directiveDefinition: Maybe<GraphQLDirective>;
-            if (oneOfAuthorizationDirectives) {
-                directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
-                directiveName = oneOfAuthorizationDirectives;
-            } else {
-                directiveDefinition = context.getSchema()?.getDirective(directiveNode.name.value);
-                directiveName = directiveNode.name.value;
-            }
-
-            if (!directiveDefinition) {
-                // Do not report, delegate this report to KnownDirectivesRule
-                return;
-            }
-            const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveName}`];
-            for (const argument of directiveNode.arguments || []) {
-                const argumentDefinition = findArgumentDefinitionNodeByName(
-                    directiveDefinition.args,
-                    argument.name.value
+        return {
+            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
+                const oneOfAuthorizationDirectives =
+                    includeAuthorizationDirectives &&
+                    ["subscriptionsAuthorization", "authorization", "authentication"].reduce<string | undefined>(
+                        (genericDirective, oneOfAuthorizationDirectives) => {
+                            if (
+                                !genericDirective &&
+                                directiveNode.name.value
+                                    .toLowerCase()
+                                    .includes(oneOfAuthorizationDirectives.toLowerCase())
+                            ) {
+                                genericDirective = oneOfAuthorizationDirectives;
+                            }
+                            return genericDirective;
+                        },
+                        undefined
+                    );
+                const otherDirectives = ["fulltext", "relationship", "node", "customResolver", "cypher"].find(
+                    (applicableDirectiveName) =>
+                        directiveNode.name.value.toLowerCase() === applicableDirectiveName.toLowerCase()
                 );
-                if (!argumentDefinition) {
+
+                if (!oneOfAuthorizationDirectives && !otherDirectives) {
                     return;
                 }
-                const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
-                if (!isValid) {
-                    context.reportError(
-                        createGraphQLError({
-                            nodes: [argument, directiveNode],
-                            path: [...pathToHere, argument.name.value, ...errorPath],
-                            errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
-                            extensions: {
-                                exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
-                            },
-                        })
-                    );
+
+                let directiveName: string;
+                let directiveDefinition: Maybe<GraphQLDirective>;
+                if (oneOfAuthorizationDirectives) {
+                    directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
+                    directiveName = oneOfAuthorizationDirectives;
+                } else {
+                    directiveDefinition = context.getSchema()?.getDirective(directiveNode.name.value);
+                    directiveName = directiveNode.name.value;
                 }
-            }
-        },
+
+                if (!directiveDefinition) {
+                    // Do not report, delegate this report to KnownDirectivesRule
+                    return;
+                }
+                const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveName}`];
+                for (const argument of directiveNode.arguments || []) {
+                    const argumentDefinition = findArgumentDefinitionNodeByName(
+                        directiveDefinition.args,
+                        argument.name.value
+                    );
+                    if (!argumentDefinition) {
+                        return;
+                    }
+                    const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
+                    if (!isValid) {
+                        context.reportError(
+                            createGraphQLError({
+                                nodes: [argument, directiveNode],
+                                path: [...pathToHere, argument.name.value, ...errorPath],
+                                errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                                extensions: {
+                                    exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
+                                },
+                            })
+                        );
+                    }
+                }
+            },
+        };
     };
 }
 

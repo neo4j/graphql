@@ -59,6 +59,7 @@ import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-multiple-inheritance";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
+import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -134,12 +135,6 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 return {
                     ...field,
                     arguments: filterInputTypes(field.arguments),
-                    directives: field.directives?.filter(
-                        (directive) =>
-                            !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
-                                directive.name.value
-                            )
-                    ),
                 };
             });
     };
@@ -186,12 +181,6 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     ...res,
                     {
                         ...def,
-                        directives: def.directives?.filter(
-                            (x) =>
-                                !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
-                                    x.name.value
-                                )
-                        ),
                         fields,
                     },
                 ];
@@ -207,13 +196,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     );
                 }
 
-                return [
-                    ...res,
-                    {
-                        ...def,
-                        directives: def.directives?.filter((x) => !["authentication"].includes(x.name.value)),
-                    },
-                ];
+                return [...res, def];
             }
 
             return [...res, def];
@@ -251,7 +234,7 @@ function runValidationRulesOnFilteredDocument({
             ReservedTypeNames,
             ValidObjectType,
             ValidDirectiveInheritance,
-            DirectiveArgumentOfCorrectType,
+            DirectiveArgumentOfCorrectType(false),
         ],
         schema
     );
@@ -280,7 +263,12 @@ function validateDocument({
     const filteredDocument = filterDocument(document, features);
     const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives, ...(additionalDirectives || [])],
+        directives: [
+            ...Object.values(directives),
+            ...typeDependantDirectivesScaffolds,
+            ...specifiedDirectives,
+            ...(additionalDirectives || []),
+        ],
         types: [
             ...Object.values(scalars),
             Point,
