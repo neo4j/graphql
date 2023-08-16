@@ -74,7 +74,13 @@ function assertRelationshipProperties(
 
         // TODO: auth related stuff are filtered out so this rule needs to run sometime else
         if (field.directives) {
-            const forbiddenDirectives = ["authorization", "authentication", "relationship", "cypher"];
+            const forbiddenDirectives = [
+                "authorization",
+                "authentication",
+                "subscriptionsAuthorization",
+                "relationship",
+                "cypher",
+            ];
             const foundForbiddenDirective = field.directives.find((d) => forbiddenDirectives.includes(d.name.value));
             if (foundForbiddenDirective) {
                 throw new DocumentValidationError(

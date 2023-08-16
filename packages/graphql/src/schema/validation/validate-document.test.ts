@@ -518,7 +518,6 @@ describe("validation 2.0", () => {
         describe("@default", () => {
             test("@default on datetime must be valid datetime", () => {
                 const doc = gql`
-                    #scalar DateTime
                     type User {
                         updatedAt: DateTime @default(value: "dummy")
                     }
@@ -541,7 +540,6 @@ describe("validation 2.0", () => {
 
             test("@default on datetime must be valid datetime correct", () => {
                 const doc = gql`
-                    #scalar DateTime
                     type User {
                         updatedAt: DateTime @default(value: "2023-07-06T09:45:11.336Z")
                     }
@@ -2480,8 +2478,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
             });
 
-            // TODO: fix this
-            test.skip("@authentication can't be used with @relationship", () => {
+            test("@authentication can't be used with @relationship", () => {
                 const doc = gql`
                     type Movie {
                         id: ID
@@ -2506,13 +2503,42 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @authentication"
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
+                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
             });
+            test("@subscriptionsAuthorization can't be used with @relationship", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID
+                        actors: [Actor!]!
+                            @relationship(type: "ACTED_IN", direction: OUT)
+                            @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
+                    }
 
-            // TODO: fix this
-            test.skip("@authorization can't be used with @relationship", () => {
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
+            });
+            test("@authorization can't be used with @relationship", () => {
                 const doc = gql`
                     type Movie {
                         id: ID
@@ -2539,10 +2565,11 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @authorization"
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
+                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
             });
+
             test("@cypher with @relationship on Field", () => {
                 const doc = gql`
                     type User {
@@ -3400,8 +3427,84 @@ describe("validation 2.0", () => {
 
     describe("@relationshipProperties", () => {
         describe("invalid", () => {
-            // TODO: fix this
-            test.skip("should throw error if @authentication is used on relationship properties interface", () => {
+            test("should throw error if @authorization is used on relationship properties interface", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @authorization(validate: [{ where: { id: "1" } }]) @relationshipProperties {
+                        screenTime: Int
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(2);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @authorization cannot be used in combination with @relationshipProperties"
+                );
+                expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty("message", 'Directive "@authorization" may not be used on INTERFACE.');
+            });
+            test("should throw error if @authorization is used on relationship property", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @relationshipProperties {
+                        screenTime: Int @authorization(validate: [{ where: { id: "1" } }])
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Cannot use the @authorization directive on relationship properties."
+                );
+                expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
+            });
+            test("should throw error if @authentication is used on relationship properties interface", () => {
                 const interfaceTypes = gql`
                     interface ActedIn @authentication @relationshipProperties {
                         screenTime: Int
@@ -3430,16 +3533,20 @@ describe("validation 2.0", () => {
 
                 const errors = getError(executeValidate);
 
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
+                    "Invalid directive usage: Directive @authentication cannot be used in combination with @relationshipProperties"
                 );
-                expect(errors[0]).toHaveProperty("path", ["HasPost", "cursor"]);
+                expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@authentication" may not be used on INTERFACE.'
+                );
             });
-            // TODO: fix this
-            test.skip("should throw error if @authentication is used on relationship property", () => {
+            test("should throw error if @authentication is used on relationship property", () => {
                 const interfaceTypes = gql`
                     interface ActedIn @relationshipProperties {
                         screenTime: Int @authentication
@@ -3473,9 +3580,92 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
+                    "Invalid @relationshipProperties field: Cannot use the @authentication directive on relationship properties."
                 );
-                expect(errors[0]).toHaveProperty("path", ["HasPost", "cursor"]);
+                expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
+            });
+            // TODO: fix this
+            test.skip("should throw error if @subscriptionsAuthorization is used on relationship properties interface", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn
+                        @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
+                        @relationshipProperties {
+                        screenTime: Int
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(2);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationshipProperties cannot be used in combination with @subscriptionsAuthorization"
+                );
+                expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
+                );
+            });
+            test("should throw error if @subscriptionsAuthorization is used on relationship property", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @relationshipProperties {
+                        screenTime: Int @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Cannot use the @subscriptionsAuthorization directive on relationship properties."
+                );
+                expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
             });
 
             test("should throw error if @relationship is used on relationship property", () => {
@@ -4221,17 +4411,6 @@ describe("validateDocument", () => {
         expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
             'Directive "@relationship" already exists in the schema. It cannot be redefined.'
         );
-    });
-
-    test("should remove auth directive and pass validation", () => {
-        const doc = gql`
-            type User @auth {
-                name: String @auth
-            }
-        `;
-
-        const res = validateDocument({ document: doc, features: undefined, additionalDefinitions });
-        expect(res).toBeUndefined();
     });
 
     test("should not throw error on use of internal node input types", () => {

@@ -28,6 +28,7 @@ export const invalidCombinations = {
         "alias",
         "authentication",
         "authorization",
+        "subscriptionsAuthorization",
         "id",
         "readonly",
         "relationship",
@@ -44,6 +45,7 @@ export const invalidCombinations = {
         "alias",
         "authentication",
         "authorization",
+        "subscriptionsAuthorization",
         "callback",
         "coalesce",
         "cypher",
@@ -61,7 +63,7 @@ export const invalidCombinations = {
     node: [],
     plural: [],
     // INTERFACE
-    relationshipProperties: ["authorization", "authentication"],
+    relationshipProperties: ["authorization", "authentication", "subscriptionsAuthorization"],
     // OBJECT and INTERFACE
     exclude: [],
 };
