@@ -21,7 +21,6 @@ import type {
     ASTVisitor,
     DirectiveNode,
     ASTNode,
-    ConstDirectiveNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
     EnumTypeDefinitionNode,
@@ -97,7 +96,7 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
             }
             const seenFields =
                 typeToDirectivesPerFieldMap.get(parentOfTraversedDef.name.value) ||
-                new Map<string, readonly DirectiveNode[] | readonly ConstDirectiveNode[]>();
+                new Map<string, readonly DirectiveNode[]>();
             seenFields.set(node.name.value, node.directives || []);
             typeToDirectivesPerFieldMap.set(parentOfTraversedDef.name.value, seenFields);
         }
