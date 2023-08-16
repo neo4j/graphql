@@ -36,6 +36,7 @@ export class ConnectionReadOperation extends Operation {
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
     private filters: Filter[] = [];
+    private authFilters: AuthorizationFilters | undefined;
     private pagination: Pagination | undefined;
     private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
@@ -58,8 +59,7 @@ export class ConnectionReadOperation extends Operation {
     }
 
     public setAuthFilters(filter: AuthorizationFilters) {
-        // TODO: auth filter separate
-        this.filters.push(filter);
+        this.authFilters = filter;
     }
 
     public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
@@ -83,11 +83,11 @@ export class ConnectionReadOperation extends Operation {
         const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+        const authPredicate = this.authFilters?.getPredicate(nestedContext);
 
-        // TODO: explicitly say this subquery should not be wrapped in a call
-        const filtersSubqueries = this.filters.flatMap((f) => f.getSubqueries(node));
+        const authFilterSubqueries = this.authFilters?.getSubqueries(node) || [];
 
-        const filters = Cypher.and(...predicates);
+        const filters = Cypher.and(...predicates, authPredicate);
 
         const nodeProjectionSubqueries = this.nodeFields
             .flatMap((f) => f.getSubqueries(node))
@@ -132,7 +132,7 @@ export class ConnectionReadOperation extends Operation {
 
         let withWhere: Cypher.Clause | undefined;
         if (filters) {
-            if (filtersSubqueries.length > 0) {
+            if (authFilterSubqueries.length > 0) {
                 // This is to avoid unnecessary With *
                 withWhere = new Cypher.With("*").where(filters);
             } else {
@@ -144,10 +144,8 @@ export class ConnectionReadOperation extends Operation {
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();
 
-            // if (paginationField) {
             sortSubquery = this.getPaginationSubquery(edgesVar, paginationField);
             sortSubquery.addColumns(totalCount);
-            // }
         }
 
         let extraWithOrder: Cypher.Clause | undefined;
@@ -170,7 +168,7 @@ export class ConnectionReadOperation extends Operation {
         ]);
         const subClause = Cypher.concat(
             clause,
-            ...filtersSubqueries,
+            ...authFilterSubqueries,
             withWhere,
             extraWithOrder,
             ...nodeProjectionSubqueries,
