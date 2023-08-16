@@ -3584,8 +3584,8 @@ describe("validation 2.0", () => {
                 );
                 expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
             });
-            // TODO: fix this
-            test.skip("should throw error if @subscriptionsAuthorization is used on relationship properties interface", () => {
+
+            test("should throw error if @subscriptionsAuthorization is used on relationship properties interface", () => {
                 const interfaceTypes = gql`
                     interface ActedIn
                         @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])

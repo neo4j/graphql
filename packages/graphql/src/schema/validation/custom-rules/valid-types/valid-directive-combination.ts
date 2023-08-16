@@ -82,11 +82,8 @@ type ASTNodeWithDirectives =
     | InputObjectTypeExtensionNode;
 export function DirectiveCombinationValid(context: SDLValidationContext): ASTVisitor {
     const interfaceToImplementingTypes = new Map<string, Set<string>>();
-    const typeToDirectivesPerFieldMap = new Map<
-        string,
-        Map<string, readonly DirectiveNode[] | readonly ConstDirectiveNode[]>
-    >();
-    const typeToDirectivesMap = new Map<string, readonly DirectiveNode[] | readonly ConstDirectiveNode[]>();
+    const typeToDirectivesPerFieldMap = new Map<string, Map<string, readonly DirectiveNode[]>>();
+    const typeToDirectivesMap = new Map<string, readonly DirectiveNode[]>();
     const hydrateWithDirectives = function (
         node: ASTNodeWithDirectives,
         parentOfTraversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
