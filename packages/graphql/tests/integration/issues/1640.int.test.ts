@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/1640", () => {
         const typeDefs = `
             type ${testAdmin} {
                 name: String!
-                organizations: [${testOrganization}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN)
+                organizations: [${testOrganization}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN) @filterable(byAggregate: true)
             }
 
             type ${testOrganization} {

@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             }
             type ${Post} {
                 content: String!
-                likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+                likes: [${User}!]! @relationship(type: "LIKES", direction: IN) @filterable(byAggregate: true)
             }
         `;
 

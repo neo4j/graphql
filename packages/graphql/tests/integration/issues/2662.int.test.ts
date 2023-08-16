@@ -63,10 +63,10 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
             }
             type ${postType} {
                 content: String!
-                likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
+                likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}") @filterable(byAggregate: true)
             }
             interface ${likesInterface} @relationshipProperties {
-                someString: String
+                someString: String @filterable(byAggregate: true)
             }    
         `;
 
@@ -839,14 +839,14 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
 
         const typeDefs = `
             type ${userType} {
-                someProperty: Int!
+                someProperty: Int! @filterable(byAggregate: true)
             }
             type ${postType} {
                 someProperty: Int!
-                likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
+                likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}") @filterable(byAggregate: true)
             }
             interface ${likesInterface} @relationshipProperties {
-                someProperty: String!
+                someProperty: String! @filterable(byAggregate: true)
             }    
         `;
 

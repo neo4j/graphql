@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
 
         type ${adminType} {
             adminId: ID! @id
-            organizations: [${organizationType}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN)
+            organizations: [${organizationType}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN) @filterable(byAggregate: true)
         }
   `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });

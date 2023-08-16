@@ -66,23 +66,23 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
 
         const typeDefs = `
             type ${movieType.name} {
-                title: String
-                genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
+                title: String @filterable(byAggregate: true)
+                genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}") @filterable(byAggregate: true)
             }
 
             type ${genreType.name} {
                 name: String
-                movies: [${movieType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
-                series: [${seriesType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}")
+                movies: [${movieType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}") @filterable(byAggregate: true)
+                series: [${seriesType.name}!]! @relationship(type: "IN_GENRE", direction: IN, properties: "${inGenreInterface.name}") @filterable(byAggregate: true)
             }
 
             type ${seriesType} {
-                name: String!
-                genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
+                name: String! @filterable(byAggregate: true)
+                genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}") @filterable(byAggregate: true)
             }
 
             interface ${inGenreInterface.name} @relationshipProperties {
-                intValue: Int!
+                intValue: Int! @filterable(byAggregate: true)
             }
         `;
 

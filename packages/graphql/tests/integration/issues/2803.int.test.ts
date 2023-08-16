@@ -114,17 +114,17 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
 
         const typeDefs = `
             type ${Movie} {
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "${ActedIn}")
-                released: Int!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "${ActedIn}") @filterable(byAggregate: true)
+                released: Int! @filterable(byAggregate: true)
             }
 
             type ${Actor} {
-                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "${ActedIn}")
-                name: String
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "${ActedIn}") @filterable(byAggregate: true)
+                name: String @filterable(byAggregate: true)
             }
 
             interface ${ActedIn} @relationshipProperties {
-                screenTime: Int!
+                screenTime: Int! @filterable(byAggregate: true)
                 roles: [String!]!
             }
         `;

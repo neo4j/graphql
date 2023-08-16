@@ -43,11 +43,11 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                 firstName: String! @readonly
                 lastName: String @readonly
                 projects: [${projectType}!]!
-                    @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties", aggregate: true)
+                    @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties", aggregate: true) @filterable(byAggregate: true)
             }
         
             interface EmployeeParticipationProperties @relationshipProperties {
-                allocation: Float
+                allocation: Float @filterable(byAggregate: true)
             }
         
             type ${projectType} {
@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                 name: String! @readonly
                 description: String
                 employees: [${employeeType}!]!
-                    @relationship(type: "PARTICIPATES", direction: IN, properties: "EmployeeParticipationProperties")
+                    @relationship(type: "PARTICIPATES", direction: IN, properties: "EmployeeParticipationProperties") @filterable(byAggregate: true)
             }
         `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
