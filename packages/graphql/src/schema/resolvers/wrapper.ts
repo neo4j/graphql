@@ -111,7 +111,8 @@ export const wrapResolver =
             if (authorization) {
                 try {
                     const jwt = await authorization.decode(context);
-                    const isAuthenticated = true;
+                    // jwt shouldn't be an empty object
+                    const isAuthenticated = !jwt ? false : Object.keys(jwt).length > 0;
                     context.authorization = {
                         isAuthenticated,
                         jwt,
@@ -141,9 +142,10 @@ export const wrapResolver =
                 }
                 context.jwt = await decodeToken(token, context.plugins.auth);
             }
-        } else {
-            const isAuthenticated = true;
+        } else {            
             const jwt = context.jwt;
+            // jwt shouldn't be an empty object
+            const isAuthenticated = !jwt ? false : Object.keys(jwt).length > 0;
 
             context.authorization = {
                 isAuthenticated,

@@ -21,10 +21,7 @@ import jsonwebtoken from "jsonwebtoken";
 
 export function createBearerToken(secret: string, extraData: Record<string, any> = {}): string {
     const token = jsonwebtoken.sign(
-        {
-            roles: [],
-            ...extraData,
-        },
+        extraData,
         secret,
         { noTimestamp: true }
     );
