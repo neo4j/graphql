@@ -23,12 +23,18 @@ import { parseResolveInfo } from "graphql-parse-resolve-info";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context } from "../../../types";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { fromGlobalId } from "../../../utils/global-ids";
+import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
-    async function resolve(_root: any, args: { id: string }, context: Context, info: GraphQLResolveInfo) {
+    async function resolve(
+        _root: any,
+        args: { id: string },
+        context: Neo4jGraphQLComposedContext,
+        info: GraphQLResolveInfo
+    ) {
         const { typeName, field, id } = fromGlobalId(args.id);
 
         if (!typeName || !field || !id) return null;
@@ -58,14 +64,15 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             fieldsByTypeName,
         };
 
-        context.resolveTree = getNeo4jResolveTree(info, { resolveTree });
+        (context as Neo4jGraphQLTranslationContext).resolveTree = getNeo4jResolveTree(info, { resolveTree });
 
-        const { cypher, params } = translateRead({ context, node });
+        const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
         const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
 
         let obj = null;

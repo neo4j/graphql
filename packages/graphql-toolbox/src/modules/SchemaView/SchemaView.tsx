@@ -188,7 +188,8 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
 
     const onSubmit = () => {
         if (!editorView) return;
-        const value = Array.from(editorView?.state.doc).toString();
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        const value = editorView?.state.doc.toString();
         if (value) {
             buildSchema(value).catch(() => null);
         }

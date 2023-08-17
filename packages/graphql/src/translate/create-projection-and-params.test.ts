@@ -87,7 +87,6 @@ describe("createProjectionAndParams", () => {
         }).instance();
 
         const context = new ContextBuilder({
-            neoSchema: { nodes: [node] },
             schemaModel: new Neo4jGraphQLSchemaModel({
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
@@ -170,7 +169,6 @@ describe("createProjectionAndParams", () => {
         }).instance();
 
         const context = new ContextBuilder({
-            neoSchema: { nodes: [node] },
             schemaModel: new Neo4jGraphQLSchemaModel({
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],

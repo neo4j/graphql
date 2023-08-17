@@ -22,7 +22,6 @@ import type { DirectiveNode, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
     ConnectionField,
-    Context,
     CustomEnumField,
     CustomScalarField,
     CypherField,
@@ -45,6 +44,7 @@ import type { NodeDirective } from "./NodeDirective";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import type { SchemaConfiguration } from "../schema/schema-configuration";
 import { leadingUnderscores } from "../utils/leading-underscore";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -235,7 +235,6 @@ class Node extends GraphElement {
         };
     }
 
-
     public get fulltextTypeNames(): FulltextTypeNames {
         return {
             result: `${this.pascalCaseSingular}FulltextResult`,
@@ -284,11 +283,11 @@ class Node extends GraphElement {
         };
     }
 
-    public getLabelString(context: Context): string {
+    public getLabelString(context: Neo4jGraphQLContext): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    public getLabels(context: Context): string[] {
+    public getLabels(context: Neo4jGraphQLContext): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 

@@ -23,6 +23,19 @@ import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Exe
 
 export interface Neo4jGraphQLContext {
     /**
+     * Parameters to be used when querying with Cypher.
+     *
+     * To be used with directives such as `@node` and `@cypher`, and can be used directly as named here.
+     *
+     * @example
+     * Given a `cypherParams` value as follows:
+     * ```
+     * { title: "The Matrix" }
+     * ```
+     * This can be referred to like `@cypher(statement: "RETURN $title AS title", columnName: "title")`.
+     */
+    cypherParams?: Record<string, any>;
+    /**
      * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options} to use when executing the translated query.
      */
     cypherQueryOptions?: CypherQueryOptions;
@@ -33,6 +46,8 @@ export interface Neo4jGraphQLContext {
     /**
      * A decoded JWT payload which can be provided for use in authentication and authorization.
      * Takes precedence over {@link token} if both are present in the context.
+     *
+     * Will be populated with the decoded {@link token} if authorization has been enabled in the library.
      *
      * @example
      * ```

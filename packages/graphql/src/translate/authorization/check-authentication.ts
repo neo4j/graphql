@@ -18,13 +18,13 @@
  */
 
 import type { Node } from "../../classes";
-import type { Context } from "../../types";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type {
     AuthenticationAnnotation,
     AuthenticationOperation,
 } from "../../schema-model/annotation/AuthenticationAnnotation";
 import { applyAuthentication } from "./utils/apply-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export function checkAuthentication({
     context,
@@ -32,7 +32,7 @@ export function checkAuthentication({
     targetOperations,
     field,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     targetOperations: AuthenticationOperation[];
     field?: string;

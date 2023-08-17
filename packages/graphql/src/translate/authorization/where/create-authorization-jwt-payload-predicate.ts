@@ -18,19 +18,20 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Context, GraphQLWhereArg } from "../../../types";
+import type { GraphQLWhereArg } from "../../../types";
 import { asArray } from "../../../utils/utils";
 import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { LogicalOperator } from "../../utils/logical-operators";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createParameterWhere } from "../../where/create-parameter-where";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createJwtPayloadWherePredicate({
     where,
     context,
 }: {
     where: GraphQLWhereArg;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
 }): Cypher.Predicate | undefined {
     const fields = Object.entries(where);
     const predicates: Cypher.Predicate[] = [];
@@ -70,7 +71,7 @@ function createNestedPredicate({
 }: {
     key: LogicalOperator;
     value: Array<GraphQLWhereArg>;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
 }): Cypher.Predicate | undefined {
     const nested: Cypher.Predicate[] = [];
 

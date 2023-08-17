@@ -24,24 +24,31 @@ import type { PageInfo } from "graphql-relay";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context } from "../../../types";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
+import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
-    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
-        const context = _context as Context;
-        const resolveTree = getNeo4jResolveTree(info);
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
 
         const edgeTree = resolveTree.fieldsByTypeName[`${upperFirst(node.plural)}Connection`]?.edges;
         const nodeTree = edgeTree?.fieldsByTypeName[`${node.name}Edge`]?.node;
         const resolveTreeForContext = nodeTree || resolveTree;
 
-        context.resolveTree = { ...resolveTreeForContext, args: resolveTree.args };
+        (context as Neo4jGraphQLTranslationContext).resolveTree = {
+            ...resolveTreeForContext,
+            args: resolveTree.args,
+        };
 
-        const { cypher, params } = translateRead({ context, node, isRootConnectionField: true });
+        const { cypher, params } = translateRead({
+            context: context as Neo4jGraphQLTranslationContext,
+            node,
+            isRootConnectionField: true,
+        });
 
         const executeResult = await execute({
             cypher,

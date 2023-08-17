@@ -105,7 +105,7 @@ const driver = neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4j", 
 const sessionFactory = () => driver.session({ defaultAccessMode: neo4j.session.READ });
 
 async function main() {
-    const genericStruct = await toGenericStruct(sessionFactory, readonly);
+    const genericStruct = await toGenericStruct(sessionFactory);
     // Programmatically transform to what you need.
 }
 

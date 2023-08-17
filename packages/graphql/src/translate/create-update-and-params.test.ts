@@ -18,7 +18,6 @@
  */
 
 import createUpdateAndParams from "./create-update-and-params";
-import type { Neo4jGraphQL } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import type { BaseField } from "../types";
 import { trimmer } from "../utils";
@@ -72,13 +71,7 @@ describe("createUpdateAndParams", () => {
             primitiveFields: [idField],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
-
         const context = new ContextBuilder({
-            neoSchema,
             schemaModel: new Neo4jGraphQLSchemaModel({
                 concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
                 compositeEntities: [],
