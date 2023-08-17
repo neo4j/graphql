@@ -50,24 +50,24 @@ describe("filterDocument", () => {
 
         expect(print(filtered)).toMatchInlineSnapshot(`
             "type User {
-              id: ID
-              name: String
-              email: String
-              password: String
-              cars: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true)
-              bikes: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true)
+              id: ID @filterable(byAggregate: true, byValue: true)
+              name: String @filterable(byAggregate: true, byValue: true)
+              email: String @filterable(byAggregate: true, byValue: true)
+              password: String @filterable(byAggregate: true, byValue: true)
+              cars: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true) @filterable(byAggregate: true, byValue: true)
+              bikes: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true) @filterable(byAggregate: true, byValue: true)
             }
 
             type Car {
-              name: String
-              engine: String
+              name: String @filterable(byAggregate: true, byValue: true)
+              engine: String @filterable(byAggregate: true, byValue: true)
             }
 
             type Bike {
-              name: String
-              engine: String
-              model: String
-              type: String
+              name: String @filterable(byAggregate: true, byValue: true)
+              engine: String @filterable(byAggregate: true, byValue: true)
+              model: String @filterable(byAggregate: true, byValue: true)
+              type: String @filterable(byAggregate: true, byValue: true)
             }
 
             extend schema @query(read: true, aggregate: true) @mutation(operations: [CREATE, UPDATE, DELETE]) @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])"
