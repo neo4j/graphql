@@ -188,28 +188,6 @@ type User {
 }
 ----
 
-[[customResolver-checks]]
-==== Checks for custom resolvers
-
-Previously, if no custom resolver was specified for a `@computed` field when creating an instance of Neo4jGraphQL, no errors would be thrown when generating the schema.
-However, it is likely that the lack of a custom resolver would lead to errors at runtime. It is preferable to fail fast in this case as it is easier to debug and makes it less likely that bugs will make it into production.
-
-As a result, checks are now performed to ensure that every `@customResolver` field has a custom resolver provided. If not the library will throw an error during schema generation.
-
-These checks may not always be required or desirable. If this is the case, they can be disabled using the new xref::guides/v4-migration/index.adoc#startup-validation[`startupValidation`] config option:
-
-[source, javascript, indent=0]
-----
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    config: {
-        startupValidation: {
-          resolvers: false
-        },
-    },
-})
-----
-
 [plural-migration]
 === `plural` argument removed from `@node` and replaced with `@plural`
 
