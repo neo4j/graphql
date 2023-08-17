@@ -52,7 +52,7 @@ export function cypherResolver({
         const executeResult = await execute({
             cypher,
             params,
-            defaultAccessMode: "WRITE",
+            defaultAccessMode: type === "Query" ? "READ" : "WRITE",
             context,
             info,
         });
