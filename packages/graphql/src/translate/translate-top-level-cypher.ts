@@ -17,28 +17,25 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { Context, CypherField } from "../types";
+import type { CypherField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
 import { compileCypher } from "../utils/compile-cypher";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateTopLevelCypher({
     context,
-    info,
     field,
     args,
     type,
     statement,
 }: {
-    context: Context;
-    info: GraphQLResolveInfo;
+    context: Neo4jGraphQLTranslationContext;
     field: CypherField;
     args: any;
     statement: string;
@@ -66,7 +63,6 @@ export function translateTopLevelCypher({
         }
     }
 
-    context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
     let params = {
         ...args,
@@ -170,8 +166,6 @@ export function translateTopLevelCypher({
         );
     }
 
-    const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-
     // Null default argument values are not passed into the resolve tree therefore these are not being passed to
     // `apocParams` below causing a runtime error when executing.
     const nullArgumentValues = field.arguments.reduce(
@@ -183,18 +177,13 @@ export function translateTopLevelCypher({
     );
 
     const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
-        (result: { strs: string[]; params: { [key: string]: unknown } }, entry) => ({
-            strs: [...result.strs, `${entry[0]}: $${entry[0]}`],
+        (result: { params: { [key: string]: unknown } }, entry) => ({
             params: { ...result.params, [entry[0]]: entry[1] },
         }),
-        { strs: initApocParamsStrs, params }
+        { params }
     );
 
-    if (statement.includes("$jwt")) {
-        apocParams.strs.push("jwt: $jwt");
-    }
-
-    params = { ...params, ...apocParams.params };
+    params = { ...params, ...apocParams.params, ...(context.cypherParams || {}) };
 
     if (type === "Query") {
         const cypherStatement = createCypherDirectiveSubquery({

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
+import type { GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
 import { createWherePredicate } from "../create-where-predicate";
@@ -27,6 +27,7 @@ import type { WhereOperator } from "../types";
 import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createRelationshipOperation({
     relationField,
@@ -39,7 +40,7 @@ export function createRelationshipOperation({
     checkParameterExistence,
 }: {
     relationField: RelationField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     operator: string | undefined;
     value: GraphQLWhereArg;
@@ -108,7 +109,7 @@ export function createRelationPredicate({
     targetPattern: Cypher.Pattern;
     targetRelationship: Cypher.Relationship;
     refNode: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     relationField: RelationField;
     whereInput: GraphQLWhereArg;
     whereOperator: WhereOperator;
@@ -303,7 +304,7 @@ function createRelationPredicateWithSubqueries({
     innerOperation: Cypher.Predicate;
     listPredicateStr: ListPredicate;
     refNode: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     whereInput: any;
     refEdge?: Relationship;
     checkParameterExistence?: boolean;

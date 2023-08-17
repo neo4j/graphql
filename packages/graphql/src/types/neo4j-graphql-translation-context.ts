@@ -17,16 +17,14 @@
  * limitations under the License.
  */
 
-import dotProp from "dot-prop";
-import type { Context } from "../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/wrapper";
 
-export default class ContextParser {
-    public static parseTag(value: string, tagName: "context" | "jwt"): string | undefined {
-        const [, path] = value?.split?.(`$${tagName}.`) || [];
-        return path;
-    }
-
-    public static getProperty(path: string, context: Context): string | undefined {
-        return dotProp.get({ value: context }, `value.${path}`);
-    }
+/**
+ * A small extension to {@link Neo4jGraphQLComposedContext}, adding the {@link resolveTree} field.
+ * This field cannot be added during resolvers composition, because it gets overridden if executing multiple queries under the same operation.
+ * Each individual resolver populates this field.
+ */
+export interface Neo4jGraphQLTranslationContext extends Neo4jGraphQLComposedContext {
+    resolveTree: ResolveTree;
 }
