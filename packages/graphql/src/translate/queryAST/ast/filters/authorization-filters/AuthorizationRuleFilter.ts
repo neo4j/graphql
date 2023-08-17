@@ -21,9 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 
-// Deprecated
 export class AuthorizationRuleFilter extends Filter {
-    // private operation: LogicalOperators;
     public children: Filter[];
     private requireAuthentication: boolean;
     private isAuthenticatedParam: Cypher.Param;
@@ -55,7 +53,6 @@ export class AuthorizationRuleFilter extends Filter {
         );
         if (!innerPredicate) return undefined;
         return innerPredicate;
-        // return Cypher.apoc.util.validatePredicate(Cypher.not(innerPredicate), AUTH_FORBIDDEN_ERROR);
     }
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
