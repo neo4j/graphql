@@ -139,7 +139,7 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isPoint() || attribute.isListOf(Neo4jGraphQLSpatialType.Point)) {
+        if (attribute.isPoint()) {
             const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
             const { crs } = field.fieldsByTypeName[typeName] as any;
             return new PointAttributeField({
@@ -149,7 +149,7 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isDateTime() || attribute.isListOf(Neo4jGraphQLTemporalType.DateTime)) {
+        if (attribute.isDateTime()) {
             return new DateTimeField({
                 attribute,
                 alias: field.alias,

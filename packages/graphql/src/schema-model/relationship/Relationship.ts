@@ -34,7 +34,7 @@ export class Relationship {
     public readonly source: ConcreteEntity;
     public readonly target: Entity;
     public readonly direction: RelationshipDirection;
-    public readonly isArray: boolean;
+    public readonly isList: boolean;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
@@ -57,7 +57,7 @@ export class Relationship {
         source,
         target,
         direction,
-        isArray,
+        isList,
         queryDirection,
         nestedOperations,
         aggregate,
@@ -68,7 +68,7 @@ export class Relationship {
         source: ConcreteEntity;
         target: Entity;
         direction: RelationshipDirection;
-        isArray: boolean;
+        isList: boolean;
         queryDirection: QueryDirection;
         nestedOperations: NestedOperation[];
         aggregate: boolean;
@@ -78,7 +78,7 @@ export class Relationship {
         this.target = target;
         this.name = name;
         this.direction = direction;
-        this.isArray = isArray;
+        this.isList = isList;
         this.queryDirection = queryDirection;
         this.nestedOperations = nestedOperations;
         this.aggregate = aggregate;
@@ -96,7 +96,7 @@ export class Relationship {
             source: this.source,
             target: this.target,
             direction: this.direction,
-            isArray: this.isArray,
+            isList: this.isList,
             queryDirection: this.queryDirection,
             nestedOperations: this.nestedOperations,
             aggregate: this.aggregate,

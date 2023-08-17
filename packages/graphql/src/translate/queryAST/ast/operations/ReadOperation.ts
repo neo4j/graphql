@@ -95,7 +95,7 @@ export class ReadOperation extends Operation {
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
 
-        const ret = this.getProjectionClause(targetNode, returnVariable, entity.isArray);
+        const ret = this.getProjectionClause(targetNode, returnVariable, entity.isList);
         // const ret = new Cypher.With([projection, targetNode]).return([Cypher.collect(targetNode), returnVariable]);
 
         let sortClause: Cypher.With | undefined;
