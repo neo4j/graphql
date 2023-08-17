@@ -45,46 +45,33 @@ export enum Neo4jGraphQLTemporalType {
     Duration = "Duration",
 }
 
-export enum ScalarTypeCategory {
-    Neo4jGraphQLTemporalType = "Neo4jGraphQLTemporalType",
-    Neo4jGraphQLNumberType = "Neo4jGraphQLNumberType",
-    Neo4jGraphQLSpatialType = "Neo4jGraphQLSpatialType",
-    GraphQLBuiltInScalarType = "GraphQLBuiltInScalarType",
-}
-
-export type Neo4jGraphQLScalarType = Neo4jGraphQLTemporalType | Neo4jGraphQLNumberType | Neo4jGraphQLSpatialType;
+export type Neo4jGraphQLScalarType = Neo4jGraphQLTemporalType | Neo4jGraphQLNumberType;
 
 // The ScalarType class is not used to represent user defined scalar types, see UserScalarType for that.
 export class ScalarType {
     public readonly name: GraphQLBuiltInScalarType | Neo4jGraphQLScalarType;
     public readonly isRequired: boolean;
-    public readonly category: ScalarTypeCategory;
     constructor(name: GraphQLBuiltInScalarType | Neo4jGraphQLScalarType, isRequired: boolean) {
         this.name = name;
         this.isRequired = isRequired;
-        switch (name) {
-            case GraphQLBuiltInScalarType.String:
-            case GraphQLBuiltInScalarType.Boolean:
-            case GraphQLBuiltInScalarType.ID:
-            case GraphQLBuiltInScalarType.Int:
-            case GraphQLBuiltInScalarType.Float:
-                this.category = ScalarTypeCategory.GraphQLBuiltInScalarType;
-                break;
-            case Neo4jGraphQLSpatialType.CartesianPoint:
-            case Neo4jGraphQLSpatialType.Point:
-                this.category = ScalarTypeCategory.Neo4jGraphQLSpatialType;
-                break;
-            case Neo4jGraphQLTemporalType.DateTime:
-            case Neo4jGraphQLTemporalType.LocalDateTime:
-            case Neo4jGraphQLTemporalType.Time:
-            case Neo4jGraphQLTemporalType.LocalTime:
-            case Neo4jGraphQLTemporalType.Date:
-            case Neo4jGraphQLTemporalType.Duration:
-                this.category = ScalarTypeCategory.Neo4jGraphQLTemporalType;
-                break;
-            case Neo4jGraphQLNumberType.BigInt:
-                this.category = ScalarTypeCategory.Neo4jGraphQLNumberType;
-        }
+    }
+}
+
+export class Neo4jCartesianPointType {
+    public readonly name: string;
+    public readonly isRequired: boolean;
+    constructor(isRequired: boolean) {
+        this.name = Neo4jGraphQLSpatialType.CartesianPoint;
+        this.isRequired = isRequired;
+    }
+}
+
+export class Neo4jPointType {
+    public readonly name: string;
+    public readonly isRequired: boolean;
+    constructor( isRequired: boolean) {
+        this.name = Neo4jGraphQLSpatialType.Point;
+        this.isRequired = isRequired;
     }
 }
 
@@ -109,9 +96,11 @@ export class ObjectType {
 }
 
 export class ListType {
-    public ofType: Exclude<AttributeType, ListType>;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly ofType: Exclude<AttributeType, ListType>;
+    public readonly isRequired: boolean;
     constructor(ofType: AttributeType, isRequired: boolean) {
+        this.name = `List<${ofType.name}>`;
         if (ofType instanceof ListType) {
             throw new Neo4jGraphQLSchemaValidationError("two-dimensional lists are not supported");
         }

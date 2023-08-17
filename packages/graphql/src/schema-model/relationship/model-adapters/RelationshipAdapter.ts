@@ -37,6 +37,7 @@ export class RelationshipAdapter {
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
+    public readonly isList: boolean;
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
@@ -48,6 +49,15 @@ export class RelationshipAdapter {
         return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 
+    /**Note: Required for now to infer the types without ResolveTree */
+    public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
+        const nestedFieldStr = upperFirst(nestedField || "");
+        const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
+        return `${this.source.name}${upperFirst(this.target.name)}${upperFirst(
+            this.name
+        )}${nestedFieldStr}${aggregationStr}Selection`;
+    }
+
     constructor(relationship: Relationship, sourceAdapter?: ConcreteEntityAdapter) {
         const {
             name,
@@ -56,6 +66,7 @@ export class RelationshipAdapter {
             source,
             target,
             direction,
+            isList,
             queryDirection,
             nestedOperations,
             aggregate,
@@ -68,6 +79,7 @@ export class RelationshipAdapter {
             this.source = new ConcreteEntityAdapter(source);
         }
         this.direction = direction;
+        this.isList = isList;
         this.queryDirection = queryDirection;
         this.nestedOperations = nestedOperations;
         this.aggregate = aggregate;
@@ -80,6 +92,42 @@ export class RelationshipAdapter {
             const attributeAdapter = new AttributeAdapter(attribute);
             this.attributes.set(attributeName, attributeAdapter);
         }
+    }
+
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+    /**
+     * translation-only
+     *
+     * @param directed the direction asked during the query, for instance "friends(directed: true)"
+     * @returns the direction to use in the CypherBuilder
+     **/
+    public getCypherDirection(directed?: boolean): "left" | "right" | "undirected" {
+        switch (this.queryDirection) {
+            case "DIRECTED_ONLY": {
+                return this.cypherDirectionFromRelDirection();
+            }
+            case "UNDIRECTED_ONLY": {
+                return "undirected";
+            }
+            case "DEFAULT_DIRECTED": {
+                if (directed === false) {
+                    return "undirected";
+                }
+                return this.cypherDirectionFromRelDirection();
+            }
+            case "DEFAULT_UNDIRECTED": {
+                if (directed === true) {
+                    return this.cypherDirectionFromRelDirection();
+                }
+                return "undirected";
+            }
+        }
+    }
+
+    private cypherDirectionFromRelDirection(): "left" | "right" {
+        return this.direction === "IN" ? "left" : "right";
     }
 
     // construct the target entity only when requested

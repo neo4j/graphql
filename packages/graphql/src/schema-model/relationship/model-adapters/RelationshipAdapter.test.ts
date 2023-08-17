@@ -78,6 +78,7 @@ describe("RelationshipAdapter", () => {
             source: userEntity,
             target: accountEntity,
             direction: "OUT",
+            isList: Boolean(false),
             attributes: [accountAlias],
             queryDirection: "DEFAULT_DIRECTED",
             nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "CONNECT_OR_CREATE"],
