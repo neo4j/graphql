@@ -19,11 +19,11 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { ContextBuilder } from "../../../../tests/utils/builders/context-builder";
-import type { Context } from "../../../types";
 import { populateWhereParams } from "./populate-where-params";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 describe("populateWhereParams", () => {
-    let context: Context;
+    let context: Neo4jGraphQLTranslationContext;
     let jwtParam: Cypher.Param;
 
     beforeAll(() => {

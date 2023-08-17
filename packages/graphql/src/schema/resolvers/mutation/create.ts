@@ -21,21 +21,25 @@ import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import { translateCreate } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context } from "../../../types";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
+import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
-        const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info, { args });
-        const { cypher, params } = await translateCreate({ context, node });
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = await translateCreate({ context: context as Neo4jGraphQLTranslationContext, node });
 
         const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "WRITE",
             context,
+            info,
         });
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(

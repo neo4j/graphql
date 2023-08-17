@@ -17,20 +17,14 @@
  * limitations under the License.
  */
 
-import type { AuthenticationOperation } from "../../schema-model/annotation/AuthenticationAnnotation";
-import type { Context } from "../../types";
-import { applyAuthentication } from "./utils/apply-authentication";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/wrapper";
 
-export function checkSchemaAuthentication({
-    context,
-    operation,
-}: {
-    context: Context;
-    operation: AuthenticationOperation;
-}): void {
-    const annotation = context.schemaModel.annotations.authentication;
-
-    if (annotation && annotation.operations.has(operation)) {
-        applyAuthentication({ context, annotation });
-    }
+/**
+ * A small extension to {@link Neo4jGraphQLComposedContext}, adding the {@link resolveTree} field.
+ * This field cannot be added during resolvers composition, because it gets overridden if executing multiple queries under the same operation.
+ * Each individual resolver populates this field.
+ */
+export interface Neo4jGraphQLTranslationContext extends Neo4jGraphQLComposedContext {
+    resolveTree: ResolveTree;
 }

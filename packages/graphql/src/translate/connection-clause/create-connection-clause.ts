@@ -20,7 +20,7 @@
 import type { Integer } from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
+import type { ConnectionField, ConnectionWhereArg, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import { filterTruthy } from "../../utils/utils";
 import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/create-connection-operation";
@@ -28,6 +28,7 @@ import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { createEdgeSubquery } from "./create-edge-subquery";
 import { checkAuthentication } from "../authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export function createConnectionClause({
     resolveTree,
@@ -39,7 +40,7 @@ export function createConnectionClause({
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     nodeVariable: Cypher.Node;
     returnVariable: Cypher.Variable;
     cypherFieldAliasMap: CypherFieldReferenceMap;
@@ -121,7 +122,7 @@ function createConnectionClauseForUnions({
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     nodeVariable: Cypher.Node;
     returnVariable: Cypher.Variable;
     cypherFieldAliasMap: CypherFieldReferenceMap;
@@ -206,7 +207,7 @@ function createConnectionSubquery({
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;

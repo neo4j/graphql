@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { GraphElement, Node } from "../../classes";
-import type { Context, GraphQLWhereArg } from "../../types";
+import type { GraphQLWhereArg } from "../../types";
 import { getFieldType, AggregationType, getReferenceNode, getFieldByName, getReferenceRelation } from "./utils";
 import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth } from "./field-aggregations-auth";
@@ -31,6 +31,7 @@ import { getCypherRelationshipDirection } from "../../utils/get-relationship-dir
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
 import { checkAuthentication } from "../authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -44,7 +45,7 @@ export function createFieldAggregation({
     node,
     field,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     nodeVar: Cypher.Node;
     node: Node;
     field: ResolveTree;

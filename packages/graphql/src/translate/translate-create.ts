@@ -20,7 +20,6 @@
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import type { Context } from "../types";
 import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
@@ -29,6 +28,7 @@ import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -46,7 +46,7 @@ export default async function translateCreate({
     context,
     node,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;

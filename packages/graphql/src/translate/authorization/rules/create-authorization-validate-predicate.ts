@@ -21,11 +21,12 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import type { AuthorizationValidateRule } from "../../../schema-model/annotation/AuthorizationAnnotation";
-import type { Context, PredicateReturn } from "../../../types";
+import type { PredicateReturn } from "../../../types";
 import type { AuthorizationOperation, AuthorizationValidateWhen } from "../../../types/authorization";
 import { getOrCreateCypherNode } from "../../utils/get-or-create-cypher-variable";
 import { createAuthorizationWherePredicate } from "../where/create-authorization-where-predicate";
 import { findMatchingRules } from "../utils/find-matching-rules";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function createAuthorizationValidatePredicate({
     when,
@@ -37,7 +38,7 @@ export function createAuthorizationValidatePredicate({
     conditionForEvaluation,
 }: {
     when: AuthorizationValidateWhen;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     rules: AuthorizationValidateRule[];
     variable: string | Cypher.Node;
