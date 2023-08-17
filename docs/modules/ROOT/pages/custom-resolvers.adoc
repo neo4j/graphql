@@ -70,7 +70,7 @@ type User implements UserInterface {
 }
 ----
 
-The following resolvers definition would cause a warning to be logged:
+The following resolvers definition would be invalid:
 
 [source, javascript, indent=0]
 ----
@@ -83,8 +83,7 @@ const resolvers = {
 };
 ----
 
-The following resolvers definition would silence the warning:
-
+Instead, the following resolvers definition would be required:
 [source, javascript, indent=0]
 ----
 const resolvers = {
@@ -96,7 +95,19 @@ const resolvers = {
 };
 ----
 
-Mismatches between the resolver map and `@customResolver` directives will always be logged to the console as a warning.
+These checks may not always be required or desirable. If this is the case, they can be disabled using the `startupValidation` config option:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        startupValidation: {
+          resolvers: false
+        },
+    },
+})
+----
 
 [[custom-resolvers-computed]]
 === `@computed`
