@@ -372,7 +372,7 @@ describe("Annotations & Attributes", () => {
                 id: ID!
                 name: String! @selectable(onAggregate: true) @alias(property: "dbName")
                 defaultName: String! @default(value: "John")
-                age: Int! @populatedBy(callback: "thisCallback" operations: [CREATE])
+                age: Int! @populatedBy(callback: "thisCallback", operations: [CREATE])
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
             }
 
@@ -444,7 +444,6 @@ describe("Annotations & Attributes", () => {
 
         expect(accountName?.databaseName).toBeDefined();
         expect(accountName?.databaseName).toBe("accountName");
-
     });
 });
 
@@ -473,6 +472,9 @@ describe("GraphQL adapters", () => {
     // account attributes
     let status: AttributeAdapter;
     let aOrB: AttributeAdapter;
+    let point: AttributeAdapter;
+    let points: AttributeAdapter;
+    let cartesianPoint: AttributeAdapter;
 
     beforeAll(() => {
         const typeDefs = gql`
@@ -508,6 +510,9 @@ describe("GraphQL adapters", () => {
 
             type Account {
                 status: Status
+                point: Point
+                points: [Point!]!
+                cartesianPoint: CartesianPoint
                 aOrB: AorB
             }
 
@@ -542,6 +547,9 @@ describe("GraphQL adapters", () => {
         // account attributes
         status = accountEntity?.attributes.get("status") as AttributeAdapter;
         aOrB = accountEntity?.attributes.get("aOrB") as AttributeAdapter;
+        point = accountEntity?.attributes.get("point") as AttributeAdapter;
+        points = accountEntity?.attributes.get("points") as AttributeAdapter;
+        cartesianPoint = accountEntity?.attributes.get("cartesianPoint") as AttributeAdapter;
     });
 
     describe("attribute types", () => {
@@ -592,9 +600,25 @@ describe("GraphQL adapters", () => {
             expect(aOrB.isAbstract()).toBe(true);
         });
 
+        test("Point", () => {
+            expect(point.isPoint({ includeLists: false })).toBe(true);
+            expect(point.isPoint({ includeLists: true })).toBe(true);
+            expect(point.isGraphQLBuiltInScalar()).toBe(false);
+            expect(points.isPoint({ includeLists: false })).toBeFalse();
+            expect(points.isPoint({ includeLists: true })).toBeTrue();
+            expect(points.isGraphQLBuiltInScalar()).toBe(false);
+        });
+
+        test("CartesianPoint", () => {
+            expect(cartesianPoint.isCartesianPoint({ includeLists: false })).toBe(true);
+            expect(cartesianPoint.isCartesianPoint({ includeLists: true })).toBe(true);
+            expect(cartesianPoint.isGraphQLBuiltInScalar()).toBe(false);
+        });
+
         test("List", () => {
             expect(favoriteColors.isList()).toBe(true);
-            expect(favoriteColors.isString()).toBe(false);
+            expect(favoriteColors.isString()).toBe(true);
+            expect(favoriteColors.isString({ includeLists: false })).toBe(false);
         });
 
         test("on extended entity", () => {
