@@ -130,7 +130,7 @@ export class FilterFactory {
         attachedTo?: "node" | "relationship";
     }): PropertyFilter {
         const filterOperator = operator || "EQ";
-        if (attribute.isDuration() || attribute.isListOf(Neo4jGraphQLTemporalType.Duration)) {
+        if (attribute.isDuration()) {
             return new DurationFilter({
                 attribute,
                 comparisonValue,
@@ -139,7 +139,7 @@ export class FilterFactory {
                 attachedTo,
             });
         }
-        if (attribute.isPoint() || attribute.isListOf(Neo4jGraphQLSpatialType.Point)) {
+        if (attribute.isPoint()) {
             return new PointFilter({
                 attribute,
                 comparisonValue,
@@ -358,7 +358,7 @@ export class FilterFactory {
             // const filterOperator = operator || "EQ";
             const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
 
-            if (attr.isDuration() || attr.isListOf(Neo4jGraphQLTemporalType.Duration)) {
+            if (attr.isDuration()) {
                 return new AggregationDurationFilter({
                     attribute: attr,
                     comparisonValue: value,
