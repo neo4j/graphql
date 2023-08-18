@@ -40,24 +40,19 @@ export interface Neo4jGraphQLComposedSubscriptionsContext extends Neo4jGraphQLSu
 export const wrapSubscription =
     (resolverArgs: WrapSubscriptionArgs) =>
     (next: GraphQLFieldResolver<any, Neo4jGraphQLComposedSubscriptionsContext>) =>
-    async (
-        root: any,
-        args: any,
-        context: Neo4jGraphQLSubscriptionsContext = { connectionParams: {} },
-        info: GraphQLResolveInfo
-    ) => {
+    async (root: any, args: any, context: Neo4jGraphQLSubscriptionsContext, info: GraphQLResolveInfo) => {
         const subscriptionsEngine = resolverArgs.subscriptionsEngine;
         const schemaModel = resolverArgs.schemaModel;
         const authorization = resolverArgs.authorization;
         const jwtClaimsMap = resolverArgs.jwtPayloadFieldsMap;
 
         const authorizationContext = await getAuthorizationContext(
-            context?.connectionParams,
+            context?.connectionParams || {},
             authorization,
             jwtClaimsMap
         );
-        if (!context.connectionParams.jwt) {
-            context.connectionParams.jwt = authorizationContext.jwt;
+        if (!context.connectionParams?.jwt) {
+            context.connectionParams = { ...context.connectionParams, jwt: authorizationContext.jwt };
         }
 
         const internalContext = {

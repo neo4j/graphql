@@ -22,5 +22,5 @@ import type { Neo4jGraphQLCommonContext } from "./neo4j-graphql-common-context";
 export interface Neo4jGraphQLSubscriptionsConnectionParams extends Neo4jGraphQLCommonContext {}
 
 export interface Neo4jGraphQLSubscriptionsContext {
-    connectionParams: Neo4jGraphQLSubscriptionsConnectionParams;
+    connectionParams?: Neo4jGraphQLSubscriptionsConnectionParams;
 }
