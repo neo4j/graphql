@@ -2054,9 +2054,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:6.8.0":
-  version: 6.8.0
-  resolution: "@codemirror/language@npm:6.8.0"
+"@codemirror/language@npm:6.9.0":
+  version: 6.9.0
+  resolution: "@codemirror/language@npm:6.9.0"
   dependencies:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
@@ -2064,7 +2064,7 @@ __metadata:
     "@lezer/highlight": ^1.0.0
     "@lezer/lr": ^1.0.0
     style-mod: ^4.0.0
-  checksum: 64408d996641931fa4c6b892e17ee1fdaee0f63d3d84c019a6ea7b1e6d1c774f92357b95c2ebaed60545062b795b72d0a058c03578b2bf4023c87726e97b5d2f
+  checksum: 9a897fb0f569159eeafb7dce83061b425af7244bbeae2649e0e677488548b2a02eaf0c13c0c5b4d59da55e8866e6f4dc7abe3dfaa09c13749a2fa2c0dbc0c565
   languageName: node
   linkType: hard
 
@@ -4283,7 +4283,7 @@ __metadata:
     "@codemirror/autocomplete": 6.9.0
     "@codemirror/commands": 6.2.4
     "@codemirror/lang-javascript": 6.1.9
-    "@codemirror/language": 6.8.0
+    "@codemirror/language": 6.9.0
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
@@ -4292,7 +4292,7 @@ __metadata:
     "@neo4j-ndl/react": 1.10.3
     "@neo4j/graphql": 3.24.1
     "@neo4j/introspector": 1.0.3
-    "@playwright/test": 1.37.0
+    "@playwright/test": 1.37.1
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.8
     "@types/lodash.debounce": 4.0.7
@@ -4323,7 +4323,7 @@ __metadata:
     neo4j-driver: 5.11.0
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 7.1.2
-    postcss: 8.4.27
+    postcss: 8.4.28
     postcss-loader: 7.3.3
     prettier: 3.0.0
     process: 0.11.10
@@ -4391,7 +4391,7 @@ __metadata:
     koa-router: 12.0.0
     libnpmsearch: 6.0.2
     mock-jwks: 1.0.10
-    nock: 13.3.2
+    nock: 13.3.3
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.3.0
@@ -5289,19 +5289,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.37.0":
-  version: 1.37.0
-  resolution: "@playwright/test@npm:1.37.0"
+"@playwright/test@npm:1.37.1":
+  version: 1.37.1
+  resolution: "@playwright/test@npm:1.37.1"
   dependencies:
     "@types/node": "*"
     fsevents: 2.3.2
-    playwright-core: 1.37.0
+    playwright-core: 1.37.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 59ccc519396c5cd66ba27bfc821b6a6483a9a426824eedb85cbd05b1cfb817f62bc1e1d893878582cf88af441a8a45aa83e678ab1d3145b54838c7c2e917b8a2
+  checksum: b7038f29000289103c08b215eff7aabdda70cdc1375fa7dad0e81651be71086a1e2fc0e0e29dc70348037c366cf0cc69f762373fda34ba1a74aa1658741d9195
   languageName: node
   linkType: hard
 
@@ -9960,6 +9960,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"asynciterator.prototype@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "asynciterator.prototype@npm:1.0.0"
+  dependencies:
+    has-symbols: ^1.0.3
+  checksum: e8ebfd9493ac651cf9b4165e9d64030b3da1d17181bb1963627b59e240cdaf021d9b59d44b827dc1dde4e22387ec04c2d0f8720cf58a1c282e34e40cc12721b3
+  languageName: node
+  linkType: hard
+
 "asynckit@npm:^0.4.0":
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
@@ -14134,7 +14143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-abstract@npm:^1.21.2":
+"es-abstract@npm:^1.21.2, es-abstract@npm:^1.21.3":
   version: 1.22.1
   resolution: "es-abstract@npm:1.22.1"
   dependencies:
@@ -14195,6 +14204,28 @@ __metadata:
     isarray: ^2.0.5
     stop-iteration-iterator: ^1.0.0
   checksum: 8fa118da42667a01a7c7529f8a8cca514feeff243feec1ce0bb73baaa3514560bd09d2b3438873cf8a5aaec5d52da248131de153b28e2638a061b6e4df13267d
+  languageName: node
+  linkType: hard
+
+"es-iterator-helpers@npm:^1.0.12":
+  version: 1.0.13
+  resolution: "es-iterator-helpers@npm:1.0.13"
+  dependencies:
+    asynciterator.prototype: ^1.0.0
+    call-bind: ^1.0.2
+    define-properties: ^1.2.0
+    es-abstract: ^1.21.3
+    es-set-tostringtag: ^2.0.1
+    function-bind: ^1.1.1
+    get-intrinsic: ^1.2.1
+    globalthis: ^1.0.3
+    has-property-descriptors: ^1.0.0
+    has-proto: ^1.0.1
+    has-symbols: ^1.0.3
+    internal-slot: ^1.0.5
+    iterator.prototype: ^1.1.0
+    safe-array-concat: ^1.0.0
+  checksum: 1b08ae7388439121fee1129cb23497abd7bf23dd440f7fa44d119c9f92f38f9b7d75b7d98453fcd15948a7eb58abb2a48c673c7250d2e15871abe3641f567ed7
   languageName: node
   linkType: hard
 
@@ -14569,14 +14600,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.33.1":
-  version: 7.33.1
-  resolution: "eslint-plugin-react@npm:7.33.1"
+"eslint-plugin-react@npm:7.33.2":
+  version: 7.33.2
+  resolution: "eslint-plugin-react@npm:7.33.2"
   dependencies:
     array-includes: ^3.1.6
     array.prototype.flatmap: ^1.3.1
     array.prototype.tosorted: ^1.1.1
     doctrine: ^2.1.0
+    es-iterator-helpers: ^1.0.12
     estraverse: ^5.3.0
     jsx-ast-utils: ^2.4.1 || ^3.0.0
     minimatch: ^3.1.2
@@ -14590,7 +14622,7 @@ __metadata:
     string.prototype.matchall: ^4.0.8
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 0427bd24acb87422b7298686203167123ba289ba563384983f3d99fad7817eae7f63157fd2e9b868bdcf0760719c319ab1e22a44764a98302034b0c844763e57
+  checksum: b4c3d76390b0ae6b6f9fed78170604cc2c04b48e6778a637db339e8e3911ec9ef22510b0ae77c429698151d0f1b245f282177f384105b6830e7b29b9c9b26610
   languageName: node
   linkType: hard
 
@@ -17874,6 +17906,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-async-function@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "is-async-function@npm:2.0.0"
+  dependencies:
+    has-tostringtag: ^1.0.0
+  checksum: e3471d95e6c014bf37cad8a93f2f4b6aac962178e0a5041e8903147166964fdc1c5c1d2ef87e86d77322c370ca18f2ea004fa7420581fa747bcaf7c223069dbd
+  languageName: node
+  linkType: hard
+
 "is-bigint@npm:^1.0.1":
   version: 1.0.4
   resolution: "is-bigint@npm:1.0.4"
@@ -18011,6 +18052,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-finalizationregistry@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "is-finalizationregistry@npm:1.0.2"
+  dependencies:
+    call-bind: ^1.0.2
+  checksum: 4f243a8e06228cd45bdab8608d2cb7abfc20f6f0189c8ac21ea8d603f1f196eabd531ce0bb8e08cbab047e9845ef2c191a3761c9a17ad5cabf8b35499c4ad35d
+  languageName: node
+  linkType: hard
+
 "is-fullwidth-code-point@npm:^1.0.0":
   version: 1.0.0
   resolution: "is-fullwidth-code-point@npm:1.0.0"
@@ -18048,7 +18098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-generator-function@npm:^1.0.7":
+"is-generator-function@npm:^1.0.10, is-generator-function@npm:^1.0.7":
   version: 1.0.10
   resolution: "is-generator-function@npm:1.0.10"
   dependencies:
@@ -18621,6 +18671,19 @@ __metadata:
     html-escaper: ^2.0.0
     istanbul-lib-report: ^3.0.0
   checksum: 7867228f83ed39477b188ea07e7ccb9b4f5320b6f73d1db93a0981b7414fa4ef72d3f80c4692c442f90fc250d9406e71d8d7ab65bb615cb334e6292b73192b89
+  languageName: node
+  linkType: hard
+
+"iterator.prototype@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "iterator.prototype@npm:1.1.0"
+  dependencies:
+    define-properties: ^1.1.4
+    get-intrinsic: ^1.1.3
+    has-symbols: ^1.0.3
+    has-tostringtag: ^1.0.0
+    reflect.getprototypeof: ^1.0.3
+  checksum: 462fe16c770affeb9c08620b13fc98d38307335821f4fabd489f491d38c79855c6a93d4b56f6146eaa56711f61690aa5c7eb0ce8586c95145d2f665a3834d916
   languageName: node
   linkType: hard
 
@@ -20289,9 +20352,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:13.3.0":
-  version: 13.3.0
-  resolution: "lint-staged@npm:13.3.0"
+"lint-staged@npm:14.0.0":
+  version: 14.0.0
+  resolution: "lint-staged@npm:14.0.0"
   dependencies:
     chalk: 5.3.0
     commander: 11.0.0
@@ -20305,7 +20368,7 @@ __metadata:
     yaml: 2.3.1
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: f7c146cc2849c9ce4f1d2808d990fcbdef5e0bb79e6e79cc895f53c91f5ac4dcefdb8c3465156b38a015dcb051f2795c6bda4f20a1e2f2fa654c7ba521b2d2e0
+  checksum: 7269cd21c15a7b5734a28775f879a91f6b59291bec9a897a1f2faae1cd8316dd50e19fd13207fb6798c705eb5371a25caee0e2dfd5932fbcd38ea5f8155f918c
   languageName: node
   linkType: hard
 
@@ -22189,12 +22252,12 @@ __metadata:
     eslint-plugin-import: 2.28.0
     eslint-plugin-jest: 27.2.3
     eslint-plugin-jsx-a11y: 6.7.1
-    eslint-plugin-react: 7.33.1
+    eslint-plugin-react: 7.33.2
     eslint-plugin-simple-import-sort: 10.0.0
     graphql: 16.8.0
     husky: 8.0.3
     jest: 29.6.2
-    lint-staged: 13.3.0
+    lint-staged: 14.0.0
     neo4j-driver: 5.11.0
     npm-run-all: 4.1.5
     prettier: 2.8.8
@@ -22253,15 +22316,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:13.3.2":
-  version: 13.3.2
-  resolution: "nock@npm:13.3.2"
+"nock@npm:13.3.3":
+  version: 13.3.3
+  resolution: "nock@npm:13.3.3"
   dependencies:
     debug: ^4.1.0
     json-stringify-safe: ^5.0.1
     lodash: ^4.17.21
     propagate: ^2.0.0
-  checksum: 1d7d5fda1816a3a0d2cb47f10283db139fcd15be6975db6f9b260efa781d5f0eeadf9bd7aab6db61191c519dd99bcd4c5c061e77880341be60abc39cd6163c1f
+  checksum: e3e4f0fb777ac63d74f89bbb7aebe8e815b891b64ac71983d91686f725fdab856fe189cf2fe23d4add9f5dd5da53f3568106a61116a771ce0f4ed0f5ad7b035b
   languageName: node
   linkType: hard
 
@@ -23908,12 +23971,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.37.0":
-  version: 1.37.0
-  resolution: "playwright-core@npm:1.37.0"
+"playwright-core@npm:1.37.1":
+  version: 1.37.1
+  resolution: "playwright-core@npm:1.37.1"
   bin:
     playwright-core: cli.js
-  checksum: be91857b1bb56890b3929ed8cd529f5f5abe4b748f709abc8dbe5b0ee4c0e158247c3958fbccec6a52394dafe4619bc0e69c93d1b129a71b31ab3697771e4c5a
+  checksum: 69f818da2230057584140d5b3af7778a4f4a822b5b18d133abfc5d259128becb943c343a2ddf6b0635277a69f28983e83e2bc3fce23595ececb1e410475b6368
   languageName: node
   linkType: hard
 
@@ -24490,14 +24553,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.27":
-  version: 8.4.27
-  resolution: "postcss@npm:8.4.27"
+"postcss@npm:8.4.28":
+  version: 8.4.28
+  resolution: "postcss@npm:8.4.28"
   dependencies:
     nanoid: ^3.3.6
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
-  checksum: 1cdd0c298849df6cd65f7e646a3ba36870a37b65f55fd59d1a165539c263e9b4872a402bf4ed1ca1bc31f58b68b2835545e33ea1a23b161a1f8aa6d5ded81e78
+  checksum: f605c24a36f7e400bad379735fbfc893ccb8d293ad6d419bb824db77cdcb69f43d614ef35f9f7091f32ca588d130ec60dbcf53b366e6bf88a8a64bbeb3c05f6d
   languageName: node
   linkType: hard
 
@@ -25701,6 +25764,20 @@ __metadata:
     indent-string: ^4.0.0
     strip-indent: ^3.0.0
   checksum: fa1ef20404a2d399235e83cc80bd55a956642e37dd197b4b612ba7327bf87fa32745aeb4a1634b2bab25467164ab4ed9c15be2c307923dd08b0fe7c52431ae6b
+  languageName: node
+  linkType: hard
+
+"reflect.getprototypeof@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "reflect.getprototypeof@npm:1.0.3"
+  dependencies:
+    call-bind: ^1.0.2
+    define-properties: ^1.1.4
+    es-abstract: ^1.20.4
+    get-intrinsic: ^1.1.1
+    globalthis: ^1.0.3
+    which-builtin-type: ^1.1.3
+  checksum: 843e2506c013da66f83635f943c5bd41243bc6c7703298531cfb16eb6baaefd92f83031fa37140ad31c4edc86938b6eb385e6fc85bf1628e79348ed49e044f3d
   languageName: node
   linkType: hard
 
@@ -30231,6 +30308,26 @@ __metadata:
     is-string: ^1.0.5
     is-symbol: ^1.0.3
   checksum: 53ce774c7379071729533922adcca47220228405e1895f26673bbd71bdf7fb09bee38c1d6399395927c6289476b5ae0629863427fd151491b71c4b6cb04f3a5e
+  languageName: node
+  linkType: hard
+
+"which-builtin-type@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "which-builtin-type@npm:1.1.3"
+  dependencies:
+    function.prototype.name: ^1.1.5
+    has-tostringtag: ^1.0.0
+    is-async-function: ^2.0.0
+    is-date-object: ^1.0.5
+    is-finalizationregistry: ^1.0.2
+    is-generator-function: ^1.0.10
+    is-regex: ^1.1.4
+    is-weakref: ^1.0.2
+    isarray: ^2.0.5
+    which-boxed-primitive: ^1.0.2
+    which-collection: ^1.0.1
+    which-typed-array: ^1.1.9
+  checksum: 43730f7d8660ff9e33d1d3f9f9451c4784265ee7bf222babc35e61674a11a08e1c2925019d6c03154fcaaca4541df43abe35d2720843b9b4cbcebdcc31408f36
   languageName: node
   linkType: hard
 
