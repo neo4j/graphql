@@ -29,6 +29,7 @@ and [development guide](./docs/contributing/DEVELOPING.md) to get started!
 1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 2. [Discord](https://discord.gg/neo4j)
 3. [Examples](./examples)
+4. [Hands-on Course](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql)
 
 ## Navigating
 
@@ -46,7 +47,7 @@ visit the [Contributing Guide](./CONTRIBUTING.md).
 ## Media
 
 Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for
-[NODES 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j
+[NODES 2023](https://dev.neo4j.com/44xcEfm) to view even more Neo4j
 GraphQL content.
 
 1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
@@ -55,3 +56,7 @@ GraphQL content.
 4. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
 5. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
 6. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
+
+## Learn with GraphAcademy
+
+Learn the fundamentals of GraphQL and how to use the Neo4j GraphQL Toolbox and the Neo4j GraphQL Library to create Neo4j-backed GraphQL APIs with the [Introduction to Neo4j & GraphQL on GraphAcademy](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql).
