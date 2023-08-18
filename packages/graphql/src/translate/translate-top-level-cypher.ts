@@ -21,7 +21,6 @@ import createProjectionAndParams from "./create-projection-and-params";
 import type { CypherField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
 import { compileCypher } from "../utils/compile-cypher";
@@ -108,7 +107,7 @@ export function translateTopLevelCypher({
 
     const entity = context.schemaModel.entities.get(field.typeMeta.name);
 
-    if (entity instanceof CompositeEntity) {
+    if (context.schemaModel.isCompositeEntity(entity)) {
         const headStrs: Cypher.Clause[] = [];
         const referencedNodes =
             entity.concreteEntities
@@ -231,7 +230,7 @@ export function translateTopLevelCypher({
 
         if (field.isScalar || field.isEnum) {
             cypherStrs.push(`RETURN this`);
-        } else if (entity instanceof CompositeEntity) {
+        } else if (context.schemaModel.isCompositeEntity(entity)) {
             cypherStrs.push(`RETURN head( ${projectionStr.getCypher(env)} ) AS this`);
         } else {
             cypherStrs.push(`RETURN this ${projectionStr.getCypher(env)} AS this`);

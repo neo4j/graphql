@@ -32,6 +32,10 @@ import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapt
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
+import { InterfaceEntity } from "./entity/InterfaceEntity";
+import { UnionEntity } from "./entity/UnionEntity";
+
+// TODO: interface implementing interface annotations inheritance
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -291,6 +295,13 @@ describe("ComposeEntity generation", () => {
         expect(humanEntities?.concreteEntities).toHaveLength(1); // User
     });
 
+    test("composite entities has correct type", () => {
+        const toolEntities = schemaModel.compositeEntities.find((e) => e.name === "Tool");
+        expect(toolEntities).toBeInstanceOf(UnionEntity);
+        const humanEntities = schemaModel.compositeEntities.find((e) => e.name === "Human");
+        expect(humanEntities).toBeInstanceOf(InterfaceEntity);
+    });
+
     test("concrete entity has correct attributes", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
         expect(userEntity?.attributes.has("id")).toBeTrue();
@@ -318,13 +329,23 @@ describe("Relationship", () => {
 
             union Show = Movie | TvShow
 
-            type Movie {
-                name: String!
+            type Actor {
+                name: String
             }
 
-            type TvShow {
+            interface Production {
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie implements Production {
+                name: String!
+                actors: [Actor!]!
+            }
+
+            type TvShow implements Production {
                 name: String!
                 episodes: Int
+                actors: [Actor!]! @relationship(type: "STARED_IN", direction: OUT)
             }
 
             type Account {
@@ -359,9 +380,63 @@ describe("Relationship", () => {
         expect(accounts?.target.name).toBe("Account");
         expect(accounts?.attributes.has("creationTime")).toBeTrue();
     });
+
+    test("composite interface entity has correct relationship", () => {
+        const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
+        const actors = productionEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("ACTED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has inherited relationship", () => {
+        const movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie");
+        const actors = movieEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("ACTED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has overwritten the inherited relationship", () => {
+        const showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow");
+        const actors = showEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("STARED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
 });
 
-describe("Annotations & Attributes", () => {
+describe("ConcreteEntity Annotations & Attributes", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     let userEntity: ConcreteEntity;
     let accountEntity: ConcreteEntity;
@@ -444,6 +519,90 @@ describe("Annotations & Attributes", () => {
 
         expect(accountName?.databaseName).toBeDefined();
         expect(accountName?.databaseName).toBe("accountName");
+    });
+});
+
+describe("ComposeEntity Annotations & Attributes", () => {
+    let schemaModel: Neo4jGraphQLSchemaModel;
+    let movieEntity: ConcreteEntity;
+    let showEntity: ConcreteEntity;
+    let productionEntity: InterfaceEntity;
+
+    beforeAll(() => {
+        const typeDefs = gql`
+            interface Production {
+                year: Int @populatedBy(callback: "thisCallback", operations: [CREATE])
+                defaultName: String! @default(value: "AwesomeProduction")
+                aliasedProp: String! @alias(property: "dbName")
+            }
+
+            type Movie implements Production {
+                name: String!
+                year: Int
+                defaultName: String!
+                aliasedProp: String! @alias(property: "movieDbName")
+            }
+
+            type TvShow implements Production {
+                name: String!
+                episodes: Int
+                year: Int @populatedBy(callback: "thisOtherCallback", operations: [CREATE])
+                aliasedProp: String!
+            }
+
+            extend type TvShow {
+                defaultName: String! @default(value: "AwesomeShow")
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        schemaModel = generateModel(document);
+        movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie") as ConcreteEntity;
+        showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow") as ConcreteEntity;
+        productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
+    });
+
+    test("attributes should be generated with the correct annotations", () => {
+        const productionYear = productionEntity?.attributes.get("year");
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const movieYear = movieEntity?.attributes.get("year");
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const showYear = showEntity?.attributes.get("year");
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisOtherCallback");
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const productionDefaultName = productionEntity?.attributes.get("defaultName");
+        expect(productionDefaultName).toBeDefined();
+        expect(productionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(productionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+
+        const movieDefaultName = movieEntity?.attributes.get("defaultName");
+        expect(movieDefaultName).toBeDefined();
+        expect(movieDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(movieDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+
+        const showDefaultName = showEntity?.attributes.get("defaultName");
+        expect(showDefaultName).toBeDefined();
+        expect(showDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(showDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeShow");
+
+        // TODO: fix databaseName
+        // const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
+        // const movieAliasedProp = movieEntity?.attributes.get("aliasedProp");
+        // const showAliasedProp = showEntity?.attributes.get("aliasedProp");
+        // expect(productionAliasedProp?.databaseName).toBeDefined();
+        // expect(productionAliasedProp?.databaseName).toBe("dbName");
+        // expect(movieAliasedProp?.databaseName).toBeDefined();
+        // expect(movieAliasedProp?.databaseName).toBe("movieDbName");
+        // expect(showAliasedProp?.databaseName).toBeDefined();
+        // expect(showAliasedProp?.databaseName).toBe("dbName");
     });
 });
 

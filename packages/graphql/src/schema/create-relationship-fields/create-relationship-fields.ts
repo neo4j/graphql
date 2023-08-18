@@ -186,7 +186,7 @@ function createRelationshipFields({
                 },
             });
         }
-    
+
         // n..m Relationships
         if (rel.typeMeta.array && rel.filterableOptions.byValue) {
             addRelationshipArrayFilters({

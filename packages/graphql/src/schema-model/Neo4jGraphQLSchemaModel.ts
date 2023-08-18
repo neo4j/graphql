@@ -21,10 +21,12 @@ import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { Operation } from "./Operation";
 import type { Annotations, Annotation } from "./annotation/Annotation";
 import { annotationToKey } from "./annotation/Annotation";
-import { CompositeEntity } from "./entity/CompositeEntity";
+import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
 import { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntity } from "./entity/InterfaceEntity";
+import { UnionEntity } from "./entity/UnionEntity";
 
 export type Operations = {
     Query?: Operation;
@@ -86,7 +88,7 @@ export class Neo4jGraphQLSchemaModel {
     }
 
     public isCompositeEntity(entity?: Entity): entity is CompositeEntity {
-        return entity instanceof CompositeEntity;
+        return entity instanceof InterfaceEntity || entity instanceof UnionEntity;
     }
 
     private addAnnotation(annotation: Annotation): void {
