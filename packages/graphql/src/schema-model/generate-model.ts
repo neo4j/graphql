@@ -16,15 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, DocumentNode, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import type {
+    DirectiveNode,
+    DocumentNode,
+    FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
-import type { Annotation } from "./annotation/Annotation";
+import type { Annotation, Annotations } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
-import { CompositeEntity } from "./entity/CompositeEntity";
+import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { findDirective } from "./parser/utils";
 import { parseArguments } from "./parser/parse-arguments";
@@ -37,6 +43,8 @@ import { parseAttribute, parseField } from "./parser/parse-attribute";
 import { nodeDirective, relationshipDirective } from "../graphql/directives";
 import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import { parseAnnotations } from "./parser/parse-annotation";
+import { InterfaceEntity } from "./entity/InterfaceEntity";
+import { UnionEntity } from "./entity/UnionEntity";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -63,11 +71,21 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
 
     const interfaceEntities = Array.from(definitionCollection.interfaceToImplementingTypeNamesMap.entries()).map(
         ([name, concreteEntities]) => {
-            return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
+            const interfaceNode = definitionCollection.interfaceTypes.get(name);
+            if (!interfaceNode) {
+                throw new Error(`Cannot find interface ${name}`);
+            }
+            return generateInterfaceEntity(
+                name,
+                interfaceNode,
+                concreteEntities,
+                concreteEntitiesMap,
+                definitionCollection
+            );
         }
     );
     const unionEntities = Array.from(definitionCollection.unionTypes).map(([unionName, unionDefinition]) => {
-        return generateCompositeEntity(
+        return generateUnionEntity(
             unionName,
             unionDefinition.types?.map((t) => t.name.value) || [],
             concreteEntitiesMap
@@ -83,7 +101,55 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         annotations,
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+    definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+    interfaceEntities.forEach((interfaceEntity) => hydrateConcreteEntitiesWithInheritedAnnotations(interfaceEntity));
+    // TODO: interface implements interface inheritance hydrate
+    // TODO: refactor flow??
+
     return schema;
+}
+
+function hydrateConcreteEntitiesWithInheritedAnnotations(interfaceEntity: InterfaceEntity) {
+    const interfaceRelationships = interfaceEntity.relationships;
+    const interfaceAttributes = interfaceEntity.attributes;
+    for (const implementingEntity of interfaceEntity.concreteEntities) {
+        // overwrite entity
+        // mergeAnnotations(interfaceEntity.annotations, implementingEntity); // only `@exclude`
+        mergeRelationships(interfaceRelationships, implementingEntity);
+        mergeAttributes(interfaceAttributes, implementingEntity);
+    }
+}
+
+function mergeAnnotations(interfaceAnnotations: Partial<Annotations>, entity: ConcreteEntity | Attribute): void {
+    const mergerConflictResolutionStrategy = function (interfaceAnnotation: string): boolean {
+        return !entity.annotations[interfaceAnnotation];
+    };
+    for (const annotation in interfaceAnnotations) {
+        if (mergerConflictResolutionStrategy(annotation)) {
+            entity.addAnnotation(interfaceAnnotations[annotation]);
+        }
+    }
+}
+
+function mergeRelationships(interfaceRelationships: Map<string, Relationship>, entity: ConcreteEntity): void {
+    const mergerConflictResolutionStrategy = function (interfaceRelationship: string): boolean {
+        return !entity.relationships.get(interfaceRelationship);
+    };
+    for (const [relationshipName, relationship] of interfaceRelationships.entries()) {
+        if (mergerConflictResolutionStrategy(relationshipName)) {
+            entity.attributeToRelationship(relationship);
+        }
+    }
+}
+
+function mergeAttributes(interfaceAttributes: Map<string, Attribute>, entity: ConcreteEntity): void {
+    for (const [attributeName, attribute] of interfaceAttributes.entries()) {
+        const entityAttribute = entity.findAttribute(attributeName);
+        if (entityAttribute) {
+            // TODO: change databaseName if alias annotation
+            mergeAnnotations(attribute.annotations, entityAttribute);
+        }
+    }
 }
 
 function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollection) {
@@ -109,6 +175,40 @@ function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollect
     });
 }
 
+function generateUnionEntity(
+    entityDefinitionName: string,
+    entityImplementingTypeNames: string[],
+    concreteEntities: Map<string, ConcreteEntity>
+): UnionEntity {
+    const unionEntity = generateCompositeEntity(entityDefinitionName, entityImplementingTypeNames, concreteEntities);
+    return new UnionEntity(unionEntity);
+}
+
+function generateInterfaceEntity(
+    entityDefinitionName: string,
+    definition: InterfaceTypeDefinitionNode,
+    entityImplementingTypeNames: string[],
+    concreteEntities: Map<string, ConcreteEntity>,
+    definitionCollection: DefinitionCollection
+): InterfaceEntity {
+    const interfaceEntity = generateCompositeEntity(
+        entityDefinitionName,
+        entityImplementingTypeNames,
+        concreteEntities
+    );
+    const fields = (definition.fields || []).map((fieldDefinition) =>
+        parseAttribute(fieldDefinition, definitionCollection)
+    );
+
+    const annotations = createEntityAnnotations(definition.directives || []);
+
+    return new InterfaceEntity({
+        ...interfaceEntity,
+        attributes: filterTruthy(fields) as Attribute[],
+        annotations,
+    });
+}
+
 function generateCompositeEntity(
     entityDefinitionName: string,
     entityImplementingTypeNames: string[],
@@ -130,36 +230,41 @@ function generateCompositeEntity(
         );
     } */
     // TODO: add annotations
-    return new CompositeEntity({
+    return {
         name: entityDefinitionName,
         concreteEntities: compositeFields,
-    });
+    };
 }
 
 function hydrateRelationships(
-    definition: ObjectTypeDefinitionNode,
+    definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
     definitionCollection: DefinitionCollection
 ): void {
     const name = definition.name.value;
     const entity = schema.getEntity(name);
 
-    if (!schema.isConcreteEntity(entity)) {
-        throw new Error(`Cannot add relationship to non-concrete entity ${name}`);
+    if (!entity) {
+        throw new Error(`Cannot find entity ${name}`);
     }
+    if (entity instanceof UnionEntity) {
+        throw new Error(`Cannot add relationship to union entity ${name}`);
+    }
+    // TODO: fix ts
+    const entityWithRelationships: ConcreteEntity | InterfaceEntity = entity as ConcreteEntity | InterfaceEntity;
     const relationshipFields = (definition.fields || []).map((fieldDefinition) => {
-        return generateRelationshipField(fieldDefinition, schema, entity, definitionCollection);
+        return generateRelationshipField(fieldDefinition, schema, entityWithRelationships, definitionCollection);
     });
 
     for (const relationship of filterTruthy(relationshipFields)) {
-        entity.addRelationship(relationship);
+        entityWithRelationships.attributeToRelationship(relationship);
     }
 }
 
 function generateRelationshipField(
     field: FieldDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
-    source: ConcreteEntity,
+    source: ConcreteEntity | InterfaceEntity,
     definitionCollection: DefinitionCollection
 ): Relationship | undefined {
     const fieldTypeMeta = getFieldTypeMeta(field.type);

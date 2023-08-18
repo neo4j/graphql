@@ -18,35 +18,35 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
-import type { Entity } from "./Entity";
+import type { CompositeEntity } from "./CompositeEntity";
+import type { ConcreteEntity } from "./ConcreteEntity";
 
-export class ConcreteEntity implements Entity {
+export class InterfaceEntity implements CompositeEntity {
     public readonly name: string;
-    public readonly labels: Set<string>;
+    public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
     public readonly annotations: Partial<Annotations> = {};
 
     constructor({
         name,
-        labels,
+        concreteEntities,
         attributes = [],
         annotations = [],
         relationships = [],
     }: {
         name: string;
-        labels: string[];
+        concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
         annotations?: Annotation[];
         relationships?: Relationship[];
     }) {
         this.name = name;
-        this.labels = new Set(labels);
+        this.concreteEntities = concreteEntities;
         for (const attribute of attributes) {
             this.addAttribute(attribute);
         }
@@ -60,15 +60,24 @@ export class ConcreteEntity implements Entity {
         }
     }
 
-    public matchLabels(labels: string[]) {
-        return setsAreEqual(new Set(labels), this.labels);
-    }
-
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
+    }
+
+    private addAnnotation(annotation: Annotation): void {
+        const annotationKey = annotationToKey(annotation);
+        const existingAnnotation = this.annotations[annotationKey];
+
+        if (existingAnnotation) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
+        }
+
+        // We cast to any because we aren't narrowing the Annotation type here.
+        // There's no reason to narrow either, since we care more about performance.
+        this.annotations[annotationKey] = annotation as any;
     }
 
     private deleteAttribute(attributeName: string): void {
@@ -80,19 +89,6 @@ export class ConcreteEntity implements Entity {
     public attributeToRelationship(relationship: Relationship): void {
         this.addRelationship(relationship);
         this.deleteAttribute(relationship.name);
-    }
-
-    public addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
     }
 
     public addRelationship(relationship: Relationship): void {
