@@ -18,11 +18,11 @@
  */
 
 import Debug from "debug";
-import type { Key, Neo4jAuthorizationSettings } from "../../types";
+import type { Key, Neo4jAuthorizationSettings, RemoteJWKS } from "../../types";
 
 import { AUTHORIZATION_UNAUTHENTICATED, DEBUG_AUTH } from "../../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose";
-import type { JWTPayload } from "jose";
+import type { JWTPayload, JWTVerifyGetKey } from "jose";
 import { parseBearerToken } from "./parse-request-token";
 import { Neo4jGraphQLError } from "../Error";
 import type { Neo4jGraphQLContext } from "../../types/neo4j-graphql-context";
@@ -32,7 +32,18 @@ const debug = Debug(DEBUG_AUTH);
 export class Neo4jGraphQLAuthorization {
     private authorization: Neo4jAuthorizationSettings;
 
+    // Assigned if input is a static symmetric secret or JWKS details
+    private resolvedKey: Uint8Array | JWTVerifyGetKey | undefined;
+    // Assigned if input is dynamic key which needs to be fetched using context details
+    private unresolvedKey: ((context: Neo4jGraphQLContext) => Key) | undefined;
+
     constructor(authorization: Neo4jAuthorizationSettings) {
+        if (typeof authorization.key === "function") {
+            this.unresolvedKey = authorization.key;
+        } else {
+            this.resolvedKey = this.serializeKey(authorization.key);
+        }
+
         this.authorization = authorization;
     }
 
@@ -62,19 +73,6 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    public decodeBearerToken(bearerToken: string): JWTPayload | undefined {
-        const token = parseBearerToken(bearerToken);
-        if (!token) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-        try {
-            return decodeJwt(token);
-        } catch (error) {
-            debug("%s", error);
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-    }
-
     public async decodeBearerTokenWithVerify(bearerToken: string | undefined): Promise<JWTPayload | undefined> {
         if (!bearerToken) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
@@ -89,22 +87,44 @@ export class Neo4jGraphQLAuthorization {
                 debug("Skipping verifying JWT as verify is set to false");
                 return decodeJwt(token);
             }
-            return await this.verify(token, this.authorization.key as Key);
+            return await this.verifyBearerToken(token, this.authorization.key as Key);
         } catch (error) {
             debug("%s", error);
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
     }
 
-    private resolveKey(context: Neo4jGraphQLContext): Key {
-        if (typeof this.authorization.key === "function") {
-            return this.authorization.key(context);
+    private serializeKey(key: string | RemoteJWKS): Uint8Array | JWTVerifyGetKey {
+        if (typeof key === "string") {
+            return Buffer.from(key);
         } else {
-            return this.authorization.key;
+            return createRemoteJWKSet(new URL(key.url), key.options);
         }
     }
 
-    private async verify(token: string, secret: Key): Promise<JWTPayload> {
+    private resolveKey(context: Neo4jGraphQLContext): Uint8Array | JWTVerifyGetKey {
+        if (this.resolvedKey) {
+            return this.resolvedKey;
+        } else {
+            // this.unresolvedKey is definitely defined due to typings and if/else
+            const resolved = this.unresolvedKey!(context);
+
+            return this.serializeKey(resolved);
+        }
+    }
+
+    private async verify(token: string, secret: Uint8Array | JWTVerifyGetKey): Promise<JWTPayload> {
+        if (secret instanceof Uint8Array) {
+            debug("Verifying JWT using secret");
+            const { payload } = await jwtVerify(token, secret, this.authorization.verifyOptions);
+            return payload;
+        }
+        debug("Verifying JWKS using url");
+        const { payload } = await jwtVerify(token, secret, this.authorization.verifyOptions);
+        return payload;
+    }
+
+    private async verifyBearerToken(token: string, secret: Key): Promise<JWTPayload> {
         if (typeof secret === "string") {
             debug("Verifying JWT using secret");
             const { payload } = await jwtVerify(token, Buffer.from(secret), this.authorization.verifyOptions);
