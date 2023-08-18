@@ -20,29 +20,29 @@
 import * as neo4j from "neo4j-driver";
 import type { Integer } from "neo4j-driver";
 
-type QueryOptionsDirectiveConstructor = {
-    limit: {
-        default?: Integer;
-        max?: Integer;
-    };
+type LimitDirectiveConstructor = {
+    default?: Integer;
+    max?: Integer;
 };
 
-export class QueryOptionsDirective {
-    private limit: QueryOptionsDirectiveConstructor["limit"];
+export class LimitDirective {
+    private default?: Integer;
+    private max?: Integer;
 
-    constructor(args: QueryOptionsDirectiveConstructor) {
-        this.limit = args.limit;
+    constructor(limit: LimitDirectiveConstructor) {
+        this.default = limit.default;
+        this.max = limit.max;
     }
 
     public getLimit(optionsLimit?: Integer | number): Integer | undefined {
         if (optionsLimit) {
             const integerLimit = neo4j.int(optionsLimit);
-            if (this.limit.max && integerLimit.greaterThan(this.limit.max)) {
-                return this.limit.max;
+            if (this.max && integerLimit.greaterThan(this.max)) {
+                return this.max;
             }
             return integerLimit;
         }
 
-        return this.limit.default || this.limit.max;
+        return this.default || this.max;
     }
 }
