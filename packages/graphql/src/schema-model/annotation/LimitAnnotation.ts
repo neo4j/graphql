@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-type QueryOptionsLimit = {
+export class LimitAnnotation {
     default?: number;
     max?: number;
-};
 
-export class QueryOptionsAnnotation {
-    public readonly limit: QueryOptionsLimit;
-
-    constructor({ limit }: { limit: QueryOptionsLimit }) {
-        this.limit = limit;
+    constructor({ default: _default, max }: {
+        default?: number;
+        max?: number;
+    }) {
+        this.default = _default;
+        this.max = max;
     }
 }

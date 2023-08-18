@@ -29,7 +29,7 @@ import { parsePluralAnnotation } from "./annotations-parser/plural-annotation";
 import { parsePopulatedByAnnotation } from "./annotations-parser/populated-by-annotation";
 import { parsePrivateAnnotation } from "./annotations-parser/private-annotation";
 import { parseQueryAnnotation } from "./annotations-parser/query-annotation";
-import { parseQueryOptionsAnnotation } from "./annotations-parser/query-options-annotation";
+import { parseLimitAnnotation } from "./annotations-parser/limit-annotation";
 import { parseSelectableAnnotation } from "./annotations-parser/selectable-annotation";
 import { parseSettableAnnotation } from "./annotations-parser/settable-annotation";
 import { parseSubscriptionAnnotation } from "./annotations-parser/subscription-annotation";
@@ -81,8 +81,8 @@ export function parseAnnotations(directives: readonly DirectiveNode[]): Annotati
                     return parsePrivateAnnotation(directive);
                 case AnnotationsKey.query:
                     return parseQueryAnnotation(directive);
-                case AnnotationsKey.queryOptions:
-                    return parseQueryOptionsAnnotation(directive);
+                case AnnotationsKey.limit:
+                    return parseLimitAnnotation(directive);
                 case AnnotationsKey.selectable:
                     return parseSelectableAnnotation(directive);
                 case AnnotationsKey.settable:

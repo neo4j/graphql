@@ -34,7 +34,7 @@ import { PluralAnnotation } from "./PluralAnnotation";
 import { PopulatedByAnnotation } from "./PopulatedByAnnotation";
 import { PrivateAnnotation } from "./PrivateAnnotation";
 import { QueryAnnotation } from "./QueryAnnotation";
-import { QueryOptionsAnnotation } from "./QueryOptionsAnnotation";
+import { LimitAnnotation } from "./LimitAnnotation";
 import { SelectableAnnotation } from "./SelectableAnnotation";
 import { SettableAnnotation } from "./SettableAnnotation";
 import { SubscriptionAnnotation } from "./SubscriptionAnnotation";
@@ -48,7 +48,7 @@ export type Annotation =
     | AuthenticationAnnotation
     | KeyAnnotation
     | SubscriptionsAuthorizationAnnotation
-    | QueryOptionsAnnotation
+    | LimitAnnotation
     | DefaultAnnotation
     | CoalesceAnnotation
     | CustomResolverAnnotation
@@ -68,7 +68,6 @@ export type Annotation =
     | JWTClaimAnnotation
     | JWTPayloadAnnotation;
 
-
 export enum AnnotationsKey {
     authentication = "authentication",
     authorization = "authorization",
@@ -82,12 +81,12 @@ export enum AnnotationsKey {
     jwtClaim = "jwtClaim",
     jwtPayload = "jwtPayload",
     key = "key",
+    limit = "limit",
     mutation = "mutation",
     plural = "plural",
     populatedBy = "populatedBy",
     private = "private",
     query = "query",
-    queryOptions = "queryOptions",
     selectable = "selectable",
     settable = "settable",
     subscription = "subscription",
@@ -102,7 +101,7 @@ export type Annotations = {
     [AnnotationsKey.authentication]: AuthenticationAnnotation;
     [AnnotationsKey.key]: KeyAnnotation;
     [AnnotationsKey.subscriptionsAuthorization]: SubscriptionsAuthorizationAnnotation;
-    [AnnotationsKey.queryOptions]: QueryOptionsAnnotation;
+    [AnnotationsKey.limit]: LimitAnnotation;
     [AnnotationsKey.default]: DefaultAnnotation;
     [AnnotationsKey.coalesce]: CoalesceAnnotation;
     [AnnotationsKey.customResolver]: CustomResolverAnnotation;
@@ -129,7 +128,7 @@ export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof AuthenticationAnnotation) return AnnotationsKey.authentication;
     if (ann instanceof KeyAnnotation) return AnnotationsKey.key;
     if (ann instanceof SubscriptionsAuthorizationAnnotation) return AnnotationsKey.subscriptionsAuthorization;
-    if (ann instanceof QueryOptionsAnnotation) return AnnotationsKey.queryOptions;
+    if (ann instanceof LimitAnnotation) return AnnotationsKey.limit;
     if (ann instanceof DefaultAnnotation) return AnnotationsKey.default;
     if (ann instanceof CoalesceAnnotation) return AnnotationsKey.coalesce;
     if (ann instanceof CustomResolverAnnotation) return AnnotationsKey.customResolver;

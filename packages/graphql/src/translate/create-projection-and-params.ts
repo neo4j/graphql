@@ -135,8 +135,8 @@ export default function createProjectionAndParams({
         if (relationField) {
             const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name);
 
-            if (referenceNode?.queryOptions) {
-                optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
+            if (referenceNode?.limit) {
+                optionsInput.limit = referenceNode.limit.getLimit(optionsInput.limit);
             }
 
             const subqueryReturnAlias = new Cypher.Variable();
