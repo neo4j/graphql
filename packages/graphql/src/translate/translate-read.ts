@@ -89,7 +89,7 @@ export function translateRead(
     }
 
     if (node.limit) {
-        optionsInput.limit = node.limit.getLimit(optionsInput.limit); // TODO: improve this
+        optionsInput.limit = node.limit.getLimit(optionsInput.limit);
         resolveTree.args.options = resolveTree.args.options || {};
         (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit;
     }
