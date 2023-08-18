@@ -18,51 +18,51 @@
  */
 
 import { makeDirectiveNode } from "@graphql-tools/utils";
-import { parseQueryOptionsAnnotation } from "./query-options-annotation";
-import { queryOptionsDirective } from "../../../graphql/directives";
+import { parseLimitAnnotation } from "./limit-annotation";
+import { limitDirective } from "../../../graphql/directives";
 
 const tests = [
     {
         name: "should parse correctly with both limit arguments",
-        directive: makeDirectiveNode("queryOptions", {
-            limit: {
+        directive: makeDirectiveNode(
+            "limit",
+            {
                 default: 25,
                 max: 100,
             },
-        }, queryOptionsDirective),
+            limitDirective
+        ),
         expected: {
-            limit: {
-                default: 25,
-                max: 100,
-            },
+            default: 25,
+            max: 100,
         },
     },
     {
         name: "should parse correctly with only default limit argument",
-        directive: makeDirectiveNode("queryOptions", {
-            limit: {
+        directive: makeDirectiveNode(
+            "limit",
+            {
                 default: 25,
             },
-        }, queryOptionsDirective),
+            limitDirective
+        ),
         expected: {
-            limit: {
-                default: 25,
-                max: undefined,
-            },
+            default: 25,
+            max: undefined,
         },
     },
     {
         name: "should parse correctly with only max limit argument",
-        directive: makeDirectiveNode("queryOptions", {
-            limit: {
+        directive: makeDirectiveNode(
+            "limit",
+            {
                 max: 100,
             },
-        }, queryOptionsDirective),
+            limitDirective
+        ),
         expected: {
-            limit: {
-                default: undefined,
-                max: 100,
-            },
+            default: undefined,
+            max: 100,
         },
     },
 ];
@@ -70,8 +70,9 @@ const tests = [
 describe("parseQueryOptionsAnnotation", () => {
     tests.forEach((test) => {
         it(`${test.name}`, () => {
-            const queryOptionsAnnotation = parseQueryOptionsAnnotation(test.directive);
-            expect(queryOptionsAnnotation.limit).toEqual(test.expected.limit);
+            const limitAnnotation = parseLimitAnnotation(test.directive);
+            expect(limitAnnotation.default).toEqual(test.expected.default);
+            expect(limitAnnotation.max).toEqual(test.expected.max);
         });
     });
 });
