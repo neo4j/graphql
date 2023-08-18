@@ -30,27 +30,42 @@ import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { AuthorizationFactory } from "./AuthorizationFactory";
+import { AuthFilterFactory } from "./AuthFilterFactory";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private queryASTFactory: QueryASTFactory;
+    private authorizationFactory: AuthorizationFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
         this.filterFactory = new FilterFactory(queryASTFactory);
         this.fieldFactory = new FieldFactory(queryASTFactory);
         this.sortAndPaginationFactory = new SortAndPaginationFactory();
+
+        const authFilterFactory = new AuthFilterFactory(queryASTFactory);
+        this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
     }
- 
-    public createReadOperationAST(entityOrRel: ConcreteEntityAdapter | RelationshipAdapter, resolveTree: ResolveTree): ReadOperation {
-        const entity = (entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel) as ConcreteEntityAdapter;
+
+    public createReadOperationAST(
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): ReadOperation {
+        const entity = (
+            entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel
+        ) as ConcreteEntityAdapter;
         const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
 
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
         const operation = new ReadOperation(entityOrRel, Boolean(resolveTree.args?.directed ?? true));
-        const fields = this.fieldFactory.createFields(entity, projectionFields);
+        const fields = this.fieldFactory.createFields(entity, projectionFields, context);
+
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
 
         let filters: Filter[];
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -60,6 +75,9 @@ export class OperationsFactory {
         }
         operation.setFields(fields);
         operation.setFilters(filters);
+        if (authFilters) {
+            operation.setAuthFilters(authFilters);
+        }
 
         const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
         if (options) {
@@ -76,7 +94,10 @@ export class OperationsFactory {
     }
 
     // TODO: dupe from read operation
-    public createAggregationOperation(relationship: RelationshipAdapter, resolveTree: ResolveTree): AggregationOperation {
+    public createAggregationOperation(
+        relationship: RelationshipAdapter,
+        resolveTree: ResolveTree
+    ): AggregationOperation {
         const entity = relationship.target as ConcreteEntityAdapter;
 
         const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
@@ -116,7 +137,11 @@ export class OperationsFactory {
         return operation;
     }
 
-    public createConnectionOperationAST(relationship: RelationshipAdapter, resolveTree: ResolveTree): ConnectionReadOperation {
+    public createConnectionOperationAST(
+        relationship: RelationshipAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): ConnectionReadOperation {
         const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
@@ -149,13 +174,25 @@ export class OperationsFactory {
             });
         }
 
-        const nodeFields = this.fieldFactory.createFields(relationship.target as ConcreteEntityAdapter, nodeRawFields);
-        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields);
-        
+        const nodeFields = this.fieldFactory.createFields(
+            relationship.target as ConcreteEntityAdapter,
+            nodeRawFields,
+            context
+        );
+        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(
+            relationship.target as ConcreteEntityAdapter,
+            ["READ"],
+            context
+        );
+
         const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
-        operation.setFilters(filters)
+        operation.setFilters(filters);
+        if (authFilters) {
+            operation.setAuthFilters(authFilters);
+        }
         operation.setEdgeFields(edgeFields);
         return operation;
     }

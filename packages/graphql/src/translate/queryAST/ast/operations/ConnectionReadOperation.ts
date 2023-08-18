@@ -28,6 +28,7 @@ import type { Sort, SortField } from "../sort/Sort";
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter;
@@ -35,6 +36,7 @@ export class ConnectionReadOperation extends Operation {
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
     private filters: Filter[] = [];
+    private authFilters: AuthorizationFilters | undefined;
     private pagination: Pagination | undefined;
     private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
@@ -54,6 +56,10 @@ export class ConnectionReadOperation extends Operation {
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
+    }
+
+    public setAuthFilters(filter: AuthorizationFilters) {
+        this.authFilters = filter;
     }
 
     public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
@@ -77,7 +83,11 @@ export class ConnectionReadOperation extends Operation {
         const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-        const filters = Cypher.and(...predicates);
+        const authPredicate = this.authFilters?.getPredicate(nestedContext);
+
+        const authFilterSubqueries = this.authFilters?.getSubqueries(node) || [];
+
+        const filters = Cypher.and(...predicates, authPredicate);
 
         const nodeProjectionSubqueries = this.nodeFields
             .flatMap((f) => f.getSubqueries(node))
@@ -119,18 +129,23 @@ export class ConnectionReadOperation extends Operation {
             });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
+
+        let withWhere: Cypher.Clause | undefined;
         if (filters) {
-            clause.where(filters);
+            if (authFilterSubqueries.length > 0) {
+                // This is to avoid unnecessary With *
+                withWhere = new Cypher.With("*").where(filters);
+            } else {
+                clause.where(filters);
+            }
         }
 
         let sortSubquery: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();
 
-            // if (paginationField) {
             sortSubquery = this.getPaginationSubquery(edgesVar, paginationField);
             sortSubquery.addColumns(totalCount);
-            // }
         }
 
         let extraWithOrder: Cypher.Clause | undefined;
@@ -153,6 +168,8 @@ export class ConnectionReadOperation extends Operation {
         ]);
         const subClause = Cypher.concat(
             clause,
+            ...authFilterSubqueries,
+            withWhere,
             extraWithOrder,
             ...nodeProjectionSubqueries,
             projectionClauses,

@@ -21,7 +21,6 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -34,6 +33,7 @@ import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttri
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -43,14 +43,15 @@ export class FieldFactory {
 
     public createFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter,
-        rawFields: Record<string, ResolveTree>
+        rawFields: Record<string, ResolveTree>,
+        context: Neo4jGraphQLTranslationContext
     ): Field[] {
         return Object.values(rawFields).map((field: ResolveTree) => {
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConnection) {
                 if (entity instanceof RelationshipAdapter)
                     throw new Error("Cannot create connection field of relationship");
-                return this.createConnectionField(entity, fieldName, field);
+                return this.createConnectionField(entity, fieldName, field, context);
             }
 
             if (isAggregation) {
@@ -65,7 +66,7 @@ export class FieldFactory {
             if (entity instanceof ConcreteEntityAdapter) {
                 const relationship = entity.findRelationship(fieldName);
                 if (relationship) {
-                    return this.createRelationshipField(entity, relationship, fieldName, field);
+                    return this.createRelationshipField(entity, relationship, fieldName, field, context);
                 }
             }
 
@@ -192,11 +193,16 @@ export class FieldFactory {
     private createConnectionField(
         entity: ConcreteEntityAdapter,
         fieldName: string,
-        field: ResolveTree
+        field: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
     ): OperationField {
         const relationship = entity.findRelationship(fieldName);
         if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
-        const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
+        const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(
+            relationship,
+            field,
+            context
+        );
 
         return new OperationField({
             operation: connectionOp,
@@ -208,13 +214,14 @@ export class FieldFactory {
         entity: ConcreteEntityAdapter,
         relationship: RelationshipAdapter,
         fieldName: string,
-        field: ResolveTree
+        field: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
     ): OperationField {
         // const nestedFields = field.fieldsByTypeName[entity.name];
         // if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
         // const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
 
-        const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field);
+        const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field, context);
 
         return new OperationField({
             operation,

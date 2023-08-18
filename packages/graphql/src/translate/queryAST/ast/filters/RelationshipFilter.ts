@@ -25,10 +25,10 @@ import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class RelationshipFilter extends Filter {
-    private targetNodeFilters: Filter[] = [];
-    private relationship: RelationshipAdapter;
-    private operator: RelationshipWhereOperator;
-    private isNot: boolean;
+    protected targetNodeFilters: Filter[] = [];
+    protected relationship: RelationshipAdapter;
+    protected operator: RelationshipWhereOperator;
+    protected isNot: boolean;
 
     constructor({
         relationship,
@@ -125,7 +125,7 @@ export class RelationshipFilter extends Filter {
         }
     }
 
-    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
+    protected wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
         if (this.isNot) return Cypher.not(predicate);
         else return predicate;
     }

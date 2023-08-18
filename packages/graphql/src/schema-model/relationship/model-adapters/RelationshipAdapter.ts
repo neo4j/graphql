@@ -38,6 +38,7 @@ export class RelationshipAdapter {
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
     public readonly isList: boolean;
+    public readonly isNullable: boolean;
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
@@ -84,6 +85,7 @@ export class RelationshipAdapter {
         this.nestedOperations = nestedOperations;
         this.aggregate = aggregate;
         this.rawEntity = target;
+        this.isNullable = relationship.isNullable;
         this.initAttributes(attributes);
     }
 

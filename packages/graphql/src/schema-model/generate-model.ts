@@ -200,6 +200,7 @@ function generateRelationshipField(
         queryDirection: queryDirection as QueryDirection,
         nestedOperations: nestedOperations as NestedOperation[],
         aggregate: aggregate as boolean,
+        isNullable: !fieldTypeMeta.required,
     });
 }
 

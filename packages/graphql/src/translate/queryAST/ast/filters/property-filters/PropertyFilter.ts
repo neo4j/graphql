@@ -22,6 +22,7 @@ import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { createComparisonOperation } from "../../../utils/create-comparison-operator";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -94,32 +95,7 @@ export class PropertyFilter extends Filter {
         property: Cypher.Expr;
         param: Cypher.Expr;
     }): Cypher.ComparisonOp {
-        switch (operator) {
-            case "LT":
-                return Cypher.lt(property, param);
-            case "LTE":
-                return Cypher.lte(property, param);
-            case "GT":
-                return Cypher.gt(property, param);
-            case "GTE":
-                return Cypher.gte(property, param);
-            case "ENDS_WITH":
-                return Cypher.endsWith(property, param);
-            case "STARTS_WITH":
-                return Cypher.startsWith(property, param);
-            case "MATCHES":
-                return Cypher.matches(property, param);
-            case "CONTAINS":
-                return Cypher.contains(property, param);
-            case "IN":
-                return Cypher.in(property, param);
-            case "INCLUDES":
-                return Cypher.in(param, property);
-            case "EQ":
-                return Cypher.eq(property, param);
-            default:
-                throw new Error(`Invalid operator ${operator}`);
-        }
+        return createComparisonOperation({ operator, property, param });
     }
 
     private getNullPredicate(propertyRef: Cypher.Property): Cypher.Predicate {

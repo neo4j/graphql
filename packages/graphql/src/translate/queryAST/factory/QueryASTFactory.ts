@@ -23,6 +23,7 @@ import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -35,9 +36,9 @@ export class QueryASTFactory {
         this.operationsFactory = new OperationsFactory(this);
     }
 
-    public createQueryAST(resolveTree: ResolveTree, entity: ConcreteEntity) {
+    public createQueryAST(resolveTree: ResolveTree, entity: ConcreteEntity, context: Neo4jGraphQLTranslationContext) {
         const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name) as ConcreteEntityAdapter;
-        const operation = this.operationsFactory.createReadOperationAST(entityAdapter, resolveTree);
+        const operation = this.operationsFactory.createReadOperationAST(entityAdapter, resolveTree, context);
         operation.nodeAlias = TOP_LEVEL_NODE_NAME;
         return new QueryAST(operation);
     }

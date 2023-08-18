@@ -116,7 +116,7 @@ export class FilterFactory {
         return filterTruthy(filters);
     }
 
-    private createPropertyFilter({
+    protected createPropertyFilter({
         attribute,
         comparisonValue,
         operator,
@@ -174,7 +174,8 @@ export class FilterFactory {
         }
         // this is because if isNull it's true we want to wrap the Exist subclause in a NOT, but if it's isNull it's true and isNot it's true they negate each other
         const isNot = isNull ? !filterOps.isNot : filterOps.isNot;
-        const relationshipFilter = new RelationshipFilter({
+
+        const relationshipFilter = this.createRelationshipFilterTreeNode({
             relationship: relationship,
             isNot,
             operator: filterOps.operator || "SOME",
@@ -187,6 +188,15 @@ export class FilterFactory {
         }
 
         return relationshipFilter;
+    }
+
+    // This allow to override this creation in AuthorizationFilterFactory
+    protected createRelationshipFilterTreeNode(options: {
+        relationship: RelationshipAdapter;
+        isNot: boolean;
+        operator: RelationshipWhereOperator;
+    }): RelationshipFilter {
+        return new RelationshipFilter(options);
     }
 
     public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Filter[] {

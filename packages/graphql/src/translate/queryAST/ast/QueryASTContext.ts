@@ -37,4 +37,12 @@ export class QueryASTContext {
         this.relationship = relationship;
         this.source = source;
     }
+
+    public push({ relationship, target }: { relationship: Cypher.Relationship; target: Cypher.Node }): QueryASTContext {
+        return new QueryASTContext({
+            source: this.target,
+            relationship: relationship,
+            target: target,
+        });
+    }
 }

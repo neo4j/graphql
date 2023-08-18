@@ -59,7 +59,6 @@ describe("Cypher Auth Where", () => {
                 secretKey: String!
                     @authorization(filter: [{ operations: [READ], where: { node: { creator: { id: "$jwt.sub" } } } }])
             }
-
             extend type Post @authorization(filter: [{ where: { node: { creator: { id: "$jwt.sub" } } } }])
         `;
 
@@ -167,13 +166,13 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                WITH *, count(this2) AS creatorCount
+                WITH *, count(this2) AS var3
                 WITH *
-                WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
+                WHERE ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
                 WITH this1 { .content } AS this1
-                RETURN collect(this1) AS var3
+                RETURN collect(this1) AS var4
             }
-            RETURN this { .id, posts: var3 } AS this"
+            RETURN this { .id, posts: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -218,15 +217,15 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                WITH *, count(this2) AS creatorCount
+                WITH *, count(this2) AS var3
                 WITH *
-                WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
+                WHERE ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
                 WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -271,15 +270,15 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                WITH *, count(this2) AS creatorCount
+                WITH *, count(this2) AS var3
                 WITH *
-                WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
+                WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
                 WITH { node: { content: this1.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
