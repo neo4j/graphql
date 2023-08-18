@@ -66,7 +66,7 @@ export function verifyFulltext({
         }
 
         (index.fields || []).forEach((field) => {
-            const foundField = compatibleFields?.find((f) => f.name.value === field);
+            const foundField = compatibleFields?.some((f) => f.name.value === field);
             if (!foundField) {
                 throw new DocumentValidationError(
                     `@fulltext.indexes invalid value for: ${indexName}. Field ${field} is not of type String or ID.`,

@@ -69,7 +69,7 @@ function isReservableASTNode(node: ASTNode): node is ReservableASTNode {
             Kind.UNION_TYPE_DEFINITION,
             Kind.ENUM_TYPE_DEFINITION,
             Kind.INPUT_OBJECT_TYPE_DEFINITION,
-        ].find((k) => k === node.kind)
+        ].some((k) => k === node.kind)
     ) {
         return true;
     }

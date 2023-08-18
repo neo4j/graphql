@@ -87,10 +87,10 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
         node: ASTNodeWithDirectives,
         parentOfTraversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
     ) {
-        if (node?.kind === Kind.OBJECT_TYPE_DEFINITION || node?.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+        if (node.kind === Kind.OBJECT_TYPE_DEFINITION || node.kind === Kind.INTERFACE_TYPE_DEFINITION) {
             typeToDirectivesMap.set(node.name.value, node.directives || []);
         }
-        if (node?.kind === Kind.FIELD_DEFINITION) {
+        if (node.kind === Kind.FIELD_DEFINITION) {
             if (!parentOfTraversedDef) {
                 return;
             }
@@ -106,13 +106,13 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
         parentOfTraversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
     ): DirectiveNode[] {
         const directivesToCheck: DirectiveNode[] = [...(node.directives || [])];
-        if (node?.kind === Kind.OBJECT_TYPE_DEFINITION || node?.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+        if (node.kind === Kind.OBJECT_TYPE_DEFINITION || node.kind === Kind.INTERFACE_TYPE_DEFINITION) {
             return getInheritedTypeNames(node, interfaceToImplementingTypes).reduce((acc, i) => {
                 const inheritedDirectives = typeToDirectivesMap.get(i) || [];
                 return acc.concat(inheritedDirectives);
             }, directivesToCheck);
         }
-        if (node?.kind === Kind.FIELD_DEFINITION) {
+        if (node.kind === Kind.FIELD_DEFINITION) {
             if (!parentOfTraversedDef) {
                 return [];
             }

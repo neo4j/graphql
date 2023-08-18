@@ -65,7 +65,7 @@ export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
                 }
             } else if (
                 !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(expectedType) &&
-                !enums.find((x) => x.name.value === expectedType)
+                !enums.some((x) => x.name.value === expectedType)
             ) {
                 throw new DocumentValidationError(
                     `@default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum`,

@@ -23,7 +23,7 @@ import { assertValid, createGraphQLError, DocumentValidationError } from "../uti
 
 export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVisitor {
     // TODO: maybe make ts understand Map1.string and Map2.string[] refer to the same category
-    const interfacesToExludeDirectiveMap = new Map<string, boolean>();
+    const interfacesToExcludeDirectiveMap = new Map<string, boolean>();
     const multipleInheritedInterfaces = new Map<string, string[]>();
 
     return {
@@ -40,14 +40,15 @@ export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVis
                 return;
             }
             const excludeDirective = interfaceType.directives.find((d) => d.name.value === "exclude");
-            interfacesToExludeDirectiveMap.set(interfaceType.name.value, !!excludeDirective);
+            interfacesToExcludeDirectiveMap.set(interfaceType.name.value, Boolean(excludeDirective));
 
-            if (!!excludeDirective === false) {
+            if (!excludeDirective) {
+                // no exclude directive so we don't need to check multiple inheritance this time
                 return;
             }
 
             const { isValid, errorMsg, errorPath } = assertValid(
-                assertMultipleInheritance.bind(null, interfacesToExludeDirectiveMap, multipleInheritedInterfaces)
+                assertMultipleInheritance.bind(null, interfacesToExcludeDirectiveMap, multipleInheritedInterfaces)
             );
 
             if (!isValid) {
@@ -64,13 +65,13 @@ export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVis
 }
 
 function assertMultipleInheritance(
-    interfacesToExludeDirectiveMap: Map<string, boolean>,
+    interfacesToExcludeDirectiveMap: Map<string, boolean>,
     multipleInheritedInterfaces: Map<string, string[]>
 ) {
     for (const [typeName, implementedInterfaces] of multipleInheritedInterfaces.entries()) {
         let isMultipleInherited = false;
         for (const interfaceName of implementedInterfaces) {
-            if (interfacesToExludeDirectiveMap.get(interfaceName) === true) {
+            if (interfacesToExcludeDirectiveMap.get(interfaceName) === true) {
                 if (isMultipleInherited) {
                     throw new DocumentValidationError(
                         `Multiple implemented interfaces of ${typeName} have @exclude directive - cannot determine directive to use.`,
