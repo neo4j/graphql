@@ -50,10 +50,10 @@ export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
 
             let result;
             if (isJwtDirective) {
-                result = assertValid(assertJwtDirective.bind(null, traversedDef, seenJwtType));
+                result = assertValid(() => assertJwtDirective(traversedDef, seenJwtType));
                 seenJwtType = true;
             } else {
-                result = assertValid(assertJwtClaimDirective.bind(null, traversedDef, parentOfTraversedDef));
+                result = assertValid(() => assertJwtClaimDirective(traversedDef, parentOfTraversedDef));
             }
 
             const { isValid, errorMsg } = result;

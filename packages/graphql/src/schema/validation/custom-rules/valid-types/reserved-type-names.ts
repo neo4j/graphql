@@ -47,7 +47,7 @@ export function ReservedTypeNames(context: SDLValidationContext): ASTVisitor {
                 return;
             }
 
-            const { isValid, errorMsg } = assertValid(assertTypeNameIsReserved.bind(null, node));
+            const { isValid, errorMsg } = assertValid(() => assertTypeNameIsReserved(node));
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({

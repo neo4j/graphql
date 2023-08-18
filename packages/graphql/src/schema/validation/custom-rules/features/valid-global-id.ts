@@ -65,8 +65,8 @@ export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
                 return;
             }
 
-            const { isValid, errorMsg, errorPath } = assertValid(
-                assertValidGlobalID.bind(null, {
+            const { isValid, errorMsg, errorPath } = assertValid(() =>
+                assertValidGlobalID({
                     directiveNode,
                     typeDef: parentOfTraversedDef,
                     typeNameToGlobalId,
@@ -100,8 +100,8 @@ export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
                     getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []
                 ).map(getAliasedFieldsFromMap);
 
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
+                const { isValid, errorMsg, errorPath } = assertValid(() =>
+                    assertGlobalIDDoesNotClash(inheritedAliasedFields)
                 );
                 if (!isValid) {
                     context.reportError(
@@ -130,8 +130,8 @@ export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
                     getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
                 ).map(getAliasedFieldsFromMap);
 
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    assertGlobalIDDoesNotClash.bind(null, inheritedAliasedFields)
+                const { isValid, errorMsg, errorPath } = assertValid(() =>
+                    assertGlobalIDDoesNotClash(inheritedAliasedFields)
                 );
                 if (!isValid) {
                     context.reportError(

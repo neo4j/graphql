@@ -47,7 +47,7 @@ export function ValidFieldTypes(context: SDLValidationContext): ASTVisitor {
     return {
         FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
             const [pathToNode] = getPathToNode(path, ancestors);
-            const { isValid, errorMsg } = assertValid(isNotMatrixType.bind(null, field));
+            const { isValid, errorMsg } = assertValid(() => isNotMatrixType(field));
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
@@ -68,8 +68,8 @@ export function ValidFieldTypes(context: SDLValidationContext): ASTVisitor {
                 console.error("No last definition traversed");
                 return;
             }
-            const { isValid, errorMsg, errorPath } = assertValid(
-                validationFn.bind(null, {
+            const { isValid, errorMsg, errorPath } = assertValid(() =>
+                validationFn({
                     directiveNode,
                     traversedDef,
                     parentDef: parentOfTraversedDef,

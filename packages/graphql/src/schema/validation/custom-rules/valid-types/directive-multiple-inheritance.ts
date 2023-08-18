@@ -47,8 +47,8 @@ export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVis
                 return;
             }
 
-            const { isValid, errorMsg, errorPath } = assertValid(
-                assertMultipleInheritance.bind(null, interfacesToExcludeDirectiveMap, multipleInheritedInterfaces)
+            const { isValid, errorMsg, errorPath } = assertValid(() =>
+                assertMultipleInheritance(interfacesToExcludeDirectiveMap, multipleInheritedInterfaces)
             );
 
             if (!isValid) {

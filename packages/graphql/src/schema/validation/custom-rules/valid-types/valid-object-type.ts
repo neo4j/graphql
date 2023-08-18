@@ -24,7 +24,7 @@ import { assertValid, createGraphQLError, DocumentValidationError } from "../uti
 export function ValidObjectType(context: SDLValidationContext): ASTVisitor {
     return {
         ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
-            const { isValid, errorMsg } = assertValid(assertValidType.bind(null, objectType));
+            const { isValid, errorMsg } = assertValid(() => assertValidType(objectType));
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
@@ -35,7 +35,7 @@ export function ValidObjectType(context: SDLValidationContext): ASTVisitor {
             }
         },
         InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
-            const { isValid, errorMsg } = assertValid(assertValidType.bind(null, interfaceType));
+            const { isValid, errorMsg } = assertValid(() => assertValidType(interfaceType));
 
             if (!isValid) {
                 context.reportError(

@@ -43,7 +43,7 @@ export function ValidRelationshipProperties(context: SDLValidationContext): ASTV
                 return;
             }
 
-            const { isValid, errorMsg, errorPath } = assertValid(assertRelationshipProperties.bind(null, traversedDef));
+            const { isValid, errorMsg, errorPath } = assertValid(() => assertRelationshipProperties(traversedDef));
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({

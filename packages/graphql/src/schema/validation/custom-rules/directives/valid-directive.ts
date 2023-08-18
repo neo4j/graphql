@@ -130,8 +130,8 @@ export function directiveIsValid(
                     return;
                 }
 
-                const { isValid, errorMsg, errorPath } = assertValid(
-                    validationFn.bind(null, {
+                const { isValid, errorMsg, errorPath } = assertValid(() =>
+                    validationFn({
                         directiveNode,
                         traversedDef,
                         parentDef: parentOfTraversedDef,

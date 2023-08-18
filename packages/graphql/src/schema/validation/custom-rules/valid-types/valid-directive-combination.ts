@@ -137,7 +137,7 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
             hydrateWithDirectives(node, parentOfTraversedDef);
             const directivesToCheck = getDirectives(node, parentOfTraversedDef);
 
-            const { isValid, errorMsg, errorPath } = assertValid(assertValidDirectives.bind(null, directivesToCheck));
+            const { isValid, errorMsg, errorPath } = assertValid(() => assertValidDirectives(directivesToCheck));
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
@@ -190,9 +190,9 @@ export function SchemaOrTypeDirectives(context: SDLValidationContext): ASTVisito
                 return;
             }
 
-            const { isValid, errorMsg } = assertValid(
-                assertSchemaOrType.bind(null, {
-                    directives: node.directives,
+            const { isValid, errorMsg } = assertValid(() =>
+                assertSchemaOrType({
+                    directives: node.directives as DirectiveNode[],
                     schemaLevelConfiguration,
                     typeLevelConfiguration,
                     isSchemaLevel,
