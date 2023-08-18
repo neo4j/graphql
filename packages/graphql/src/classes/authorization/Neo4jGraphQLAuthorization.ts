@@ -20,11 +20,10 @@
 import Debug from "debug";
 import type { Key, Neo4jAuthorizationSettings, RemoteJWKS } from "../../types";
 
-import { AUTHORIZATION_UNAUTHENTICATED, DEBUG_AUTH } from "../../constants";
+import { DEBUG_AUTH } from "../../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose";
 import type { JWTPayload, JWTVerifyGetKey } from "jose";
 import { parseBearerToken } from "./parse-request-token";
-import { Neo4jGraphQLError } from "../Error";
 import type { Neo4jGraphQLContext } from "../../types/neo4j-graphql-context";
 import type { Neo4jGraphQLSubscriptionsConnectionParams } from "../../types/neo4j-graphql-subscriptions-context";
 
@@ -57,11 +56,11 @@ export class Neo4jGraphQLAuthorization {
     ): Promise<JWTPayload | undefined> {
         const bearerToken = context.token;
         if (!bearerToken) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+            return undefined;
         }
         const token = parseBearerToken(bearerToken);
         if (!token) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+            return undefined;
         }
         try {
             if (this.authorization.verify === false) {
@@ -72,7 +71,7 @@ export class Neo4jGraphQLAuthorization {
             return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+            return undefined;
         }
     }
 

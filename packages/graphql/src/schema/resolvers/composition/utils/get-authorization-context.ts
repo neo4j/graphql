@@ -28,26 +28,25 @@ export async function getAuthorizationContext(
     authorization?: Neo4jGraphQLAuthorization,
     jwtClaimsMap?: Map<string, string>
 ): Promise<AuthorizationContext> {
-    if (!context.jwt) {
-        if (authorization) {
-            try {
-                context.jwt = await authorization.decode(context);
-                const isAuthenticated = true;
-                return {
-                    isAuthenticated,
-                    jwt: context.jwt,
-                    jwtParam: new Cypher.NamedParam("jwt", context.jwt),
-                    isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
-                    claims: jwtClaimsMap,
-                };
-            } catch (e) {
-                const isAuthenticated = false;
-                return {
-                    isAuthenticated,
-                    jwtParam: new Cypher.NamedParam("jwt", {}),
-                    isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
-                };
-            }
+    if (!context.jwt && authorization) {
+        const jwt = await authorization.decode(context);
+        if (jwt) {
+            context.jwt = jwt;
+            const isAuthenticated = true;
+            return {
+                isAuthenticated,
+                jwt: context.jwt,
+                jwtParam: new Cypher.NamedParam("jwt", context.jwt),
+                isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+                claims: jwtClaimsMap,
+            };
+        } else {
+            const isAuthenticated = false;
+            return {
+                isAuthenticated,
+                jwtParam: new Cypher.NamedParam("jwt", {}),
+                isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+            };
         }
     }
 
