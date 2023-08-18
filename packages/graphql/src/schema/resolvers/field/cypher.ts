@@ -19,10 +19,13 @@
 
 import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
-import type { Context, CypherField } from "../../../types";
+import type { CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
 import { isNeoInt } from "../../../utils/utils";
 import { translateTopLevelCypher } from "../../../translate";
+import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
 export function cypherResolver({
     field,
@@ -33,22 +36,25 @@ export function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
-        const context = _context as Context;
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info);
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateTopLevelCypher({
-            context,
-            info,
+            context: context as Neo4jGraphQLTranslationContext,
             field,
             args,
             type,
             statement,
         });
+
         const executeResult = await execute({
             cypher,
             params,
-            defaultAccessMode: "WRITE",
+            defaultAccessMode: type === "Query" ? "READ" : "WRITE",
             context,
+            info,
         });
 
         const values = executeResult.result.records.map((record) => {

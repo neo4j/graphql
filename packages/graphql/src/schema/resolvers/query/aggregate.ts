@@ -20,17 +20,19 @@
 import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import type { Node } from "../../../classes";
-import type { Context } from "../../../types";
 import { translateAggregate } from "../../../translate";
+import type { Neo4jGraphQLComposedContext } from "../wrapper";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function aggregateResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
-        const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
+    async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info);
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const [aggregateCypher, aggregateParams] = translateAggregate({
-            context,
+            context: context as Neo4jGraphQLTranslationContext,
             node,
         });
 
@@ -42,6 +44,7 @@ export function aggregateResolver({ node }: { node: Node }) {
             params,
             defaultAccessMode: "READ",
             context,
+            info,
         });
 
         return Object.values(executeResult.records[0] || {})[0];

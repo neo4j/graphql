@@ -66,7 +66,7 @@ describe("auth/custom-resolvers", () => {
                 typeDefs,
                 resolvers: {
                     Query: {
-                        me: (_, __, ctx) => ({ id: ctx.authorization.jwt.sub }),
+                        me: (_, __, ctx) => ({ id: ctx.jwt.sub }),
                     },
                 },
                 features: {
@@ -113,7 +113,7 @@ describe("auth/custom-resolvers", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.authorization.jwt.sub }) } },
+                resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.jwt.sub }) } },
                 features: {
                     authorization: {
                         key: secret,
@@ -160,7 +160,7 @@ describe("auth/custom-resolvers", () => {
                 typeDefs,
                 resolvers: {
                     Query: { me: () => ({}) },
-                    User: { customId: (_, __, ctx) => ctx.authorization.jwt.sub },
+                    User: { customId: (_, __, ctx) => ctx.jwt.sub },
                 },
                 features: {
                     authorization: {
@@ -214,7 +214,7 @@ describe("auth/custom-resolvers", () => {
                 typeDefs,
                 resolvers: {
                     Query: {
-                        me: (_, __, ctx) => ({ id: ctx.authorization.jwt.sub }),
+                        me: (_, __, ctx) => ({ id: ctx.jwt.sub }),
                     },
                 },
             });

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context, PredicateReturn } from "../../types";
+import type { GraphQLWhereArg, PredicateReturn } from "../../types";
 import type { GraphElement } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 // Recursive function
@@ -25,6 +25,7 @@ import { createPropertyWhere } from "./property-operations/create-property-where
 import type { LogicalOperator } from "../utils/logical-operators";
 import { isLogicalOperator, getLogicalPredicate } from "../utils/logical-operators";
 import { asArray, filterTruthy } from "../../utils/utils";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 /** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
 export function createWherePredicate({
@@ -37,7 +38,7 @@ export function createWherePredicate({
 }: {
     targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     element: GraphElement;
     useExistExpr?: boolean;
     checkParameterExistence?: boolean;
@@ -98,7 +99,7 @@ function createNestedPredicate({
     key: LogicalOperator;
     element: GraphElement;
     targetElement: Cypher.Variable;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     value: Array<GraphQLWhereArg>;
     useExistExpr?: boolean;
     checkParameterExistence?: boolean;

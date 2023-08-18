@@ -59,11 +59,15 @@ describe("NodeDirective", () => {
     });
 
     test("should escape context labels", () => {
-        const context = new ContextBuilder({ escapeTest1: "123-321", escapeTest2: "He`l`lo" }).instance();
+        const context = new ContextBuilder().instance();
         const instance = new NodeDirective({
             labels: ["label", "$context.escapeTest1", "$context.escapeTest2"],
         });
-        const labelString = instance.getLabelsString("label", context);
+        const labelString = instance.getLabelsString("label", {
+            ...context,
+            escapeTest1: "123-321",
+            escapeTest2: "He`l`lo",
+        } as Record<string, any>);
         expect(labelString).toBe(":label:`123-321`:`He``l``lo`");
     });
 

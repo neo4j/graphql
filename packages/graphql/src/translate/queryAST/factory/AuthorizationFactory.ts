@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Context } from "../../../types";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { AuthorizationRuleFilter } from "../ast/filters/authorization-filters/AuthorizationRuleFilter";
 import type { AuthorizationOperation } from "../../../types/authorization";
@@ -25,6 +24,7 @@ import { findMatchingRules } from "../../authorization/utils/find-matching-rules
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
 import type { AuthFilterFactory } from "./AuthFilterFactory";
 import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class AuthorizationFactory {
     private filterFactory: AuthFilterFactory;
@@ -36,7 +36,7 @@ export class AuthorizationFactory {
     public createEntityAuthFilters(
         entity: ConcreteEntityAdapter,
         operations: AuthorizationOperation[],
-        context: Context
+        context: Neo4jGraphQLTranslationContext
     ): AuthorizationFilters | undefined {
         const entityAuth = entity.annotations.authorization;
         if (!entityAuth) return undefined;

@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-import type { Context, Neo4jGraphQLCallbacks } from "../types";
+import type { Neo4jGraphQLCallbacks } from "../types";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export interface Callback {
     functionName: string;
@@ -27,9 +29,9 @@ export interface Callback {
 
 export class CallbackBucket {
     public callbacks: Callback[];
-    private context: Context;
+    private context: Neo4jGraphQLTranslationContext;
 
-    constructor(context: Context) {
+    constructor(context: Neo4jGraphQLTranslationContext) {
         this.context = context;
         this.callbacks = [];
     }
@@ -46,10 +48,12 @@ export class CallbackBucket {
 
         await Promise.all(
             this.callbacks.map(async (cb) => {
-                const callbackFunction = (this.context?.callbacks as Neo4jGraphQLCallbacks)[cb.functionName] as (
+                const callbackFunction = (this.context.features.populatedBy?.callbacks as Neo4jGraphQLCallbacks)[
+                    cb.functionName
+                ] as (
                     parent?: Record<string, unknown>,
                     args?: Record<string, never>,
-                    context?: Record<string, unknown>
+                    context?: Neo4jGraphQLContext
                 ) => Promise<any>;
                 const param = await callbackFunction(cb.parent, {}, this.context);
 

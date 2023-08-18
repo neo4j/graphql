@@ -38,7 +38,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
 
         const pattern = this.getPattern(nestedContext);
 
-        if (!this.relationship.isArray && this.relationship.isNullable) {
+        if (!this.relationship.isList && this.relationship.isNullable) {
             return [];
         }
         return [new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVar])];
@@ -59,7 +59,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             innerPredicate = this.wrapInNotIfNeeded(innerPredicate);
         }
 
-        if (!this.relationship.isArray && this.relationship.isNullable) {
+        if (!this.relationship.isList && this.relationship.isNullable) {
             const pattern = this.getPattern(nestedContext);
 
             const comprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));

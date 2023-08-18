@@ -17,15 +17,22 @@
  * limitations under the License.
  */
 
-import type { TypeSource } from "@graphql-tools/utils";
-import type { GraphQLSchema } from "graphql";
+import type { DocumentNode, GraphQLSchema } from "graphql";
 import type * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
 
 export class TestSubgraph {
     library: Neo4jGraphQL;
 
-    constructor({ typeDefs, resolvers, driver }: { typeDefs: TypeSource; resolvers?: any; driver: neo4j.Driver }) {
+    constructor({
+        typeDefs,
+        resolvers,
+        driver,
+    }: {
+        typeDefs: string | DocumentNode;
+        resolvers?: any;
+        driver: neo4j.Driver;
+    }) {
         this.library = new Neo4jGraphQL({
             typeDefs,
             resolvers,

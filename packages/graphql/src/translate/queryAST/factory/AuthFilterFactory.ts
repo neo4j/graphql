@@ -25,7 +25,7 @@ import type { RelationshipAdapter } from "../../../schema-model/relationship/mod
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
 import type { Filter } from "../ast/filters/Filter";
-import type { Context, GraphQLWhereArg } from "../../../types";
+import type { GraphQLWhereArg } from "../../../types";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import { isLogicalOperator } from "../../utils/logical-operators";
@@ -33,6 +33,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { parseWhereField } from "./parsers/parse-where-field";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -44,7 +45,7 @@ export class AuthFilterFactory extends FilterFactory {
     }: {
         entity: ConcreteEntityAdapter;
         operations: AuthorizationOperation[];
-        context: Context;
+        context: Neo4jGraphQLTranslationContext;
         populatedWhere: GraphQLWhereArg;
     }): Filter[] {
         const nestedFilters: Filter[] = Object.entries(populatedWhere).flatMap(([key, value]): Filter[] => {

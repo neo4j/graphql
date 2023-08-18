@@ -34,10 +34,10 @@ export class RelationshipAdapter {
     private rawEntity: Entity;
     private _target: Entity | undefined;
     public readonly direction: RelationshipDirection;
-    public readonly isArray: boolean;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
+    public readonly isList: boolean;
     public readonly isNullable: boolean;
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -67,7 +67,7 @@ export class RelationshipAdapter {
             source,
             target,
             direction,
-            isArray,
+            isList,
             queryDirection,
             nestedOperations,
             aggregate,
@@ -80,7 +80,7 @@ export class RelationshipAdapter {
             this.source = new ConcreteEntityAdapter(source);
         }
         this.direction = direction;
-        this.isArray = isArray;
+        this.isList = isList;
         this.queryDirection = queryDirection;
         this.nestedOperations = nestedOperations;
         this.aggregate = aggregate;

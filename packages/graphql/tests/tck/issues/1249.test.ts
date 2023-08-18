@@ -28,9 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Bulk
-                @exclude(operations: [CREATE, DELETE, UPDATE])
-                @node(labels: ["Bulk", "$context.cypherParams.tenant"]) {
+            type Bulk @exclude(operations: [CREATE, DELETE, UPDATE]) @node(labels: ["Bulk", "$tenant"]) {
                 id: ID!
                 supplierMaterialNumber: String!
                 material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)
@@ -103,9 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"cypherParams\\": {
-                    \\"tenant\\": \\"BULK\\"
-                }
+                \\"tenant\\": \\"BULK\\"
             }"
         `);
     });

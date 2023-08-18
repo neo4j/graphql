@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context } from "../../types";
+import type { GraphQLWhereArg } from "../../types";
 import type { Node } from "../../classes";
 import { createWherePredicate } from "./create-where-predicate";
 import Cypher from "@neo4j/cypher-builder";
 import { compileCypherIfExists } from "../../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 // TODO: Remove this method and replace for directly using createWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
@@ -34,7 +35,7 @@ export default function createWhereAndParams({
     recursing,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     whereInput: GraphQLWhereArg;
     varName: string;
     chainStr?: string;

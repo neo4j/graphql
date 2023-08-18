@@ -23,7 +23,7 @@ import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
-import type { ConnectionSortArg, Context, GraphQLOptionsArg } from "../../../types";
+import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import type { Integer } from "neo4j-driver";
 import type { Filter } from "../ast/filters/Filter";
@@ -32,6 +32,7 @@ import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-a
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { AuthorizationFactory } from "./AuthorizationFactory";
 import { AuthFilterFactory } from "./AuthFilterFactory";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -53,7 +54,7 @@ export class OperationsFactory {
     public createReadOperationAST(
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
-        context: Context
+        context: Neo4jGraphQLTranslationContext
     ): ReadOperation {
         const entity = (
             entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel
@@ -139,7 +140,7 @@ export class OperationsFactory {
     public createConnectionOperationAST(
         relationship: RelationshipAdapter,
         resolveTree: ResolveTree,
-        context: Context
+        context: Neo4jGraphQLTranslationContext
     ): ConnectionReadOperation {
         const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };

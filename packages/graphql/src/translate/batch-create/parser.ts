@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Context, RelationField } from "../../types";
+import type { RelationField } from "../../types";
 import type { GraphQLCreateInput, TreeDescriptor } from "./types";
 import { UnsupportedUnwindOptimization } from "./types";
 import type { GraphElement, Node, Relationship } from "../../classes";
@@ -26,12 +26,12 @@ import Cypher from "@neo4j/cypher-builder";
 import type { AST } from "./GraphQLInputAST/GraphQLInputAST";
 import { CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
 import mapToDbProperty from "../../utils/map-to-db-property";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 function getRelationshipFields(
     node: Node,
     key: string,
-    value: any,
-    context: Context
+    context: Neo4jGraphQLTranslationContext
 ): [RelationField | undefined, Node[]] {
     const relationField = node.relationFields.find((x) => key === x.fieldName);
     const refNodes: Node[] = [];
@@ -49,7 +49,7 @@ function getRelationshipFields(
 export function inputTreeToCypherMap(
     input: GraphQLCreateInput[] | GraphQLCreateInput,
     node: Node,
-    context: Context,
+    context: Neo4jGraphQLTranslationContext,
     parentKey?: string,
     relationship?: Relationship
 ): Cypher.List | Cypher.Map {
@@ -62,7 +62,7 @@ export function inputTreeToCypherMap(
     }
     const properties = (Object.entries(input) as GraphQLCreateInput).reduce(
         (obj: Record<string, Cypher.Expr>, [key, value]: [string, Record<string, any>]) => {
-            const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
+            const [relationField, relatedNodes] = getRelationshipFields(node, key, context);
             if (relationField && relationField.properties) {
                 relationship = context.relationships.find(
                     (x) => x.properties === relationField.properties
@@ -123,13 +123,13 @@ function isScalarOrEnum(fieldName: string, graphElement: GraphElement) {
 export function getTreeDescriptor(
     input: GraphQLCreateInput,
     node: Node,
-    context: Context,
+    context: Neo4jGraphQLTranslationContext,
     parentKey?: string,
     relationship?: Relationship
 ): TreeDescriptor {
     return Object.entries(input).reduce(
         (previous, [key, value]) => {
-            const [relationField, relatedNodes] = getRelationshipFields(node, key, value, context);
+            const [relationField, relatedNodes] = getRelationshipFields(node, key, context);
             if (relationField && relationField.properties) {
                 relationship = context.relationships.find(
                     (x) => x.properties === relationField.properties
@@ -192,9 +192,9 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
     );
 }
 
-function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNode: AST): AST {
+function parser(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslationContext, parentASTNode: AST): AST {
     Object.entries(input.children).forEach(([key, value]) => {
-        const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
+        const [relationField, relatedNodes] = getRelationshipFields(node, key, context);
 
         if (relationField) {
             let edge;
@@ -266,7 +266,7 @@ function raiseOnNotSupportedProperty(graphElement: GraphElement) {
     });
 }
 
-export function parseCreate(input: TreeDescriptor, node: Node, context: Context) {
+export function parseCreate(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslationContext) {
     const nodeProperties = input.properties;
     raiseOnNotSupportedProperty(node);
     raiseAttributeAmbiguity(input.properties, node);
@@ -278,7 +278,7 @@ export function parseCreate(input: TreeDescriptor, node: Node, context: Context)
 function parseNestedCreate(
     input: TreeDescriptor,
     node: Node,
-    context: Context,
+    context: Neo4jGraphQLTranslationContext,
     parentNode: Node,
     relationshipPropertyPath: string,
     relationship: [RelationField | undefined, Node[]],

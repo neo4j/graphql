@@ -19,7 +19,7 @@
 
 import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
-import type { Context } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 function createRelationshipValidationString({
     node,
@@ -28,7 +28,7 @@ function createRelationshipValidationString({
     relationshipFieldNotOverwritable,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     varName: string;
     relationshipFieldNotOverwritable?: string;
 }): string {

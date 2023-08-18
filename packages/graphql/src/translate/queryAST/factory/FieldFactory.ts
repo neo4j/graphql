@@ -21,7 +21,6 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Field } from "../ast/fields/Field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { QueryASTFactory } from "./QueryASTFactory";
-import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -34,7 +33,7 @@ import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttri
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { Context } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -45,7 +44,7 @@ export class FieldFactory {
     public createFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter,
         rawFields: Record<string, ResolveTree>,
-        context: Context
+        context: Neo4jGraphQLTranslationContext
     ): Field[] {
         return Object.values(rawFields).map((field: ResolveTree) => {
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
@@ -141,7 +140,7 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isPoint() || attribute.isListOf(Neo4jGraphQLSpatialType.Point)) {
+        if (attribute.isPoint()) {
             const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
             const { crs } = field.fieldsByTypeName[typeName] as any;
             return new PointAttributeField({
@@ -151,7 +150,7 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isDateTime() || attribute.isListOf(Neo4jGraphQLTemporalType.DateTime)) {
+        if (attribute.isDateTime()) {
             return new DateTimeField({
                 attribute,
                 alias: field.alias,
@@ -195,7 +194,7 @@ export class FieldFactory {
         entity: ConcreteEntityAdapter,
         fieldName: string,
         field: ResolveTree,
-        context: Context
+        context: Neo4jGraphQLTranslationContext
     ): OperationField {
         const relationship = entity.findRelationship(fieldName);
         if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
@@ -216,7 +215,7 @@ export class FieldFactory {
         relationship: RelationshipAdapter,
         fieldName: string,
         field: ResolveTree,
-        context: Context
+        context: Neo4jGraphQLTranslationContext
     ): OperationField {
         // const nestedFields = field.fieldsByTypeName[entity.name];
         // if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
