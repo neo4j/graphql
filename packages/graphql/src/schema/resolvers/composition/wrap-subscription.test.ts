@@ -38,7 +38,7 @@ describe("subscription wrapper test", () => {
         const resolvedResult = "Resolved value";
         const resolver = (_root, _args, context: Neo4jGraphQLComposedSubscriptionsContext) => {
             expect(context).toBeDefined();
-            expect(context.connectionParams.jwt).toEqual({ sub: "test" });
+            expect(context.connectionParams?.jwt).toEqual({ sub: "test" });
             return resolvedResult;
         };
 
