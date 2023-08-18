@@ -18,7 +18,7 @@
  */
 
 import type Node from "../../../../classes/Node";
-import type { SubscriptionEventType, SubscriptionContext } from "../types";
+import type { SubscriptionEventType } from "../types";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { GraphQLResolveInfo } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
@@ -26,12 +26,13 @@ import { parseResolveInfo } from "graphql-parse-resolve-info";
 import type { SelectionFields } from "./selection-set-parser";
 import { parseSelectionSetForAuthenticated } from "./selection-set-parser";
 import { checkAuthentication } from "./check-authentication";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 
 export function checkAuthenticationOnSelectionSet(
     resolveInfo: GraphQLResolveInfo,
     node: Node,
     type: SubscriptionEventType,
-    context: SubscriptionContext
+    context: Neo4jGraphQLComposedSubscriptionsContext
 ) {
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree | undefined | null;
     if (!resolveTree) {
@@ -61,7 +62,7 @@ function checkAuthenticationOnSelection({
 }: {
     fieldSelection: SelectionFields;
     entity: ConcreteEntity;
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
 }) {
     checkAuthentication({ authenticated: entity, operation: "READ", context });
     for (const selectedField of Object.values(fieldSelection)) {

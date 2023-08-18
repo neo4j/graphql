@@ -41,7 +41,7 @@ export class WebSocketTestClient {
             url: this.path,
             webSocketImpl: ws,
             connectionParams: {
-                authorization: jwt,
+                token: jwt,
             },
         });
     }

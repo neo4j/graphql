@@ -19,12 +19,13 @@
 
 import type { Node, RelationField, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../../../types";
 import type { ObjectFields } from "../../../../get-obj-field-meta";
-import type { RecordType, RelationshipType, SubscriptionContext } from "../../types";
+import type { RecordType, RelationshipType } from "../../types";
 import { filterByProperties } from "./filter-by-properties";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { filterRelationshipKey } from "../utils/filter-relationship-key";
 import { filterByValues } from "../../../../../translate/authorization/utils/filter-by-values";
 import type { SubscriptionsAuthorizationWhere } from "../../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../../composition/wrap-subscription";
 
 function isRelationshipSubscriptionsEvent(event: SubscriptionsEvent): event is RelationshipSubscriptionsEvent {
     return ["create_relationship", "delete_relationship"].includes(event.event);
@@ -48,7 +49,7 @@ export function filterByAuthorizationRules({
     event: SubscriptionsEvent;
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
 }): boolean {
     const receivedEventProperties = event.properties;
 
@@ -138,7 +139,7 @@ export function filterByAuthorizationRules({
         }
 
         if (wherePropertyKey === "jwt") {
-            return filterByValues(wherePropertyValue, context.jwt as Record<string, any>);
+            return filterByValues(wherePropertyValue, context.authorization.jwt as Record<string, any>);
         }
 
         return true;

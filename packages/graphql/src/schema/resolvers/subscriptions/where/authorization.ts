@@ -20,11 +20,11 @@
 import type { SubscriptionsEvent } from "../../../../types";
 import type Node from "../../../../classes/Node";
 import type { ObjectFields } from "../../../get-obj-field-meta";
-import type { SubscriptionContext } from "../types";
 import { filterByAuthorizationRules } from "./filters/filter-by-authorization-rules";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { multipleConditionsAggregationMap } from "./utils/multiple-conditions-aggregation-map";
 import { populateWhereParams } from "./utils/populate-where-params";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 
 export function subscriptionAuthorization({
     event,
@@ -39,7 +39,7 @@ export function subscriptionAuthorization({
     entity: ConcreteEntity;
     nodes?: Node[];
     relationshipFields?: Map<string, ObjectFields>;
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
 }): boolean {
     const subscriptionsAuthorization = entity.annotations.subscriptionsAuthorization;
 
@@ -52,7 +52,7 @@ export function subscriptionAuthorization({
     }
 
     const results = matchedRules.map((rule) => {
-        if (rule.requireAuthentication && !context.jwt) {
+        if (rule.requireAuthentication && !context.authorization.jwt) {
             return false;
         }
 
