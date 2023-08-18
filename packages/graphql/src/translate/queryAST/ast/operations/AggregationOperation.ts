@@ -29,6 +29,7 @@ import type { AggregationField } from "../fields/aggregation-fields/AggregationF
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { QueryASTNode } from "../QueryASTNode";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -67,6 +68,17 @@ export class AggregationOperation extends Operation {
 
     public setFilters(filters: Filter[]) {
         this.filters = filters;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return filterTruthy([
+            ...this.fields,
+            ...this.nodeFields,
+            ...this.edgeFields,
+            ...this.filters,
+            ...this.sortFields,
+            this.pagination,
+        ]);
     }
 
     private createSubquery(
@@ -156,7 +168,10 @@ export class AggregationOperation extends Operation {
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
-        const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, { returnVariable, parentNode });
+        const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, {
+            returnVariable,
+            parentNode,
+        });
         return {
             clauses,
             projectionExpr: this.aggregationProjectionMap,

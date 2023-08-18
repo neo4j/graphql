@@ -2,6 +2,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class CountFilter extends Filter {
     protected comparisonValue: unknown;
@@ -29,6 +30,14 @@ export class CountFilter extends Filter {
             expr: Cypher.count(queryASTContext.target),
             param: new Cypher.Param(this.comparisonValue),
         });
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.isNot ? "NOT " : ""}${this.operator}>`;
     }
 
     /** Returns the default operation for a given filter */

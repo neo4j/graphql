@@ -30,6 +30,7 @@ import { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { QueryASTNode } from "../QueryASTNode";
 
 export class ReadOperation extends Operation {
     public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
@@ -215,6 +216,10 @@ export class ReadOperation extends Operation {
             clauses: [clause],
             projectionExpr: returnVariable,
         };
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return filterTruthy([...this.fields, ...this.filters, this.authFilters, this.pagination, ...this.sortFields]);
     }
 
     protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {

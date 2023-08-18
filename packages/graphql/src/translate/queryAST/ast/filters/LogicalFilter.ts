@@ -22,6 +22,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import type { LogicalOperators } from "./Filter";
 import { Filter } from "./Filter";
 import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
 
 export class LogicalFilter extends Filter {
     private operation: LogicalOperators;
@@ -31,6 +32,14 @@ export class LogicalFilter extends Filter {
         super();
         this.operation = operation;
         this.children = filters;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...this.children];
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.operation}>`;
     }
 
     public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {

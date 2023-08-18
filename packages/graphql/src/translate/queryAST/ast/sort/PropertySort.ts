@@ -21,6 +21,7 @@ import type Cypher from "@neo4j/cypher-builder";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTNode } from "../QueryASTNode";
 
 export class PropertySort extends Sort {
     private attribute: AttributeAdapter;
@@ -30,6 +31,10 @@ export class PropertySort extends Sort {
         super();
         this.attribute = attribute;
         this.direction = direction;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 
     public getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[] {

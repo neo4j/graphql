@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AggregationField } from "./AggregationField";
 import type { Entity } from "../../../../../schema-model/entity/Entity";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class CountField extends AggregationField {
     private entity: Entity;
@@ -27,6 +28,10 @@ export class CountField extends AggregationField {
     constructor({ alias, entity }: { alias: string; entity: Entity }) {
         super(alias);
         this.entity = entity;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {

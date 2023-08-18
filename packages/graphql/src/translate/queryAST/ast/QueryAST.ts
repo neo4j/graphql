@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ReadOperation } from "./operations/ReadOperation";
+import type { QueryASTNode } from "./QueryASTNode";
 
 export class QueryAST {
     private operation: ReadOperation;
@@ -43,4 +44,33 @@ export class QueryAST {
         // const visitor = new QueryASTVisitor();
         // visitor.visit(this.operation);
     }
+
+    public print(): void {
+        const resultLines = getTreeLines(this.operation);
+
+        console.log(resultLines.join("\n"));
+    }
+}
+
+function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
+    const nodeName = treeNode.print();
+    const resultLines: string[] = [];
+
+    if (depth === 0) {
+        resultLines.push(`${nodeName}`);
+    } else if (depth === 1) {
+        resultLines.push(`|${"────".repeat(depth)} ${nodeName}`);
+    } else {
+        resultLines.push(`|${"    ".repeat(depth - 1)} |──── ${nodeName}`);
+    }
+
+    const children = treeNode.getChildren();
+    if (children.length > 0) {
+        children.forEach((curr) => {
+            const childLines = getTreeLines(curr, depth + 1);
+            resultLines.push(...childLines);
+        });
+    }
+
+    return resultLines;
 }

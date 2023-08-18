@@ -23,6 +23,7 @@ import { Filter } from "./Filter";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTNode } from "../QueryASTNode";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
@@ -43,6 +44,10 @@ export class RelationshipFilter extends Filter {
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...this.targetNodeFilters];
     }
 
     public addTargetNodeFilter(...filter: Filter[]): void {

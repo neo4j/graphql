@@ -18,6 +18,7 @@
  */
 
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
 
@@ -27,6 +28,10 @@ export class AttributeField extends Field {
     constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
         super(alias);
         this.attribute = attribute;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {

@@ -19,8 +19,8 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { AggregationField } from "./AggregationField";
-import type { Attribute } from "../../../../../schema-model/attribute/Attribute";
-import { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AggregationAttributeField extends AggregationField {
     private attribute: AttributeAdapter;
@@ -28,6 +28,10 @@ export class AggregationAttributeField extends AggregationField {
     constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
         super(alias);
         this.attribute = attribute;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {

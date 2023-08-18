@@ -33,4 +33,8 @@ export abstract class Field extends QueryASTNode {
     public getSubqueries(_node: Cypher.Node): Cypher.Clause[] {
         return [];
     }
+
+    public print(): string {
+        return `${super.print()} <${this.alias}>`;
+    }
 }

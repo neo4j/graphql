@@ -23,6 +23,7 @@ import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -50,6 +51,14 @@ export class PropertyFilter extends Filter {
         this.operator = operator;
         this.isNot = isNot;
         this.attachedTo = attachedTo ?? "node";
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
+
+    public print(): string {
+        return `${super.print()} [${this.attachedTo}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {

@@ -42,4 +42,8 @@ export class Pagination extends QueryASTNode {
             limit: this.limit ? new Cypher.Param(this.limit) : undefined,
         };
     }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
 }

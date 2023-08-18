@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AuthorizationRuleFilter extends Filter {
     public children: Filter[];
@@ -57,5 +58,9 @@ export class AuthorizationRuleFilter extends Filter {
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
         return this.children.flatMap((c) => c.getSubqueries(_parentNode));
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...this.children];
     }
 }

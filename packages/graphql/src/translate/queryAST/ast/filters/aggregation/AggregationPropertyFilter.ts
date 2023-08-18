@@ -3,6 +3,7 @@ import type { AggregationLogicalOperator, AggregationOperator } from "../../../f
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AggregationPropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -31,6 +32,10 @@ export class AggregationPropertyFilter extends Filter {
         this.logicalOperator = logicalOperator;
         this.aggregationOperator = aggregationOperator;
         this.attachedTo = attachedTo ?? "node";
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {

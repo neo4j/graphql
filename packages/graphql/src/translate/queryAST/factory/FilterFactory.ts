@@ -28,7 +28,6 @@ import type { RelationshipWhereOperator, WhereOperator } from "../../where/types
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
-import { Neo4jGraphQLSpatialType, Neo4jGraphQLTemporalType } from "../../../schema-model/attribute/AttributeType";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
@@ -199,8 +198,9 @@ export class FilterFactory {
         return new RelationshipFilter(options);
     }
 
+    // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
     public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Filter[] {
-        return filterTruthy(
+        const filters = filterTruthy(
             Object.entries(where).map(([key, value]): Filter | undefined => {
                 if (isLogicalOperator(key)) {
                     return this.createNodeLogicalFilter(key, value as any, entity);
@@ -248,6 +248,8 @@ export class FilterFactory {
                 });
             })
         );
+
+        return this.wrapMultipleFiltersInLogical(filters);
     }
 
     private createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
@@ -268,7 +270,8 @@ export class FilterFactory {
             });
         });
 
-        return filterTruthy(filterASTs);
+        return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
+        // return filterTruthy(filterASTs);
     }
 
     private createNodeLogicalFilter(
@@ -303,12 +306,13 @@ export class FilterFactory {
         where: AggregateWhereInput,
         relationship: RelationshipAdapter
     ): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> {
-        return Object.entries(where).flatMap(
+        const nestedFilters = Object.entries(where).flatMap(
             ([key, value]): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = asArray(value).flatMap((nestedWhere) => {
                         return this.getAggregationNestedFilters(nestedWhere, relationship);
                     });
+
                     const logicalFilter = new LogicalFilter({
                         operation: key,
                         filters: nestedFilters,
@@ -341,6 +345,8 @@ export class FilterFactory {
                 throw new Error(`Aggregation filter not found ${key}`);
             }
         );
+
+        return this.wrapMultipleFiltersInLogical(nestedFilters);
     }
 
     private createAggregationFilter(where: AggregateWhereInput, relationship: RelationshipAdapter): AggregationFilter {
@@ -355,7 +361,7 @@ export class FilterFactory {
         where: Record<string, any>,
         entity: ConcreteEntityAdapter | RelationshipAdapter
     ): Array<AggregationPropertyFilter | LogicalFilter> {
-        return Object.entries(where).map(([key, value]) => {
+        const filters = Object.entries(where).map(([key, value]) => {
             if (isLogicalOperator(key)) {
                 return this.createAggregateLogicalFilter(key, value, entity);
             }
@@ -386,6 +392,23 @@ export class FilterFactory {
                 attachedTo,
             });
         });
+
+        return this.wrapMultipleFiltersInLogical(filters);
+    }
+
+    private wrapMultipleFiltersInLogical<F extends Filter>(
+        filters: F[],
+        logicalOp: "AND" | "OR" = "AND"
+    ): Array<F | LogicalFilter> {
+        if (filters.length > 1) {
+            return [
+                new LogicalFilter({
+                    operation: logicalOp,
+                    filters,
+                }),
+            ];
+        }
+        return filters;
     }
 
     private createAggregateLogicalFilter(

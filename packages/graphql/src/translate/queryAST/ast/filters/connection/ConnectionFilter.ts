@@ -4,6 +4,7 @@ import type { RelationshipWhereOperator } from "../../../../where/types";
 import { Filter } from "../Filter";
 import { QueryASTContext } from "../../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { QueryASTNode } from "../../QueryASTNode";
 
 export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
@@ -28,6 +29,10 @@ export class ConnectionFilter extends Filter {
 
     public addFilters(filters: Filter[]): void {
         this.innerFilters.push(...filters);
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...this.innerFilters];
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {

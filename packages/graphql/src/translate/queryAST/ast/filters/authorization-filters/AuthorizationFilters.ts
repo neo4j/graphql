@@ -22,6 +22,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../../../../../constants";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { Filter } from "../Filter";
 import type { AuthorizationRuleFilter } from "./AuthorizationRuleFilter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AuthorizationFilters extends Filter {
     private validationFilters: AuthorizationRuleFilter[] = [];
@@ -64,5 +65,9 @@ export class AuthorizationFilters extends Filter {
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
         return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSubqueries(_parentNode));
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...this.validationFilters, ...this.whereFilters];
     }
 }

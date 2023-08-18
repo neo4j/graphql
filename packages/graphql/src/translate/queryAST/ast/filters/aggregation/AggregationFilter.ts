@@ -6,6 +6,7 @@ import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { LogicalFilter } from "../LogicalFilter";
 import { QueryASTContext } from "../../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AggregationFilter extends Filter {
     private relationship: RelationshipAdapter;
@@ -21,6 +22,10 @@ export class AggregationFilter extends Filter {
 
     public addFilters(...filter: Array<AggregationPropertyFilter | CountFilter | LogicalFilter>) {
         this.filters.push(...filter);
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...this.filters];
     }
 
     public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {

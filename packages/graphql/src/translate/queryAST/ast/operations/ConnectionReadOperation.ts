@@ -29,6 +29,8 @@ import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import { filterTruthy } from "../../../../utils/utils";
+import type { QueryASTNode } from "../QueryASTNode";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter;
@@ -68,6 +70,21 @@ export class ConnectionReadOperation extends Operation {
 
     public addPagination(pagination: Pagination): void {
         this.pagination = pagination;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        const sortFields = this.sortFields.flatMap((s) => {
+            return [...s.edge, ...s.node];
+        });
+
+        return filterTruthy([
+            ...this.nodeFields,
+            ...this.edgeFields,
+            ...this.filters,
+            this.authFilters,
+            this.pagination,
+            ...sortFields,
+        ]);
     }
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {

@@ -17,4 +17,11 @@
  * limitations under the License.
  */
 
-export abstract class QueryASTNode {}
+export abstract class QueryASTNode {
+    public abstract getChildren(): QueryASTNode[];
+
+    /** Prints the name of the Node */
+    public print(): string {
+        return this.constructor.name;
+    }
+}

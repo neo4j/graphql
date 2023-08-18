@@ -22,6 +22,7 @@ import { QueryASTContext } from "../../QueryASTContext";
 import { RelationshipFilter } from "../RelationshipFilter";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import { Memoize } from "typescript-memoize";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AuthRelationshipFilter extends RelationshipFilter {
     private countVar = new Cypher.Variable();
@@ -68,6 +69,10 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         }
 
         return Cypher.and(Cypher.neq(this.countVar, new Cypher.Literal(0)), innerPredicate);
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 
     @Memoize()

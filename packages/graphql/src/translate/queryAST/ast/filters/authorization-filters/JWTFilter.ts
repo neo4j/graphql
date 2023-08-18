@@ -4,6 +4,7 @@ import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import Cypher from "@neo4j/cypher-builder";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
+import type { QueryASTNode } from "../../QueryASTNode";
 
 export class JWTFilter extends Filter {
     protected operator: FilterOperator;
@@ -25,7 +26,11 @@ export class JWTFilter extends Filter {
         this.comparisonValue = comparisonValue;
     }
 
-    public getPredicate(context: QueryASTContext): Predicate | undefined {
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
+
+    public getPredicate(_context: QueryASTContext): Predicate | undefined {
         return createComparisonOperation({
             operator: this.operator,
             property: this.JWTClaim,
