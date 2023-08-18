@@ -122,9 +122,9 @@ new Neo4jGraphQL({
 ==== `requires` changes
 
 In version 4.0.0, it is now possible to require non-scalar fields. This means it is also possible to require fields on related type.
-To make this possible, the `requires` argument now accept a graphql selection set instead of a list of strings.
+To make this possible, the `requires` argument now accept a GraphQL selection set instead of a list of strings.
 
-Therefore, the following type definitions:
+Therefore, given the following type definitions in 3.0.0:
 
 [source, graphql, indent=0]
 ----
@@ -135,7 +135,7 @@ type User {
 }
 ----
 
-Would need to be modified to use a selection set as below:
+In 4.0.0, these need to be modified to use a selection set as below:
 
 [source, graphql, indent=0]
 ----
