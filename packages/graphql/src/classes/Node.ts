@@ -41,7 +41,7 @@ import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
-import type { QueryOptionsDirective } from "./QueryOptionsDirective";
+import type { LimitDirective } from "./LimitDirective";
 import type { SchemaConfiguration } from "../schema/schema-configuration";
 import { leadingUnderscores } from "../utils/leading-underscore";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
@@ -68,7 +68,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     schemaConfiguration?: SchemaConfiguration;
     nodeDirective?: NodeDirective;
     description?: string;
-    queryOptionsDirective?: QueryOptionsDirective;
+    limitDirective?: LimitDirective;
     isGlobalNode?: boolean;
     globalIdField?: string;
     globalIdFieldIsInt?: boolean;
@@ -134,7 +134,7 @@ class Node extends GraphElement {
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
     public description?: string;
-    public queryOptions?: QueryOptionsDirective;
+    public limit?: LimitDirective;
     public singular: string;
     public plural: string;
     public isGlobalNode: boolean | undefined;
@@ -156,7 +156,7 @@ class Node extends GraphElement {
         this.schemaConfiguration = input.schemaConfiguration;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.queryOptions = input.queryOptionsDirective;
+        this.limit = input.limitDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;
         this._idFieldIsInt = input.globalIdFieldIsInt;
