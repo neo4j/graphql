@@ -21,18 +21,9 @@ import { Kind } from "graphql";
 import { parseArgumentToInt } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 
-export function verifyQueryOptions({ directiveNode }: { directiveNode: DirectiveNode }) {
-    const limitArg = directiveNode.arguments?.find((a) => a.name.value === "limit");
-    if (!limitArg) {
-        // nothing to check, argument is optional
-        return;
-    }
-    if (limitArg.value.kind !== Kind.OBJECT) {
-        // delegate to DirectiveArgumentOfCorrectType rule
-        return;
-    }
-    const defaultArg = limitArg.value.fields.find((f) => f.name.value === "default");
-    const maxArg = limitArg.value.fields.find((f) => f.name.value === "max");
+export function verifyLimit({ directiveNode }: { directiveNode: DirectiveNode }) {
+    const defaultArg = directiveNode.arguments?.find((a) => a.name.value === "default");
+    const maxArg = directiveNode.arguments?.find((a) => a.name.value === "max");
     if (!defaultArg && !maxArg) {
         // nothing to check, fields are optional
         return;
@@ -44,8 +35,8 @@ export function verifyQueryOptions({ directiveNode }: { directiveNode: Directive
         // default must be greater than 0
         if (defaultValue <= 0) {
             throw new DocumentValidationError(
-                `@queryOptions.limit.default invalid value: ${defaultValue}. Must be greater than 0.`,
-                ["limit"]
+                `@limit.default invalid value: ${defaultValue}. Must be greater than 0.`,
+                ["default"]
             );
         }
     }
@@ -53,10 +44,9 @@ export function verifyQueryOptions({ directiveNode }: { directiveNode: Directive
         const maxValue = maxLimit.toNumber();
         // max must be greater than 0
         if (maxValue <= 0) {
-            throw new DocumentValidationError(
-                `@queryOptions.limit.max invalid value: ${maxValue}. Must be greater than 0.`,
-                ["limit"]
-            );
+            throw new DocumentValidationError(`@limit.max invalid value: ${maxValue}. Must be greater than 0.`, [
+                "max",
+            ]);
         }
     }
     if (defaultLimit && maxLimit) {
@@ -65,8 +55,8 @@ export function verifyQueryOptions({ directiveNode }: { directiveNode: Directive
         // default must be smaller than max
         if (maxLimit < defaultLimit) {
             throw new DocumentValidationError(
-                `@queryOptions.limit.max invalid value: ${maxValue}. Must be greater than limit.default: ${defaultValue}.`,
-                ["limit"]
+                `@limit.max invalid value: ${maxValue}. Must be greater than limit.default: ${defaultValue}.`,
+                ["max"]
             );
         }
     }

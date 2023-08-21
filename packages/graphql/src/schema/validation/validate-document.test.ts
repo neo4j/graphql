@@ -1773,10 +1773,10 @@ describe("validation 2.0", () => {
             });
         });
 
-        describe("@queryOptions", () => {
-            test("@queryOptions default must be > 0", () => {
+        describe("@limit", () => {
+            test("@limit default must be > 0", () => {
                 const doc = gql`
-                    type User @queryOptions(limit: { default: -1 }) {
+                    type User @limit(default: -1) {
                         name: String
                     }
                 `;
@@ -1788,14 +1788,30 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@queryOptions.limit.default invalid value: -1. Must be greater than 0."
+                    "@limit.default invalid value: -1. Must be greater than 0."
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "@limit", "default"]);
             });
 
-            test("@queryOptions max must be > 0", () => {
+            test("@limit max must be > 0", () => {
                 const doc = gql`
-                    type User @queryOptions(limit: { max: -1 }) {
+                    type User @limit(max: -1) {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "@limit.max invalid value: -1. Must be greater than 0.");
+                expect(errors[0]).toHaveProperty("path", ["User", "@limit", "max"]);
+            });
+
+            test("@limit default must be < max", () => {
+                const doc = gql`
+                    type User @limit(default: 10, max: 9) {
                         name: String
                     }
                 `;
@@ -1807,33 +1823,14 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@queryOptions.limit.max invalid value: -1. Must be greater than 0."
+                    "@limit.max invalid value: 9. Must be greater than limit.default: 10."
                 );
-                expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "@limit", "max"]);
             });
 
-            test("@queryOptions default must be < max", () => {
+            test("@limit empty limit argument is correct", () => {
                 const doc = gql`
-                    type User @queryOptions(limit: { default: 10, max: 9 }) {
-                        name: String
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@queryOptions.limit.max invalid value: 9. Must be greater than limit.default: 10."
-                );
-                expect(errors[0]).toHaveProperty("path", ["User", "@queryOptions", "limit"]);
-            });
-
-            test("@queryOptions empty limit argument is correct", () => {
-                const doc = gql`
-                    type User @queryOptions(limit: {}) {
+                    type User @limit {
                         name: String
                     }
                 `;
@@ -1842,9 +1839,9 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@queryOptions correct", () => {
+            test("@limit correct", () => {
                 const doc = gql`
-                    type User @queryOptions(limit: { default: 1, max: 2 }) {
+                    type User @limit(default: 1, max: 2) {
                         name: String
                     }
                 `;

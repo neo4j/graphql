@@ -16,7 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { TypeNode, ValueNode, EnumTypeDefinitionNode, ObjectFieldNode, FieldDefinitionNode } from "graphql";
+import type {
+    TypeNode,
+    ValueNode,
+    EnumTypeDefinitionNode,
+    ObjectFieldNode,
+    FieldDefinitionNode,
+    ArgumentNode,
+} from "graphql";
 import { Kind } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
@@ -66,9 +73,9 @@ export function getPrettyName(typeNode: TypeNode): string {
     return typeNode.name.value;
 }
 
-export function parseArgumentToInt(field: ObjectFieldNode | undefined): neo4j.Integer | undefined {
-    if (field) {
-        const parsed = parseValueNode(field.value) as number;
+export function parseArgumentToInt(arg: ArgumentNode | undefined): neo4j.Integer | undefined {
+    if (arg) {
+        const parsed = parseValueNode(arg.value) as number;
         return neo4j.int(parsed);
     }
     return undefined;

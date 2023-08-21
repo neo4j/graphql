@@ -31,7 +31,7 @@ import { verifyCoalesce } from "./coalesce";
 import { verifyDefault } from "./default";
 import { verifyFulltext } from "./fulltext";
 import { verifyPopulatedBy } from "./populatedBy";
-import { verifyQueryOptions } from "./queryOptions";
+import { verifyLimit } from "./limit";
 import { verifyRelationshipArgumentValue } from "./relationship";
 import type { ValidationFunction } from "../utils/document-validation-error";
 import { createGraphQLError, assertValid } from "../utils/document-validation-error";
@@ -61,8 +61,8 @@ function getValidationFunction(
             return verifyFulltext;
         case "populatedBy":
             return verifyPopulatedBy(callbacks);
-        case "queryOptions":
-            return verifyQueryOptions;
+        case "limit":
+            return verifyLimit;
         case "relationship":
             return verifyRelationshipArgumentValue(
                 objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,
