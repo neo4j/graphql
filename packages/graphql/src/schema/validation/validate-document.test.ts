@@ -440,7 +440,7 @@ describe("validation 2.0", () => {
 
         test("@customResolver.required property must be string", () => {
             const doc = gql`
-                type Query {
+                type User {
                     myStuff: String @customResolver(requires: 42)
                 }
             `;
@@ -452,7 +452,7 @@ describe("validation 2.0", () => {
                 "message",
                 "Invalid argument: requires, error: SelectionSet cannot represent non string value: 42"
             );
-            expect(errors[0]).toHaveProperty("path", ["Query", "myStuff", "@customResolver", "requires"]);
+            expect(errors[0]).toHaveProperty("path", ["User", "myStuff", "@customResolver", "requires"]);
         });
 
         test("@cypher.columnName property must be string", () => {
@@ -2755,6 +2755,163 @@ describe("validation 2.0", () => {
                     "Invalid directive usage: Directive @query can only be used in one location: either schema or type."
                 );
             });
+        });
+    });
+
+    describe("Valid directives on fields of root types (Query|Mutation|Subscription)", () => {
+        test("@relationship can't be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @relationship is not supported on fields of the Query type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@relationship"]);
+        });
+
+        test("@authentication can't be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]! @authentication
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @authentication is not supported on fields of the Query type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authentication"]);
+        });
+
+        test("@populatedBy can't be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]! @populatedBy(callback: "myCallback")
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                myCallback: () => "test",
+                            },
+                        },
+                    },
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @populatedBy is not supported on fields of the Query type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
+        });
+
+        test("@cypher ok to be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]!
+                        @cypher(
+                            statement: """
+                            RETURN {name: "Keanu"} AS actor
+                            """
+                            columnName: "actor"
+                        )
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@cypher can't be used on the field of the Subscription type", () => {
+            const doc = gql`
+                type Subscription {
+                    someActors: [Actor!]!
+                        @cypher(
+                            statement: """
+                            RETURN {name: "Keanu"} AS actor
+                            """
+                            columnName: "actor"
+                        )
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @cypher is not supported on fields of the Subscription type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Subscription", "someActors", "@cypher"]);
         });
     });
 

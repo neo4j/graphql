@@ -60,6 +60,7 @@ import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
 import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
+import { ValidDirectiveAtLocation } from "./custom-rules/directives/valid-directive-location";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -225,6 +226,7 @@ function runValidationRulesOnFilteredDocument({
         [
             ...specifiedSDLRules,
             directiveIsValid(extra, callbacks),
+            ValidDirectiveAtLocation,
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,
