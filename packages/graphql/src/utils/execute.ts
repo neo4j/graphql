@@ -21,7 +21,7 @@ import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
 import { DEBUG_EXECUTE } from "../constants";
 import type { GraphQLResolveInfo } from "graphql";
-import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/wrapper";
+import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
 
 const debug = Debug(DEBUG_EXECUTE);
 

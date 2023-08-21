@@ -18,16 +18,16 @@
  */
 
 import dotProp from "dot-prop";
-import type { SubscriptionContext } from "../../types";
 import type { SubscriptionsAuthorizationWhere } from "../../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
 import type { GraphQLWhereArg } from "../../../../../types";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../../composition/wrap-subscription";
 
 export function populateWhereParams({
     where,
     context,
 }: {
     where: SubscriptionsAuthorizationWhere | GraphQLWhereArg;
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
 }): SubscriptionsAuthorizationWhere {
     const parsed: SubscriptionsAuthorizationWhere = {};
 
@@ -42,9 +42,9 @@ export function populateWhereParams({
             if (v.startsWith("$jwt")) {
                 const path = v.substring(5);
 
-                const mappedPath = context.jwtPayloadFieldsMap?.get(path);
+                const mappedPath = context.authorization.claims?.get(path);
 
-                const value = dotProp.get(context.jwt, mappedPath || path);
+                const value = dotProp.get(context.authorization.jwt, mappedPath || path);
 
                 parsed[k] = value;
             } else if (v.startsWith("$context")) {

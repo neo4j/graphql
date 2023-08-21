@@ -20,9 +20,8 @@
 import * as semver from "semver";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import type { Session, Driver } from "neo4j-driver";
-import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
-import type { Neo4jGraphQLComposedContext } from "./wrapper";
-import { wrapSubscription } from "./wrapper";
+import { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
+import type { Neo4jGraphQLComposedContext } from "./wrap-query-and-mutation";
 
 describe("wrapper test", () => {
     let fakeSession: Session;
@@ -32,8 +31,8 @@ describe("wrapper test", () => {
     let wrapResolver;
 
     beforeEach(async () => {
-        const module = await import("./wrapper");
-        wrapResolver = module.wrapResolver;
+        const module = await import("./wrap-query-and-mutation");
+        wrapResolver = module.wrapQueryAndMutation;
         jest.resetModules();
         executeRead.mockReset();
         // @ts-ignore
@@ -116,33 +115,5 @@ describe("wrapper test", () => {
         const secondRes = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
         expect(secondRes).toBe(resolvedResult);
         expect(executeRead).toHaveBeenCalledTimes(1);
-    });
-});
-
-describe("subscription wrapper test", () => {
-    test("should check JWT in subscription context", async () => {
-        const args = {
-            features: {
-                subscriptions: "any",
-            },
-            plugins: {
-                auth: {
-                    isGlobalAuthenticationEnabled: true,
-                },
-            },
-        } as unknown as Parameters<typeof wrapSubscription>[0];
-
-        const resolverDecorator = wrapSubscription(args);
-        const resolvedResult = "Resolved value";
-        const resolver = (_root, _args, context: Neo4jGraphQLComposedContext) => {
-            expect(context).toBeDefined();
-            expect(context.jwt).toEqual({ sub: "test" });
-            return resolvedResult;
-        };
-
-        const wrappedResolver = resolverDecorator(resolver);
-        const context = { jwt: { sub: "test" } } as Neo4jGraphQLComposedContext;
-        const res = await wrappedResolver({}, {}, context, {} as GraphQLResolveInfo);
-        expect(res).toBe(resolvedResult);
     });
 });

@@ -22,7 +22,7 @@ import type { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } 
 import { nodeDefinitions } from "graphql-relay";
 import type { Node } from "../types";
 import { globalNodeResolver } from "./resolvers/query/global-node";
-import type { Neo4jGraphQLComposedContext } from "./resolvers/wrapper";
+import type { Neo4jGraphQLComposedContext } from "./resolvers/composition/wrap-query-and-mutation";
 
 // returns true if globalNodeFields added or false if not
 export function addGlobalNodeFields(nodes: Node[], composer: SchemaComposer): boolean {
