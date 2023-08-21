@@ -35,7 +35,7 @@ import type { Node } from "../types";
 import { execute } from "../utils";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { isInArray } from "../utils/is-in-array";
-import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/wrapper";
+import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 // TODO fetch the directive names from the spec
