@@ -31,7 +31,7 @@ export { nodeDirective } from "./node";
 export { pluralDirective } from "./plural";
 export { populatedByDirective } from "./populatedBy";
 export { privateDirective } from "./private";
-export { queryOptionsDirective } from "./query-options";
+export { limitDirective } from "./limit";
 export { readonlyDirective } from "./readonly";
 export { relationshipPropertiesDirective } from "./relationship-properties";
 export { relationshipDirective } from "./relationship";
