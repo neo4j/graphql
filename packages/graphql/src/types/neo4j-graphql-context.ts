@@ -19,9 +19,9 @@
 
 import type { CypherQueryOptions } from ".";
 import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Executor";
-import type { Neo4jGraphQLCommonContext } from "./neo4j-graphql-common-context";
+import type { Neo4jGraphQLContextInterface } from "./neo4j-graphql-context-interface";
 
-export interface Neo4jGraphQLContext extends Neo4jGraphQLCommonContext {
+export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
     /**
      * Parameters to be used when querying with Cypher.
      *

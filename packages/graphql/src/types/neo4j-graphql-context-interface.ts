@@ -22,7 +22,7 @@ import type { JWTPayload } from "jose";
 /**
  * A type containing context values which are common for both Query/Mutation and Subscription operations.
  */
-export interface Neo4jGraphQLCommonContext {
+export interface Neo4jGraphQLContextInterface {
     /**
      * A decoded JWT payload which can be provided for use in authentication and authorization.
      * Takes precedence over {@link token} if both are present in the context.
