@@ -56,7 +56,7 @@ export class Attribute {
         });
     }
 
-    public addAnnotation(annotation: Annotation): void {
+    private addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
         if (this.annotations[annotationKey]) {
             throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);

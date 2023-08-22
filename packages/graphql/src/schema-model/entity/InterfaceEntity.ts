@@ -21,7 +21,6 @@ import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
-import type { Relationship } from "../relationship/Relationship";
 import type { CompositeEntity } from "./CompositeEntity";
 import type { ConcreteEntity } from "./ConcreteEntity";
 
@@ -29,7 +28,6 @@ export class InterfaceEntity implements CompositeEntity {
     public readonly name: string;
     public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
-    public readonly relationships: Map<string, Relationship> = new Map();
     public readonly annotations: Partial<Annotations> = {};
 
     constructor({
@@ -37,13 +35,11 @@ export class InterfaceEntity implements CompositeEntity {
         concreteEntities,
         attributes = [],
         annotations = [],
-        relationships = [],
     }: {
         name: string;
         concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
         annotations?: Annotation[];
-        relationships?: Relationship[];
     }) {
         this.name = name;
         this.concreteEntities = concreteEntities;
@@ -53,10 +49,6 @@ export class InterfaceEntity implements CompositeEntity {
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);
-        }
-
-        for (const relationship of relationships) {
-            this.addRelationship(relationship);
         }
     }
 
@@ -80,31 +72,7 @@ export class InterfaceEntity implements CompositeEntity {
         this.annotations[annotationKey] = annotation as any;
     }
 
-    private deleteAttribute(attributeName: string): void {
-        if (this.attributes.has(attributeName)) {
-            this.attributes.delete(attributeName);
-        }
-    }
-
-    public attributeToRelationship(relationship: Relationship): void {
-        this.addRelationship(relationship);
-        this.deleteAttribute(relationship.name);
-    }
-
-    public addRelationship(relationship: Relationship): void {
-        if (this.relationships.has(relationship.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(
-                `Attribute ${relationship.name} already exists in ${this.name}`
-            );
-        }
-        this.relationships.set(relationship.name, relationship);
-    }
-
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
-    }
-
-    public findRelationship(name: string): Relationship | undefined {
-        return this.relationships.get(name);
     }
 }
