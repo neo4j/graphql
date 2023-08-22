@@ -17,12 +17,4 @@
  * limitations under the License.
  */
 
-export class IDAnnotation {
-    public readonly autogenerate: boolean;
-    public readonly unique: boolean;
-
-    constructor({ autogenerate, unique }: { autogenerate: boolean; unique: boolean }) {
-        this.autogenerate = autogenerate;
-        this.unique = unique;
-    }
-}
+export class IDAnnotation {}

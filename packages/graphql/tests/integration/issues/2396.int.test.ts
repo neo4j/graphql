@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         const typeDefs = `
             type ${PostalCode} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                number: String! @id(autogenerate: false)
+                number: String! @unique
 
                 address: [${Address}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }

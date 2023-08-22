@@ -29,7 +29,7 @@ describe("issues/1130", () => {
             
             # <-- Changing the name to "SicIndustry" works
             type SICIndustry {
-              code: ID! @id(autogenerate: false)
+              code: ID! @unique
               title: String!
               companies: [Company!]! @relationship(type: "CONDUCTS_BUSINESS_IN", direction: IN)
             }

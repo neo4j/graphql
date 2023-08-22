@@ -130,8 +130,14 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
     }
 
     for (const constraintToCreate of constraintsToCreate) {
+        let createConstraintStr = "CREATE CONSTRAINT";
+
+        if (constraintToCreate.constraintName) {
+            createConstraintStr = createConstraintStr + ` ${constraintToCreate.constraintName}`;
+        }
+
         const cypher = [
-            `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
+            createConstraintStr,
             `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
             `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
