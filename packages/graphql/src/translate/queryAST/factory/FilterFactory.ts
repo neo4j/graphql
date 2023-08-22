@@ -27,7 +27,7 @@ import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { asArray, filterTruthy } from "../../../utils/utils";
-import { ConnectionFilter } from "../ast/filters/connection/ConnectionFilter";
+import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
