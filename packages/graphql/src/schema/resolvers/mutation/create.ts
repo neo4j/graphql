@@ -22,7 +22,7 @@ import { execute } from "../../../utils";
 import { translateCreate } from "../../../translate";
 import type { Node } from "../../../classes";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
-import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
