@@ -37,7 +37,7 @@ function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationConte
     if (!entity) throw new Error("Entity not found");
     const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity, context);
     const clause = queryAST.transpile();
-
+    // queryAST.print();
     return clause.build();
 }
 
@@ -209,6 +209,7 @@ export function translateRead(
         projectionSubqueries,
         projectionClause
     );
+
     const result = readQuery.build(undefined, context.cypherParams ? { ...context.cypherParams } : {});
 
     return result;

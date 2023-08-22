@@ -46,9 +46,8 @@ export class AuthRelationshipFilter extends RelationshipFilter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        // if version>5 super.getPredicate()
+        // if version>5 super.getPredicate(), due to limitations with Exists operation in neo4j 4
 
-        //
         const nestedContext = queryASTContext.push({
             relationship: this.relationshipVar,
             target: this.relatedNode,

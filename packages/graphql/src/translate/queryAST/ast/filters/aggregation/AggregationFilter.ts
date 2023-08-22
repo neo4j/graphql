@@ -29,6 +29,7 @@ export class AggregationFilter extends Filter {
     }
 
     public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
+        this.subqueryVariables = []; // TODO: fix this state
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const relatedNode = new Cypher.Node({
             labels: relatedEntity.labels,

@@ -160,7 +160,6 @@ export class ReadOperation extends Operation {
         const filterPredicates = this.getPredicates(context);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(node) : [];
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(node), ...authFilterSubqueries);
-
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(context) : undefined;
 
         const projectionFields = this.fields.map((f) => f.getProjectionField(node));
@@ -219,7 +218,7 @@ export class ReadOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.fields, ...this.filters, this.authFilters, this.pagination, ...this.sortFields]);
+        return filterTruthy([...this.filters, this.authFilters, ...this.fields, this.pagination, ...this.sortFields]);
     }
 
     protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
