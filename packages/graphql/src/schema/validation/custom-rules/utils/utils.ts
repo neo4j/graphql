@@ -16,14 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    TypeNode,
-    ValueNode,
-    EnumTypeDefinitionNode,
-    ObjectFieldNode,
-    FieldDefinitionNode,
-    ArgumentNode,
-} from "graphql";
+import type { ArgumentNode, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode, ValueNode } from "graphql";
 import { Kind } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
