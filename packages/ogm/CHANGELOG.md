@@ -1,5 +1,16 @@
 # @neo4j/graphql-ogm
 
+## 4.0.0-beta.2
+
+### Major Changes
+
+-   [#3592](https://github.com/neo4j/graphql/pull/3592) [`2ba1d45b5`](https://github.com/neo4j/graphql/commit/2ba1d45b5bf642975381ca8431cb10094151586d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library now only accepts a `string`, `DocumentNode` or an array containing these types. A callback function returning these is also accepted. This is a reduction from `TypeSource` which also included types such as `GraphQLSchema` and `DefinitionNode`, which would have resulted in unexpected behaviour if passed in.
+
+### Patch Changes
+
+-   Updated dependencies [[`2ba1d45b5`](https://github.com/neo4j/graphql/commit/2ba1d45b5bf642975381ca8431cb10094151586d), [`a16ba357c`](https://github.com/neo4j/graphql/commit/a16ba357cb745ba728009c5e6b531b4c56a62f43), [`56857a3e5`](https://github.com/neo4j/graphql/commit/56857a3e53134ad9f46f3265567c55570f674aab), [`e9bf1e619`](https://github.com/neo4j/graphql/commit/e9bf1e619ee71ead228530a9d46834a655686c6d), [`9354860ae`](https://github.com/neo4j/graphql/commit/9354860ae2f5f4a82179de874344724862d0c231)]:
+    -   @neo4j/graphql@4.0.0-beta.2
+
 ## 4.0.0-beta.1
 
 ### Patch Changes

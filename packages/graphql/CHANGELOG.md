@@ -1,5 +1,21 @@
 # @neo4j/graphql
 
+## 4.0.0-beta.2
+
+### Major Changes
+
+-   [#3592](https://github.com/neo4j/graphql/pull/3592) [`2ba1d45b5`](https://github.com/neo4j/graphql/commit/2ba1d45b5bf642975381ca8431cb10094151586d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library now only accepts a `string`, `DocumentNode` or an array containing these types. A callback function returning these is also accepted. This is a reduction from `TypeSource` which also included types such as `GraphQLSchema` and `DefinitionNode`, which would have resulted in unexpected behaviour if passed in.
+
+-   [#3809](https://github.com/neo4j/graphql/pull/3809) [`a16ba357c`](https://github.com/neo4j/graphql/commit/a16ba357cb745ba728009c5e6b531b4c56a62f43) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `limit` argument of the `@queryOptions` directive has been moved to its own directive, `@limit`.
+
+-   [#3792](https://github.com/neo4j/graphql/pull/3792) [`56857a3e5`](https://github.com/neo4j/graphql/commit/56857a3e53134ad9f46f3265567c55570f674aab) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Use driver default access mode "READ" for `@cypher` directives in the `Query` type, and "WRITE" in the `Mutation` type.
+
+### Patch Changes
+
+-   [#3758](https://github.com/neo4j/graphql/pull/3758) [`e9bf1e619`](https://github.com/neo4j/graphql/commit/e9bf1e619ee71ead228530a9d46834a655686c6d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `cypherParams` added to the `Neo4jGraphQLContext` type, and the fields within it can be referred to directly.
+
+-   [#3795](https://github.com/neo4j/graphql/pull/3795) [`9354860ae`](https://github.com/neo4j/graphql/commit/9354860ae2f5f4a82179de874344724862d0c231) Thanks [@darrellwarde](https://github.com/darrellwarde)! - If possible, instantiate JWKS endpoint connection on startup, to benefit from caching.
+
 ## 4.0.0-beta.1
 
 ### Patch Changes
