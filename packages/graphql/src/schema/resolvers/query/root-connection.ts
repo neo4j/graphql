@@ -27,7 +27,7 @@ import type { Node } from "../../../classes";
 import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
-import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 

@@ -20,12 +20,12 @@
 import Debug from "debug";
 import type { Key, Neo4jAuthorizationSettings, RemoteJWKS } from "../../types";
 
-import { AUTHORIZATION_UNAUTHENTICATED, DEBUG_AUTH } from "../../constants";
+import { DEBUG_AUTH } from "../../constants";
 import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose";
 import type { JWTPayload, JWTVerifyGetKey } from "jose";
 import { parseBearerToken } from "./parse-request-token";
-import { Neo4jGraphQLError } from "../Error";
 import type { Neo4jGraphQLContext } from "../../types/neo4j-graphql-context";
+import type { Neo4jGraphQLSubscriptionsConnectionParams } from "../../types/neo4j-graphql-subscriptions-context";
 
 const debug = Debug(DEBUG_AUTH);
 
@@ -51,14 +51,16 @@ export class Neo4jGraphQLAuthorization {
         return this.authorization.globalAuthentication || false;
     }
 
-    public async decode(context: Neo4jGraphQLContext): Promise<JWTPayload | undefined> {
+    public async decode(
+        context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams
+    ): Promise<JWTPayload | undefined> {
         const bearerToken = context.token;
         if (!bearerToken) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+            return undefined;
         }
         const token = parseBearerToken(bearerToken);
         if (!token) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+            return undefined;
         }
         try {
             if (this.authorization.verify === false) {
@@ -69,28 +71,7 @@ export class Neo4jGraphQLAuthorization {
             return await this.verify(token, secret);
         } catch (error) {
             debug("%s", error);
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-    }
-
-    public async decodeBearerTokenWithVerify(bearerToken: string | undefined): Promise<JWTPayload | undefined> {
-        if (!bearerToken) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-
-        const token = parseBearerToken(bearerToken);
-        if (!token) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-        try {
-            if (this.authorization.verify === false) {
-                debug("Skipping verifying JWT as verify is set to false");
-                return decodeJwt(token);
-            }
-            return await this.verifyBearerToken(token, this.authorization.key as Key);
-        } catch (error) {
-            debug("%s", error);
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
+            return undefined;
         }
     }
 
@@ -102,7 +83,9 @@ export class Neo4jGraphQLAuthorization {
         }
     }
 
-    private resolveKey(context: Neo4jGraphQLContext): Uint8Array | JWTVerifyGetKey {
+    private resolveKey(
+        context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams
+    ): Uint8Array | JWTVerifyGetKey {
         if (this.resolvedKey) {
             return this.resolvedKey;
         } else {
@@ -121,19 +104,6 @@ export class Neo4jGraphQLAuthorization {
         }
         debug("Verifying JWKS using url");
         const { payload } = await jwtVerify(token, secret, this.authorization.verifyOptions);
-        return payload;
-    }
-
-    private async verifyBearerToken(token: string, secret: Key): Promise<JWTPayload> {
-        if (typeof secret === "string") {
-            debug("Verifying JWT using secret");
-            const { payload } = await jwtVerify(token, Buffer.from(secret), this.authorization.verifyOptions);
-            return payload;
-        }
-        debug("Verifying JWKS using url");
-        const { url, options } = secret;
-        const JWKS = createRemoteJWKSet(new URL(url), options);
-        const { payload } = await jwtVerify(token, JWKS, this.authorization.verifyOptions);
         return payload;
     }
 }

@@ -18,37 +18,38 @@
  */
 
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
-import Debug from "debug";
-import type { Neo4jFeaturesSettings, ContextFeatures, Neo4jGraphQLSubscriptionsEngine } from "../types";
-import { makeAugmentedSchema } from "../schema";
-import type Node from "./Node";
-import type Relationship from "./Relationship";
-import checkNeo4jCompat from "./utils/verify-database";
-import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
-import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
-import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
-import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
-import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
-import { asArray } from "../utils/utils";
-import { DEBUG_ALL } from "../constants";
-import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
-import { Executor } from "./Executor";
-import { generateModel } from "../schema-model/generate-model";
-import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
+import Debug from "debug";
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
+import { DEBUG_ALL } from "../constants";
+import { makeAugmentedSchema } from "../schema";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { generateModel } from "../schema-model/generate-model";
+import { getDefinitionNodes } from "../schema/get-definition-nodes";
+import { makeDocumentToAugment } from "../schema/make-document-to-augment";
+import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap-query-and-mutation";
+import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
+import { wrapSubscription } from "../schema/resolvers/composition/wrap-subscription";
+import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
-import { makeDocumentToAugment } from "../schema/make-document-to-augment";
-import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
+import type { ContextFeatures, Neo4jFeaturesSettings, Neo4jGraphQLSubscriptionsEngine } from "../types";
+import { asArray } from "../utils/utils";
+import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
+import { Executor } from "./Executor";
+import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
-import { getDefinitionNodes } from "../schema/get-definition-nodes";
+import type Node from "./Node";
+import type Relationship from "./Relationship";
+import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
+import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
+import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
+import checkNeo4jCompat from "./utils/verify-database";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -288,10 +289,17 @@ class Neo4jGraphQL {
         };
 
         const resolversComposition = {
-            "Query.*": [wrapResolver(wrapResolverArgs)],
-            "Mutation.*": [wrapResolver(wrapResolverArgs)],
-            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
+            "Query.*": [wrapQueryAndMutation(wrapResolverArgs)],
+            "Mutation.*": [wrapQueryAndMutation(wrapResolverArgs)],
         };
+
+        if (this.features.subscriptions) {
+            resolversComposition["Subscription.*"] = wrapSubscription({
+                subscriptionsEngine: this.features.subscriptions,
+                schemaModel: this.schemaModel,
+                authorization: this.authorization,
+            });
+        }
 
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);
