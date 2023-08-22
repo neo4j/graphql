@@ -103,6 +103,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     // TODO: interface implements interface
     // TODO: refactor flow??
+    // TODO: add tests for interfaces and relationshipProperties interface annotations
 
     return schema;
 }
