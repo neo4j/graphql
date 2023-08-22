@@ -20,11 +20,9 @@
 export class IDAnnotation {
     public readonly autogenerate: boolean;
     public readonly unique: boolean;
-    public readonly global: boolean;
 
-    constructor({ autogenerate, unique, global }: { autogenerate: boolean; unique: boolean; global: boolean }) {
+    constructor({ autogenerate, unique }: { autogenerate: boolean; unique: boolean }) {
         this.autogenerate = autogenerate;
         this.unique = unique;
-        this.global = global;
     }
 }

@@ -47,6 +47,10 @@ function getUniqueMeta(
         };
     }
 
+    if (directives.some((d) => ["relayId"].includes(d.name.value))) {
+        return {};
+    }
+
     let uniqueId = false;
 
     const idDirective = directives.find((x) => x.name.value === "id");

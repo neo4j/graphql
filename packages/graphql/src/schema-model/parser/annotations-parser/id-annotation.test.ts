@@ -23,29 +23,26 @@ import { idDirective } from "../../../graphql/directives";
 const tests = [
     {
         name: "should parse correctly with all properties set to true",
-        directive: makeDirectiveNode("id", { autogenerate: true, unique: true, global: true }, idDirective),
+        directive: makeDirectiveNode("id", { autogenerate: true, unique: true }, idDirective),
         expected: {
             autogenerate: true,
             unique: true,
-            global: true,
         },
     },
     {
         name: "should parse correctly with all properties set to false",
-        directive: makeDirectiveNode("id", { autogenerate: false, unique: false, global: false }, idDirective),
+        directive: makeDirectiveNode("id", { autogenerate: false, unique: false }, idDirective),
         expected: {
             autogenerate: false,
             unique: false,
-            global: false,
         },
     },
     {
         name: "should parse correctly with autogenerate set to false, unique and global set to true",
-        directive: makeDirectiveNode("id", { autogenerate: false, unique: true, global: true }, idDirective),
+        directive: makeDirectiveNode("id", { autogenerate: false, unique: true }, idDirective),
         expected: {
             autogenerate: false,
             unique: true,
-            global: true,
         },
     },
 ];
@@ -56,7 +53,6 @@ describe("parseIDAnnotation", () => {
             const idAnnotation = parseIDAnnotation(test.directive);
             expect(idAnnotation.autogenerate).toBe(test.expected.autogenerate);
             expect(idAnnotation.unique).toBe(test.expected.unique);
-            expect(idAnnotation.global).toBe(test.expected.global);
         });
     });
 });

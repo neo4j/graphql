@@ -35,6 +35,7 @@ export { limitDirective } from "./limit";
 export { readonlyDirective } from "./readonly";
 export { relationshipPropertiesDirective } from "./relationship-properties";
 export { relationshipDirective } from "./relationship";
+export { relayIdDirective } from "./relay-id";
 export { timestampDirective } from "./timestamp";
 export { uniqueDirective } from "./unique";
 export { writeonlyDirective } from "./writeonly";

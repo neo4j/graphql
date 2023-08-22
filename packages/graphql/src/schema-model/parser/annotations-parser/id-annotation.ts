@@ -23,15 +23,13 @@ import { parseArguments } from "../parse-arguments";
 import { idDirective } from "../../../graphql/directives";
 
 export function parseIDAnnotation(directive: DirectiveNode): IDAnnotation {
-    const { autogenerate, unique, global } = parseArguments(idDirective, directive) as {
+    const { autogenerate, unique } = parseArguments(idDirective, directive) as {
         autogenerate: boolean;
         unique: boolean;
-        global: boolean;
     };
 
     return new IDAnnotation({
         autogenerate,
         unique,
-        global,
     });
 }
