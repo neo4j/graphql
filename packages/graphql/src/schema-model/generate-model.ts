@@ -105,6 +105,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     interfaceEntities.forEach((interfaceEntity) => hydrateConcreteEntitiesWithInheritedAnnotations(interfaceEntity));
     // TODO: interface implements interface inheritance hydrate
     // TODO: refactor flow??
+    // TODO: add tests for interfaces and relationshipProperties interface annotations
 
     return schema;
 }
