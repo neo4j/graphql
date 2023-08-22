@@ -1,5 +1,14 @@
 # @neo4j/graphql-toolbox
 
+## 2.0.7
+
+### Patch Changes
+
+-   [#3791](https://github.com/neo4j/graphql/pull/3791) [`688d2a311`](https://github.com/neo4j/graphql/commit/688d2a311a2e61a8df7f8f038ff8b4f598b175bf) Thanks [@mjfwebb](https://github.com/mjfwebb)! - update dependency @neo4j-ndl/react to v1.10.3
+
+-   Updated dependencies [[`9354860ae`](https://github.com/neo4j/graphql/commit/9354860ae2f5f4a82179de874344724862d0c231)]:
+    -   @neo4j/graphql@3.24.2
+
 ## 2.0.6
 
 ### Patch Changes

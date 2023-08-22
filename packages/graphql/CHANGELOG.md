@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.24.2
+
+### Patch Changes
+
+-   [#3795](https://github.com/neo4j/graphql/pull/3795) [`9354860ae`](https://github.com/neo4j/graphql/commit/9354860ae2f5f4a82179de874344724862d0c231) Thanks [@darrellwarde](https://github.com/darrellwarde)! - If possible, instantiate JWKS endpoint connection on startup, to benefit from caching.
+
 ## 3.24.1
 
 ### Patch Changes
