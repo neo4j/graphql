@@ -21,10 +21,12 @@ import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode 
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 
+// this rule was implemented for @exclude but is not used now
 export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVisitor {
     // TODO: maybe make ts understand Map1.string and Map2.string[] refer to the same category
     const interfacesToExcludeDirectiveMap = new Map<string, boolean>();
     const multipleInheritedInterfaces = new Map<string, string[]>();
+    const directiveNamesToCheck: string[] = [];
 
     return {
         ObjectTypeDefinition(objectType: ObjectTypeDefinitionNode) {
@@ -39,7 +41,7 @@ export function ValidDirectiveInheritance(context: SDLValidationContext): ASTVis
             if (!interfaceType.directives) {
                 return;
             }
-            const excludeDirective = interfaceType.directives.find((d) => d.name.value === "exclude");
+            const excludeDirective = interfaceType.directives.find((d) => directiveNamesToCheck.includes(d.name.value));
             interfacesToExcludeDirectiveMap.set(interfaceType.name.value, Boolean(excludeDirective));
 
             if (!excludeDirective) {

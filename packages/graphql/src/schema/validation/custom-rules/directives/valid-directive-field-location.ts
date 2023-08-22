@@ -139,6 +139,7 @@ function validFieldOfInterfaceTypeLocation({
 }) {
     if (parentDef.directives?.find((d) => d.name.value === "relationshipProperties")) {
         // relationshipProperties interfaces are allowed to have directives
+        // delegate to valid-relationship-properties rule
         return;
     }
     noDirectivesAllowedAtLocation({ directiveNode, parentDef });

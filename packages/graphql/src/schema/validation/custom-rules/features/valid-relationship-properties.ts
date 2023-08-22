@@ -72,7 +72,6 @@ function assertRelationshipProperties(
             }
         });
 
-        // TODO: auth related stuff are filtered out so this rule needs to run sometime else
         if (field.directives) {
             const forbiddenDirectives = [
                 "authorization",
