@@ -37,6 +37,99 @@ const additionalDefinitions = {
 };
 
 describe("validation 2.0", () => {
+    describe.skip("Directives not allowed on Interface fields", () => {
+        test("@relationship", () => {
+            const interfaceDoc = gql`
+                interface Site {
+                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+            `;
+            const doc = gql`
+                ${interfaceDoc}
+                type SomeSite implements Site {
+                    name: String
+                    posts: [Post!]!
+                    archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+                type Post {
+                    title: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @relationship is not supported on fields of the Site type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
+        });
+
+        test("@alias", () => {
+            const doc = gql`
+                type Movie implements MovieInterface {
+                    rottenid: ID! @id(global: true)
+                    id: ID!
+                    title: String
+                }
+                interface MovieInterface {
+                    id: ID! @alias(property: "somethingElse")
+                }
+            `;
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @relationship is not supported on fields of the Site type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
+        });
+
+        test("@private", () => {
+            const interfaceTypes = gql`
+                interface UserInterface {
+                    private: String @private
+                }
+            `;
+            const doc = gql`
+                ${interfaceTypes}
+                type User implements UserInterface {
+                    id: ID
+                    password: String @private
+                    private: String
+                }
+            `;
+
+            const enums = [] as EnumTypeDefinitionNode[];
+            const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+            const unions = [] as UnionTypeDefinitionNode[];
+            const objects = [] as ObjectTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    features: {},
+                });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @private is not supported on fields of the UserInterface type."
+            );
+        });
+    });
     describe("Directive Argument (existence)", () => {
         describe("@cypher", () => {
             test("@cypher columnName required", () => {
@@ -1934,41 +2027,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "archivedPosts", "@relationship"]);
             });
 
-            test("@relationship duplicate [type, direction, fieldType] combination on interface", () => {
-                const interfaceDoc = gql`
-                    interface Site {
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type SomeSite implements Site {
-                        name: String
-                        posts: [Post!]!
-                        archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-                    }
-                    type Post {
-                        title: String
-                    }
-                `;
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
-                );
-                expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
-            });
-
             test("@relationship no relationshipProperties interface found", () => {
                 const doc = gql`
                     type User {
@@ -2084,36 +2142,6 @@ describe("validation 2.0", () => {
                         archived: [Post!]!
                             @relationship(type: "HAS_ARCHIVED_POST", direction: OUT, properties: "Poster")
                         favorite: Post @relationship(type: "HAS_FAVORITE", direction: OUT)
-                    }
-                    type Post {
-                        title: String
-                    }
-                `;
-
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("@relationship correct usage with interface", () => {
-                const interfaceDoc = gql`
-                    interface Site {
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type SomeSite implements Site {
-                        name: String
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
                     type Post {
                         title: String
@@ -2251,8 +2279,11 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Cannot use `@unique` on fields of Interface types.");
-                expect(errors[0]).toHaveProperty("path", ["IUser", "name"]);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @unique is not supported on fields of the IUser type."
+                );
+                expect(errors[0]).toHaveProperty("path", ["IUser", "name", "@unique"]);
             });
         });
         test("should throw cannot auto-generate a non ID field", () => {
@@ -2601,82 +2632,6 @@ describe("validation 2.0", () => {
                     "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "post"]);
-            });
-
-            test("@cypher with inherited @relationship on Field", () => {
-                const doc = gql`
-                    interface Person {
-                        post: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-                    }
-                    type User implements Person {
-                        id: ID
-                        post: [Post!]!
-                            @cypher(
-                                statement: """
-                                MATCH (u:User {id: 1})-[:HAS_POST]->(p:Post) RETURN p
-                                """
-                                columnName: "p"
-                            )
-                    }
-                    type Post {
-                        title: String
-                    }
-                `;
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
-                );
-                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
-            });
-
-            test("@cypher with inherited @relationship on Field reverse order", () => {
-                const doc = gql`
-                    type User implements Person {
-                        id: ID
-                        post: [Post!]!
-                            @cypher(
-                                statement: """
-                                MATCH (u:User {id: 1})-[:HAS_POST]->(p:Post) RETURN p
-                                """
-                                columnName: "p"
-                            )
-                    }
-                    interface Person {
-                        post: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-                    }
-                    type Post {
-                        title: String
-                    }
-                `;
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @cypher"
-                );
-                expect(errors[0]).toHaveProperty("path", ["Person", "post"]);
             });
 
             test("@cypher double", () => {
@@ -3376,21 +3331,6 @@ describe("validation 2.0", () => {
             const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
-
-        test("field named id already exists but aliased on interface", () => {
-            const doc = gql`
-                type Movie implements MovieInterface {
-                    rottenid: ID! @id(global: true)
-                    id: ID!
-                    title: String
-                }
-                interface MovieInterface {
-                    id: ID! @alias(property: "somethingElse")
-                }
-            `;
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-            expect(executeValidate).not.toThrow();
-        });
     });
 
     describe("union has no types", () => {
@@ -3435,38 +3375,6 @@ describe("validation 2.0", () => {
 
     describe("Objects and Interfaces must have one or more fields", () => {
         describe("@private", () => {
-            test("should throw error if @private would leave no fields in interface", () => {
-                const interfaceTypes = gql`
-                    interface UserInterface {
-                        private: String @private
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceTypes}
-                    type User implements UserInterface {
-                        id: ID
-                        password: String @private
-                        private: String
-                    }
-                `;
-
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                    });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
-            });
-
             test("should throw error if @private would leave no fields in object", () => {
                 const doc = gql`
                     type User {

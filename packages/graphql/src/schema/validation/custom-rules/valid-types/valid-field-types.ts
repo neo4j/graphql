@@ -23,7 +23,6 @@ import type { SDLValidationContext } from "graphql/validation/ValidationContext"
 import { verifyId } from "../directives/id";
 import { verifyRelationshipFieldType } from "../directives/relationship";
 import { verifyTimestamp } from "../directives/timestamp";
-import { verifyUnique } from "../directives/unique";
 import type { ValidationFunction } from "../utils/document-validation-error";
 import { createGraphQLError, assertValid, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
@@ -34,8 +33,6 @@ function getValidationFunction(directiveName: string): ValidationFunction | unde
             return verifyId;
         case "timestamp":
             return verifyTimestamp;
-        case "unique":
-            return verifyUnique;
         case "relationship":
             return verifyRelationshipFieldType;
         default:
