@@ -47,10 +47,6 @@ export class Neo4jGraphQLAuthorization {
         this.authorization = authorization;
     }
 
-    public get globalAuthentication(): boolean {
-        return this.authorization.globalAuthentication || false;
-    }
-
     public async decode(
         context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams
     ): Promise<JWTPayload | undefined> {
