@@ -585,7 +585,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
-                `Type User already has a field \`id\`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the \`@alias\` directive to access it via another field`
+                `Type User already has a field 'id', which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the '@alias' directive to access it via another field`
             );
         });
         test("should not throw if a type already contains an id field but the field is aliased", () => {

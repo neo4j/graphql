@@ -40,7 +40,7 @@ function getUniqueMeta(
         return {};
     }
 
-    if (directives.some((d) => ["id", "relayId"].includes(d.name.value))) {
+    if (directives.some((directive) => ["id", "relayId"].includes(directive.name.value))) {
         return {};
     }
 }

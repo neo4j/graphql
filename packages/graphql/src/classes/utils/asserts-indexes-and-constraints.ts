@@ -133,7 +133,7 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
         let createConstraintStr = "CREATE CONSTRAINT";
 
         if (constraintToCreate.constraintName) {
-            createConstraintStr = createConstraintStr + ` ${constraintToCreate.constraintName}`;
+            createConstraintStr = `${createConstraintStr} ${constraintToCreate.constraintName}`;
         }
 
         const cypher = [

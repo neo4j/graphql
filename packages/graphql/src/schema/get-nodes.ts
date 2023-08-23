@@ -206,7 +206,7 @@ function getNodes(
             const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
             if (!hasAlias) {
                 throw new Error(
-                    `Type ${definition.name.value} already has a field \`id\`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the \`@alias\` directive to access it via another field.`
+                    `Type ${definition.name.value} already has a field 'id', which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the '@alias' directive to access it via another field.`
                 );
             }
         }
