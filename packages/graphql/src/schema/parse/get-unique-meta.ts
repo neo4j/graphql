@@ -37,11 +37,11 @@ function getUniqueMeta(
         if (constraintName && constraintName.value.kind === Kind.STRING) {
             return { constraintName: constraintName.value.value };
         }
-        return {};
+        return { constraintName: `${type.name.value}_${fieldName}` };
     }
 
     if (directives.some((directive) => ["id", "relayId"].includes(directive.name.value))) {
-        return {};
+        return { constraintName: `${type.name.value}_${fieldName}` };
     }
 }
 

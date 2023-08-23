@@ -78,7 +78,7 @@ export interface TypeMeta {
 }
 
 export type Unique = {
-    constraintName?: string;
+    constraintName: string;
 };
 
 export interface Callback {

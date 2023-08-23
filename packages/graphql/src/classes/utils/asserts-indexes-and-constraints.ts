@@ -130,14 +130,8 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
     }
 
     for (const constraintToCreate of constraintsToCreate) {
-        let createConstraintStr = "CREATE CONSTRAINT";
-
-        if (constraintToCreate.constraintName) {
-            createConstraintStr = `${createConstraintStr} ${constraintToCreate.constraintName}`;
-        }
-
         const cypher = [
-            createConstraintStr,
+            `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
             `IF NOT EXISTS FOR (n:${constraintToCreate.label})`,
             `REQUIRE n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
@@ -243,7 +237,7 @@ async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; s
     debug("Successfully checked for the existence of all necessary indexes");
 }
 
-type MissingConstraint = { constraintName?: string; label: string; property: string };
+type MissingConstraint = { constraintName: string; label: string; property: string };
 
 async function getMissingConstraints({
     nodes,
