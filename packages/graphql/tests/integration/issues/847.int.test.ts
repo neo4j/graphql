@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
 
             type ${interactionType.name}  {
-                id       : ID! @id
+                id       : ID! @id @unique
                 kind     : String!
                 subjects : [Entity!]! @relationship(type: "ACTED_IN", direction: IN )
                 objects  : [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)

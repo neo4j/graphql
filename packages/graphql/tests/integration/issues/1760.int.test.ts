@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             type BaseObject
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+                id: ID! @id @unique
             }
         `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: secret } } });

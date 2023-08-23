@@ -62,7 +62,7 @@ describe("Projecting interface relationships following create of multiple nodes"
             }
 
             type ${Interaction} {
-                id: ID! @id
+                id: ID! @id @unique
                 kind: String!
                 subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)
                 objects: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)

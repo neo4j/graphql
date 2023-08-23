@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             type BaseObject
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
                 @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+                id: ID! @id @unique
             }
         `;
 

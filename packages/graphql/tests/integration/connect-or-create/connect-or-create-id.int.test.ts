@@ -46,7 +46,7 @@ describe("connect-or-create with @id", () => {
         type ${typeMovie.name} {
             title: String! @unique
             subtitle: String @unique
-            id: ID! @id
+            id: ID! @id @unique
             actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
 

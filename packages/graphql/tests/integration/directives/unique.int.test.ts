@@ -708,7 +708,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String!
                 }
             `;
@@ -732,7 +732,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id @alias(property: "identifier")
+                    id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -756,7 +756,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String!
                 }
             `;
@@ -792,7 +792,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id @alias(property: "identifier")
+                    id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -828,7 +828,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String!
                 }
             `;
@@ -874,7 +874,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id @alias(property: "identifier")
+                    id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -923,7 +923,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                    someIdProperty: ID! @id @alias(property: "someAlias")
+                    someIdProperty: ID! @id @unique @alias(property: "someAlias")
                     title: String!
                 }
             `;
@@ -964,7 +964,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                    someIdProperty: ID! @id @alias(property: "someAlias")
+                    someIdProperty: ID! @id @unique @alias(property: "someAlias")
                     title: String!
                 }
             `;

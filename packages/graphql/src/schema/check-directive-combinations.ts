@@ -30,7 +30,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): 
         customResolver: ["alias", "authentication", "authorization", "id", "readonly", "relationship", "writeonly"],
         cypher: [],
         default: [],
-        id: ["cypher", "customResolver", "relationship", "timestamp", "unique"],
+        id: ["cypher", "customResolver", "relationship", "timestamp"],
         populatedBy: ["id", "default", "relationship"],
         private: [],
         readonly: ["cypher", "customResolver"],
@@ -47,7 +47,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): 
             "readonly",
         ],
         timestamp: ["id", "unique"],
-        unique: ["cypher", "id", "customResolver", "relationship", "timestamp"],
+        unique: ["cypher", "customResolver", "relationship", "timestamp"],
         writeonly: ["cypher", "customResolver"],
         // OBJECT
         node: [],

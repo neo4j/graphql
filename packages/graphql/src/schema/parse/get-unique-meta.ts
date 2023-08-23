@@ -40,7 +40,7 @@ function getUniqueMeta(
         return { constraintName: `${type.name.value}_${fieldName}` };
     }
 
-    if (directives.some((directive) => ["id", "relayId"].includes(directive.name.value))) {
+    if (directives.some((directive) => directive.name.value === "relayId")) {
         return { constraintName: `${type.name.value}_${fieldName}` };
     }
 }

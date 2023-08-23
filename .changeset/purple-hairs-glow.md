@@ -4,9 +4,10 @@
 
 The `@id` directive has had a number of breaking changes.
 
-The `autogenerate` argument has been removed. With this value set to `false`, the `@id` directive was essentially an alias for the `@unique` directive. Use the `@unique` directive instead.
+The `unique` argument has been removed. In an effort to simplify directives, `@id` will now only only be responsible for the autogeneration of UUID values.
+If you would like the property to also be backed by a unique node property constraint, use the `@unique` directive alongside `@id`.
 
-The `unique` argument has been removed. We consider it necessary for a globally unique identifier to be backed by a unique node property constraint, so we have removed the ability to disable this. If you wish to automatically generate an ID without it being backed by a constraint, we recommend using the `@populatedBy` directive with a callback to generate appropriate values.
+The `autogenerate` argument has been removed. With this value set to `false` and the above removal of constraint management, this would make the directive a no-op.
 
 The `global` argument has been removed. This quite key feature of specifying the globally unique identifier for Relay was hidden away inside the `@id` directive. This functionality has been moved into its own directive, `@relayId`, which is used with no arguments. The use of the `@relayId` directive also implies that the field will be backed by a unique node property constraint.
 

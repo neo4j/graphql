@@ -567,8 +567,8 @@ describe("makeAugmentedSchema", () => {
         test("should throw error if more than one @id directive field has the global argument set to true", () => {
             const typeDefs = gql`
                 type User {
-                    email: ID! @id @relayId
-                    name: ID! @id @relayId
+                    email: ID! @id @unique @relayId
+                    name: ID! @id @unique @relayId
                 }
             `;
             expect(() => makeAugmentedSchema(typeDefs)).toThrow(
@@ -580,7 +580,7 @@ describe("makeAugmentedSchema", () => {
             const typeDefs = gql`
                 type User {
                     id: ID!
-                    email: ID! @id @relayId
+                    email: ID! @id @unique @relayId
                 }
             `;
 
@@ -591,7 +591,7 @@ describe("makeAugmentedSchema", () => {
         test("should not throw if a type already contains an id field but the field is aliased", () => {
             const typeDefs = gql`
                 type User {
-                    dbId: ID! @id @relayId @alias(property: "id")
+                    dbId: ID! @id @unique @relayId @alias(property: "id")
                 }
             `;
             expect(() => makeAugmentedSchema(typeDefs)).not.toThrow();

@@ -47,7 +47,7 @@ describe("Global node resolution", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `type ${typeFilm.name} {
-            dbId: ID! @id @relayId @alias(property: "id")
+            dbId: ID! @id @unique @relayId @alias(property: "id")
             title: String!
         }`;
 
@@ -446,7 +446,7 @@ describe("Global node resolution", () => {
 
         const typeDefs = `
           type ${typeUser.name} {
-            dbId: ID! @id @relayId @alias(property: "id")
+            dbId: ID! @id @unique @relayId @alias(property: "id")
             name: String!
             created: [${typeFilm.name}!]! @relationship(type: "CREATED", direction: OUT)
           }
@@ -509,7 +509,7 @@ describe("Global node resolution", () => {
         const typeDefs = `
 
           type ${typeUser.name} {
-            dbId: ID! @id @relayId @alias(property: "id")
+            dbId: ID! @id @unique @relayId @alias(property: "id")
             name: String!
           }
 
@@ -569,7 +569,7 @@ describe("Global node resolution", () => {
         }
 
         type ${typeUser.name} {
-          dbId: ID! @id @relayId @alias(property: "id")
+          dbId: ID! @id @unique @relayId @alias(property: "id")
           name: String!
         }
 

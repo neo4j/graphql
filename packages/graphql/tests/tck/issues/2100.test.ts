@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
 
             type Bacenta implements Church {
-                id: ID @id
+                id: ID @id @unique
                 name: String!
                 serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
                 bussing(limit: Int!): [BussingRecord!]!

@@ -27,7 +27,7 @@ describe("connect or create with id", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
-                id: ID! @id
+                id: ID! @id @unique
             }
 
             type Actor {
@@ -478,7 +478,7 @@ describe("connect or create with id", () => {
             }
 
             type User {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }

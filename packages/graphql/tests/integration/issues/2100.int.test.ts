@@ -54,13 +54,13 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         }
 
         interface Church {
-            id: ID @id
+            id: ID @id 
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
         }
 
         type ${BacentaType} implements Church @authentication {
-            id: ID @id
+            id: ID @id @unique
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
             bussing(limit: Int!): [${BussingRecordType}!]!
