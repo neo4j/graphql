@@ -1,5 +1,24 @@
 # @neo4j/graphql-toolbox
 
+## 2.0.5-beta.2
+
+### Patch Changes
+
+* [#3792](https://github.com/neo4j/graphql/pull/3792) [`56857a3e5`](https://github.com/neo4j/graphql/commit/56857a3e53134ad9f46f3265567c55570f674aab) Thanks [@darrellwarde](https://github.com/darrellwarde)! - fix: ensure no additional commas are added to the editor value
+
+* Updated dependencies [[`2ba1d45b5`](https://github.com/neo4j/graphql/commit/2ba1d45b5bf642975381ca8431cb10094151586d), [`a16ba357c`](https://github.com/neo4j/graphql/commit/a16ba357cb745ba728009c5e6b531b4c56a62f43), [`85b3c06e8`](https://github.com/neo4j/graphql/commit/85b3c06e800699f30daedc796286c37cd318746c), [`56857a3e5`](https://github.com/neo4j/graphql/commit/56857a3e53134ad9f46f3265567c55570f674aab), [`e9bf1e619`](https://github.com/neo4j/graphql/commit/e9bf1e619ee71ead228530a9d46834a655686c6d), [`9354860ae`](https://github.com/neo4j/graphql/commit/9354860ae2f5f4a82179de874344724862d0c231)]:
+  * @neo4j/graphql@4.0.0-beta.2
+  * @neo4j/introspector@2.0.0-beta.1
+
+## 2.0.7
+
+### Patch Changes
+
+* [#3791](https://github.com/neo4j/graphql/pull/3791) [`688d2a311`](https://github.com/neo4j/graphql/commit/688d2a311a2e61a8df7f8f038ff8b4f598b175bf) Thanks [@mjfwebb](https://github.com/mjfwebb)! - update dependency @neo4j-ndl/react to v1.10.3
+
+* Updated dependencies [[`9354860ae`](https://github.com/neo4j/graphql/commit/9354860ae2f5f4a82179de874344724862d0c231)]:
+  * @neo4j/graphql@3.24.2
+
 ## 2.0.6
 
 ### Patch Changes

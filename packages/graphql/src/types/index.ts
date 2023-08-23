@@ -430,7 +430,6 @@ export interface Neo4jAuthorizationSettings {
     key: Key | ((context: Neo4jGraphQLContext) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
-    globalAuthentication?: boolean;
 }
 export interface RemoteJWKS {
     url: string | URL;
