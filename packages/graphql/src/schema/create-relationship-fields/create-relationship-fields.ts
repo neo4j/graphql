@@ -186,7 +186,7 @@ function createRelationshipFields({
                 },
             });
         }
-    
+
         // n..m Relationships
         if (rel.typeMeta.array && rel.filterableOptions.byValue) {
             addRelationshipArrayFilters({
@@ -384,7 +384,7 @@ function createRelationshipFields({
                 },
             });
         }
-    
+
         if (rel.settableOptions.onUpdate && nodeFieldUpdateInput) {
             const connectionUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateConnectionInput`;
 
@@ -464,9 +464,11 @@ function createRelationshipFields({
     });
 }
 
-function nodeHasRelationshipWithNestedOperation(node: Node, nestedOperation: RelationshipNestedOperationsOption): boolean {
- return Boolean(node.relationFields.filter(relationField => relationField.nestedOperations.includes(nestedOperation)).length)
+function nodeHasRelationshipWithNestedOperation(
+    node: Node,
+    nestedOperation: RelationshipNestedOperationsOption
+): boolean {
+    return node.relationFields.some((relationField) => relationField.nestedOperations.includes(nestedOperation));
 }
 
 export default createRelationshipFields;
-
