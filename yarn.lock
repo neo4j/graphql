@@ -12027,9 +12027,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:8.2.0":
-  version: 8.2.0
-  resolution: "concurrently@npm:8.2.0"
+"concurrently@npm:8.2.1":
+  version: 8.2.1
+  resolution: "concurrently@npm:8.2.1"
   dependencies:
     chalk: ^4.1.2
     date-fns: ^2.30.0
@@ -12043,7 +12043,7 @@ __metadata:
   bin:
     conc: dist/bin/concurrently.js
     concurrently: dist/bin/concurrently.js
-  checksum: eafe6a4d9b7fda87f55ea285cfc6acd937a5286ceec8991ab48e6cc27c45fce6a5c6f45e18d7555defa15dc7d7e8941bc5a9d1ceaf182e31441d420e00333434
+  checksum: 216cb16d5b301cbd9c657b19430836d1686fe8fa9b9ef35ef7ac601e1a5cf6535166a3e57de446696dbd5e7e3f45d78fc70f33c5fd4bb565342cd5e752c5b069
   languageName: node
   linkType: hard
 
@@ -22208,7 +22208,7 @@ __metadata:
     "@neo4j/graphql": ^3.15.0
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@neo4j/graphql-plugin-subscriptions-amqp": ^2.0.0
-    concurrently: 8.2.0
+    concurrently: 8.2.1
     dotenv: ^16.0.3
     express: ^4.18.2
     graphql: ^16.6.0
@@ -22318,7 +22318,7 @@ __metadata:
     "@tsconfig/node16": 1.0.4
     "@typescript-eslint/eslint-plugin": 6.4.1
     "@typescript-eslint/parser": 6.4.1
-    concurrently: 8.2.0
+    concurrently: 8.2.1
     dotenv: 16.3.1
     eslint: 8.47.0
     eslint-config-prettier: 9.0.0
