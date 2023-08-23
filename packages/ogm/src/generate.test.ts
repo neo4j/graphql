@@ -1709,7 +1709,7 @@ describe("generate", () => {
     test("https://github.com/neo4j/graphql/issues/3539", async () => {
         const typeDefs = gql`
             type FAQ {
-                id: ID! @id
+                id: ID! @id @unique
                 activated: Boolean!
                 name: String!
                 entries: [FAQEntry!]!
@@ -1717,7 +1717,7 @@ describe("generate", () => {
             }
 
             type FAQEntry {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String!
                 body: String!
                 inFAQs: [FAQ!]! @relationship(type: "FAQ_ENTRY_IN_FAQ", properties: "FaqEntryInFaq", direction: OUT)

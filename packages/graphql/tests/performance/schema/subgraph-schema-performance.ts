@@ -41,7 +41,7 @@ const basicTypeDefs = `
     }
 
     interface Block {
-        id: ID @id @unique
+        id: ID @id
     }
 
     type TextBlock implements Block {
