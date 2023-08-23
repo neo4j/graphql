@@ -2764,9 +2764,74 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Directive @authentication is not supported on fields of the Query type."
+                "Invalid directive usage: Directive @authentication is not supported on fields of the Query type unless it is a @cypher field."
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authentication"]);
+        });
+
+        test("@authorization can't be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]! @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @authorization is not supported on fields of the Query type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authorization"]);
+        });
+
+        test("@authorization with @cypher suggest to use @authentication instead", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]!
+                        @cypher(
+                            statement: """
+                            RETURN {name: "Keanu"} AS actor
+                            """
+                            columnName: "actor"
+                        )
+                        @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @authorization is not supported on fields of the Query type. Did you mean to use @authentication?"
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authorization"]);
         });
 
         test("@populatedBy can't be used on the field of a root type", () => {
@@ -2802,6 +2867,34 @@ describe("validation 2.0", () => {
                 "Invalid directive usage: Directive @populatedBy is not supported on fields of the Query type."
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
+        });
+
+        test("@authentication with @cypher ok to be used on the field of a root type", () => {
+            const doc = gql`
+                type Query {
+                    someActors: [Actor!]!
+                        @cypher(
+                            statement: """
+                            RETURN {name: "Keanu"} AS actor
+                            """
+                            columnName: "actor"
+                        )
+                        @authentication
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            expect(executeValidate).not.toThrow();
         });
 
         test("@cypher ok to be used on the field of a root type", () => {
@@ -3429,56 +3522,6 @@ describe("validation 2.0", () => {
                 }
                 interface Production {
                     episodes: Int
-                }
-            `;
-
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-            expect(executeValidate).not.toThrow();
-        });
-    });
-
-    describe("multiple interfaces with @exclude", () => {
-        test("invalid", () => {
-            const doc = gql`
-                type Movie implements Production & Show {
-                    id: ID!
-                    title: String
-                    year: Int
-                    starts: Int
-                }
-                interface Production @exclude(operations: [CREATE]) {
-                    year: Int
-                }
-                interface Show @exclude(operations: [UPDATE]) {
-                    starts: Int
-                }
-            `;
-
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Multiple implemented interfaces of Movie have @exclude directive - cannot determine directive to use."
-            );
-            expect(errors[0]).toHaveProperty("path", ["Movie"]);
-        });
-
-        test("valid", () => {
-            const doc = gql`
-                type Movie implements Production & Show {
-                    id: ID!
-                    title: String
-                    year: Int
-                    starts: Int
-                }
-                interface Production {
-                    year: Int
-                }
-                interface Show @exclude(operations: [UPDATE]) {
-                    starts: Int
                 }
             `;
 

@@ -33,7 +33,7 @@ import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives
 
 // TODO object extension and interface extension are possible in parent of type def from getPathNode
 // TODO remove interface inheritance from all rules
-// TODO remove interface inheritance from schema model
+// TODO fix @id validation
 
 /** only the @cypher directive is valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
 export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): ASTVisitor {
@@ -154,17 +154,32 @@ function validFieldOfRootTypeLocation({
     traversedDef: FieldDefinitionNode;
     parentDef: ObjectTypeDefinitionNode;
 }) {
-    if (directiveNode.name.value === "cypher" && parentDef.name.value !== "Subscription") {
-        // @cypher is valid
-        return;
-    }
-    if (
-        directiveNode.name.value === "authentication" &&
-        traversedDef.directives?.find((d) => d.name.value === "cypher") &&
-        parentDef.name.value !== "Subscription"
-    ) {
-        // @cypher @authentication combo is valid
-        return;
+    if (parentDef.name.value !== "Subscription") {
+        // some directives are valid on Query | Mutation
+        if (directiveNode.name.value === "cypher") {
+            // @cypher is valid
+            return;
+        }
+        const isDirectiveCombinedWithCypher = traversedDef.directives?.some(
+            (directive) => directive.name.value === "cypher"
+        );
+        if (directiveNode.name.value === "authentication" && isDirectiveCombinedWithCypher) {
+            // @cypher @authentication combo is valid
+            return;
+        }
+        // explicitly checked for "enhanced" error messages
+        if (directiveNode.name.value === "authentication" && !isDirectiveCombinedWithCypher) {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @authentication is not supported on fields of the ${parentDef.name.value} type unless it is a @cypher field.`,
+                [`@${directiveNode.name.value}`]
+            );
+        }
+        if (directiveNode.name.value === "authorization" && isDirectiveCombinedWithCypher) {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @authorization is not supported on fields of the ${parentDef.name.value} type. Did you mean to use @authentication?`,
+                [`@${directiveNode.name.value}`]
+            );
+        }
     }
     noDirectivesAllowedAtLocation({ directiveNode, parentDef });
 }
