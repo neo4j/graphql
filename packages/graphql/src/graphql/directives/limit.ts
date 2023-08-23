@@ -17,14 +17,20 @@
  * limitations under the License.
  */
 
-import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
+import { DirectiveLocation, GraphQLDirective, GraphQLInt } from "graphql";
 
-/**
- * A small extension to {@link Neo4jGraphQLComposedContext}, adding the {@link resolveTree} field.
- * This field cannot be added during resolvers composition, because it gets overridden if executing multiple queries under the same operation.
- * Each individual resolver populates this field.
- */
-export interface Neo4jGraphQLTranslationContext extends Neo4jGraphQLComposedContext {
-    resolveTree: ResolveTree;
-}
+export const limitDirective = new GraphQLDirective({
+    name: "limit",
+    description: "Instructs @neo4j/graphql to inject limit values into a query.",
+    args: {
+        default: {
+            description: "If no limit argument is supplied on query will fallback to this value.",
+            type: GraphQLInt,
+        },
+        max: {
+            description: "Maximum limit to be used for queries.",
+            type: GraphQLInt,
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
+});

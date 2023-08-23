@@ -17,15 +17,10 @@
  * limitations under the License.
  */
 
-type QueryOptionsLimit = {
-    default?: number;
-    max?: number;
-};
+import type { Neo4jGraphQLContextInterface } from "./neo4j-graphql-context-interface";
 
-export class QueryOptionsAnnotation {
-    public readonly limit: QueryOptionsLimit;
+export interface Neo4jGraphQLSubscriptionsConnectionParams extends Neo4jGraphQLContextInterface {}
 
-    constructor({ limit }: { limit: QueryOptionsLimit }) {
-        this.limit = limit;
-    }
+export interface Neo4jGraphQLSubscriptionsContext {
+    connectionParams?: Neo4jGraphQLSubscriptionsConnectionParams;
 }
