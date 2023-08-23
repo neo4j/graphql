@@ -43,7 +43,6 @@ function getValidationFunction(
         string,
         Map<string, [string, string, string][]>
     >,
-    interfaceToImplementationsMap: Map<string, Set<string>>,
     extra: {
         enums: EnumTypeDefinitionNode[];
         interfaces: InterfaceTypeDefinitionNode[];
@@ -66,7 +65,6 @@ function getValidationFunction(
         case "relationship":
             return verifyRelationshipArgumentValue(
                 objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,
-                interfaceToImplementationsMap,
                 extra
             );
         default:
@@ -108,13 +106,11 @@ export function directiveIsValid(
             string,
             Map<string, [string, string, string][]>
         >();
-        const interfaceToImplementationsMap = new Map<string, Set<string>>();
         return {
             Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
                 const validationFn = getValidationFunction(
                     directiveNode.name.value,
                     objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,
-                    interfaceToImplementationsMap,
                     extra,
                     callbacks
                 );

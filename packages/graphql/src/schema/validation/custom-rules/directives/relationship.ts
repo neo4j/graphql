@@ -31,7 +31,6 @@ import { DocumentValidationError } from "../utils/document-validation-error";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
-    interfaceToImplementationsMap: Map<string, Set<string>>,
     extra?: {
         enums: EnumTypeDefinitionNode[];
         interfaces: InterfaceTypeDefinitionNode[];
@@ -51,8 +50,8 @@ export function verifyRelationshipArgumentValue(
             // delegate
             return;
         }
-        if (!parentDef) {
-            console.error("No parent definition");
+        if (!parentDef || parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+            // @relationship can only be present on fields of Object Types
             return;
         }
         const typeArg = directiveNode.arguments?.find((a) => a.name.value === "type");
@@ -72,8 +71,7 @@ export function verifyRelationshipArgumentValue(
                 parentDef,
                 currentRelationship,
                 typeValue,
-                objectTypeToRelationshipsPerRelationshipTypeMap,
-                interfaceToImplementationsMap
+                objectTypeToRelationshipsPerRelationshipTypeMap
             );
         }
 
@@ -149,11 +147,10 @@ function checkRelationshipFieldsForDuplicates(
 }
 
 function verifyRelationshipFields(
-    parentDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    parentDef: ObjectTypeDefinitionNode,
     currentRelationship: [string, string, string],
     typeValue: any,
-    objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
-    interfaceToImplementationsMap: Map<string, Set<string>>
+    objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>
 ) {
     const relationshipFieldsForCurrentType = objectTypeToRelationshipsPerRelationshipTypeMap.get(parentDef.name.value);
     checkRelationshipFieldsForDuplicates(relationshipFieldsForCurrentType, currentRelationship, typeValue);
@@ -161,32 +158,6 @@ function verifyRelationshipFields(
         parentDef.name.value,
         getUpdatedRelationshipFieldsForCurrentType(relationshipFieldsForCurrentType, currentRelationship, typeValue)
     );
-
-    if (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-        const dependents = interfaceToImplementationsMap.get(parentDef.name.value);
-        dependents?.forEach((dependentTypeName) => {
-            const relationshipFieldsForDependentType =
-                objectTypeToRelationshipsPerRelationshipTypeMap.get(dependentTypeName);
-            checkRelationshipFieldsForDuplicates(relationshipFieldsForDependentType, currentRelationship, typeValue);
-        });
-    }
-
-    if (parentDef.kind === Kind.OBJECT_TYPE_DEFINITION) {
-        parentDef.interfaces?.forEach((i) => {
-            const relationshipFieldsForImplementedInterface = objectTypeToRelationshipsPerRelationshipTypeMap.get(
-                i.name.value
-            );
-            checkRelationshipFieldsForDuplicates(
-                relationshipFieldsForImplementedInterface,
-                currentRelationship,
-                typeValue
-            );
-
-            const implementations = interfaceToImplementationsMap.get(i.name.value) || new Set<string>();
-            implementations.add(parentDef.name.value);
-            interfaceToImplementationsMap.set(i.name.value, implementations);
-        });
-    }
 }
 
 export function verifyRelationshipFieldType({
