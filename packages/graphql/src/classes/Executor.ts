@@ -82,6 +82,7 @@ export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
     cypherQueryOptions?: CypherQueryOptions;
     sessionConfig?: SessionConfig;
+    cypherParams?: Record<string, any>;
 };
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
@@ -98,25 +99,30 @@ export class Executor {
 
     private sessionConfig: SessionConfig | undefined;
 
-    constructor({ executionContext, cypherQueryOptions, sessionConfig }: ExecutorConstructorParam) {
+    private cypherParams: Record<string, any>;
+
+    constructor({ executionContext, cypherQueryOptions, sessionConfig, cypherParams = {} }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
         this.lastBookmark = null;
         this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
+        this.cypherParams = cypherParams;
     }
 
     public async execute(
         query: string,
-        parameters: unknown,
+        parameters: Record<string, any>,
         sessionMode: SessionMode,
         info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
+        const params = { ...parameters, ...this.cypherParams };
+
         try {
             if (isDriverLike(this.executionContext)) {
                 return await this.driverRun({
                     query,
-                    parameters,
+                    parameters: params,
                     driver: this.executionContext,
                     sessionMode,
                     info,
@@ -124,10 +130,16 @@ export class Executor {
             }
 
             if (isSessionLike(this.executionContext)) {
-                return await this.sessionRun({ query, parameters, sessionMode, session: this.executionContext, info });
+                return await this.sessionRun({
+                    query,
+                    parameters: params,
+                    sessionMode,
+                    session: this.executionContext,
+                    info,
+                });
             }
 
-            return await this.transactionRun(query, parameters, this.executionContext);
+            return await this.transactionRun(query, params, this.executionContext);
         } catch (error) {
             throw this.formatError(error);
         }
@@ -201,7 +213,7 @@ export class Executor {
         info,
     }: {
         query: string;
-        parameters: unknown;
+        parameters: Record<string, any>;
         driver: Driver;
         sessionMode: SessionMode;
         info?: GraphQLResolveInfo;
@@ -230,7 +242,7 @@ export class Executor {
         info,
     }: {
         query: string;
-        parameters: unknown;
+        parameters: Record<string, any>;
         session: Session;
         sessionMode: SessionMode;
         info?: GraphQLResolveInfo;
@@ -259,7 +271,11 @@ export class Executor {
         return result;
     }
 
-    private transactionRun(query: string, parameters: unknown, transaction: Transaction | ManagedTransaction): Result {
+    private transactionRun(
+        query: string,
+        parameters: Record<string, any>,
+        transaction: Transaction | ManagedTransaction
+    ): Result {
         const queryToRun = this.generateQuery(query);
 
         debug(
