@@ -352,7 +352,7 @@ function createRelationshipFields({
             schemaComposer.getOrCreateITC(connectName, (tc) => {
                 tc.addFields({ where: connectWhereName });
 
-                if (node.relationFields.length) {
+                if (nodeHasRelationshipWithNestedOperation(node, RelationshipNestedOperationsOption.CONNECT)) {
                     tc.addFields({
                         connect: rel.typeMeta.array ? `[${node.name}ConnectInput!]` : `${node.name}ConnectInput`,
                     });
@@ -384,6 +384,7 @@ function createRelationshipFields({
                 },
             });
         }
+    
         if (rel.settableOptions.onUpdate && nodeFieldUpdateInput) {
             const connectionUpdateInputName = `${rel.connectionPrefix}${upperFieldName}UpdateConnectionInput`;
 
@@ -420,7 +421,7 @@ function createRelationshipFields({
                 schemaComposer.getOrCreateITC(nodeFieldDeleteInputName, (tc) => {
                     tc.addFields({ where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere` });
 
-                    if (node.relationFields.length) {
+                    if (nodeHasRelationshipWithNestedOperation(node, RelationshipNestedOperationsOption.DELETE)) {
                         tc.addFields({ delete: `${node.name}DeleteInput` });
                     }
                 });
@@ -442,7 +443,7 @@ function createRelationshipFields({
                 schemaComposer.getOrCreateITC(nodeFieldDisconnectInputName, (tc) => {
                     tc.addFields({ where: `${rel.connectionPrefix}${upperFieldName}ConnectionWhere` });
 
-                    if (node.relationFields.length) {
+                    if (nodeHasRelationshipWithNestedOperation(node, RelationshipNestedOperationsOption.DISCONNECT)) {
                         tc.addFields({ disconnect: `${node.name}DisconnectInput` });
                     }
                 });
@@ -463,4 +464,9 @@ function createRelationshipFields({
     });
 }
 
+function nodeHasRelationshipWithNestedOperation(node: Node, nestedOperation: RelationshipNestedOperationsOption): boolean {
+ return Boolean(node.relationFields.filter(relationField => relationField.nestedOperations.includes(nestedOperation)).length)
+}
+
 export default createRelationshipFields;
+
