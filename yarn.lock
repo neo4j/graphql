@@ -4209,7 +4209,7 @@ __metadata:
     "@graphql-tools/merge": ^8.3.3
     "@neo4j/graphql": ^3.24.2
     "@neo4j/graphql-plugin-auth": ^2.2.0
-    "@types/jest": 29.5.3
+    "@types/jest": 29.5.4
     "@types/node": 18.15.1
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -4234,7 +4234,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.8
-    "@types/jest": 29.5.3
+    "@types/jest": 29.5.4
     "@types/jsonwebtoken": 9.0.2
     "@types/node": 18.15.1
     debug: ^4.3.4
@@ -4256,7 +4256,7 @@ __metadata:
     "@types/body-parser": 1.19.2
     "@types/cors": 2.8.13
     "@types/debug": 4.1.8
-    "@types/jest": 29.5.3
+    "@types/jest": 29.5.4
     "@types/node": 18.15.1
     amqplib: 0.10.3
     body-parser: ^1.20.2
@@ -4294,12 +4294,12 @@ __metadata:
     "@neo4j/introspector": 1.0.3
     "@playwright/test": 1.37.1
     "@tsconfig/create-react-app": 2.0.1
-    "@types/codemirror": 5.60.8
+    "@types/codemirror": 5.60.9
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 13.0.0
     "@types/prettier": 2.7.3
     "@types/react-dom": 18.2.7
-    "@types/webpack": 5.28.1
+    "@types/webpack": 5.28.2
     autoprefixer: 10.4.15
     classnames: 2.3.2
     cm6-graphql: 0.0.9
@@ -4363,7 +4363,7 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^2.2.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
-    "@types/jest": 29.5.3
+    "@types/jest": 29.5.4
     "@types/jsonwebtoken": 9.0.2
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.30
@@ -4420,7 +4420,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^3.16.0
-    "@types/jest": 29.5.3
+    "@types/jest": 29.5.4
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.30
     camelcase: ^6.3.0
@@ -7790,7 +7790,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/codemirror@npm:5.60.8, @types/codemirror@npm:^5.60.8":
+"@types/codemirror@npm:5.60.9":
+  version: 5.60.9
+  resolution: "@types/codemirror@npm:5.60.9"
+  dependencies:
+    "@types/tern": "*"
+  checksum: 89da80a8d5c904f573289769098ad7721a4b58e056c1d08168b967bcfb63e30433d9d0bee0c43ff4b6679b0b7b87cfe942cc3f250ca0365ee244c9fb68ac9a70
+  languageName: node
+  linkType: hard
+
+"@types/codemirror@npm:^5.60.8":
   version: 5.60.8
   resolution: "@types/codemirror@npm:5.60.8"
   dependencies:
@@ -7989,13 +7998,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.3":
-  version: 29.5.3
-  resolution: "@types/jest@npm:29.5.3"
+"@types/jest@npm:29.5.4":
+  version: 29.5.4
+  resolution: "@types/jest@npm:29.5.4"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e36bb92e0b9e5ea7d6f8832baa42f087fc1697f6cd30ec309a07ea4c268e06ec460f1f0cfd2581daf5eff5763475190ec1ad8ac6520c49ccfe4f5c0a48bfa676
+  checksum: 38ed5942f44336452efd0f071eab60aaa57cd8d46530348d0a3aa5a691dcbf1366c4ca8f6ee8364efb45b4413bfefae443e5d4f469246a472a03b21ac11cd4ed
   languageName: node
   linkType: hard
 
@@ -8398,14 +8407,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack@npm:5.28.1":
-  version: 5.28.1
-  resolution: "@types/webpack@npm:5.28.1"
+"@types/webpack@npm:5.28.2":
+  version: 5.28.2
+  resolution: "@types/webpack@npm:5.28.2"
   dependencies:
     "@types/node": "*"
     tapable: ^2.2.0
     webpack: ^5
-  checksum: 9f9bfe041382acfab36015f95011f6539705ba116fd9b3b8d7599a6396d996b7efcdb71947dba6d24a1a1bf397d15fdfb3c50d2f73e0aa5366a76198d5ec98b3
+  checksum: 0b147aaaaa8992417a5ed65af83eb0df9b5247c38ab482f3c844495935a29c474cb21bc865ca36052c353034f40d14c8d232f0c831fdc1a6956baa985d7b1135
   languageName: node
   linkType: hard
 
@@ -12027,9 +12036,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:8.2.0":
-  version: 8.2.0
-  resolution: "concurrently@npm:8.2.0"
+"concurrently@npm:8.2.1":
+  version: 8.2.1
+  resolution: "concurrently@npm:8.2.1"
   dependencies:
     chalk: ^4.1.2
     date-fns: ^2.30.0
@@ -12043,7 +12052,7 @@ __metadata:
   bin:
     conc: dist/bin/concurrently.js
     concurrently: dist/bin/concurrently.js
-  checksum: eafe6a4d9b7fda87f55ea285cfc6acd937a5286ceec8991ab48e6cc27c45fce6a5c6f45e18d7555defa15dc7d7e8941bc5a9d1ceaf182e31441d420e00333434
+  checksum: 216cb16d5b301cbd9c657b19430836d1686fe8fa9b9ef35ef7ac601e1a5cf6535166a3e57de446696dbd5e7e3f45d78fc70f33c5fd4bb565342cd5e752c5b069
   languageName: node
   linkType: hard
 
@@ -22208,7 +22217,7 @@ __metadata:
     "@neo4j/graphql": ^3.15.0
     "@neo4j/graphql-plugin-auth": ^2.1.0
     "@neo4j/graphql-plugin-subscriptions-amqp": ^2.0.0
-    concurrently: 8.2.0
+    concurrently: 8.2.1
     dotenv: ^16.0.3
     express: ^4.18.2
     graphql: ^16.6.0
@@ -22318,7 +22327,7 @@ __metadata:
     "@tsconfig/node16": 1.0.4
     "@typescript-eslint/eslint-plugin": 6.4.1
     "@typescript-eslint/parser": 6.4.1
-    concurrently: 8.2.0
+    concurrently: 8.2.1
     dotenv: 16.3.1
     eslint: 8.47.0
     eslint-config-prettier: 9.0.0
