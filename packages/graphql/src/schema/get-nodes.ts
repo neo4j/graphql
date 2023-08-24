@@ -172,22 +172,7 @@ function getNodes(
 
         const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
 
-        if (globalIdFields.length > 1) {
-            throw new Error("Only one field may be decorated with the `@relayId` directive");
-        }
-
         const globalIdField = globalIdFields[0];
-
-        const idField = definition.fields?.find((x) => x.name.value === "id");
-
-        if (globalIdField && idField) {
-            const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
-            if (!hasAlias) {
-                throw new Error(
-                    `Type ${definition.name.value} already has a field 'id', which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the '@alias' directive to access it via another field.`
-                );
-            }
-        }
 
         const node = new Node({
             name: definition.name.value,

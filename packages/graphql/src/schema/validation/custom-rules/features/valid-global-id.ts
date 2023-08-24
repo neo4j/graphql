@@ -18,7 +18,6 @@
  */
 
 import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
-import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import {
@@ -55,13 +54,7 @@ export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
                 addToAliasedFieldsMap(parentOfTraversedDef.name.value, traversedDef.name.value);
             }
 
-            if (directiveNode.name.value !== "id") {
-                return;
-            }
-            const isGlobalID = directiveNode.arguments?.find(
-                (a) => a.name.value === "global" && a.value.kind === Kind.BOOLEAN && a.value.value === true
-            );
-            if (!isGlobalID) {
+            if (directiveNode.name.value !== "relayId") {
                 return;
             }
 
@@ -187,14 +180,13 @@ function assertGlobalIDDoesNotClash(aliasedFieldsFromInheritedTypes: (Set<string
     }
     if (hasAlias === false && shouldDeferCheck === false) {
         throw new DocumentValidationError(
-            'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.',
+            `Type already has a field \`id\`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the \`@alias\` directive to access it via another field.`,
             ["id"]
         );
     }
 }
 
 function assertValidGlobalID({
-    directiveNode,
     typeDef,
     typeNameToGlobalId,
     interfaceToImplementingTypes,
@@ -206,20 +198,10 @@ function assertValidGlobalID({
 }) {
     if (hasGlobalIDField(typeDef, typeNameToGlobalId, interfaceToImplementingTypes)) {
         throw new DocumentValidationError(
-            "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`.",
-            ["@id", "global"]
+            "Invalid directive usage: Only one field may be decorated with the `@relayId` directive.",
+            ["@relayId"]
         );
     } else {
         typeNameToGlobalId.set(typeDef.name.value, true);
-    }
-
-    const isNotUnique = directiveNode.arguments?.find(
-        (a) => a.name.value === "unique" && a.value.kind === Kind.BOOLEAN && a.value.value === false
-    );
-    if (isNotUnique) {
-        throw new DocumentValidationError(
-            `Invalid global ID field - global argument is set to true requires the unique argument be set to true.`,
-            ["@id", "unique"]
-        );
     }
 }

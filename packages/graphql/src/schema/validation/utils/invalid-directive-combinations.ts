@@ -37,7 +37,7 @@ export const invalidCombinations = {
     ],
     cypher: ["alias", "id", "readonly", "relationship", "unique", "writeonly"],
     default: ["callback", "populatedBy", "relationship"],
-    id: ["cypher", "populatedBy", "callback", "customResolver", "relationship", "timestamp", "unique"],
+    id: ["cypher", "populatedBy", "callback", "customResolver", "relationship", "timestamp"],
     populatedBy: ["id", "default", "relationship"],
     private: [],
     readonly: ["cypher", "customResolver", "relationship"],
@@ -57,7 +57,7 @@ export const invalidCombinations = {
         "unique",
     ],
     timestamp: ["id", "unique"],
-    unique: ["cypher", "id", "customResolver", "relationship", "timestamp"],
+    unique: ["cypher", "customResolver", "relationship", "timestamp"],
     writeonly: ["cypher", "customResolver"],
     // OBJECT
     node: [],
