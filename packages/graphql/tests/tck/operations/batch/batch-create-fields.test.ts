@@ -29,7 +29,7 @@ describe("Batch Create, Scalar types", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String
                 born: Date
                 createdAt: DateTime @timestamp(operations: [CREATE])

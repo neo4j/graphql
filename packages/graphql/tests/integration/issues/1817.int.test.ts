@@ -35,30 +35,30 @@ describe("https://github.com/neo4j/graphql/issues/1817", () => {
 
     const typeDefs = `
         type ${TypeContainerType} {
-            id: ID! @id
+            id: ID! @id @unique
             name: String!
             specifiesContainers: [${TypeContainer}!]!
                 @relationship(type: "hasContainer", properties: "CoT_Co_hasContainer", direction: OUT)
         }
 
         type ${TypeContainer} {
-            id: ID! @id
+            id: ID! @id @unique
             name: String
             containsMaterial: [${TypeMaterial}!]!
                 @relationship(type: "hasMaterial", properties: "Co_Ma_hasMaterial", direction: OUT)
         }
 
         type ${TypeMaterial} {
-            id: ID! @id
+            id: ID! @id @unique
             name: String
         }
 
         interface CoT_Co_hasContainer @relationshipProperties {
-            id: ID! @id
+            id: ID! @id 
         }
 
         interface Co_Ma_hasMaterial @relationshipProperties {
-            id: ID! @id
+            id: ID! @id 
         }
     `;
 

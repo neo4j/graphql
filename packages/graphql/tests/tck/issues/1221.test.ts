@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     test("should apply where filter for deep relations, two relations deep", async () => {
         typeDefs = gql`
             type Series {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 architecture: [MasterData!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             }
 
             type MasterData {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
             }
@@ -121,13 +121,13 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     test("should apply where filter for deep relations, three relations deep", async () => {
         typeDefs = gql`
             type Main {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 main: [Series!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
             }
 
             type Series {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 architecture: [MasterData!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             }
 
             type MasterData {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
             }

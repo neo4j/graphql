@@ -320,4 +320,125 @@ describe("makeAugmentedSchema", () => {
             );
         });
     });
+
+    describe("Directive combinations", () => {
+        test("@unique can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @unique
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Directive @unique cannot be used in combination with @relationship"
+            );
+        });
+
+        test("@authentication can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT) @authentication
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Directive @relationship cannot be used in combination with @authentication"
+            );
+        });
+
+        test("@authorization can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor!]!
+                        @relationship(type: "ACTED_IN", direction: OUT)
+                        @authorization(validate: [{ where: { id: "1" } }])
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Directive @relationship cannot be used in combination with @authorization"
+            );
+        });
+    });
+
+    describe("@private", () => {
+        test("should throw error if @private would leave no fields in interface", () => {
+            const typeDefs = gql`
+                interface UserInterface {
+                    private: String @private
+                }
+
+                type User implements UserInterface {
+                    id: ID
+                    password: String @private
+                    private: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Objects and Interfaces must have one or more fields: UserInterface"
+            );
+        });
+
+        test("should throw error if @private would leave no fields in object", () => {
+            const typeDefs = gql`
+                type User {
+                    password: String @private
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Objects and Interfaces must have one or more fields: User"
+            );
+        });
+    });
+    describe("global nodes", () => {
+        test("should throw error if more than one @id directive field has the global argument set to true", () => {
+            const typeDefs = gql`
+                type User {
+                    email: ID! @id @unique @relayId
+                    name: ID! @id @unique @relayId
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                "Only one field may be decorated with the `@relayId` directive"
+            );
+        });
+
+        test("should throw if a type already contains an id field", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID!
+                    email: ID! @id @unique @relayId
+                }
+            `;
+
+            expect(() => makeAugmentedSchema(typeDefs)).toThrow(
+                `Type User already has a field 'id', which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the '@alias' directive to access it via another field`
+            );
+        });
+        test("should not throw if a type already contains an id field but the field is aliased", () => {
+            const typeDefs = gql`
+                type User {
+                    dbId: ID! @id @unique @relayId @alias(property: "id")
+                }
+            `;
+            expect(() => makeAugmentedSchema(typeDefs)).not.toThrow();
+        });
+    });
 });

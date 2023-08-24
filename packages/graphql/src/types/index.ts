@@ -77,9 +77,9 @@ export interface TypeMeta {
     originalType?: TypeNode;
 }
 
-export interface Unique {
+export type Unique = {
     constraintName: string;
-}
+};
 
 export interface Callback {
     operations: CallbackOperations[];

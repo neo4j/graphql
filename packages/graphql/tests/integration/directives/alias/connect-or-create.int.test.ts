@@ -53,7 +53,7 @@ describe("@alias directive", () => {
             type ${typeMovie} {
                 title: String
                 titleAgain: String @alias(property: "title")
-                id: ID! @id
+                id: ID! @id @unique
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;

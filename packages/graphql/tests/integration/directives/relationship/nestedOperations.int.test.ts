@@ -385,7 +385,7 @@ describe("@relationhip - nestedOperations", () => {
         test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${Person} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String
                 }
 
@@ -1148,7 +1148,7 @@ describe("@relationhip - nestedOperations", () => {
         test("Should only be able to perform the connectOrCreate nested op when CONNECT_OR_CREATE is the only nestedOperation specified", async () => {
             const typeDefs = `#graphql
                 type ${PersonOne} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String
                 }
 
