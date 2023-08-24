@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
     test("should successfully execute given mutation", async () => {
         const typeDefs = `
             type Category {
-                categoryId: ID! @id
+                categoryId: ID! @id @unique
                 name: String!
                 description: String! @default(value: "")
                 exampleImageLocations: [String!]

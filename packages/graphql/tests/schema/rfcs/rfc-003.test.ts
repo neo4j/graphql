@@ -34,15 +34,15 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
 
                 type SecondTarget {
-                    id: ID @id
+                    id: ID @id @unique
                 }
 
                 type ThirdTarget {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -58,7 +58,7 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -74,7 +74,7 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -89,7 +89,7 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -109,14 +109,14 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Source implements SourceInterface {
-                    id: ID @id
+                    id: ID @id @unique
                     targets: [Target!]!
                     target1: Target!
                     target2: Target
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -132,12 +132,12 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Source implements SourceInterface {
-                    id: ID @id
+                    id: ID @id @unique
                     targets: [Target!]
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -153,12 +153,12 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Source implements SourceInterface {
-                    id: ID @id
+                    id: ID @id @unique
                     targets: [Target]!
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 
@@ -174,12 +174,12 @@ describe("schema/rfc/003", () => {
                 }
 
                 type Source implements SourceInterface {
-                    id: ID @id
+                    id: ID @id @unique
                     targets: [Target]
                 }
 
                 type Target {
-                    id: ID @id
+                    id: ID @id @unique
                 }
             `;
 

@@ -31,7 +31,7 @@ const basicTypeDefs = `
     }
 
     type Article @key(fields: "id") {
-        id: ID! @id
+        id: ID! @id @unique
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -45,16 +45,16 @@ const basicTypeDefs = `
     }
 
     type TextBlock implements Block {
-        id: ID @id
+        id: ID @id @unique
         text: String
     }
 
     type DividerBlock implements Block {
-        id: ID @id
+        id: ID @id @unique
     }
 
     type ImageBlock implements Block {
-        id: ID @id
+        id: ID @id @unique
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 

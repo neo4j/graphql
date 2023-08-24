@@ -25,7 +25,7 @@ import type Node from "./Node";
 import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
-import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
+import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";

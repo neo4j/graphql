@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
         const typeDefs = `
         type ${PostalCode.name} {
             archivedAt: DateTime
-            number: String! @id(autogenerate: false)
+            number: String! @unique
             address: [${Address.name}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
           }
           
@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           
           type ${Address.name} {
             archivedAt: DateTime
-            uuid: ID! @id
+            uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             postalCode: ${PostalCode.name} @relationship(type: "HAS_POSTAL_CODE", direction: OUT)
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           
           type ${Mandate.name} @exclude(operations: [DELETE]) {
             archivedAt: DateTime
-            number: ID! @id # numéro
+            number: ID! @id @unique # numéro
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             price: Float!
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           
           type ${Valuation.name} @exclude(operations: [DELETE]) {
             archivedAt: DateTime
-            uuid: ID! @id
+            uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             estate: ${Estate.name}  @relationship(type: "VALUATION_FOR", direction: OUT)
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           
           type ${Estate.name} @exclude(operations: [DELETE]) {
             archivedAt: DateTime
-            uuid: ID! @id
+            uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             estateType: EstateType!

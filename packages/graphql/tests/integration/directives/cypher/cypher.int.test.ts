@@ -863,7 +863,7 @@ describe("cypher", () => {
                 }
 
                 type User {
-                    id: ID @id
+                    id: ID @id @unique
                     updates: [PostMovieUser!]!
                         @cypher(
                             statement: """

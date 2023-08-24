@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
                         { operations: [READ], where: { jwt: { roles_INCLUDES: "ADMIN" } } }
                     ]
                 ) {
-                userId: ID! @id
+                userId: ID! @id @unique
                 isPublic: Boolean
             }
         `;

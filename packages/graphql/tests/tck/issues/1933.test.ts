@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Employee {
-                employeeId: ID! @id(autogenerate: false)
+                employeeId: ID! @unique
                 firstName: String! @readonly
                 lastName: String @readonly
                 projects: [Project!]!
@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
 
             type Project {
-                projectId: ID! @id(autogenerate: false)
+                projectId: ID! @unique
                 name: String! @readonly
                 description: String
                 employees: [Employee!]!

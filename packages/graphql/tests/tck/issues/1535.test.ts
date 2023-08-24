@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Tenant {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
                 fooBars: [FooBar!]! @relationship(type: "HAS_FOOBARS", direction: OUT)
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
 
             type Screening implements Event {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String
                 beginsAt: DateTime!
             }
@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
 
             type FooBar {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
         `;

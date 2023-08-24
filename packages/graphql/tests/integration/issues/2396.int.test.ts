@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         const typeDefs = `
             type ${PostalCode} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                number: String! @id(autogenerate: false)
+                number: String! @unique
 
                 address: [${Address}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }
@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type ${Address} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type ${Mandate} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                number: ID! @id # numéro
+                number: ID! @id @unique # numéro
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type ${Valuation} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type ${Estate} @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 

@@ -178,7 +178,7 @@ describe("validateDocument", () => {
             }
 
             type Post {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String!
                 datetime: DateTime @readonly @timestamp(operations: [CREATE])
             }
@@ -371,7 +371,7 @@ describe("validateDocument", () => {
         test("should not throw error on validation of schema", () => {
             const doc = gql`
                 type Order {
-                    orderID: ID! @id
+                    orderID: ID! @id @unique
                     placedAt: DateTime @timestamp
                     shipTo: Address! @relationship(type: "SHIPS_TO", direction: OUT)
                     customer: Customer! @relationship(type: "PLACED", direction: IN)
