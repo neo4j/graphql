@@ -2039,9 +2039,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-javascript@npm:6.1.9":
-  version: 6.1.9
-  resolution: "@codemirror/lang-javascript@npm:6.1.9"
+"@codemirror/lang-javascript@npm:6.2.0":
+  version: 6.2.0
+  resolution: "@codemirror/lang-javascript@npm:6.2.0"
   dependencies:
     "@codemirror/autocomplete": ^6.0.0
     "@codemirror/language": ^6.6.0
@@ -2050,7 +2050,7 @@ __metadata:
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.0.0
     "@lezer/javascript": ^1.0.0
-  checksum: 6c79b51c61d37b3f4dde6312df02183045c31f055e5cf8550b497f39798b823b4e380a641a2cfc97f3f26fd4e89194258d8ef741c42acd72b3f2e18257b427a5
+  checksum: 17e4d11a0f1ea6dd9bcecb39fa116c6c2f25f354be1d7b8aa91f6e6f5e0c43b5e8ef037e2d543acdc12351eabd57cc0825cacd546faa429baa07e9d1c1fd947d
   languageName: node
   linkType: hard
 
@@ -4282,7 +4282,7 @@ __metadata:
   dependencies:
     "@codemirror/autocomplete": 6.9.0
     "@codemirror/commands": 6.2.4
-    "@codemirror/lang-javascript": 6.1.9
+    "@codemirror/lang-javascript": 6.2.0
     "@codemirror/language": 6.9.0
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
