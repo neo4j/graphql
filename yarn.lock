@@ -2051,18 +2051,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-javascript@npm:6.2.0":
-  version: 6.2.0
-  resolution: "@codemirror/lang-javascript@npm:6.2.0"
+"@codemirror/lang-javascript@npm:6.2.1":
+  version: 6.2.1
+  resolution: "@codemirror/lang-javascript@npm:6.2.1"
   dependencies:
     "@codemirror/autocomplete": ^6.0.0
     "@codemirror/language": ^6.6.0
     "@codemirror/lint": ^6.0.0
     "@codemirror/state": ^6.0.0
-    "@codemirror/view": ^6.0.0
+    "@codemirror/view": ^6.17.0
     "@lezer/common": ^1.0.0
     "@lezer/javascript": ^1.0.0
-  checksum: 17e4d11a0f1ea6dd9bcecb39fa116c6c2f25f354be1d7b8aa91f6e6f5e0c43b5e8ef037e2d543acdc12351eabd57cc0825cacd546faa429baa07e9d1c1fd947d
+  checksum: 3df38c4cced06195283a9a2a9365aaa7c8c1b157852b331bc3a118403f774bbba57d2a392de52f5e28d2b344a323bc0146bcf7c8ef8be2473f167d815e4a37cd
   languageName: node
   linkType: hard
 
@@ -2153,6 +2153,17 @@ __metadata:
     style-mod: ^4.0.0
     w3c-keyname: ^2.2.4
   checksum: 718ecbb021ca75eb89003f73c846a07d36a708dcfec8345f0f0dbcfc0d0df5ea6f114918694b2730a6d49e5e50502bcce79ce7ff94ce55748e068e5a35073755
+  languageName: node
+  linkType: hard
+
+"@codemirror/view@npm:^6.17.0":
+  version: 6.17.0
+  resolution: "@codemirror/view@npm:6.17.0"
+  dependencies:
+    "@codemirror/state": ^6.1.4
+    style-mod: ^4.1.0
+    w3c-keyname: ^2.2.4
+  checksum: a4b3098b2821c6fd354c2a7fdee8be848d346be11d6159b8573d3d9004a8608cb92d52beb3482357682d795a974b9d3f9dd96cea23d705baf84c15cbed27fefb
   languageName: node
   linkType: hard
 
@@ -4294,7 +4305,7 @@ __metadata:
   dependencies:
     "@codemirror/autocomplete": 6.9.0
     "@codemirror/commands": 6.2.5
-    "@codemirror/lang-javascript": 6.2.0
+    "@codemirror/lang-javascript": 6.2.1
     "@codemirror/language": 6.9.0
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
@@ -27953,6 +27964,13 @@ __metadata:
   version: 4.0.2
   resolution: "style-mod@npm:4.0.2"
   checksum: 4bac8877e039c61481fc729981378791979c3ebb2f827a54240e95ccca5bca92a6d660566cacb87a8d7cc1ffb26bcd5eafa10c697e131adb5ca9541f3a9cbff6
+  languageName: node
+  linkType: hard
+
+"style-mod@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "style-mod@npm:4.1.0"
+  checksum: 8402b14ca11113a3640d46b3cf7ba49f05452df7846bc5185a3535d9b6a64a3019e7fb636b59ccbb7816aeb0725b24723e77a85b05612a9360e419958e13b4e6
   languageName: node
   linkType: hard
 
