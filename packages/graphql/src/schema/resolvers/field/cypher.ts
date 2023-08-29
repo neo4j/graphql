@@ -23,7 +23,7 @@ import type { CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
 import { isNeoInt } from "../../../utils/utils";
 import { translateTopLevelCypher } from "../../../translate";
-import type { Neo4jGraphQLComposedContext } from "../wrapper";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 

@@ -708,7 +708,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String!
                 }
             `;
@@ -732,7 +732,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id @alias(property: "identifier")
+                    id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -743,54 +743,6 @@ describe("assertIndexesAndConstraints/unique", () => {
             await expect(
                 neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.identifier`);
-        });
-
-        test("should not throw an error when unique argument is set to false", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const type = new UniqueType("User");
-
-            const typeDefs = `
-                type ${type.name} {
-                    id: ID! @id(unique: false)
-                    name: String!
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
-            ).resolves.not.toThrow();
-        });
-
-        test("should not throw an error when unique argument is set to false when used with @alias", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const type = new UniqueType("User");
-
-            const typeDefs = `
-                type ${type.name} {
-                    id: ID! @id(unique: false) @alias(property: "identifier")
-                    name: String!
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({ driver, sessionConfig: { database: databaseName } })
-            ).resolves.not.toThrow();
         });
 
         test("should not throw an error when all necessary constraints exist", async () => {
@@ -804,7 +756,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String!
                 }
             `;
@@ -840,7 +792,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id @alias(property: "identifier")
+                    id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -876,7 +828,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String!
                 }
             `;
@@ -922,7 +874,7 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    id: ID! @id @alias(property: "identifier")
+                    id: ID! @id @unique @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -960,101 +912,6 @@ describe("assertIndexesAndConstraints/unique", () => {
             }
         });
 
-        test("should not create a constraint if it doesn't exist and unique option is set to false", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const type = new UniqueType("User");
-
-            const typeDefs = `
-                type ${type.name} {
-                    id: ID! @id(unique: false)
-                    name: String!
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const session = driver.session({ database: databaseName });
-
-            const cypher = "SHOW UNIQUE CONSTRAINTS";
-
-            try {
-                const result = await session.run(cypher);
-
-                expect(
-                    result.records
-                        .map((record) => {
-                            return record.toObject();
-                        })
-                        .filter((record) => record.labelsOrTypes.includes(type.name))
-                ).toHaveLength(0);
-            } finally {
-                await session.close();
-            }
-        });
-
-        test("should not create a constraint if it doesn't exist and unique option is set to false when used with @alias", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
-            const type = new UniqueType("User");
-
-            const typeDefs = `
-                type ${type.name} {
-                    id: ID! @id(unique: false) @alias(property: "identifier")
-                    name: String!
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await neoSchema.getSchema();
-
-            await expect(
-                neoSchema.assertIndexesAndConstraints({
-                    driver,
-                    sessionConfig: { database: databaseName },
-                    options: { create: true },
-                })
-            ).resolves.not.toThrow();
-
-            const session = driver.session({ database: databaseName });
-
-            const cypher = "SHOW UNIQUE CONSTRAINTS";
-
-            try {
-                const result = await session.run(cypher);
-
-                expect(
-                    result.records
-                        .map((record) => {
-                            return record.toObject();
-                        })
-                        .filter(
-                            (record) =>
-                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
-                        )
-                ).toHaveLength(0);
-            } finally {
-                await session.close();
-            }
-        });
-
         test("should not throw if constraint exists on an additional label", async () => {
             // Skip if multi-db not supported
             if (!MULTIDB_SUPPORT) {
@@ -1066,7 +923,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                    someIdProperty: ID! @id @alias(property: "someAlias")
+                    someIdProperty: ID! @id @unique @alias(property: "someAlias")
                     title: String!
                 }
             `;
@@ -1107,7 +964,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
                 type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                    someIdProperty: ID! @id @alias(property: "someAlias")
+                    someIdProperty: ID! @id @unique @alias(property: "someAlias")
                     title: String!
                 }
             `;

@@ -26,7 +26,7 @@ describe("Relationship nested operations", () => {
     test("Single relationship to type with unique field with no nested operation specified", async () => {
         const typeDefs = gql`
             type Person {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String
             }
 

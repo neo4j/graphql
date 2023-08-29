@@ -17,21 +17,10 @@
  * limitations under the License.
  */
 
-import { type DirectiveNode } from "graphql";
-import { IDAnnotation } from "../../annotation/IDAnnotation";
-import { parseArguments } from "../parse-arguments";
-import { idDirective } from "../../../graphql/directives";
+import type { Neo4jGraphQLContextInterface } from "./neo4j-graphql-context-interface";
 
-export function parseIDAnnotation(directive: DirectiveNode): IDAnnotation {
-    const { autogenerate, unique, global } = parseArguments(idDirective, directive) as {
-        autogenerate: boolean;
-        unique: boolean;
-        global: boolean;
-    };
+export interface Neo4jGraphQLSubscriptionsConnectionParams extends Neo4jGraphQLContextInterface {}
 
-    return new IDAnnotation({
-        autogenerate,
-        unique,
-        global,
-    });
+export interface Neo4jGraphQLSubscriptionsContext {
+    connectionParams?: Neo4jGraphQLSubscriptionsConnectionParams;
 }

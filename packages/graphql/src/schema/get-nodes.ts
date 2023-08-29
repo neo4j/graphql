@@ -22,7 +22,7 @@ import type { DirectiveNode, NamedTypeNode } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
-import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
+import type { LimitDirective } from "../classes/LimitDirective";
 import type { FullText, Neo4jGraphQLCallbacks } from "../types";
 import { asArray } from "../utils/utils";
 import type { DefinitionNodes } from "./get-definition-nodes";
@@ -31,7 +31,7 @@ import parseExcludeDirective from "./parse-exclude-directive";
 import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parsePluralDirective from "./parse/parse-plural-directive";
-import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
+import { parseLimitDirective } from "./parse/parse-limit-directive";
 import { schemaConfigurationFromObjectTypeDefinition } from "./schema-configuration";
 
 type Nodes = {
@@ -66,7 +66,7 @@ function getNodes(
                     "exclude",
                     "node",
                     "fulltext",
-                    "queryOptions",
+                    "limit",
                     "plural",
                     "shareable",
                     "subscriptionsAuthorization",
@@ -85,9 +85,7 @@ function getNodes(
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
-        const queryOptionsDirectiveDefinition = (definition.directives || []).find(
-            (x) => x.name.value === "queryOptions"
-        );
+        const limitDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "limit");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         const { interfaceExcludeDirectives } = nodeInterfaces.reduce<{
@@ -154,10 +152,10 @@ function getNodes(
             floatWhereInTypeDefs = true;
         }
 
-        let queryOptionsDirective: QueryOptionsDirective | undefined;
-        if (queryOptionsDirectiveDefinition) {
-            queryOptionsDirective = parseQueryOptionsDirective({
-                directive: queryOptionsDirectiveDefinition,
+        let limitDirective: LimitDirective | undefined;
+        if (limitDirectiveDefinition) {
+            limitDirective = parseLimitDirective({
+                directive: limitDirectiveDefinition,
                 definition,
             });
         }
@@ -197,9 +195,7 @@ function getNodes(
         const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
 
         if (globalIdFields.length > 1) {
-            throw new Error(
-                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
-            );
+            throw new Error("Only one field may be decorated with the `@relayId` directive");
         }
 
         const globalIdField = globalIdFields[0];
@@ -210,16 +206,11 @@ function getNodes(
             const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
             if (!hasAlias) {
                 throw new Error(
-                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+                    `Type ${definition.name.value} already has a field 'id', which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the '@alias' directive to access it via another field.`
                 );
             }
         }
 
-        if (globalIdField && !globalIdField.unique) {
-            throw new Error(
-                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
-            );
-        }
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
@@ -233,7 +224,7 @@ function getNodes(
             nodeDirective,
             // @ts-ignore we can be sure it's defined
             fulltextDirective,
-            queryOptionsDirective,
+            limitDirective,
             description: definition.description?.value,
             isGlobalNode: Boolean(globalIdField),
             globalIdField: globalIdField?.fieldName,

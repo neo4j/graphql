@@ -25,9 +25,9 @@ import type Node from "./Node";
 import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
 import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
-import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
-import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
-import type { WrapResolverArguments } from "../schema/resolvers/wrapper";
+import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
+import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
+import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
@@ -48,6 +48,7 @@ import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
+import { wrapSubscription } from "../schema/resolvers/composition/wrap-subscription";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -287,10 +288,17 @@ class Neo4jGraphQL {
         };
 
         const resolversComposition = {
-            "Query.*": [wrapResolver(wrapResolverArgs)],
-            "Mutation.*": [wrapResolver(wrapResolverArgs)],
-            "Subscription.*": [wrapSubscription(wrapResolverArgs)],
+            "Query.*": [wrapQueryAndMutation(wrapResolverArgs)],
+            "Mutation.*": [wrapQueryAndMutation(wrapResolverArgs)],
         };
+
+        if (this.features.subscriptions) {
+            resolversComposition["Subscription.*"] = wrapSubscription({
+                subscriptionsEngine: this.features.subscriptions,
+                schemaModel: this.schemaModel,
+                authorization: this.authorization,
+            });
+        }
 
         // Merge generated and custom resolvers
         const mergedResolvers = mergeResolvers([...asArray(resolvers), ...asArray(this.resolvers)]);

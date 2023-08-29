@@ -39,7 +39,7 @@ describe("#601", () => {
             }
 
             type Document @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+                id: ID! @id @unique
                 stakeholder: Stakeholder! @relationship(type: "REQUIRES", direction: OUT)
 
                 customerContact: CustomerContact!

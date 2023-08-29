@@ -88,8 +88,8 @@ export function translateRead(
         optionsInput.sort = optionsInput.sort?.[node?.singular] || optionsInput.sort;
     }
 
-    if (node.queryOptions) {
-        optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
+    if (node.limit) {
+        optionsInput.limit = node.limit.getLimit(optionsInput.limit);
         resolveTree.args.options = resolveTree.args.options || {};
         (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit;
     }

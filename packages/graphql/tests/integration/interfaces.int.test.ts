@@ -51,18 +51,18 @@ describe("Interfaces tests", () => {
 
         const typeDefs = `
             type ${SomeNodeType} {
-                id: ID! @id
+                id: ID! @id @unique
                 other: ${OtherNodeType}! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
             type ${OtherNodeType} {
-                id: ID! @id
+                id: ID! @id @unique
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
             interface MyInterface {
                 id: ID! @id
             }
             type ${MyImplementationType} implements MyInterface {
-                id: ID! @id
+                id: ID! @id @unique
             }
 
             extend type ${SomeNodeType} @authentication

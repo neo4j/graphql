@@ -17,15 +17,11 @@
  * limitations under the License.
  */
 
-type QueryOptionsLimit = {
-    default?: number;
-    max?: number;
-};
+import { DirectiveLocation, GraphQLDirective } from "graphql";
 
-export class QueryOptionsAnnotation {
-    public readonly limit: QueryOptionsLimit;
-
-    constructor({ limit }: { limit: QueryOptionsLimit }) {
-        this.limit = limit;
-    }
-}
+export const relayIdDirective = new GraphQLDirective({
+    name: "relayId",
+    description:
+        "Mark the field to be used as the global node identifier for Relay. This field will be backed by a unique node property constraint.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+});

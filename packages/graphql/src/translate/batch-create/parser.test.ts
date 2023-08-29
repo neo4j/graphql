@@ -35,7 +35,7 @@ describe("TreeDescriptor Parser", () => {
     beforeAll(async () => {
         typeDefs = gql`
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String
                 age: Int
                 height: Int

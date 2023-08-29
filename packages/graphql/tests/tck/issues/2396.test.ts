@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         typeDefs = gql`
             type PostalCode @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                number: String! @id(autogenerate: false)
+                number: String! @unique
 
                 address: [Address!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type Address @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type Valuation @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             type Estate @exclude(operations: [DELETE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 

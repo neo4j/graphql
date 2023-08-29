@@ -48,7 +48,7 @@ describe("413", () => {
             }
 
             type JobPlan @query(aggregate: true) {
-                id: ID! @id
+                id: ID! @id @unique
                 tenantID: ID!
                 name: String!
             }

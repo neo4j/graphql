@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             type ${Book} {
                 name: String!
                 year: Int
-                refID: ID @id
+                refID: ID @id @unique
                 soldCopies: Int
                     @cypher(
                         statement: "OPTIONAL MATCH(sales:${Sales}) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result"

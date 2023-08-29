@@ -195,6 +195,7 @@ function generateRelationshipField(
         source,
         target: relatedToEntity,
         direction: direction as RelationshipDirection,
+        isList: Boolean(fieldTypeMeta.array),
         queryDirection: queryDirection as QueryDirection,
         nestedOperations: nestedOperations as NestedOperation[],
         aggregate: aggregate as boolean,

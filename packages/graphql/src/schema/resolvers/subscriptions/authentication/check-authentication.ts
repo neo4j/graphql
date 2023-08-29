@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { SubscriptionContext } from "../types";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { filterByValues } from "../../../../translate/authorization/utils/filter-by-values";
 import type {
@@ -27,6 +26,7 @@ import type {
 import type { Attribute } from "../../../../schema-model/attribute/Attribute";
 import { Neo4jGraphQLError } from "../../../../classes";
 import { AUTHORIZATION_UNAUTHENTICATED } from "../../../../constants";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 
 export function checkAuthentication({
     authenticated,
@@ -35,7 +35,7 @@ export function checkAuthentication({
 }: {
     authenticated: ConcreteEntity | Attribute;
     operation: AuthenticationOperation;
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
 }) {
     const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
     if (schemaLevelAnnotation && schemaLevelAnnotation.operations.has(operation)) {
@@ -47,12 +47,12 @@ export function checkAuthentication({
     }
 }
 
-function applyAuthentication(annotation: AuthenticationAnnotation, context: SubscriptionContext) {
-    if (!context.jwt) {
+function applyAuthentication(annotation: AuthenticationAnnotation, context: Neo4jGraphQLComposedSubscriptionsContext) {
+    if (!context.authorization.jwt) {
         throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
     }
     if (annotation.jwt) {
-        const result = filterByValues(annotation.jwt, context.jwt);
+        const result = filterByValues(annotation.jwt, context.authorization.jwt);
         if (!result) {
             throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
         }
