@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
                 @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
         }
 
-        type ${testNameDetails} @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+        type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
             fullName: String!
         }
 
