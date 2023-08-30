@@ -26,7 +26,7 @@ describe("@customResolver directive", () => {
     test("passes fields directly through with no generation", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                customResolver: String @customResolver
+                customResolver: String
             }
 
             type User implements UserInterface {
@@ -34,7 +34,7 @@ describe("@customResolver directive", () => {
                 username: String!
                 password: String!
                 nickname: String! @customResolver
-                customResolver: String
+                customResolver: String @customResolver
             }
         `;
 
