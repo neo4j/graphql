@@ -823,7 +823,9 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const query = gql`
             {
                 movies(
-                    where: { genres_ALL: { OR: { moviesAggregate: { count: 0 }, seriesAggregate: { count: 1 } } } }
+                    where: {
+                        genres_ALL: { OR: [{ moviesAggregate: { count: 0 } }, { seriesAggregate: { count: 1 } }] }
+                    }
                 ) {
                     title
                 }
@@ -848,7 +850,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                     RETURN count(this5) = $param1 AS var6
                 }
                 WITH *
-                WHERE (var3 = true AND var6 = true)
+                WHERE (var3 = true OR var6 = true)
                 RETURN count(this0) > 0 AS var7
             }
             CALL {
@@ -865,7 +867,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                     RETURN count(this12) = $param3 AS var13
                 }
                 WITH *
-                WHERE NOT (var10 = true AND var13 = true)
+                WHERE NOT (var10 = true OR var13 = true)
                 RETURN count(this0) > 0 AS var14
             }
             WITH *
@@ -901,7 +903,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                 movies(
                     where: {
                         genres_ALL: {
-                            OR: { moviesAggregate: { count: 0 }, name: "Thriller" }
+                            OR: [{ moviesAggregate: { count: 0 } }, { name: "Thriller" }]
                             seriesAggregate: { count: 1 }
                         }
                     }
@@ -929,7 +931,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                     RETURN count(this5) = $param1 AS var6
                 }
                 WITH *
-                WHERE ((this0.name = $param2 AND var3 = true) AND var6 = true)
+                WHERE ((var3 = true OR this0.name = $param2) AND var6 = true)
                 RETURN count(this0) > 0 AS var7
             }
             CALL {
@@ -946,7 +948,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                     RETURN count(this12) = $param4 AS var13
                 }
                 WITH *
-                WHERE NOT ((this0.name = $param5 AND var10 = true) AND var13 = true)
+                WHERE NOT ((var10 = true OR this0.name = $param5) AND var13 = true)
                 RETURN count(this0) > 0 AS var14
             }
             WITH *

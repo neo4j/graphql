@@ -148,26 +148,27 @@ export class RelationshipFilter extends Filter {
         const returnVariables: Cypher.Variable[] = [];
         const match = new Cypher.Match(pattern);
 
-        const nestedSubqueries = this.targetNodeFilters.flatMap((f) => {
-            return f.getSubqueries(context.target).map((sq) => {
-                let predicate = f.getPredicate(context);
-                if (predicate) {
-                    if (notPredicate) {
-                        predicate = Cypher.not(predicate);
-                    }
-
-                    const returnVar = new Cypher.Variable();
-                    returnVariables.push(returnVar);
-                    return new Cypher.Call(sq)
-                        .innerWith(context.target)
-                        .with("*")
-                        .where(predicate)
-                        .return([Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0)), returnVar]); // THis variable needs to be used in predicate
-                }
+        const subqueries = this.targetNodeFilters.map((f) => {
+            const returnVar = new Cypher.Variable();
+            returnVariables.push(returnVar);
+            const nestedSubqueries = f.getSubqueries(context.target).map((sq) => {
+                return new Cypher.Call(sq).innerWith(context.target);
             });
-        });
 
-        return { clause: Cypher.concat(match, ...nestedSubqueries), returnVariables };
+            let predicate = f.getPredicate(context);
+            if (predicate && notPredicate) {
+                predicate = Cypher.not(predicate);
+            }
+
+            const withClause = new Cypher.With("*");
+            if (predicate) {
+                withClause.where(predicate);
+            }
+            withClause.return([Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0)), returnVar]); // THis variable needs to be used in predicate
+
+            return Cypher.concat(...nestedSubqueries, withClause);
+        });
+        return { clause: Cypher.concat(match, ...subqueries), returnVariables };
     }
 
     private getNestedSubqueryFilter(target: Cypher.Expr): Cypher.Predicate {
