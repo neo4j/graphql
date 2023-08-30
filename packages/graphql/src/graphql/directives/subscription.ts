@@ -19,38 +19,38 @@
 
 import { DirectiveLocation, GraphQLDirective, GraphQLEnumType, GraphQLList, GraphQLNonNull } from "graphql";
 
-export enum SubscriptionOperations {
-    CREATE = "CREATE",
-    UPDATE = "UPDATE",
-    DELETE = "DELETE",
-    CREATE_RELATIONSHIP = "CREATE_RELATIONSHIP",
-    DELETE_RELATIONSHIP = "DELETE_RELATIONSHIP",
+export enum SubscriptionEvent {
+    CREATED = "CREATED",
+    UPDATED = "UPDATED",
+    DELETED = "DELETED",
+    RELATIONSHIP_CREATED = "RELATIONSHIP_CREATED",
+    RELATIONSHIP_DELETED = "RELATIONSHIP_DELETED",
 }
 
-const SUBSCRIPTION_FIELDS = new GraphQLEnumType({
-    name: "SubscriptionFields",
+const SubscriptionEventType = new GraphQLEnumType({
+    name: "SubscriptionEvent",
     values: {
-        [SubscriptionOperations.CREATE]: { value: SubscriptionOperations.CREATE },
-        [SubscriptionOperations.UPDATE]: { value: SubscriptionOperations.UPDATE },
-        [SubscriptionOperations.DELETE]: { value: SubscriptionOperations.DELETE },
-        [SubscriptionOperations.CREATE_RELATIONSHIP]: { value: SubscriptionOperations.CREATE_RELATIONSHIP },
-        [SubscriptionOperations.DELETE_RELATIONSHIP]: { value: SubscriptionOperations.DELETE_RELATIONSHIP },
+        [SubscriptionEvent.CREATED]: { value: SubscriptionEvent.CREATED },
+        [SubscriptionEvent.UPDATED]: { value: SubscriptionEvent.UPDATED },
+        [SubscriptionEvent.DELETED]: { value: SubscriptionEvent.DELETED },
+        [SubscriptionEvent.RELATIONSHIP_CREATED]: { value: SubscriptionEvent.RELATIONSHIP_CREATED },
+        [SubscriptionEvent.RELATIONSHIP_DELETED]: { value: SubscriptionEvent.RELATIONSHIP_DELETED },
     },
 });
 
 export const subscriptionDirective = new GraphQLDirective({
     name: "subscription",
-    description: "Define the granularity of operations available in the subscription root type.",
+    description: "Define the granularity of events available in the subscription root type.",
     args: {
-        operations: {
-            description: "Enable/Disable subscription operations for this type",
-            type: new GraphQLNonNull(new GraphQLList(SUBSCRIPTION_FIELDS)),
+        events: {
+            description: "Enable/Disable subscription events for this type",
+            type: new GraphQLNonNull(new GraphQLList(SubscriptionEventType)),
             defaultValue: [
-                SubscriptionOperations.CREATE,
-                SubscriptionOperations.UPDATE,
-                SubscriptionOperations.DELETE,
-                SubscriptionOperations.CREATE_RELATIONSHIP,
-                SubscriptionOperations.DELETE_RELATIONSHIP,
+                SubscriptionEvent.CREATED,
+                SubscriptionEvent.UPDATED,
+                SubscriptionEvent.DELETED,
+                SubscriptionEvent.RELATIONSHIP_CREATED,
+                SubscriptionEvent.RELATIONSHIP_DELETED,
             ],
         },
     },
