@@ -13,7 +13,7 @@ export class AggregationFilter extends Filter {
 
     private filters: Array<AggregationPropertyFilter | CountFilter | LogicalFilter> = [];
 
-    private subqueryVariables: Array<Cypher.Variable> = [];
+    private subqueryReturnVariable: Cypher.Variable | undefined;
 
     constructor(relationship: RelationshipAdapter) {
         super();
@@ -29,7 +29,7 @@ export class AggregationFilter extends Filter {
     }
 
     public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
-        this.subqueryVariables = []; // TODO: fix this state
+        this.subqueryReturnVariable = new Cypher.Variable();
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const relatedNode = new Cypher.Node({
             labels: relatedEntity.labels,
@@ -56,9 +56,7 @@ export class AggregationFilter extends Filter {
         const returnColumns: Cypher.ProjectionColumn[] = [];
 
         if (predicates) {
-            const newVar = new Cypher.Variable();
-            this.subqueryVariables.push(newVar);
-            returnColumns.push([predicates, newVar]);
+            returnColumns.push([predicates, this.subqueryReturnVariable]);
         }
 
         if (returnColumns.length === 0) return []; // Maybe throw?
@@ -69,8 +67,7 @@ export class AggregationFilter extends Filter {
     }
 
     public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const trueLiteral = new Cypher.Literal(true);
-        const subqueryPredicates = this.subqueryVariables.map((v) => Cypher.eq(v, trueLiteral));
-        return Cypher.and(...subqueryPredicates);
+        if (!this.subqueryReturnVariable) return undefined;
+        return Cypher.eq(this.subqueryReturnVariable, Cypher.true);
     }
 }

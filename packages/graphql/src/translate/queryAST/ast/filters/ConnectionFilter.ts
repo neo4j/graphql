@@ -12,6 +12,7 @@ export class ConnectionFilter extends Filter {
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
+    // TODO: remove this
     private subqueryPredicate: Cypher.Predicate | undefined;
 
     constructor({

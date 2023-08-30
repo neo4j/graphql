@@ -31,6 +31,9 @@ export class RelationshipFilter extends Filter {
     protected operator: RelationshipWhereOperator;
     protected isNot: boolean;
 
+    // TODO: remove this, this is not good
+    private subqueryPredicate: Cypher.Predicate | undefined;
+
     constructor({
         relationship,
         operator,
@@ -54,7 +57,134 @@ export class RelationshipFilter extends Filter {
         this.targetNodeFilters.push(...filter);
     }
 
+    public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
+        const relatedEntity = this.relationship.target as ConcreteEntity;
+        const target = new Cypher.Node({
+            labels: relatedEntity.labels,
+        });
+        const relationship = new Cypher.Relationship({
+            type: this.relationship.type,
+        });
+        const nestedContext = new QueryASTContext({
+            target,
+            source: parentNode,
+            relationship,
+        });
+
+        const subqueries = this.targetNodeFilters.flatMap((f) => f.getSubqueries(target));
+        if (subqueries.length > 0) {
+            const pattern = new Cypher.Pattern(parentNode)
+                .withoutLabels()
+                .related(relationship)
+                .withoutVariable()
+                .withDirection(this.relationship.getCypherDirection())
+                .to(target);
+
+            switch (this.operator) {
+                case "NONE":
+                case "SOME":
+                case "SINGLE": {
+                    const match = new Cypher.Match(pattern);
+
+                    const returnVar = new Cypher.Variable();
+                    const nestedSubqueries = this.targetNodeFilters.flatMap((f) => {
+                        return f.getSubqueries(target).map((sq) => {
+                            return new Cypher.Call(sq).innerWith(target);
+                        });
+                    });
+
+                    const subqueriesFilters = this.targetNodeFilters.map((f) => f.getPredicate(nestedContext));
+
+                    const subqueriesPredicate = Cypher.and(...subqueriesFilters);
+
+                    // NOTE: NONE is SOME + isNot
+                    // TODO: move to wrapInNullIfNeeded in getPredicate
+                    const comparator = this.isNot ? Cypher.false : Cypher.true;
+                    this.subqueryPredicate = Cypher.eq(returnVar, comparator);
+
+                    const withAfterSubqueries = new Cypher.With("*");
+
+                    if (subqueriesPredicate) {
+                        withAfterSubqueries.where(subqueriesPredicate);
+                    }
+
+                    const returnPredicate = this.getNestedSubqueryFilter(target);
+
+                    withAfterSubqueries.return([returnPredicate, returnVar]);
+
+                    return [Cypher.concat(match, ...nestedSubqueries, withAfterSubqueries)];
+                }
+
+                case "ALL": {
+                    const { clause: nestedSubqueries, returnVariables: truthyReturn } = this.getSubqueryForAllFilter(
+                        pattern,
+                        nestedContext,
+                        false
+                    );
+
+                    const { clause: nestedSubqueries2, returnVariables: falsyReturn } = this.getSubqueryForAllFilter(
+                        pattern,
+                        nestedContext,
+                        true
+                    );
+
+                    this.subqueryPredicate = Cypher.and(
+                        ...falsyReturn.map((v) => Cypher.eq(v, Cypher.false)),
+                        ...truthyReturn.map((v) => Cypher.eq(v, Cypher.true))
+                    );
+
+                    return [nestedSubqueries, nestedSubqueries2];
+                }
+            }
+        }
+        return [];
+    }
+
+    private getSubqueryForAllFilter(
+        pattern: Cypher.Pattern,
+        context: QueryASTContext,
+        notPredicate: boolean
+    ): { clause: Cypher.Clause; returnVariables: Cypher.Variable[] } {
+        const returnVariables: Cypher.Variable[] = [];
+        const match = new Cypher.Match(pattern);
+
+        const subqueries = this.targetNodeFilters.map((f) => {
+            const returnVar = new Cypher.Variable();
+            returnVariables.push(returnVar);
+            const nestedSubqueries = f.getSubqueries(context.target).map((sq) => {
+                return new Cypher.Call(sq).innerWith(context.target);
+            });
+
+            let predicate = f.getPredicate(context);
+            if (predicate && notPredicate) {
+                predicate = Cypher.not(predicate);
+            }
+
+            const withClause = new Cypher.With("*");
+            if (predicate) {
+                withClause.where(predicate);
+            }
+            withClause.return([Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0)), returnVar]); // THis variable needs to be used in predicate
+
+            return Cypher.concat(...nestedSubqueries, withClause);
+        });
+        return { clause: Cypher.concat(match, ...subqueries), returnVariables };
+    }
+
+    private getNestedSubqueryFilter(target: Cypher.Expr): Cypher.Predicate {
+        switch (this.operator) {
+            case "NONE":
+            case "SOME":
+                return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
+            case "SINGLE":
+                return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
+            case "ALL":
+                throw new Error("Not supported");
+        }
+    }
+
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        if (this.subqueryPredicate) return this.subqueryPredicate;
         //TODO: not concrete entities
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const relatedNode = new Cypher.Node({
@@ -103,24 +233,9 @@ export class RelationshipFilter extends Filter {
                     innerPredicate
                 );
                 return Cypher.single(queryASTContext.target, patternComprehension, new Cypher.Literal(true));
-                // const isArray = relationField.typeMeta.array;
-                // const isRequired = relationField.typeMeta.required;
-
-                // if (isArray || !isRequired) {
-                //     const patternComprehension = new Cypher.PatternComprehension(
-                //         matchPattern,
-                //         new Cypher.Literal(1)
-                //     ).where(innerOperation);
-                //     return { predicate: Cypher.single(childNode, patternComprehension, new Cypher.Literal(true)) };
-                // }
-
-                // const matchStatement = new Cypher.Match(matchPattern);
-                // return {
-                //     predicate: innerOperation,
-                //     preComputedSubqueries: Cypher.concat(matchStatement),
-                // };
             }
-            default: {
+            case "NONE":
+            case "SOME": {
                 const match = new Cypher.Match(pattern);
                 if (innerPredicate) {
                     return new Cypher.Exists(match.where(innerPredicate));

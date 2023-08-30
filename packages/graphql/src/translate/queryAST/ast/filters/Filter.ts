@@ -53,7 +53,7 @@ export abstract class Filter extends QueryASTNode {
     public abstract getPredicate(context: QueryASTContext): Cypher.Predicate | undefined;
 
     public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
-        // TODO: this should be QueryASTCOntext
+        // TODO: this should be QueryASTContext
         return [];
     }
 }
