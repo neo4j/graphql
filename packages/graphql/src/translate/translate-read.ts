@@ -29,6 +29,10 @@ import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import Debug from "debug";
+import { DEBUG_ALL } from "../constants";
+
+const debug = Debug(DEBUG_ALL);
 
 function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationContext; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
@@ -37,7 +41,7 @@ function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationConte
     if (!entity) throw new Error("Entity not found");
     const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity, context);
     const clause = queryAST.transpile();
-    // queryAST.print();
+    debug(queryAST.print());
     return clause.build();
 }
 

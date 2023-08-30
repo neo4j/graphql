@@ -45,10 +45,9 @@ export class QueryAST {
         // visitor.visit(this.operation);
     }
 
-    public print(): void {
+    public print(): string {
         const resultLines = getTreeLines(this.operation);
-
-        console.log(resultLines.join("\n"));
+        return resultLines.join("\n");
     }
 }
 
