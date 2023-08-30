@@ -54,7 +54,7 @@ import {
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
 import { ReservedTypeNames } from "./custom-rules/valid-types/reserved-type-names";
-import { ValidGlobalID } from "./custom-rules/features/valid-global-id";
+import { ValidRelayID } from "./custom-rules/features/valid-relay-id";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-multiple-inheritance";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
@@ -230,7 +230,7 @@ function runValidationRulesOnFilteredDocument({
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,
-            ValidGlobalID,
+            ValidRelayID,
             ValidRelationshipProperties,
             ValidFieldTypes,
             ReservedTypeNames,

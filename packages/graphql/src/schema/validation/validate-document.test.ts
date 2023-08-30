@@ -78,7 +78,6 @@ describe("validation 2.0", () => {
             const doc = gql`
                 type Movie implements MovieInterface {
                     rottenid: ID! @relayId
-                    id: ID!
                     title: String
                 }
                 interface MovieInterface {
@@ -3162,6 +3161,26 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Movie", "id"]);
         });
 
+        test("should throw if a type already contains an id field", () => {
+            const doc = gql`
+                type User {
+                    id: ID!
+                    email: ID! @id @unique @relayId
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Type already has a field `id`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "id"]);
+        });
+
         test("valid", () => {
             const doc = gql`
                 type Movie {
@@ -3171,6 +3190,16 @@ describe("validation 2.0", () => {
                 }
             `;
 
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("should not throw if a type already contains an id field but the field is aliased", () => {
+            const doc = gql`
+                type User {
+                    dbId: ID! @id @unique @relayId @alias(property: "id")
+                }
+            `;
             const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
@@ -3218,6 +3247,7 @@ describe("validation 2.0", () => {
 
     describe("Objects and Interfaces must have one or more fields", () => {
         describe("@private", () => {
+            // TODO: `@private` on interface fields?
             test("should throw error if @private would leave no fields in object", () => {
                 const doc = gql`
                     type User {
