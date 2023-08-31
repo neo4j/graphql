@@ -17,13 +17,21 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+import type {
+    ASTVisitor,
+    DirectiveNode,
+    ObjectTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeExtensionNode,
+    InterfaceTypeExtensionNode,
+} from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import {
     getInheritedTypeNames,
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
 export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
@@ -38,6 +46,65 @@ export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
     const getAliasedFieldsFromMap = function (typeName: string) {
         return typeNameToAliasedFields.get(typeName);
     };
+
+    const doOnObjectType = {
+        enter(objectType: ObjectTypeDefinitionNode | ObjectTypeExtensionNode) {
+            hydrateInterfaceWithImplementedTypesMap(objectType, interfaceToImplementingTypes);
+        },
+        leave(objectType: ObjectTypeDefinitionNode | ObjectTypeExtensionNode) {
+            addToAliasedFieldsMap(objectType.name.value);
+
+            const fieldNamedID = getUnaliasedFieldNamedID(objectType);
+            if (!fieldNamedID || !hasGlobalIDField(objectType, typeNameToGlobalId, interfaceToImplementingTypes)) {
+                return;
+            }
+
+            const inheritedAliasedFields = (getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []).map(
+                getAliasedFieldsFromMap
+            );
+
+            const { isValid, errorMsg, errorPath } = assertValid(() =>
+                assertGlobalIDDoesNotClash(inheritedAliasedFields)
+            );
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [objectType, fieldNamedID],
+                        path: [objectType.name.value, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+    };
+
+    const doOnInterfaceType = {
+        leave(interfaceType: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode) {
+            addToAliasedFieldsMap(interfaceType.name.value);
+            const fieldNamedID = getUnaliasedFieldNamedID(interfaceType);
+            if (!fieldNamedID || !hasGlobalIDField(interfaceType, typeNameToGlobalId, interfaceToImplementingTypes)) {
+                return;
+            }
+
+            const inheritedAliasedFields = (
+                getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
+            ).map(getAliasedFieldsFromMap);
+
+            const { isValid, errorMsg, errorPath } = assertValid(() =>
+                assertGlobalIDDoesNotClash(inheritedAliasedFields)
+            );
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [interfaceType],
+                        path: [interfaceType.name.value, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+    };
+
     return {
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
             const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
@@ -77,70 +144,15 @@ export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
             }
         },
 
-        ObjectTypeDefinition: {
-            enter(objectType: ObjectTypeDefinitionNode) {
-                hydrateInterfaceWithImplementedTypesMap(objectType, interfaceToImplementingTypes);
-            },
-            leave(objectType: ObjectTypeDefinitionNode) {
-                addToAliasedFieldsMap(objectType.name.value);
+        ObjectTypeDefinition: doOnObjectType,
+        ObjectTypeExtension: doOnObjectType,
 
-                const fieldNamedID = getUnaliasedFieldNamedID(objectType);
-                if (!fieldNamedID || !hasGlobalIDField(objectType, typeNameToGlobalId, interfaceToImplementingTypes)) {
-                    return;
-                }
-
-                const inheritedAliasedFields = (
-                    getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []
-                ).map(getAliasedFieldsFromMap);
-
-                const { isValid, errorMsg, errorPath } = assertValid(() =>
-                    assertGlobalIDDoesNotClash(inheritedAliasedFields)
-                );
-                if (!isValid) {
-                    context.reportError(
-                        createGraphQLError({
-                            nodes: [objectType, fieldNamedID],
-                            path: [objectType.name.value, ...errorPath],
-                            errorMsg,
-                        })
-                    );
-                }
-            },
-        },
-
-        InterfaceTypeDefinition: {
-            leave(interfaceType: InterfaceTypeDefinitionNode) {
-                addToAliasedFieldsMap(interfaceType.name.value);
-                const fieldNamedID = getUnaliasedFieldNamedID(interfaceType);
-                if (
-                    !fieldNamedID ||
-                    !hasGlobalIDField(interfaceType, typeNameToGlobalId, interfaceToImplementingTypes)
-                ) {
-                    return;
-                }
-
-                const inheritedAliasedFields = (
-                    getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
-                ).map(getAliasedFieldsFromMap);
-
-                const { isValid, errorMsg, errorPath } = assertValid(() =>
-                    assertGlobalIDDoesNotClash(inheritedAliasedFields)
-                );
-                if (!isValid) {
-                    context.reportError(
-                        createGraphQLError({
-                            nodes: [interfaceType],
-                            path: [interfaceType.name.value, ...errorPath],
-                            errorMsg,
-                        })
-                    );
-                }
-            },
-        },
+        InterfaceTypeDefinition: doOnInterfaceType,
+        InterfaceTypeExtension: doOnInterfaceType,
     };
 }
 
-function getUnaliasedFieldNamedID(mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode) {
+function getUnaliasedFieldNamedID(mainType: ObjectOrInterfaceWithExtensions) {
     const fieldNamedID = mainType.fields?.find((x) => x.name.value === "id");
     if (!fieldNamedID) {
         return;
@@ -153,7 +165,7 @@ function getUnaliasedFieldNamedID(mainType: ObjectTypeDefinitionNode | Interface
 }
 
 function hasGlobalIDField(
-    mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    mainType: ObjectOrInterfaceWithExtensions,
     typeNameToGlobalId: Map<string, boolean>,
     interfaceToImplementingTypes: Map<string, Set<string>>
 ): boolean {
@@ -192,7 +204,7 @@ function assertValidGlobalID({
     interfaceToImplementingTypes,
 }: {
     directiveNode: DirectiveNode;
-    typeDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+    typeDef: ObjectOrInterfaceWithExtensions;
     typeNameToGlobalId: Map<string, boolean>;
     interfaceToImplementingTypes: Map<string, Set<string>>;
 }) {
