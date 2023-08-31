@@ -20,47 +20,67 @@
 import type {
     ASTVisitor,
     DirectiveNode,
-    ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
+    InterfaceTypeExtensionNode,
 } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { RESERVED_INTERFACE_FIELDS } from "../../../../constants";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
 export function ValidRelationshipProperties(context: SDLValidationContext): ASTVisitor {
+    const relationshipPropertyTypeNames = new Set<string>();
+    const doOnInterface = {
+        leave(node: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode, _key, _parent, path, ancestors) {
+            if (relationshipPropertyTypeNames.has(node.name.value)) {
+                const { isValid, errorMsg, errorPath } = assertValid(() => assertRelationshipProperties(node));
+                const [pathToNode] = getPathToNode(path, ancestors);
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [node],
+                            path: [...pathToNode, node.name.value, ...errorPath],
+                            errorMsg,
+                        })
+                    );
+                }
+            }
+        },
+    };
     return {
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-            if (directiveNode.name.value !== "relationshipProperties") {
-                return;
-            }
-
             const [pathToNode, traversedDef] = getPathToNode(path, ancestors);
             if (!traversedDef) {
                 console.error("No last definition traversed");
                 return;
             }
 
-            const { isValid, errorMsg, errorPath } = assertValid(() => assertRelationshipProperties(traversedDef));
-            if (!isValid) {
-                context.reportError(
-                    createGraphQLError({
-                        nodes: [directiveNode, traversedDef],
-                        path: [...pathToNode, ...errorPath],
-                        errorMsg,
-                    })
-                );
+            if (directiveNode.name.value === "relationshipProperties") {
+                const { isValid, errorMsg, errorPath } = assertValid(() => assertRelationshipProperties(traversedDef));
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [directiveNode, traversedDef],
+                            path: [...pathToNode, ...errorPath],
+                            errorMsg,
+                        })
+                    );
+                } else {
+                    // to check on extensions
+                    relationshipPropertyTypeNames.add(traversedDef?.name.value);
+                }
             }
         },
+        InterfaceTypeDefinition: doOnInterface,
+        InterfaceTypeExtension: doOnInterface,
     };
 }
 
-function assertRelationshipProperties(
-    traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode
-) {
-    if (traversedDef.kind !== Kind.INTERFACE_TYPE_DEFINITION) {
+function assertRelationshipProperties(traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode) {
+    if (traversedDef.kind !== Kind.INTERFACE_TYPE_DEFINITION && traversedDef.kind !== Kind.INTERFACE_TYPE_EXTENSION) {
         // delegate
         return;
     }
