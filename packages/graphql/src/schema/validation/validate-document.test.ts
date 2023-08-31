@@ -3231,9 +3231,9 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@node with @exclude on Object", () => {
+            test("@node with @query on Object", () => {
                 const doc = gql`
-                    type User @node(labels: ["Person"]) @exclude(operations: []) {
+                    type User @node(labels: ["Person"]) @query(read: false) {
                         id: ID
                         name: String
                     }
@@ -4001,7 +4001,7 @@ describe("validation 2.0", () => {
         describe("invalid", () => {
             test("@jwt cannot combined", () => {
                 const doc = gql`
-                    type JWTPayload @jwt @exclude {
+                    type JWTPayload @jwt @query(read: false) {
                         id: ID
                     }
                 `;
@@ -4020,7 +4020,7 @@ describe("validation 2.0", () => {
 
             test("@jwt cannot combined extension", () => {
                 const doc = gql`
-                    type JWTPayload @exclude {
+                    type JWTPayload @query(read: false) {
                         id: ID
                     }
                     extend type JWTPayload @jwt
@@ -5951,7 +5951,7 @@ describe("validation 2.0", () => {
                 type Post {
                     id: ID! @id @unique
                     title: String!
-                    datetime: DateTime @readonly @timestamp(operations: [CREATE])
+                    datetime: DateTime @timestamp(operations: [CREATE])
                 }
             `;
 
