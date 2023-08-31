@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             node: [AddressNode!]! @relationship(type: "HAS_ADDRESS", direction: IN)
           }
           
-          type ${Mandate.name} @exclude(operations: [DELETE]) {
+          type ${Mandate.name} @mutation(operations: [CREATE, UPDATE]) {
             archivedAt: DateTime
             number: ID! @id @unique # numéro
             createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             valuation: ${Valuation.name}! @relationship(type: "HAS_VALUATION", direction: OUT)
           }
           
-          type ${Valuation.name} @exclude(operations: [DELETE]) {
+          type ${Valuation.name} @mutation(operations: [CREATE, UPDATE]) {
             archivedAt: DateTime
             uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             BUSINESS_FUND
           }
           
-          type ${Estate.name} @exclude(operations: [DELETE]) {
+          type ${Estate.name} @mutation(operations: [CREATE, UPDATE]) {
             archivedAt: DateTime
             uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])

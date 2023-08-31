@@ -44,7 +44,7 @@ describe("Create Subscription", () => {
              title: String
              actors: [${typeActor}]
          }
-         type ${typeActor} @exclude(operations: [SUBSCRIBE]) {
+         type ${typeActor} @subscription(operations: []) {
             name: String
          }
          `;
