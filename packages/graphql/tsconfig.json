@@ -4,7 +4,9 @@
         "rootDir": ".",
         "baseUrl": ".",
         "outDir": "dist",
-        "noUncheckedIndexedAccess": true
+        "noUncheckedIndexedAccess": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext"
     },
     "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
     "ts-node": {
