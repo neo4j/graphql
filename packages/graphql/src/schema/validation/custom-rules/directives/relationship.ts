@@ -28,6 +28,10 @@ import { Kind } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import { getInnerTypeName, getPrettyName } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import {
+    getInheritedTypeNames,
+    hydrateInterfaceWithImplementedTypesMap,
+} from "../utils/interface-to-implementing-types";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
@@ -162,31 +166,13 @@ function verifyRelationshipFields(
         getUpdatedRelationshipFieldsForCurrentType(relationshipFieldsForCurrentType, currentRelationship, typeValue)
     );
 
-    if (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-        const dependents = interfaceToImplementationsMap.get(parentDef.name.value);
-        dependents?.forEach((dependentTypeName) => {
-            const relationshipFieldsForDependentType =
-                objectTypeToRelationshipsPerRelationshipTypeMap.get(dependentTypeName);
-            checkRelationshipFieldsForDuplicates(relationshipFieldsForDependentType, currentRelationship, typeValue);
-        });
-    }
+    const inheritedTypeNames = getInheritedTypeNames(parentDef, interfaceToImplementationsMap);
+    inheritedTypeNames.forEach((typeName) => {
+        const inheritedRelationshipFields = objectTypeToRelationshipsPerRelationshipTypeMap.get(typeName);
+        checkRelationshipFieldsForDuplicates(inheritedRelationshipFields, currentRelationship, typeValue);
+    });
 
-    if (parentDef.kind === Kind.OBJECT_TYPE_DEFINITION) {
-        parentDef.interfaces?.forEach((i) => {
-            const relationshipFieldsForImplementedInterface = objectTypeToRelationshipsPerRelationshipTypeMap.get(
-                i.name.value
-            );
-            checkRelationshipFieldsForDuplicates(
-                relationshipFieldsForImplementedInterface,
-                currentRelationship,
-                typeValue
-            );
-
-            const implementations = interfaceToImplementationsMap.get(i.name.value) || new Set<string>();
-            implementations.add(parentDef.name.value);
-            interfaceToImplementationsMap.set(i.name.value, implementations);
-        });
-    }
+    hydrateInterfaceWithImplementedTypesMap(parentDef, interfaceToImplementationsMap);
 }
 
 export function verifyRelationshipFieldType({
