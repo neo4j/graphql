@@ -79,7 +79,6 @@ function assertRelationshipProperties(
                 "subscriptionsAuthorization",
                 "relationship",
                 "cypher",
-                "unique",
             ];
             const foundForbiddenDirective = field.directives.find((d) => forbiddenDirectives.includes(d.name.value));
             if (foundForbiddenDirective) {
