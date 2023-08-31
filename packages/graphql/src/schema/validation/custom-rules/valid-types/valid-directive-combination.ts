@@ -137,6 +137,11 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
             hydrateWithDirectives(node, parentOfTraversedDef);
             const directivesToCheck = getDirectives(node, parentOfTraversedDef);
 
+            if (directivesToCheck.length < 2) {
+                // no combination to check
+                return;
+            }
+
             const { isValid, errorMsg, errorPath } = assertValid(() => assertValidDirectives(directivesToCheck));
             if (!isValid) {
                 context.reportError(
