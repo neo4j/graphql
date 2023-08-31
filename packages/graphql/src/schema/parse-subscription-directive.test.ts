@@ -21,7 +21,7 @@ import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import { SubscriptionDirective } from "../classes/SubscriptionDirective";
 import parseSubscriptionDirective from "./parse-subscription-directive";
-import { SubscriptionOperations } from "../graphql/directives/subscription";
+import { SubscriptionEvent } from "../graphql/directives/subscription";
 
 describe("parseSubscriptionDirective", () => {
     test("should throw an error if incorrect directive is passed in", () => {
@@ -47,21 +47,27 @@ describe("parseSubscriptionDirective", () => {
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new SubscriptionDirective([SubscriptionOperations.CREATE, SubscriptionOperations.UPDATE, SubscriptionOperations.DELETE, SubscriptionOperations.CREATE_RELATIONSHIP, SubscriptionOperations.DELETE_RELATIONSHIP]);
+        const expected = new SubscriptionDirective([
+            SubscriptionEvent.CREATED,
+            SubscriptionEvent.UPDATED,
+            SubscriptionEvent.DELETED,
+            SubscriptionEvent.RELATIONSHIP_CREATED,
+            SubscriptionEvent.RELATIONSHIP_DELETED,
+        ]);
 
         expect(parseSubscriptionDirective(directive)).toMatchObject(expected);
     });
 
     test("should return an instance with only update enabled, when only update passed", () => {
         const typeDefs = `
-            type TestType @subscription(operations: [UPDATE]) {
+            type TestType @subscription(events: [UPDATED]) {
                 name: String
             }
         `;
 
         const definition = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
         const directive = definition?.directives?.length ? (definition.directives[0] as DirectiveNode) : undefined;
-        const expected = new SubscriptionDirective([SubscriptionOperations.UPDATE]);
+        const expected = new SubscriptionDirective([SubscriptionEvent.UPDATED]);
 
         expect(parseSubscriptionDirective(directive)).toMatchObject(expected);
     });

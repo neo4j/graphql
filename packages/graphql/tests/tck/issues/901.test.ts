@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Series {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 brand: Series @relationship(type: "HAS_BRAND", direction: OUT, properties: "Properties")
                 manufacturer: Series @relationship(type: "HAS_MANUFACTURER", direction: OUT, properties: "Properties")

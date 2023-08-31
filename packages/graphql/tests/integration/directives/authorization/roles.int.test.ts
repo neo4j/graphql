@@ -1063,7 +1063,7 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @exclude {
+                type ${typeUser} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }

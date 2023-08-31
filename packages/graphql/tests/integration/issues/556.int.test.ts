@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/556 - Input Object type Articl
         }
 
         type Thing556 {
-            id: ID! @id
+            id: ID! @id @unique
         }
     `;
 

@@ -1983,13 +1983,13 @@ describe("Advanced Filtering", () => {
 
             const typeDefs = `
                 type Movie {
-                    id: ID! @id
+                    id: ID! @id @unique
                     budget: Int!
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
                 type Actor {
-                    id: ID! @id
+                    id: ID! @id @unique
                     flag: Boolean!
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }

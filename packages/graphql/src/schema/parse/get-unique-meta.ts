@@ -17,13 +17,7 @@
  * limitations under the License.
  */
 
-import type {
-    BooleanValueNode,
-    DirectiveNode,
-    InterfaceTypeDefinitionNode,
-    ObjectTypeDefinitionNode,
-    StringValueNode,
-} from "graphql";
+import type { DirectiveNode, InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import type { Unique } from "../../types";
 
@@ -40,29 +34,14 @@ function getUniqueMeta(
 
     if (uniqueDirective) {
         const constraintName = uniqueDirective.arguments?.find((a) => a.name.value === "constraintName");
-        return {
-            constraintName: constraintName
-                ? (constraintName.value as StringValueNode).value
-                : `${type.name.value}_${fieldName}`,
-        };
+        if (constraintName && constraintName.value.kind === Kind.STRING) {
+            return { constraintName: constraintName.value.value };
+        }
+        return { constraintName: `${type.name.value}_${fieldName}` };
     }
 
-    let uniqueId = false;
-
-    const idDirective = directives.find((x) => x.name.value === "id");
-
-    if (idDirective) {
-        const idDirectiveUniqueArgument = idDirective?.arguments?.find((a) => a.name.value === "unique")?.value as
-            | BooleanValueNode
-            | undefined;
-        // If unique argument is absent from @id directive, default is to use unique constraint
-        uniqueId = idDirectiveUniqueArgument ? idDirectiveUniqueArgument.value : true;
-    }
-
-    if (uniqueId) {
-        return {
-            constraintName: `${type.name.value}_${fieldName}`,
-        };
+    if (directives.some((directive) => directive.name.value === "relayId")) {
+        return { constraintName: `${type.name.value}_${fieldName}` };
     }
 }
 

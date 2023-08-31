@@ -29,7 +29,7 @@ describe("Cypher autogenerate directive", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
         `;

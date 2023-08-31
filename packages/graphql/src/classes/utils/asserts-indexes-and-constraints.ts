@@ -29,6 +29,32 @@ export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
 }
 
+export async function assertIndexesAndConstraints({
+    driver,
+    sessionConfig,
+    nodes,
+    options,
+}: {
+    driver: Driver;
+    sessionConfig?: Neo4jGraphQLSessionConfig;
+    nodes: Node[];
+    options?: AssertIndexesAndConstraintsOptions;
+}): Promise<void> {
+    await driver.verifyConnectivity();
+
+    const session = driver.session(sessionConfig);
+
+    try {
+        if (options?.create) {
+            await createIndexesAndConstraints({ nodes, session });
+        } else {
+            await checkIndexesAndConstraints({ nodes, session });
+        }
+    } finally {
+        await session.close();
+    }
+}
+
 async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
     const constraintsToCreate = await getMissingConstraints({ nodes, session });
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
@@ -261,31 +287,3 @@ async function getMissingConstraints({
 
     return missingConstraints;
 }
-
-async function assertIndexesAndConstraints({
-    driver,
-    sessionConfig,
-    nodes,
-    options,
-}: {
-    driver: Driver;
-    sessionConfig?: Neo4jGraphQLSessionConfig;
-    nodes: Node[];
-    options?: AssertIndexesAndConstraintsOptions;
-}): Promise<void> {
-    await driver.verifyConnectivity();
-
-    const session = driver.session(sessionConfig);
-
-    try {
-        if (options?.create) {
-            await createIndexesAndConstraints({ nodes, session });
-        } else {
-            await checkIndexesAndConstraints({ nodes, session });
-        }
-    } finally {
-        await session.close();
-    }
-}
-
-export default assertIndexesAndConstraints;

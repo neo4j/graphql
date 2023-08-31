@@ -41,15 +41,15 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             interface BusinessObject {
-                id: ID! @id(autogenerate: false)
+                id: ID!
                 nameDetails: NameDetails
             }
 
             type ApplicationVariant implements BusinessObject
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                @mutation(operations: []) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 relatedId: ID
                     @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res", columnName: "res")
                 baseObject: BaseObject! @relationship(type: "HAS_BASE", direction: IN)
@@ -59,21 +59,22 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
             type NameDetails
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
+                @mutation(operations: [])
+                @query(read: false, aggregate: false) {
                 fullName: String!
             }
 
             type Market implements BusinessObject
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id(autogenerate: false)
+                @mutation(operations: []) {
+                id: ID! @unique
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
             }
 
             type BaseObject
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+                @mutation(operations: []) {
+                id: ID! @id @unique
             }
         `;
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, features: { authorization: { key: secret } } });

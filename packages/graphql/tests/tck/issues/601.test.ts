@@ -38,8 +38,8 @@ describe("#601", () => {
                 uploadedAt: DateTime!
             }
 
-            type Document @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+            type Document @mutation(operations: []) {
+                id: ID! @id @unique
                 stakeholder: Stakeholder! @relationship(type: "REQUIRES", direction: OUT)
 
                 customerContact: CustomerContact!
@@ -48,7 +48,7 @@ describe("#601", () => {
 
             extend type Document @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "view" } } }])
 
-            type CustomerContact @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type CustomerContact @mutation(operations: []) {
                 email: String!
                 firstname: String!
                 lastname: String!
@@ -57,7 +57,7 @@ describe("#601", () => {
 
             extend type CustomerContact @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "view" } } }])
 
-            type Stakeholder @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type Stakeholder @mutation(operations: []) {
                 id: ID!
                 fields: String!
                 documents: [Document!]! @relationship(type: "REQUIRES", direction: OUT)

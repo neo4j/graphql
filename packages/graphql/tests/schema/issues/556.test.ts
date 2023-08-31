@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
             type Article {
-                id: ID! @id
+                id: ID! @id @unique
                 blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
                 images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
@@ -47,16 +47,16 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
             type TextBlock implements Block {
-                id: ID @id
+                id: ID @id @unique
                 text: String
             }
 
             type DividerBlock implements Block {
-                id: ID @id
+                id: ID @id @unique
             }
 
             type ImageBlock implements Block {
-                id: ID @id
+                id: ID @id @unique
                 images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
             }
 

@@ -22,9 +22,9 @@ import { parseArguments } from "../parse-arguments";
 import { subscriptionDirective } from "../../../graphql/directives";
 
 export function parseSubscriptionAnnotation(directive: DirectiveNode): SubscriptionAnnotation {
-    const { operations } = parseArguments(subscriptionDirective, directive) as { operations: string[] };
+    const { events } = parseArguments(subscriptionDirective, directive) as { events: string[] };
 
     return new SubscriptionAnnotation({
-        operations,
+        events,
     });
 }

@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
         const typeDefs = `
         type ${PostalCode.name} {
             archivedAt: DateTime
-            number: String! @id(autogenerate: false)
+            number: String! @unique
             address: [${Address.name}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
           }
           
@@ -61,25 +61,25 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
           
           type ${Address.name} {
             archivedAt: DateTime
-            uuid: ID! @id
+            uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             postalCode: ${PostalCode.name} @relationship(type: "HAS_POSTAL_CODE", direction: OUT)
             node: [AddressNode!]! @relationship(type: "HAS_ADDRESS", direction: IN)
           }
           
-          type ${Mandate.name} @exclude(operations: [DELETE]) {
+          type ${Mandate.name} @mutation(operations: [CREATE, UPDATE]) {
             archivedAt: DateTime
-            number: ID! @id # numéro
+            number: ID! @id @unique # numéro
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             price: Float!
             valuation: ${Valuation.name}! @relationship(type: "HAS_VALUATION", direction: OUT)
           }
           
-          type ${Valuation.name} @exclude(operations: [DELETE]) {
+          type ${Valuation.name} @mutation(operations: [CREATE, UPDATE]) {
             archivedAt: DateTime
-            uuid: ID! @id
+            uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             estate: ${Estate.name}  @relationship(type: "VALUATION_FOR", direction: OUT)
@@ -100,9 +100,9 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
             BUSINESS_FUND
           }
           
-          type ${Estate.name} @exclude(operations: [DELETE]) {
+          type ${Estate.name} @mutation(operations: [CREATE, UPDATE]) {
             archivedAt: DateTime
-            uuid: ID! @id
+            uuid: ID! @id @unique
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
             estateType: EstateType!

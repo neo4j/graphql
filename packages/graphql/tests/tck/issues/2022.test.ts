@@ -29,14 +29,14 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
     beforeAll(() => {
         typeDefs = gql`
             type ArtPiece {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 title: String!
                 auction: AuctionItem! @relationship(type: "SOLD_AT_AUCTION_AS", direction: OUT)
                 owner: Organization! @relationship(type: "OWNED_BY", direction: OUT)
             }
 
             type AuctionItem {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 auctionName: String!
                 lotNumber: Int!
 
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
             }
 
             type Organization {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
 
                 artCollection: [ArtPiece!]! @relationship(type: "OWNED_BY", direction: IN)

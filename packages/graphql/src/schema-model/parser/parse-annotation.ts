@@ -22,7 +22,6 @@ import { parseCoalesceAnnotation } from "./annotations-parser/coalesce-annotatio
 import { parseCypherAnnotation } from "./annotations-parser/cypher-annotation";
 import { parseCustomResolverAnnotation } from "./annotations-parser/custom-resolver-annotation";
 import { parseDefaultAnnotation } from "./annotations-parser/default-annotation";
-import { parseIDAnnotation } from "./annotations-parser/id-annotation";
 import { parseFilterableAnnotation } from "./annotations-parser/filterable-annotation";
 import { parseMutationAnnotation } from "./annotations-parser/mutation-annotation";
 import { parsePluralAnnotation } from "./annotations-parser/plural-annotation";
@@ -44,6 +43,7 @@ import { parseSubscriptionsAuthorizationAnnotation } from "./annotations-parser/
 import { filterTruthy } from "../../utils/utils";
 import type { Annotation } from "../annotation/Annotation";
 import { AnnotationsKey } from "../annotation/Annotation";
+import { IDAnnotation } from "../annotation/IDAnnotation";
 
 export function parseAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     return filterTruthy(
@@ -66,7 +66,7 @@ export function parseAnnotations(directives: readonly DirectiveNode[]): Annotati
                 case AnnotationsKey.fulltext:
                     return parseFullTextAnnotation(directive);
                 case AnnotationsKey.id:
-                    return parseIDAnnotation(directive);
+                    return new IDAnnotation();
                 case AnnotationsKey.jwtClaim:
                     return parseJWTClaimAnnotation(directive);
                 case AnnotationsKey.jwtPayload:

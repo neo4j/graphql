@@ -27,10 +27,10 @@ function parseSubscriptionDirective(directiveNode: DirectiveNode | undefined) {
         throw new Error("Undefined or incorrect directive passed into parseSubscriptionDirective function");
     }
     const arg = parseArguments(subscriptionDirectiveDefinition, directiveNode) as {
-        operations: ConstructorParameters<typeof SubscriptionDirective>[0];
+        events: ConstructorParameters<typeof SubscriptionDirective>[0];
     };
 
-    return new SubscriptionDirective(arg.operations);
+    return new SubscriptionDirective(arg.events);
 }
 
 export default parseSubscriptionDirective;

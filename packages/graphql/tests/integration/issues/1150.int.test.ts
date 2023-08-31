@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
 
             type Battery {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
             }
 
@@ -49,12 +49,12 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "admin" } } }])
 
             type CombustionEngine {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
             }
 
             type Drive {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 driveCompositions: [DriveComposition!]!
                     @relationship(type: "CONSISTS_OF", properties: "RelationProps", direction: OUT)
@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             union DriveComponent = Battery | CombustionEngine
 
             type DriveComposition {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 current: Boolean!
                 driveComponent: [DriveComponent!]!
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)

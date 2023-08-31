@@ -29,9 +29,9 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Employee {
-                employeeId: ID! @id(autogenerate: false)
-                firstName: String! @readonly
-                lastName: String @readonly
+                employeeId: ID! @unique
+                firstName: String! @settable(onCreate: false, onUpdate: false)
+                lastName: String @settable(onCreate: false, onUpdate: false)
                 projects: [Project!]!
                     @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties")
             }
@@ -41,8 +41,8 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
 
             type Project {
-                projectId: ID! @id(autogenerate: false)
-                name: String! @readonly
+                projectId: ID! @unique
+                name: String! @settable(onCreate: false, onUpdate: false)
                 description: String
                 employees: [Employee!]!
                     @relationship(type: "PARTICIPATES", direction: IN, properties: "EmployeeParticipationProperties")
