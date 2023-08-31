@@ -40,19 +40,19 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
     test("should create the correct number of nodes following multiple connect", async () => {
         const typeDefs = gql`
             type A {
-                ID: ID! @id
+                ID: ID! @id @unique
                 name: String!
                 rel_b: [B!]! @relationship(type: "REL_B", direction: OUT)
                 rel_c: [C!]! @relationship(type: "REL_C", direction: OUT)
             }
 
             type B {
-                ID: ID! @id
+                ID: ID! @id @unique
                 name: String!
             }
 
             type C {
-                ID: ID! @id
+                ID: ID! @id @unique
                 name: String!
             }
         `;

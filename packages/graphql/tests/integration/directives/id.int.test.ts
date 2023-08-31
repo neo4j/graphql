@@ -42,7 +42,7 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Movie {
-              id: ID! @id
+              id: ID! @id @unique
               name: String
             }
         `;
@@ -128,12 +128,12 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Genre {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
 
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
@@ -188,7 +188,7 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
 
@@ -198,7 +198,7 @@ describe("@id directive", () => {
             }
 
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }

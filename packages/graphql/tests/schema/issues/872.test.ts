@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
-                id: ID! @id
+                id: ID! @id @unique
             }
 
             type Actor {

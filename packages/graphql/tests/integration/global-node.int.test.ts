@@ -47,7 +47,7 @@ describe("Global node resolution", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `type ${typeFilm.name} {
-            dbId: ID! @id(global:true) @alias(property: "id")
+            dbId: ID! @id @unique @relayId @alias(property: "id")
             title: String!
         }`;
 
@@ -92,7 +92,7 @@ describe("Global node resolution", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `type ${typeFilm.name} {
-            title: ID! @id(autogenerate: false, global: true)
+            title: ID! @relayId
         }`;
 
         const neoSchema = new Neo4jGraphQL({
@@ -132,7 +132,7 @@ describe("Global node resolution", () => {
     test("returns the correct id when queried", async () => {
         const session = await neo4j.getSession();
         const typeDefs = `type ${typeFilm.name} {
-            title: ID! @id(autogenerate: false, global: true)
+            title: ID! @relayId
         }`;
 
         const neoSchema = new Neo4jGraphQL({
@@ -186,13 +186,13 @@ describe("Global node resolution", () => {
     test("return the correct id when the underlying field is an aliased id db property", async () => {
         const typeDefs = gql`
         type ${typeFilm.name} {
-          dbId: ID! @id(autogenerate: false, global: true) @alias(property: "id")
+          dbId: ID! @relayId @alias(property: "id")
           title: String!
           createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT)
         }
 
         type ${typeUser.name} {
-          dbId: ID! @id(autogenerate: false, global: true) @alias(property: "id")
+          dbId: ID! @relayId @alias(property: "id")
           name: String!
           createdFilms: [${typeFilm.name}!]! @relationship(type: "CREATED_BY", direction: IN)
         }
@@ -267,13 +267,13 @@ describe("Global node resolution", () => {
     test("return the correct id when the underlying field is of type Int", async () => {
         const typeDefs = gql`
         type ${typeFilm.name} {
-          dbId: Int! @id(autogenerate: false, global: true) @alias(property: "id")
+          dbId: Int! @relayId @alias(property: "id")
           title: String!
           createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT)
         }
 
         type ${typeUser.name} {
-          dbId: Int! @id(autogenerate: false, global: true) @alias(property: "id")
+          dbId: Int! @relayId @alias(property: "id")
           name: String!
           createdFilms: [${typeFilm.name}!]! @relationship(type: "CREATED_BY", direction: IN)
         }
@@ -348,12 +348,12 @@ describe("Global node resolution", () => {
     test("sends and returns the correct selectionSet for the node", async () => {
         const typeDefs = `
         type ${typeFilm.name} {
-          title: ID! @id(autogenerate: false, global: true)
+          title: ID! @relayId
           website: String
         }
 
         type FilmActor {
-          name: ID! @id(autogenerate: false, global: true)
+          name: ID! @relayId
           hairColor: String
         }
       `;
@@ -446,13 +446,13 @@ describe("Global node resolution", () => {
 
         const typeDefs = `
           type ${typeUser.name} {
-            dbId: ID! @id(global: true) @alias(property: "id")
+            dbId: ID! @id @unique @relayId @alias(property: "id")
             name: String!
             created: [${typeFilm.name}!]! @relationship(type: "CREATED", direction: OUT)
           }
 
           type ${typeFilm.name} {
-            title: ID! @id(global: true, autogenerate: false)
+            title: ID! @relayId
             creator: ${typeUser.name}! @relationship(type: "CREATED", direction: IN)
           }
 
@@ -509,7 +509,7 @@ describe("Global node resolution", () => {
         const typeDefs = `
 
           type ${typeUser.name} {
-            dbId: ID! @id(global: true) @alias(property: "id")
+            dbId: ID! @id @unique @relayId @alias(property: "id")
             name: String!
           }
 
@@ -569,7 +569,7 @@ describe("Global node resolution", () => {
         }
 
         type ${typeUser.name} {
-          dbId: ID! @id(global: true) @alias(property: "id")
+          dbId: ID! @id @unique @relayId @alias(property: "id")
           name: String!
         }
 

@@ -17,21 +17,11 @@
  * limitations under the License.
  */
 
-import { type DirectiveNode } from "graphql";
-import { IDAnnotation } from "../../annotation/IDAnnotation";
-import { parseArguments } from "../parse-arguments";
-import { idDirective } from "../../../graphql/directives";
+import { DirectiveLocation, GraphQLDirective } from "graphql";
 
-export function parseIDAnnotation(directive: DirectiveNode): IDAnnotation {
-    const { autogenerate, unique, global } = parseArguments(idDirective, directive) as {
-        autogenerate: boolean;
-        unique: boolean;
-        global: boolean;
-    };
-
-    return new IDAnnotation({
-        autogenerate,
-        unique,
-        global,
-    });
-}
+export const relayIdDirective = new GraphQLDirective({
+    name: "relayId",
+    description:
+        "Mark the field to be used as the global node identifier for Relay. This field will be backed by a unique node property constraint.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+});

@@ -34,7 +34,7 @@ describe("Batch Create, Auth", () => {
             }
 
             type Actor @authorization(validate: [{ when: [BEFORE], where: { node: { id: "$jwt.sub" } } }]) {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")

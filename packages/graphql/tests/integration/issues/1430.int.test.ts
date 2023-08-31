@@ -39,24 +39,24 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         const typeDefs = `
             type ${testAbce.name} {
-                id:ID @id
+                id:ID @id @unique
                 name: String
                 interface: InterfaceMom @relationship(type:"HAS_INTERFACE", direction:OUT)
             }
             
             interface InterfaceMom {
-                id:ID @id
+                id:ID @id 
                 name:String
             }
             
             type ${testChildOne.name} implements InterfaceMom {
-                id:ID @id
+                id:ID @id @unique
                 name:String
                 feathur: String
             }
             
             type ${testChildTwo.name} implements InterfaceMom {
-                id:ID @id
+                id:ID @id @unique
                 name:String
                 sth: String
             }

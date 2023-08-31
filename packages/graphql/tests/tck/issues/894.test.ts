@@ -29,13 +29,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
     beforeAll(() => {
         typeDefs = gql`
             type User {
-                id: ID! @id @alias(property: "_id")
+                id: ID! @id @unique @alias(property: "_id")
                 name: String!
                 activeOrganization: Organization @relationship(type: "ACTIVELY_MANAGING", direction: OUT)
             }
 
             type Organization {
-                id: ID! @id @alias(property: "_id")
+                id: ID! @id @unique @alias(property: "_id")
                 name: String!
             }
         `;
