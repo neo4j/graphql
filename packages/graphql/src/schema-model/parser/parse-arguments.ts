@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -18,8 +17,8 @@
  * limitations under the License.
  */
 
+import type { Maybe} from "@graphql-tools/utils";
 import { inspect } from "@graphql-tools/utils";
-import type { Maybe } from "@graphql-tools/utils/typings/types";
 import { isNonNullType, Kind, valueFromAST, print } from "graphql";
 import type { ObjMap } from "graphql/jsutils/ObjMap";
 import { parseValueNode } from "./parse-value-node";
