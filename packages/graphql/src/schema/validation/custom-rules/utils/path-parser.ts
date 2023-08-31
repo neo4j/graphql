@@ -16,15 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ASTNode, ObjectTypeDefinitionNode, FieldDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+import type {
+    ASTNode,
+    ObjectTypeDefinitionNode,
+    FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeExtensionNode,
+    InterfaceTypeExtensionNode,
+} from "graphql";
+
+export type ObjectOrInterfaceWithExtensions =
+    | ObjectTypeDefinitionNode
+    | InterfaceTypeDefinitionNode
+    | ObjectTypeExtensionNode
+    | InterfaceTypeExtensionNode;
 
 export function getPathToNode(
     path: readonly (number | string)[],
     ancenstors: readonly (ASTNode | readonly ASTNode[])[]
 ): [
     Array<string>,
-    ObjectTypeDefinitionNode | FieldDefinitionNode | InterfaceTypeDefinitionNode | undefined,
-    ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
+    ObjectOrInterfaceWithExtensions | FieldDefinitionNode | undefined,
+    ObjectOrInterfaceWithExtensions | undefined
 ] {
     const documentASTNodes = ancenstors[1];
     if (!documentASTNodes || (Array.isArray(documentASTNodes) && !documentASTNodes.length)) {
@@ -32,25 +45,20 @@ export function getPathToNode(
     }
     const [, definitionIdx] = path;
     const traversedDefinition = documentASTNodes[definitionIdx as number];
-    const pathToHere: (ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode)[] = [
-        traversedDefinition,
-    ];
-    let lastSeenDefinition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode =
-        traversedDefinition;
+    const pathToHere: (ObjectOrInterfaceWithExtensions | FieldDefinitionNode)[] = [traversedDefinition];
+    let lastSeenDefinition: ObjectOrInterfaceWithExtensions | FieldDefinitionNode = traversedDefinition;
     const getNextDefinition = parsePath(path, traversedDefinition);
     for (const definition of getNextDefinition()) {
         lastSeenDefinition = definition;
         pathToHere.push(definition);
     }
-    const parentOfLastSeenDefinition = pathToHere.slice(-2)[0] as
-        | ObjectTypeDefinitionNode
-        | InterfaceTypeDefinitionNode;
+    const parentOfLastSeenDefinition = pathToHere.slice(-2)[0] as ObjectOrInterfaceWithExtensions;
     return [pathToHere.map((n) => n.name?.value || "Schema"), lastSeenDefinition, parentOfLastSeenDefinition];
 }
 
 function parsePath(
     path: readonly (number | string)[],
-    traversedDefinition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode
+    traversedDefinition: ObjectOrInterfaceWithExtensions | FieldDefinitionNode
 ) {
     return function* getNextDefinition(idx = 2) {
         while (path[idx] && path[idx] !== "directives") {

@@ -20,6 +20,7 @@
 import type { ASTVisitor, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function ValidObjectType(context: SDLValidationContext): ASTVisitor {
     return {
@@ -49,7 +50,7 @@ export function ValidObjectType(context: SDLValidationContext): ASTVisitor {
     };
 }
 
-function assertValidType(type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode) {
+function assertValidType(type: ObjectOrInterfaceWithExtensions) {
     if (!type.fields || !type.fields.length) {
         throw new DocumentValidationError("Objects and Interfaces must have one or more fields.", []);
     }

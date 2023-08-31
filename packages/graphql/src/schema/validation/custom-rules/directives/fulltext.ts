@@ -16,25 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
+import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { FulltextContext } from "../../../../types";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function verifyFulltext({
     directiveNode,
     traversedDef,
 }: {
     directiveNode: DirectiveNode;
-    traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
+    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
 }) {
-    if (traversedDef.kind !== Kind.OBJECT_TYPE_DEFINITION) {
+    if (traversedDef.kind !== Kind.OBJECT_TYPE_DEFINITION && traversedDef.kind !== Kind.OBJECT_TYPE_EXTENSION) {
         // delegate
         return;
     }

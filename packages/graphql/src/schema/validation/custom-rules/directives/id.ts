@@ -16,23 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
+import type { DirectiveNode, FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import { getInnerTypeName } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function verifyId({
     directiveNode,
     traversedDef,
 }: {
     directiveNode: DirectiveNode;
-    traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
+    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
 }) {
     if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
         // delegate
@@ -47,9 +43,9 @@ export function verifyId({
     }
 
     if (traversedDef.type.kind === Kind.LIST_TYPE) {
-        throw new DocumentValidationError("Cannot autogenerate an array.", ["@id", "autogenerate"]);
+        throw new DocumentValidationError("Cannot autogenerate an array.", ["@id"]);
     }
     if (getInnerTypeName(traversedDef.type) !== "ID") {
-        throw new DocumentValidationError("Cannot autogenerate a non ID field.", ["@id", "autogenerate"]);
+        throw new DocumentValidationError("Cannot autogenerate a non ID field.", ["@id"]);
     }
 }

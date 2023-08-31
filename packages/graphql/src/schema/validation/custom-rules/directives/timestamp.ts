@@ -16,15 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ObjectTypeDefinitionNode, FieldDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+import type { FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import { getInnerTypeName } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function verifyTimestamp({
     traversedDef,
 }: {
-    traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
+    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
 }) {
     if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
         // delegate

@@ -16,18 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    EnumTypeDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
+import type { DirectiveNode, FieldDefinitionNode, EnumTypeDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../utils/utils";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function verifyCoalesce(enums: EnumTypeDefinitionNode[]) {
     return function ({
@@ -35,7 +30,7 @@ export function verifyCoalesce(enums: EnumTypeDefinitionNode[]) {
         traversedDef,
     }: {
         directiveNode: DirectiveNode;
-        traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
+        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
     }) {
         if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
             // delegate

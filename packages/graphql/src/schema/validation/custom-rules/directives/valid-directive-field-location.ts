@@ -21,17 +21,16 @@ import type {
     ASTVisitor,
     DirectiveNode,
     FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
+    ObjectTypeExtensionNode,
 } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { createGraphQLError, assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
-
-// TODO object extension and interface extension are possible in parent of type def from getPathNode
 
 /** only the @cypher directive is valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
 export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): ASTVisitor {
@@ -77,7 +76,7 @@ function isDirectiveValidAtLocation({
 }: {
     directiveNode: DirectiveNode;
     traversedDef: FieldDefinitionNode;
-    parentDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+    parentDef: ObjectOrInterfaceWithExtensions;
 }) {
     if (isLocationFieldOfRootType(parentDef)) {
         return () =>
@@ -92,11 +91,11 @@ function isDirectiveValidAtLocation({
 }
 
 function isLocationFieldOfRootType(
-    parentDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
-): parentDef is ObjectTypeDefinitionNode {
+    parentDef: ObjectOrInterfaceWithExtensions
+): parentDef is ObjectTypeDefinitionNode | ObjectTypeExtensionNode {
     return (
         parentDef &&
-        parentDef.kind === Kind.OBJECT_TYPE_DEFINITION &&
+        (parentDef.kind === Kind.OBJECT_TYPE_DEFINITION || parentDef.kind === Kind.OBJECT_TYPE_EXTENSION) &&
         ["Query", "Mutation", "Subscription"].includes(parentDef.name.value)
     );
 }
@@ -106,7 +105,7 @@ function noDirectivesAllowedAtLocation({
     parentDef,
 }: {
     directiveNode: DirectiveNode;
-    parentDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+    parentDef: ObjectOrInterfaceWithExtensions;
 }) {
     const allDirectivesDefinedByNeo4jGraphQL = Object.values(directives).concat(typeDependantDirectivesScaffolds);
     const directiveAtInvalidLocation = allDirectivesDefinedByNeo4jGraphQL.find(
@@ -127,7 +126,7 @@ function validFieldOfRootTypeLocation({
 }: {
     directiveNode: DirectiveNode;
     traversedDef: FieldDefinitionNode;
-    parentDef: ObjectTypeDefinitionNode;
+    parentDef: ObjectTypeDefinitionNode | ObjectTypeExtensionNode;
 }) {
     if (parentDef.name.value !== "Subscription") {
         // some directives are valid on Query | Mutation

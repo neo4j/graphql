@@ -16,15 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    ASTNode,
-    GraphQLErrorExtensions,
-} from "graphql";
+import type { DirectiveNode, FieldDefinitionNode, ASTNode, GraphQLErrorExtensions } from "graphql";
 import { GraphQLError } from "graphql";
+import type { ObjectOrInterfaceWithExtensions } from "./path-parser";
 
 export type AssertionResponse = {
     isValid: boolean;
@@ -37,8 +31,8 @@ export type ValidationFunction = ({
     parentDef,
 }: {
     directiveNode: DirectiveNode;
-    traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
-    parentDef?: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
+    parentDef?: ObjectOrInterfaceWithExtensions;
 }) => void | undefined;
 
 export class DocumentValidationError extends Error {

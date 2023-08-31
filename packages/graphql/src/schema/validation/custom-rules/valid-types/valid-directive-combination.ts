@@ -53,6 +53,7 @@ import {
     getInheritedTypeNames,
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
 type ASTNodeWithDirectives =
@@ -85,10 +86,16 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
     const typeToDirectivesMap = new Map<string, readonly DirectiveNode[]>();
     const hydrateWithDirectives = function (
         node: ASTNodeWithDirectives,
-        parentOfTraversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
+        parentOfTraversedDef: ObjectOrInterfaceWithExtensions | undefined
     ) {
-        if (node.kind === Kind.OBJECT_TYPE_DEFINITION || node.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-            typeToDirectivesMap.set(node.name.value, node.directives || []);
+        if (
+            node.kind === Kind.OBJECT_TYPE_DEFINITION ||
+            node.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+            node.kind === Kind.OBJECT_TYPE_EXTENSION ||
+            node.kind === Kind.INTERFACE_TYPE_EXTENSION
+        ) {
+            const prev = typeToDirectivesMap.get(node.name.value) || [];
+            typeToDirectivesMap.set(node.name.value, prev.concat(node.directives || []));
         }
         if (node.kind === Kind.FIELD_DEFINITION) {
             if (!parentOfTraversedDef) {
@@ -103,10 +110,17 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
     };
     const getDirectives = function (
         node: ASTNodeWithDirectives,
-        parentOfTraversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
+        parentOfTraversedDef: ObjectOrInterfaceWithExtensions | undefined
     ): DirectiveNode[] {
         const directivesToCheck: DirectiveNode[] = [...(node.directives || [])];
-        if (node.kind === Kind.OBJECT_TYPE_DEFINITION || node.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+        if (
+            node.kind === Kind.OBJECT_TYPE_DEFINITION ||
+            node.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+            node.kind === Kind.OBJECT_TYPE_EXTENSION ||
+            node.kind === Kind.INTERFACE_TYPE_EXTENSION
+        ) {
+            // might have been directives on extension
+            directivesToCheck.push(...(typeToDirectivesMap.get(node.name.value) || []));
             return getInheritedTypeNames(node, interfaceToImplementingTypes).reduce((acc, i) => {
                 const inheritedDirectives = typeToDirectivesMap.get(i) || [];
                 return acc.concat(inheritedDirectives);

@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
+
 import { Kind } from "graphql";
 import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
-export function verifyUnique({ parentDef }: { parentDef?: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode }) {
+export function verifyUnique({ parentDef }: { parentDef?: ObjectOrInterfaceWithExtensions }) {
     if (!parentDef) {
         console.error("No parent definition traversed");
         return;

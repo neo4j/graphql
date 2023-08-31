@@ -16,19 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    EnumTypeDefinitionNode,
-    StringValueNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
+import type { DirectiveNode, FieldDefinitionNode, EnumTypeDefinitionNode, StringValueNode } from "graphql";
 import { Kind } from "graphql";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../utils/utils";
 import { DocumentValidationError } from "../utils/document-validation-error";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 // TODO: schema-generation: save enums as map
 
@@ -38,7 +32,7 @@ export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
         traversedDef,
     }: {
         directiveNode: DirectiveNode;
-        traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
+        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
     }) {
         if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
             // delegate

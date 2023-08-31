@@ -18,11 +18,11 @@
  */
 import type {
     DirectiveNode,
-    ObjectTypeDefinitionNode,
     FieldDefinitionNode,
     EnumTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     UnionTypeDefinitionNode,
+    InterfaceTypeExtensionNode,
 } from "graphql";
 import { Kind } from "graphql";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
@@ -32,13 +32,14 @@ import {
     getInheritedTypeNames,
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
     interfaceToImplementationsMap: Map<string, Set<string>>,
     extra?: {
         enums: EnumTypeDefinitionNode[];
-        interfaces: InterfaceTypeDefinitionNode[];
+        interfaces: (InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode)[];
         unions: UnionTypeDefinitionNode[];
     }
 ) {
@@ -48,8 +49,8 @@ export function verifyRelationshipArgumentValue(
         parentDef,
     }: {
         directiveNode: DirectiveNode;
-        traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
-        parentDef?: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
+        parentDef?: ObjectOrInterfaceWithExtensions;
     }) {
         if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
             // delegate
@@ -87,7 +88,9 @@ export function verifyRelationshipArgumentValue(
                 throw new Error("Missing data: Enums, Interfaces, Unions.");
             }
             const relationshipPropertiesInterface = extra.interfaces.filter(
-                (i) => i.name.value.toLowerCase() === propertiesValue.toLowerCase()
+                (i) =>
+                    i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
+                    i.kind !== Kind.INTERFACE_TYPE_EXTENSION
             );
             if (relationshipPropertiesInterface.length > 1) {
                 throw new DocumentValidationError(
@@ -153,7 +156,7 @@ function checkRelationshipFieldsForDuplicates(
 }
 
 function verifyRelationshipFields(
-    parentDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    parentDef: ObjectOrInterfaceWithExtensions,
     currentRelationship: [string, string, string],
     typeValue: any,
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
@@ -178,7 +181,7 @@ function verifyRelationshipFields(
 export function verifyRelationshipFieldType({
     traversedDef,
 }: {
-    traversedDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode;
+    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
 }) {
     if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
         // delegate
