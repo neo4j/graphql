@@ -20,7 +20,7 @@
 import type { DocumentNode, GraphQLSchema, SelectionSetNode } from "graphql";
 import { graphql, parse, print } from "graphql";
 import type { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
-import type { Neo4jGraphQLContext } from "@neo4j/graphql/src";
+import type { Neo4jGraphQLContext } from "@neo4j/graphql";
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {
