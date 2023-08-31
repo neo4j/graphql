@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                     }
                 ]
             )
-            @exclude(operations: [CREATE, UPDATE]) {
+            @mutation(operations: [DELETE]) {
             id: ID!
             name: String!
             members: [${userType}!]! @relationship(type: "MEMBER_OF", direction: IN)

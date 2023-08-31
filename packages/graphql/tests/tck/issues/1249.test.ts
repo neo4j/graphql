@@ -28,13 +28,13 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Bulk @exclude(operations: [CREATE, DELETE, UPDATE]) @node(labels: ["Bulk", "$tenant"]) {
+            type Bulk @mutation(operations: []) @node(labels: ["Bulk", "$tenant"]) {
                 id: ID!
                 supplierMaterialNumber: String!
                 material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)
             }
 
-            type Material @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            type Material @mutation(operations: []) {
                 id: ID!
                 itemNumber: String!
 
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                     @relationship(type: "MATERIAL_SUPPLIER", properties: "RelationMaterialSupplier", direction: OUT)
             }
 
-            type Supplier @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            type Supplier @mutation(operations: []) {
                 id: ID!
                 name: String
                 supplierId: String!
