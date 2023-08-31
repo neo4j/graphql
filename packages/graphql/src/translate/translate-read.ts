@@ -30,9 +30,9 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import Debug from "debug";
-import { DEBUG_ALL } from "../constants";
+import { DEBUG_TRANSLATE } from "../constants";
 
-const debug = Debug(DEBUG_ALL);
+const debug = Debug(DEBUG_TRANSLATE);
 
 function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationContext; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
