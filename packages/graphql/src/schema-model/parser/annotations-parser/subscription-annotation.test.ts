@@ -23,22 +23,22 @@ import { subscriptionDirective } from "../../../graphql/directives";
 
 const tests = [
     {
-        name: "should parse correctly when CREATE operation is passed",
-        directive: makeDirectiveNode("subscription", { operations: ["CREATE"] }, subscriptionDirective),
-        operations: ["CREATE"],
-        expected: { operations: ["CREATE"] },
+        name: "should parse correctly when CREATED event is passed",
+        directive: makeDirectiveNode("subscription", { events: ["CREATED"] }, subscriptionDirective),
+        events: ["CREATED"],
+        expected: { events: ["CREATED"] },
     },
     {
-        name: "should parse correctly when UPDATE operation is passed",
-        directive: makeDirectiveNode("subscription", { operations: ["UPDATE"] }, subscriptionDirective),
-        operations: ["UPDATE"],
-        expected: { operations: ["UPDATE"] },
+        name: "should parse correctly when UPDATED event is passed",
+        directive: makeDirectiveNode("subscription", { events: ["UPDATED"] }, subscriptionDirective),
+        events: ["UPDATED"],
+        expected: { events: ["UPDATED"] },
     },
     {
-        name: "should parse correctly when CREATE and UPDATE operations are passed",
-        directive: makeDirectiveNode("subscription", { operations: ["CREATE", "UPDATE"] }, subscriptionDirective),
-        operations: ["CREATE", "UPDATE"],
-        expected: { operations: ["CREATE", "UPDATE"] },
+        name: "should parse correctly when CREATE and UPDATE events are passed",
+        directive: makeDirectiveNode("subscription", { events: ["CREATED", "UPDATED"] }, subscriptionDirective),
+        events: ["CREATED", "UPDATED"],
+        expected: { events: ["CREATED", "UPDATED"] },
     },
 ];
 
@@ -46,7 +46,7 @@ describe("parseSubscriptionAnnotation", () => {
     tests.forEach((test) => {
         it(`${test.name}`, () => {
             const subscriptionAnnotation = parseSubscriptionAnnotation(test.directive);
-            expect(subscriptionAnnotation.operations).toEqual(test.operations);
+            expect(subscriptionAnnotation.events).toEqual(test.events);
         });
     });
 });

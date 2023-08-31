@@ -27,7 +27,7 @@ import {
     schemaConfigurationFromSchemaExtensions,
 } from "./schema-configuration";
 import parseExcludeDirective from "./parse-exclude-directive";
-import { SubscriptionOperations } from "../graphql/directives/subscription";
+import { SubscriptionEvent } from "../graphql/directives/subscription";
 
 describe("schemaConfiguration", () => {
     test("schemaConfigurationFromObjectTypeDefinition should return a Schema Configuration object", () => {
@@ -43,11 +43,11 @@ describe("schemaConfiguration", () => {
         expect(schemaConfiguration).toMatchObject({
             queryDirective: new QueryDirective({ read: false, aggregate: false }),
             subscriptionDirective: new SubscriptionDirective([
-                SubscriptionOperations.CREATE,
-                SubscriptionOperations.DELETE,
-                SubscriptionOperations.UPDATE,
-                SubscriptionOperations.CREATE_RELATIONSHIP,
-                SubscriptionOperations.DELETE_RELATIONSHIP,
+                SubscriptionEvent.CREATED,
+                SubscriptionEvent.DELETED,
+                SubscriptionEvent.UPDATED,
+                SubscriptionEvent.RELATIONSHIP_CREATED,
+                SubscriptionEvent.RELATIONSHIP_DELETED,
             ]),
         });
     });
@@ -67,11 +67,11 @@ describe("schemaConfiguration", () => {
 
         expect(schemaConfiguration).toMatchObject({
             subscriptionDirective: new SubscriptionDirective([
-                SubscriptionOperations.CREATE,
-                SubscriptionOperations.DELETE,
-                SubscriptionOperations.UPDATE,
-                SubscriptionOperations.CREATE_RELATIONSHIP,
-                SubscriptionOperations.DELETE_RELATIONSHIP,
+                SubscriptionEvent.CREATED,
+                SubscriptionEvent.DELETED,
+                SubscriptionEvent.UPDATED,
+                SubscriptionEvent.RELATIONSHIP_CREATED,
+                SubscriptionEvent.RELATIONSHIP_DELETED,
             ]),
         });
     });
@@ -81,7 +81,7 @@ describe("schemaConfiguration", () => {
                 type TestType @query(read:false) @mutation(operations: [CREATE, DELETE]) {
                     name: String
                 }
-                extend schema @subscription(operations: [CREATE])
+                extend schema @subscription(events: [CREATED])
             `;
 
         const documentNode = parse(typeDefs);

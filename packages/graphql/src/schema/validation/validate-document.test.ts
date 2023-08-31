@@ -180,7 +180,7 @@ describe("validateDocument", () => {
             type Post {
                 id: ID! @id @unique
                 title: String!
-                datetime: DateTime @readonly @timestamp(operations: [CREATE])
+                datetime: DateTime @timestamp(operations: [CREATE])
             }
         `;
 

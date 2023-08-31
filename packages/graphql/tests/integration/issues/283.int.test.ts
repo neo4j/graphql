@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
         type Post {
             id: ID! @id @unique
             title: String!
-            datetime: DateTime @readonly @timestamp(operations: [CREATE])
+            datetime: DateTime @timestamp(operations: [CREATE])
         }
     `;
     // Presence of a custom resolver was causing the bug

@@ -156,8 +156,7 @@ export function getSchemaConfigurationFlags(options: {
 
     if (options.excludeDirective) {
         const excludeOperationsSet = new Set(options.excludeDirective.operations);
-        schemaConfigurationFlags.read = schemaConfigurationFlags.aggregate =
-            !excludeOperationsSet.has("read");
+        schemaConfigurationFlags.read = schemaConfigurationFlags.aggregate = !excludeOperationsSet.has("read");
         schemaConfigurationFlags.create = !excludeOperationsSet.has("create");
         schemaConfigurationFlags.delete = !excludeOperationsSet.has("delete");
         schemaConfigurationFlags.update = !excludeOperationsSet.has("update");
@@ -183,11 +182,11 @@ export function getSchemaConfigurationFlags(options: {
     }
 
     if (subscriptionDirective) {
-        schemaConfigurationFlags.subscribeCreate = subscriptionDirective.create;
-        schemaConfigurationFlags.subscribeUpdate = subscriptionDirective.update;
-        schemaConfigurationFlags.subscribeDelete = subscriptionDirective.delete;
-        schemaConfigurationFlags.subscribeCreateRelationship = subscriptionDirective.createRelationship;
-        schemaConfigurationFlags.subscribeDeleteRelationship = subscriptionDirective.deleteRelationship;
+        schemaConfigurationFlags.subscribeCreate = subscriptionDirective.created;
+        schemaConfigurationFlags.subscribeUpdate = subscriptionDirective.updated;
+        schemaConfigurationFlags.subscribeDelete = subscriptionDirective.deleted;
+        schemaConfigurationFlags.subscribeCreateRelationship = subscriptionDirective.relationshipCreated;
+        schemaConfigurationFlags.subscribeDeleteRelationship = subscriptionDirective.relationshipDeleted;
     }
 
     return schemaConfigurationFlags;
