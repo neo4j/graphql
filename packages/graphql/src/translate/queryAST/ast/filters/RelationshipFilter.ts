@@ -212,6 +212,21 @@ export class RelationshipFilter extends Filter {
         return this.wrapInNotIfNeeded(predicate);
     }
 
+    private getSingleRelationshipOperation({
+        pattern,
+        queryASTContext,
+        innerPredicate,
+    }: {
+        pattern: Cypher.Pattern;
+        queryASTContext: QueryASTContext;
+        innerPredicate: Cypher.Predicate;
+    }): Cypher.Predicate {
+        const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
+            innerPredicate
+        );
+        return Cypher.single(queryASTContext.target, patternComprehension, new Cypher.Literal(true));
+    }
+
     private createRelationshipOperation(
         pattern: Cypher.Pattern,
         queryASTContext: QueryASTContext
@@ -229,13 +244,29 @@ export class RelationshipFilter extends Filter {
             }
             case "SINGLE": {
                 if (!innerPredicate) return undefined;
-                const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
-                    innerPredicate
-                );
-                return Cypher.single(queryASTContext.target, patternComprehension, new Cypher.Literal(true));
+
+                return this.getSingleRelationshipOperation({
+                    pattern,
+                    queryASTContext,
+                    innerPredicate,
+                });
             }
             case "NONE":
             case "SOME": {
+                if (!this.relationship.isList) {
+                    if (this.relationship.isNullable) {
+                        if (!innerPredicate) return undefined;
+
+                        return this.getSingleRelationshipOperation({
+                            pattern,
+                            queryASTContext,
+                            innerPredicate,
+                        });
+                    } else {
+                        // Optional Match + Count
+                    }
+                }
+
                 const match = new Cypher.Match(pattern);
                 if (innerPredicate) {
                     return new Cypher.Exists(match.where(innerPredicate));
