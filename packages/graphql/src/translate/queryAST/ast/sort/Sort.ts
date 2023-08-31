@@ -23,5 +23,5 @@ import { QueryASTNode } from "../QueryASTNode";
 export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
 
 export abstract class Sort extends QueryASTNode {
-    public abstract getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[];
+    public abstract getSortFields(variable: Cypher.Variable | Cypher.Property, aliased?: boolean): SortField[];
 }

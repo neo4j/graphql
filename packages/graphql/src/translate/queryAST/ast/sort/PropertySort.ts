@@ -37,8 +37,14 @@ export class PropertySort extends Sort {
         return [];
     }
 
-    public getSortFields(variable: Cypher.Variable | Cypher.Property): SortField[] {
-        const nodeProperty = variable.property(this.attribute.databaseName); // getDBName?
+    public print(): string {
+        return `${super.print()} <${this.attribute.name}>`;
+    }
+
+    public getSortFields(variable: Cypher.Variable | Cypher.Property, sortByDatabaseName = true): SortField[] {
+        const attributeName = sortByDatabaseName ? this.attribute.databaseName : this.attribute.name;
+
+        const nodeProperty = variable.property(attributeName);
         return [[nodeProperty, this.direction]];
     }
 

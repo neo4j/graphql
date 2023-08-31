@@ -226,8 +226,8 @@ export class ConnectionReadOperation extends Operation {
         edgeVar: Cypher.Variable | Cypher.Property
     ): SortField[] {
         return this.sortFields.flatMap(({ node, edge }) => {
-            const nodeFields = node.flatMap((s) => s.getSortFields(nodeVar));
-            const edgeFields = edge.flatMap((s) => s.getSortFields(edgeVar));
+            const nodeFields = node.flatMap((s) => s.getSortFields(nodeVar, false));
+            const edgeFields = edge.flatMap((s) => s.getSortFields(edgeVar, false));
 
             return [...nodeFields, ...edgeFields];
         });

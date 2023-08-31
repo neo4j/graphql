@@ -92,24 +92,15 @@ export class ReadOperation extends Operation {
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(targetNode) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
-        // const projectionFields = this.fields.map((f) => f.getProjectionField(targetNode));
-        // const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
-
-        // const projection = this.getProjectionMap(
-        //     targetNode,
-        //     Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
-        // );
 
         const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
         let withWhere: Cypher.Clause | undefined;
         if (wherePredicate) {
             withWhere = new Cypher.With("*").where(wherePredicate);
-            // matchClause.where(filterPredicates);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
 
         const ret = this.getProjectionClause(targetNode, returnVariable, entity.isList);
-        // const ret = new Cypher.With([projection, targetNode]).return([Cypher.collect(targetNode), returnVariable]);
 
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
@@ -129,13 +120,7 @@ export class ReadOperation extends Operation {
         returnVariable: Cypher.Variable,
         isArray: boolean
     ): Cypher.Return {
-        const projectionFields = this.fields.map((f) => f.getProjectionField(target));
-        const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
-
-        const projection = this.getProjectionMap(
-            target,
-            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
-        );
+        const projection = this.getProjectionMap(target);
 
         let aggregationExpr: Cypher.Expr = Cypher.collect(target);
         if (!isArray) {
@@ -162,13 +147,7 @@ export class ReadOperation extends Operation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(node), ...authFilterSubqueries);
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(context) : undefined;
 
-        const projectionFields = this.fields.map((f) => f.getProjectionField(node));
-        const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
-
-        const projection = this.getProjectionMap(
-            node,
-            Array.from(new Set([...projectionFields, ...sortProjectionFields])) // TODO remove duplicates
-        );
+        const projection = this.getProjectionMap(node);
 
         const matchClause = new Cypher.Match(node);
 
@@ -231,14 +210,16 @@ export class ReadOperation extends Operation {
         });
     }
 
-    private getProjectionMap(
-        node: Cypher.Node,
-        projectionFields: Array<string | Record<string, Cypher.Expr>>
-    ): Cypher.MapProjection {
+    private getProjectionMap(node: Cypher.Node): Cypher.MapProjection {
+        const projectionFields = this.fields.map((f) => f.getProjectionField(node));
+        const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField());
+
+        const uniqueProjectionFields = Array.from(new Set([...projectionFields, ...sortProjectionFields])); // TODO remove duplicates with alias
+
         const stringFields: string[] = [];
         let otherFields: Record<string, Cypher.Expr> = {};
 
-        for (const field of projectionFields) {
+        for (const field of uniqueProjectionFields) {
             if (typeof field === "string") stringFields.push(field);
             else {
                 otherFields = { ...otherFields, ...field };
