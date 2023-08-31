@@ -4064,6 +4064,44 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
             });
 
+            test("@jwtClaim cannot combined inherited extension", () => {
+                const interfaceDoc = gql`
+                    interface Something {
+                        id: ID
+                            @cypher(
+                                statement: """
+                                RETURN 1 as x
+                                """
+                                columnName: "x"
+                            )
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type JWTPayload implements Something {
+                        id: ID @jwtClaim(path: "user.id")
+                    }
+                    extend type JWTPayload @jwt
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with @cypher"
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
+            });
+
             test("@jwtClaim cannot combined inherited", () => {
                 const interfaceDoc = gql`
                     interface Something {

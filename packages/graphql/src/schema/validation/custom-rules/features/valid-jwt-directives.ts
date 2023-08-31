@@ -17,19 +17,23 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, ObjectTypeExtensionNode } from "graphql";
+import type {
+    ASTVisitor,
+    FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    InterfaceTypeExtensionNode,
+    ObjectTypeDefinitionNode,
+    ObjectTypeExtensionNode,
+} from "graphql";
+import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
-import {
-    getInheritedTypeNames,
-    hydrateInterfaceWithImplementedTypesMap,
-} from "../utils/interface-to-implementing-types";
+import { hydrateInterfaceWithImplementedTypesMap } from "../utils/interface-to-implementing-types";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
-// TODO: finish this
 export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
     const interfaceToImplementingTypes = new Map<string, Set<string>>();
     const typeToDirectivesMap = new Map<string, Set<string>>();
@@ -91,7 +95,7 @@ export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
             hydrateTypeToMappedClaimsField(parentOfTraversedDef, node);
 
             const { isValid, errorMsg } = assertValid(() =>
-                assertJwtClaimDirective(parentOfTraversedDef, typeToDirectivesMap, interfaceToImplementingTypes)
+                assertJwtClaimDirective(context, parentOfTraversedDef.name.value)
             );
 
             if (!isValid) {
@@ -143,26 +147,37 @@ function assertJwtDirective(
     }
 }
 
-function assertJwtClaimDirective(
-    fieldType: ObjectOrInterfaceWithExtensions,
-    typeToDirectivesMap: Map<string, Set<string>>,
-    interfaceToImplementingTypes: Map<string, Set<string>>
-) {
-    let isClaim = typeToDirectivesMap.get(fieldType.name.value)?.has("jwt") || false;
-    if (isClaim) {
+function assertJwtClaimDirective(context: SDLValidationContext, typeName: string) {
+    const defsForTypeName = context
+        .getDocument()
+        .definitions.filter(
+            (d) =>
+                (d.kind === Kind.OBJECT_TYPE_DEFINITION || d.kind === Kind.OBJECT_TYPE_EXTENSION) &&
+                d.name.value === typeName
+        ) as (ObjectTypeDefinitionNode | ObjectTypeExtensionNode)[];
+    let isJwtType: ObjectOrInterfaceWithExtensions[] = defsForTypeName.filter((def) =>
+        def.directives?.some((d) => d.name.value === "jwt")
+    );
+    if (isJwtType.length) {
         return;
     }
-
-    const typeNames = getInheritedTypeNames(fieldType, interfaceToImplementingTypes);
-
-    for (const typename of typeNames) {
-        isClaim = typeToDirectivesMap.get(typename)?.has("jwt") || false;
-        if (isClaim === true) {
-            return;
+    const implementations = defsForTypeName.flatMap((d) => d.interfaces);
+    if (implementations.length) {
+        for (const impl of implementations) {
+            if (isJwtType.length) {
+                return;
+            }
+            const defsForTypeName = context
+                .getDocument()
+                .definitions.filter(
+                    (d) =>
+                        (d.kind === Kind.INTERFACE_TYPE_DEFINITION || d.kind === Kind.INTERFACE_TYPE_EXTENSION) &&
+                        d.name.value === impl?.name.value
+                ) as (InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode)[];
+            isJwtType = defsForTypeName.filter((def) => def.directives?.some((d) => d.name.value === "jwt"));
         }
     }
-
-    if (!isClaim) {
+    if (!isJwtType.length) {
         throw new DocumentValidationError(
             `Invalid directive usage: Directive @jwtClaim can only be used in \\"@jwt\\" types.`,
             []
