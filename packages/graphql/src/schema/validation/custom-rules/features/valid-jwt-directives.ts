@@ -17,52 +17,88 @@
  * limitations under the License.
  */
 
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-} from "graphql";
-import { Kind } from "graphql";
+import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, ObjectTypeExtensionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import {
+    getInheritedTypeNames,
+    hydrateInterfaceWithImplementedTypesMap,
+} from "../utils/interface-to-implementing-types";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
+// TODO: finish this
 export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
-    let seenJwtType = false;
-    return {
-        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-            const isJwtDirective = directiveNode.name.value === "jwt";
-            const isJwtClaimDirective = directiveNode.name.value === "jwtClaim";
-            if (!isJwtDirective && !isJwtClaimDirective) {
+    const interfaceToImplementingTypes = new Map<string, Set<string>>();
+    const typeToDirectivesMap = new Map<string, Set<string>>();
+    const typeToMappedClaimsField = new Map<string, Set<string>>();
+    const hydrateTypeToDirectivesMap = function (traversedDef: ObjectTypeDefinitionNode | ObjectTypeExtensionNode) {
+        const prev = typeToDirectivesMap.get(traversedDef.name.value) || new Set<string>();
+        for (const directive of traversedDef.directives || []) {
+            prev.add(directive.name.value);
+        }
+        typeToDirectivesMap.set(traversedDef.name.value, prev);
+    };
+    const hydrateTypeToMappedClaimsField = function (
+        traversedDef: ObjectOrInterfaceWithExtensions,
+        field: FieldDefinitionNode
+    ) {
+        const oldOnes = typeToMappedClaimsField.get(traversedDef.name.value) || new Set<string>();
+        typeToMappedClaimsField.set(traversedDef.name.value, oldOnes.add(field.name.value));
+    };
+    const doOnObject = {
+        enter: (node: ObjectTypeDefinitionNode | ObjectTypeExtensionNode) => {
+            hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementingTypes);
+            hydrateTypeToDirectivesMap(node);
+            const isJwtType = typeToDirectivesMap.get(node.name.value)?.has("jwt");
+            if (!isJwtType) {
                 return;
             }
-
+            const { isValid, errorMsg } = assertValid(() => assertJwtDirective(node, typeToDirectivesMap));
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [node],
+                        path: [node.name.value, "@jwt"],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+    };
+    return {
+        ObjectTypeDefinition: doOnObject,
+        ObjectTypeExtension: doOnObject,
+        FieldDefinition(node: FieldDefinitionNode, _key, _parent, path, ancestors) {
             const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             if (!traversedDef) {
                 console.error("No last definition traversed");
                 return;
             }
-            const pathToHere = [...pathToNode, `@${directiveNode.name.value}`];
-
-            let result;
-            if (isJwtDirective) {
-                result = assertValid(() => assertJwtDirective(traversedDef, seenJwtType));
-                seenJwtType = true;
-            } else {
-                result = assertValid(() => assertJwtClaimDirective(traversedDef, parentOfTraversedDef));
+            if (!parentOfTraversedDef) {
+                console.error("No parent of last definition traversed");
+                return;
             }
 
-            const { isValid, errorMsg } = result;
+            const isMappedClaim =
+                node.directives?.some((directive) => directive.name.value === "jwtClaim") ||
+                typeToMappedClaimsField.get(parentOfTraversedDef.name.value)?.has(node.name.value);
+            if (!isMappedClaim) {
+                return;
+            }
+            hydrateTypeToMappedClaimsField(parentOfTraversedDef, node);
+
+            const { isValid, errorMsg } = assertValid(() =>
+                assertJwtClaimDirective(parentOfTraversedDef, typeToDirectivesMap, interfaceToImplementingTypes)
+            );
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
-                        nodes: [directiveNode, traversedDef],
-                        path: pathToHere,
+                        nodes: [node],
+                        path: [...pathToNode, "@jwtClaim"],
                         errorMsg,
                     })
                 );
@@ -72,28 +108,34 @@ export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
 }
 
 function assertJwtDirective(
-    objectType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode,
-    seenJwtType: boolean
+    objectType: ObjectTypeDefinitionNode | ObjectTypeExtensionNode,
+    typeToDirectivesMap: Map<string, Set<string>>
 ) {
-    if (objectType.kind !== Kind.OBJECT_TYPE_DEFINITION) {
-        // delegate
-        return;
+    let seenJwtType = false;
+    for (const directiveNames of typeToDirectivesMap.values()) {
+        if (directiveNames.has("jwt")) {
+            if (seenJwtType === false) {
+                seenJwtType = true;
+            } else {
+                throw new DocumentValidationError(
+                    `Invalid directive usage: Directive @jwt can only be used once in the Type Definitions.`,
+                    []
+                );
+            }
+        }
     }
 
-    if (seenJwtType) {
-        throw new DocumentValidationError(
-            `Invalid directive usage: Directive @jwt can only be used once in the Type Definitions.`,
-            []
-        );
-    }
-
-    if (objectType.directives && objectType.directives.length > 1) {
+    const directiveNames = typeToDirectivesMap.get(objectType.name.value);
+    if (directiveNames && directiveNames.size > 1) {
         throw new DocumentValidationError(
             `Invalid directive usage: Directive @jwt cannot be used in combination with other directives.`,
             []
         );
     }
-    if (objectType.fields?.some((field) => !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(getInnerTypeName(field.type)))) {
+    const incompatibleFieldsStatus = objectType.fields?.some(
+        (field) => !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(getInnerTypeName(field.type))
+    );
+    if (incompatibleFieldsStatus === true) {
         throw new DocumentValidationError(
             `Invalid directive usage: Fields of a @jwt type can only be Scalars or Lists of Scalars.`,
             []
@@ -102,26 +144,25 @@ function assertJwtDirective(
 }
 
 function assertJwtClaimDirective(
-    fieldType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | FieldDefinitionNode,
-    objectType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | undefined
+    fieldType: ObjectOrInterfaceWithExtensions,
+    typeToDirectivesMap: Map<string, Set<string>>,
+    interfaceToImplementingTypes: Map<string, Set<string>>
 ) {
-    if (!objectType) {
-        console.error("No parent of last definition traversed");
+    let isClaim = typeToDirectivesMap.get(fieldType.name.value)?.has("jwt") || false;
+    if (isClaim) {
         return;
     }
 
-    if (fieldType.kind !== Kind.FIELD_DEFINITION || objectType.kind !== Kind.OBJECT_TYPE_DEFINITION) {
-        // delegate
-        return;
+    const typeNames = getInheritedTypeNames(fieldType, interfaceToImplementingTypes);
+
+    for (const typename of typeNames) {
+        isClaim = typeToDirectivesMap.get(typename)?.has("jwt") || false;
+        if (isClaim === true) {
+            return;
+        }
     }
 
-    if (fieldType.directives && fieldType.directives.length > 1) {
-        throw new DocumentValidationError(
-            `Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives.`,
-            []
-        );
-    }
-    if (!objectType.directives?.find((d) => d.name.value === "jwt")) {
+    if (!isClaim) {
         throw new DocumentValidationError(
             `Invalid directive usage: Directive @jwtClaim can only be used in \\"@jwt\\" types.`,
             []

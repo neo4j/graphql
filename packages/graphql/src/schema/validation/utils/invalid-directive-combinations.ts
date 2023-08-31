@@ -66,4 +66,21 @@ export const invalidCombinations = {
     relationshipProperties: ["authorization", "authentication", "subscriptionsAuthorization"],
     // OBJECT and INTERFACE
     exclude: [],
+    jwtClaim: [
+        "alias",
+        "authentication",
+        "authorization",
+        "subscriptionsAuthorization",
+        "callback",
+        "coalesce",
+        "cypher",
+        "default",
+        "id",
+        "timestamp",
+        "relayId",
+        "customResolver",
+        "readonly",
+        "populatedBy",
+        "unique",
+    ],
 };
