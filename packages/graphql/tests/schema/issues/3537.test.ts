@@ -520,7 +520,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
                 title: String
             }
 
-            extend schema @subscription(operations: [UPDATE])
+            extend schema @subscription(events: [UPDATED])
         `;
 
         const subscriptionPlugin = new TestSubscriptionsEngine();

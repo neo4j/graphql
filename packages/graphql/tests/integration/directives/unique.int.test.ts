@@ -922,7 +922,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @mutation(operations: []) {
                     someIdProperty: ID! @id @unique @alias(property: "someAlias")
                     title: String!
                 }
@@ -963,7 +963,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             const baseType = new UniqueType("Base");
             const additionalType = new UniqueType("Additional");
             const typeDefs = `
-                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                type ${baseType.name} @node(labels: ["${baseType.name}", "${additionalType.name}"]) @mutation(operations: []) {
                     someIdProperty: ID! @id @unique @alias(property: "someAlias")
                     title: String!
                 }

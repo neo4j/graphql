@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
         }
 
-        type ${testNameDetails} @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+        type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
             fullName: String!
         }
 
