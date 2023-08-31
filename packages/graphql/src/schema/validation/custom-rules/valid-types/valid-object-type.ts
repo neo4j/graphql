@@ -35,10 +35,6 @@ export function ValidObjectType(context: SDLValidationContext): ASTVisitor {
             }
         },
         InterfaceTypeDefinition(interfaceType: InterfaceTypeDefinitionNode) {
-            if (!interfaceType.directives?.some((d) => d.name.value === "relationshipProperties")) {
-                // no need to run rule on interface types because their fields cannot contain the @private directive
-                return;
-            }
             const { isValid, errorMsg } = assertValid(() => assertValidType(interfaceType));
 
             if (!isValid) {
