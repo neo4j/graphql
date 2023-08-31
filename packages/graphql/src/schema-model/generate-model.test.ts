@@ -376,7 +376,7 @@ describe("Annotations & Attributes", () => {
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", direction: OUT)
             }
 
-            type Account @subscription(operations: [CREATE]) {
+            type Account @subscription(events: [CREATED]) {
                 id: ID!
                 accountName: String! @settable(onCreate: false)
             }
@@ -404,17 +404,17 @@ describe("Annotations & Attributes", () => {
 
         const userSubscription = userEntity?.annotations[AnnotationsKey.subscription];
         expect(userSubscription).toBeDefined();
-        expect(userSubscription?.operations).toStrictEqual([
-            "CREATE",
-            "UPDATE",
-            "DELETE",
-            "CREATE_RELATIONSHIP",
-            "DELETE_RELATIONSHIP",
+        expect(userSubscription?.events).toStrictEqual([
+            "CREATED",
+            "UPDATED",
+            "DELETED",
+            "RELATIONSHIP_CREATED",
+            "RELATIONSHIP_DELETED",
         ]);
 
         const accountSubscription = accountEntity?.annotations[AnnotationsKey.subscription];
         expect(accountSubscription).toBeDefined();
-        expect(accountSubscription?.operations).toStrictEqual(["CREATE"]);
+        expect(accountSubscription?.events).toStrictEqual(["CREATED"]);
     });
 
     test("attributes should be generated with the correct annotations", () => {

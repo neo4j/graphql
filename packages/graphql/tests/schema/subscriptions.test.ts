@@ -3415,7 +3415,7 @@ describe("Subscriptions", () => {
 
     test("Subscriptions excluded", async () => {
         const typeDefs = gql`
-            type Movie @subscription(operations: []) {
+            type Movie @subscription(events: []) {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -3931,7 +3931,7 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type", async () => {
         const typeDefs = gql`
-            type User @mutation(operations: []) @subscription(operations: []) {
+            type User @mutation(operations: []) @subscription(events: []) {
                 username: String!
                 name: String
             }
@@ -4529,7 +4529,7 @@ describe("Subscriptions", () => {
 
             union Actor = Star | Person
 
-            type Star @subscription(operations: []) {
+            type Star @subscription(events: []) {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Person {
@@ -5585,7 +5585,7 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type + Interface type", async () => {
         const typeDefs = gql`
-            type Movie implements Production @subscription(operations: []) {
+            type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
                 director: Creature!

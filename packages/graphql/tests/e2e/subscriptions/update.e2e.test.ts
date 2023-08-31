@@ -44,7 +44,7 @@ describe("Update Subscriptions", () => {
             title: String
             actors: [${typeActor}]
          }
-         type ${typeActor} @subscription(operations: []) {
+         type ${typeActor} @subscription(events: []) {
             name: String
          }
          `;
