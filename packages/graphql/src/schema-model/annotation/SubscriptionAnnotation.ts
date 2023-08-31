@@ -18,9 +18,9 @@
  */
 
 export class SubscriptionAnnotation {
-    public readonly operations: string[];
+    public readonly events: string[];
 
-    constructor({ operations }: { operations: string[] }) {
-        this.operations = operations;
+    constructor({ events }: { events: string[] }) {
+        this.events = events;
     }
 }
