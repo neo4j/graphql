@@ -54,13 +54,13 @@ import {
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
 import { ReservedTypeNames } from "./custom-rules/valid-types/reserved-type-names";
-import { ValidGlobalID } from "./custom-rules/features/valid-global-id";
+import { ValidRelayID } from "./custom-rules/features/valid-relay-id";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-multiple-inheritance";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
 import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
-import { ValidDirectiveAtLocation } from "./custom-rules/directives/valid-directive-location";
+import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
@@ -226,11 +226,11 @@ function runValidationRulesOnFilteredDocument({
         [
             ...specifiedSDLRules,
             directiveIsValid(extra, callbacks),
-            ValidDirectiveAtLocation,
+            ValidDirectiveAtFieldLocation,
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,
-            ValidGlobalID,
+            ValidRelayID,
             ValidRelationshipProperties,
             ValidFieldTypes,
             ReservedTypeNames,

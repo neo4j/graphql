@@ -2504,6 +2504,44 @@ describe("validation 2.0", () => {
                 );
                 expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
             });
+
+            test("@authentication can't be used with @relationship inherited", () => {
+                const interfaceDoc = gql`
+                    interface Production {
+                        actors: [Actor!]! @authentication
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type Movie implements Production {
+                        id: ID
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @authentication"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
+            });
             test("@subscriptionsAuthorization can't be used with @relationship", () => {
                 const doc = gql`
                     type Movie {
@@ -2534,6 +2572,42 @@ describe("validation 2.0", () => {
                     "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization"
                 );
                 expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
+            });
+            test("@subscriptionsAuthorization can't be used with @relationship inherited", () => {
+                const interfaceDoc = gql`
+                    interface Production {
+                        actors: [Actor!]! @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
+                    }
+                `;
+                const doc = gql`
+                    type Movie implements Production {
+                        id: ID
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+                    ${interfaceDoc}
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Production", "actors"]);
             });
             test("@authorization can't be used with @relationship", () => {
                 const doc = gql`
@@ -3186,8 +3260,8 @@ describe("validation 2.0", () => {
         test("only one field can be global @id", () => {
             const doc = gql`
                 type Movie {
-                    rottenid: ID! @id(global: true)
-                    imdbid: ID @id(global: true)
+                    rottenid: ID! @relayId
+                    imdbid: ID @relayId
                     title: String
                 }
             `;
@@ -3199,19 +3273,19 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
             );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "imdbid", "@id", "global"]);
+            expect(errors[0]).toHaveProperty("path", ["Movie", "imdbid", "@relayId"]);
         });
 
         test("only one field can be global @id with interface", () => {
             const doc = gql`
                 interface MovieInterface {
-                    imdbid: ID! @id(global: true)
+                    imdbid: ID! @relayId
                 }
 
                 type Movie implements MovieInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     imdbid: ID!
                     title: String
                 }
@@ -3224,20 +3298,20 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
             );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@id", "global"]);
+            expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@relayId"]);
         });
 
         test("only one field can be global @id with interface reverse order", () => {
             const doc = gql`
                 type Movie implements MovieInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     imdbid: ID!
                     title: String
                 }
                 interface MovieInterface {
-                    imdbid: ID! @id(global: true)
+                    imdbid: ID! @relayId
                 }
             `;
 
@@ -3248,15 +3322,15 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
             );
-            expect(errors[0]).toHaveProperty("path", ["MovieInterface", "imdbid", "@id", "global"]);
+            expect(errors[0]).toHaveProperty("path", ["MovieInterface", "imdbid", "@relayId"]);
         });
 
         test("only one field can be global @id with interface implementing interface", () => {
             const doc = gql`
                 interface ScorableInterface {
-                    imdbid: ID! @id(global: true)
+                    imdbid: ID! @relayId
                 }
 
                 interface MovieInterface implements ScorableInterface {
@@ -3264,7 +3338,7 @@ describe("validation 2.0", () => {
                 }
 
                 type Movie implements MovieInterface & ScorableInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     imdbid: ID!
                     title: String
                 }
@@ -3277,9 +3351,9 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
             );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@id", "global"]);
+            expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@relayId"]);
         });
 
         test("field named id already exists and not aliased on interface - multiple interfaces", () => {
@@ -3293,7 +3367,7 @@ describe("validation 2.0", () => {
                 }
 
                 type Movie implements MovieInterface & ScorableInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     id: ID!
                     title: String
                 }
@@ -3306,7 +3380,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
+                "Type already has a field `id`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field."
             );
             expect(errors[0]).toHaveProperty("path", ["Movie", "id"]);
         });
@@ -3318,12 +3392,12 @@ describe("validation 2.0", () => {
                 }
 
                 type Movie implements MovieInterface & ScorableInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     imdbid: ID!
                     title: String
                 }
                 interface ScorableInterface {
-                    imdbid: ID! @id(global: true)
+                    imdbid: ID! @relayId
                 }
             `;
 
@@ -3334,9 +3408,9 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Only one field may be decorated with an '@id' directive with the global argument set to `true`."
+                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
             );
-            expect(errors[0]).toHaveProperty("path", ["ScorableInterface", "imdbid", "@id", "global"]);
+            expect(errors[0]).toHaveProperty("path", ["ScorableInterface", "imdbid", "@relayId"]);
         });
 
         test("field named id already exists", () => {
@@ -3363,7 +3437,7 @@ describe("validation 2.0", () => {
         test("field named id already exists and not aliased on interface", () => {
             const doc = gql`
                 type Movie implements MovieInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     id: ID!
                     title: String
                 }
@@ -3378,55 +3452,9 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
+                "Type already has a field `id`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field."
             );
             expect(errors[0]).toHaveProperty("path", ["MovieInterface", "id"]);
-        });
-
-        test("global @id must be unique", () => {
-            const doc = gql`
-                type Movie {
-                    imdbid: ID! @id(global: true, unique: false)
-                    title: String
-                }
-            `;
-
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid global ID field - global argument is set to true requires the unique argument be set to true."
-            );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "imdbid", "@id", "unique"]);
-        });
-
-        test("global @id must be unique even if same field", () => {
-            const doc = gql`
-                type Movie {
-                    id: ID! @id(global: true, unique: false)
-                    title: String
-                }
-            `;
-
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(2);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid global ID field - global argument is set to true requires the unique argument be set to true."
-            );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "id", "@id", "unique"]);
-            expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[1]).toHaveProperty(
-                "message",
-                'Invalid global id field: Types decorated with an `@id` directive with the global argument set to `true` cannot have a field named "id". Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field.'
-            );
-            expect(errors[1]).toHaveProperty("path", ["Movie", "id"]);
         });
 
         test("valid", () => {
@@ -3445,7 +3473,7 @@ describe("validation 2.0", () => {
         test("field named id already exists but aliased on interface", () => {
             const doc = gql`
                 type Movie implements MovieInterface {
-                    rottenid: ID! @id(global: true)
+                    rottenid: ID! @relayId
                     id: ID!
                     title: String
                 }
@@ -3590,56 +3618,6 @@ describe("validation 2.0", () => {
                     }
                     interface Production {
                         episodes: Int
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                expect(executeValidate).not.toThrow();
-            });
-        });
-
-        describe("multiple interfaces with @exclude", () => {
-            test("invalid", () => {
-                const doc = gql`
-                    type Movie implements Production & Show {
-                        id: ID!
-                        title: String
-                        year: Int
-                        starts: Int
-                    }
-                    interface Production @exclude(operations: [CREATE]) {
-                        year: Int
-                    }
-                    interface Show @exclude(operations: [UPDATE]) {
-                        starts: Int
-                    }
-                `;
-
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Multiple implemented interfaces of Movie have @exclude directive - cannot determine directive to use."
-                );
-                expect(errors[0]).toHaveProperty("path", ["Movie"]);
-            });
-
-            test("valid", () => {
-                const doc = gql`
-                    type Movie implements Production & Show {
-                        id: ID!
-                        title: String
-                        year: Int
-                        starts: Int
-                    }
-                    interface Production {
-                        year: Int
-                    }
-                    interface Show @exclude(operations: [UPDATE]) {
-                        starts: Int
                     }
                 `;
 
