@@ -32,6 +32,8 @@ import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
 
 // TODO object extension and interface extension are possible in parent of type def from getPathNode
+// TODO remove interface inheritance from all rules
+// TODO fix @id validation
 
 /** only the @cypher directive is valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
 export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): ASTVisitor {
@@ -39,12 +41,11 @@ export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): AS
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
             const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
-                // only want to check directives on fields
+                console.error("No last definition traversed");
                 return;
             }
             if (!parentOfTraversedDef) {
                 // this rule only checks field location, parent needs to exist
-                console.error("No parent of definition found");
                 return;
             }
             const shouldRunThisRule = isDirectiveValidAtLocation({

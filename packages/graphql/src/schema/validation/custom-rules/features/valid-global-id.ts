@@ -20,10 +20,15 @@
 import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, InterfaceTypeDefinitionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import {
+    getInheritedTypeNames,
+    hydrateInterfaceWithImplementedTypesMap,
+} from "../utils/interface-to-implementing-types";
 import { getPathToNode } from "../utils/path-parser";
 
-export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
+export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
     const typeNameToGlobalId = new Map<string, boolean>();
+    const interfaceToImplementingTypes = new Map<string, Set<string>>();
     const typeNameToAliasedFields = new Map<string, Set<string>>();
     const addToAliasedFieldsMap = function (typeName: string, fieldName?: string) {
         const x = typeNameToAliasedFields.get(typeName) || new Set<string>();
@@ -47,7 +52,6 @@ export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
 
             if (directiveNode.name.value === "alias") {
                 addToAliasedFieldsMap(parentOfTraversedDef.name.value, traversedDef.name.value);
-                return;
             }
 
             if (directiveNode.name.value !== "relayId") {
@@ -59,6 +63,7 @@ export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
                     directiveNode,
                     typeDef: parentOfTraversedDef,
                     typeNameToGlobalId,
+                    interfaceToImplementingTypes,
                 })
             );
             if (!isValid) {
@@ -73,22 +78,23 @@ export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
         },
 
         ObjectTypeDefinition: {
+            enter(objectType: ObjectTypeDefinitionNode) {
+                hydrateInterfaceWithImplementedTypesMap(objectType, interfaceToImplementingTypes);
+            },
             leave(objectType: ObjectTypeDefinitionNode) {
                 addToAliasedFieldsMap(objectType.name.value);
 
-                const hasRelayIDField = typeNameToGlobalId.has(objectType.name.value);
-                if (!hasRelayIDField) {
-                    // nothing to clash with because no relay id
-                    return;
-                }
-                const fieldNamedID = objectType.fields?.find((x) => x.name.value === "id");
-                if (!fieldNamedID) {
-                    // nothing to clash with because no field named id
+                const fieldNamedID = getUnaliasedFieldNamedID(objectType);
+                if (!fieldNamedID || !hasGlobalIDField(objectType, typeNameToGlobalId, interfaceToImplementingTypes)) {
                     return;
                 }
 
+                const inheritedAliasedFields = (
+                    getInheritedTypeNames(objectType, interfaceToImplementingTypes) || []
+                ).map(getAliasedFieldsFromMap);
+
                 const { isValid, errorMsg, errorPath } = assertValid(() =>
-                    assertGlobalIDDoesNotClash(getAliasedFieldsFromMap(objectType.name.value))
+                    assertGlobalIDDoesNotClash(inheritedAliasedFields)
                 );
                 if (!isValid) {
                     context.reportError(
@@ -101,30 +107,96 @@ export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
                 }
             },
         },
+
+        InterfaceTypeDefinition: {
+            leave(interfaceType: InterfaceTypeDefinitionNode) {
+                addToAliasedFieldsMap(interfaceType.name.value);
+                const fieldNamedID = getUnaliasedFieldNamedID(interfaceType);
+                if (
+                    !fieldNamedID ||
+                    !hasGlobalIDField(interfaceType, typeNameToGlobalId, interfaceToImplementingTypes)
+                ) {
+                    return;
+                }
+
+                const inheritedAliasedFields = (
+                    getInheritedTypeNames(interfaceType, interfaceToImplementingTypes) || []
+                ).map(getAliasedFieldsFromMap);
+
+                const { isValid, errorMsg, errorPath } = assertValid(() =>
+                    assertGlobalIDDoesNotClash(inheritedAliasedFields)
+                );
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [interfaceType],
+                            path: [interfaceType.name.value, ...errorPath],
+                            errorMsg,
+                        })
+                    );
+                }
+            },
+        },
     };
 }
 
-function assertGlobalIDDoesNotClash(aliasedFields: Set<string> | undefined) {
-    if (aliasedFields && aliasedFields.has("id")) {
-        // field is aliased
+function getUnaliasedFieldNamedID(mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode) {
+    const fieldNamedID = mainType.fields?.find((x) => x.name.value === "id");
+    if (!fieldNamedID) {
         return;
     }
+    const isFieldAliased = !!fieldNamedID.directives?.find((x) => x.name.value === "alias");
+    if (!isFieldAliased) {
+        return fieldNamedID;
+    }
+    return;
+}
 
-    throw new DocumentValidationError(
-        `Type already has a field \`id\`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the \`@alias\` directive to access it via another field.`,
-        ["id"]
+function hasGlobalIDField(
+    mainType: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    typeNameToGlobalId: Map<string, boolean>,
+    interfaceToImplementingTypes: Map<string, Set<string>>
+): boolean {
+    if (typeNameToGlobalId.get(mainType.name.value)) {
+        return true;
+    }
+    return !!getInheritedTypeNames(mainType, interfaceToImplementingTypes)?.find(
+        (typeName) => typeNameToGlobalId.get(typeName) === true
     );
+}
+
+function assertGlobalIDDoesNotClash(aliasedFieldsFromInheritedTypes: (Set<string> | undefined)[]) {
+    let shouldDeferCheck: boolean | undefined = false;
+    let hasAlias: boolean | undefined = false;
+    for (const aliasedFields of aliasedFieldsFromInheritedTypes) {
+        if (!aliasedFields) {
+            shouldDeferCheck = true;
+        } else {
+            if (aliasedFields.has("id")) {
+                hasAlias = true;
+                return;
+            }
+        }
+    }
+    if (hasAlias === false && shouldDeferCheck === false) {
+        throw new DocumentValidationError(
+            `Type already has a field \`id\`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the \`@alias\` directive to access it via another field.`,
+            ["id"]
+        );
+    }
 }
 
 function assertValidGlobalID({
     typeDef,
     typeNameToGlobalId,
+    interfaceToImplementingTypes,
 }: {
     directiveNode: DirectiveNode;
     typeDef: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     typeNameToGlobalId: Map<string, boolean>;
+    interfaceToImplementingTypes: Map<string, Set<string>>;
 }) {
-    if (typeNameToGlobalId.has(typeDef.name.value)) {
+    if (hasGlobalIDField(typeDef, typeNameToGlobalId, interfaceToImplementingTypes)) {
         throw new DocumentValidationError(
             "Invalid directive usage: Only one field may be decorated with the `@relayId` directive.",
             ["@relayId"]
