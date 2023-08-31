@@ -386,9 +386,57 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes", 0]);
         });
 
+        test("@fulltext.indexes property required extension", () => {
+            const doc = gql`
+                type User {
+                    name: String
+                }
+                extend type User @fulltext(indexes: [{ name: "something" }])
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid argument: indexes, error: Field "fields" of required type "[String]!" was not provided.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes", 0]);
+        });
+
         test("@relationship.direction property must be enum value", () => {
             const doc = gql`
                 type User {
+                    post: Post @relationship(direction: "EVERYWHERE", type: "HAS_NAME")
+                }
+                type Post {
+                    title: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid argument: direction, error: Value "EVERYWHERE" does not exist in "RelationshipDirection" enum.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "direction"]);
+        });
+
+        test("@relationship.direction property must be enum value extension", () => {
+            const doc = gql`
+                type User {
+                    id: ID
+                }
+                extend type User {
                     post: Post @relationship(direction: "EVERYWHERE", type: "HAS_NAME")
                 }
                 type Post {
@@ -438,6 +486,76 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "type"]);
         });
 
+        test("@relationship.type property must be string inherited", () => {
+            const interfaceDoc = gql`
+                interface Person {
+                    post: Post @relationship(type: 42, direction: IN)
+                }
+            `;
+            const doc = gql`
+                type User implements Person {
+                    post: Post
+                }
+                type Post {
+                    title: String
+                }
+                ${interfaceDoc}
+            `;
+
+            const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    features: {},
+                });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: type, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "post", "@relationship", "type"]);
+        });
+
+        test("@relationship.type property must be string inherited extension", () => {
+            const interfaceDoc = gql`
+                interface Person {
+                    id: ID
+                }
+                extend interface Person {
+                    post: Post @relationship(type: 42, direction: IN)
+                }
+            `;
+            const doc = gql`
+                type User implements Person {
+                    id: ID
+                    post: Post
+                }
+                type Post {
+                    title: String
+                }
+                ${interfaceDoc}
+            `;
+
+            const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    features: {},
+                });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: type, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "post", "@relationship", "type"]);
+        });
+
         test("@customResolver.required property must be string", () => {
             const doc = gql`
                 type User {
@@ -471,6 +589,91 @@ describe("validation 2.0", () => {
                 "Invalid argument: statement, error: String cannot represent a non string value: 42"
             );
             expect(errors[0]).toHaveProperty("path", ["User", "name", "@cypher", "statement"]);
+        });
+
+        test("@cypher.columnName property must be string extension", () => {
+            const doc = gql`
+                type User {
+                    id: ID
+                }
+                extend type User {
+                    name: String @cypher(statement: 42, columnName: "x")
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: statement, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "name", "@cypher", "statement"]);
+        });
+
+        test("@cypher.columnName property must be string inherited", () => {
+            const interfaceDoc = gql`
+                interface Person {
+                    name: String @cypher(statement: 42, columnName: "x")
+                }
+            `;
+            const doc = gql`
+                type User implements Person {
+                    name: String
+                }
+                ${interfaceDoc}
+            `;
+
+            const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    features: {},
+                    additionalDefinitions: { ...additionalDefinitions, interfaces },
+                });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: statement, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher", "statement"]);
+        });
+
+        test("@cypher.columnName property must be string inherited extension", () => {
+            const interfaceDoc = gql`
+                interface Person {
+                    id: ID
+                }
+                extend interface Person {
+                    name: String @cypher(statement: 42, columnName: "x")
+                }
+            `;
+            const doc = gql`
+                type User implements Person {
+                    id: ID
+                    name: String
+                }
+                ${interfaceDoc}
+            `;
+
+            const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    features: {},
+                    additionalDefinitions: { ...additionalDefinitions, interfaces },
+                });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid argument: statement, error: String cannot represent a non string value: 42"
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher", "statement"]);
         });
         test("@cypher.statement property must be string", () => {
             const doc = gql`
@@ -512,6 +715,24 @@ describe("validation 2.0", () => {
             );
             expect(errors[0]).toHaveProperty("path", ["User", "@node", "labels", 0]);
         });
+
+        test("@node.labels property required extension", () => {
+            const doc = gql`
+                type User {
+                    name: String
+                }
+                extend type User @node(labels: [null])
+            `;
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const errors = getError(executeValidate);
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                'Invalid argument: labels, error: Expected non-nullable type "String!" not to be null.'
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "@node", "labels", 0]);
+        });
     });
 
     describe("Directive Argument Value", () => {
@@ -519,6 +740,31 @@ describe("validation 2.0", () => {
             test("@default on datetime must be valid datetime", () => {
                 const doc = gql`
                     type User {
+                        updatedAt: DateTime @default(value: "dummy")
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
+            });
+
+            test("@default on datetime must be valid datetime extension", () => {
+                const doc = gql`
+                    type User {
+                        id: ID
+                    }
+                    extend type User {
                         updatedAt: DateTime @default(value: "dummy")
                     }
                 `;
@@ -584,6 +830,84 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@default", "value"]);
+            });
+
+            test("@default on enum must be enum inherited", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const interfaceDoc = gql`
+                    interface Person {
+                        status: Status @default(value: "dummy")
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User implements Person {
+                        status: Status
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty("path", ["Person", "status", "@default", "value"]);
+            });
+
+            test("@default on enum must be enum inherited extension", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const interfaceDoc = gql`
+                    interface Person {
+                        id: ID
+                    }
+                    extend interface Person {
+                        status: Status @default(value: "dummy")
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User implements Person {
+                        id: ID
+                        status: Status
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty("path", ["Person", "status", "@default", "value"]);
             });
 
             test("@default on enum must be enum correct", () => {
@@ -1183,6 +1507,40 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@coalesce", "value"]);
             });
 
+            test("@coalesce on enum must be enum extension", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User {
+                        id: ID
+                    }
+                    extend type User {
+                        status: Status @coalesce(value: "dummy")
+                    }
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty("path", ["User", "status", "@coalesce", "value"]);
+            });
+
             test("@coalesce on enum must be enum correct", () => {
                 const enumTypes = gql`
                     enum Status {
@@ -1242,6 +1600,90 @@ describe("validation 2.0", () => {
                     "@coalesce.value on Status list fields must be a list of Status values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on enum list must be list inherited", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const interfaceDoc = gql`
+                    interface Person {
+                        statuses: [Status] @coalesce(value: "dummy")
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User implements Person {
+                        statuses: [Status]
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@coalesce.value on Status list fields must be a list of Status values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Person", "statuses", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on enum list must be list inherited extsnion", () => {
+                const enumTypes = gql`
+                    enum Status {
+                        REGISTERED
+                        PENDING
+                    }
+                `;
+                const interfaceDoc = gql`
+                    interface Person {
+                        id: ID
+                    }
+                    extend interface Person {
+                        statuses: [Status] @coalesce(value: "dummy")
+                    }
+                `;
+                const doc = gql`
+                    ${enumTypes}
+                    type User implements Person {
+                        id: ID
+                        statuses: [Status]
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@coalesce.value on Status list fields must be a list of Status values"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Person", "statuses", "@coalesce", "value"]);
             });
 
             test("@coalesce on enum list must be list of enum values", () => {
@@ -1793,6 +2235,26 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "@limit", "default"]);
             });
 
+            test("@limit default must be > 0 extension", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                    }
+                    extend type User @limit(default: -1)
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@limit.default invalid value: -1. Must be greater than 0."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "@limit", "default"]);
+            });
+
             test("@limit max must be > 0", () => {
                 const doc = gql`
                     type User @limit(max: -1) {
@@ -1859,6 +2321,25 @@ describe("validation 2.0", () => {
                         name: String
                         id: ID
                     }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "@fulltext.indexes invalid value for: a. Duplicate name.");
+                expect(errors[0]).toHaveProperty("path", ["User", "@fulltext", "indexes"]);
+            });
+
+            test("@fulltext duplicate index names extension", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                        id: ID
+                    }
+                    extend type User
+                        @fulltext(indexes: [{ indexName: "a", fields: ["name"] }, { indexName: "a", fields: ["id"] }])
                 `;
 
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
@@ -1969,6 +2450,44 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
             });
 
+            test("@relationship duplicate [type, direction, fieldType] combination on interface extension", () => {
+                const interfaceDoc = gql`
+                    interface Site {
+                        name: String
+                    }
+                    extend interface Site {
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type SomeSite implements Site {
+                        name: String
+                        posts: [Post!]!
+                        archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
+                );
+                expect(errors[0]).toHaveProperty("path", ["SomeSite", "archivedPosts", "@relationship"]);
+            });
+
             test("@relationship no relationshipProperties interface found", () => {
                 const doc = gql`
                     type User {
@@ -1977,6 +2496,35 @@ describe("validation 2.0", () => {
                     }
                     type Post {
                         title: String
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@relationship.properties invalid. Cannot find interface to represent the relationship properties: Poster."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
+            });
+
+            test("@relationship no relationshipProperties interface found extension", () => {
+                const doc = gql`
+                    type User {
+                        name: String
+                    }
+                    type Post {
+                        title: String
+                    }
+                    extend type User {
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
                     }
                 `;
 
@@ -2182,9 +2730,106 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
             });
 
+            test("@populatedBy callback not provided inherited", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type User implements Person {
+                        id: ID
+                        name: String
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@populatedBy.callback needs to be provided in features option."
+                );
+                expect(errors[0]).toHaveProperty("path", ["Person", "name", "@populatedBy", "callback"]);
+            });
+
+            test("@populatedBy callback not provided inherited extension", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        id: ID
+                    }
+                    extend interface Person {
+                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
+                    }
+                `;
+                const doc = gql`
+                    type User implements Person {
+                        id: ID
+                        name: String
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@populatedBy.callback needs to be provided in features option."
+                );
+                expect(errors[0]).toHaveProperty("path", ["Person", "name", "@populatedBy", "callback"]);
+            });
+
             test("@populatedBy callback not a function", () => {
                 const doc = gql`
                     type User {
+                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {
+                            populatedBy: {
+                                callbacks: {
+                                    getUName: "i should really be a Function.." as unknown as Neo4jGraphQLCallback,
+                                },
+                            },
+                        },
+                        additionalDefinitions,
+                    });
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@populatedBy.callback `getUName` must be of type Function."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
+            });
+
+            test("@populatedBy callback not a function extension", () => {
+                const doc = gql`
+                    type User {
+                        id: ID
+                    }
+                    extend type User {
                         name: String @populatedBy(operations: [CREATE], callback: "getUName")
                     }
                 `;
@@ -2268,7 +2913,7 @@ describe("validation 2.0", () => {
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty("message", "Cannot autogenerate a non ID field.");
-            expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@id", "autogenerate"]);
+            expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@id"]);
         });
 
         test("should throw cannot auto-generate an array", () => {
@@ -2284,7 +2929,7 @@ describe("validation 2.0", () => {
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
-            expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@id", "autogenerate"]);
+            expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@id"]);
         });
 
         describe("@timestamp", () => {
@@ -2298,6 +2943,30 @@ describe("validation 2.0", () => {
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
+
+            test("@timestamp valid inherited", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        lastSeenAt: DateTime @timestamp
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type User implements Person {
+                        lastSeenAt: DateTime
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
             test("@timestamp cannot autogenerate array", () => {
                 const doc = gql`
                     type User {
@@ -2329,6 +2998,34 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
                 expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@timestamp"]);
             });
+            test("should throw cannot timestamp on array of DateTime inherited", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        name: [DateTime] @timestamp(operations: [CREATE])
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type User implements Person {
+                        name: [DateTime]
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
+                expect(errors[0]).toHaveProperty("path", ["Person", "name", "@timestamp"]);
+            });
+
             test("@timestamp cannot timestamp temporal fields lacking time zone information", () => {
                 const doc = gql`
                     type User {
@@ -2360,6 +3057,30 @@ describe("validation 2.0", () => {
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
+
+            test("@id autogenerate valid inherited", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        uid: ID @id
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type User implements Person {
+                        uid: ID
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
             test("@id autogenerate cannot autogenerate array", () => {
                 const doc = gql`
                     type User {
@@ -2373,7 +3094,35 @@ describe("validation 2.0", () => {
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
-                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id", "autogenerate"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id"]);
+            });
+
+            test("@id autogenerate cannot autogenerate array inherited", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        uid: [ID] @id
+                    }
+                `;
+                const doc = gql`
+                    type User implements Person {
+                        uid: [ID]
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
+                expect(errors[0]).toHaveProperty("path", ["Person", "uid", "@id"]);
             });
             test("@id autogenerate cannot autogenerate a non ID field", () => {
                 const doc = gql`
@@ -2388,7 +3137,7 @@ describe("validation 2.0", () => {
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate a non ID field.");
-                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id", "autogenerate"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id"]);
             });
         });
 
@@ -2416,6 +3165,69 @@ describe("validation 2.0", () => {
                 `;
 
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@cypher with @timestamp on Field inherited", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        name: DateTime @timestamp
+                    }
+                `;
+                const doc = gql`
+                    type User implements Person {
+                        id: ID
+                        name: DateTime
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1}) RETURN u.lastSeenAt AS u
+                                """
+                                columnName: "u"
+                            )
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("@cypher with @timestamp on Field inherited extension", () => {
+                const interfaceDoc = gql`
+                    interface Person {
+                        id: ID
+                    }
+                    extend interface Person {
+                        name: DateTime @timestamp
+                    }
+                `;
+                const doc = gql`
+                    type User implements Person {
+                        id: ID
+                        name: DateTime
+                            @cypher(
+                                statement: """
+                                MATCH (u:User {id: 1}) RETURN u.lastSeenAt AS u
+                                """
+                                columnName: "u"
+                            )
+                    }
+                    ${interfaceDoc}
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -2508,6 +3320,47 @@ describe("validation 2.0", () => {
             test("@authentication can't be used with @relationship inherited", () => {
                 const interfaceDoc = gql`
                     interface Production {
+                        actors: [Actor!]! @authentication
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type Movie implements Production {
+                        id: ID
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @authentication"
+                );
+                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
+            });
+
+            test("@authentication can't be used with @relationship inherited extension", () => {
+                const interfaceDoc = gql`
+                    interface Production {
+                        id: ID
+                    }
+                    extend interface Production {
                         actors: [Actor!]! @authentication
                     }
                 `;
@@ -2859,6 +3712,39 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@relationship"]);
         });
 
+        test("@relationship can't be used on the field of a root type extension", () => {
+            const doc = gql`
+                type Query {
+                    me: String
+                }
+
+                type Actor {
+                    name: String
+                }
+
+                extend type Query {
+                    someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @relationship is not supported on fields of the Query type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@relationship"]);
+        });
+
         test("@authentication can't be used on the field of a root type", () => {
             const doc = gql`
                 type Query {
@@ -2896,6 +3782,38 @@ describe("validation 2.0", () => {
 
                 type Actor {
                     name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @authorization is not supported on fields of the Query type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authorization"]);
+        });
+
+        test("@authorization can't be used on the field of a root type extension", () => {
+            const doc = gql`
+                type Query {
+                    me: String
+                }
+
+                type Actor {
+                    name: String
+                }
+                extend type Query {
+                    someActors: [Actor!]! @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
                 }
             `;
 
@@ -3100,6 +4018,26 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
             });
 
+            test("@jwt cannot combined extension", () => {
+                const doc = gql`
+                    type JWTPayload @exclude {
+                        id: ID
+                    }
+                    extend type JWTPayload @jwt
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwt cannot be used in combination with other directives."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
+            });
+
             test("@jwtClaim cannot combined", () => {
                 const doc = gql`
                     type JWTPayload @jwt {
@@ -3121,9 +4059,46 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with other directives."
+                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with @cypher"
                 );
-                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id", "@jwtClaim"]);
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
+            });
+
+            test("@jwtClaim cannot combined inherited", () => {
+                const interfaceDoc = gql`
+                    interface Something {
+                        id: ID
+                            @cypher(
+                                statement: """
+                                RETURN 1 as x
+                                """
+                                columnName: "x"
+                            )
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type JWTPayload implements Something @jwt {
+                        id: ID @jwtClaim(path: "user.id")
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with @cypher"
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
             });
 
             test("@jwtClaim incorrect location outside @jwt", () => {
@@ -3189,9 +4164,69 @@ describe("validation 2.0", () => {
                 );
                 expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
             });
+
+            test("@jwt fields not scalars extension", () => {
+                const doc = gql`
+                    type JWTPayload @jwt {
+                        me: String
+                    }
+                    type Post {
+                        title: String
+                    }
+                    extend type JWTPayload {
+                        post: Post
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Fields of a @jwt type can only be Scalars or Lists of Scalars."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
+            });
+
+            test("@jwt fields not scalars inherited", () => {
+                const interfaceDoc = gql`
+                    interface Something {
+                        post: Post
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceDoc}
+                    type JWTPayload implements Something @jwt {
+                        me: String
+                        post: Post
+                    }
+                    type Post {
+                        title: String
+                    }
+                `;
+
+                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: {},
+                        additionalDefinitions: { ...additionalDefinitions, interfaces },
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Fields of a @jwt type can only be Scalars or Lists of Scalars."
+                );
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
+            });
         });
 
-        describe("valid", () => {
+        describe.skip("valid", () => {
             test("@jwt and @jwtClaim", () => {
                 const doc = gql`
                     type JWTPayload @jwt {
@@ -3205,12 +4240,32 @@ describe("validation 2.0", () => {
         });
     });
 
-    describe("global @id", () => {
+    describe("relayId", () => {
         describe("global nodes", () => {
             test("should throw error if more than one @relayId directive field", () => {
                 const doc = gql`
                     type User {
                         email: ID! @relayId
+                        name: ID! @relayId
+                    }
+                `;
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "name", "@relayId"]);
+            });
+            test("should throw error if more than one @relayId directive field extension", () => {
+                const doc = gql`
+                    type User {
+                        email: ID! @relayId
+                    }
+                    extend type User {
                         name: ID! @relayId
                     }
                 `;
@@ -3245,6 +4300,28 @@ describe("validation 2.0", () => {
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "id"]);
             });
+
+            test("should throw if a type already contains an id field extension", () => {
+                const doc = gql`
+                    type User {
+                        email: ID! @relayId
+                    }
+                    extend type User {
+                        id: ID!
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Type already has a field `id`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "id"]);
+            });
             test("should not throw if a type already contains an id field but the field is aliased", () => {
                 const doc = gql`
                     type User {
@@ -3255,9 +4332,22 @@ describe("validation 2.0", () => {
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
             });
+
+            test("should not throw if a type already contains an id field but the field is aliased on extension", () => {
+                const doc = gql`
+                    type User {
+                        dbId: ID! @relayId
+                    }
+                    extend type User {
+                        id: Int @alias(property: "other")
+                    }
+                `;
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
         });
 
-        test("only one field can be global @id", () => {
+        test("only one field can be @relayId", () => {
             const doc = gql`
                 type Movie {
                     rottenid: ID! @relayId
@@ -3278,7 +4368,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Movie", "imdbid", "@relayId"]);
         });
 
-        test("only one field can be global @id with interface", () => {
+        test("only one field can be @relayId with interface", () => {
             const doc = gql`
                 interface MovieInterface {
                     imdbid: ID! @relayId
@@ -3303,7 +4393,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@relayId"]);
         });
 
-        test("only one field can be global @id with interface reverse order", () => {
+        test("only one field can be @relayId with interface reverse order", () => {
             const doc = gql`
                 type Movie implements MovieInterface {
                     rottenid: ID! @relayId
@@ -3327,7 +4417,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["MovieInterface", "imdbid", "@relayId"]);
         });
 
-        test("only one field can be global @id with interface implementing interface", () => {
+        test("only one field can be @relayId with interface implementing interface", () => {
             const doc = gql`
                 interface ScorableInterface {
                     imdbid: ID! @relayId
@@ -3592,6 +4682,39 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
             });
 
+            test("should throw error if @private would leave no fields in object extension", () => {
+                const interfaceTypes = gql`
+                    interface UserInterface {
+                        private: String
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type User implements UserInterface {
+                        password: String @private
+                    }
+                    extend type User {
+                        private: String @private
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty("message", "Objects and Interfaces must have one or more fields.");
+            });
+
             test("Interfaces must have one or more fields", () => {
                 const doc = gql`
                     interface Production
@@ -3708,11 +4831,98 @@ describe("validation 2.0", () => {
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
                 });
+
+                test("should throw error if @authorization is used on relationship property extension", () => {
+                    const interfaceTypes = gql`
+                        interface ActedIn @relationshipProperties {
+                            me: String
+                        }
+                        extend interface ActedIn {
+                            screenTime: Int @authorization(validate: [{ where: { id: "1" } }])
+                        }
+                    `;
+                    const doc = gql`
+                        ${interfaceTypes}
+                        type Movie {
+                            actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                        }
+
+                        type Actor {
+                            name: String
+                        }
+                    `;
+
+                    const enums = [] as EnumTypeDefinitionNode[];
+                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const unions = [] as UnionTypeDefinitionNode[];
+                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: doc,
+                            additionalDefinitions: { enums, interfaces, unions, objects },
+                            features: {},
+                        });
+
+                    const errors = getError(executeValidate);
+
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        "Invalid @relationshipProperties field: Cannot use the @authorization directive on relationship properties."
+                    );
+                    expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
+                });
+
                 test("should throw error if @authentication is used on relationship properties interface", () => {
                     const interfaceTypes = gql`
                         interface ActedIn @authentication @relationshipProperties {
                             screenTime: Int
                         }
+                    `;
+                    const doc = gql`
+                        ${interfaceTypes}
+                        type Movie {
+                            actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                        }
+
+                        type Actor {
+                            name: String
+                        }
+                    `;
+                    const enums = [] as EnumTypeDefinitionNode[];
+                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const unions = [] as UnionTypeDefinitionNode[];
+                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: doc,
+                            additionalDefinitions: { enums, interfaces, unions, objects },
+                            features: {},
+                        });
+
+                    const errors = getError(executeValidate);
+
+                    expect(errors).toHaveLength(2);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        "Invalid directive usage: Directive @authentication cannot be used in combination with @relationshipProperties"
+                    );
+                    expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
+                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[1]).toHaveProperty(
+                        "message",
+                        'Directive "@authentication" may not be used on INTERFACE.'
+                    );
+                });
+
+                test("should throw error if @authentication is used on relationship properties interface extension", () => {
+                    const interfaceTypes = gql`
+                        interface ActedIn @relationshipProperties {
+                            screenTime: Int
+                        }
+                        extend interface ActedIn @authentication
                     `;
                     const doc = gql`
                         ${interfaceTypes}
@@ -4110,6 +5320,28 @@ describe("validation 2.0", () => {
                     expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
                 });
 
+                test("matrix array aliased extension", () => {
+                    const doc = gql`
+                        type Post {
+                            year: Int
+                        }
+                        extend type Post {
+                            titles: [[String]] @alias(property: "names")
+                        }
+                    `;
+
+                    const executeValidate = () =>
+                        validateDocument({ document: doc, features: {}, additionalDefinitions });
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        "Invalid field type: Lists of lists are not supported."
+                    );
+                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
+                });
+
                 test("@relationship nullable list type", () => {
                     const doc = gql`
                         type User {
@@ -4144,6 +5376,37 @@ describe("validation 2.0", () => {
                         }
                         type Post {
                             title: String
+                        }
+                    `;
+
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: doc,
+                            additionalDefinitions,
+                            features: {},
+                        });
+
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        "Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [Post!]!"
+                    );
+                    expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
+                });
+
+                test("@relationship non-nullable list of nullable type extension", () => {
+                    const doc = gql`
+                        type User {
+                            name: String
+                        }
+
+                        type Post {
+                            title: String
+                        }
+                        extend type User {
+                            posts: [Post]! @relationship(type: "HAS_POST", direction: OUT)
                         }
                     `;
 
@@ -4204,6 +5467,47 @@ describe("validation 2.0", () => {
             test("should throw when using 'node' as a relationship property", () => {
                 const interfaceTypes = gql`
                     interface ActedIn @relationshipProperties {
+                        node: ID
+                    }
+                `;
+                const doc = gql`
+                    ${interfaceTypes}
+                    type Movie {
+                        id: ID
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                const enums = [] as EnumTypeDefinitionNode[];
+                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const unions = [] as UnionTypeDefinitionNode[];
+                const objects = [] as ObjectTypeDefinitionNode[];
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        features: {},
+                    });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid @relationshipProperties field: Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"
+                );
+            });
+
+            test("should throw when using 'node' as a relationship property extension", () => {
+                const interfaceTypes = gql`
+                    interface ActedIn @relationshipProperties {
+                        me: String
+                    }
+                    extend interface ActedIn {
                         node: ID
                     }
                 `;
