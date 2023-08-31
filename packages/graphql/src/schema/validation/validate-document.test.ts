@@ -4226,7 +4226,7 @@ describe("validation 2.0", () => {
             });
         });
 
-        describe.skip("valid", () => {
+        describe("valid", () => {
             test("@jwt and @jwtClaim", () => {
                 const doc = gql`
                     type JWTPayload @jwt {
