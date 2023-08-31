@@ -2,7 +2,9 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "../dist"
+        "outDir": "../dist",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext"
     },
     "exclude": ["**/*.test.ts", "test-api.ts"],
     "references": [
