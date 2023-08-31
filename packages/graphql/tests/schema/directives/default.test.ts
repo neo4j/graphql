@@ -26,7 +26,8 @@ describe("@default directive", () => {
     test("sets default values in schema", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                toBeOverridden: String!
+                fromInterface: String! @default(value: "Interface default value")
+                toBeOverridden: String! @default(value: "Interface override value")
             }
 
             type User implements UserInterface {
@@ -36,6 +37,7 @@ describe("@default directive", () => {
                 numberOfFriends: Int! @default(value: 0)
                 rating: Float! @default(value: 0.0)
                 verifiedDate: DateTime! @default(value: "1970-01-01T00:00:00.000Z")
+                fromInterface: String!
                 toBeOverridden: String! @default(value: "Overridden value")
                 location: Location! @default(value: HERE)
             }
@@ -151,6 +153,7 @@ describe("@default directive", () => {
             }
 
             type User implements UserInterface {
+              fromInterface: String!
               id: ID!
               location: Location!
               name: String!
@@ -163,6 +166,7 @@ describe("@default directive", () => {
 
             type UserAggregateSelection {
               count: Int!
+              fromInterface: StringAggregateSelectionNonNullable!
               id: IDAggregateSelectionNonNullable!
               name: StringAggregateSelectionNonNullable!
               numberOfFriends: IntAggregateSelectionNonNullable!
@@ -172,6 +176,7 @@ describe("@default directive", () => {
             }
 
             input UserCreateInput {
+              fromInterface: String! = \\"Interface default value\\"
               id: ID! = \\"00000000-00000000-00000000-00000000\\"
               location: Location! = HERE
               name: String! = \\"Jane Smith\\"
@@ -188,6 +193,7 @@ describe("@default directive", () => {
             }
 
             interface UserInterface {
+              fromInterface: String!
               toBeOverridden: String!
             }
 
@@ -204,6 +210,7 @@ describe("@default directive", () => {
             Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
             \\"\\"\\"
             input UserSort {
+              fromInterface: SortDirection
               id: SortDirection
               location: SortDirection
               name: SortDirection
@@ -215,6 +222,7 @@ describe("@default directive", () => {
             }
 
             input UserUpdateInput {
+              fromInterface: String
               id: ID
               location: Location
               name: String
@@ -235,6 +243,16 @@ describe("@default directive", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              fromInterface: String
+              fromInterface_CONTAINS: String
+              fromInterface_ENDS_WITH: String
+              fromInterface_IN: [String!]
+              fromInterface_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_STARTS_WITH: String
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

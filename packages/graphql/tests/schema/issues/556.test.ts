@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
             }
 
             interface Block {
-                id: ID
+                id: ID @id
             }
 
             type TextBlock implements Block {
