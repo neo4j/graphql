@@ -43,7 +43,7 @@ export function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): D
     const schemaExtension = `
     extend schema @query(read: true, aggregate: true) 
         @mutation(operations: [CREATE, UPDATE, DELETE]) 
-        @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])`;
+        @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])`;
     const merged = mergeTypeDefs(
         Array.isArray(typeDefs) ? (typeDefs as string[]).concat(schemaExtension) : [typeDefs as string, schemaExtension]
     );

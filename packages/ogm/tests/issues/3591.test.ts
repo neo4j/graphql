@@ -22,7 +22,7 @@ import { generate, OGM } from "../../src";
 describe("issues/3591", () => {
     test("should correctly generate types and ignore all the schema configuration directives", async () => {
         const typeDefs = `
-          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(operation: [CREATE]) {
+          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(events: [CREATED]) {
             id: ID! @id
             company: [Company!]! @relationship(type: "WORKS_AT", direction: OUT)
             favoriteRestaurants: [Restaurant!]! @relationship(type: "FAVORITE_RESTAURANTS", direction: OUT)           
