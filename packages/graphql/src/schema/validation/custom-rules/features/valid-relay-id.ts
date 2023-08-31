@@ -26,7 +26,7 @@ import {
 } from "../utils/interface-to-implementing-types";
 import { getPathToNode } from "../utils/path-parser";
 
-export function ValidGlobalID(context: SDLValidationContext): ASTVisitor {
+export function ValidRelayID(context: SDLValidationContext): ASTVisitor {
     const typeNameToGlobalId = new Map<string, boolean>();
     const interfaceToImplementingTypes = new Map<string, Set<string>>();
     const typeNameToAliasedFields = new Map<string, Set<string>>();
