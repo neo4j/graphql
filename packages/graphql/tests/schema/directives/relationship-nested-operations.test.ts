@@ -801,7 +801,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsConnectFieldInput {
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: PersonConnectWhere
@@ -2981,7 +2981,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsConnectFieldInput {
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: PersonConnectWhere
