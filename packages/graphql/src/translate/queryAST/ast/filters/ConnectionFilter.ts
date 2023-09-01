@@ -12,7 +12,8 @@ export class ConnectionFilter extends Filter {
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
-    // TODO: remove this
+    // Predicate generation for subqueries cannot be done separately from subqueries, so we need to create the predicates at the same time
+    // as subqueries and store them
     private subqueryPredicate: Cypher.Predicate | undefined;
 
     constructor({
@@ -43,7 +44,6 @@ export class ConnectionFilter extends Filter {
     }
 
     public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
-        // For neo 5 this may not be needed
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
@@ -64,103 +64,11 @@ export class ConnectionFilter extends Filter {
             relationship,
         });
 
-        const match = new Cypher.Match(pattern);
-        const match2 = new Cypher.Match(pattern);
-
-        const truthyFilters: Cypher.Variable[] = [];
-        const falsyFilters: Cypher.Variable[] = [];
-
-        const innerFiltersPredicates: Cypher.Predicate[] = [];
-
-        if (this.operator === "ALL") {
-            const subqueries = this.innerFilters.flatMap((f) => {
-                const nestedSubqueries = f.getSubqueries(target).map((sq) => {
-                    const predicate = f.getPredicate(nestedContext);
-                    if (predicate) {
-                        const returnVar = new Cypher.Variable();
-                        truthyFilters.push(returnVar);
-                        return new Cypher.Call(sq)
-                            .innerWith(target)
-                            .with("*")
-                            .where(predicate)
-                            .return([Cypher.gt(Cypher.count(target), new Cypher.Literal(0)), returnVar]); // THis variable needs to be used in predicate
-                    }
-                });
-
-                return nestedSubqueries;
-            });
-
-            if (subqueries.length === 0) return []; // Hack logic to change predicates logic
-
-            const subqueries2 = this.innerFilters.flatMap((f) => {
-                const nestedSubqueries = f.getSubqueries(target).map((sq) => {
-                    const predicate = f.getPredicate(nestedContext);
-                    if (predicate) {
-                        const returnVar = new Cypher.Variable();
-                        falsyFilters.push(returnVar);
-                        return new Cypher.Call(sq)
-                            .innerWith(target)
-                            .with("*")
-                            .where(Cypher.not(predicate))
-                            .return([Cypher.gt(Cypher.count(target), new Cypher.Literal(0)), returnVar]); // THis variable needs to be used in predicate
-                    }
-                });
-
-                return nestedSubqueries;
-            });
-
-            const falsyPredicates = falsyFilters.map((v) => Cypher.eq(v, Cypher.false));
-            const truthyPredicates = truthyFilters.map((v) => Cypher.eq(v, Cypher.true));
-            this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
-
-            return [Cypher.concat(match, ...subqueries), Cypher.concat(match2, ...subqueries2)];
-        } else {
-            const returnVar = new Cypher.Variable();
-            truthyFilters.push(returnVar);
-
-            // const returnVars: Array<[Cypher.Expr, Cypher.Variable]> = [];
-            // TODO: this only works for ALL operations
-            const subqueries1 = this.innerFilters.flatMap((f) => {
-                const nestedSubqueries = f.getSubqueries(target).map((sq) => new Cypher.Call(sq).innerWith(target));
-
-                const predicate = f.getPredicate(nestedContext);
-                if (predicate) {
-                    innerFiltersPredicates.push(predicate);
-                    // returnVars.push([Cypher.gt(Cypher.count(target), new Cypher.Literal(0)), returnVar]);
-                    return nestedSubqueries;
-                    // return Cypher.concat(
-                    //     nestedSubqueries
-                    //     // new Cypher.With("*")
-                    //     //     .where(predicate)
-                    //     //     .return([Cypher.gt(Cypher.count(target), new Cypher.Literal(0)), returnVar])
-                    // );
-                }
-
-                return nestedSubqueries;
-            });
-
-            if (subqueries1.length === 0) return []; // Hack logic to change predicates logic
-
-            if (this.isNot) {
-                const falsyPredicates = falsyFilters.map((v) => Cypher.eq(v, Cypher.true));
-                const truthyPredicates = truthyFilters.map((v) => Cypher.eq(v, Cypher.false));
-                this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
-            } else {
-                const falsyPredicates = falsyFilters.map((v) => Cypher.eq(v, Cypher.false));
-                const truthyPredicates = truthyFilters.map((v) => Cypher.eq(v, Cypher.true));
-                this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
-            }
-
-            if (this.operator === "SINGLE") {
-                const withPredicateReturn = new Cypher.With("*")
-                    .where(Cypher.and(...innerFiltersPredicates))
-                    .return([Cypher.eq(Cypher.count(target), new Cypher.Literal(1)), returnVar]);
-                return [Cypher.concat(match, ...subqueries1, withPredicateReturn)];
-            }
-            const withPredicateReturn = new Cypher.With("*")
-                .where(Cypher.and(...innerFiltersPredicates))
-                .return([Cypher.gt(Cypher.count(target), new Cypher.Literal(0)), returnVar]);
-            return [Cypher.concat(match, ...subqueries1, withPredicateReturn)];
+        switch (this.operator) {
+            case "ALL":
+                return this.getSubqueriesForOperationAll(pattern, nestedContext);
+            default:
+                return this.getSubqueriesForDefaultOperations(pattern, nestedContext);
         }
     }
 
@@ -216,6 +124,97 @@ export class ConnectionFilter extends Filter {
                 return new Cypher.Exists(match);
             }
         }
+    }
+
+    private getSubqueriesForDefaultOperations(
+        pattern: Cypher.Pattern,
+        queryASTContext: QueryASTContext
+    ): Cypher.Clause[] {
+        const match = new Cypher.Match(pattern);
+        const returnVar = new Cypher.Variable();
+        const innerFiltersPredicates: Cypher.Predicate[] = [];
+
+        const subqueries = this.innerFilters.flatMap((f) => {
+            const nestedSubqueries = f
+                .getSubqueries(queryASTContext.target)
+                .map((sq) => new Cypher.Call(sq).innerWith(queryASTContext.target));
+
+            const predicate = f.getPredicate(queryASTContext);
+            if (predicate) {
+                innerFiltersPredicates.push(predicate);
+                return nestedSubqueries;
+            }
+
+            return nestedSubqueries;
+        });
+
+        if (subqueries.length === 0) return []; // Hack logic to change predicates logic
+
+        const comparisonValue = this.isNot ? Cypher.false : Cypher.true;
+        this.subqueryPredicate = Cypher.eq(returnVar, comparisonValue);
+
+        const countComparisonPredicate =
+            this.operator === "SINGLE"
+                ? Cypher.eq(Cypher.count(queryASTContext.target), new Cypher.Literal(1))
+                : Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0));
+
+        const withPredicateReturn = new Cypher.With("*")
+            .where(Cypher.and(...innerFiltersPredicates))
+            .return([countComparisonPredicate, returnVar]);
+        return [Cypher.concat(match, ...subqueries, withPredicateReturn)];
+    }
+
+    // This method has a big deal of complexity due to a couple of factors:
+    // 1. "All" operations require 2 CALL subqueries
+    // 2. Each subquery has its own return variable, that needs to be carried over to the predicate
+    private getSubqueriesForOperationAll(pattern: Cypher.Pattern, queryASTContext: QueryASTContext): Cypher.Clause[] {
+        const match = new Cypher.Match(pattern);
+        const match2 = new Cypher.Match(pattern);
+
+        const truthyFilters: Cypher.Variable[] = [];
+        const falsyFilters: Cypher.Variable[] = [];
+
+        const subqueries = this.innerFilters.flatMap((f) => {
+            const nestedSubqueries = f.getSubqueries(queryASTContext.target).map((sq) => {
+                const predicate = f.getPredicate(queryASTContext);
+                if (predicate) {
+                    const returnVar = new Cypher.Variable();
+                    truthyFilters.push(returnVar);
+                    return new Cypher.Call(sq)
+                        .innerWith(queryASTContext.target)
+                        .with("*")
+                        .where(predicate)
+                        .return([Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0)), returnVar]);
+                }
+            });
+
+            return nestedSubqueries;
+        });
+
+        if (subqueries.length === 0) return [];
+
+        const subqueries2 = this.innerFilters.flatMap((f) => {
+            const nestedSubqueries = f.getSubqueries(queryASTContext.target).map((sq) => {
+                const predicate = f.getPredicate(queryASTContext);
+                if (predicate) {
+                    const returnVar = new Cypher.Variable();
+                    falsyFilters.push(returnVar);
+                    return new Cypher.Call(sq)
+                        .innerWith(queryASTContext.target)
+                        .with("*")
+                        .where(Cypher.not(predicate))
+                        .return([Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0)), returnVar]);
+                }
+            });
+
+            return nestedSubqueries;
+        });
+
+        const falsyPredicates = falsyFilters.map((v) => Cypher.eq(v, Cypher.false));
+        const truthyPredicates = truthyFilters.map((v) => Cypher.eq(v, Cypher.true));
+        this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
+
+        return [Cypher.concat(match, ...subqueries), Cypher.concat(match2, ...subqueries2)];
     }
 
     private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
