@@ -28,7 +28,7 @@ import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
-import type { Annotation, Annotations } from "./annotation/Annotation";
+import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -45,6 +45,76 @@ import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import { parseAnnotations } from "./parser/parse-annotation";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
+
+/*
+export function generateModel2(document: DocumentNode): Neo4jGraphQLSchemaModel {
+    const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
+
+    const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
+        acc[definition.name.value] = generateOperation(definition);
+        return acc;
+    }, {});
+
+    // hydrate interface to typeNames map
+    hydrateInterfacesToTypeNamesMap(definitionCollection);
+
+    // === 1. add composites w/o concreteEntities connection
+    const unionEntities = Array.from(definitionCollection.unionTypes).map(([unionName, unionDefinition]) => {
+        return generateUnionEntity(
+            unionName,
+            unionDefinition.types?.map((t) => t.name.value) || [],
+            concreteEntitiesMap
+        );
+    });
+    const interfaceEntities = Array.from(definitionCollection.interfaceToImplementingTypeNamesMap.entries()).map(
+        ([name, concreteEntities]) => {
+            const interfaceNode = definitionCollection.interfaceTypes.get(name);
+            if (!interfaceNode) {
+                throw new Error(`Cannot find interface ${name}`);
+            }
+            return generateInterfaceEntity(
+                name,
+                interfaceNode,
+                concreteEntities,
+                concreteEntitiesMap,
+                definitionCollection
+            );
+        }
+    );
+
+    // === 2. add concretes with attributes, annotations and relationships already resolved (with inherited)
+    const concreteEntities = Array.from(definitionCollection.nodes.values()).map((node) =>
+        generateConcreteEntity(node, definitionCollection)
+    );
+
+    // === 3. update composites with links to concrete
+    // TODO
+
+    // TODO: still need this?
+    const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
+        if (acc.has(entity.name)) {
+            throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
+        }
+        acc.set(entity.name, entity);
+        return acc;
+    }, new Map<string, ConcreteEntity>());
+
+    // === 4. create schema model with everything
+    const annotations = createSchemaModelAnnotations(definitionCollection.schemaDirectives);
+    const schema = new Neo4jGraphQLSchemaModel({
+        compositeEntities: [...unionEntities, ...interfaceEntities],
+        concreteEntities,
+        operations,
+        annotations,
+    });
+
+    definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+    definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+
+    return schema;
+}
+*/
+// ===============================================================
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -102,56 +172,11 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-    interfaceEntities.forEach((interfaceEntity) => hydrateConcreteEntitiesWithInheritedAnnotations(interfaceEntity));
-    // TODO: interface implements interface inheritance hydrate
+    // TODO: test - interface implements interface inheritance hydrate
     // TODO: refactor flow??
     // TODO: add tests for interfaces and relationshipProperties interface annotations
 
     return schema;
-}
-
-function hydrateConcreteEntitiesWithInheritedAnnotations(interfaceEntity: InterfaceEntity) {
-    const interfaceRelationships = interfaceEntity.relationships;
-    const interfaceAttributes = interfaceEntity.attributes;
-    for (const implementingEntity of interfaceEntity.concreteEntities) {
-        // overwrite entity
-        // mergeAnnotations(interfaceEntity.annotations, implementingEntity); // only `@exclude`
-        mergeRelationships(interfaceRelationships, implementingEntity);
-        mergeAttributes(interfaceAttributes, implementingEntity);
-    }
-}
-
-function mergeAnnotations(interfaceAnnotations: Partial<Annotations>, entity: ConcreteEntity | Attribute): void {
-    const mergerConflictResolutionStrategy = function (interfaceAnnotation: string): boolean {
-        return !entity.annotations[interfaceAnnotation];
-    };
-    for (const annotation in interfaceAnnotations) {
-        if (mergerConflictResolutionStrategy(annotation)) {
-            entity.addAnnotation(interfaceAnnotations[annotation]);
-        }
-    }
-}
-
-function mergeRelationships(interfaceRelationships: Map<string, Relationship>, entity: ConcreteEntity): void {
-    const mergerConflictResolutionStrategy = function (interfaceRelationship: string): boolean {
-        return !entity.relationships.get(interfaceRelationship);
-    };
-    for (const [relationshipName, relationship] of interfaceRelationships.entries()) {
-        if (mergerConflictResolutionStrategy(relationshipName)) {
-            // entity.attributeToRelationship(relationship);
-            entity.addRelationship(relationship);
-        }
-    }
-}
-
-function mergeAttributes(interfaceAttributes: Map<string, Attribute>, entity: ConcreteEntity): void {
-    for (const [attributeName, attribute] of interfaceAttributes.entries()) {
-        const entityAttribute = entity.findAttribute(attributeName);
-        if (entityAttribute) {
-            // TODO: change databaseName if alias annotation
-            mergeAnnotations(attribute.annotations, entityAttribute);
-        }
-    }
 }
 
 function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollection) {
@@ -198,10 +223,26 @@ function generateInterfaceEntity(
         entityImplementingTypeNames,
         concreteEntities
     );
-    const fields = (definition.fields || []).map((fieldDefinition) =>
-        parseAttribute(fieldDefinition, definitionCollection)
-    );
+    const inheritedFields =
+        definition.interfaces?.flatMap((interfaceNamedNode) => {
+            const interfaceName = interfaceNamedNode.name.value;
+            return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+        }) || [];
+    const fields = (definition.fields || []).map((fieldDefinition) => {
+        const inheritedField = inheritedFields?.filter(
+            (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
+        );
+        const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
+        const isInheritedRelationshipAttribute = inheritedField?.some((inheritedField) =>
+            findDirective(inheritedField.directives, relationshipDirective.name)
+        );
+        if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
+            return;
+        }
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+    });
 
+    // TODO: inherited annotations?
     const annotations = createEntityAnnotations(definition.directives || []);
 
     return new InterfaceEntity({
@@ -253,11 +294,32 @@ function hydrateRelationships(
     }
     // TODO: fix ts
     const entityWithRelationships: ConcreteEntity | InterfaceEntity = entity as ConcreteEntity | InterfaceEntity;
-    const relationshipFields = (definition.fields || []).map((fieldDefinition) => {
-        return generateRelationshipField(fieldDefinition, schema, entityWithRelationships, definitionCollection);
-    });
+    const inheritedFields =
+        definition.interfaces?.flatMap((interfaceNamedNode) => {
+            const interfaceName = interfaceNamedNode.name.value;
+            return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+        }) || [];
+    // TODO: directives on definition have priority over interfaces
+    const mergedFields = (definition.fields || []).concat(inheritedFields);
+    const relationshipFieldsMap = new Map<string, Relationship>();
+    for (const fieldDefinition of mergedFields) {
+        // TODO: takes the first one
+        // multiple interfaces can have this annotation - must constrain this flexibility by design
+        if (relationshipFieldsMap.has(fieldDefinition.name.value)) {
+            continue;
+        }
+        const relationshipField = generateRelationshipField(
+            fieldDefinition,
+            schema,
+            entityWithRelationships,
+            definitionCollection
+        );
+        if (relationshipField) {
+            relationshipFieldsMap.set(fieldDefinition.name.value, relationshipField);
+        }
+    }
 
-    for (const relationship of filterTruthy(relationshipFields)) {
+    for (const relationship of relationshipFieldsMap.values()) {
         // entityWithRelationships.attributeToRelationship(relationship);
         entityWithRelationships.addRelationship(relationship);
     }
@@ -291,7 +353,17 @@ function generateRelationshipField(
             );
         }
 
-        const fields = (propertyInterface.fields || []).map((field) => parseAttribute(field, definitionCollection));
+        const inheritedFields =
+            propertyInterface.interfaces?.flatMap((interfaceNamedNode) => {
+                const interfaceName = interfaceNamedNode.name.value;
+                return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+            }) || [];
+        const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
+            const inheritedField = inheritedFields?.filter(
+                (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
+            );
+            return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+        });
 
         attributes = filterTruthy(fields) as Attribute[];
     }
@@ -318,21 +390,21 @@ function generateConcreteEntity(
         return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
     });
     const fields = (definition.fields || []).map((fieldDefinition) => {
+        const inheritedField = inheritedFields?.filter(
+            (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
+        );
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
-        const isInheritedRelationshipAttribute = inheritedFields?.some(
-            (inheritedField) =>
-                inheritedField.name.value === fieldDefinition.name.value &&
-                findDirective(inheritedField.directives, relationshipDirective.name)
+        const isInheritedRelationshipAttribute = inheritedField?.some((inheritedField) =>
+            findDirective(inheritedField.directives, relationshipDirective.name)
         );
         if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, definitionCollection);
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
     });
 
     const annotations = createEntityAnnotations(definition.directives || []);
 
-    // TODO: add annotations inherited from interface
     return new ConcreteEntity({
         name: definition.name.value,
         labels: getLabels(definition),

@@ -71,18 +71,7 @@ export class ConcreteEntity implements Entity {
         this.attributes.set(attribute.name, attribute);
     }
 
-    private deleteAttribute(attributeName: string): void {
-        if (this.attributes.has(attributeName)) {
-            this.attributes.delete(attributeName);
-        }
-    }
-
-    public attributeToRelationship(relationship: Relationship): void {
-        this.addRelationship(relationship);
-        this.deleteAttribute(relationship.name);
-    }
-
-    public addAnnotation(annotation: Annotation): void {
+    private addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
         const existingAnnotation = this.annotations[annotationKey];
 
