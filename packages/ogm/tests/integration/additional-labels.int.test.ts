@@ -22,7 +22,6 @@ import type { Driver, Session } from "neo4j-driver";
 import { OGM } from "../../src";
 import { UniqueType } from "../utils/utils";
 import neo4j from "./neo4j";
-import { createBearerToken } from "../utils/create-bearer-token";
 
 describe("Additional Labels", () => {
     const secret = "secret";
