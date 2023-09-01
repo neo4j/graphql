@@ -140,6 +140,12 @@
 
 * [#3661](https://github.com/neo4j/graphql/pull/3661) [`ce84c47cc`](https://github.com/neo4j/graphql/commit/ce84c47cc610366def7d3abd9227ecb5244ef9d1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The evaluation of authorization rules is now supported when using the Neo4j GraphQL Library as a Federation Subgraph.
 
+## 3.24.3
+
+### Patch Changes
+
+* [#3828](https://github.com/neo4j/graphql/pull/3828) [`65666a5f7`](https://github.com/neo4j/graphql/commit/65666a5f7e2ab53654526dd239614b02bd900c44) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix the configuration of nested operations when leaving a type with only relationships with no nested delete, connect or disconnect operations.
+
 ## 3.24.2
 
 ### Patch Changes
