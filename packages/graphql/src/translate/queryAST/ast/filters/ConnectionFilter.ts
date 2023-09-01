@@ -90,6 +90,8 @@ export class ConnectionFilter extends Filter {
                 return nestedSubqueries;
             });
 
+            if (subqueries.length === 0) return []; // Hack logic to change predicates logic
+
             const subqueries2 = this.innerFilters.flatMap((f) => {
                 const nestedSubqueries = f.getSubqueries(target).map((sq) => {
                     const predicate = f.getPredicate(nestedContext);
@@ -118,10 +120,9 @@ export class ConnectionFilter extends Filter {
 
             // const returnVars: Array<[Cypher.Expr, Cypher.Variable]> = [];
             // TODO: this only works for ALL operations
-            const subqueries1 = this.innerFilters.map((f) => {
-                const nestedSubqueries = Cypher.concat(
-                    ...f.getSubqueries(target).map((sq) => new Cypher.Call(sq).innerWith(target))
-                );
+            const subqueries1 = this.innerFilters.flatMap((f) => {
+                const nestedSubqueries = f.getSubqueries(target).map((sq) => new Cypher.Call(sq).innerWith(target));
+
                 const predicate = f.getPredicate(nestedContext);
                 if (predicate) {
                     innerFiltersPredicates.push(predicate);
@@ -137,6 +138,8 @@ export class ConnectionFilter extends Filter {
 
                 return nestedSubqueries;
             });
+
+            if (subqueries1.length === 0) return []; // Hack logic to change predicates logic
 
             if (this.isNot) {
                 const falsyPredicates = falsyFilters.map((v) => Cypher.eq(v, Cypher.true));
