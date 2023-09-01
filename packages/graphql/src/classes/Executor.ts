@@ -82,7 +82,7 @@ export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
     cypherQueryOptions?: CypherQueryOptions;
     sessionConfig?: SessionConfig;
-    cypherParams?: Record<string, any>;
+    cypherParams?: Record<string, unknown>;
 };
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
@@ -99,7 +99,7 @@ export class Executor {
 
     private sessionConfig: SessionConfig | undefined;
 
-    private cypherParams: Record<string, any>;
+    private cypherParams: Record<string, unknown>;
 
     constructor({ executionContext, cypherQueryOptions, sessionConfig, cypherParams = {} }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
