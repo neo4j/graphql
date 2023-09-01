@@ -593,16 +593,15 @@ describe("ComposeEntity Annotations & Attributes", () => {
         expect(showDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
         expect(showDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeShow");
 
-        // TODO: fix databaseName
-        // const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
-        // const movieAliasedProp = movieEntity?.attributes.get("aliasedProp");
-        // const showAliasedProp = showEntity?.attributes.get("aliasedProp");
-        // expect(productionAliasedProp?.databaseName).toBeDefined();
-        // expect(productionAliasedProp?.databaseName).toBe("dbName");
-        // expect(movieAliasedProp?.databaseName).toBeDefined();
-        // expect(movieAliasedProp?.databaseName).toBe("movieDbName");
-        // expect(showAliasedProp?.databaseName).toBeDefined();
-        // expect(showAliasedProp?.databaseName).toBe("dbName");
+        const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
+        const movieAliasedProp = movieEntity?.attributes.get("aliasedProp");
+        const showAliasedProp = showEntity?.attributes.get("aliasedProp");
+        expect(productionAliasedProp?.databaseName).toBeDefined();
+        expect(productionAliasedProp?.databaseName).toBe("dbName");
+        expect(movieAliasedProp?.databaseName).toBeDefined();
+        expect(movieAliasedProp?.databaseName).toBe("movieDbName");
+        expect(showAliasedProp?.databaseName).toBeDefined();
+        expect(showAliasedProp?.databaseName).toBe("dbName");
     });
 });
 
