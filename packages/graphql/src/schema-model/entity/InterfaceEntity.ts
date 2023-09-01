@@ -80,17 +80,6 @@ export class InterfaceEntity implements CompositeEntity {
         this.annotations[annotationKey] = annotation as any;
     }
 
-    private deleteAttribute(attributeName: string): void {
-        if (this.attributes.has(attributeName)) {
-            this.attributes.delete(attributeName);
-        }
-    }
-
-    public attributeToRelationship(relationship: Relationship): void {
-        this.addRelationship(relationship);
-        this.deleteAttribute(relationship.name);
-    }
-
     public addRelationship(relationship: Relationship): void {
         if (this.relationships.has(relationship.name)) {
             throw new Neo4jGraphQLSchemaValidationError(
