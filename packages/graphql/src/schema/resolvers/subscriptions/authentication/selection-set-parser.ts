@@ -109,10 +109,10 @@ function getTargetEntities({
     if (!relationshipTarget) {
         return;
     }
-    if (context.schemaModel.isConcreteEntity(relationshipTarget)) {
+    if (relationshipTarget.isConcreteEntity()) {
         return [relationshipTarget];
     }
-    if (context.schemaModel.isCompositeEntity(relationshipTarget)) {
+    if (relationshipTarget.isCompositeEntity()) {
         return relationshipTarget.concreteEntities;
     }
 }

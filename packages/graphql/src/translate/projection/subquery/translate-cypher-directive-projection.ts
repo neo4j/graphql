@@ -92,7 +92,7 @@ export function translateCypherDirectiveProjection({
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
         predicates.push(...nestedPredicates);
-    } else if (context.schemaModel.isCompositeEntity(entity)) {
+    } else if (entity?.isCompositeEntity()) {
         const unionProjections: Array<{ predicate: Cypher.Predicate; projection: Cypher.Expr }> = [];
         const labelsSubPredicates: Cypher.Predicate[] = [];
 

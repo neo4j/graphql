@@ -23,6 +23,7 @@ import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
+import type { CompositeEntity } from "./CompositeEntity";
 import type { Entity } from "./Entity";
 
 export class ConcreteEntity implements Entity {
@@ -58,6 +59,12 @@ export class ConcreteEntity implements Entity {
         for (const relationship of relationships) {
             this.addRelationship(relationship);
         }
+    }
+    isConcreteEntity(): this is ConcreteEntity {
+        return true;
+    }
+    isCompositeEntity(): this is CompositeEntity {
+        return false;
     }
 
     public matchLabels(labels: string[]) {

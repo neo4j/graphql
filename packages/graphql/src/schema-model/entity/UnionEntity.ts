@@ -28,4 +28,10 @@ export class UnionEntity implements CompositeEntity {
         this.name = name;
         this.concreteEntities = concreteEntities;
     }
+    isConcreteEntity(): this is ConcreteEntity {
+        return false;
+    }
+    isCompositeEntity(): this is CompositeEntity {
+        return true;
+    }
 }
