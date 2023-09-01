@@ -380,6 +380,60 @@ describe("Relationship", () => {
         expect(accounts?.target.name).toBe("Account");
         expect(accounts?.attributes.has("creationTime")).toBeTrue();
     });
+
+    test("composite interface entity has correct relationship", () => {
+        const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
+        const actors = productionEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("ACTED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has inherited relationship", () => {
+        const movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie");
+        const actors = movieEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("ACTED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has overwritten the inherited relationship", () => {
+        const showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow");
+        const actors = showEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("STARED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
 });
 
 describe("ConcreteEntity Annotations & Attributes", () => {
@@ -468,8 +522,7 @@ describe("ConcreteEntity Annotations & Attributes", () => {
     });
 });
 
-// TODO: for relationshipProperties only, no inheritance
-describe.skip("ComposeEntity Annotations & Attributes", () => {
+describe("ComposeEntity Annotations & Attributes", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     let movieEntity: ConcreteEntity;
     let showEntity: ConcreteEntity;

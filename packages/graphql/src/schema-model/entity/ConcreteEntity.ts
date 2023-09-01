@@ -82,7 +82,7 @@ export class ConcreteEntity implements Entity {
         this.deleteAttribute(relationship.name);
     }
 
-    private addAnnotation(annotation: Annotation): void {
+    public addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
         const existingAnnotation = this.annotations[annotationKey];
 

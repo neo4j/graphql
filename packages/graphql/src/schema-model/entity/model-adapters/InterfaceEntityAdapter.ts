@@ -20,15 +20,17 @@
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
+import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
+import type { Relationship } from "../../relationship/Relationship";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { InterfaceEntity } from "../InterfaceEntity";
 import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
 
 export class InterfaceEntityAdapter {
     public readonly name: string;
-    // TODO: there can also be interface entities here, not only concrete
     public concreteEntities: ConcreteEntityAdapter[];
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
+    public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
 
     constructor(entity: InterfaceEntity) {
@@ -36,6 +38,7 @@ export class InterfaceEntityAdapter {
         this.concreteEntities = [];
         this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
+        this.initRelationships(entity.relationships);
         this.initConcreteEntities(entity.concreteEntities);
     }
 
@@ -50,6 +53,12 @@ export class InterfaceEntityAdapter {
         for (const [attributeName, attribute] of attributes.entries()) {
             const attributeAdapter = new AttributeAdapter(attribute);
             this.attributes.set(attributeName, attributeAdapter);
+        }
+    }
+
+    private initRelationships(relationships: Map<string, Relationship>) {
+        for (const [relationshipName, relationship] of relationships.entries()) {
+            this.relationships.set(relationshipName, new RelationshipAdapter(relationship, this));
         }
     }
 }
