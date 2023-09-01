@@ -30,7 +30,6 @@ import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
-import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { findDirective } from "./parser/utils";
 import { parseArguments } from "./parser/parse-arguments";
@@ -256,7 +255,7 @@ function generateCompositeEntity(
     entityDefinitionName: string,
     entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
-): CompositeEntity {
+): { name: string; concreteEntities: ConcreteEntity[] } {
     const compositeFields = entityImplementingTypeNames.map((type) => {
         const concreteEntity = concreteEntities.get(type);
         if (!concreteEntity) {

@@ -35,7 +35,7 @@ export class RelationshipAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly source: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
     private rawEntity: Entity;
-    private _target: Entity | undefined;
+    private _target: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
@@ -145,7 +145,7 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
-    get target(): Entity {
+    get target(): ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
                 this._target = new ConcreteEntityAdapter(this.rawEntity);

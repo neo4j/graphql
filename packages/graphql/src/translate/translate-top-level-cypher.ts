@@ -104,7 +104,7 @@ export function translateTopLevelCypher({
 
     const entity = context.schemaModel.entities.get(field.typeMeta.name);
 
-    if (context.schemaModel.isCompositeEntity(entity)) {
+    if (entity?.isCompositeEntity()) {
         const headStrs: Cypher.Clause[] = [];
         const referencedNodes =
             entity.concreteEntities
@@ -227,7 +227,7 @@ export function translateTopLevelCypher({
 
         if (field.isScalar || field.isEnum) {
             cypherStrs.push(`RETURN this`);
-        } else if (context.schemaModel.isCompositeEntity(entity)) {
+        } else if (entity?.isCompositeEntity()) {
             cypherStrs.push(`RETURN head( ${projectionStr.getCypher(env)} ) AS this`);
         } else {
             cypherStrs.push(`RETURN this ${projectionStr.getCypher(env)} AS this`);
