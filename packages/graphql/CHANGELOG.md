@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.24.3
+
+### Patch Changes
+
+-   [#3828](https://github.com/neo4j/graphql/pull/3828) [`65666a5f7`](https://github.com/neo4j/graphql/commit/65666a5f7e2ab53654526dd239614b02bd900c44) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix the configuration of nested operations when leaving a type with only relationships with no nested delete, connect or disconnect operations.
+
 ## 3.24.2
 
 ### Patch Changes
