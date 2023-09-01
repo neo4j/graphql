@@ -17,13 +17,7 @@
  * limitations under the License.
  */
 
-import type {
-    ASTVisitor,
-    DirectiveNode,
-    FieldDefinitionNode,
-    ObjectTypeDefinitionNode,
-    ObjectTypeExtensionNode,
-} from "graphql";
+import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, ObjectTypeExtensionNode } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
@@ -59,56 +53,45 @@ export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
 
     return {
         Directive(node: DirectiveNode, _key, _parent, path, ancestors) {
-            if (node.name.value !== "jwt") {
+            const isJwtDirective = node.name.value === "jwt";
+            const isJwtClaimDirective = node.name.value === "jwtClaim";
+            if (!isJwtDirective && !isJwtClaimDirective) {
                 return;
             }
-            const [pathToNode, traversedDef] = getPathToNode(path, ancestors);
-            if (!traversedDef) {
-                console.error("No last definition traversed");
-                return;
-            }
-            if (traversedDef.kind !== Kind.OBJECT_TYPE_DEFINITION && traversedDef.kind !== Kind.OBJECT_TYPE_EXTENSION) {
-                // delegate to another rule bc cannot use jwt on fields
-                return;
-            }
-            const isJwtType = jwtTypes.has(traversedDef.name.value);
-            if (!isJwtType) {
-                return;
-            }
-            const { isValid, errorMsg } = assertValid(() => assertJwtDirective(traversedDef, jwtTypes));
-            if (!isValid) {
-                context.reportError(
-                    createGraphQLError({
-                        nodes: [node, traversedDef],
-                        path: [...pathToNode, "@jwt"],
-                        errorMsg,
-                    })
-                );
-            }
-        },
-        FieldDefinition(node: FieldDefinitionNode, _key, _parent, path, ancestors) {
+
             const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             if (!traversedDef) {
                 console.error("No last definition traversed");
                 return;
             }
-            if (!parentOfTraversedDef) {
-                console.error("No parent of last definition traversed");
-                return;
+
+            let validationResult;
+            let errorPath;
+            if (isJwtDirective) {
+                if (
+                    traversedDef.kind !== Kind.OBJECT_TYPE_DEFINITION &&
+                    traversedDef.kind !== Kind.OBJECT_TYPE_EXTENSION
+                ) {
+                    // delegate to another rule bc cannot use jwt on fields
+                    return;
+                }
+                validationResult = assertValid(() => assertJwtDirective(traversedDef, jwtTypes));
+                errorPath = "@jwt";
+            } else {
+                if (!parentOfTraversedDef) {
+                    console.error("No parent of last definition traversed");
+                    return;
+                }
+                validationResult = assertValid(() => assertJwtClaimDirective(jwtTypes, parentOfTraversedDef));
+                errorPath = "@jwtClaim";
             }
 
-            const isMappedClaim = node.directives?.some((directive) => directive.name.value === "jwtClaim");
-            if (!isMappedClaim) {
-                return;
-            }
-
-            const { isValid, errorMsg } = assertValid(() => assertJwtClaimDirective(jwtTypes, parentOfTraversedDef));
-
+            const { isValid, errorMsg } = validationResult;
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
-                        nodes: [node],
-                        path: [...pathToNode, "@jwtClaim"],
+                        nodes: [node, traversedDef],
+                        path: [...pathToNode, errorPath],
                         errorMsg,
                     })
                 );
