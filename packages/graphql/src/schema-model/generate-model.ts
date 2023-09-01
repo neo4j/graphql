@@ -138,7 +138,8 @@ function mergeRelationships(interfaceRelationships: Map<string, Relationship>, e
     };
     for (const [relationshipName, relationship] of interfaceRelationships.entries()) {
         if (mergerConflictResolutionStrategy(relationshipName)) {
-            entity.attributeToRelationship(relationship);
+            // entity.attributeToRelationship(relationship);
+            entity.addRelationship(relationship);
         }
     }
 }
@@ -230,7 +231,6 @@ function generateCompositeEntity(
             `Composite entity ${entityDefinitionName} has no concrete entities`
         );
     } */
-    // TODO: add annotations
     return {
         name: entityDefinitionName,
         concreteEntities: compositeFields,
@@ -258,7 +258,8 @@ function hydrateRelationships(
     });
 
     for (const relationship of filterTruthy(relationshipFields)) {
-        entityWithRelationships.attributeToRelationship(relationship);
+        // entityWithRelationships.attributeToRelationship(relationship);
+        entityWithRelationships.addRelationship(relationship);
     }
 }
 
@@ -312,9 +313,22 @@ function generateConcreteEntity(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
-    const fields = (definition.fields || []).map((fieldDefinition) =>
-        parseAttribute(fieldDefinition, definitionCollection)
-    );
+    const inheritedFields = definition.interfaces?.flatMap((interfaceNamedNode) => {
+        const interfaceName = interfaceNamedNode.name.value;
+        return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+    });
+    const fields = (definition.fields || []).map((fieldDefinition) => {
+        const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
+        const isInheritedRelationshipAttribute = inheritedFields?.some(
+            (inheritedField) =>
+                inheritedField.name.value === fieldDefinition.name.value &&
+                findDirective(inheritedField.directives, relationshipDirective.name)
+        );
+        if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
+            return;
+        }
+        return parseAttribute(fieldDefinition, definitionCollection);
+    });
 
     const annotations = createEntityAnnotations(definition.directives || []);
 
