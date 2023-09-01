@@ -218,7 +218,7 @@ describe("162", () => {
             input TigerJawLevel2Part1ConnectFieldInput {
               connect: TigerJawLevel2Part1ConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: TigerJawLevel2Part1ConnectWhere
@@ -333,7 +333,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: TigerConnectWhere

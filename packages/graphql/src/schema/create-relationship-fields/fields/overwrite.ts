@@ -21,7 +21,6 @@ import { GraphQLBoolean } from "graphql";
 
 export const overwrite = {
     type: GraphQLBoolean,
-    description:
-        "Whether or not to overwrite any matching relationship with the new properties. Will default to `false` in 4.0.0.",
+    description: "Whether or not to overwrite any matching relationship with the new properties.",
     defaultValue: true,
 };
