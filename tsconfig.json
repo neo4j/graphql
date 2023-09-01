@@ -3,7 +3,6 @@
     "references": [
         { "path": "./packages/graphql/tsconfig.json" },
         { "path": "./packages/ogm/tsconfig.json" },
-        { "path": "./packages/introspector/tsconfig.json" },
-        { "path": "./packages/plugins/graphql-plugin-auth/tsconfig.json" }
+        { "path": "./packages/introspector/tsconfig.json" }
     ]
 }

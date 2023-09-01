@@ -57,7 +57,7 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
+            "MATCH (this:Film:Multimedia)
             RETURN this { .title } AS this"
         `);
 
@@ -79,10 +79,10 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
+            "MATCH (this:Film:Multimedia)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`:\`Person\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor:Person)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -114,7 +114,7 @@ describe("Node directive with additionalLabels", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Film\`:\`Multimedia\`)
+                CREATE (create_this1:Film:Multimedia)
                 SET
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
@@ -122,7 +122,7 @@ describe("Node directive with additionalLabels", () => {
                     WITH create_this1, create_var0
                     UNWIND create_var0.actors.create AS create_var2
                     WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:\`Actor\`:\`Person\`)
+                    CREATE (create_this5:Actor:Person)
                     SET
                         create_this5.name = create_var3.name
                     MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
@@ -178,7 +178,7 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
+            "MATCH (this:Film:Multimedia)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -204,7 +204,7 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`:\`Multimedia\`)
+            "MATCH (this:Film:Multimedia)
             WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"

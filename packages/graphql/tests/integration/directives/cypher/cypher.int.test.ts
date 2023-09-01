@@ -78,7 +78,8 @@ describe("cypher", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """
+                                """,
+                                columnName: "m"
                             )
                     }
                 `;
@@ -110,7 +111,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -149,7 +150,7 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                        """
+                        """, columnName: "m"
                         )
                     }
                 `;
@@ -181,7 +182,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -224,7 +225,7 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """)
+                            """, columnName: "m")
                     }
                 `;
 
@@ -264,7 +265,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -307,7 +308,8 @@ describe("cypher", () => {
                             MATCH (m:${Movie})
                             WHERE m.title in $titles
                             RETURN m
-                            """
+                            """,
+                            columnName: "m"
                             )
                     }
                 `;
@@ -343,7 +345,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
                     });
 
@@ -405,7 +407,8 @@ describe("cypher", () => {
                                 MATCH (m:${Movie})
                                 WHERE m.title = $title
                                 RETURN m
-                                """
+                                """,
+                                columnName: "m"
                             )
                     }
                 `;
@@ -450,7 +453,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title },
                     });
 
@@ -507,7 +510,8 @@ describe("cypher", () => {
                                 statement: """
                                 MATCH (m:${Movie} {title: $title})
                                 RETURN m
-                                """
+                                """,
+                                columnName: "m"
                             )
                     }
                 `;
@@ -539,7 +543,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -578,7 +582,8 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """)
+                            """,
+                            columnName: "m")
                     }
                 `;
 
@@ -609,7 +614,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -652,7 +657,8 @@ describe("cypher", () => {
                         customMovies(title: String!): [${Movie}] @cypher(statement: """
                             MATCH (m:${Movie} {title: $title})
                             RETURN m
-                            """)
+                            """,
+                            columnName: "m")
                     }
                 `;
 
@@ -683,7 +689,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { title: movieTitle },
                     });
 
@@ -714,7 +720,7 @@ describe("cypher", () => {
                     id: ID!
                     preposition(caseName: String${
                         withDefaultValue ? "= null" : ""
-                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}')")
+                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}') as result", columnName: "result")
                 }
 
                 type Query {
@@ -722,7 +728,8 @@ describe("cypher", () => {
                         MATCH (town:Town {id:$id})
                         OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:Destination)
                         RETURN destination
-                    """)
+                    """,
+                    columnName: "destination")
                 }
             `;
 
@@ -856,14 +863,15 @@ describe("cypher", () => {
                 }
 
                 type User {
-                    id: ID @id
+                    id: ID @id @unique
                     updates: [PostMovieUser!]!
                         @cypher(
                             statement: """
                             MATCH (this:User)-[:WROTE]->(wrote:Post)
                             RETURN wrote
                             LIMIT 5
-                            """
+                            """,
+                            columnName: "wrote"
                         )
                 }
             `;

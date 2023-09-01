@@ -56,7 +56,7 @@ describe("tck/rfs/003", () => {
                     "UNWIND $create_param0 AS create_var0
                     CALL {
                         WITH create_var0
-                        CREATE (create_this1:\`Movie\`)
+                        CREATE (create_this1:Movie)
                         SET
                             create_this1.id = create_var0.id
                         WITH create_this1
@@ -64,7 +64,7 @@ describe("tck/rfs/003", () => {
                         	WITH create_this1
                         	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(create_this1_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS create_this1_director_Director_unique_ignored
                         }
                         RETURN create_this1
@@ -116,7 +116,7 @@ describe("tck/rfs/003", () => {
                     "UNWIND $create_param0 AS create_var0
                     CALL {
                         WITH create_var0
-                        CREATE (create_this1:\`Movie\`)
+                        CREATE (create_this1:Movie)
                         SET
                             create_this1.id = create_var0.id
                         WITH create_this1
@@ -124,7 +124,7 @@ describe("tck/rfs/003", () => {
                         	WITH create_this1
                         	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(create_this1_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS create_this1_director_Director_unique_ignored
                         }
                         RETURN create_this1
@@ -183,7 +183,7 @@ describe("tck/rfs/003", () => {
                         "UNWIND $create_param0 AS create_var0
                         CALL {
                             WITH create_var0
-                            CREATE (create_this1:\`Movie\`)
+                            CREATE (create_this1:Movie)
                             SET
                                 create_this1.id = create_var0.id
                             WITH create_this1, create_var0
@@ -191,7 +191,7 @@ describe("tck/rfs/003", () => {
                                 WITH create_this1, create_var0
                                 UNWIND create_var0.director.create AS create_var2
                                 WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                                CREATE (create_this5:\`Director\`)
+                                CREATE (create_this5:Director)
                                 SET
                                     create_this5.id = create_var3.id
                                 MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
@@ -200,7 +200,7 @@ describe("tck/rfs/003", () => {
                                 	WITH create_this5
                                 	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
                                 	WITH count(create_this5_address_Address_unique) as c
-                                	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
+                                	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
                                 	RETURN c AS create_this5_address_Address_unique_ignored
                                 }
                                 RETURN collect(NULL) AS create_var7
@@ -210,7 +210,7 @@ describe("tck/rfs/003", () => {
                             	WITH create_this1
                             	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(create_this1_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS create_this1_director_Director_unique_ignored
                             }
                             RETURN create_this1
@@ -275,7 +275,7 @@ describe("tck/rfs/003", () => {
                         "UNWIND $create_param0 AS create_var0
                         CALL {
                             WITH create_var0
-                            CREATE (create_this1:\`Movie\`)
+                            CREATE (create_this1:Movie)
                             SET
                                 create_this1.id = create_var0.id
                             WITH create_this1, create_var0
@@ -283,7 +283,7 @@ describe("tck/rfs/003", () => {
                                 WITH create_this1, create_var0
                                 UNWIND create_var0.director.create AS create_var2
                                 WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                                CREATE (create_this5:\`Director\`)
+                                CREATE (create_this5:Director)
                                 SET
                                     create_this5.id = create_var3.id
                                 MERGE (create_this1)<-[create_this6:DIRECTED]-(create_this5)
@@ -292,7 +292,7 @@ describe("tck/rfs/003", () => {
                                 	WITH create_this5
                                 	MATCH (create_this5)-[create_this5_address_Address_unique:HAS_ADDRESS]->(:Address)
                                 	WITH count(create_this5_address_Address_unique) as c
-                                	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                                 	RETURN c AS create_this5_address_Address_unique_ignored
                                 }
                                 RETURN collect(NULL) AS create_var7
@@ -302,7 +302,7 @@ describe("tck/rfs/003", () => {
                             	WITH create_this1
                             	MATCH (create_this1)<-[create_this1_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(create_this1_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                             	RETURN c AS create_this1_director_Director_unique_ignored
                             }
                             RETURN create_this1
@@ -360,7 +360,7 @@ describe("tck/rfs/003", () => {
                     const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "MATCH (this:\`Movie\`)
+                        "MATCH (this:Movie)
                         WHERE this.id = $param0
                         SET this.id = $this_update_id
                         WITH *
@@ -368,7 +368,7 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN 'Query cannot conclude with CALL'"
@@ -412,7 +412,7 @@ describe("tck/rfs/003", () => {
                     const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "MATCH (this:\`Movie\`)
+                        "MATCH (this:Movie)
                         WHERE this.id = $param0
                         SET this.id = $this_update_id
                         WITH *
@@ -420,7 +420,7 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN 'Query cannot conclude with CALL'"
@@ -474,7 +474,7 @@ describe("tck/rfs/003", () => {
                         const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this:\`Movie\`)
+                            "MATCH (this:Movie)
                             WHERE this.id = $param0
                             WITH this
                             CALL {
@@ -486,7 +486,7 @@ describe("tck/rfs/003", () => {
                             		WITH this_director0
                             		MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
                             		WITH count(this_director0_address_Address_unique) as c
-                            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
+                            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
                             		RETURN c AS this_director0_address_Address_unique_ignored
                             	}
                             	RETURN count(*) AS update_this_director0
@@ -496,7 +496,7 @@ describe("tck/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -549,7 +549,7 @@ describe("tck/rfs/003", () => {
                         const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this:\`Movie\`)
+                            "MATCH (this:Movie)
                             WHERE this.id = $param0
                             WITH this
                             CALL {
@@ -561,7 +561,7 @@ describe("tck/rfs/003", () => {
                             		WITH this_director0
                             		MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
                             		WITH count(this_director0_address_Address_unique) as c
-                            		CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                            		WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                             		RETURN c AS this_director0_address_Address_unique_ignored
                             	}
                             	RETURN count(*) AS update_this_director0
@@ -571,7 +571,7 @@ describe("tck/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -624,7 +624,7 @@ describe("tck/rfs/003", () => {
                         const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this:\`Movie\`)
+                            "MATCH (this:Movie)
                             WHERE this.id = $param0
                             WITH this
                             CREATE (this_director0_create0_node:Director)
@@ -635,7 +635,7 @@ describe("tck/rfs/003", () => {
                             	WITH this_director0_create0_node
                             	MATCH (this_director0_create0_node)-[this_director0_create0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
                             	WITH count(this_director0_create0_node_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
                             	RETURN c AS this_director0_create0_node_address_Address_unique_ignored
                             }
                             WITH *
@@ -643,7 +643,7 @@ describe("tck/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -710,27 +710,31 @@ describe("tck/rfs/003", () => {
                         const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this:\`Movie\`)
+                            "MATCH (this:Movie)
                             WHERE this.id = $param0
-                            WITH this
+                            WITH *
+                            CALL {
+                            WITH *
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
                             WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
-                            WITH this, this_delete_director0
+                            WITH *
+                            CALL {
+                            WITH *
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
                             WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
-                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            WITH this_delete_director0_address0_relationship, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
                             	UNWIND this_delete_director0_address0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
                             }
-                            WITH this, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            }
+                            WITH this_delete_director0_relationship, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
                             CALL {
                             	WITH this_delete_director0_to_delete
                             	UNWIND this_delete_director0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
+                            }
                             }
                             WITH *
                             WITH *
@@ -738,14 +742,14 @@ describe("tck/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_coDirector_CoDirector_unique:CO_DIRECTED]-(:CoDirector)
                             	WITH count(this_coDirector_CoDirector_unique) as c
-                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
                             	RETURN c AS this_coDirector_CoDirector_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -831,27 +835,31 @@ describe("tck/rfs/003", () => {
                         const result = await translateQuery(neoSchema, mutation);
 
                         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this:\`Movie\`)
+                            "MATCH (this:Movie)
                             WHERE this.id = $param0
-                            WITH this
+                            WITH *
+                            CALL {
+                            WITH *
                             OPTIONAL MATCH (this)<-[this_delete_director0_relationship:DIRECTED]-(this_delete_director0:Director)
                             WHERE this_delete_director0.id = $updateMovies_args_delete_director_where_this_delete_director0param0
-                            WITH this, this_delete_director0
+                            WITH *
+                            CALL {
+                            WITH *
                             OPTIONAL MATCH (this_delete_director0)-[this_delete_director0_address0_relationship:HAS_ADDRESS]->(this_delete_director0_address0:Address)
                             WHERE this_delete_director0_address0.id = $updateMovies_args_delete_director_delete_address_where_this_delete_director0_address0param0
-                            WITH this, this_delete_director0, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
+                            WITH this_delete_director0_address0_relationship, collect(DISTINCT this_delete_director0_address0) AS this_delete_director0_address0_to_delete
                             CALL {
                             	WITH this_delete_director0_address0_to_delete
                             	UNWIND this_delete_director0_address0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
                             }
-                            WITH this, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
+                            }
+                            WITH this_delete_director0_relationship, collect(DISTINCT this_delete_director0) AS this_delete_director0_to_delete
                             CALL {
                             	WITH this_delete_director0_to_delete
                             	UNWIND this_delete_director0_to_delete AS x
                             	DETACH DELETE x
-                            	RETURN count(*) AS _
+                            }
                             }
                             WITH *
                             WITH *
@@ -859,14 +867,14 @@ describe("tck/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_coDirector_CoDirector_unique:CO_DIRECTED]-(:CoDirector)
                             	WITH count(this_coDirector_CoDirector_unique) as c
-                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
                             	RETURN c AS this_coDirector_CoDirector_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -953,9 +961,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this0
                         			UNWIND connectedNodes as this0_director_connect0_node
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                        			RETURN count(*) AS _
                         		}
-                        		RETURN count(*) AS _
                         	}
                         WITH this0, this0_director_connect0_node
                         	RETURN count(*) AS connect_this0_director_connect_Director
@@ -965,7 +971,7 @@ describe("tck/rfs/003", () => {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this0_director_Director_unique_ignored
                         }
                         RETURN this0
@@ -1028,9 +1034,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this0
                         			UNWIND connectedNodes as this0_director_connect0_node
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                        			RETURN count(*) AS _
                         		}
-                        		RETURN count(*) AS _
                         	}
                         WITH this0, this0_director_connect0_node
                         	RETURN count(*) AS connect_this0_director_connect_Director
@@ -1040,7 +1044,7 @@ describe("tck/rfs/003", () => {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this0_director_Director_unique_ignored
                         }
                         RETURN this0
@@ -1121,9 +1125,7 @@ describe("tck/rfs/003", () => {
                             			UNWIND parentNodes as this0
                             			UNWIND connectedNodes as this0_director_connect0_node
                             			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                            			RETURN count(*) AS _
                             		}
-                            		RETURN count(*) AS _
                             	}
                             WITH this0, this0_director_connect0_node
                             CALL {
@@ -1138,16 +1140,14 @@ describe("tck/rfs/003", () => {
                             			UNWIND parentNodes as this0_director_connect0_node
                             			UNWIND connectedNodes as this0_director_connect0_node_address0_node
                             			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
-                            			RETURN count(*) AS _
                             		}
-                            		RETURN count(*) AS _
                             	}
                             	WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
                             CALL {
                             	WITH this0_director_connect0_node
                             	MATCH (this0_director_connect0_node)-[this0_director_connect0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
                             	WITH count(this0_director_connect0_node_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required exactly once', [0])
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
                             WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
@@ -1160,7 +1160,7 @@ describe("tck/rfs/003", () => {
                             	WITH this0
                             	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this0_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS this0_director_Director_unique_ignored
                             }
                             RETURN this0
@@ -1211,7 +1211,7 @@ describe("tck/rfs/003", () => {
                     const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "MATCH (this:\`Movie\`)
+                        "MATCH (this:Movie)
                         WHERE this.id = $param0
                         WITH this
                         CALL {
@@ -1223,7 +1223,6 @@ describe("tck/rfs/003", () => {
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
                         	UNWIND this_disconnect_director0 as x
                         	DELETE this_disconnect_director0_rel
-                        	RETURN count(*) AS _
                         }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
@@ -1233,7 +1232,7 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN 'Query cannot conclude with CALL'"
@@ -1305,7 +1304,7 @@ describe("tck/rfs/003", () => {
                     const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "MATCH (this:\`Movie\`)
+                        "MATCH (this:Movie)
                         WHERE this.id = $param0
                         WITH this
                         CALL {
@@ -1317,7 +1316,6 @@ describe("tck/rfs/003", () => {
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
                         	UNWIND this_disconnect_director0 as x
                         	DELETE this_disconnect_director0_rel
-                        	RETURN count(*) AS _
                         }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
@@ -1334,9 +1332,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this
                         			UNWIND connectedNodes as this_connect_director0_node
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
-                        			RETURN count(*) AS _
                         		}
-                        		RETURN count(*) AS _
                         	}
                         WITH this, this_connect_director0_node
                         	RETURN count(*) AS connect_this_connect_director_Director
@@ -1344,7 +1340,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:\`Director\`)
+                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:Director)
                             WITH update_this1 { .id } AS update_this1
                             RETURN head(collect(update_this1)) AS update_var2
                         }
@@ -1353,7 +1349,7 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN collect(DISTINCT this { .id, director: update_var2 }) AS data"
@@ -1424,7 +1420,7 @@ describe("tck/rfs/003", () => {
                     const result = await translateQuery(neoSchema, mutation);
 
                     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "MATCH (this:\`Movie\`)
+                        "MATCH (this:Movie)
                         WHERE this.id = $param0
                         WITH this
                         CALL {
@@ -1436,7 +1432,6 @@ describe("tck/rfs/003", () => {
                         	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel, this
                         	UNWIND this_disconnect_director0 as x
                         	DELETE this_disconnect_director0_rel
-                        	RETURN count(*) AS _
                         }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
@@ -1453,9 +1448,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this
                         			UNWIND connectedNodes as this_connect_director0_node
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
-                        			RETURN count(*) AS _
                         		}
-                        		RETURN count(*) AS _
                         	}
                         WITH this, this_connect_director0_node
                         	RETURN count(*) AS connect_this_connect_director_Director
@@ -1463,7 +1456,7 @@ describe("tck/rfs/003", () => {
                         WITH *
                         CALL {
                             WITH this
-                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:\`Director\`)
+                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:Director)
                             WITH update_this1 { .id } AS update_this1
                             RETURN head(collect(update_this1)) AS update_var2
                         }
@@ -1472,7 +1465,7 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN collect(DISTINCT this { .id, director: update_var2 }) AS data"

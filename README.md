@@ -26,10 +26,10 @@ and [development guide](./docs/contributing/DEVELOPING.md) to get started!
 
 ## Links
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
-2. [Discord](https://discord.gg/neo4j)
-3. [Examples](./examples)
-4. [Hands-on Course](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql)
+* [Documentation](https://neo4j.com/docs/graphql-manual/current/)
+* [Discord](https://discord.gg/neo4j)
+* [Examples](./examples)
+* [Hands-on Course](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql)
 
 ## Navigating
 
@@ -37,13 +37,12 @@ This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yar
 To learn more on how to; setup, test and contribute to Neo4j GraphQL then please
 visit the [Contributing Guide](./CONTRIBUTING.md).
 
-1. [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage
+* [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage
    with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
-2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
+* [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
    interactions with the database
-3. [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
-4. [`@neo4j/graphql-plugin-auth`](./packages/graphql-plugin-auth) - Auth decode plugins for @neo4j/graphql
-5. [`@neo4j/graphql-toolbox`](./packages/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j Desktop.
+* [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
+* [`@neo4j/graphql-toolbox`](./packages/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j Desktop.
 
 ## Media
 
@@ -51,12 +50,12 @@ Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for
 [NODES 2023](https://dev.neo4j.com/44xcEfm) to view even more Neo4j
 GraphQL content.
 
-1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
-2. [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
-3. [Best Practices For Using Cypher With GraphQL](https://youtu.be/YceBpk01Gxs)
-4. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
-5. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
-6. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
+* [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
+* [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
+* [Best Practices For Using Cypher With GraphQL](https://youtu.be/YceBpk01Gxs)
+* [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
+* [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
+* [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
 
 ## Learn with GraphAcademy
 

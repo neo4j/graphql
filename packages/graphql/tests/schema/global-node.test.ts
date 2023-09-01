@@ -26,7 +26,7 @@ describe("Node Interface Types", () => {
     test("nodes should implement the Node Interface and generate a top-level node query", async () => {
         const typeDefs = gql`
             type Movie {
-                title: String! @id(autogenerate: false, global: true)
+                title: String! @relayId
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -39,7 +39,7 @@ describe("Node Interface Types", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -50,7 +50,7 @@ describe("Node Interface Types", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -161,7 +161,7 @@ describe("Node Interface Types", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

@@ -50,7 +50,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -86,7 +86,7 @@ describe("aggregations-where-edge-int", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -115,7 +115,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -152,7 +152,7 @@ describe("aggregations-where-edge-int", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -182,7 +182,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -218,7 +218,7 @@ describe("aggregations-where-edge-int", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -248,7 +248,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -285,7 +285,7 @@ describe("aggregations-where-edge-int", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -314,7 +314,7 @@ describe("aggregations-where-edge-int", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -350,7 +350,7 @@ describe("aggregations-where-edge-int", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -377,7 +377,7 @@ describe("aggregations-where-edge-int", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someInt: Int
             }
         `;
@@ -423,7 +423,7 @@ describe("aggregations-where-edge-int", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -474,7 +474,7 @@ describe("aggregations-where-edge-int", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -524,7 +524,7 @@ describe("aggregations-where-edge-int", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -574,7 +574,7 @@ describe("aggregations-where-edge-int", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -624,7 +624,7 @@ describe("aggregations-where-edge-int", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -652,7 +652,7 @@ describe("aggregations-where-edge-int", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     someInt: Int
                 }
             `;
@@ -695,7 +695,7 @@ describe("aggregations-where-edge-int", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

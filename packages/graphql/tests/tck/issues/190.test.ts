@@ -63,14 +63,14 @@ describe("#190", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE EXISTS {
-                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
+                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:UserDemographics)
                 WHERE (this0.type = $param0 AND this0.value = $param1)
             }
             CALL {
                 WITH this
-                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:\`UserDemographics\`)
+                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:UserDemographics)
                 WITH this2 { .type, .value } AS this2
                 RETURN collect(this2) AS var3
             }
@@ -105,14 +105,14 @@ describe("#190", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE EXISTS {
-                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
+                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:UserDemographics)
                 WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3)
             }
             CALL {
                 WITH this
-                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:\`UserDemographics\`)
+                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:UserDemographics)
                 WITH this2 { .type, .value } AS this2
                 RETURN collect(this2) AS var3
             }

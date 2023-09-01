@@ -19,17 +19,17 @@
 
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { Context } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateResolveReference({
     node,
     context,
     reference,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     node: Node;
     reference: any;
 }): Cypher.CypherResult {
@@ -38,7 +38,6 @@ export function translateResolveReference({
 
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { __typename, ...where } = reference;
 
     const {
@@ -61,6 +60,16 @@ export function translateResolveReference({
         cypherFieldAliasMap: {},
     });
 
+    let projAuth: Cypher.Clause | undefined;
+
+    const predicates: Cypher.Predicate[] = [];
+
+    predicates.push(...projection.predicates);
+
+    if (predicates.length) {
+        projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
+    }
+
     const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);
 
     const projectionExpression = new Cypher.RawCypher((env) => {
@@ -69,21 +78,18 @@ export function translateResolveReference({
 
     const returnClause = new Cypher.Return([projectionExpression, varName]);
 
-    const projectionClause: Cypher.Clause = returnClause; // TODO avoid reassign
-    let connectionPreClauses: Cypher.Clause | undefined;
-
     const preComputedWhereFields =
         preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty
             ? Cypher.concat(preComputedWhereFieldSubqueries, topLevelWhereClause)
-            : undefined;
+            : topLevelWhereClause;
 
     const readQuery = Cypher.concat(
         topLevelMatch,
         preComputedWhereFields,
-        connectionPreClauses,
+        projAuth,
         projectionSubqueries,
-        projectionClause
+        returnClause
     );
 
-    return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
+    return readQuery.build();
 }

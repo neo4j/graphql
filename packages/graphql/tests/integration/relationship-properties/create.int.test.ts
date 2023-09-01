@@ -49,7 +49,7 @@ describe("Relationship properties - create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -96,7 +96,7 @@ describe("Relationship properties - create", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { movieTitle, actorName, screenTime },
         });
         expect(result.errors).toBeFalsy();
@@ -135,7 +135,7 @@ describe("Relationship properties - create", () => {
                 publications: [Publication!]! @relationship(type: "WROTE", properties: "Wrote", direction: OUT)
             }
 
-            interface Wrote {
+            interface Wrote @relationshipProperties {
                 words: Int!
             }
         `;
@@ -181,7 +181,7 @@ describe("Relationship properties - create", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { movieTitle, actorName, words },
         });
         expect(result.errors).toBeFalsy();

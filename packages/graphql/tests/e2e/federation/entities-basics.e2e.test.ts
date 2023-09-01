@@ -76,18 +76,15 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
             reviewsSubgraph.getSchema(),
         ]);
 
-        productsServer = new SubgraphServer(productsSchema, 4003);
-        reviewsServer = new SubgraphServer(reviewsSchema, 4004);
+        productsServer = new SubgraphServer(productsSchema);
+        reviewsServer = new SubgraphServer(reviewsSchema);
 
         const [productsUrl, reviewsUrl] = await Promise.all([productsServer.start(), reviewsServer.start()]);
 
-        gatewayServer = new GatewayServer(
-            [
-                { name: "products", url: productsUrl },
-                { name: "reviews", url: reviewsUrl },
-            ],
-            4005
-        );
+        gatewayServer = new GatewayServer([
+            { name: "products", url: productsUrl },
+            { name: "reviews", url: reviewsUrl },
+        ]);
 
         gatewayUrl = await gatewayServer.start();
 

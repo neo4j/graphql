@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("https://github.com/neo4j/graphql/issues/3351", () => {
     let driver: Driver;
@@ -49,8 +49,8 @@ describe("https://github.com/neo4j/graphql/issues/3351", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
+            features: {
+                subscriptions: new TestSubscriptionsEngine(),
             },
         });
 
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/3351", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

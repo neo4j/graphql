@@ -94,7 +94,7 @@ describe("Cypher Auth Allow", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`User\`)
+                CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.name = create_var0.name
@@ -157,7 +157,7 @@ describe("Cypher Auth Allow", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`User\`)
+                CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.name = create_var0.name
@@ -166,7 +166,7 @@ describe("Cypher Auth Allow", () => {
                     WITH create_this1, create_var0
                     UNWIND create_var0.posts.create AS create_var2
                     WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
-                    CREATE (create_this5:\`Post\`)
+                    CREATE (create_this5:Post)
                     SET
                         create_this5.id = create_var3.id
                     MERGE (create_this1)-[create_this6:HAS_POST]->(create_this5)
@@ -175,7 +175,7 @@ describe("Cypher Auth Allow", () => {
                         WITH create_this5, create_var3
                         UNWIND create_var3.creator.create AS create_var7
                         WITH create_var7.node AS create_var8, create_var7.edge AS create_var9, create_this5
-                        CREATE (create_this10:\`User\`)
+                        CREATE (create_this10:User)
                         SET
                             create_this10.id = create_var8.id
                         MERGE (create_this5)<-[create_this11:HAS_POST]-(create_this10)
@@ -184,7 +184,7 @@ describe("Cypher Auth Allow", () => {
                         RETURN collect(NULL) AS create_var12
                     }
                     WITH *
-                    OPTIONAL MATCH (create_this5)<-[:HAS_POST]-(create_this13:\`User\`)
+                    OPTIONAL MATCH (create_this5)<-[:HAS_POST]-(create_this13:User)
                     WITH *, count(create_this13) AS creatorCount
                     WITH *
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND create_this13.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -193,7 +193,7 @@ describe("Cypher Auth Allow", () => {
                     	WITH create_this5
                     	MATCH (create_this5)<-[create_this5_creator_User_unique:HAS_POST]-(:User)
                     	WITH count(create_this5_creator_User_unique) as c
-                    	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+                    	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
                     	RETURN c AS create_this5_creator_User_unique_ignored
                     }
                     RETURN collect(NULL) AS create_var14
@@ -258,7 +258,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             SET this.id = $this_update_id
             WITH this
@@ -307,7 +307,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -328,7 +328,7 @@ describe("Cypher Auth Allow", () => {
             		WITH this_posts0
             		MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
             		WITH count(this_posts0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_posts0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_posts0
@@ -398,7 +398,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -413,13 +413,11 @@ describe("Cypher Auth Allow", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_creator0_node
             			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_creator0_node
             WITH *
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this)<-[:HAS_POST]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_connect_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
@@ -431,7 +429,7 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -470,7 +468,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -482,10 +480,9 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel, this
             	UNWIND this_disconnect_creator0 as x
             	DELETE this_disconnect_creator0_rel
-            	RETURN count(*) AS _
             }
             WITH *
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this)<-[:HAS_POST]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_disconnect_creator0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
@@ -497,7 +494,7 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
             	WITH count(this_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
             RETURN collect(DISTINCT this { .id }) AS data"

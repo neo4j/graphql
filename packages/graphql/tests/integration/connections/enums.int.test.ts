@@ -60,7 +60,7 @@ describe("Enum Relationship Properties", () => {
                 SUPPORTING
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;
@@ -114,7 +114,7 @@ describe("Enum Relationship Properties", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { title, name },
             });
 

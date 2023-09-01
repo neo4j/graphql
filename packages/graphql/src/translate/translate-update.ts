@@ -18,13 +18,13 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { Context, CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
+import type { CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -35,13 +35,14 @@ import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export default async function translateUpdate({
     node,
     context,
 }: {
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
 }): Promise<[string, any]> {
     const { resolveTree } = context;
     const updateInput = resolveTree.args.update;
@@ -66,13 +67,12 @@ export default async function translateUpdate({
     const createStrs: string[] = [];
     let deleteStr = "";
     let projAuth: Cypher.Clause | undefined = undefined;
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
     const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "UPDATE", where });
     matchAndWhereStr = topLevelMatch.cypher;
-    cypherParams = { ...cypherParams, ...topLevelMatch.params };
+    let cypherParams = topLevelMatch.params;
 
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -208,10 +208,23 @@ export default async function translateUpdate({
                 if (!relationField.typeMeta.array) {
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
+
+                    const validatePredicates: string[] = [];
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistence = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
-                        connectStrs.push(validateRelationshipExistence);
+                        const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name}))`;
+                        validatePredicates.push(validateRelationshipExistence);
                     });
+
+                    if (validatePredicates.length) {
+                        connectStrs.push("WITH *");
+                        connectStrs.push(
+                            `WHERE apoc.util.validatePredicate(${validatePredicates.join(
+                                " OR "
+                            )},'Relationship field "%s.%s" cannot have more than one node linked',["${
+                                relationField.connectionPrefix
+                            }","${relationField.fieldName}"])`
+                        );
+                    }
                 }
 
                 const connectAndParams = createConnectAndParams({
@@ -339,21 +352,27 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
+                        createStrs.push("WITH *");
+
+                        const validatePredicateTemplate = (condition: string) =>
+                            `WHERE apoc.util.validatePredicate(${condition},'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+
                         const singleCardinalityValidationTemplate = (nodeName) =>
-                            `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                            `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName}))`;
+
                         if (relationField.union && relationField.union.nodes) {
                             const validateRelationshipExistence = relationField.union.nodes.map(
                                 singleCardinalityValidationTemplate
                             );
-                            createStrs.push(...validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence.join(" OR ")));
                         } else if (relationField.interface && relationField.interface.implementations) {
                             const validateRelationshipExistence = relationField.interface.implementations.map(
                                 singleCardinalityValidationTemplate
                             );
-                            createStrs.push(...validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence.join(" OR ")));
                         } else {
                             const validateRelationshipExistence = singleCardinalityValidationTemplate(refNode.name);
-                            createStrs.push(validateRelationshipExistence);
+                            createStrs.push(validatePredicateTemplate(validateRelationshipExistence));
                         }
                     }
 
@@ -396,7 +415,7 @@ export default async function translateUpdate({
                             relVariable: propertiesName,
                             fromVariable,
                             toVariable,
-                            typename: relationField.type,
+                            typename: relationField.typeUnescaped,
                             fromTypename,
                             toTypename,
                         });
@@ -423,16 +442,6 @@ export default async function translateUpdate({
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         const predicates: Cypher.Predicate[] = [];
-
-        // TODO: Authorization: delete for 4.0.0
-        if (projection.meta?.authValidatePredicates?.length) {
-            predicates.push(
-                Cypher.apoc.util.validatePredicate(
-                    Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                    AUTH_FORBIDDEN_ERROR
-                )
-            );
-        }
 
         predicates.push(...projection.predicates);
 

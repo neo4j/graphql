@@ -36,22 +36,22 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
     const typeDefs = `
         type ${testSeries} {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             current: Boolean!
             architecture: [${testMasterData}!]!
                 @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
         }
 
-        type ${testNameDetails} @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+        type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
             fullName: String!
         }
 
-        interface RelationProps {
+        interface RelationProps @relationshipProperties {
             current: Boolean!
         }
 
         type ${testMasterData} {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             current: Boolean!
             nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
         }
@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
     const extendedTypeDefs = `
         type ${testMain} {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             current: Boolean!
             main: [${testSeries}!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
         }
@@ -154,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -246,7 +246,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -359,7 +359,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -483,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -596,7 +596,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();

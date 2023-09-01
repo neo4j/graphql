@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
             type ${User} {
                 firstName: String!
                 lastName: String!
-                fullName: String! @customResolver(requires: ["firstName", "lastName"])
+                fullName: String! @customResolver(requires: "firstName lastName")
             }
         `;
 
@@ -116,12 +116,12 @@ describe("https://github.com/neo4j/graphql/issues/2560", () => {
             type ${User} {
                 firstName: String!
                 lastName: String!
-                fullName: String! @customResolver(requires: ["firstName", "lastName"])
+                fullName: String! @customResolver(requires: "firstName lastName")
             }
 
             type ${Person} {
                 firstName: String!
-                secondName: String! @customResolver(requires: ["firstName"])
+                secondName: String! @customResolver(requires: "firstName")
             }
         `;
 

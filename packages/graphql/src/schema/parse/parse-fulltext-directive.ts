@@ -18,9 +18,9 @@
  */
 
 import type { ArgumentNode, DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
-import type { FullText, FulltextIndex } from "../../types";
+import type { FullText, FulltextContext } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
-import parseValueNode from "../../schema-model/parser/parse-value-node";
+import { parseValueNode } from "../../schema-model/parser/parse-value-node";
 
 const deprecationWarning =
     "The @fulltext name argument has been deprecated and will be removed in 4.0.0. " +
@@ -38,7 +38,7 @@ function parseFulltextDirective({
     definition: ObjectTypeDefinitionNode;
 }): FullText {
     const indexesArg = directive.arguments?.find((arg) => arg.name.value === "indexes") as ArgumentNode;
-    const value = parseValueNode(indexesArg.value) as FulltextIndex[];
+    const value = parseValueNode(indexesArg.value) as FulltextContext[];
     const compatibleFields = nodeFields.primitiveFields.filter(
         (f) => ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array
     );

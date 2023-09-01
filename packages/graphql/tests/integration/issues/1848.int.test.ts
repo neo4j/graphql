@@ -56,7 +56,8 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                 @cypher(
                     statement: """
                     Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit
-                    """
+                    """,
+                    columnName: "pag"
                 )
         }
 

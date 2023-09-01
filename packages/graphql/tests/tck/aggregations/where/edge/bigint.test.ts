@@ -37,7 +37,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someBigInt: BigInt
                 someBigIntAlias: BigInt @alias(property: "_someBigIntAlias")
             }
@@ -60,10 +60,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someBigInt) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -93,10 +93,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0._someBigIntAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -126,10 +126,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someBigInt) WHERE var2 > $param0) AS var3
             }
             WITH *
@@ -159,10 +159,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someBigInt) WHERE var2 >= $param0) AS var3
             }
             WITH *
@@ -192,10 +192,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someBigInt) WHERE var2 < $param0) AS var3
             }
             WITH *
@@ -225,10 +225,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someBigInt) WHERE var2 <= $param0) AS var3
             }
             WITH *
@@ -258,10 +258,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) = $param0 AS var2
             }
             WITH *
@@ -291,10 +291,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) > $param0 AS var2
             }
             WITH *
@@ -324,10 +324,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) >= $param0 AS var2
             }
             WITH *
@@ -357,10 +357,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) < $param0 AS var2
             }
             WITH *
@@ -390,10 +390,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) <= $param0 AS var2
             }
             WITH *
@@ -423,10 +423,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) = $param0 AS var2
             }
             WITH *
@@ -456,10 +456,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) > $param0 AS var2
             }
             WITH *
@@ -489,10 +489,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) >= $param0 AS var2
             }
             WITH *
@@ -522,10 +522,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) < $param0 AS var2
             }
             WITH *
@@ -555,10 +555,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) <= $param0 AS var2
             }
             WITH *
@@ -588,10 +588,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) = $param0 AS var2
             }
             WITH *
@@ -621,10 +621,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) > $param0 AS var2
             }
             WITH *
@@ -654,10 +654,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) >= $param0 AS var2
             }
             WITH *
@@ -687,10 +687,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) < $param0 AS var2
             }
             WITH *
@@ -720,10 +720,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) <= $param0 AS var2
             }
             WITH *
@@ -753,10 +753,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) = $param0 AS var2
             }
             WITH *
@@ -786,10 +786,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) > $param0 AS var2
             }
             WITH *
@@ -819,10 +819,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) >= $param0 AS var2
             }
             WITH *
@@ -852,10 +852,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) < $param0 AS var2
             }
             WITH *
@@ -885,10 +885,10 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) <= $param0 AS var2
             }
             WITH *

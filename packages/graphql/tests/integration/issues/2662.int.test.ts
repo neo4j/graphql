@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
                 content: String!
                 likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
             }
-            interface ${likesInterface} {
+            interface ${likesInterface} @relationshipProperties {
                 someString: String
             }    
         `;
@@ -845,7 +845,7 @@ describe("https://github.com/neo4j/graphql/issues/2662", () => {
                 someProperty: Int!
                 likes: [${userType}!]! @relationship(type: "LIKES", direction: IN, properties: "${likesInterface}")
             }
-            interface ${likesInterface} {
+            interface ${likesInterface} @relationshipProperties {
                 someProperty: String!
             }    
         `;

@@ -26,13 +26,13 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
     test("DateTime and Point fields are included in onCreate", async () => {
         const typeDefs = gql`
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 dob: DateTime!
                 homeAddress: Point!
@@ -170,7 +170,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -189,7 +189,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -542,7 +542,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

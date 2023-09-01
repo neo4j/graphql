@@ -34,11 +34,11 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
     let neo4j: Neo4j;
     let session: Session;
 
-    async function graphqlQuery(query: string, bookmark?: string) {
+    async function graphqlQuery(query: string) {
         return graphql({
             schema,
             source: query,
-            contextValue: bookmark ? neo4j.getContextValuesWithBookmarks([bookmark]) : neo4j.getContextValues(),
+            contextValue: neo4j.getContextValues(),
         });
     }
 
@@ -143,12 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const createProgrammeItemsResults = await graphqlQuery(createProgrammeItems);
         expect(createProgrammeItemsResults.errors).toBeUndefined();
 
-        const updateProgrammeItemsResults = await graphqlQuery(
-            updateProgrammeItems,
-            (createProgrammeItemsResults.data?.[testProgrammeItem.operations.create] as any).info.bookmark as
-                | string
-                | undefined
-        );
+        const updateProgrammeItemsResults = await graphqlQuery(updateProgrammeItems);
         expect(updateProgrammeItemsResults.errors).toBeUndefined();
 
         const query = `
@@ -163,12 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 }
             }
         `;
-        const queryResults = await graphqlQuery(
-            query,
-            (updateProgrammeItemsResults.data?.[testProgrammeItem.operations.update] as any).info.bookmark as
-                | string
-                | undefined
-        );
+        const queryResults = await graphqlQuery(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data as any).toEqual({
             [testProgrammeItem.plural]: expect.toIncludeSameMembers([

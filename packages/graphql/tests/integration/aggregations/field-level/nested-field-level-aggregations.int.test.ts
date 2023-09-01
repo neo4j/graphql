@@ -51,7 +51,7 @@ describe("Nested Field Level Aggregations", () => {
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
-        interface ActedIn {
+        interface ActedIn @relationshipProperties {
             screentime: Int
             character: String
         }
@@ -89,7 +89,7 @@ describe("Nested Field Level Aggregations", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(gqlResult.errors).toBeUndefined();
         const movies = (gqlResult.data as any)?.actors[0].movies;

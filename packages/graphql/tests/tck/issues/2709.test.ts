@@ -105,9 +105,9 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             WHERE EXISTS {
-                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:\`Netflix\`)
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Netflix)
                 WHERE this1.name = $param0
             }
             RETURN this { .title } AS this"
@@ -133,9 +133,9 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             WHERE EXISTS {
-                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:\`Dishney\`)
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Dishney)
                 WHERE this1.name = $param0
             }
             RETURN this { .title } AS this"
@@ -159,9 +159,9 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             WHERE EXISTS {
-                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:\`Dishney\`)
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Dishney)
                 WHERE this1.name = $param0
             }
             RETURN this { .title } AS this"
@@ -185,10 +185,10 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1)
-                WHERE (this1.name = $param0 AND (this1:\`Dishney\` OR this1:\`Prime\` OR this1:\`Netflix\`))
+                WHERE (this1.name = $param0 AND (this1:Dishney OR this1:Prime OR this1:Netflix))
             }
             RETURN this { .title } AS this"
         `);

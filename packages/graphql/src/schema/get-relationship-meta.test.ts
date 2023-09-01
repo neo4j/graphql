@@ -214,7 +214,7 @@ describe("getRelationshipMeta", () => {
         );
     });
 
-    test("should return the correct meta with direction and type", () => {
+    test("should return the correct meta with direction and escaped type", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -233,7 +233,7 @@ describe("getRelationshipMeta", () => {
                             // @ts-ignore
                             name: { value: "type" },
                             // @ts-ignore
-                            value: { kind: Kind.STRING, value: "ACTED_IN" },
+                            value: { kind: Kind.STRING, value: "ACTED_IN$" },
                         },
                     ],
                 },
@@ -243,8 +243,9 @@ describe("getRelationshipMeta", () => {
         const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
-            type: "ACTED_IN",
+            type: "`ACTED_IN$`",
             direction: "IN",
+            typeUnescaped: "ACTED_IN$",
         });
     });
 

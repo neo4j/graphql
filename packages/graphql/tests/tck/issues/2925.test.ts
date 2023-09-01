@@ -56,8 +56,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            WHERE single(this0 IN [(this)-[:HAS_GROUP]->(this0:\`Group\`) WHERE this0.name IN $param0 | 1] WHERE true)
+            "MATCH (this:User)
+            WHERE single(this0 IN [(this)-[:HAS_GROUP]->(this0:Group) WHERE this0.name IN $param0 | 1] WHERE true)
             RETURN this { .name } AS this"
         `);
 
@@ -82,8 +82,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            OPTIONAL MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:\`Group\`)
+            "MATCH (this:User)
+            OPTIONAL MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:Group)
             WITH *, count(this0) AS hasRequiredGroupCount
             WITH *
             WHERE (hasRequiredGroupCount <> 0 AND this0.name IN $param0)
@@ -111,10 +111,10 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Group\`)
+            "MATCH (this:Group)
             WHERE EXISTS {
-                MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
-                WHERE single(this1 IN [(this0)-[:HAS_GROUP]->(this1:\`Group\`) WHERE this1.name IN $param0 | 1] WHERE true)
+                MATCH (this)<-[:HAS_GROUP]-(this0:User)
+                WHERE single(this1 IN [(this0)-[:HAS_GROUP]->(this1:Group) WHERE this1.name IN $param0 | 1] WHERE true)
             }
             RETURN this { .name } AS this"
         `);
@@ -140,11 +140,11 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Group\`)
+            "MATCH (this:Group)
             CALL {
                 WITH this
-                MATCH (this)<-[:HAS_GROUP]-(this0:\`User\`)
-                OPTIONAL MATCH (this0)-[:HAS_REQUIRED_GROUP]->(this1:\`Group\`)
+                MATCH (this)<-[:HAS_GROUP]-(this0:User)
+                OPTIONAL MATCH (this0)-[:HAS_REQUIRED_GROUP]->(this1:Group)
                 WITH *, count(this1) AS hasRequiredGroupCount
                 WITH *
                 WHERE (hasRequiredGroupCount <> 0 AND this1.name IN $param0)

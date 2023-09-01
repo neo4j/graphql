@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
                 flagged: Boolean!
                 content: String!
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
-                canEdit: Boolean! @cypher(statement: "RETURN false")
+                canEdit: Boolean! @cypher(statement: "RETURN false as res", columnName: "res")
             }
         `;
 
@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             expect(result.errors).toBeFalsy();
             expect((result?.data as any)?.posts[0].flaggedComments).toContainEqual({

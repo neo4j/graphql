@@ -33,7 +33,6 @@ describe("sort", () => {
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
     let session: Session;
-    let bookmarks: string[];
 
     const movieType = new UniqueType("Movie");
     const seriesType = new UniqueType("Series");
@@ -49,7 +48,7 @@ describe("sort", () => {
             title: String!
             runtime: Int!
             actors: [${actorType}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            numberOfActors: Int! @cypher(statement: "MATCH (actor:${actorType})-[:ACTED_IN]->(this) RETURN count(actor)")
+            numberOfActors: Int! @cypher(statement: "MATCH (actor:${actorType})-[:ACTED_IN]->(this) RETURN count(actor) AS count", columnName: "count")
         }
 
         type ${seriesType} implements Production {
@@ -66,8 +65,9 @@ describe("sort", () => {
                 @cypher(
                     statement: """
                     MATCH (this)-[r:ACTED_IN]->(:${movieType})
-                    RETURN sum(r.screenTime)
-                    """
+                    RETURN sum(r.screenTime) AS sum
+                    """,
+                    columnName: "sum"
                 )
         }
         interface ActedIn @relationshipProperties {
@@ -146,8 +146,6 @@ describe("sort", () => {
             { movies, series, actors }
         );
 
-        bookmarks = session2.lastBookmark();
-
         await session2.close();
     });
 
@@ -173,7 +171,7 @@ describe("sort", () => {
                     schema,
                     source,
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
-                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                    contextValue: neo4j.getContextValues(),
                 });
 
             describe("with field in selection set", () => {
@@ -292,7 +290,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
                 });
 
@@ -465,7 +463,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieId: movies[1].id, actorIds: actors.map(({ id }) => id), direction },
             });
 
@@ -760,7 +758,7 @@ describe("sort", () => {
             const gqlResult = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -776,7 +774,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { actorId: actors[0].id, direction },
                 });
             describe("with field in selection set", () => {

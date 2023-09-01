@@ -73,18 +73,18 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:\`Genre\`)
+                    MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:\`Movie\`)
+                    MATCH (this)-[this3:SEARCH]->(this4:Movie)
                     WITH this4 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this4
                     RETURN this4 AS var2
                 }
@@ -122,18 +122,18 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:\`Genre\`)
+                    MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:\`Movie\`)
+                    MATCH (this)-[this3:SEARCH]->(this4:Movie)
                     WITH this4 { __resolveType: \\"Movie\\", __id: id(this) } AS this4
                     RETURN this4 AS var2
                 }
@@ -177,19 +177,19 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:\`Genre\`)
+                    MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE (this1.name = $param1 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this1 { __resolveType: \\"Genre\\", __id: id(this), .name } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:\`Movie\`)
+                    MATCH (this)-[this3:SEARCH]->(this4:Movie)
                     WHERE this4.title = $param4
                     WITH this4 { __resolveType: \\"Movie\\", __id: id(this), .title } AS this4
                     RETURN this4 AS var2
@@ -250,7 +250,7 @@ describe("Cypher Union", () => {
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
             RETURN this0
             }
-            RETURN [ this0 { .title } ] AS data"
+            RETURN [this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -277,7 +277,7 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
@@ -331,16 +331,14 @@ describe("Cypher Union", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_search_Genre_connect0_node
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_search_Genre_connect0_node
             	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
             }
             RETURN this0
             }
-            RETURN [ this0 { .title } ] AS data"
+            RETURN [this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -377,7 +375,7 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -440,7 +438,7 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -452,7 +450,6 @@ describe("Cypher Union", () => {
             	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
             	UNWIND this_search_Genre0_disconnect0 as x
             	DELETE this_search_Genre0_disconnect0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_search_Genre0_disconnect_Genre
             }
@@ -507,7 +504,7 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -519,7 +516,6 @@ describe("Cypher Union", () => {
             	WITH collect(this_disconnect_search_Genre0) as this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel, this
             	UNWIND this_disconnect_search_Genre0 as x
             	DELETE this_disconnect_search_Genre0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_search_Genre_Genre
             }
@@ -571,7 +567,7 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -586,9 +582,7 @@ describe("Cypher Union", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_search_Genre0_node
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_search_Genre0_node
             	RETURN count(*) AS connect_this_connect_search_Genre_Genre
@@ -624,17 +618,19 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
+            CALL {
+            WITH *
             OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
             WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_this_delete_search_Genre0param0
-            WITH this, collect(DISTINCT this_delete_search_Genre0) AS this_delete_search_Genre0_to_delete
+            WITH this_delete_search_Genre0_relationship, collect(DISTINCT this_delete_search_Genre0) AS this_delete_search_Genre0_to_delete
             CALL {
             	WITH this_delete_search_Genre0_to_delete
             	UNWIND this_delete_search_Genre0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

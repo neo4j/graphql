@@ -21,15 +21,9 @@ const DEBUG_PREFIX = "@neo4j/graphql";
 
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
 export const AUTH_UNAUTHENTICATED_ERROR = "@neo4j/graphql/UNAUTHENTICATED";
+export const MIN_NEO4J_VERSION = "4.4";
+export const REQUIRED_APOC_FUNCTIONS = ["apoc.util.validatePredicate", "apoc.date.convertFormat"];
 export const AUTHORIZATION_UNAUTHENTICATED = "Unauthenticated";
-export const MIN_VERSIONS = [{ majorMinor: "4.3", neo4j: "4.3.2" }] as const;
-export const REQUIRED_APOC_FUNCTIONS = [
-    "apoc.util.validatePredicate",
-    "apoc.cypher.runFirstColumnSingle",
-    "apoc.cypher.runFirstColumnMany",
-    "apoc.date.convertFormat",
-] as const;
-export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.cypher.doIt"];
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
@@ -58,27 +52,24 @@ export const RESERVED_INTERFACE_FIELDS = [
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
 ];
 
-export const SCALAR_TYPES = [
-    "Boolean",
-    "ID",
-    "String",
-    "Int",
-    "BigInt",
-    "Float",
-    "DateTime",
-    "LocalDateTime",
-    "Time",
-    "LocalTime",
-    "Date",
-    "Duration",
-];
+export const GRAPHQL_BUILTIN_SCALAR_TYPES = ["Boolean", "ID", "String", "Int", "Float"];
+export const TEMPORAL_SCALAR_TYPES = ["DateTime", "LocalDateTime", "Time", "LocalTime", "Date"];
+export const SCALAR_TYPES = [...GRAPHQL_BUILTIN_SCALAR_TYPES, ...TEMPORAL_SCALAR_TYPES, "BigInt", "Duration"];
+export const SPATIAL_TYPES = ["Point", "CartesianPoint"];
+
+export function isTemporal(typeName: string) {
+    return TEMPORAL_SCALAR_TYPES.includes(typeName);
+}
+export function isSpatial(typeName: string) {
+    return SPATIAL_TYPES.includes(typeName);
+}
 
 export const NODE_OR_EDGE_KEYS = ["node", "edge"];
 
 export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 
 // aggregation
-export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"] as const;
 export const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
 
 export const WHERE_AGGREGATION_TYPES = [

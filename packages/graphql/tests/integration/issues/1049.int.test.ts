@@ -56,8 +56,9 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
                     @cypher(
                         statement: """
                         MATCH (this)<-[:LIKES]-(:${Person.name})-[:LIKES]->(other:${Media.name})
-                        RETURN COLLECT(other { .*, __resolveType: apoc.coll.subtract(labels(other), ['Meda'])[0] })
-                        """
+                        RETURN COLLECT(other { .*, __resolveType: apoc.coll.subtract(labels(other), ['Meda'])[0] }) as x
+                        """,
+                        columnName: "x"
                     )
             }
 

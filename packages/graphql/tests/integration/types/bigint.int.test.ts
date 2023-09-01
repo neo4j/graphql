@@ -71,7 +71,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -132,7 +132,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -215,8 +215,8 @@ describe("BigInt", () => {
                 type File {
                   name: String!
                   size: BigInt! @cypher(statement: """
-                      RETURN 9223372036854775807
-                  """)
+                      RETURN 9223372036854775807 as result
+                  """, columnName:"result")
                 }
             `;
 
@@ -242,7 +242,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

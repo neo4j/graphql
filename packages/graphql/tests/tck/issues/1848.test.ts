@@ -56,6 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                         statement: """
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit
                         """
+                        columnName: "pag"
                     )
             }
 
@@ -87,15 +88,20 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Community\`:\`UNIVERSAL\`)
+            "MATCH (this:Community:UNIVERSAL)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param0, pageIndex: $param1, this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($param0 * $param1) LIMIT $param0
+                }
+                WITH pag AS this0
                 WITH *
-                WHERE ((this0:\`ContentPiece\` AND this0:\`UNIVERSAL\`) OR (this0:\`Project\` AND this0:\`UNIVERSAL\`))
+                WHERE ((this0:ContentPiece AND this0:UNIVERSAL) OR (this0:Project AND this0:UNIVERSAL))
                 RETURN collect(CASE
-                    WHEN (this0:\`ContentPiece\` AND this0:\`UNIVERSAL\`) THEN this0 { __resolveType: \\"ContentPiece\\",  .id }
-                    WHEN (this0:\`Project\` AND this0:\`UNIVERSAL\`) THEN this0 { __resolveType: \\"Project\\",  .id }
+                    WHEN (this0:ContentPiece AND this0:UNIVERSAL) THEN this0 { __resolveType: \\"ContentPiece\\",  .id }
+                    WHEN (this0:Project AND this0:UNIVERSAL) THEN this0 { __resolveType: \\"Project\\",  .id }
                 END) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"
@@ -110,10 +116,6 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                 \\"param1\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
-                },
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
                 }
             }"
         `);

@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
@@ -66,9 +66,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -192,9 +190,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -286,9 +282,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -396,9 +390,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -508,9 +500,7 @@ describe("Subscription authentication", () => {
                         authorization: {
                             key: secret,
                         },
-                    },
-                    plugins: {
-                        subscriptions: new TestSubscriptionsPlugin(),
+                        subscriptions: new TestSubscriptionsEngine(),
                     },
                 });
 
@@ -599,9 +589,7 @@ describe("Subscription authentication", () => {
                         authorization: {
                             key: secret,
                         },
-                    },
-                    plugins: {
-                        subscriptions: new TestSubscriptionsPlugin(),
+                        subscriptions: new TestSubscriptionsEngine(),
                     },
                 });
 
@@ -709,7 +697,7 @@ describe("Subscription authentication", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         
@@ -743,9 +731,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5122,7 +5108,7 @@ describe("Subscription authentication", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         
@@ -5156,9 +5142,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5504,9 +5488,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -5597,9 +5579,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 

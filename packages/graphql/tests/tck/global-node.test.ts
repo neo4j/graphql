@@ -26,19 +26,18 @@ describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
         const typeDefs = gql`
             type Actor {
-                name: ID! @id(global: true)
+                name: ID! @id @unique @relayId
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
-                title: ID! @id(global: true)
+                title: ID! @id @unique @relayId
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
         const query = gql`
             query Node($id: ID!) {
@@ -59,7 +58,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -67,18 +66,17 @@ describe("Global nodes", () => {
     test("it should project the correct node and fields when id is the idField", async () => {
         const typeDefs = gql`
             type Actor {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Movie {
-                title: ID! @id(global: true)
+                title: ID! @id @unique @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
         const query = gql`
             query Node($id: ID!) {
@@ -97,7 +95,7 @@ describe("Global nodes", () => {
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name, dbId: this.id } AS this"
         `);
@@ -111,19 +109,18 @@ describe("Global nodes", () => {
     test("it should project the correct selectionSet when id is used as a where argument", async () => {
         const typeDefs = gql`
             type Actor {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Movie {
-                title: ID! @id(global: true)
+                title: ID! @id @unique @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
 
         const query = gql`
@@ -142,7 +139,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name } AS this"
         `);
@@ -156,14 +153,13 @@ describe("Global nodes", () => {
     test("it should project the param as an integer when the underlying field is a number (fixes 1560)", async () => {
         const typeDefs = gql`
             type Actor {
-                dbId: Int! @id(global: true, autogenerate: false)
+                dbId: Int! @relayId
                 name: String!
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {},
         });
 
         const query = gql`
@@ -185,7 +181,7 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WHERE this.dbId = $param0
             RETURN this { .dbId, .name } AS this"
         `);

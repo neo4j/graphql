@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import type { RelationField, Context, PrimitiveField, PredicateReturn } from "../types";
+import type { RelationField, PrimitiveField, PredicateReturn } from "../types";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
@@ -34,6 +32,7 @@ import { createAuthorizationBeforePredicate } from "./authorization/create-autho
 import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 type CreateOrConnectInput = {
     where?: {
@@ -62,7 +61,7 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     withVars: string[];
     callbackBucket: CallbackBucket;
 }): Cypher.CypherResult {
@@ -103,14 +102,12 @@ export function createConnectOrCreateAndParams({
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const countResult = new Cypher.RawCypher(() => {
-            if (context.subscriptionsEnabled) {
-                return "meta as update_meta";
-            }
-            return "COUNT(*) AS _";
-        });
-        const returnStatement = new Cypher.Return(countResult);
+        const returnStatement = context.subscriptionsEnabled
+            ? new Cypher.Return([new Cypher.NamedVariable("meta"), "update_meta"])
+            : new Cypher.Return([Cypher.count(new Cypher.RawCypher("*")), "_"]);
+
         const withStatement = new Cypher.With(...withVarsVariables);
+
         const callStatement = new Cypher.Call(Cypher.concat(statement, returnStatement)).innerWith(
             ...withVarsVariables
         );
@@ -145,7 +142,7 @@ function createConnectOrCreatePartialStatement({
     relationField: RelationField;
     refNode: Node;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     withVars: string[];
 }): Cypher.Clause {
@@ -189,16 +186,6 @@ function createConnectOrCreatePartialStatement({
 
     mergeQuery = Cypher.concat(mergeQuery, mergeCypher);
 
-    const authQuery = createAuthStatement({
-        node: refNode,
-        context,
-        nodeName: baseName,
-    });
-
-    if (authQuery) {
-        mergeQuery = Cypher.concat(mergeQuery, new Cypher.With("*"), authQuery);
-    }
-
     const authorizationAfterPredicateReturn = createAuthorizationAfterConnectOrCreate({
         context,
         sourceNode: node,
@@ -236,7 +223,7 @@ function mergeStatement({
     input: CreateOrConnectInput;
     refNode: Node;
     parentRefNode: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     relationField: RelationField;
     parentNode: Cypher.Node;
     varName: string;
@@ -316,7 +303,7 @@ function mergeStatement({
                 relVariable: compileCypher(relationship, env),
                 fromVariable: compileCypher(fromNode, env),
                 toVariable: compileCypher(toNode, env),
-                typename: relationField.type,
+                typename: relationField.typeUnescaped,
                 fromTypename,
                 toTypename,
             });
@@ -327,42 +314,12 @@ function mergeStatement({
     return Cypher.concat(merge, relationshipMerge, withClause);
 }
 
-function createAuthStatement({
-    node,
-    context,
-    nodeName,
-}: {
-    node: Node;
-    context: Context;
-    nodeName: string;
-}): Cypher.Clause | undefined {
-    if (!node.auth) return undefined;
-
-    const { cypher, params } = createAuthAndParams({
-        entity: node,
-        operations: ["CONNECT", "CREATE"],
-        context,
-        allow: { node, varName: nodeName },
-    });
-
-    if (!cypher) return undefined;
-
-    return new Cypher.RawCypher(() => {
-        const predicate = `NOT (${cypher})`;
-        const message = AUTH_FORBIDDEN_ERROR;
-
-        const cypherStr = `CALL apoc.util.validate(${predicate}, "${message}", [0])`;
-
-        return [cypherStr, params];
-    });
-}
-
 function createAuthorizationBeforeConnectOrCreate({
     context,
     sourceNode,
     sourceName,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     sourceNode: Node;
     sourceName: string;
     targetNode: Node;
@@ -407,7 +364,7 @@ function createAuthorizationAfterConnectOrCreate({
     targetNode,
     targetName,
 }: {
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     sourceNode: Node;
     sourceName: string;
     targetNode: Node;
@@ -498,7 +455,7 @@ function getAutogeneratedParams(node: Node | Relationship): Record<string, Cyphe
 function getCypherParameters(onCreateParams: Record<string, any> = {}, node?: Node): Record<string, Cypher.Param<any>> {
     const params = Object.entries(onCreateParams).reduce((acc, [key, value]) => {
         const nodeField = node?.constrainableFields.find((f) => f.fieldName === key);
-        const nodeFieldName = nodeField?.dbPropertyName || nodeField?.fieldName;
+        const nodeFieldName = nodeField?.dbPropertyNameUnescaped || nodeField?.fieldName;
         const fieldName = nodeFieldName || key;
         const valueOrArray = nodeField?.typeMeta.array ? asArray(value) : value;
         acc[fieldName] = valueOrArray;

@@ -105,7 +105,7 @@ describe("Mathematical operations tests", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -181,7 +181,7 @@ describe("Mathematical operations tests", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value },
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             expect(gqlResult.errors).toBeDefined();
             expect(
@@ -241,7 +241,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -306,7 +306,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -386,7 +386,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -471,7 +471,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -561,7 +561,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -618,7 +618,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: increment },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -709,7 +709,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -798,7 +798,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeDefined();

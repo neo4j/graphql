@@ -8,39 +8,39 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 
 ## Must have
 
--   Subscribe to the following events:
-    -   CREATE
-    -   UPDATE
-    -   DELETE
--   Ability to filter which nodes are subscribed to (i.e. `where` clause).
--   Ability to horizontally scale - either now, or able to do so without breaking in the future.
--   Wherever possible, events are ordered.
--   Events are fired individually.
--   We won't mutate our users' databases - no metadata.
--   All events are sent (for example, if node created and then deleted, we get both events).
--   Database transactions must be successful - no optimisticness.
--   Garbage collection of old subscriptions.
--   Some form of auth validation.
--   `@neo4j/graphql` should still run on browser
+* Subscribe to the following events:
+  * CREATE
+  * UPDATE
+  * DELETE
+* Ability to filter which nodes are subscribed to (i.e. `where` clause).
+* Ability to horizontally scale - either now, or able to do so without breaking in the future.
+* Wherever possible, events are ordered.
+* Events are fired individually.
+* We won't mutate our users' databases - no metadata.
+* All events are sent (for example, if node created and then deleted, we get both events).
+* Database transactions must be successful - no optimisticness.
+* Garbage collection of old subscriptions.
+* Some form of auth validation.
+* `@neo4j/graphql` should still run on browser
 
 ## Should have
 
--   To subscribe to the following events:
-    -   CONNECT
-    -   DISCONNECT
--   Relationship property updates
+* To subscribe to the following events:
+  * CONNECT
+  * DISCONNECT
+* Relationship property updates
 
 ## Could have
 
--   Subscriptions to Interface and Union types
--   OGM support
--   We return "full objects" including nested relationships (for example, a movie subscription must return type `Movie` with nested `actors`)
+* Subscriptions to Interface and Union types
+* OGM support
+* We return "full objects" including nested relationships (for example, a movie subscription must return type `Movie` with nested `actors`)
 
 ## Won't have
 
--   Events from changes outside of GraphQL
--   Events triggered from custom Cypher
--   Support for subscriptions on browser
+* Events from changes outside of GraphQL
+* Events triggered from custom Cypher
+* Support for subscriptions on browser
 
 # Proposed Solution
 
@@ -199,9 +199,9 @@ Events `connect` and `disconnect` should be available to provide support for sub
 
 These events should contain the following information:
 
--   The connected/disconnected relationship properties
--   Source and target nodes with the top level properties
--   Relationship name: This should, somehow, map to the name given to the property. The internal relationship type should **not** be used.
+* The connected/disconnected relationship properties
+* Source and target nodes with the top level properties
+* Relationship name: This should, somehow, map to the name given to the property. The internal relationship type should **not** be used.
 
 Assuming the following typedefs:
 
@@ -230,14 +230,14 @@ interface Follows @relationshipProperties {
 
 All of the subscriptions are attached to nodes, the events will trigger whenever a connection is made or destroyed to that node respectively. For these events, the following rules apply:
 
--   An event will be triggered for all relationship fields connected, meaning that a connection can trigger up to 2 events (source and target nodes)
--   Only connections with a relationship defined in the schema will be triggered
+* An event will be triggered for all relationship fields connected, meaning that a connection can trigger up to 2 events (source and target nodes)
+* Only connections with a relationship defined in the schema will be triggered
 
 For example, the following connections will trigger these events:
 
--   Actor - movies: Will trigger 2 events (actor-movies, movie-actors)
--   Actor - follows: Will trigger 2 events (actor-follows, actors-followedBy)
--   Movie - director: Will trigger 1 event (movie-director), the opposite will not be triggered as it is not defined in Actor type
+* Actor - movies: Will trigger 2 events (actor-movies, movie-actors)
+* Actor - follows: Will trigger 2 events (actor-follows, actors-followedBy)
+* Movie - director: Will trigger 1 event (movie-director), the opposite will not be triggered as it is not defined in Actor type
 
 **Payload - current version**
 
@@ -373,7 +373,7 @@ The subscription operation (`actorConnected`/ `actorDisconnected`) is now split 
 
 Examples:
 
--   _Created_ connection
+* _Created_ connection
 
 ```graphql
 subscription {
@@ -403,7 +403,7 @@ subscription {
 }
 ```
 
--   _Updated_ connection - _out of scope for now_
+* _Updated_ connection - _out of scope for now_
 
 ```graphql
 subscription {
@@ -452,7 +452,7 @@ subscription {
 }
 ```
 
--   _Deleted_ connection
+* _Deleted_ connection
 
 ```graphql
 subscription {
@@ -486,17 +486,17 @@ subscription {
 
 Filtering can be done with a `where` input field that will have the following properties
 
--   `actor`: Filter of top level properties of the node (e.g. `actor`) from which the subscription is done
--   All of the `relationships` can be filtered either by related node or properties, by using the same properties as in the payload, only top-level properties of the related node can be filtered
--   By providing the relationship field name inside the `relationship` field, connection events of the type, properties and direction specified in the `@relationship` directive which the field is annotated with will be triggered.Logic is:
-    -   if no fields are specified, everything is included
-    -   if some fields are specified, **only** those are included
-    -   if filtering operations (eg. _name_NOT_) are specified, they are taken into account
-    -   if no filtering operation is specified, everything that complies is included
-    -   the same holds for all levels of granularity:
-        -   relationship field names inside the `relationship` field: `where: { relationship: { actors: {} } }`
-        -   concrete type names inside a relationship field name related to a Union type: `where: { relationship: { directors: { Person: {} } } }`
-        -   concrete type names inside a (\_on) relationship field name related to an Interface type: `where: { relationship: { reviewers: { _on: { Person: {} } } } }`
+* `actor`: Filter of top level properties of the node (e.g. `actor`) from which the subscription is done
+* All of the `relationships` can be filtered either by related node or properties, by using the same properties as in the payload, only top-level properties of the related node can be filtered
+* By providing the relationship field name inside the `relationship` field, connection events of the type, properties and direction specified in the `@relationship` directive which the field is annotated with will be triggered.Logic is:
+  * if no fields are specified, everything is included
+  * if some fields are specified, **only** those are included
+  * if filtering operations (eg. _name_NOT_) are specified, they are taken into account
+  * if no filtering operation is specified, everything that complies is included
+  * the same holds for all levels of granularity:
+    * relationship field names inside the `relationship` field: `where: { relationship: { actors: {} } }`
+    * concrete type names inside a relationship field name related to a Union type: `where: { relationship: { directors: { Person: {} } } }`
+    * concrete type names inside a (\_on) relationship field name related to an Interface type: `where: { relationship: { reviewers: { _on: { Person: {} } } } }`
 
 For instance, for subscribing only to connections of type `ACTED_IN` between types `Movie` and `Actor` as described in the `actors @relationship` annotation we can use the `actors` field:
 
@@ -870,11 +870,11 @@ The input type would look like:
 
 #### Risks and Limitations on connections
 
--   FOREACH on nested Connect, disconnect and delete
--   ConnectOrCreate
--   (out of scope) Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
--   (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
--   (out of scope) Subscription to changes to the relationship properties are out of scope, only creation/deletion of relationships trigger events.
+* FOREACH on nested Connect, disconnect and delete
+* ConnectOrCreate
+* (out of scope) Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
+* (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
+* (out of scope) Subscription to changes to the relationship properties are out of scope, only creation/deletion of relationships trigger events.
 
 #### Cypher Examples
 
@@ -909,24 +909,24 @@ MATCH (this:`Movie`)
 WHERE this.title = $param0
 WITH this { .* } AS oldProps, this, meta
 CALL {
-	WITH *
-	SET this.title = $this_update_title
-	RETURN meta as update_meta
+ WITH *
+ SET this.title = $this_update_title
+ RETURN meta as update_meta
 }
 WITH *, update_meta as meta
 WITH this, meta + { event: "update", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: "Movie" } AS meta
 WITH this, meta
 CALL {
-	WITH this, meta
-	OPTIONAL MATCH (this_connect_actors0_node:Person)
-	WHERE NOT (this_connect_actors0_node.name = $this_connect_actors0_node_param0)
-	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
+ WITH this, meta
+ OPTIONAL MATCH (this_connect_actors0_node:Person)
+ WHERE NOT (this_connect_actors0_node.name = $this_connect_actors0_node_param0)
+ FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+  FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
             MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             >>> Here meta should be updated, however, foreach doesn't allow for return
-		)
-	)
-	RETURN count(*) AS connect_this_connect_actors_Person
+  )
+ )
+ RETURN count(*) AS connect_this_connect_actors_Person
 }
 WITH *
 WITH *
@@ -996,12 +996,12 @@ RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta
 
 With a delete:
 
-1.  Delete (just nodes targeted)
+1. Delete (just nodes targeted)
 
--   match all relationships connected to the node, irrespective of the direction
--   add to meta array via 2 additional properties: nodeLables, otherNodeLabels
--   labels to be transformed to node type via new helper Map data structure of type Map<Set<string>, node> that maps a Set of labels to a node Type, created in the Node.ts file and exported in the context to be used in the translation code
-    -   !! **IMPORTANT** all labels have to be taken into account (check @additionalLabels / @node directives)
+* match all relationships connected to the node, irrespective of the direction
+* add to meta array via 2 additional properties: nodeLables, otherNodeLabels
+* labels to be transformed to node type via new helper Map data structure of type Map<Set<string>, node> that maps a Set of labels to a node Type, created in the Node.ts file and exported in the context to be used in the translation code
+  * !! **IMPORTANT** all labels have to be taken into account (check @additionalLabels / @node directives)
 
 ```cypher
 WITH [] AS meta
@@ -1026,15 +1026,15 @@ Problem: How do we know the direction of the relationship?
 
 Solution 1 (**Prefered**): Remove the need to know the direction in the first place
 
--   Remove any indication of direction from the event properties, given that we don't return it any more. => { event: "connect|disconnect", id_from, id_to, id, properties: {from, to, relationship}, timestamp, relationshipName, fromTypename, toTypename } becomes { event: "connect|disconnect", id_node, id_otherNode, id, properties: {node, otherNode, relationship}, timestamp, relationshipName, nodeTypename, otherNodeTypename } + additional nodeLables, otherNodeLabels
--   Filter-out the events by {id, event} combination before publishing them
+* Remove any indication of direction from the event properties, given that we don't return it any more. => { event: "connect|disconnect", id_from, id_to, id, properties: {from, to, relationship}, timestamp, relationshipName, fromTypename, toTypename } becomes { event: "connect|disconnect", id_node, id_otherNode, id, properties: {node, otherNode, relationship}, timestamp, relationshipName, nodeTypename, otherNodeTypename } + additional nodeLables, otherNodeLabels
+* Filter-out the events by {id, event} combination before publishing them
 
 Solution 2: Using case & startNode
 
--   use startNode(this_relationship) and case st to determine which node has the labels of the startNode => it is the `from` node
--   no need to filter-out from js as DISTINCT will do the job in this case
+* use startNode(this_relationship) and case st to determine which node has the labels of the startNode => it is the `from` node
+* no need to filter-out from js as DISTINCT will do the job in this case
 
-2.  Delete - delete (relationship(s) targeted)
+2. Delete - delete (relationship(s) targeted)
 
 2.1. Legacy foreach impl version
 
@@ -1281,7 +1281,7 @@ class Neo4jGraphQLSubscriptionsLocalPlugin extends Neo4jGraphQLSubscriptionsPlug
 And in rough pseudocode, an implementation of this using an AMQP broker would look roughly like:
 
 ```ts
-class Neo4jGraphQLSubscriptionsAMQPPlugin extends Neo4jGraphQLSubscriptionsPlugin {
+class Neo4jGraphQLAMQPSubscriptionsEngine extends Neo4jGraphQLSubscriptionsPlugin {
     private amqpConnection;
 
     public publish(eventMeta: SubscriptionsEvent) {
@@ -1402,13 +1402,13 @@ subscription SubscribeToMatrix {
 This will subscribe to any newly created movie with the title "The Matrix".
 The proposed filters should mimic, as possible, the `query` where filters, Including support for:
 
--   `OR`.
--   `AND`.
--   `_IN`, `_NOT_IN`.
--   `_CONTAINS`, `_NOT_CONTAINS`.
--   `_STARTS_WITH`, `_ENDS_WITH` and `_NOT` equivalents.
--   `_LT`, `_LTE`, `_GT`, `_GTE`.
--   `_MATCHES`.
+* `OR`.
+* `AND`.
+* `_IN`, `_NOT_IN`.
+* `_CONTAINS`, `_NOT_CONTAINS`.
+* `_STARTS_WITH`, `_ENDS_WITH` and `_NOT` equivalents.
+* `_LT`, `_LTE`, `_GT`, `_GTE`.
+* `_MATCHES`.
 
 > Due to limitations on filtering, only root level fields can be filtered, aggregations, connections and relationships are out of scope.
 
@@ -1450,8 +1450,8 @@ mutation Mutation {
 
 To support use cases for subscriptions to an updated value, update subscriptions should also provide filters targeting the new value by prepending `NEW`, for instance:
 
--   `NEW_title`.
--   `NEW_title_GT`.
+* `NEW_title`.
+* `NEW_title_GT`.
 
 This would allow for subscriptions such as:
 
@@ -1509,9 +1509,9 @@ this where not being sent.
 
 The following should be available along with the data payload:
 
--   **event**: The event that triggered this event (`CREATE`, `UPDATE`, `DELETE`)
--   **timestamp**: The timestamp the event was generated, this may be needed to ensure order consistency on horizontal scaled subscriptions.
--   **previousState** (only for updates): State of the node before the modification.
+* **event**: The event that triggered this event (`CREATE`, `UPDATE`, `DELETE`)
+* **timestamp**: The timestamp the event was generated, this may be needed to ensure order consistency on horizontal scaled subscriptions.
+* **previousState** (only for updates): State of the node before the modification.
 
 ## Nested fields
 
@@ -1532,17 +1532,17 @@ The plugin implementing eventEmitter is a flexible enough solution as to allow u
 
 The following list contains an incomplete list of providers that could be supported
 
--   [Redis](https://redis.io/)
--   [RabbitMQ](https://www.rabbitmq.com/) & AMQP
--   [Kafka](https://kafka.apache.org/)
--   [PostgreSQL](https://www.postgresql.org/) (through [pg-ipc](https://www.npmjs.com/package/pg-ipc))
--   [Amazon SQS](https://aws.amazon.com/sqs/)
--   [Google PubSub](https://cloud.google.com/pubsub)
+* [Redis](https://redis.io/)
+* [RabbitMQ](https://www.rabbitmq.com/) & AMQP
+* [Kafka](https://kafka.apache.org/)
+* [PostgreSQL](https://www.postgresql.org/) (through [pg-ipc](https://www.npmjs.com/package/pg-ipc))
+* [Amazon SQS](https://aws.amazon.com/sqs/)
+* [Google PubSub](https://cloud.google.com/pubsub)
 
 We should also leverage existing PubSub implementations to these services, some of those deprecated, but well known:
 
--   [graphql-subscriptions](https://github.com/apollographql/graphql-subscriptions)
--   [yoga](https://www.graphql-yoga.com/docs/features/subscriptions)
+* [graphql-subscriptions](https://github.com/apollographql/graphql-subscriptions)
+* [yoga](https://www.graphql-yoga.com/docs/features/subscriptions)
 
 ## Subscriptions transports
 
@@ -1564,20 +1564,20 @@ The addition of subscriptions creates a new entry top-level access for the datab
 
 Additionally, by the real-time nature of subscriptions, a few extra considerations need to be taken into account:
 
--   **Denial of service attacks**: Real time updates are susceptible to DOS attacks, as any query may trigger a large number of subscriptions.
--   **Wss**: We need to ensure that our documentation and library is compatible with WebSocket Secure (WSS).
--   Other transports risks: Any new transport (e.g. SSE) may pose new security risks that need to be addressed per case.
+* **Denial of service attacks**: Real time updates are susceptible to DOS attacks, as any query may trigger a large number of subscriptions.
+* **Wss**: We need to ensure that our documentation and library is compatible with WebSocket Secure (WSS).
+* Other transports risks: Any new transport (e.g. SSE) may pose new security risks that need to be addressed per case.
 
 > Due to these security considerations, any form of subscriptions must be opt-in for new and existing users.
 
 # Risks
 
--   Maintaining order of events being fired
-    -   For a single instance this can be guaranteed. On multiple-servers implementations, broker network may lead to unordered events in some cases. The addition of timestamps to the payload would be beneficial in these cases.
--   Ensure consistency of events data with data in the database
--   Make sure it works across popular PubSub Engine implementations (for example <https://www.apollographql.com/docs/apollo-server/data/subscriptions/#production-pubsub-libraries>)
--   Make sure it works with `@auth` directive - users shouldn't be able to listen to events for types they can't access
--   Efficiency of Cypher queries - do we fetch all properties of a node and allow GraphQL runtime to filter down, or only the properties in the selection set?
+* Maintaining order of events being fired
+  * For a single instance this can be guaranteed. On multiple-servers implementations, broker network may lead to unordered events in some cases. The addition of timestamps to the payload would be beneficial in these cases.
+* Ensure consistency of events data with data in the database
+* Make sure it works across popular PubSub Engine implementations (for example <https://www.apollographql.com/docs/apollo-server/data/subscriptions/#production-pubsub-libraries>)
+* Make sure it works with `@auth` directive - users shouldn't be able to listen to events for types they can't access
+* Efficiency of Cypher queries - do we fetch all properties of a node and allow GraphQL runtime to filter down, or only the properties in the selection set?
 
 # Discarded solutions
 

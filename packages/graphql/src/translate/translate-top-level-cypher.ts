@@ -17,30 +17,25 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { Context, CypherField } from "../types";
-import { createAuthAndParams } from "./create-auth-and-params";
+import type { CypherField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
-import createAuthParam from "./create-auth-param";
 import { CompositeEntity } from "../schema-model/entity/CompositeEntity";
 import { Neo4jGraphQLError } from "../classes";
 import { filterByValues } from "./authorization/utils/filter-by-values";
 import { compileCypher } from "../utils/compile-cypher";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateTopLevelCypher({
     context,
-    info,
     field,
     args,
     type,
     statement,
 }: {
-    context: Context;
-    info: GraphQLResolveInfo;
+    context: Neo4jGraphQLTranslationContext;
     field: CypherField;
     args: any;
     statement: string;
@@ -68,23 +63,12 @@ export function translateTopLevelCypher({
         }
     }
 
-    context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
-    let params = {
-        ...args,
-        auth: createAuthParam({ context }),
-        cypherParams: context.cypherParams,
-    };
+    let params = args;
     if (statement.includes("$jwt")) {
         params.jwt = context.authorization.jwtParam.value;
     }
     const cypherStrs: string[] = [];
-
-    const { cypher: authCypher, params: authParams } = createAuthAndParams({ entity: field, context });
-    if (authCypher) {
-        params = { ...params, ...authParams };
-        cypherStrs.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-    }
 
     let projectionStr;
     const projectionAuthStrs: Cypher.Predicate[] = [];
@@ -98,7 +82,6 @@ export function translateTopLevelCypher({
         const {
             projection: str,
             params: p,
-            meta,
             subqueries,
             subqueriesBeforeSort,
             predicates,
@@ -112,10 +95,6 @@ export function translateTopLevelCypher({
         projectionStr = str;
         projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
-
-        if (meta.authValidatePredicates?.length) {
-            projectionAuthStrs.push(...projectionAuthStrs, Cypher.and(...meta.authValidatePredicates));
-        }
 
         if (predicates.length) {
             projectionValidatePredicates.push(...predicates);
@@ -153,7 +132,6 @@ export function translateTopLevelCypher({
                     const {
                         projection: str,
                         params: p,
-                        meta,
                         subqueries,
                         predicates,
                     } = createProjectionAndParams({
@@ -165,9 +143,6 @@ export function translateTopLevelCypher({
                     });
                     projectionSubqueries.push(...subqueries);
                     params = { ...params, ...p };
-                    if (meta.authValidatePredicates?.length) {
-                        projectionAuthStrs.push(Cypher.and(...meta.authValidatePredicates));
-                    }
                     if (predicates.length) {
                         projectionValidatePredicates.push(...predicates);
                     }
@@ -188,8 +163,6 @@ export function translateTopLevelCypher({
         );
     }
 
-    const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-
     // Null default argument values are not passed into the resolve tree therefore these are not being passed to
     // `apocParams` below causing a runtime error when executing.
     const nullArgumentValues = field.arguments.reduce(
@@ -201,39 +174,28 @@ export function translateTopLevelCypher({
     );
 
     const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
-        (result: { strs: string[]; params: { [key: string]: unknown } }, entry) => ({
-            strs: [...result.strs, `${entry[0]}: $${entry[0]}`],
+        (result: { params: { [key: string]: unknown } }, entry) => ({
             params: { ...result.params, [entry[0]]: entry[1] },
         }),
-        { strs: initApocParamsStrs, params }
+        { params }
     );
-
-    if (statement.includes("$jwt")) {
-        apocParams.strs.push("jwt: $jwt");
-    }
 
     params = { ...params, ...apocParams.params };
 
-    const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
-
     if (type === "Query") {
-        if (field.columnName) {
-            const experimentalCypherStatement = createCypherDirectiveSubquery({
-                field,
-            });
-            cypherStrs.push(...experimentalCypherStatement);
-        } else {
-            const legacyCypherStatement = createCypherDirectiveApocProcedure({
-                field,
-                apocParams: apocParamsStr,
-            });
-            cypherStrs.push(...legacyCypherStatement);
-        }
+        const cypherStatement = createCypherDirectiveSubquery({
+            field,
+        });
+        cypherStrs.push(...cypherStatement);
     } else {
+        const columnName = field.columnName;
         cypherStrs.push(`
-            CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH [k in keys(value) | value[k]][0] AS this
-            `);
+            CALL {
+                ${statement}
+            }
+            WITH ${columnName} AS this
+        
+        `);
     }
 
     if (unionWhere.length) {
@@ -273,27 +235,6 @@ export function translateTopLevelCypher({
         }
         return [cypherStrs.join("\n"), params];
     }).build();
-}
-
-function createCypherDirectiveApocProcedure({
-    field,
-    apocParams,
-}: {
-    field: CypherField;
-    apocParams: string;
-}): string[] {
-    const isArray = field.typeMeta.array;
-    const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-    const cypherStrs: string[] = [];
-
-    if (expectMultipleValues) {
-        cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${field.statement}", ${apocParams}) as x`);
-    } else {
-        cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${field.statement}", ${apocParams}) as x`);
-    }
-
-    cypherStrs.push("UNWIND x as this\nWITH this");
-    return cypherStrs;
 }
 
 function createCypherDirectiveSubquery({ field }: { field: CypherField }): string[] {

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -26,8 +27,10 @@ import type {
     TypeNode,
     GraphQLDirective,
     GraphQLNamedType,
+    EnumTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
-import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
 import pluralize from "pluralize";
 import * as scalars from "../../graphql/scalars";
 import * as directives from "../../graphql/directives";
@@ -38,28 +41,30 @@ import { PointInput } from "../../graphql/input-objects/PointInput";
 import { CartesianPointInput } from "../../graphql/input-objects/CartesianPointInput";
 import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
-import { RESERVED_TYPE_NAMES } from "../../constants";
 import { isRootType } from "../../utils/is-root-type";
-import type { Neo4jFeaturesSettings } from "../../types";
+import { validateSchemaCustomizations } from "./validate-schema-customizations";
+import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
+import { validateSDL } from "./validate-sdl";
+import { specifiedSDLRules } from "graphql/validation/specifiedRules";
+import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
+import {
+    DirectiveCombinationValid,
+    SchemaOrTypeDirectives,
+} from "./custom-rules/valid-types/valid-directive-combination";
+import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
+import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
+import { ReservedTypeNames } from "./custom-rules/valid-types/reserved-type-names";
+import { ValidRelayID } from "./custom-rules/features/valid-relay-id";
+import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
+import { ValidDirectiveInheritance } from "./custom-rules/valid-types/directive-multiple-inheritance";
+import { directiveIsValid } from "./custom-rules/directives/valid-directive";
+import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
+import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
+import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
-            if (
-                definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
-                definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
-                definition.kind === Kind.INTERFACE_TYPE_DEFINITION ||
-                definition.kind === Kind.UNION_TYPE_DEFINITION ||
-                definition.kind === Kind.ENUM_TYPE_DEFINITION ||
-                definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
-            ) {
-                RESERVED_TYPE_NAMES.forEach((reservedName) => {
-                    if (reservedName.regex.test(definition.name.value)) {
-                        throw new Error(reservedName.error);
-                    }
-                });
-            }
-
             if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 if (!isRootType(definition)) {
                     return true;
@@ -131,12 +136,6 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 return {
                     ...field,
                     arguments: filterInputTypes(field.arguments),
-                    directives: field.directives?.filter(
-                        (directive) =>
-                            !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
-                                directive.name.value
-                            )
-                    ),
                 };
             });
     };
@@ -161,8 +160,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             }
 
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION || def.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-                const fields = filterFields(def.fields, features);
+                if (!def.fields?.length) {
+                    return [...res, def];
+                }
 
+                const fields = filterFields(def.fields, features);
                 if (!fields?.length) {
                     return res;
                 }
@@ -180,12 +182,6 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     ...res,
                     {
                         ...def,
-                        directives: def.directives?.filter(
-                            (x) =>
-                                !["auth", "authentication", "authorization", "subscriptionsAuthorization"].includes(
-                                    x.name.value
-                                )
-                        ),
                         fields,
                     },
                 ];
@@ -201,13 +197,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                     );
                 }
 
-                return [
-                    ...res,
-                    {
-                        ...def,
-                        directives: def.directives?.filter((x) => !["authentication"].includes(x.name.value)),
-                    },
-                ];
+                return [...res, def];
             }
 
             return [...res, def];
@@ -215,21 +205,72 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
     };
 }
 
+function runValidationRulesOnFilteredDocument({
+    schema,
+    document,
+    extra,
+    callbacks,
+}: {
+    schema: GraphQLSchema;
+    document: DocumentNode;
+    extra: {
+        enums?: EnumTypeDefinitionNode[];
+        interfaces?: InterfaceTypeDefinitionNode[];
+        unions?: UnionTypeDefinitionNode[];
+        objects?: ObjectTypeDefinitionNode[];
+    };
+    callbacks?: Neo4jGraphQLCallbacks;
+}) {
+    const errors = validateSDL(
+        document,
+        [
+            ...specifiedSDLRules,
+            directiveIsValid(extra, callbacks),
+            ValidDirectiveAtFieldLocation,
+            DirectiveCombinationValid,
+            SchemaOrTypeDirectives,
+            ValidJwtDirectives,
+            ValidRelayID,
+            ValidRelationshipProperties,
+            ValidFieldTypes,
+            ReservedTypeNames,
+            ValidObjectType,
+            ValidDirectiveInheritance,
+            DirectiveArgumentOfCorrectType(false),
+        ],
+        schema
+    );
+    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+    if (filteredErrors.length) {
+        throw filteredErrors;
+    }
+}
+
 function validateDocument({
     document,
     features,
-    additionalDirectives = [],
-    additionalTypes = [],
+    additionalDefinitions,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
-    additionalDirectives?: Array<GraphQLDirective>;
-    additionalTypes?: Array<GraphQLNamedType>;
+    additionalDefinitions: {
+        additionalDirectives?: Array<GraphQLDirective>;
+        additionalTypes?: Array<GraphQLNamedType>;
+        enums?: EnumTypeDefinitionNode[];
+        interfaces?: InterfaceTypeDefinitionNode[];
+        unions?: UnionTypeDefinitionNode[];
+        objects?: ObjectTypeDefinitionNode[];
+    };
 }): void {
-    const doc = filterDocument(document, features);
-
+    const filteredDocument = filterDocument(document, features);
+    const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
     const schemaToExtend = new GraphQLSchema({
-        directives: [...Object.values(directives), ...specifiedDirectives, ...additionalDirectives],
+        directives: [
+            ...Object.values(directives),
+            ...typeDependantDirectivesScaffolds,
+            ...specifiedDirectives,
+            ...(additionalDirectives || []),
+        ],
         types: [
             ...Object.values(scalars),
             Point,
@@ -239,19 +280,28 @@ function validateDocument({
             CartesianPointInput,
             CartesianPointDistance,
             SortDirection,
-            ...additionalTypes,
+            ...(additionalTypes || []),
         ],
     });
 
-    const schema = extendSchema(schemaToExtend, doc);
+    runValidationRulesOnFilteredDocument({
+        schema: schemaToExtend,
+        document: filteredDocument,
+        extra,
+        callbacks: features?.populatedBy?.callbacks,
+    });
+
+    const schema = extendSchema(schemaToExtend, filteredDocument);
 
     const errors = validateSchema(schema);
-
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
-
     if (filteredErrors.length) {
-        throw new Error(filteredErrors.join("\n"));
+        throw filteredErrors;
     }
+
+    // TODO: how to improve this??
+    // validates `@customResolver`
+    validateSchemaCustomizations({ document, schema });
 }
 
 export default validateDocument;

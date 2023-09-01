@@ -27,7 +27,6 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let bookmarks: string[];
     let token: string;
 
     const BacentaType = new UniqueType("Bacenta");
@@ -48,19 +47,20 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     statement: """
                     MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                     RETURN COUNT(member) > 0 AS markedAttendance
-                    """
+                    """,
+                    columnName: "markedAttendance"
                 )
             serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
 
         interface Church {
-            id: ID @id
+            id: ID @id 
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
         }
 
         type ${BacentaType} implements Church @authentication {
-            id: ID @id
+            id: ID @id @unique
             name: String!
             serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
             bussing(limit: Int!): [${BussingRecordType}!]!
@@ -70,6 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     WITH DISTINCT records, date LIMIT $limit
                     RETURN records ORDER BY date.date DESC
                     """
+                    columnName: "records"
                 )
         }
 
@@ -85,7 +86,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     statement: """
                     MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                     RETURN COUNT(member) > 0 AS markedAttendance
-                    """
+                    """,
+                    columnName: "markedAttendance"
                 )
             serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
@@ -107,7 +109,6 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 RETURN p;
                 `
             );
-            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -160,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();
@@ -214,7 +215,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 variableValues: {
                     id: 1,
                 },
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();

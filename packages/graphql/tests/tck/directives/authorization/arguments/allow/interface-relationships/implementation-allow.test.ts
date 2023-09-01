@@ -95,18 +95,18 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:\`Comment\`)
+                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                     WITH this1 { __resolveType: \\"Comment\\", __id: id(this), .id, .content } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_CONTENT]->(this4:\`Post\`)
-                    OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:\`User\`)
+                    MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
+                    OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
                     WITH *, count(this5) AS creatorCount
                     WITH *
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -154,26 +154,26 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:\`Comment\`)
+                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                     WHERE this1.id = $param1
                     WITH this1 { __resolveType: \\"Comment\\", __id: id(this) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)-[this3:HAS_CONTENT]->(this4:\`Post\`)
-                    OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:\`User\`)
+                    MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
+                    OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
                     WITH *, count(this5) AS creatorCount
                     WITH *
                     WHERE (this4.id = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     CALL {
                         WITH this4
-                        MATCH (this4)-[this6:HAS_COMMENT]->(this7:\`Comment\`)
+                        MATCH (this4)-[this6:HAS_COMMENT]->(this7:Comment)
                         WHERE this7.id = $param5
                         WITH this7 { .content } AS this7
                         RETURN collect(this7) AS var8
@@ -224,7 +224,7 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -239,14 +239,14 @@ describe("@auth allow on specific interface implementation", () => {
             		WITH this_content0
             		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
             		WITH count(this_content0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
             		RETURN c AS this_content0_creator_User_unique_ignored
             	}
             	CALL {
             		WITH this_content0
             		MATCH (this_content0)<-[this_content0_post_Post_unique:HAS_COMMENT]-(:Post)
             		WITH count(this_content0_post_Post_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
             		RETURN c AS this_content0_post_Post_unique_ignored
             	}
             	RETURN count(*) AS update_this_content0
@@ -259,7 +259,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_this0:User)
             	WITH *, count(authorization_this0) AS creatorCount
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	SET this_content0.id = $this_update_content0_id
@@ -268,7 +268,7 @@ describe("@auth allow on specific interface implementation", () => {
             		WITH this_content0
             		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
             		WITH count(this_content0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_content0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_content0
@@ -280,13 +280,13 @@ describe("@auth allow on specific interface implementation", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:HAS_CONTENT]->(update_this1:\`Comment\`)
+                    MATCH (this)-[update_this0:HAS_CONTENT]->(update_this1:Comment)
                     WITH update_this1 { __resolveType: \\"Comment\\", __id: id(this), .id } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:HAS_CONTENT]->(update_this4:\`Post\`)
-                    OPTIONAL MATCH (update_this4)<-[:HAS_CONTENT]-(update_this5:\`User\`)
+                    MATCH (this)-[update_this3:HAS_CONTENT]->(update_this4:Post)
+                    OPTIONAL MATCH (update_this4)<-[:HAS_CONTENT]-(update_this5:User)
                     WITH *, count(update_this5) AS creatorCount
                     WITH *
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND update_this5.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -330,29 +330,33 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
-            WITH this
+            WITH *
+            CALL {
+            WITH *
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WHERE this_content_Comment0.id = $this_deleteUsers_args_delete_content0_where_this_content_Comment0param0
-            WITH this, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
+            WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
             CALL {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
             }
-            WITH this
-            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
-            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            }
+            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
+            CALL {
+            WITH *
+            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WHERE this_content_Post0.id = $this_deleteUsers_args_delete_content0_where_this_content_Post0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
+            WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             DETACH DELETE this"
         `);
@@ -405,7 +409,7 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -417,14 +421,13 @@ describe("@auth allow on specific interface implementation", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -432,7 +435,6 @@ describe("@auth allow on specific interface implementation", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
@@ -497,7 +499,7 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -509,14 +511,13 @@ describe("@auth allow on specific interface implementation", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -524,12 +525,11 @@ describe("@auth allow on specific interface implementation", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_content0
             OPTIONAL MATCH (this_disconnect_content0)-[this_disconnect_content0_comments0_rel:HAS_COMMENT]->(this_disconnect_content0_comments0:Comment)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WHERE this_disconnect_content0_comments0.id = $updateUsers_args_disconnect_content0_disconnect__on_Post0_comments0_where_Comment_this_disconnect_content0_comments0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
@@ -537,7 +537,6 @@ describe("@auth allow on specific interface implementation", () => {
             	WITH collect(this_disconnect_content0_comments0) as this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel, this_disconnect_content0
             	UNWIND this_disconnect_content0_comments0 as x
             	DELETE this_disconnect_content0_comments0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_content0_comments_Comment
             }
@@ -614,7 +613,7 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -629,9 +628,7 @@ describe("@auth allow on specific interface implementation", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content0_node
             	RETURN count(*) AS connect_this_connect_content_Comment
@@ -639,7 +636,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_content1_node:Post)
-            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
@@ -650,9 +647,7 @@ describe("@auth allow on specific interface implementation", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content1_node
             	RETURN count(*) AS connect_this_connect_content_Post

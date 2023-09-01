@@ -22,7 +22,6 @@ import type {
     DefinitionNode,
     DocumentNode,
     GraphQLScalarType,
-    InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
@@ -31,39 +30,35 @@ import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import type { Node } from "../classes";
-import type Relationship from "../classes/Relationship";
-import * as constants from "../constants";
-import * as Scalars from "../graphql/scalars";
-import type { BaseField, Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../types";
-import { isRootType } from "../utils/is-root-type";
-import { upperFirst } from "../utils/upper-first";
-import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
-import { augmentFulltextSchema } from "./augment/fulltext";
-import createConnectionFields from "./create-connection-fields";
-import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
-import { ensureNonEmptyInput } from "./ensure-non-empty-input";
-import getCustomResolvers from "./get-custom-resolvers";
-import { getDefinitionNodes } from "./get-definition-nodes";
-import type { ObjectFields } from "./get-obj-field-meta";
-import getObjFieldMeta from "./get-obj-field-meta";
-import getSortableFields from "./get-sortable-fields";
-import getUniqueFields from "./get-unique-fields";
-import getWhereFields from "./get-where-fields";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
-import { createResolver } from "./resolvers/mutation/create";
-import { deleteResolver } from "./resolvers/mutation/delete";
-import { updateResolver } from "./resolvers/mutation/update";
 import { aggregateResolver } from "./resolvers/query/aggregate";
 import { findResolver } from "./resolvers/query/read";
 import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { createResolver } from "./resolvers/mutation/create";
+import { deleteResolver } from "./resolvers/mutation/delete";
+import { updateResolver } from "./resolvers/mutation/update";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
+import * as Scalars from "../graphql/scalars";
+import type { Node } from "../classes";
+import type Relationship from "../classes/Relationship";
+import createConnectionFields from "./create-connection-fields";
+import getCustomResolvers from "./get-custom-resolvers";
+import type { ObjectFields } from "./get-obj-field-meta";
+import getObjFieldMeta from "./get-obj-field-meta";
+import getSortableFields from "./get-sortable-fields";
 import {
     graphqlDirectivesToCompose,
     objectFieldsToComposeFields,
     objectFieldsToCreateInputFields,
     objectFieldsToUpdateInputFields,
 } from "./to-compose";
+import getUniqueFields from "./get-unique-fields";
+import getWhereFields from "./get-where-fields";
+import { upperFirst } from "../utils/upper-first";
+import { ensureNonEmptyInput } from "./ensure-non-empty-input";
+import { getDefinitionNodes } from "./get-definition-nodes";
 
 // GraphQL type imports
 import type { Subgraph } from "../classes/Subgraph";
@@ -88,6 +83,8 @@ import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-t
 import { addMathOperatorsToITC } from "./math";
 import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import type { BaseField, Neo4jFeaturesSettings } from "../types";
+import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -97,21 +94,15 @@ function makeAugmentedSchema(
     document: DocumentNode,
     {
         features,
-        enableRegex,
-        validateResolvers,
         generateSubscriptions,
-        callbacks,
         userCustomResolvers,
         subgraph,
     }: {
         features?: Neo4jFeaturesSettings;
-        enableRegex?: boolean;
-        validateResolvers?: boolean;
         generateSubscriptions?: boolean;
-        callbacks?: Neo4jGraphQLCallbacks;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
-    } = { validateResolvers: true }
+    } = {}
 ): {
     nodes: Node[];
     relationships: Relationship[];
@@ -119,12 +110,18 @@ function makeAugmentedSchema(
     resolvers: IResolvers;
 } {
     const composer = new SchemaComposer();
+    const callbacks = features?.populatedBy?.callbacks;
 
     let relationships: Relationship[] = [];
 
     const createInfo = composer.createObjectTC(CreateInfo);
     const deleteInfo = composer.createObjectTC(DeleteInfo);
     const updateInfo = composer.createObjectTC(UpdateInfo);
+    [createInfo, deleteInfo, updateInfo].forEach((info) => {
+        info.deprecateFields({
+            bookmark: "This field has been deprecated because bookmarks are now handled by the driver.",
+        });
+    });
     const pageInfo = composer.createObjectTC(PageInfo);
 
     if (subgraph) {
@@ -173,7 +170,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers, validateResolvers });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
         getNodesResult;
@@ -196,29 +193,6 @@ function makeAugmentedSchema(
     const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        const authDirective = (relationship.directives || []).find((x) =>
-            ["auth", "authorization", "authentication"].includes(x.name.value)
-        );
-        if (authDirective) {
-            throw new Error("Cannot have @auth directive on relationship properties interface");
-        }
-
-        relationship.fields?.forEach((field) => {
-            constants.RESERVED_INTERFACE_FIELDS.forEach(([fieldName, message]) => {
-                if (field.name.value === fieldName) {
-                    throw new Error(message);
-                }
-            });
-
-            const forbiddenDirectives = ["auth", "authorization", "authentication", "relationship", "cypher"];
-            forbiddenDirectives.forEach((directive) => {
-                const found = (field.directives || []).find((x) => x.name.value === directive);
-                if (found) {
-                    throw new Error(`Cannot have @${directive} directive on relationship property`);
-                }
-            });
-        });
-
         const relFields = getObjFieldMeta({
             enums: enumTypes,
             interfaces: filteredInterfaceTypes,
@@ -227,7 +201,6 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: relationship,
             callbacks,
-            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -282,7 +255,6 @@ function makeAugmentedSchema(
                 pointFields: relFields.pointFields,
                 primitiveFields: relFields.primitiveFields,
             },
-            enableRegex,
             features,
         });
 
@@ -316,7 +288,6 @@ function makeAugmentedSchema(
             unions: unionTypes,
             obj: interfaceRelationship,
             callbacks,
-            validateResolvers,
         });
 
         if (!pointInTypeDefs) {
@@ -387,7 +358,6 @@ function makeAugmentedSchema(
                 pointFields: interfaceFields.pointFields,
                 primitiveFields: interfaceFields.primitiveFields,
             },
-            enableRegex,
             isInterface: true,
             features,
         });
@@ -635,7 +605,6 @@ function makeAugmentedSchema(
 
         const queryFields = getWhereFields({
             typeName: node.name,
-            enableRegex,
             fields: {
                 temporalFields: node.temporalFields,
                 enumFields: node.enumFields,
@@ -833,11 +802,7 @@ function makeAugmentedSchema(
     });
 
     unionTypes.forEach((union) => {
-        if (!union.types) {
-            throw new Error(`Union ${union.name.value} has no types`);
-        }
-
-        const fields = union.types.reduce((f: Record<string, string>, type) => {
+        const fields = union.types!.reduce((f: Record<string, string>, type) => {
             return { ...f, [type.name.value]: `${type.name.value}Where` };
         }, {});
 
@@ -858,8 +823,8 @@ function makeAugmentedSchema(
     }
 
     ["Mutation", "Query"].forEach((type) => {
-        const objectComposer = composer[type] as ObjectTypeComposer;
-        const cypherType = customResolvers[`customCypher${type}`] as ObjectTypeDefinitionNode;
+        const objectComposer: ObjectTypeComposer = composer[type];
+        const cypherType: ObjectTypeDefinitionNode = customResolvers[`customCypher${type}`];
 
         if (cypherType) {
             const objectFields = getObjFieldMeta({
@@ -870,7 +835,6 @@ function makeAugmentedSchema(
                 unions: unionTypes,
                 objects: objectTypes,
                 callbacks,
-                validateResolvers,
             });
 
             const objectComposeFields = objectFieldsToComposeFields([
@@ -909,7 +873,6 @@ function makeAugmentedSchema(
             unions: unionTypes,
             objects: objectTypes,
             callbacks,
-            validateResolvers,
         });
 
         const baseFields: BaseField[][] = Object.values(objectFields);
@@ -934,21 +897,6 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
 
     let parsedDoc = parse(generatedTypeDefs);
-
-    const emptyObjectsInterfaces = parsedDoc.definitions
-        .filter(
-            (x): x is InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode =>
-                (x.kind === Kind.OBJECT_TYPE_DEFINITION && !isRootType(x)) || x.kind === Kind.INTERFACE_TYPE_DEFINITION
-        )
-        .filter((x) => !x.fields?.length);
-
-    if (emptyObjectsInterfaces.length) {
-        throw new Error(
-            `Objects and Interfaces must have one or more fields: ${emptyObjectsInterfaces
-                .map((x) => x.name.value)
-                .join(", ")}`
-        );
-    }
 
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);

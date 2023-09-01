@@ -42,7 +42,7 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Movie {
-              id: ID! @id
+              id: ID! @id @unique
               name: String
             }
         `;
@@ -64,7 +64,7 @@ describe("@id directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -109,7 +109,7 @@ describe("@id directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -128,12 +128,12 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Genre {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
 
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
@@ -168,7 +168,7 @@ describe("@id directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -188,17 +188,17 @@ describe("@id directive", () => {
 
         const typeDefs = `
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 id: ID! @id
                 screenTime: Int!
             }
 
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }

@@ -37,7 +37,7 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someLocalDateTime: LocalDateTime
                 someLocalDateTimeAlias: LocalDateTime @alias(property: "_someLocalDateTimeAlias")
             }
@@ -60,10 +60,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someLocalDateTime) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -98,10 +98,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0._someLocalDateTimeAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -136,10 +136,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someLocalDateTime) WHERE var2 > $param0) AS var3
             }
             WITH *
@@ -174,10 +174,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someLocalDateTime) WHERE var2 >= $param0) AS var3
             }
             WITH *
@@ -212,10 +212,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someLocalDateTime) WHERE var2 < $param0) AS var3
             }
             WITH *
@@ -250,10 +250,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someLocalDateTime) WHERE var2 <= $param0) AS var3
             }
             WITH *
@@ -288,10 +288,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someLocalDateTime) = $param0 AS var2
             }
             WITH *
@@ -326,10 +326,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someLocalDateTime) > $param0 AS var2
             }
             WITH *
@@ -364,10 +364,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someLocalDateTime) >= $param0 AS var2
             }
             WITH *
@@ -402,10 +402,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someLocalDateTime) < $param0 AS var2
             }
             WITH *
@@ -440,10 +440,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someLocalDateTime) <= $param0 AS var2
             }
             WITH *
@@ -478,10 +478,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someLocalDateTime) = $param0 AS var2
             }
             WITH *
@@ -516,10 +516,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someLocalDateTime) > $param0 AS var2
             }
             WITH *
@@ -554,10 +554,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someLocalDateTime) >= $param0 AS var2
             }
             WITH *
@@ -592,10 +592,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someLocalDateTime) < $param0 AS var2
             }
             WITH *
@@ -630,10 +630,10 @@ describe("Cypher Aggregations where edge with LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someLocalDateTime) <= $param0 AS var2
             }
             WITH *

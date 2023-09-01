@@ -43,6 +43,7 @@ describe("Cypher Alias", () => {
                         MATCH (m:Movie)
                         RETURN m
                         """
+                        columnName: "m"
                     )
             }
         `;
@@ -70,29 +71,27 @@ describe("Cypher Alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH this1 { aliasActorsName: this1.name } AS this1
                 RETURN collect(this1) AS var2
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie)
-                RETURN m\\", { this: this, auth: $auth }) AS this3
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (m:Movie)
+                    RETURN m
+                }
+                WITH m AS this3
                 RETURN collect(this3 { aliasCustomId: this3.id }) AS this3
             }
             RETURN this { movieId: this.id, actors: var2, custom: this3 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

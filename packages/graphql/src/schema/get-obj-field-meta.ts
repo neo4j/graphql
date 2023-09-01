@@ -29,18 +29,16 @@ import type {
     StringValueNode,
     EnumValueNode,
     UnionTypeDefinitionNode,
-    ValueNode,
     DirectiveNode,
 } from "graphql";
 import { Kind } from "graphql";
-import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
-import getCustomResolverMeta from "./get-custom-resolver-meta";
+import { getCustomResolverMeta } from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
-import { SCALAR_TYPES } from "../constants";
+import { SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../constants";
 import type {
     RelationField,
     CypherField,
@@ -61,16 +59,10 @@ import type {
     SettableOptions,
     FilterableOptions,
 } from "../types";
-import parseValueNode from "../schema-model/parser/parse-value-node";
-import checkDirectiveCombinations from "./check-directive-combinations";
+import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import { upperFirst } from "../utils/upper-first";
-import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
-import { parseArguments } from "../schema-model/parser/utils";
-
-const deprecationWarning =
-    "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead." +
-    "More information can be found at " +
-    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_callback_renamed_to_populatedby.";
+import { getPopulatedByMeta } from "./get-populated-by-meta";
+import { parseArgumentsFromUnknownDirective } from "../schema-model/parser/parse-arguments";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -87,8 +79,6 @@ export interface ObjectFields {
     customResolverFields: CustomResolverField[];
 }
 
-let callbackDeprecatedWarningShown = false;
-
 function getObjFieldMeta({
     obj,
     objects,
@@ -98,7 +88,6 @@ function getObjFieldMeta({
     enums,
     callbacks,
     customResolvers,
-    validateResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -106,13 +95,11 @@ function getObjFieldMeta({
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
-    validateResolvers?: boolean;
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
-}) {
+}): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
-    const objIsJwtPayload = (obj.directives || []).find((d) => d.name.value === "jwt");
 
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
@@ -128,31 +115,29 @@ function getObjFieldMeta({
                 ),
             ];
 
-            checkDirectiveCombinations(directives);
-
             if (directives.some((x) => x.name.value === "private")) {
                 return res;
             }
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(
+            const customResolverMeta = getCustomResolverMeta({
                 field,
-                obj,
-                validateResolvers,
+                object: obj,
+                objects,
+                interfaces,
+                unions,
                 customResolvers,
-                interfaceField
-            );
+                interfaceField,
+            });
             const typeMeta = getFieldTypeMeta(field.type);
-            const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
+            const relayIdDirective = directives.find((x) => x.name.value === "relayId");
             const defaultDirective = directives.find((x) => x.name.value === "default");
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
-            const callbackDirective = directives.find((x) => x.name.value === "callback");
             const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
-            const jwtClaimDirective = directives.find((x) => x.name.value === "jwtClaim");
             const selectableDirective = directives.find((x) => x.name.value === "selectable");
             const settableDirective = directives.find((x) => x.name.value === "settable");
             const filterableDirective = directives.find((x) => x.name.value === "filterable");
@@ -163,6 +148,8 @@ function getObjFieldMeta({
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
+            const fieldTemporal = TEMPORAL_SCALAR_TYPES.includes(typeMeta.name);
+            const fieldPoint = SPATIAL_TYPES.includes(typeMeta.name);
 
             const selectableOptions = parseSelectableDirective(selectableDirective);
             const settableOptions = parseSettableDirective(settableDirective);
@@ -181,12 +168,10 @@ function getObjFieldMeta({
                             "relationship",
                             "cypher",
                             "id",
-                            "auth",
                             "authorization",
                             "authentication",
                             "readonly",
                             "writeonly",
-                            "computed",
                             "customResolver",
                             "default",
                             "coalesce",
@@ -200,10 +185,10 @@ function getObjFieldMeta({
                             "settable",
                             "subscriptionsAuthorization",
                             "filterable",
+                            "relayId",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
-                ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
                 readonly:
                     directives.some((d) => d.name.value === "readonly") ||
@@ -218,47 +203,11 @@ function getObjFieldMeta({
                 const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
-                }
-            }
-
-            if (jwtClaimDirective) {
-                if (!objIsJwtPayload) {
-                    throw new Error("@jwtClaim directive can only be used on fields within a type annotated with @jwt");
-                }
-                if ((field.directives as DirectiveNode[]).length > 1) {
-                    throw new Error("@jwtClaim directive cannot be combined with other directives.");
+                    baseField.dbPropertyNameUnescaped = aliasMeta.propertyUnescaped;
                 }
             }
 
             if (relationshipMeta) {
-                if (authDirective) {
-                    throw new Error("cannot have auth directive on a relationship");
-                }
-
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
-                if (aliasDirective) {
-                    throw new Error("@alias directive cannot be used on relationship fields");
-                }
-
-                const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of ${obj.name.value}.${field.name.value} to [${baseField.typeMeta.name}!]!`;
-
-                if (typeMeta.originalType?.kind === Kind.NON_NULL_TYPE) {
-                    if (typeMeta.originalType?.type.kind === Kind.LIST_TYPE) {
-                        if (typeMeta.originalType?.type.type.kind !== Kind.NON_NULL_TYPE) {
-                            throw new Error(msg);
-                        }
-                    }
-                } else if (typeMeta.originalType?.kind === Kind.LIST_TYPE) {
-                    throw new Error(msg);
-                }
-
                 const relationField: RelationField = {
                     ...baseField,
                     ...relationshipMeta,
@@ -351,18 +300,6 @@ function getObjFieldMeta({
                 res.connectionFields.push(connectionField);
                 // }
             } else if (cypherMeta) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
-                if (aliasDirective) {
-                    throw new Error("@alias directive cannot be used on cypher fields");
-                }
-
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
@@ -373,9 +310,6 @@ function getObjFieldMeta({
             } else if (customResolverMeta) {
                 res.customResolverFields.push({ ...baseField, ...customResolverMeta });
             } else if (fieldScalar) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
                 const scalarField: CustomScalarField = {
                     ...baseField,
                 };
@@ -390,23 +324,11 @@ function getObjFieldMeta({
                     const defaultValue = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
                     if (enumField.typeMeta.array) {
-                        if (!defaultValue || !isListValue(defaultValue)) {
-                            throw new Error("@default value on enum list fields must be a list of enums");
-                        }
-
-                        enumField.defaultValue = defaultValue.values.map((v) => {
-                            if (!v || !isEnumValue(v)) {
-                                throw new Error("@default value on enum list fields must be a list of enums");
-                            }
-
-                            return v.value;
+                        enumField.defaultValue = (defaultValue as ListValueNode).values.map((v) => {
+                            return (v as EnumValueNode).value;
                         });
                     } else {
-                        if (!defaultValue || !isEnumValue(defaultValue)) {
-                            throw new Error("@default value on enum fields must be an enum value");
-                        }
-
-                        enumField.defaultValue = defaultValue.value;
+                        enumField.defaultValue = (defaultValue as EnumValueNode).value;
                     }
                 }
 
@@ -414,81 +336,37 @@ function getObjFieldMeta({
                     const coalesceValue = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
                     if (enumField.typeMeta.array) {
-                        if (!coalesceValue || !isListValue(coalesceValue)) {
-                            throw new Error("@coalesce value on enum list fields must be a list of enums");
-                        }
-
-                        enumField.coalesceValue = coalesceValue.values.map((v) => {
-                            if (!v || !isEnumValue(v)) {
-                                throw new Error("@coalesce value on enum list fields must be a list of enums");
-                            }
-
-                            return v.value;
+                        enumField.coalesceValue = (coalesceValue as ListValueNode).values.map((v) => {
+                            return (v as EnumValueNode).value;
                         });
                     } else {
-                        if (!coalesceValue || !isEnumValue(coalesceValue)) {
-                            throw new Error("@coalesce value on enum fields must be an enum value");
-                        }
-
                         // TODO: avoid duplication with primitives
-                        enumField.coalesceValue = `"${coalesceValue.value}"`;
+                        enumField.coalesceValue = `"${(coalesceValue as EnumValueNode).value}"`;
                     }
                 }
 
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
                 const unionField: UnionField = {
                     ...baseField,
                 };
                 res.unionFields.push(unionField);
             } else if (fieldInterface) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
                 res.interfaceFields.push({
                     ...baseField,
                 });
             } else if (fieldObject) {
-                if (defaultDirective) {
-                    throw new Error("@default directive can only be used on primitive type fields");
-                }
-
-                if (coalesceDirective) {
-                    throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
                 const objectField: ObjectField = {
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
             } else {
-                if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
+                if (fieldTemporal) {
                     const temporalField: TemporalField = {
                         ...baseField,
                     };
 
                     if (timestampDirective) {
-                        if (baseField.typeMeta.array) {
-                            throw new Error("cannot auto-generate an array");
-                        }
-
-                        if (!["DateTime", "Time"].includes(typeMeta.name)) {
-                            throw new Error("Cannot timestamp temporal fields lacking time zone information");
-                        }
-
                         const operations = timestampDirective?.arguments?.find((x) => x.name.value === "operations")
                             ?.value as ListValueNode;
 
@@ -501,30 +379,11 @@ function getObjFieldMeta({
 
                     if (defaultDirective) {
                         const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
-
-                        if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
-                            throw new Error(
-                                `Default value for ${obj.name.value}.${temporalField.fieldName} is not a valid DateTime`
-                            );
-                        }
-
                         temporalField.defaultValue = (value as StringValueNode).value;
                     }
 
-                    if (coalesceDirective) {
-                        throw new Error("@coalesce is not supported by DateTime fields at this time");
-                    }
-
                     res.temporalFields.push(temporalField);
-                } else if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
-                    if (defaultDirective) {
-                        throw new Error("@default directive can only be used on primitive type fields");
-                    }
-
-                    if (coalesceDirective) {
-                        throw new Error("@coalesce directive can only be used on primitive type fields");
-                    }
-
+                } else if (fieldPoint) {
                     const pointField: PointField = {
                         ...baseField,
                     };
@@ -539,32 +398,15 @@ function getObjFieldMeta({
                         primitiveField.callback = callback;
                     }
 
-                    if (callbackDirective) {
-                        if (!callbackDeprecatedWarningShown) {
-                            console.warn(deprecationWarning);
-                            callbackDeprecatedWarningShown = true;
-                        }
-                        const callback = getCallbackMeta(callbackDirective, callbacks);
-                        primitiveField.callback = callback;
-                    }
-
                     if (idDirective) {
                         const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");
                         if (!autogenerate || (autogenerate.value as BooleanValueNode).value) {
-                            if (baseField.typeMeta.name !== "ID") {
-                                throw new Error("cannot auto-generate a non ID field");
-                            }
-
-                            if (baseField.typeMeta.array) {
-                                throw new Error("cannot auto-generate an array");
-                            }
-
                             primitiveField.autogenerate = true;
                         }
-                        const global = idDirective.arguments?.find((a) => a.name.value === "global");
-                        if (global) {
-                            primitiveField.isGlobalIdField = true;
-                        }
+                    }
+
+                    if (relayIdDirective) {
+                        primitiveField.isGlobalIdField = true;
                     }
 
                     if (defaultDirective) {
@@ -666,14 +508,6 @@ function getObjFieldMeta({
     ) as ObjectFields;
 }
 
-function isEnumValue(value: ValueNode): value is EnumValueNode {
-    return value.kind === Kind.ENUM;
-}
-
-function isListValue(value: ValueNode): value is ListValueNode {
-    return value.kind === Kind.LIST;
-}
-
 export default getObjFieldMeta;
 
 function parseSelectableDirective(directive: DirectiveNode | undefined): SelectableOptions {
@@ -682,7 +516,7 @@ function parseSelectableDirective(directive: DirectiveNode | undefined): Selecta
         onAggregate: true,
     };
 
-    const args: Partial<SelectableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<SelectableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         onRead: args.onRead ?? defaultArguments.onRead,
@@ -696,7 +530,7 @@ function parseSettableDirective(directive: DirectiveNode | undefined): SettableO
         onUpdate: true,
     };
 
-    const args: Partial<SettableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<SettableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         onCreate: args.onCreate ?? defaultArguments.onCreate,
@@ -710,7 +544,7 @@ function parseFilterableDirective(directive: DirectiveNode | undefined): Filtera
         byAggregate: directive === undefined ? true : false,
     };
 
-    const args: Partial<FilterableOptions> = directive ? parseArguments(directive) : {};
+    const args: Partial<FilterableOptions> = directive ? parseArgumentsFromUnknownDirective(directive) : {};
 
     return {
         byValue: args.byValue ?? defaultArguments.byValue,

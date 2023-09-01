@@ -56,7 +56,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
             extend type User {
                 history: [History]
-                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+                    @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", columnName: "h")
                     @authentication(operations: [READ])
             }
         `;
@@ -83,7 +83,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             RETURN this { .id, .name } AS this"
         `);
 
@@ -107,7 +107,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             RETURN this { .id, .name, .password } AS this"
         `);
 
@@ -131,23 +131,21 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
+                }
+                WITH h AS this0
                 RETURN collect(this0 { .url }) AS this0
             }
             RETURN this { history: this0 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Create Node", async () => {
@@ -170,7 +168,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`User\`)
+                CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id
                 RETURN create_this1
@@ -210,7 +208,7 @@ describe("Cypher Auth isAuthenticated", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`User\`)
+                CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.password = create_var0.password
@@ -249,7 +247,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -281,7 +279,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             SET this.password = $this_update_password
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -313,7 +311,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH this
             CALL {
             	WITH this
@@ -326,9 +324,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_posts0_node
             	RETURN count(*) AS connect_this_connect_posts_Post
@@ -361,7 +357,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WITH this
             CALL {
             WITH this
@@ -371,7 +367,6 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel, this
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
@@ -410,7 +405,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             DETACH DELETE this"
         `);
 
@@ -432,15 +427,17 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            WITH this
+            "MATCH (this:User)
+            WITH *
+            CALL {
+            WITH *
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WITH this, collect(DISTINCT this_posts0) AS this_posts0_to_delete
+            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(*) AS _
+            }
             }
             DETACH DELETE this"
         `);

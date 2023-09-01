@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             interface ResourceEntity {
-                id: ID! @id(autogenerate: false)
+                id: ID!
                 name: String
                 """
                 Allowed resource types (enums)
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type Resource implements ResourceEntity {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 name: String
                 type: ResourceType!
                 externalIds: [ID!]
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -104,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -553,7 +553,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

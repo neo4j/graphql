@@ -50,7 +50,7 @@ describe("composite-where", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int
                 }
             `;
@@ -111,7 +111,7 @@ describe("composite-where", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { movieId, actorName1, screenTime },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -139,7 +139,7 @@ describe("composite-where", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int
                 }
             `;
@@ -200,7 +200,7 @@ describe("composite-where", () => {
                     schema: await neoSchema.getSchema(),
                     source: query,
                     variableValues: { movieId, actorName1, screenTime },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

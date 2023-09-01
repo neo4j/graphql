@@ -74,7 +74,7 @@ describe("Interface Relationships - Update disconnect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             WITH this
@@ -85,7 +85,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
             }
@@ -98,7 +97,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
@@ -151,7 +149,7 @@ describe("Interface Relationships - Update disconnect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             WITH this
@@ -162,7 +160,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_actedIn0
@@ -173,7 +170,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -188,7 +184,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_actedIn0
@@ -199,7 +194,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -266,7 +260,7 @@ describe("Interface Relationships - Update disconnect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             WITH this
@@ -277,7 +271,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_actedIn0
@@ -288,7 +281,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -303,7 +295,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
@@ -377,7 +368,7 @@ describe("Interface Relationships - Update disconnect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             WITH this
             CALL {
             WITH this
@@ -388,7 +379,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_actedIn0
@@ -399,7 +389,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -414,7 +403,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel, this
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*) AS _
             }
             CALL {
             WITH this, this_disconnect_actedIn0
@@ -425,7 +413,6 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel, this_disconnect_actedIn0
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*) AS _
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }

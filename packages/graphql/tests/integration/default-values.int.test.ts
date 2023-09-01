@@ -45,8 +45,9 @@ describe("Default values", () => {
               field(skip: Int = 100): Int
                 @cypher(
                     statement: """
-                    return $skip
-                    """
+                    return $skip as s
+                    """,
+                    columnName: "s"
                 )
             }
         `;
@@ -76,7 +77,7 @@ describe("Default values", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -102,8 +103,9 @@ describe("Default values", () => {
                 field(skip: Int = 100): Int
                 @cypher(
                     statement: """
-                    return $skip
-                    """
+                    return $skip as s
+                    """,
+                    columnName: "s"
                 )
             }
         `;
@@ -122,7 +124,7 @@ describe("Default values", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

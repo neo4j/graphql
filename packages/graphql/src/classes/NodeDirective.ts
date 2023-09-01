@@ -17,32 +17,23 @@
  * limitations under the License.
  */
 
+import dotProp from "dot-prop";
 import { Neo4jGraphQLError } from "./Error";
-import type { Context } from "../types";
-import ContextParser from "../utils/context-parser";
 import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 
 export interface NodeDirectiveConstructor {
-    label?: string;
-    additionalLabels?: string[];
     labels?: string[];
-    plural?: string;
 }
 
 export class NodeDirective {
-    public readonly label: string | undefined;
-    public readonly additionalLabels: string[];
-    public readonly plural: string | undefined;
     public readonly labels: string[];
 
     constructor(input: NodeDirectiveConstructor) {
-        this.label = input.label;
-        this.additionalLabels = input.additionalLabels || [];
-        this.plural = input.plural;
         this.labels = input.labels || [];
     }
 
-    public getLabelsString(typeName: string, context: Context): string {
+    public getLabelsString(typeName: string, context: Neo4jGraphQLContext): string {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
@@ -50,48 +41,35 @@ export class NodeDirective {
         return `:${labels.join(":")}`;
     }
 
-    public getLabels(typeName: string, context: Context): string[] {
-        let labels: string[] = [];
-        if (this.labels.length) {
-            labels = [...this.labels];
-        } else {
-            const mainLabel = this.label || typeName;
-            labels = [mainLabel, ...this.additionalLabels];
-        }
-        // TODO: use when removing label & additionalLabels
-        // const labels = !this.labels.length ? [typeName] : this.labels;
+    public getLabels(typeName: string, context: Neo4jGraphQLContext): string[] {
+        const labels = !this.labels.length ? [typeName] : this.labels;
         return this.mapLabelsWithContext(labels, context);
     }
 
-    private mapLabelsWithContext(labels: string[], context: Context): string[] {
+    private mapLabelsWithContext(labels: string[], context: Neo4jGraphQLContext): string[] {
         return labels.map((label: string) => {
-            const jwtPath = ContextParser.parseTag(label, "jwt");
-            let ctxPath = ContextParser.parseTag(label, "context");
-
-            if (jwtPath) {
-                ctxPath = `jwt.${jwtPath}`;
-            }
-
-            if (ctxPath) {
-                let mappedLabel = ContextParser.getProperty(ctxPath, context);
-                if (mappedLabel) {
-                    return mappedLabel;
+            if (label.startsWith("$")) {
+                // Trim $context. OR $ off the beginning of the string
+                const path = label.substring(label.startsWith("$context") ? 9 : 1);
+                const labelValue = this.searchLabel(context, path);
+                if (!labelValue) {
+                    throw new Error(`Label value not found in context.`);
                 }
-
-                // Try the new authorization path - this will become default in 4.0.0
-                if (jwtPath) {
-                    ctxPath = `authorization.jwt.${jwtPath}`;
-                    mappedLabel = ContextParser.getProperty(ctxPath, context);
-                    if (mappedLabel) {
-                        return mappedLabel;
-                    }
-                }
-
-                throw new Error(`Label value not found in context.`);
+                return labelValue;
             }
 
             return label;
         });
+    }
+
+    private searchLabel(context, path): string | undefined {
+        // Search for the key at the root of the context
+        let labelValue = dotProp.get<string>(context, path);
+        if (!labelValue) {
+            // Search for the key in cypherParams
+            labelValue = dotProp.get<string>(context.cypherParams, path);
+        }
+        return labelValue;
     }
 
     private escapeLabel(label: string): string {

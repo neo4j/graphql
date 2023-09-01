@@ -68,11 +68,11 @@ describe("tck/rfs/022 subquery projection", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
@@ -110,15 +110,15 @@ describe("tck/rfs/022 subquery projection", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
                     CALL {
                         WITH this1
-                        MATCH (this1)-[this2:DIRECTED]->(this3:\`Movie\`)
+                        MATCH (this1)-[this2:DIRECTED]->(this3:Movie)
                         WITH this3 { .title, .released } AS this3
                         RETURN collect(this3) AS var4
                     }
@@ -195,11 +195,11 @@ describe("tck/rfs/022 subquery projection", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Movie\`)
+                "MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE (this1.name = $param1 AND (($isAuthenticated = true AND ($param3 IS NOT NULL AND this1.name = $param3)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.test IS NOT NULL AND this1.name = $jwt.test) AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2

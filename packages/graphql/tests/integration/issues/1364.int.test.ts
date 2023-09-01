@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         return graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
     }
 
@@ -59,15 +59,17 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     @cypher(
                         statement: """
                         MATCH (this)-[:HAS_GENRE]->(genre:${testGenre.name})
-                        RETURN count(DISTINCT genre)
-                        """
+                        RETURN count(DISTINCT genre) as c
+                        """,
+                        columnName: "c"
                     )
                 totalActors: Int!
                     @cypher(
                         statement: """
                         MATCH (this)<-[:ACTED_IN]-(actor:${testActor.name})
-                        RETURN count(DISTINCT actor)
-                        """
+                        RETURN count(DISTINCT actor) as c
+                        """,
+                        columnName: "c"
                     )
             }
 

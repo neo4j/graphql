@@ -39,7 +39,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -75,11 +75,11 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE ((this0.screenTime > $param1 AND this0.screenTime < $param2) AND (this1.firstName = $param3 AND this1.lastName = $param4))
                 WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
                 WITH collect(edge) AS edges
@@ -132,11 +132,11 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE (NOT (this0.screenTime < $param1 AND this0.screenTime > $param2) AND NOT (this1.firstName = $param3 AND this1.lastName = $param4))
                 WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
                 WITH collect(edge) AS edges

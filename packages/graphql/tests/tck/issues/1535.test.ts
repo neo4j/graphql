@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Tenant {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
                 fooBars: [FooBar!]! @relationship(type: "HAS_FOOBARS", direction: OUT)
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
 
             type Screening implements Event {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String
                 beginsAt: DateTime!
             }
@@ -55,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
 
             type FooBar {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
             }
         `;
@@ -80,17 +80,17 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Tenant\`)
+            "MATCH (this:Tenant)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)<-[this0:HOSTED_BY]-(this1:\`Screening\`)
+                    MATCH (this)<-[this0:HOSTED_BY]-(this1:Screening)
                     WITH this1 { __resolveType: \\"Screening\\", __id: id(this), .id } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)<-[this3:HOSTED_BY]-(this4:\`Booking\`)
+                    MATCH (this)<-[this3:HOSTED_BY]-(this4:Booking)
                     WITH this4 { __resolveType: \\"Booking\\", __id: id(this), .id } AS this4
                     RETURN this4 AS var2
                 }

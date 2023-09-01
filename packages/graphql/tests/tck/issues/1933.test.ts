@@ -29,9 +29,9 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Employee {
-                employeeId: ID! @id(autogenerate: false)
-                firstName: String! @readonly
-                lastName: String @readonly
+                employeeId: ID! @unique
+                firstName: String! @settable(onCreate: false, onUpdate: false)
+                lastName: String @settable(onCreate: false, onUpdate: false)
                 projects: [Project!]!
                     @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties")
             }
@@ -41,8 +41,8 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
 
             type Project {
-                projectId: ID! @id(autogenerate: false)
-                name: String! @readonly
+                projectId: ID! @unique
+                name: String! @settable(onCreate: false, onUpdate: false)
                 description: String
                 employees: [Employee!]!
                     @relationship(type: "PARTICIPATES", direction: IN, properties: "EmployeeParticipationProperties")
@@ -79,22 +79,22 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Employee\`)
+            "MATCH (this:Employee)
             CALL {
                 WITH this
-                MATCH (this)-[this0:PARTICIPATES]->(this1:\`Project\`)
+                MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
                 RETURN sum(this0.allocation) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:\`Project\`)
+                MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
                 RETURN count(this4) AS var5
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:\`Project\`)
+                MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
                 RETURN { min: min(this3.allocation), max: max(this3.allocation), average: avg(this3.allocation), sum: sum(this3.allocation) }  AS var6
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var6 } } } AS this"
@@ -132,22 +132,22 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Employee\`)
+            "MATCH (this:Employee)
             CALL {
                 WITH this
-                MATCH (this)-[this0:PARTICIPATES]->(this1:\`Project\`)
+                MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
                 RETURN any(var2 IN collect(this0.allocation) WHERE var2 <= $param0) AS var3
             }
             WITH *
             WHERE var3 = true
             CALL {
                 WITH this
-                MATCH (this)-[this4:PARTICIPATES]->(this5:\`Project\`)
+                MATCH (this)-[this4:PARTICIPATES]->(this5:Project)
                 RETURN count(this5) AS var6
             }
             CALL {
                 WITH this
-                MATCH (this)-[this4:PARTICIPATES]->(this5:\`Project\`)
+                MATCH (this)-[this4:PARTICIPATES]->(this5:Project)
                 RETURN { min: min(this4.allocation), max: max(this4.allocation), average: avg(this4.allocation), sum: sum(this4.allocation) }  AS var7
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var6, edge: { allocation: var7 } } } AS this"

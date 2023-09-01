@@ -18,24 +18,29 @@
  */
 
 import type { Node } from "../classes";
-import type { Context, GraphQLWhereArg } from "../types";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
-import { createAuthAndParams } from "./create-auth-and-params";
+import type { GraphQLWhereArg } from "../types";
+import { META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
-export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
+export function translateDelete({
+    context,
+    node,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    node: Node;
+}): Cypher.CypherResult {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
     let matchAndWhereStr = "";
-    let allowStr = "";
     let deleteStr = "";
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
+    let cypherParams: Record<string, any> = {};
 
     const withVars = [varName];
 
@@ -49,23 +54,6 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE", where });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
-
-    // TODO: Authorization - delete for 4.0.0 (provided by translateTopLevelMatch)
-    const { cypher: authCypher, params: authParams } = createAuthAndParams({
-        operations: "DELETE",
-        entity: node,
-        context,
-        allow: {
-            node,
-            varName,
-        },
-    });
-    if (authCypher) {
-        cypherParams = { ...cypherParams, ...authParams };
-        allowStr = `WITH ${withVars.join(
-            ", "
-        )}\nCALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
 
     if (deleteInput) {
         const deleteAndParams = createDeleteAndParams({
@@ -100,7 +88,6 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
             matchAndWhereStr,
             ...(context.subscriptionsEnabled ? [`WITH ${varName}, ${eventMeta}`] : []),
             deleteStr,
-            allowStr,
             `DETACH DELETE ${varName}`,
             ...getDeleteReturn(context),
         ];
@@ -112,7 +99,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
     return result;
 }
 
-function getDeleteReturn(context: Context): Array<string> {
+function getDeleteReturn(context: Neo4jGraphQLTranslationContext): Array<string> {
     return context.subscriptionsEnabled
         ? [
               `WITH collect(${META_CYPHER_VARIABLE}) AS ${META_CYPHER_VARIABLE}`,

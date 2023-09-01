@@ -47,7 +47,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende {
+            interface Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -57,6 +57,7 @@ describe("369", () => {
                         statement: """
                         MATCH (d:Dato {uuid: $uuid}) RETURN d
                         """
+                        columnName: "d"
                     )
             }
         `;
@@ -105,7 +106,7 @@ describe("369", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -131,7 +132,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende {
+            interface Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -141,6 +142,7 @@ describe("369", () => {
                         statement: """
                         MATCH (d:Dato {uuid: $uuid}) RETURN d
                         """
+                        columnName: "d"
                     )
             }
         `;
@@ -191,7 +193,7 @@ describe("369", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();

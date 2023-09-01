@@ -20,14 +20,13 @@
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, Context, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-predicates";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import type { GraphQLOptionsArg, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
 import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 export function translateRead(
     {
@@ -35,7 +34,7 @@ export function translateRead(
         context,
         isRootConnectionField,
     }: {
-        context: Context;
+        context: Neo4jGraphQLTranslationContext;
         node: Node;
         isRootConnectionField?: boolean;
     },
@@ -72,36 +71,10 @@ export function translateRead(
 
     const predicates: Cypher.Predicate[] = [];
 
-    // TODO: Authorization: delete for 4.0.0
-    if (projection.meta?.authValidatePredicates?.length) {
-        predicates.push(
-            Cypher.apoc.util.validatePredicate(
-                Cypher.not(Cypher.and(...projection.meta.authValidatePredicates)),
-                AUTH_FORBIDDEN_ERROR
-            )
-        );
-    }
-
     predicates.push(...projection.predicates);
 
     if (predicates.length) {
         projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
-    }
-
-    // TODO: Authorization - delete for 4.0.0 (provided by createMatchClause)
-    const authPredicates = createAuthPredicates({
-        operations: "READ",
-        entity: node,
-        context,
-        allow: {
-            node,
-            varName,
-        },
-    });
-    if (authPredicates) {
-        (topLevelWhereClause || topLevelMatch).where(
-            Cypher.apoc.util.validatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR)
-        );
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
@@ -111,12 +84,12 @@ export function translateRead(
 
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
-    if (context.fulltextIndex) {
+    if (context.fulltext) {
         optionsInput.sort = optionsInput.sort?.[node?.singular] || optionsInput.sort;
     }
 
-    if (node.queryOptions) {
-        optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
+    if (node.limit) {
+        optionsInput.limit = node.limit.getLimit(optionsInput.limit);
         resolveTree.args.options = resolveTree.args.options || {};
         (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit;
     }
@@ -130,7 +103,7 @@ export function translateRead(
             target: matchNode,
             projectionClause: orderClause as Cypher.With,
             nodeField: node.singular,
-            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+            fulltextScoreVariable: context.fulltext?.scoreVariable,
             cypherFields: node.cypherFields,
             cypherFieldAliasMap,
             graphElement: node,
@@ -143,10 +116,10 @@ export function translateRead(
 
     let returnClause = new Cypher.Return([projectionExpression, varName]);
 
-    if (context.fulltextIndex?.scoreVariable) {
+    if (context.fulltext?.scoreVariable) {
         returnClause = new Cypher.Return(
             [projectionExpression, varName],
-            [context.fulltextIndex?.scoreVariable, SCORE_FIELD]
+            [context.fulltext?.scoreVariable, SCORE_FIELD]
         );
     }
 
@@ -168,7 +141,7 @@ export function translateRead(
                 target: matchNode,
                 projectionClause: orderClause as Cypher.With,
                 nodeField: node.singular,
-                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+                fulltextScoreVariable: context.fulltext?.scoreVariable,
                 cypherFields: node.cypherFields,
                 cypherFieldAliasMap,
                 graphElement: node,
@@ -219,7 +192,7 @@ export function translateRead(
         projectionSubqueries,
         projectionClause
     );
-    const result = readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
+    const result = readQuery.build();
 
     return result;
 }

@@ -23,7 +23,6 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { Neo4jGraphQLAuthJWTPlugin } from "../../../../plugins/graphql-plugin-auth/src";
 
 describe("https://github.com/neo4j/graphql/issues/2981", () => {
     let driver: Driver;
@@ -70,11 +69,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
         });
     });
 

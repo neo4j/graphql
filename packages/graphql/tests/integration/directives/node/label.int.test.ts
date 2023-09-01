@@ -63,7 +63,7 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({
@@ -99,7 +99,7 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+            contextValue: neo4j.getContextValues({ token }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({
@@ -126,7 +126,7 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+            contextValue: neo4j.getContextValues({
                 filmLabel: typeFilm.name,
             }),
         });

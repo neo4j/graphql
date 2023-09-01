@@ -17,7 +17,16 @@
  * limitations under the License.
  */
 
-import type { Driver, QueryResult, Session, SessionMode, Transaction, SessionConfig } from "neo4j-driver";
+import type {
+    Driver,
+    QueryResult,
+    Session,
+    SessionMode,
+    Transaction,
+    SessionConfig,
+    ManagedTransaction,
+    Result,
+} from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
@@ -34,8 +43,6 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import type { CypherQueryOptions } from "../types";
-import type { AuthContext } from "../types/deprecated/auth/auth-context";
-import createAuthParam from "../translate/create-auth-param";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
 
@@ -73,58 +80,66 @@ export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
-    auth?: AuthContext;
-    queryOptions?: CypherQueryOptions;
+    cypherQueryOptions?: CypherQueryOptions;
     sessionConfig?: SessionConfig;
-};
-
-export type ExecutorResult = {
-    result: QueryResult;
+    cypherParams?: Record<string, unknown>;
 };
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
 export class Executor {
-    private executionContext: Driver | Session | Transaction;
+    private executionContext: ExecutionContext;
 
+    /**
+     * @deprecated Will be removed in 5.0.0.
+     */
     public lastBookmark: string | null;
 
-    private queryOptions: CypherQueryOptions | undefined;
-    private auth: AuthContext;
+    private cypherQueryOptions: CypherQueryOptions | undefined;
 
     private sessionConfig: SessionConfig | undefined;
 
-    constructor({ executionContext, auth, queryOptions, sessionConfig }: ExecutorConstructorParam) {
+    private cypherParams: Record<string, unknown>;
+
+    constructor({ executionContext, cypherQueryOptions, sessionConfig, cypherParams = {} }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
+        this.cypherQueryOptions = cypherQueryOptions;
         this.lastBookmark = null;
-        this.queryOptions = queryOptions;
-        if (auth) {
-            this.auth = auth;
-        } else {
-            this.auth = createAuthParam({ context: {} });
-        }
+        this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
+        this.cypherParams = cypherParams;
     }
 
     public async execute(
         query: string,
-        parameters: unknown,
-        defaultAccessMode: SessionMode,
+        parameters: Record<string, any>,
+        sessionMode: SessionMode,
         info?: GraphQLResolveInfo
-    ): Promise<ExecutorResult> {
+    ): Promise<QueryResult> {
+        const params = { ...parameters, ...this.cypherParams };
+
         try {
             if (isDriverLike(this.executionContext)) {
-                const session = this.executionContext.session(this.getSessionConfig(defaultAccessMode));
-                const result = await this.sessionRun(query, parameters, defaultAccessMode, session, info);
-                await session.close();
-                return result;
+                return await this.driverRun({
+                    query,
+                    parameters: params,
+                    driver: this.executionContext,
+                    sessionMode,
+                    info,
+                });
             }
 
             if (isSessionLike(this.executionContext)) {
-                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext, info);
+                return await this.sessionRun({
+                    query,
+                    parameters: params,
+                    sessionMode,
+                    session: this.executionContext,
+                    info,
+                });
             }
 
-            return await this.transactionRun(query, parameters, this.executionContext);
+            return await this.transactionRun(query, params, this.executionContext);
         } catch (error) {
             throw this.formatError(error);
         }
@@ -156,28 +171,15 @@ export class Executor {
     }
 
     private generateQuery(query: string): string {
-        if (this.queryOptions && Object.keys(this.queryOptions).length) {
-            const queryOptions = `CYPHER ${Object.entries(this.queryOptions)
+        if (this.cypherQueryOptions && Object.keys(this.cypherQueryOptions).length) {
+            const cypherQueryOptions = `CYPHER ${Object.entries(this.cypherQueryOptions)
                 .map(([key, value]) => `${key}=${value}`)
                 .join(" ")}`;
 
-            return `${queryOptions}\n${query}`;
+            return `${cypherQueryOptions}\n${query}`;
         }
 
         return query;
-    }
-
-    private generateParameters(query: string, parameters: any): Record<string, any> {
-        if (query.includes("$auth.") || query.includes("auth: $auth") || query.includes("auth:$auth")) {
-            return { ...parameters, auth: this.auth };
-        }
-
-        return parameters;
-    }
-
-    private getSessionConfig(sessionMode: SessionMode): SessionConfig {
-        // Always specify a default database to avoid requests for routing table
-        return { defaultAccessMode: sessionMode, database: "neo4j", ...this.sessionConfig };
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
@@ -203,35 +205,84 @@ export class Executor {
         return transactionConfig;
     }
 
-    private async sessionRun(
-        query: string,
-        parameters: unknown,
-        defaultAccessMode: string,
-        session: Session,
-        info?: GraphQLResolveInfo
-    ): Promise<ExecutorResult> {
-        const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
-        const result = await session[transactionType]((transaction: Transaction) => {
-            return this.transactionRun(query, parameters, transaction);
-        }, this.getTransactionConfig(info));
-        const lastBookmark = session.lastBookmark();
-        if (Array.isArray(lastBookmark) && lastBookmark[0]) {
+    private async driverRun({
+        query,
+        parameters,
+        driver,
+        sessionMode,
+        info,
+    }: {
+        query: string;
+        parameters: Record<string, any>;
+        driver: Driver;
+        sessionMode: SessionMode;
+        info?: GraphQLResolveInfo;
+    }): Promise<QueryResult> {
+        const session = driver.session({
+            // Always specify a default database to avoid requests for routing table
+            database: "neo4j",
+            ...this.sessionConfig,
+            bookmarkManager: driver.executeQueryBookmarkManager,
+            defaultAccessMode: sessionMode,
+        });
+
+        try {
+            const result = await this.sessionRun({ query, parameters, info, session, sessionMode });
+            return result;
+        } finally {
+            await session.close();
+        }
+    }
+
+    private async sessionRun({
+        query,
+        parameters,
+        session,
+        sessionMode,
+        info,
+    }: {
+        query: string;
+        parameters: Record<string, any>;
+        session: Session;
+        sessionMode: SessionMode;
+        info?: GraphQLResolveInfo;
+    }): Promise<QueryResult> {
+        let result: QueryResult | undefined;
+
+        switch (sessionMode) {
+            case "READ":
+                result = await session.executeRead((tx: ManagedTransaction) => {
+                    return this.transactionRun(query, parameters, tx);
+                }, this.getTransactionConfig(info));
+                break;
+            case "WRITE":
+                result = await session.executeWrite((tx: ManagedTransaction) => {
+                    return this.transactionRun(query, parameters, tx);
+                }, this.getTransactionConfig(info));
+                break;
+        }
+
+        // TODO: remove in 5.0.0, only kept to not make client breaking changes in 4.0.0
+        const lastBookmark = session.lastBookmarks();
+        if (lastBookmark[0]) {
             this.lastBookmark = lastBookmark[0];
         }
+
         return result;
     }
 
-    private async transactionRun(query: string, parameters, transaction: Transaction): Promise<ExecutorResult> {
+    private transactionRun(
+        query: string,
+        parameters: Record<string, any>,
+        transaction: Transaction | ManagedTransaction
+    ): Result {
         const queryToRun = this.generateQuery(query);
-        const parametersToRun = this.generateParameters(query, parameters);
 
         debug(
             "%s",
-            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parametersToRun, null, 2)}`
+            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parameters, null, 2)}`
         );
 
-        const result = await transaction.run(queryToRun, parametersToRun);
-
-        return { result };
+        return transaction.run(queryToRun, parameters);
     }
 }

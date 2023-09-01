@@ -20,10 +20,7 @@
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes/Error";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
-import { createAuthAndParams } from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
@@ -35,6 +32,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     creates: string[];
@@ -61,7 +59,7 @@ function createCreateAndParams({
     input: any;
     varName: string;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     withVars: string[];
     includeRelationshipValidation?: boolean;
@@ -184,7 +182,7 @@ function createCreateAndParams({
                                 relVariable: propertiesName,
                                 fromVariable,
                                 toVariable,
-                                typename: relationField.type,
+                                typename: relationField.typeUnescaped,
                                 fromTypename,
                                 toTypename,
                             });
@@ -217,7 +215,6 @@ function createCreateAndParams({
                         refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
-                        fromCreate: true,
                     });
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
@@ -252,7 +249,6 @@ function createCreateAndParams({
                     refNodes,
                     labelOverride: "",
                     parentNode: node,
-                    fromCreate: true,
                 });
                 res.creates.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };
@@ -281,22 +277,8 @@ function createCreateAndParams({
             }
             res.meta.authorizationPredicates.push(cypher);
             res.params = { ...res.params, ...authParams };
-        } else {
-            // TODO: Authorization - delete for 4.0.0
-
-            if (primitiveField?.auth) {
-                const { cypher: authCypher, params: authParams } = createAuthAndParams({
-                    entity: primitiveField,
-                    operations: "CREATE",
-                    context,
-                    bind: { node, varName },
-                });
-                if (authCypher) {
-                    res.meta.authStrs.push(authCypher);
-                    res.params = { ...res.params, ...authParams };
-                }
-            }
         }
+
         if (pointField) {
             if (pointField.typeMeta.array) {
                 res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${varNameKey} | point(p)]`);
@@ -371,21 +353,6 @@ function createCreateAndParams({
         }
         authorizationPredicates.push(cypher);
         params = { ...params, ...authParams };
-    } else {
-        // TODO: Authorization - delete for 4.0.0
-        if (node.auth) {
-            const { cypher: authCypher, params: authParams } = createAuthAndParams({
-                entity: node,
-                operations: "CREATE",
-                context,
-                bind: { node, varName },
-            });
-            if (authCypher) {
-                creates.push(`WITH ${withVars.join(", ")}`);
-                creates.push(`CALL apoc.util.validate(NOT (${authCypher}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-                params = { ...params, ...authParams };
-            }
-        }
     }
 
     if (authorizationPredicates.length) {
@@ -395,12 +362,6 @@ function createCreateAndParams({
             creates.push(`WITH *`);
         }
         creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
-    }
-
-    // TODO: Authorization - delete for 4.0.0
-    if (meta?.authStrs.length) {
-        creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(`CALL apoc.util.validate(NOT (${meta.authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
     if (includeRelationshipValidation) {

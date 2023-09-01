@@ -22,14 +22,14 @@ import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import Neo4j from "../../neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
     let neo4j: Neo4j;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -37,7 +37,7 @@ describe("Subscriptions delete", () => {
     });
 
     beforeEach(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsEngine();
     });
 
     afterAll(async () => {
@@ -75,8 +75,6 @@ describe("Subscriptions delete", () => {
                 authorization: {
                     key: "secret",
                 },
-            },
-            plugins: {
                 subscriptions: plugin,
             },
         });
@@ -91,7 +89,7 @@ describe("Subscriptions delete", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

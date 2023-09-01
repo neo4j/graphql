@@ -145,7 +145,7 @@ describe("array-pop", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -249,7 +249,7 @@ describe("array-pop", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -353,7 +353,7 @@ describe("array-pop", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -438,7 +438,7 @@ describe("array-pop", () => {
         const gqlCreateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 title: movieTitle,
                 longitude: point.longitude,
@@ -471,7 +471,7 @@ describe("array-pop", () => {
         const gqlUpdateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { elementsToPop },
         });
 
@@ -554,7 +554,7 @@ describe("array-pop", () => {
         const gqlCreateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 title: movieTitle,
                 x: cartesianPoint.x,
@@ -585,7 +585,7 @@ describe("array-pop", () => {
         const gqlUpdateResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { elementsToPop },
         });
 
@@ -638,7 +638,7 @@ describe("array-pop", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {
@@ -713,7 +713,7 @@ describe("array-pop", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: { numberToPop: 1, id },
         });
 
@@ -793,7 +793,7 @@ describe("array-pop", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, numberToPop: 1 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -881,7 +881,7 @@ describe("array-pop", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, numberToPop: 1 },
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

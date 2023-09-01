@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
           }
 
           type ${Post} {
-            id: ID! @id
+            id: ID! @id @unique
             subject: ${PostSubject}! @relationship(type: "POST_FOR", direction: OUT)
           }
 
@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [Post, User])
+        await cleanNodes(session, [Post, User]);
         await session.close();
     });
 
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: {},
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();

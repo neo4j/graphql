@@ -38,7 +38,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -67,7 +67,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -136,7 +136,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {

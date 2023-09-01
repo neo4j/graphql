@@ -55,14 +55,16 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                 url: URL
                     @cypher(
                         statement: """
-                        return '${url}'
-                        """
+                        return '${url}' as res
+                        """,
+                        columnName: "res"
                     )
                 url_array: [URL]
                     @cypher(
                         statement: """
-                        return ['${url}', '${url}']
-                        """
+                        return ['${url}', '${url}'] as res
+                        """,
+                        columnName: "res"
                     )
             }
         `;
@@ -116,14 +118,16 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                 url: URL
                     @cypher(
                         statement: """
-                        return '${url}'
-                        """
+                        return '${url}' as x
+                        """,
+                        columnName: "x"
                     )
                 url_array: [URL]
                     @cypher(
                         statement: """
-                        return ['${url}', '${url}']
-                        """
+                        return ['${url}', '${url}'] as x
+                        """,
+                        columnName: "x"
                     )
             }
         `;

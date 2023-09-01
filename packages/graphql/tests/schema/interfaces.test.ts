@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 describe("Interfaces", () => {
     test("Interfaces", async () => {
         const typeDefs = gql`
-            interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+            interface MovieNode {
                 id: ID
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
@@ -34,10 +34,11 @@ describe("Interfaces", () => {
                         MATCH (m:Movie)
                         RETURN m
                         """
+                        columnName: "m"
                     )
             }
 
-            type Movie implements MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+            type Movie implements MovieNode {
                 id: ID
                 nodes: [MovieNode]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
@@ -47,6 +48,7 @@ describe("Interfaces", () => {
                         MATCH (m:Movie)
                         RETURN m
                         """
+                        columnName: "m"
                     )
             }
         `;
@@ -60,7 +62,7 @@ describe("Interfaces", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -71,7 +73,7 @@ describe("Interfaces", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -324,7 +326,7 @@ describe("Interfaces", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

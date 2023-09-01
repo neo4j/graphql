@@ -48,7 +48,7 @@ describe("413", () => {
             }
 
             type JobPlan {
-                id: ID! @id
+                id: ID! @id @unique
                 tenantID: ID!
                 name: String!
             }
@@ -99,7 +99,7 @@ describe("413", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                contextValue: neo4j.getContextValues({ token }),
             });
 
             expect(result.errors).toBeFalsy();

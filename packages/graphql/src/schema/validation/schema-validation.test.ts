@@ -3206,7 +3206,31 @@ describe("schema validation", () => {
                     expect(errors[0]).toHaveProperty("path", ["User", "@authorization", "filter", 0]);
                 });
 
-                // TODO
+                test("should return error when both @authorization and @subscriptionAuthorization present", () => {
+                    const userDocument = gql`
+                        type User {
+                            name: String!
+                            id: ID!
+                                @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+                                @subscriptionsAuthorization(filter: [{ where: { wrongNode: { id: "$jwt.sub" } } }])
+                        }
+                    `;
+
+                    const { typeDefs: augmentedDocument } = makeAugmentedSchema(userDocument, {
+                        generateSubscriptions: true,
+                    });
+
+                    const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
+
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(1);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        'Invalid argument: filter, error: Field "wrongNode" is not defined by type.'
+                    );
+                });
+
                 test("should returns errors when an @authorization filter has a wrong where definition", () => {
                     const userDocument = gql`
                         type User @authorization(filter: [{ where: { notANode: { id: "$jwt.sub" } } }]) {

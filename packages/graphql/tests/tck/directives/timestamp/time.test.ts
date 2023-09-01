@@ -65,7 +65,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.createdAt = time(),
@@ -102,7 +102,7 @@ describe("Cypher TimeStamps On Time Fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             SET this.updatedAt = time()
             SET this.interfaceTimestamp = time()
             SET this.id = $this_update_id

@@ -21,13 +21,13 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
-import { TestSubscriptionsPlugin } from "../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../utils/TestSubscriptionsEngine";
 
 describe("Subscriptions", () => {
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsEngine();
     });
 
     test("Subscriptions", async () => {
@@ -46,9 +46,9 @@ describe("Subscriptions", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -168,7 +168,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -179,7 +179,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -645,7 +645,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -676,9 +676,9 @@ describe("Subscriptions", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -986,7 +986,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -997,7 +997,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -1396,7 +1396,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -1432,9 +1432,9 @@ describe("Subscriptions", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -1454,7 +1454,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -1475,7 +1475,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -2514,7 +2514,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -2559,9 +2559,9 @@ describe("Subscriptions", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -2915,7 +2915,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -2926,7 +2926,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -3399,7 +3399,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -3415,7 +3415,7 @@ describe("Subscriptions", () => {
 
     test("Subscriptions excluded", async () => {
         const typeDefs = gql`
-            type Movie @exclude(operations: [SUBSCRIBE]) {
+            type Movie @subscription(events: []) {
                 id: ID
                 actorCount: Int
                 averageRating: Float
@@ -3429,9 +3429,9 @@ describe("Subscriptions", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -3551,7 +3551,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -3562,7 +3562,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -3915,7 +3915,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -3931,7 +3931,7 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type", async () => {
         const typeDefs = gql`
-            type User @exclude(operations: [CREATE, DELETE, UPDATE, SUBSCRIBE]) {
+            type User @mutation(operations: []) @subscription(events: []) {
                 username: String!
                 name: String
             }
@@ -3943,9 +3943,9 @@ describe("Subscriptions", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -3972,6 +3972,10 @@ describe("Subscriptions", () => {
 
             input AgreementConnectInput {
               owner: AgreementOwnerConnectFieldInput
+            }
+
+            type AgreementConnectedRelationships {
+              owner: AgreementOwnerConnectedRelationship
             }
 
             input AgreementCreateInput {
@@ -4037,6 +4041,10 @@ describe("Subscriptions", () => {
               \\"\\"\\"
               overwrite: Boolean! = true
               where: UserConnectWhere
+            }
+
+            type AgreementOwnerConnectedRelationship {
+              node: UserEventPayload!
             }
 
             type AgreementOwnerConnection {
@@ -4155,6 +4163,10 @@ describe("Subscriptions", () => {
               node: User!
             }
 
+            input AgreementOwnerRelationshipSubscriptionWhere {
+              node: UserSubscriptionWhere
+            }
+
             input AgreementOwnerUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -4174,6 +4186,7 @@ describe("Subscriptions", () => {
 
             type AgreementRelationshipCreatedEvent {
               agreement: AgreementEventPayload!
+              createdRelationship: AgreementConnectedRelationships!
               event: EventType!
               relationshipFieldName: String!
               timestamp: Float!
@@ -4184,10 +4197,12 @@ describe("Subscriptions", () => {
               NOT: AgreementRelationshipCreatedSubscriptionWhere
               OR: [AgreementRelationshipCreatedSubscriptionWhere!]
               agreement: AgreementSubscriptionWhere
+              createdRelationship: AgreementRelationshipsSubscriptionWhere
             }
 
             type AgreementRelationshipDeletedEvent {
               agreement: AgreementEventPayload!
+              deletedRelationship: AgreementConnectedRelationships!
               event: EventType!
               relationshipFieldName: String!
               timestamp: Float!
@@ -4198,6 +4213,11 @@ describe("Subscriptions", () => {
               NOT: AgreementRelationshipDeletedSubscriptionWhere
               OR: [AgreementRelationshipDeletedSubscriptionWhere!]
               agreement: AgreementSubscriptionWhere
+              deletedRelationship: AgreementRelationshipsSubscriptionWhere
+            }
+
+            input AgreementRelationshipsSubscriptionWhere {
+              owner: AgreementOwnerRelationshipSubscriptionWhere
             }
 
             \\"\\"\\"
@@ -4298,13 +4318,13 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -4378,7 +4398,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -4410,6 +4430,11 @@ describe("Subscriptions", () => {
               node: User!
             }
 
+            type UserEventPayload {
+              name: String
+              username: String!
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
@@ -4425,6 +4450,32 @@ describe("Subscriptions", () => {
             input UserSort {
               name: SortDirection
               username: SortDirection
+            }
+
+            input UserSubscriptionWhere {
+              AND: [UserSubscriptionWhere!]
+              NOT: UserSubscriptionWhere
+              OR: [UserSubscriptionWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
             }
 
             input UserUpdateInput {
@@ -4478,7 +4529,7 @@ describe("Subscriptions", () => {
 
             union Actor = Star | Person
 
-            type Star @exclude(operations: [SUBSCRIBE]) {
+            type Star @subscription(events: []) {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Person {
@@ -4488,9 +4539,9 @@ describe("Subscriptions", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -4510,7 +4561,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -4531,7 +4582,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -5508,7 +5559,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -5534,7 +5585,7 @@ describe("Subscriptions", () => {
 
     test("Type with relationship to a subscriptions excluded type + Interface type", async () => {
         const typeDefs = gql`
-            type Movie implements Production @exclude(operations: [SUBSCRIBE]) {
+            type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
                 director: Creature!
@@ -5568,9 +5619,9 @@ describe("Subscriptions", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -5583,7 +5634,7 @@ describe("Subscriptions", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -5728,7 +5779,7 @@ describe("Subscriptions", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -5840,6 +5891,32 @@ describe("Subscriptions", () => {
             input MovieSort {
               id: SortDirection
               title: SortDirection
+            }
+
+            input MovieSubscriptionWhere {
+              AND: [MovieSubscriptionWhere!]
+              NOT: MovieSubscriptionWhere
+              OR: [MovieSubscriptionWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
             }
 
             input MovieUpdateInput {
@@ -6151,6 +6228,7 @@ describe("Subscriptions", () => {
             }
 
             input ProductionImplementationsSubscriptionWhere {
+              Movie: MovieSubscriptionWhere
               Series: SeriesSubscriptionWhere
             }
 
@@ -6490,7 +6568,7 @@ describe("Subscriptions", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

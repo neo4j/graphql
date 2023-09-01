@@ -58,6 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
                     }
                     RETURN DISTINCT post AS result ORDER BY result.modifiedDate DESC
                     """
+                    columnName: "result"
                 )
         }
     `;
@@ -215,7 +216,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
             const mutationResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { input },
             });
 
@@ -232,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
             const queryResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: {
                     userID,
                 },

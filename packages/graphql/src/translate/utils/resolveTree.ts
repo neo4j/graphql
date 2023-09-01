@@ -56,7 +56,7 @@ export function filterFieldsInSelection<T extends BaseField>({
 }
 
 /** Generates a field to be used in creating projections */
-export function generateProjectionField({
+export function generateResolveTree({
     name,
     alias,
     args = {},
@@ -84,7 +84,7 @@ export function generateMissingOrAliasedFields({
         const exists = getResolveTreeByFieldName({ fieldName, selection });
         const aliased = getAliasedResolveTreeByFieldName({ fieldName, selection });
         if (!exists || aliased) {
-            return { ...acc, ...generateProjectionField({ name: fieldName }) };
+            return { ...acc, ...generateResolveTree({ name: fieldName }) };
         }
         return acc;
     }, {});

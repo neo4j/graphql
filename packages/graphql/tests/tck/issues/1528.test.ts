@@ -31,8 +31,9 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     @cypher(
                         statement: """
                         MATCH (this)<-[:ACTED_IN]-(ac:Person)
-                        RETURN count(ac)
+                        RETURN count(ac) as res
                         """
+                        columnName: "res"
                     )
             }
 
@@ -69,16 +70,21 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Genre\`)
+            "MATCH (this:Genre)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:IS_GENRE]-(this1:\`Movie\`)
+                MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
                 WITH this0, this1
                 ORDER BY this1.actorsCount DESC
                 CALL {
                     WITH this1
-                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
-                    RETURN count(ac)\\", { this: this1, auth: $auth }) AS this2
+                    CALL {
+                        WITH this1
+                        WITH this1 AS this
+                        MATCH (this)<-[:ACTED_IN]-(ac:Person)
+                        RETURN count(ac) as res
+                    }
+                    UNWIND res AS this2
                     RETURN head(collect(this2)) AS this2
                 }
                 WITH { node: { title: this1.title, actorsCount: this2 } } AS edge
@@ -97,13 +103,6 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             RETURN this { moviesConnection: var4 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

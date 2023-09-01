@@ -51,7 +51,7 @@ describe("aggregations-where-edge-string", () => {
               someStringAlias: String @alias(property: "_someStringAlias")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 testString: String
             }
         `;
@@ -85,7 +85,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-string", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 testString: String
             }
         `;
@@ -156,7 +156,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -189,7 +189,7 @@ describe("aggregations-where-edge-string", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 testString: String
             }
         `;
@@ -226,7 +226,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -259,7 +259,7 @@ describe("aggregations-where-edge-string", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 testString: String
             }
         `;
@@ -296,7 +296,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -329,7 +329,7 @@ describe("aggregations-where-edge-string", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 testString: String
             }
         `;
@@ -366,7 +366,7 @@ describe("aggregations-where-edge-string", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -402,7 +402,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -455,7 +455,7 @@ describe("aggregations-where-edge-string", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     if (gqlResult.errors) {
@@ -493,7 +493,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -546,7 +546,7 @@ describe("aggregations-where-edge-string", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     if (gqlResult.errors) {
@@ -584,7 +584,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -641,7 +641,7 @@ describe("aggregations-where-edge-string", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     if (gqlResult.errors) {
@@ -672,7 +672,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -730,7 +730,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -760,7 +760,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -817,7 +817,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -847,7 +847,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -905,7 +905,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -935,7 +935,7 @@ describe("aggregations-where-edge-string", () => {
                   likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
                 }
 
-                interface Likes {
+                interface Likes @relationshipProperties {
                     testString: String
                 }
             `;
@@ -992,7 +992,7 @@ describe("aggregations-where-edge-string", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -1024,7 +1024,7 @@ describe("aggregations-where-edge-string", () => {
                 content: String
                 likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someStringAlias: String @alias(property: "_someStringAlias")
             }
         `;
@@ -1048,7 +1048,7 @@ describe("aggregations-where-edge-string", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         if (gqlResult.errors) {

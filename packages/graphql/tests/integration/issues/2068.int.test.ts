@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -189,7 +189,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -231,7 +231,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -263,7 +263,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (m:${movieType.name} {title: $title})
                         RETURN m
-                        """
+                        """,
+                        columnName: "m"
                     )
 
                 tvShows(title: String): [${movieType.name}]
@@ -271,7 +272,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (t:${tvShowType.name} {title: $title})
                         RETURN t
-                        """
+                        """,
+                        columnName: "t"
                     )
 
                 movieOrTVShow(title: String): [${movieOrTVShowType.name}]
@@ -280,7 +282,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         MATCH (n)
                         WHERE (n:${tvShowType.name} OR n:${movieType.name}) AND ($title IS NULL OR n.title = $title)
                         RETURN n
-                        """
+                        """,
+                        columnName: "n"
                     )
             }
 
@@ -295,14 +298,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
                 topActor: ${actorType.name}
                     @cypher(
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
             }
 
@@ -314,14 +319,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
                 topActor: ${actorType.name}
                     @cypher(
                         statement: """
                         MATCH (a:${actorType.name})
                         RETURN a
-                        """
+                        """,
+                        columnName: "a"
                     )
             }
         `;
@@ -362,7 +369,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -466,7 +473,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -498,7 +505,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
+                    contextValue: neo4j.getContextValues({ token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -521,7 +528,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -553,7 +560,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
+                    contextValue: neo4j.getContextValues({ token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -576,7 +583,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -608,7 +615,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
+                    contextValue: neo4j.getContextValues({ token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -631,7 +638,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(createOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -665,7 +672,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -699,7 +706,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
+                    contextValue: neo4j.getContextValues({ token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -724,7 +731,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -758,7 +765,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
+                    contextValue: neo4j.getContextValues({ token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -783,7 +790,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -817,7 +824,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: invalidToken }),
+                    contextValue: neo4j.getContextValues({ token: invalidToken }),
                 });
 
                 expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
@@ -842,7 +849,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token: validToken }),
+                    contextValue: neo4j.getContextValues({ token: validToken }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -910,7 +917,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -966,7 +973,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

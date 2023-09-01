@@ -73,10 +73,11 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                         statement: """
                         MATCH (node)
                         WHERE
-                            \\"${typeBook.name}\\" IN labels(node) OR
-                            \\"${typeMovie.name}\\" IN labels(node)
+                            "${typeBook.name}" IN labels(node) OR
+                            "${typeMovie.name}" IN labels(node)
                         RETURN node
-                        """
+                        """,
+                        columnName: "node"
                     )
             }
         `;

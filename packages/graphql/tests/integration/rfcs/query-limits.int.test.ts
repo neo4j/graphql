@@ -43,7 +43,7 @@ describe("integration/rfcs/query-limits", () => {
             const randomType = new UniqueType("Movie");
 
             const typeDefs = `
-                type ${randomType.name} @queryOptions(limit: {default:2}) {
+                type ${randomType.name} @limit(default: 2) {
                     id: ID!
                 }
             `;
@@ -71,7 +71,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -101,7 +101,7 @@ describe("integration/rfcs/query-limits", () => {
                     actors: [${randomType2.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${randomType2.name} @queryOptions(limit:{default: 3}) {
+                type ${randomType2.name} @limit(default: 3) {
                     id: ID!
                 }
             `;
@@ -133,7 +133,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {
@@ -161,7 +161,7 @@ describe("integration/rfcs/query-limits", () => {
                     actors: [${randomType2.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type ${randomType2.name} @queryOptions(limit:{default: 4}) {
+                type ${randomType2.name} @limit(default: 4) {
                     id: ID!
                 }
             `;
@@ -197,7 +197,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 if (gqlResult.errors) {

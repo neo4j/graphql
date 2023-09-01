@@ -21,7 +21,7 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("Extending the schema in when using getSubgraphSchema", () => {
     test("Should be able to extend the schema using @query", async () => {
@@ -144,7 +144,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type CreateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -155,7 +155,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type DeleteInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -253,7 +253,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type UpdateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -520,11 +520,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
                 title: String
             }
 
-            extend schema @subscription(operations: [UPDATE])
+            extend schema @subscription(events: [UPDATED])
         `;
 
-        const subscriptionPlugin = new TestSubscriptionsPlugin();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+        const subscriptionPlugin = new TestSubscriptionsEngine();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -673,7 +673,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type CreateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -684,7 +684,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type DeleteInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -839,7 +839,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type UpdateInfo @shareable {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

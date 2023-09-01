@@ -22,14 +22,14 @@ import type { Driver } from "neo4j-driver";
 import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import Neo4j from "../../neo4j";
 
 describe("Subscriptions connect with create", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsEngine;
 
     let typeDefs: string;
     let typeActor: UniqueType;
@@ -40,7 +40,7 @@ describe("Subscriptions connect with create", () => {
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsEngine();
     });
 
     beforeEach(() => {
@@ -73,7 +73,7 @@ describe("Subscriptions connect with create", () => {
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         
@@ -99,7 +99,7 @@ describe("Subscriptions connect with create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
             },
         });

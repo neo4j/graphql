@@ -65,7 +65,7 @@ describe("Update using aggregate where", () => {
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} {
+            interface ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;
@@ -132,7 +132,7 @@ describe("Update using aggregate where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -217,7 +217,7 @@ describe("Update using aggregate where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -299,7 +299,7 @@ describe("Update using aggregate where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

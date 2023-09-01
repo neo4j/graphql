@@ -28,15 +28,13 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Bulk
-                @exclude(operations: [CREATE, DELETE, UPDATE])
-                @node(labels: ["Bulk", "$context.cypherParams.tenant"]) {
+            type Bulk @mutation(operations: []) @node(labels: ["Bulk", "$tenant"]) {
                 id: ID!
                 supplierMaterialNumber: String!
                 material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)
             }
 
-            type Material @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            type Material @mutation(operations: []) {
                 id: ID!
                 itemNumber: String!
 
@@ -44,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                     @relationship(type: "MATERIAL_SUPPLIER", properties: "RelationMaterialSupplier", direction: OUT)
             }
 
-            type Supplier @exclude(operations: [CREATE, DELETE, UPDATE]) {
+            type Supplier @mutation(operations: []) {
                 id: ID!
                 name: String
                 supplierId: String!
@@ -83,13 +81,13 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
         const result = await translateQuery(neoSchema, query, { contextValues: { cypherParams: { tenant: "BULK" } } });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Bulk\`:\`BULK\`)
+            "MATCH (this:Bulk:BULK)
             CALL {
                 WITH this
-                MATCH (this)-[this0:MATERIAL_BULK]->(this1:\`Material\`)
+                MATCH (this)-[this0:MATERIAL_BULK]->(this1:Material)
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Material\`)-[this2:MATERIAL_SUPPLIER]->(this3:\`Supplier\`)
+                    MATCH (this1:Material)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)
                     WITH { supplierMaterialNumber: this2.supplierMaterialNumber, node: { supplierId: this3.supplierId } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -103,9 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"cypherParams\\": {
-                    \\"tenant\\": \\"BULK\\"
-                }
+                \\"tenant\\": \\"BULK\\"
             }"
         `);
     });

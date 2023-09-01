@@ -39,7 +39,7 @@ describe("Cypher alias directive", () => {
                 rating: Float @alias(property: "ratingPropInDb")
             }
 
-            interface ActorActedInProps {
+            interface ActorActedInProps @relationshipProperties {
                 character: String! @alias(property: "characterPropInDb")
                 screenTime: Int
             }
@@ -67,10 +67,10 @@ describe("Cypher alias directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WITH this1 { .title, rating: this1.ratingPropInDb } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -103,10 +103,10 @@ describe("Cypher alias directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WITH { character: this0.characterPropInDb, screenTime: this0.screenTime, node: { title: this1.title, rating: this1.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -163,7 +163,7 @@ describe("Cypher alias directive", () => {
             "UNWIND $create_param0 AS create_var7
             CALL {
                 WITH create_var7
-                CREATE (create_this0:\`Actor\`)
+                CREATE (create_this0:Actor)
                 SET
                     create_this0.name = create_var7.name,
                     create_this0.cityPropInDb = create_var7.city
@@ -172,7 +172,7 @@ describe("Cypher alias directive", () => {
                     WITH create_this0, create_var7
                     UNWIND create_var7.actedIn.create AS create_var8
                     WITH create_var8.node AS create_var9, create_var8.edge AS create_var10, create_this0
-                    CREATE (create_this11:\`Movie\`)
+                    CREATE (create_this11:Movie)
                     SET
                         create_this11.title = create_var9.title,
                         create_this11.ratingPropInDb = create_var9.rating
@@ -186,13 +186,13 @@ describe("Cypher alias directive", () => {
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0)-[create_this1:ACTED_IN]->(create_this2:\`Movie\`)
+                MATCH (create_this0)-[create_this1:ACTED_IN]->(create_this2:Movie)
                 WITH create_this2 { .title, rating: create_this2.ratingPropInDb } AS create_this2
                 RETURN collect(create_this2) AS create_var3
             }
             CALL {
                 WITH create_this0
-                MATCH (create_this0:\`Actor\`)-[create_this4:ACTED_IN]->(create_this5:\`Movie\`)
+                MATCH (create_this0:Actor)-[create_this4:ACTED_IN]->(create_this5:Movie)
                 WITH { character: create_this4.characterPropInDb, screenTime: create_this4.screenTime, node: { title: create_this5.title, rating: create_this5.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

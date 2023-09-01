@@ -21,7 +21,7 @@ import { Kind, type DirectiveNode, type FieldDefinitionNode } from "graphql";
 
 type CypherMeta = {
     statement: string;
-    columnName?: string;
+    columnName: string;
 };
 
 export function getCypherMeta(
@@ -53,10 +53,10 @@ function parseStatementFlag(directive: DirectiveNode): string {
     return stmtArg.value.value;
 }
 
-function parseColumnNameFlag(directive: DirectiveNode): string | undefined {
+function parseColumnNameFlag(directive: DirectiveNode): string {
     const stmtArg = directive.arguments?.find((x) => x.name.value === "columnName");
     if (!stmtArg) {
-        return undefined;
+        throw new Error("@cypher columnName required");
     }
     if (stmtArg.value.kind !== Kind.STRING) {
         throw new Error("@cypher columnName is not a string");

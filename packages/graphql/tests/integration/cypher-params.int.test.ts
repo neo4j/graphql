@@ -45,7 +45,7 @@ describe("cypherParams", () => {
             }
 
             type Query {
-                id: String! @cypher(statement: "RETURN $cypherParams.id")
+                id: String! @cypher(statement: "RETURN $id AS id", columnName: "id")
             }
         `;
 
@@ -88,7 +88,7 @@ describe("cypherParams", () => {
 
             type Movie {
               id: ID
-              cypherParams: CypherParams @cypher(statement: "RETURN $cypherParams")
+              cypherParams: CypherParams @cypher(statement: "RETURN $cypherParams AS result", columnName: "result")
             }
         `;
 
@@ -128,7 +128,7 @@ describe("cypherParams", () => {
                 variableValues: {
                     id: movieId,
                 },
-                contextValue: neo4j.getContextValues({ cypherParams: { id: cypherParamsId } }),
+                contextValue: neo4j.getContextValues({ cypherParams: { cypherParams: { id: cypherParamsId } } }),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -153,7 +153,7 @@ describe("cypherParams", () => {
             }
 
             type Mutation {
-                id: String! @cypher(statement: "RETURN $cypherParams.id")
+                id: String! @cypher(statement: "RETURN $id AS id", columnName:"id")
             }
         `;
 

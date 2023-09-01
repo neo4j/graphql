@@ -19,28 +19,18 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { DirectiveNode, GraphQLResolveInfo, GraphQLSchema, InputValueDefinitionNode, TypeNode } from "graphql";
+import type { DirectiveNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import type { Directive } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
-import type { Node, Relationship } from "../classes";
-import type { Executor } from "../classes/Executor";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
-import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import type { Auth } from "./deprecated/auth/auth";
 import type { JwtPayload } from "./jwt-payload";
-import type { AuthContext } from "./deprecated/auth/auth-context";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
 export { Node } from "../classes";
 
-export type DriverConfig = {
-    database?: string;
-    bookmarks?: string | string[];
-};
-
-type AuthorizationContext = {
+export type AuthorizationContext = {
     jwt?: JwtPayload;
     jwtParam: Cypher.Param;
     isAuthenticated: boolean;
@@ -48,33 +38,17 @@ type AuthorizationContext = {
     claims?: Map<string, string>;
 };
 
-export interface Context extends Neo4jGraphQLContext {
-    resolveTree: ResolveTree;
-    info: GraphQLResolveInfo;
-    nodes: Node[];
-    relationships: Relationship[];
-    schemaModel: Neo4jGraphQLSchemaModel;
-    schema: GraphQLSchema;
-    auth?: AuthContext;
-    callbacks?: Neo4jGraphQLCallbacks;
-    plugins?: Neo4jGraphQLPlugins;
-    subscriptionsEnabled: boolean;
-    executor: Executor;
-    extensions?: Record<string, any>;
-    authorization: AuthorizationContext;
-    [k: string]: any;
-}
-
-export type FulltextIndex = {
+export type FulltextContext = {
     name: string | undefined;
     fields: string[];
     queryType: string;
     queryName: string | undefined;
     indexName: string | undefined; // TODO: not undefined once name is removed.
+    scoreVariable: Cypher.Variable;
 };
 
 export type FullText = {
-    indexes: FulltextIndex[];
+    indexes: FulltextContext[];
 };
 
 /**
@@ -103,9 +77,9 @@ export interface TypeMeta {
     originalType?: TypeNode;
 }
 
-export interface Unique {
+export type Unique = {
     constraintName: string;
-}
+};
 
 export interface Callback {
     operations: CallbackOperations[];
@@ -136,11 +110,11 @@ export interface BaseField {
     otherDirectives: DirectiveNode[];
     arguments: InputValueDefinitionNode[];
     private?: boolean;
-    auth?: Auth;
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
     dbPropertyName?: string;
+    dbPropertyNameUnescaped?: string;
     unique?: Unique;
     selectableOptions: SelectableOptions;
     settableOptions: SettableOptions;
@@ -152,6 +126,7 @@ export interface BaseField {
  */
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
+    typeUnescaped: string;
     type: string;
     connectionPrefix?: string;
     inherited: boolean;
@@ -173,7 +148,7 @@ export interface ConnectionField extends BaseField {
  */
 export interface CypherField extends BaseField {
     statement: string;
-    columnName?: string;
+    columnName: string;
     isEnum: boolean;
     isScalar: boolean;
 }
@@ -205,7 +180,7 @@ export interface UnionField extends BaseField {
 }
 
 export interface CustomResolverField extends BaseField {
-    requiredFields: string[];
+    requiredFields: Record<string, ResolveTree>;
 }
 
 export interface InterfaceField extends BaseField {
@@ -292,95 +267,22 @@ export type TimeStampOperations = "CREATE" | "UPDATE";
 
 export type CallbackOperations = "CREATE" | "UPDATE";
 
-export enum CypherRuntime {
-    INTERPRETED = "interpreted",
-    SLOTTED = "slotted",
-    PIPELINED = "pipelined",
-}
-
-export enum CypherPlanner {
-    COST = "cost",
-    IDP = "idp",
-    DP = "dp",
-}
-
-export enum CypherConnectComponentsPlanner {
-    GREEDY = "greedy",
-    IDP = "idp",
-}
-
-export enum CypherUpdateStrategy {
-    DEFAULT = "default",
-    EAGER = "eager",
-}
-
-export enum CypherExpressionEngine {
-    DEFAULT = "default",
-    INTERPRETED = "interpreted",
-    COMPILED = "compiled",
-}
-
-export enum CypherOperatorEngine {
-    DEFAULT = "default",
-    INTERPRETED = "interpreted",
-    COMPILED = "compiled",
-}
-
-export enum CypherInterpretedPipesFallback {
-    DEFAULT = "default",
-    DISABLED = "disabled",
-    WHITELISTED_PLANS_ONLY = "whitelisted_plans_only",
-    ALL = "all",
-}
-
-export enum CypherReplanning {
-    DEFAULT = "default",
-    FORCE = "force",
-    SKIP = "skip",
-}
-
 /*
   Object keys and enum values map to values at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options
 */
 export interface CypherQueryOptions {
-    runtime?: CypherRuntime;
-    planner?: CypherPlanner;
-    connectComponentsPlanner?: CypherConnectComponentsPlanner;
-    updateStrategy?: CypherUpdateStrategy;
-    expressionEngine?: CypherExpressionEngine;
-    operatorEngine?: CypherOperatorEngine;
-    interpretedPipesFallback?: CypherInterpretedPipesFallback;
-    replan?: CypherReplanning;
+    runtime?: "interpreted" | "slotted" | "pipelined";
+    planner?: "cost" | "idp" | "dp";
+    connectComponentsPlanner?: "greedy" | "idp";
+    updateStrategy?: "default" | "eager";
+    expressionEngine?: "default" | "interpreted" | "compiled";
+    operatorEngine?: "default" | "interpreted" | "compiled";
+    interpretedPipesFallback?: "default" | "disabled" | "whitelisted_plans_only" | "all";
+    replan?: "default" | "force" | "skip";
 }
-
-/** The startup validation checks to run */
-export interface StartupValidationOptions {
-    typeDefs?: boolean;
-    resolvers?: boolean;
-}
-
-/**
- * Configure which startup validation checks should be run.
- * Optionally, a boolean can be passed to toggle all these options.
- */
-export type StartupValidationConfig = StartupValidationOptions | boolean;
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
-
-export interface Neo4jGraphQLAuthPlugin {
-    rolesPath?: string;
-    isGlobalAuthenticationEnabled?: boolean;
-    bindPredicate?: "all" | "any";
-
-    decode<T>(token: string): Promise<T | undefined>;
-    /**
-     * This function tries to resolve public or secret keys.
-     * The implementation on how to resolve the keys by the `JWKSEndpoint` or by the `Secret` is set on when the plugin is being initiated.
-     * @param req
-     */
-    tryToResolveKeys(req: unknown): void;
-}
 
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {
@@ -484,7 +386,8 @@ export type RelationshipSubscriptionsEvent =
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
-export interface Neo4jGraphQLSubscriptionsPlugin {
+/** Defines a custom mechanism to transport subscription events internally between servers */
+export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
@@ -493,17 +396,12 @@ export interface Neo4jGraphQLSubscriptionsPlugin {
     init?(): Promise<void>;
 }
 
-export interface Neo4jGraphQLPlugins {
-    auth?: Neo4jGraphQLAuthPlugin;
-    subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
-}
-
 export type CallbackReturnValue = string | number | boolean | undefined | null;
 
 export type Neo4jGraphQLCallback = (
     parent: Record<string, unknown>,
     args: Record<string, never>,
-    context: Record<string, unknown>
+    context: Neo4jGraphQLContext
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
@@ -532,7 +430,6 @@ export interface Neo4jAuthorizationSettings {
     key: Key | ((context: Neo4jGraphQLContext) => Key);
     verify?: boolean;
     verifyOptions?: JWTVerifyOptions;
-    globalAuthentication?: boolean;
 }
 export interface RemoteJWKS {
     url: string | URL;
@@ -545,11 +442,21 @@ export type RequestLike = {
     cookies?: { token?: string };
 };
 
-export interface Neo4jFeaturesSettings {
+/** Options to enable extra capabilities on @neo4j/graphql API */
+export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
-}
+    subscriptions?: Neo4jGraphQLSubscriptionsEngine | boolean;
+};
+
+/** Parsed features used in context */
+export type ContextFeatures = {
+    filters?: Neo4jFiltersSettings;
+    populatedBy?: Neo4jPopulatedBySettings;
+    authorization?: Neo4jAuthorizationSettings;
+    subscriptions?: Neo4jGraphQLSubscriptionsEngine;
+};
 
 export type PredicateReturn = {
     predicate: Cypher.Predicate | undefined;

@@ -22,7 +22,7 @@ import { generate, OGM } from "../../src";
 describe("issues/3591", () => {
     test("should correctly generate types and ignore all the schema configuration directives", async () => {
         const typeDefs = `
-          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(operation: [CREATE]) {
+          type User @query(aggregate: false) @mutation(operation: [CREATE]), @subscription(events: [CREATED]) {
             id: ID! @id
             company: [Company!]! @relationship(type: "WORKS_AT", direction: OUT)
             favoriteRestaurants: [Restaurant!]! @relationship(type: "FAVORITE_RESTAURANTS", direction: OUT)           
@@ -62,18 +62,27 @@ describe("issues/3591", () => {
             export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
               [SubKey in K]: Maybe<T[SubKey]>;
             };
+            export type MakeEmpty<
+              T extends { [key: string]: unknown },
+              K extends keyof T
+            > = { [_ in K]?: never };
+            export type Incremental<T> =
+              | T
+              | {
+                  [P in keyof T]?: P extends \\" $fragmentName\\" | \\"__typename\\" ? T[P] : never;
+                };
             /** All built-in and custom scalars, mapped to their actual values */
             export type Scalars = {
               /** The \`ID\` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as \`\\"4\\"\`) or integer (such as \`4\`) input value will be accepted as an ID. */
-              ID: string;
+              ID: { input: string; output: string };
               /** The \`String\` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text. */
-              String: string;
+              String: { input: string; output: string };
               /** The \`Boolean\` scalar type represents \`true\` or \`false\`. */
-              Boolean: boolean;
+              Boolean: { input: boolean; output: boolean };
               /** The \`Int\` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. */
-              Int: number;
+              Int: { input: number; output: number };
               /** The \`Float\` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
-              Float: number;
+              Float: { input: number; output: number };
             };
 
             export type Query = {
@@ -95,8 +104,8 @@ describe("issues/3591", () => {
             };
 
             export type QueryUsersConnectionArgs = {
-              first?: InputMaybe<Scalars[\\"Int\\"]>;
-              after?: InputMaybe<Scalars[\\"String\\"]>;
+              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<UserWhere>;
               sort?: InputMaybe<Array<InputMaybe<UserSort>>>;
             };
@@ -111,8 +120,8 @@ describe("issues/3591", () => {
             };
 
             export type QueryCompaniesConnectionArgs = {
-              first?: InputMaybe<Scalars[\\"Int\\"]>;
-              after?: InputMaybe<Scalars[\\"String\\"]>;
+              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<CompanyWhere>;
               sort?: InputMaybe<Array<InputMaybe<CompanySort>>>;
             };
@@ -127,8 +136,8 @@ describe("issues/3591", () => {
             };
 
             export type QueryRestaurantsConnectionArgs = {
-              first?: InputMaybe<Scalars[\\"Int\\"]>;
-              after?: InputMaybe<Scalars[\\"String\\"]>;
+              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               where?: InputMaybe<RestaurantWhere>;
               sort?: InputMaybe<Array<InputMaybe<RestaurantSort>>>;
             };
@@ -204,22 +213,22 @@ describe("issues/3591", () => {
 
             export type CompaniesConnection = {
               __typename?: \\"CompaniesConnection\\";
-              totalCount: Scalars[\\"Int\\"];
+              totalCount: Scalars[\\"Int\\"][\\"output\\"];
               pageInfo: PageInfo;
               edges: Array<CompanyEdge>;
             };
 
             export type Company = {
               __typename?: \\"Company\\";
-              id: Scalars[\\"ID\\"];
-              field1?: Maybe<Scalars[\\"String\\"]>;
-              field2?: Maybe<Scalars[\\"String\\"]>;
-              field3?: Maybe<Scalars[\\"String\\"]>;
+              id: Scalars[\\"ID\\"][\\"output\\"];
+              field1?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              field2?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              field3?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             export type CompanyAggregateSelection = {
               __typename?: \\"CompanyAggregateSelection\\";
-              count: Scalars[\\"Int\\"];
+              count: Scalars[\\"Int\\"][\\"output\\"];
               id: IdAggregateSelectionNonNullable;
               field1: StringAggregateSelectionNullable;
               field2: StringAggregateSelectionNullable;
@@ -228,7 +237,7 @@ describe("issues/3591", () => {
 
             export type CompanyEdge = {
               __typename?: \\"CompanyEdge\\";
-              cursor: Scalars[\\"String\\"];
+              cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Company;
             };
 
@@ -240,9 +249,10 @@ describe("issues/3591", () => {
 
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
-              bookmark?: Maybe<Scalars[\\"String\\"]>;
-              nodesCreated: Scalars[\\"Int\\"];
-              relationshipsCreated: Scalars[\\"Int\\"];
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
+              bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
+              relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
             };
 
             export type CreateRestaurantsMutationResponse = {
@@ -259,54 +269,55 @@ describe("issues/3591", () => {
 
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
-              bookmark?: Maybe<Scalars[\\"String\\"]>;
-              nodesDeleted: Scalars[\\"Int\\"];
-              relationshipsDeleted: Scalars[\\"Int\\"];
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
+              bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
+              relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
             };
 
             export type IdAggregateSelectionNonNullable = {
               __typename?: \\"IDAggregateSelectionNonNullable\\";
-              shortest: Scalars[\\"ID\\"];
-              longest: Scalars[\\"ID\\"];
+              shortest: Scalars[\\"ID\\"][\\"output\\"];
+              longest: Scalars[\\"ID\\"][\\"output\\"];
             };
 
             /** Pagination information (Relay) */
             export type PageInfo = {
               __typename?: \\"PageInfo\\";
-              hasNextPage: Scalars[\\"Boolean\\"];
-              hasPreviousPage: Scalars[\\"Boolean\\"];
-              startCursor?: Maybe<Scalars[\\"String\\"]>;
-              endCursor?: Maybe<Scalars[\\"String\\"]>;
+              hasNextPage: Scalars[\\"Boolean\\"][\\"output\\"];
+              hasPreviousPage: Scalars[\\"Boolean\\"][\\"output\\"];
+              startCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              endCursor?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             export type Restaurant = {
               __typename?: \\"Restaurant\\";
-              name?: Maybe<Scalars[\\"String\\"]>;
+              name?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             export type RestaurantAggregateSelection = {
               __typename?: \\"RestaurantAggregateSelection\\";
-              count: Scalars[\\"Int\\"];
+              count: Scalars[\\"Int\\"][\\"output\\"];
               name: StringAggregateSelectionNullable;
             };
 
             export type RestaurantEdge = {
               __typename?: \\"RestaurantEdge\\";
-              cursor: Scalars[\\"String\\"];
+              cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Restaurant;
             };
 
             export type RestaurantsConnection = {
               __typename?: \\"RestaurantsConnection\\";
-              totalCount: Scalars[\\"Int\\"];
+              totalCount: Scalars[\\"Int\\"][\\"output\\"];
               pageInfo: PageInfo;
               edges: Array<RestaurantEdge>;
             };
 
             export type StringAggregateSelectionNullable = {
               __typename?: \\"StringAggregateSelectionNullable\\";
-              shortest?: Maybe<Scalars[\\"String\\"]>;
-              longest?: Maybe<Scalars[\\"String\\"]>;
+              shortest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
             export type UpdateCompaniesMutationResponse = {
@@ -317,11 +328,12 @@ describe("issues/3591", () => {
 
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
-              bookmark?: Maybe<Scalars[\\"String\\"]>;
-              nodesCreated: Scalars[\\"Int\\"];
-              nodesDeleted: Scalars[\\"Int\\"];
-              relationshipsCreated: Scalars[\\"Int\\"];
-              relationshipsDeleted: Scalars[\\"Int\\"];
+              /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
+              bookmark?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
+              nodesCreated: Scalars[\\"Int\\"][\\"output\\"];
+              nodesDeleted: Scalars[\\"Int\\"][\\"output\\"];
+              relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
+              relationshipsDeleted: Scalars[\\"Int\\"][\\"output\\"];
             };
 
             export type UpdateRestaurantsMutationResponse = {
@@ -338,7 +350,7 @@ describe("issues/3591", () => {
 
             export type User = {
               __typename?: \\"User\\";
-              id: Scalars[\\"ID\\"];
+              id: Scalars[\\"ID\\"][\\"output\\"];
               company: Array<Company>;
               companyAggregate?: Maybe<UserCompanyCompanyAggregationSelection>;
               favoriteRestaurants: Array<Restaurant>;
@@ -350,50 +362,50 @@ describe("issues/3591", () => {
             export type UserCompanyArgs = {
               where?: InputMaybe<CompanyWhere>;
               options?: InputMaybe<CompanyOptions>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type UserCompanyAggregateArgs = {
               where?: InputMaybe<CompanyWhere>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type UserFavoriteRestaurantsArgs = {
               where?: InputMaybe<RestaurantWhere>;
               options?: InputMaybe<RestaurantOptions>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type UserFavoriteRestaurantsAggregateArgs = {
               where?: InputMaybe<RestaurantWhere>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type UserCompanyConnectionArgs = {
               where?: InputMaybe<UserCompanyConnectionWhere>;
-              first?: InputMaybe<Scalars[\\"Int\\"]>;
-              after?: InputMaybe<Scalars[\\"String\\"]>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
               sort?: InputMaybe<Array<UserCompanyConnectionSort>>;
             };
 
             export type UserFavoriteRestaurantsConnectionArgs = {
               where?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
-              first?: InputMaybe<Scalars[\\"Int\\"]>;
-              after?: InputMaybe<Scalars[\\"String\\"]>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"]>;
+              first?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              after?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
               sort?: InputMaybe<Array<UserFavoriteRestaurantsConnectionSort>>;
             };
 
             export type UserAggregateSelection = {
               __typename?: \\"UserAggregateSelection\\";
-              count: Scalars[\\"Int\\"];
+              count: Scalars[\\"Int\\"][\\"output\\"];
               id: IdAggregateSelectionNonNullable;
             };
 
             export type UserCompanyCompanyAggregationSelection = {
               __typename?: \\"UserCompanyCompanyAggregationSelection\\";
-              count: Scalars[\\"Int\\"];
+              count: Scalars[\\"Int\\"][\\"output\\"];
               node?: Maybe<UserCompanyCompanyNodeAggregateSelection>;
             };
 
@@ -408,38 +420,38 @@ describe("issues/3591", () => {
             export type UserCompanyConnection = {
               __typename?: \\"UserCompanyConnection\\";
               edges: Array<UserCompanyRelationship>;
-              totalCount: Scalars[\\"Int\\"];
+              totalCount: Scalars[\\"Int\\"][\\"output\\"];
               pageInfo: PageInfo;
             };
 
             export type UserCompanyRelationship = {
               __typename?: \\"UserCompanyRelationship\\";
-              cursor: Scalars[\\"String\\"];
+              cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Company;
             };
 
             export type UserEdge = {
               __typename?: \\"UserEdge\\";
-              cursor: Scalars[\\"String\\"];
+              cursor: Scalars[\\"String\\"][\\"output\\"];
               node: User;
             };
 
             export type UserFavoriteRestaurantsConnection = {
               __typename?: \\"UserFavoriteRestaurantsConnection\\";
               edges: Array<UserFavoriteRestaurantsRelationship>;
-              totalCount: Scalars[\\"Int\\"];
+              totalCount: Scalars[\\"Int\\"][\\"output\\"];
               pageInfo: PageInfo;
             };
 
             export type UserFavoriteRestaurantsRelationship = {
               __typename?: \\"UserFavoriteRestaurantsRelationship\\";
-              cursor: Scalars[\\"String\\"];
+              cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Restaurant;
             };
 
             export type UserRestaurantFavoriteRestaurantsAggregationSelection = {
               __typename?: \\"UserRestaurantFavoriteRestaurantsAggregationSelection\\";
-              count: Scalars[\\"Int\\"];
+              count: Scalars[\\"Int\\"][\\"output\\"];
               node?: Maybe<UserRestaurantFavoriteRestaurantsNodeAggregateSelection>;
             };
 
@@ -450,7 +462,7 @@ describe("issues/3591", () => {
 
             export type UsersConnection = {
               __typename?: \\"UsersConnection\\";
-              totalCount: Scalars[\\"Int\\"];
+              totalCount: Scalars[\\"Int\\"][\\"output\\"];
               pageInfo: PageInfo;
               edges: Array<UserEdge>;
             };
@@ -464,22 +476,22 @@ describe("issues/3591", () => {
             };
 
             export type CompanyCreateInput = {
-              field1?: InputMaybe<Scalars[\\"String\\"]>;
-              field2?: InputMaybe<Scalars[\\"String\\"]>;
-              field3?: InputMaybe<Scalars[\\"String\\"]>;
+              field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type CompanyOnCreateInput = {
-              field1?: InputMaybe<Scalars[\\"String\\"]>;
-              field2?: InputMaybe<Scalars[\\"String\\"]>;
-              field3?: InputMaybe<Scalars[\\"String\\"]>;
+              field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type CompanyOptions = {
               /** Specify one or more CompanySort objects to sort Companies by. The sorts will be applied in the order in which they are arranged in the array. */
               sort?: InputMaybe<Array<CompanySort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
 
             /** Fields to sort Companies by. The order in which sorts are applied is not guaranteed when specifying many fields in one CompanySort object. */
@@ -491,79 +503,79 @@ describe("issues/3591", () => {
             };
 
             export type CompanyUniqueWhere = {
-              id?: InputMaybe<Scalars[\\"ID\\"]>;
+              id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
             };
 
             export type CompanyUpdateInput = {
-              field1?: InputMaybe<Scalars[\\"String\\"]>;
-              field2?: InputMaybe<Scalars[\\"String\\"]>;
-              field3?: InputMaybe<Scalars[\\"String\\"]>;
+              field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type CompanyWhere = {
               OR?: InputMaybe<Array<CompanyWhere>>;
               AND?: InputMaybe<Array<CompanyWhere>>;
               NOT?: InputMaybe<CompanyWhere>;
-              id?: InputMaybe<Scalars[\\"ID\\"]>;
+              id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT?: InputMaybe<Scalars[\\"ID\\"]>;
-              id_IN?: InputMaybe<Array<Scalars[\\"ID\\"]>>;
+              id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"]>>;
-              id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"]>;
-              id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
-              id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
+              id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
-              field1?: InputMaybe<Scalars[\\"String\\"]>;
+              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              field1_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              field1_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field1_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              field1_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              field1_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              field1_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field1_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
+              field1_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field1_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field1_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              field1_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field1_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field1_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              field2?: InputMaybe<Scalars[\\"String\\"]>;
+              field1_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              field2_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              field2_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              field2_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              field2_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              field2_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field2_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
+              field2_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field2_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              field2_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field2_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field2_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              field3?: InputMaybe<Scalars[\\"String\\"]>;
+              field2_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              field3_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              field3_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              field3_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              field3_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              field3_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field3_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
+              field3_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              field3_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              field3_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field3_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              field3_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              field3_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type RestaurantConnectWhere = {
@@ -571,14 +583,14 @@ describe("issues/3591", () => {
             };
 
             export type RestaurantCreateInput = {
-              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type RestaurantOptions = {
               /** Specify one or more RestaurantSort objects to sort Restaurants by. The sorts will be applied in the order in which they are arranged in the array. */
               sort?: InputMaybe<Array<RestaurantSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
 
             /** Fields to sort Restaurants by. The order in which sorts are applied is not guaranteed when specifying many fields in one RestaurantSort object. */
@@ -587,36 +599,36 @@ describe("issues/3591", () => {
             };
 
             export type RestaurantUpdateInput = {
-              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type RestaurantWhere = {
               OR?: InputMaybe<Array<RestaurantWhere>>;
               AND?: InputMaybe<Array<RestaurantWhere>>;
               NOT?: InputMaybe<RestaurantWhere>;
-              name?: InputMaybe<Scalars[\\"String\\"]>;
+              name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT?: InputMaybe<Scalars[\\"String\\"]>;
-              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
+              name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"]>>>;
-              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
-              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
-              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars[\\"String\\"][\\"input\\"]>>>;
+              name_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              name_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_CONTAINS?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
             };
 
             export type UserCompanyAggregateInput = {
-              count?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               AND?: InputMaybe<Array<UserCompanyAggregateInput>>;
               OR?: InputMaybe<Array<UserCompanyAggregateInput>>;
               NOT?: InputMaybe<UserCompanyAggregateInput>;
@@ -626,7 +638,7 @@ describe("issues/3591", () => {
             export type UserCompanyConnectFieldInput = {
               where?: InputMaybe<CompanyConnectWhere>;
               /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
-              overwrite?: Scalars[\\"Boolean\\"];
+              overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
             export type UserCompanyConnectionSort = {
@@ -674,172 +686,172 @@ describe("issues/3591", () => {
               OR?: InputMaybe<Array<UserCompanyNodeAggregationWhereInput>>;
               NOT?: InputMaybe<UserCompanyNodeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              id_EQUAL?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_EQUAL?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field1_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              field1_EQUAL?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              field1_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
-              field1_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field1_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field1_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              field1_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"]>;
-              field1_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field1_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field1_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              field1_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              field1_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field1_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field1_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              field1_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"]>;
-              field1_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field1_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field1_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              field1_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field1_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              field1_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field1_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field1_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field1_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field1_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field2_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              field2_EQUAL?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              field2_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
-              field2_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field2_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field2_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              field2_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"]>;
-              field2_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field2_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field2_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              field2_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              field2_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field2_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field2_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              field2_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"]>;
-              field2_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field2_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field2_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              field2_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field2_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              field2_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field2_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field2_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field2_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field2_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field3_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              field3_EQUAL?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              field3_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
-              field3_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field3_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field3_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              field3_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"]>;
-              field3_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field3_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field3_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              field3_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              field3_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field3_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field3_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              field3_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"]>;
-              field3_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field3_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              field3_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              field3_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              field3_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              field3_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              field3_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              field3_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              field3_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              field3_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
 
             export type UserCompanyUpdateConnectionInput = {
@@ -887,11 +899,11 @@ describe("issues/3591", () => {
             };
 
             export type UserFavoriteRestaurantsAggregateInput = {
-              count?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              count_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              count?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              count_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               AND?: InputMaybe<Array<UserFavoriteRestaurantsAggregateInput>>;
               OR?: InputMaybe<Array<UserFavoriteRestaurantsAggregateInput>>;
               NOT?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
@@ -901,7 +913,7 @@ describe("issues/3591", () => {
             export type UserFavoriteRestaurantsConnectFieldInput = {
               where?: InputMaybe<RestaurantConnectWhere>;
               /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
-              overwrite?: Scalars[\\"Boolean\\"];
+              overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
             export type UserFavoriteRestaurantsConnectionSort = {
@@ -939,60 +951,60 @@ describe("issues/3591", () => {
               OR?: InputMaybe<Array<UserFavoriteRestaurantsNodeAggregationWhereInput>>;
               NOT?: InputMaybe<UserFavoriteRestaurantsNodeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              name_EQUAL?: InputMaybe<Scalars[\\"String\\"]>;
+              name_EQUAL?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LONGEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              name_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              name_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LONGEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_AVERAGE_LENGTH_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              name_LONGEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_SHORTEST_LENGTH_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              name_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LONGEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              name_LONGEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              name_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LONGEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_AVERAGE_LENGTH_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              name_LONGEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_SHORTEST_LENGTH_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
-              name_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
+              name_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_LONGEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Please use the explicit _LENGTH version for string aggregation. */
-              name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"]>;
-              name_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
-              name_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"]>;
+              name_SHORTEST_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
+              name_LONGEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              name_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
 
             export type UserFavoriteRestaurantsUpdateConnectionInput = {
@@ -1011,8 +1023,8 @@ describe("issues/3591", () => {
             export type UserOptions = {
               /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
               sort?: InputMaybe<Array<UserSort>>;
-              limit?: InputMaybe<Scalars[\\"Int\\"]>;
-              offset?: InputMaybe<Scalars[\\"Int\\"]>;
+              limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
             };
 
             export type UserRelationInput = {
@@ -1038,21 +1050,21 @@ describe("issues/3591", () => {
               OR?: InputMaybe<Array<UserWhere>>;
               AND?: InputMaybe<Array<UserWhere>>;
               NOT?: InputMaybe<UserWhere>;
-              id?: InputMaybe<Scalars[\\"ID\\"]>;
+              id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT?: InputMaybe<Scalars[\\"ID\\"]>;
-              id_IN?: InputMaybe<Array<Scalars[\\"ID\\"]>>;
+              id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"]>>;
-              id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"]>;
-              id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
-              id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_IN?: InputMaybe<Array<Scalars[\\"ID\\"][\\"input\\"]>>;
+              id_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              id_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_CONTAINS?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"]>;
+              id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Use \`company_SOME\` instead. */
               company?: InputMaybe<CompanyWhere>;
               /** @deprecated Use \`company_NONE\` instead. */

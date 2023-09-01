@@ -89,7 +89,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -149,7 +149,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -212,7 +212,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -274,7 +274,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -334,7 +334,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -394,7 +394,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -454,7 +454,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -514,7 +514,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -574,7 +574,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -636,7 +636,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -698,7 +698,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -723,7 +723,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roles: [String]!
             }
         `;
@@ -762,7 +762,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -786,7 +786,7 @@ describe("Connections Alias", () => {
                 name: String!
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 roles: [String]!
             }
         `;
@@ -841,7 +841,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -927,7 +927,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -957,7 +957,7 @@ describe("Connections Alias", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -1009,7 +1009,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();

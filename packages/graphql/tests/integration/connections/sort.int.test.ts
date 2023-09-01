@@ -33,7 +33,6 @@ describe("connections sort", () => {
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
     let session: Session;
-    let bookmarks: string[];
 
     const Movie = new UniqueType("Movie");
     const Series = new UniqueType("Series");
@@ -49,7 +48,7 @@ describe("connections sort", () => {
             title: String!
             runtime: Int!
             actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            numberOfActors: Int! @cypher(statement: "MATCH (actor:${Actor})-[:ACTED_IN]->(this) RETURN count(actor)")
+            numberOfActors: Int! @cypher(statement: "MATCH (actor:${Actor})-[:ACTED_IN]->(this) RETURN count(actor) as count", columnName: "count")
         }
 
         type ${Series} implements Production {
@@ -66,8 +65,9 @@ describe("connections sort", () => {
                 @cypher(
                     statement: """
                     MATCH (this)-[r:ACTED_IN]->(:${Movie})
-                    RETURN sum(r.screenTime)
-                    """
+                    RETURN sum(r.screenTime) as sum
+                    """,
+                    columnName: "sum"
                 )
         }
         interface ActedIn @relationshipProperties {
@@ -152,8 +152,6 @@ describe("connections sort", () => {
             { movies, series, actors }
         );
 
-        bookmarks = session2.lastBookmark();
-
         await session2.close();
     });
 
@@ -193,7 +191,7 @@ describe("connections sort", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -234,7 +232,7 @@ describe("connections sort", () => {
         const secondResult = await graphql({
             schema,
             source: secondQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(secondResult.errors).toBeUndefined();
         expect(secondResult.data as any).toEqual({
@@ -284,7 +282,7 @@ describe("connections sort", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -322,7 +320,7 @@ describe("connections sort", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeUndefined();
@@ -356,7 +354,7 @@ describe("connections sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { actorId: actors[0]?.id, direction },
             });
         describe("node", () => {

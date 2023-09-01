@@ -71,10 +71,10 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [ ${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -172,7 +172,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, directorName, year: 2011, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
@@ -263,7 +263,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, directorName, year, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
@@ -313,7 +313,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -386,7 +386,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -446,7 +446,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
@@ -504,7 +504,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
@@ -561,7 +561,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -623,7 +623,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -681,7 +681,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -710,7 +710,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn {
+                interface ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
             `;
@@ -768,7 +768,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, actorId },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -827,7 +827,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
@@ -892,7 +892,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -957,7 +957,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1025,7 +1025,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1094,7 +1094,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, movieOtherTitle },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(`${typeMovie.name}.actors required exactly once`);
@@ -1156,7 +1156,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1223,7 +1223,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime: screenTimeUpdate, screenTimeOther },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1304,7 +1304,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: {
                     movieTitle,
                     actorName,
@@ -1353,7 +1353,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
                     directed: [${typeMovie.name}!]! @relationship(type: "DIRECTED", properties: "Directed", direction: OUT)
                 }
 
-                interface Directed {
+                interface Directed @relationshipProperties {
                     year: Int!
                 }
             `;
@@ -1426,7 +1426,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1493,7 +1493,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1556,7 +1556,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1619,7 +1619,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1694,7 +1694,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1767,7 +1767,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, year, yearOther, actorName: actorNameOther },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1845,7 +1845,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -1924,7 +1924,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, movieOtherTitle, year: yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();
@@ -1994,7 +1994,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -2066,7 +2066,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors?.[0]?.toString()).toInclude(
@@ -2137,7 +2137,7 @@ describe("Relationship properties - connect with and without `overwrite` argumen
             const gqlResultUpdate = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: update,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, movieOtherTitle, year, yearOther, actorName },
             });
             expect(gqlResultUpdate.errors).toBeFalsy();

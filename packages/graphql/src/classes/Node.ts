@@ -22,7 +22,6 @@ import type { DirectiveNode, NamedTypeNode } from "graphql";
 import pluralize from "pluralize";
 import type {
     ConnectionField,
-    Context,
     CustomEnumField,
     CustomScalarField,
     CypherField,
@@ -35,7 +34,6 @@ import type {
     TemporalField,
     UnionField,
 } from "../types";
-import type { Auth } from "../types/deprecated/auth/auth";
 import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { upperFirst } from "../utils/upper-first";
@@ -43,9 +41,10 @@ import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
-import type { QueryOptionsDirective } from "./QueryOptionsDirective";
-import { NodeAuth } from "./deprecated/NodeAuth";
+import type { LimitDirective } from "./LimitDirective";
 import type { SchemaConfiguration } from "../schema/schema-configuration";
+import { leadingUnderscores } from "../utils/leading-underscore";
+import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -64,13 +63,12 @@ export interface NodeConstructor extends GraphElementConstructor {
     temporalFields: TemporalField[];
     pointFields: PointField[];
     plural?: string;
-    auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
     schemaConfiguration?: SchemaConfiguration;
     nodeDirective?: NodeDirective;
     description?: string;
-    queryOptionsDirective?: QueryOptionsDirective;
+    limitDirective?: LimitDirective;
     isGlobalNode?: boolean;
     globalIdField?: string;
     globalIdFieldIsInt?: boolean;
@@ -135,9 +133,8 @@ class Node extends GraphElement {
     public schemaConfiguration?: SchemaConfiguration;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public auth?: NodeAuth;
     public description?: string;
-    public queryOptions?: QueryOptionsDirective;
+    public limit?: LimitDirective;
     public singular: string;
     public plural: string;
     public isGlobalNode: boolean | undefined;
@@ -159,8 +156,7 @@ class Node extends GraphElement {
         this.schemaConfiguration = input.schemaConfiguration;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
-        this.queryOptions = input.queryOptionsDirective;
+        this.limit = input.limitDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;
         this._idFieldIsInt = input.globalIdFieldIsInt;
@@ -174,8 +170,8 @@ class Node extends GraphElement {
             ...this.temporalFields,
             ...this.enumFields,
             ...this.objectFields,
-            ...this.scalarFields,
-            ...this.primitiveFields,
+            ...this.scalarFields, // these are just custom scalars
+            ...this.primitiveFields, // these are instead built-in scalars
             ...this.interfaceFields,
             ...this.objectFields,
             ...this.unionFields,
@@ -184,6 +180,7 @@ class Node extends GraphElement {
     }
 
     /** Fields you can apply auth allow and bind to */
+    // Maybe we can remove this as they may not be used anymore in the new auth system
     public get authableFields(): AuthableField[] {
         return [
             ...this.primitiveFields,
@@ -286,27 +283,19 @@ class Node extends GraphElement {
         };
     }
 
-    public getLabelString(context: Context): string {
+    public getLabelString(context: Neo4jGraphQLContext): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    public getLabels(context: Context): string[] {
+    public getLabels(context: Neo4jGraphQLContext): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
     public getMainLabel(): string {
-        return this.nodeDirective?.labels?.[0] || this.nodeDirective?.label || this.name;
+        return this.nodeDirective?.labels?.[0] || this.name;
     }
     public getAllLabels(): string[] {
-        if (!this.nodeDirective) {
-            return [this.name];
-        }
-        if (this.nodeDirective.labels.length) {
-            return this.nodeDirective.labels;
-        }
-        return [this.nodeDirective.label || this.name, ...(this.nodeDirective.additionalLabels || [])];
-        // TODO: use when removing label & additionalLabels
-        // return this.nodeDirective?.labels || [this.name];
+        return this.nodeDirective?.labels || [this.name];
     }
 
     public getGlobalIdField(): string {
@@ -331,20 +320,14 @@ class Node extends GraphElement {
     private generateSingular(): string {
         const singular = camelcase(this.name);
 
-        return `${this.leadingUnderscores(this.name)}${singular}`;
+        return `${leadingUnderscores(this.name)}${singular}`;
     }
 
     private generatePlural(inputPlural: string | undefined): string {
-        const name = inputPlural || this.nodeDirective?.plural || this.name;
-        const plural = inputPlural || this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+        const name = inputPlural || this.plural || this.name;
+        const plural = inputPlural || this.plural ? camelcase(name) : pluralize(camelcase(name));
 
-        return `${this.leadingUnderscores(name)}${plural}`;
-    }
-
-    private leadingUnderscores(name: string): string {
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        return match?.[1] || "";
+        return `${leadingUnderscores(name)}${plural}`;
     }
 }
 

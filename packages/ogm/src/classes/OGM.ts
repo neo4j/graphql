@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLConstructor, Node } from "@neo4j/graphql";
+import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import type { GraphQLSchema } from "graphql";
 import Model from "./Model";
-import { filterDocument } from "../utils";
+import { filterDocument } from "../utils/filter-document";
 import type { Driver, SessionConfig } from "neo4j-driver";
 
 export interface OGMConstructor extends Neo4jGraphQLConstructor {
@@ -67,7 +67,7 @@ class OGM<ModelMap = unknown> {
         } = {}) {
             return this.neoSchema.checkNeo4jCompat({
                 driver: driver || rest.driver,
-                sessionConfig: sessionConfig || rest.config?.driverConfig,
+                sessionConfig: sessionConfig || (database && { database }) || undefined,
             });
         };
 
@@ -84,7 +84,7 @@ class OGM<ModelMap = unknown> {
                 await this.neoSchema.assertIndexesAndConstraints({
                     options,
                     driver: driver || rest.driver,
-                    sessionConfig: sessionConfig || rest.config?.driverConfig,
+                    sessionConfig: sessionConfig || (database && { database }) || undefined,
                 });
             } catch (e: unknown) {
                 if (
@@ -104,14 +104,6 @@ class OGM<ModelMap = unknown> {
         }
 
         return this._schema;
-    }
-
-    public get nodes(): Node[] {
-        try {
-            return this.neoSchema.nodes;
-        } catch {
-            throw new Error("You must await `.init()` before accessing `nodes`");
-        }
     }
 
     public async init(): Promise<void> {
@@ -141,8 +133,16 @@ class OGM<ModelMap = unknown> {
         return model as M;
     }
 
+    private get nodes() {
+        try {
+            return this.neoSchema["nodes"];
+        } catch {
+            throw new Error("You must await `.init()` before accessing `nodes`");
+        }
+    }
+
     private initModel(model: Model) {
-        const node = this.neoSchema.nodes.find((n) => n.name === model.name);
+        const node = this.neoSchema["nodes"].find((n) => n.name === model.name);
 
         if (!node) {
             throw new Error(`Could not find model ${model.name}`);

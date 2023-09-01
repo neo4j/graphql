@@ -29,14 +29,13 @@ describe("TreeDescriptor Parser", () => {
     let typeDefs;
     let movieNode;
     let context;
-    let schema;
     let nodes;
     let relationships;
 
     beforeAll(async () => {
         typeDefs = gql`
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String
                 age: Int
                 height: Int
@@ -67,16 +66,14 @@ describe("TreeDescriptor Parser", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-        schema = await neoSchema.getSchema();
-        nodes = neoSchema.nodes;
-        relationships = neoSchema.relationships;
+        await neoSchema.getSchema();
+        nodes = neoSchema["nodes"];
+        relationships = neoSchema["relationships"];
 
         movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         context = new ContextBuilder({
-            neoSchema: { nodes, relationships },
             nodes,
             relationships,
-            schema,
         }).instance();
     });
 
@@ -105,10 +102,8 @@ describe("TreeDescriptor Parser", () => {
         };
         const movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         const context = new ContextBuilder({
-            neoSchema: { nodes, relationships },
             nodes,
             relationships,
-            schema,
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(
@@ -326,10 +321,8 @@ describe("TreeDescriptor Parser", () => {
         };
         const movieNode = nodes.find((node) => node.name === "Movie") as unknown as Node;
         const context = new ContextBuilder({
-            neoSchema: { nodes, relationships },
             nodes,
             relationships,
-            schema,
         }).instance();
         const treeDescriptor = Array.isArray(graphQLInput)
             ? mergeTreeDescriptors(

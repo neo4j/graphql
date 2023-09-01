@@ -132,7 +132,7 @@ describe("Cypher Auth Allow", () => {
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentPost0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_contentPost0_node)<-[:HAS_CONTENT]-(this0_contentPost0_node_creator0_node)
             WITH this0, this0_contentPost0_node
-            OPTIONAL MATCH (this0_contentPost0_node)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this0_contentPost0_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -142,14 +142,14 @@ describe("Cypher Auth Allow", () => {
             	WITH this0_contentPost0_node
             	MATCH (this0_contentPost0_node)<-[this0_contentPost0_node_creator_User_unique:HAS_CONTENT]-(:User)
             	WITH count(this0_contentPost0_node_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this0_contentPost0_node_creator_User_unique_ignored
             }
             WITH this0
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN [ this0 { .id } ] AS data"
+            RETURN [this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -225,14 +225,14 @@ describe("Cypher Auth Allow", () => {
             	WITH this0_contentComment0_node
             	MATCH (this0_contentComment0_node)<-[this0_contentComment0_node_creator_User_unique:HAS_CONTENT]-(:User)
             	WITH count(this0_contentComment0_node_creator_User_unique) as c
-            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
             	RETURN c AS this0_contentComment0_node_creator_User_unique_ignored
             }
             WITH this0
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN [ this0 { .id } ] AS data"
+            RETURN [this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -278,7 +278,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -302,7 +302,7 @@ describe("Cypher Auth Allow", () => {
             		WITH this_content0
             		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
             		WITH count(this_content0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
             		RETURN c AS this_content0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_content0
@@ -326,7 +326,7 @@ describe("Cypher Auth Allow", () => {
             		RETURN count(*) AS update_this_content0_creator0
             	}
             	WITH this, this_content0
-            	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_this0:User)
             	WITH *, count(authorization_this0) AS creatorCount
             	WITH *
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -335,7 +335,7 @@ describe("Cypher Auth Allow", () => {
             		WITH this_content0
             		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
             		WITH count(this_content0_creator_User_unique) as c
-            		CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
+            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             		RETURN c AS this_content0_creator_User_unique_ignored
             	}
             	RETURN count(*) AS update_this_content0
@@ -407,7 +407,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -422,9 +422,7 @@ describe("Cypher Auth Allow", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content0_node
             WITH this, this_connect_content0_node
@@ -443,13 +441,11 @@ describe("Cypher Auth Allow", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_content1_node
             WITH *
-            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
@@ -496,7 +492,7 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -508,7 +504,6 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             WITH this, this_disconnect_content0
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -523,10 +518,9 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
-            	RETURN count(*) AS _
             }
             WITH *
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:\`User\`)
+            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))

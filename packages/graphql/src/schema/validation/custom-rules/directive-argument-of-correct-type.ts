@@ -22,71 +22,95 @@ import type {
     DirectiveNode,
     GraphQLArgument,
     ArgumentNode,
-    ASTNode,
-    ObjectTypeDefinitionNode,
-    FieldDefinitionNode,
+    GraphQLDirective,
+    GraphQLSchema,
 } from "graphql";
-import { GraphQLError, coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
-
+import { coerceInputValue, valueFromASTUntyped, buildASTSchema } from "graphql";
+import type { Maybe } from "graphql/jsutils/Maybe";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { VALIDATION_ERROR_CODES } from "../utils/validation-error-codes";
+import type { AssertionResponse } from "./utils/document-validation-error";
+import { createGraphQLError } from "./utils/document-validation-error";
+import { getPathToNode } from "./utils/path-parser";
 
-export function DirectiveArgumentOfCorrectType(context: SDLValidationContext): ASTVisitor {
-    const schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
-
-    return {
-        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
-            const genericDirectiveName = ["subscriptionsAuthorization", "authorization", "authentication"].find(
-                (applicableDirectiveName) =>
-                    directiveNode.name.value.toLowerCase().includes(applicableDirectiveName.toLowerCase())
-            );
-            // Validate only Authorization/Authentication usage
-            if (!genericDirectiveName) {
-                return;
+export function DirectiveArgumentOfCorrectType(includeAuthorizationDirectives: boolean = true) {
+    return function (context: SDLValidationContext): ASTVisitor {
+        // TODO: find a way to scope this schema instead of creating the whole document
+        // should only contain dynamic directives and their associated types (typeWhere + jwt payload)
+        let schema: GraphQLSchema | undefined;
+        const getSchemaFromDocument = (): GraphQLSchema => {
+            if (!schema) {
+                schema = buildASTSchema(context.getDocument(), { assumeValid: true, assumeValidSDL: true });
             }
-            const directiveDefinition = schema.getDirective(directiveNode.name.value);
-            if (!directiveDefinition) {
-                // Do not report, delegate this report to KnownDirectivesRule
-                return;
-            }
-            const pathToHere = [...getPathToDirectiveNode(path, ancenstors), `@${genericDirectiveName}`];
+            return schema;
+        };
 
-            directiveNode.arguments?.forEach((argument) => {
-                const argumentDefinition = findArgumentDefinitionNodeByName(
-                    directiveDefinition.args,
-                    argument.name.value
+        return {
+            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
+                const oneOfAuthorizationDirectives =
+                    includeAuthorizationDirectives &&
+                    ["subscriptionsAuthorization", "authorization", "authentication"].reduce<string | undefined>(
+                        (genericDirective, oneOfAuthorizationDirectives) => {
+                            if (
+                                !genericDirective &&
+                                directiveNode.name.value
+                                    .toLowerCase()
+                                    .includes(oneOfAuthorizationDirectives.toLowerCase())
+                            ) {
+                                genericDirective = oneOfAuthorizationDirectives;
+                            }
+                            return genericDirective;
+                        },
+                        undefined
+                    );
+                const otherDirectives = ["fulltext", "relationship", "node", "customResolver", "cypher"].find(
+                    (applicableDirectiveName) =>
+                        directiveNode.name.value.toLowerCase() === applicableDirectiveName.toLowerCase()
                 );
-                if (!argumentDefinition) {
+
+                if (!oneOfAuthorizationDirectives && !otherDirectives) {
                     return;
                 }
-                const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
-                if (!isValid) {
-                    const errorOpts = {
-                        nodes: [argument, directiveNode],
-                        extensions: {
-                            exception: { code: VALIDATION_ERROR_CODES[genericDirectiveName.toUpperCase()] },
-                        },
-                        path: [...pathToHere, argument.name.value, ...errorPath],
-                        source: undefined,
-                        positions: undefined,
-                        originalError: undefined,
-                    };
 
-                    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-                    context.reportError(
-                        new GraphQLError(
-                            `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
-                            errorOpts.nodes,
-                            errorOpts.source,
-                            errorOpts.positions,
-                            errorOpts.path,
-                            errorOpts.originalError,
-                            errorOpts.extensions
-                        )
-                    );
+                let directiveName: string;
+                let directiveDefinition: Maybe<GraphQLDirective>;
+                if (oneOfAuthorizationDirectives) {
+                    directiveDefinition = getSchemaFromDocument().getDirective(directiveNode.name.value);
+                    directiveName = oneOfAuthorizationDirectives;
+                } else {
+                    directiveDefinition = context.getSchema()?.getDirective(directiveNode.name.value);
+                    directiveName = directiveNode.name.value;
                 }
-            });
-        },
+
+                if (!directiveDefinition) {
+                    // Do not report, delegate this report to KnownDirectivesRule
+                    return;
+                }
+                const pathToHere = [...getPathToNode(path, ancenstors)[0], `@${directiveName}`];
+                for (const argument of directiveNode.arguments || []) {
+                    const argumentDefinition = findArgumentDefinitionNodeByName(
+                        directiveDefinition.args,
+                        argument.name.value
+                    );
+                    if (!argumentDefinition) {
+                        return;
+                    }
+                    const { isValid, errorMsg, errorPath } = assertArgumentType(argument, argumentDefinition);
+                    if (!isValid) {
+                        context.reportError(
+                            createGraphQLError({
+                                nodes: [argument, directiveNode],
+                                path: [...pathToHere, argument.name.value, ...errorPath],
+                                errorMsg: `Invalid argument: ${argument.name.value}, error: ${errorMsg}`,
+                                extensions: {
+                                    exception: { code: VALIDATION_ERROR_CODES[directiveName.toUpperCase()] },
+                                },
+                            })
+                        );
+                    }
+                }
+            },
+        };
     };
 }
 
@@ -94,60 +118,19 @@ function findArgumentDefinitionNodeByName(args: readonly GraphQLArgument[], name
     return args.find((arg) => arg.name === name);
 }
 
-function getPathToDirectiveNode(
-    path: readonly (number | string)[],
-    ancenstors: readonly (ASTNode | readonly ASTNode[])[]
-): Array<string> {
-    const documentASTNodes = ancenstors[1];
-    if (!documentASTNodes || (Array.isArray(documentASTNodes) && !documentASTNodes.length)) {
-        return [];
-    }
-    const [, definitionIdx] = path;
-    const traversedDefinition = documentASTNodes[definitionIdx as number];
-    const pathToHere: string[] = [traversedDefinition?.name?.value];
-    const getNextDefinition = parsePath(path, traversedDefinition);
-    for (const definition of getNextDefinition()) {
-        pathToHere.push(definition.name.value);
-    }
-    return pathToHere;
-}
-
-function parsePath(
-    path: readonly (number | string)[],
-    traversedDefinition: ObjectTypeDefinitionNode | FieldDefinitionNode
-) {
-    return function* getNextDefinition(idx = 2) {
-        while (path[idx] && path[idx] !== "directives") {
-            // continue parsing for annotated fields
-            const key = path[idx] as string;
-            const idxAtKey = path[idx + 1] as number;
-            traversedDefinition = traversedDefinition[key][idxAtKey];
-            yield traversedDefinition;
-            idx += 2;
-        }
-    };
-}
-
-type AssertionResponse = {
-    isValid: boolean;
-    errorMsg?: string;
-    errorPath: ReadonlyArray<string | number>;
-};
-
 function assertArgumentType(argumentNode: ArgumentNode, inputValueDefinition: GraphQLArgument): AssertionResponse {
     const argType = inputValueDefinition.type;
     const argValue = valueFromASTUntyped(argumentNode.value);
 
     let isValid = true;
-    let errorMsg, errorPath;
+    let errorMsg = "";
+    let errorPath: readonly (string | number)[] = [];
 
-    const onError = (_path: ReadonlyArray<string | number>, _invalidValue: unknown, error: Error) => {
+    coerceInputValue(argValue, argType, (path, _invalidValue, error) => {
         isValid = false;
         errorMsg = error.message;
-        errorPath = _path;
-    };
-
-    coerceInputValue(argValue, argType, onError);
+        errorPath = path;
+    });
 
     return { isValid, errorMsg, errorPath };
 }

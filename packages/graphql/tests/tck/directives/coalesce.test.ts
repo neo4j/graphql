@@ -97,7 +97,7 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (this.verified = $param2) AND this.numberOfFriends > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
             RETURN this { .name } AS this"
         `);
@@ -153,7 +153,7 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
             RETURN this { .id, .status } AS this"
         `);
@@ -210,10 +210,10 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE coalesce(this1.status, \\"ACTIVE\\") = $param0
                 WITH { node: { id: this1.id, status: this1.status } } AS edge
                 WITH collect(edge) AS edges
@@ -268,11 +268,11 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
-                WHERE coalesce(this1.statuses, [ \\"ACTIVE\\", \\"INACTIVE\\" ]) = $param0
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]) = $param0
                 WITH { node: { id: this1.id, statuses: this1.statuses } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

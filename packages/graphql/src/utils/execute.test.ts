@@ -18,18 +18,6 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { Neo4jGraphQL } from "../classes";
-import type { AuthContext } from "../types/deprecated/auth/auth-context";
-import {
-    CypherConnectComponentsPlanner,
-    CypherExpressionEngine,
-    CypherInterpretedPipesFallback,
-    CypherOperatorEngine,
-    CypherPlanner,
-    CypherReplanning,
-    CypherRuntime,
-    CypherUpdateStrategy,
-} from "../types";
 import execute from "./execute";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
@@ -78,7 +66,16 @@ describe("execute", () => {
                                 // @ts-ignore
                                 return fn(tx);
                             },
+                            executeRead: (fn) => {
+                                // @ts-ignore
+                                return fn(tx);
+                            },
+                            executeWrite: (fn) => {
+                                // @ts-ignore
+                                return fn(tx);
+                            },
                             lastBookmark: () => "bookmark",
+                            lastBookmarks: () => "bookmark",
                             close: () => true,
                         };
                     },
@@ -86,27 +83,18 @@ describe("execute", () => {
                     _config: {},
                 };
 
-                // @ts-ignore
-                const neoSchema: Neo4jGraphQL = {
-                    // @ts-ignore
-                    options: {},
-                };
-
                 const executeResult = await execute({
                     cypher,
                     params,
                     defaultAccessMode,
                     context: new ContextBuilder({
-                        neoSchema,
                         executor: new Executor({
                             executionContext: driver,
-                            auth: {} as AuthContext,
                             sessionConfig: {
                                 database,
                                 bookmarks,
                             },
                         }),
-                        info: undefined,
                     }).instance(),
                 });
 
@@ -156,18 +144,21 @@ describe("execute", () => {
                             // @ts-ignore
                             return fn(tx);
                         },
-                        lastBookmark: () => "bookmark",
+                        executeRead: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeWrite: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
                         close: () => true,
+                        lastBookmark: () => [],
+                        lastBookmarks: () => [],
                     };
                 },
                 // @ts-ignore
                 _config: {},
-            };
-
-            // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
-                // @ts-ignore
-                options: {},
             };
 
             const executeResult = await execute({
@@ -175,17 +166,14 @@ describe("execute", () => {
                 params,
                 defaultAccessMode,
                 context: new ContextBuilder({
-                    neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        auth: {} as AuthContext,
                         sessionConfig: {
                             database,
                             bookmarks,
                         },
-                        queryOptions: {},
+                        cypherQueryOptions: {},
                     }),
-                    info: undefined,
                 }).instance(),
             });
 
@@ -238,18 +226,21 @@ describe("execute", () => {
                             // @ts-ignore
                             return fn(tx);
                         },
-                        lastBookmark: () => "bookmark",
+                        executeRead: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeWrite: (fn) => {
+                            // @ts-ignore
+                            return fn(tx);
+                        },
                         close: () => true,
+                        lastBookmark: () => [],
+                        lastBookmarks: () => [],
                     };
                 },
                 // @ts-ignore
                 _config: {},
-            };
-
-            // @ts-ignore
-            const neoSchema: Neo4jGraphQL = {
-                // @ts-ignore
-                options: {},
             };
 
             const executeResult = await execute({
@@ -257,26 +248,23 @@ describe("execute", () => {
                 params,
                 defaultAccessMode,
                 context: new ContextBuilder({
-                    neoSchema,
                     executor: new Executor({
                         executionContext: driver,
-                        auth: {} as AuthContext,
                         sessionConfig: {
                             database,
                             bookmarks,
                         },
-                        queryOptions: {
-                            runtime: CypherRuntime.INTERPRETED,
-                            planner: CypherPlanner.COST,
-                            connectComponentsPlanner: CypherConnectComponentsPlanner.GREEDY,
-                            updateStrategy: CypherUpdateStrategy.DEFAULT,
-                            expressionEngine: CypherExpressionEngine.COMPILED,
-                            operatorEngine: CypherOperatorEngine.COMPILED,
-                            interpretedPipesFallback: CypherInterpretedPipesFallback.ALL,
-                            replan: CypherReplanning.DEFAULT,
+                        cypherQueryOptions: {
+                            runtime: "interpreted",
+                            planner: "cost",
+                            connectComponentsPlanner: "greedy",
+                            updateStrategy: "default",
+                            expressionEngine: "compiled",
+                            operatorEngine: "compiled",
+                            interpretedPipesFallback: "all",
+                            replan: "default",
                         },
                     }),
-                    info: undefined,
                 }).instance(),
             });
 

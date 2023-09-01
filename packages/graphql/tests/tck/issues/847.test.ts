@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
 
             type Interaction {
-                id: ID! @id
+                id: ID! @id @unique
                 kind: String!
                 subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)
                 objects: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -67,17 +67,17 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Interaction\`)
+            "MATCH (this:Interaction)
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:\`Person\`)
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH this1 { __resolveType: \\"Person\\", __id: id(this), .id } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:\`Place\`)
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Place)
                     WITH this4 { __resolveType: \\"Place\\", __id: id(this), .id } AS this4
                     RETURN this4 AS var2
                 }
@@ -88,12 +88,12 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this5:ACTED_IN]->(this6:\`Person\`)
+                    MATCH (this)-[this5:ACTED_IN]->(this6:Person)
                     WITH this6 { __resolveType: \\"Person\\", __id: id(this), .id } AS this6
                     RETURN this6 AS var7
                     UNION
                     WITH *
-                    MATCH (this)-[this8:ACTED_IN]->(this9:\`Place\`)
+                    MATCH (this)-[this8:ACTED_IN]->(this9:Place)
                     WITH this9 { __resolveType: \\"Place\\", __id: id(this), .id } AS this9
                     RETURN this9 AS var7
                 }

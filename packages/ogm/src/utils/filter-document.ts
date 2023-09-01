@@ -17,12 +17,7 @@
  * limitations under the License.
  */
 
-import {
-    Kind,
-    type DefinitionNode,
-    type DocumentNode,
-    type FieldDefinitionNode,
-} from "graphql";
+import { Kind, type DefinitionNode, type DocumentNode, type FieldDefinitionNode } from "graphql";
 import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
@@ -43,12 +38,12 @@ const excludedDirectives = [
     "settable",
 ];
 
-function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
+export function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
     // hack to keep aggregation enabled for OGM
     const schemaExtension = `
     extend schema @query(read: true, aggregate: true) 
         @mutation(operations: [CREATE, UPDATE, DELETE]) 
-        @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])`;
+        @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])`;
     const merged = mergeTypeDefs(
         Array.isArray(typeDefs) ? (typeDefs as string[]).concat(schemaExtension) : [typeDefs as string, schemaExtension]
     );
@@ -90,9 +85,11 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
                                     ?.filter((x) => !excludedDirectives.includes(x.name.value))
                                     .map((x) => {
                                         if (x.name.value === "relationship") {
-                                            const args = (x.arguments ? x.arguments?.filter(
-                                                (arg) => arg.name.value !== "aggregate"
-                                            ) : []) as any[]; // cast to any as this type is changing between GraphQL versions
+                                            const args = (
+                                                x.arguments
+                                                    ? x.arguments?.filter((arg) => arg.name.value !== "aggregate")
+                                                    : []
+                                            ) as any[]; // cast to any as this type is changing between GraphQL versions
                                             args?.push(relationshipAggregateArgument);
                                             return {
                                                 ...x,
@@ -110,5 +107,3 @@ function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): Document
         }, []),
     };
 }
-
-export default filterDocument;

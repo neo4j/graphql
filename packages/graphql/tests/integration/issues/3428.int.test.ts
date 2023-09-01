@@ -186,7 +186,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         test("Should not error and should only be able to perform the disconnect nested op when only the DISCONNECT nestedOperation is specified on rel to a type with a unique field", async () => {
             const typeDefs = `#graphql
                 type ${Person} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String
                 }
 
@@ -200,52 +200,52 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             const createWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedUpdateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedUpdate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDisconnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDisconnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const deleteWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: deleteMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
@@ -290,7 +290,7 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
         test("Should only be able to perform the disconnect and connectOrCreate nested ops when DISCONNECT and CONNECT_OR_CREATE are the only nestedOperations specified", async () => {
             const typeDefs = `#graphql
                 type ${Person} {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String
                 }
 
@@ -304,52 +304,52 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             const createWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedUpdateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedUpdate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDisconnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDisconnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const deleteWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: deleteMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
@@ -552,52 +552,52 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             const createWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedUpdateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedUpdate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDisconnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDisconnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const deleteWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: deleteMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(createWithNestedCreateResult.errors).toBeDefined();
@@ -661,52 +661,52 @@ describe("https://github.com/neo4j/graphql/issues/3428", () => {
             const createWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const createWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedConnectOrCreateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedConnectOrCreate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedUpdateResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedUpdate,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDisconnectResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDisconnect,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const updateWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: updateMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
             const deleteWithNestedDeleteResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: deleteMutationWithNestedDelete,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(createWithNestedCreateResult.errors).toBeDefined();

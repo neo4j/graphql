@@ -58,10 +58,10 @@ describe("#402", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Event\`)
+            "MATCH (this:Event)
             CALL {
                 WITH this
-                MATCH (this)-[this0:HAPPENS_IN]->(this1:\`Area\`)
+                MATCH (this)-[this0:HAPPENS_IN]->(this1:Area)
                 WITH this1 { .id } AS this1
                 RETURN head(collect(this1)) AS var2
             }

@@ -77,7 +77,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, duration },
                 });
 
@@ -139,7 +139,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, durations },
                 });
 
@@ -227,7 +227,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, duration },
                 });
 
@@ -300,7 +300,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { id, duration },
                 });
 
@@ -391,7 +391,7 @@ describe("Duration", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                            contextValue: neo4j.getContextValues(),
                             variableValues: {
                                 where: { id_IN: [longId, mediumId, shortId], [`duration_${filter}`]: medium },
                             },

@@ -38,6 +38,7 @@ describe("Cypher", () => {
                         RETURN a
                         LIMIT 1
                         """
+                        columnName: "a"
                     )
             }
         `;
@@ -116,7 +117,7 @@ describe("Cypher", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -127,7 +128,7 @@ describe("Cypher", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -242,7 +243,7 @@ describe("Cypher", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!
@@ -264,8 +265,9 @@ describe("Cypher", () => {
                     @cypher(
                         statement: """
                         MATCH (this)-[r:ACTED_IN]->(:Movie)
-                        RETURN sum(r.screenTime)
+                        RETURN sum(r.screenTime) as result
                         """
+                        columnName: "result"
                     )
             }
 
@@ -278,6 +280,7 @@ describe("Cypher", () => {
                         RETURN a
                         LIMIT 1
                         """
+                        columnName: "a"
                     )
             }
         `;
@@ -358,7 +361,7 @@ describe("Cypher", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -369,7 +372,7 @@ describe("Cypher", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -484,7 +487,7 @@ describe("Cypher", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

@@ -76,7 +76,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -138,7 +138,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: {
                     imdbRating_float: imdbRatingFloat,
                     imdbRating_int: imdbRatingInt,
@@ -187,8 +187,9 @@ describe("Float", () => {
                     @cypher(
                         statement: """
                         CREATE (m:Movie {id: $id, float: $float, floats: $nested.floats})
-                        RETURN m.float
-                        """
+                        RETURN m.float as result
+                        """,
+                        columnName: "result"
                     )
             }
         `;
@@ -209,7 +210,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: {
                     float,
                     floats,
@@ -241,8 +242,8 @@ describe("Float", () => {
             type Movie {
                 id: String
                 fakeFloat: Float! @cypher(statement: """
-                    RETURN 12345
-                """)
+                    RETURN 12345 as result
+                """, columnName: "result")
             }
 
 
@@ -272,7 +273,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();

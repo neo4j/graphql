@@ -51,7 +51,7 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.localDT = $param0
             RETURN this { .localDT } AS this"
         `);
@@ -83,7 +83,7 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.localDT >= $param0
             RETURN this { .localDT } AS this"
         `);
@@ -120,7 +120,7 @@ describe("Cypher LocalDateTime", () => {
             "UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
-                CREATE (create_this1:\`Movie\`)
+                CREATE (create_this1:Movie)
                 SET
                     create_this1.localDT = create_var0.localDT
                 RETURN create_this1
@@ -163,7 +163,7 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             SET this.localDT = $this_update_localDT
             RETURN collect(DISTINCT this { .id, .localDT }) AS data"
         `);

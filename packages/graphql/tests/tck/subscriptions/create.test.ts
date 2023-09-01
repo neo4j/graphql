@@ -19,17 +19,17 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on create", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsEngine();
         typeDefs = gql`
             type Actor {
                 name: String!
@@ -44,9 +44,9 @@ describe("Subscriptions metadata on create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 
@@ -62,7 +62,7 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -95,9 +95,9 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
-                } as any,
+                },
             }),
             query
         );
@@ -119,13 +119,13 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
             }
-            RETURN [ this0 { .title, actorsConnection: create_var2 } ] AS data, meta"
+            RETURN [this0 { .title, actorsConnection: create_var2 }] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -175,9 +175,9 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
-                } as any,
+                },
             }),
             query
         );
@@ -198,13 +198,13 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 WITH { node: { name: create_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
             }
-            RETURN [ this0 { .title, actorsConnection: create_var2 } ] AS data, meta"
+            RETURN [this0 { .title, actorsConnection: create_var2 }] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -227,7 +227,7 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -272,9 +272,9 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
-                } as any,
+                },
             }),
             query
         );
@@ -302,13 +302,13 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS create_var2
             }
-            RETURN [ this0 { .title, actorsConnection: create_var2 } ] AS data, meta"
+            RETURN [this0 { .title, actorsConnection: create_var2 }] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -341,11 +341,11 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            interface Directed {
+            interface Directed @relationshipProperties {
                 year: Int!
             }
 
@@ -387,9 +387,9 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
-                } as any,
+                },
             }),
             query
         );
@@ -419,19 +419,19 @@ describe("Subscriptions metadata on create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:\`Actor\`)
+                    MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:Actor)
                     WITH create_this1 { __resolveType: \\"Actor\\", __id: id(this0), .name } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)<-[create_this3:DIRECTED]-(create_this4:\`Person\`)
+                    MATCH (this0)<-[create_this3:DIRECTED]-(create_this4:Person)
                     WITH create_this4 { __resolveType: \\"Person\\", __id: id(this0), .name } AS create_this4
                     RETURN create_this4 AS create_var2
                 }
                 WITH create_var2
                 RETURN collect(create_var2) AS create_var2
             }
-            RETURN [ this0 { .title, directors: create_var2 } ] AS data, meta"
+            RETURN [this0 { .title, directors: create_var2 }] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -464,11 +464,11 @@ describe("Subscriptions metadata on create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
-            interface Directed {
+            interface Directed @relationshipProperties {
                 year: Int!
             }
 
@@ -527,9 +527,9 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(
             new Neo4jGraphQL({
                 typeDefs,
-                plugins: {
+                features: {
                     subscriptions: plugin,
-                } as any,
+                },
             }),
             query
         );
@@ -565,10 +565,10 @@ describe("Subscriptions metadata on create", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:\`Actor\`)
+                    MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:Actor)
                     CALL {
                         WITH create_this1
-                        MATCH (create_this1)-[create_this2:ACTED_IN]->(create_this3:\`Movie\`)
+                        MATCH (create_this1)-[create_this2:ACTED_IN]->(create_this3:Movie)
                         WITH create_this3 { .title } AS create_this3
                         RETURN collect(create_this3) AS create_var4
                     }
@@ -576,14 +576,14 @@ describe("Subscriptions metadata on create", () => {
                     RETURN create_this1 AS create_var5
                     UNION
                     WITH *
-                    MATCH (this0)<-[create_this6:DIRECTED]-(create_this7:\`Person\`)
+                    MATCH (this0)<-[create_this6:DIRECTED]-(create_this7:Person)
                     WITH create_this7 { __resolveType: \\"Person\\", __id: id(this0), .name } AS create_this7
                     RETURN create_this7 AS create_var5
                 }
                 WITH create_var5
                 RETURN collect(create_var5) AS create_var5
             }
-            RETURN [ this0 { .title, directors: create_var5 } ] AS data, meta"
+            RETURN [this0 { .title, directors: create_var5 }] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -630,7 +630,7 @@ describe("Subscriptions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
-            RETURN [ this0 { .id } ] AS data, meta"
+            RETURN [this0 { .id }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -670,7 +670,7 @@ describe("Subscriptions metadata on create", () => {
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
-            RETURN [ this0 { .id }, this1 { .id } ] AS data, meta"
+            RETURN [this0 { .id }, this1 { .id }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -714,11 +714,11 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 WITH create_this1 { .name } AS create_this1
                 RETURN collect(create_this1) AS create_var2
             }
-            RETURN [ this0 { .id, actors: create_var2 } ] AS data, meta"
+            RETURN [this0 { .id, actors: create_var2 }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -774,11 +774,11 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 WITH create_this1 { .name } AS create_this1
                 RETURN collect(create_this1) AS create_var2
             }
-            RETURN [ this0 { .id, actors: create_var2 } ] AS data, meta"
+            RETURN [this0 { .id, actors: create_var2 }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -857,13 +857,13 @@ describe("Subscriptions metadata on create", () => {
             WITH this0, this0_meta AS meta
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:\`Actor\`)
+                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 CALL {
                     WITH create_this1
-                    MATCH (create_this1)-[create_this2:ACTED_IN]->(create_this3:\`Movie\`)
+                    MATCH (create_this1)-[create_this2:ACTED_IN]->(create_this3:Movie)
                     CALL {
                         WITH create_this3
-                        MATCH (create_this3)<-[create_this4:ACTED_IN]-(create_this5:\`Actor\`)
+                        MATCH (create_this3)<-[create_this4:ACTED_IN]-(create_this5:Actor)
                         WITH create_this5 { .name } AS create_this5
                         RETURN collect(create_this5) AS create_var6
                     }
@@ -873,7 +873,7 @@ describe("Subscriptions metadata on create", () => {
                 WITH create_this1 { .name, movies: create_var7 } AS create_this1
                 RETURN collect(create_this1) AS create_var8
             }
-            RETURN [ this0 { .id, actors: create_var8 } ] AS data, meta"
+            RETURN [this0 { .id, actors: create_var8 }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -947,7 +947,7 @@ describe("Subscriptions metadata on create", () => {
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
-            RETURN [ this0 { .id }, this1 { .id } ] AS data, meta"
+            RETURN [this0 { .id }, this1 { .id }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

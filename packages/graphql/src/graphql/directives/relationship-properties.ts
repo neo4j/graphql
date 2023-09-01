@@ -21,6 +21,6 @@ import { DirectiveLocation, GraphQLDirective } from "graphql";
 
 export const relationshipPropertiesDirective = new GraphQLDirective({
     name: "relationshipProperties",
-    description: "Syntactic sugar to help differentiate between interfaces for relationship properties, and otherwise.",
+    description: "Required to differentiate between interfaces for relationship properties, and otherwise.",
     locations: [DirectiveLocation.INTERFACE],
 });

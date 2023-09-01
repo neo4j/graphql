@@ -29,13 +29,13 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Movie {
-                id: ID! @id
+                id: ID! @id @unique
                 title: String!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Actor {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String!
                 dob: DateTime!
                 homeAddress: Point!
@@ -86,17 +86,17 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             WITH this0
             CALL {
                 WITH this0
-                MERGE (this0_actors_connectOrCreate0:\`Actor\` { id: $this0_actors_connectOrCreate_param0 })
+                MERGE (this0_actors_connectOrCreate0:Actor { id: $this0_actors_connectOrCreate_param0 })
                 ON CREATE SET
                     this0_actors_connectOrCreate0.name = $this0_actors_connectOrCreate_param1,
                     this0_actors_connectOrCreate0.homeAddress = $this0_actors_connectOrCreate_param2,
                     this0_actors_connectOrCreate0.dob = $this0_actors_connectOrCreate_param3
                 MERGE (this0)<-[this0_actors_connectOrCreate_this0:ACTED_IN]-(this0_actors_connectOrCreate0)
-                RETURN COUNT(*) AS _
+                RETURN count(*) AS _
             }
             RETURN this0
             }
-            RETURN [ this0 { .title } ] AS data"
+            RETURN [this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

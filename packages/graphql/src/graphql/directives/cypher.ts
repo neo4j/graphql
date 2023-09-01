@@ -31,9 +31,8 @@ export const cypherDirective = new GraphQLDirective({
             type: new GraphQLNonNull(GraphQLString),
         },
         columnName: {
-            description:
-                "[Experimental] Name of the returned variable from the Cypher statement, if provided, the query will be optimized to improve performance.",
-            type: GraphQLString,
+            description: "Name of the returned variable from the Cypher statement.",
+            type: new GraphQLNonNull(GraphQLString),
         },
     },
 });

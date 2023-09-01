@@ -20,13 +20,13 @@
 import type { GraphQLFieldMap } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@subscription directive", () => {
-    let subscriptionPlugin: TestSubscriptionsPlugin;
+    let subscriptionPlugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        subscriptionPlugin = new TestSubscriptionsPlugin();
+        subscriptionPlugin = new TestSubscriptionsEngine();
     });
 
     describe("on OBJECT", () => {
@@ -44,7 +44,10 @@ describe("@subscription directive", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                features: { subscriptions: subscriptionPlugin },
+            });
             const schema = await neoSchema.getSchema();
 
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
@@ -88,13 +91,13 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(operations: [UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) {
+                type Movie @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -137,13 +140,13 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(operations: [CREATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) {
+                type Movie @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -186,13 +189,13 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]) {
+                type Movie @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -235,13 +238,13 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(operations: [CREATE, UPDATE, DELETE, DELETE_RELATIONSHIP]) {
+                type Movie @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_DELETED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -284,13 +287,13 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP]) {
+                type Movie @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED]) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -333,13 +336,13 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @subscription(operations: []) {
+                type Movie @subscription(events: []) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -382,12 +385,12 @@ describe("@subscription directive", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
 
-                type Movie @query(read: true) @subscription(operations: []) {
+                type Movie @query(read: true) @subscription(events: []) {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();
@@ -410,7 +413,7 @@ describe("@subscription directive", () => {
                 extend schema @subscription
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
 
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
@@ -458,10 +461,10 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(operations: [UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
+                extend schema @subscription(events: [UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -508,10 +511,10 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(operations: [CREATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
+                extend schema @subscription(events: [CREATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -558,10 +561,10 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP])
+                extend schema @subscription(events: [CREATED, UPDATED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -608,10 +611,10 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(operations: [CREATE, UPDATE, DELETE, DELETE_RELATIONSHIP])
+                extend schema @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_DELETED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -658,10 +661,10 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(operations: [CREATE, UPDATE, DELETE, CREATE_RELATIONSHIP])
+                extend schema @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -708,10 +711,10 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @subscription(operations: [])
+                extend schema @subscription(events: [])
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
             const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -758,9 +761,9 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
-                extend schema @query(read: true) @subscription(operations: [])
+                extend schema @query(read: true) @subscription(events: [])
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: subscriptionPlugin } });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();

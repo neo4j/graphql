@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 current: Boolean!
             }
 
-            interface RelationProps {
+            interface RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 where: {
                     current: true,

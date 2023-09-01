@@ -45,7 +45,8 @@ export const typeDefs = `#graphql
         reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
         producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
         likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
-        oneActorName: String @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name")
+        oneActorName: String
+            @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name AS name", columnName: "name")
         favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
@@ -71,15 +72,18 @@ export const typeDefs = `#graphql
                 WHERE m.released > 2000
                 RETURN p
                 """
+                columnName: "p"
             )
-        experimentalCustomCypher: [Person]
+    }
+
+    type Mutation {
+        getCustomUser: [Person]!
             @cypher(
                 statement: """
-                MATCH(m:Movie)--(p:Person)
-                WHERE m.released > 2000
-                RETURN p
+                MATCH (user:Person { name_INCLUDES: "Wa" })
+                RETURN user
                 """
-                columnName: "p"
+                columnName: "user"
             )
     }
 `;

@@ -106,9 +106,7 @@ describe("Interface Relationships - Create connect", () => {
             			UNWIND connectedNodes as this0_actedIn_connect0_node
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             			SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_actedIn_connect0_node
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie
@@ -126,9 +124,7 @@ describe("Interface Relationships - Create connect", () => {
             			UNWIND connectedNodes as this0_actedIn_connect1_node
             			MERGE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
             			SET this0_actedIn_connect1_relationship.screenTime = $this0_actedIn_connect1_relationship_screenTime
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this0, this0_actedIn_connect1_node
             	RETURN count(*) AS connect_this0_actedIn_connect_Series
@@ -139,19 +135,19 @@ describe("Interface Relationships - Create connect", () => {
                 WITH this0
                 CALL {
                     WITH *
-                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:\`Movie\`)
+                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
                     WITH create_this1 { __resolveType: \\"Movie\\", __id: id(this0), .runtime, .title } AS create_this1
                     RETURN create_this1 AS create_var2
                     UNION
                     WITH *
-                    MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:\`Series\`)
+                    MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:Series)
                     WITH create_this4 { __resolveType: \\"Series\\", __id: id(this0), .episodes, .title } AS create_this4
                     RETURN create_this4 AS create_var2
                 }
                 WITH create_var2
                 RETURN collect(create_var2) AS create_var2
             }
-            RETURN [ this0 { .name, actedIn: create_var2 } ] AS data"
+            RETURN [this0 { .name, actedIn: create_var2 }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

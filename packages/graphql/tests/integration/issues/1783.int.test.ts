@@ -35,23 +35,23 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
     const typeDefs = `
         type ${testSeries} {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             current: Boolean!
             architecture: [${testMasterData}!]!
                 @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
             nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
         }
 
-        type ${testNameDetails} @exclude(operations: [CREATE, UPDATE, DELETE, READ]) {
+        type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) {
             fullName: String!
         }
 
-        interface RelationProps {
+        interface RelationProps @relationshipProperties {
             current: Boolean!
         }
 
         type ${testMasterData} {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             current: Boolean!
             nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
         }
@@ -166,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 schema,
                 source: query,
                 variableValues,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(res.errors).toBeUndefined();

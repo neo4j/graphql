@@ -18,20 +18,18 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConnectionField, ConnectionWhereArg, Context, CypherFieldReferenceMap } from "../../types";
+import type { ConnectionField, ConnectionWhereArg, CypherFieldReferenceMap } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
-import { createAuthPredicates } from "../create-auth-predicates";
 import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
-
 import { createEdgeProjection } from "./connection-projection";
 import { getEdgeSortFieldKeys } from "./get-sort-fields";
-import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
+import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -48,7 +46,7 @@ export function createEdgeSubquery({
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     parentNode: Cypher.Node;
     relatedNode: Node;
     returnVariable: Cypher.Variable;
@@ -113,30 +111,6 @@ export function createEdgeSubquery({
         if (authorizationSubqueries && !authorizationSubqueries.empty) {
             preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationSubqueries);
         }
-    } else {
-        // TODO: Authorization - delete for 4.0.0
-
-        const authPredicate = createAuthPredicates({
-            operations: "READ",
-            entity: relatedNode,
-            context,
-            where: { varName: relatedNodeRef, node: relatedNode },
-        });
-
-        if (authPredicate) predicates.push(authPredicate);
-
-        const authAllowPredicate = createAuthPredicates({
-            operations: "READ",
-            entity: relatedNode,
-            context,
-            allow: {
-                node: relatedNode,
-                varName: relatedNodeRef,
-            },
-        });
-
-        if (authAllowPredicate)
-            predicates.push(Cypher.apoc.util.validatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
     }
 
     const projection = createEdgeProjection({

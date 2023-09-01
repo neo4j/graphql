@@ -38,8 +38,8 @@ describe("#601", () => {
                 uploadedAt: DateTime!
             }
 
-            type Document @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+            type Document @mutation(operations: []) {
+                id: ID! @id @unique
                 stakeholder: Stakeholder! @relationship(type: "REQUIRES", direction: OUT)
 
                 customerContact: CustomerContact!
@@ -48,7 +48,7 @@ describe("#601", () => {
 
             extend type Document @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "view" } } }])
 
-            type CustomerContact @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type CustomerContact @mutation(operations: []) {
                 email: String!
                 firstname: String!
                 lastname: String!
@@ -57,7 +57,7 @@ describe("#601", () => {
 
             extend type CustomerContact @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "view" } } }])
 
-            type Stakeholder @exclude(operations: [CREATE, UPDATE, DELETE]) {
+            type Stakeholder @mutation(operations: []) {
                 id: ID!
                 fields: String!
                 documents: [Document!]! @relationship(type: "REQUIRES", direction: OUT)
@@ -93,16 +93,16 @@ describe("#601", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Stakeholder\`)
+            "MATCH (this:Stakeholder)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)-[this0:REQUIRES]->(this1:\`Document\`)
+                MATCH (this)-[this0:REQUIRES]->(this1:Document)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
-                    MATCH (this1:\`Document\`)<-[this2:UPLOADED]-(this3:\`CustomerContact\`)
+                    MATCH (this1:Document)<-[this2:UPLOADED]-(this3:CustomerContact)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS edge
                     WITH collect(edge) AS edges

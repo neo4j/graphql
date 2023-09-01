@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
 
         const typeDefs = `
             type ${Test_Item} {
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 int: Int
                 str: String
                 bool: Boolean
@@ -54,11 +54,12 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                         OPTIONAL MATCH (this)<-[:TEST_RELATIONSHIP]-(t:${Test_Feedback})
                         RETURN t
                         LIMIT 1
-                        """
+                        """,
+                        columnName: "t"
                     )
             }
             type ${Test_Feedback} {
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 int: Int
                 str: String
                 bool: Boolean

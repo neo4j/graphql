@@ -36,6 +36,7 @@ describe("Cypher directive", () => {
                         MATCH (m:Movie {title: $title})
                         RETURN m
                         """
+                        columnName: "m"
                     )
             }
 
@@ -67,14 +68,19 @@ describe("Cypher directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                RETURN m\\", { title: NULL, this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (m:Movie {title: NULL})
+                    RETURN m
+                }
+                WITH m AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)<-[this1:ACTED_IN]-(this2:\`Actor\`)
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH { node: { __resolveType: \\"Actor\\", __id: id(this2) } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -85,13 +91,6 @@ describe("Cypher directive", () => {
             RETURN this { movies: this0 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
-            }"
-        `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

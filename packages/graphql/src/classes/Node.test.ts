@@ -386,7 +386,8 @@ describe("Node", () => {
             (plural: string, rootTypeFieldNames: RootTypeFieldNames) => {
                 const node = new NodeBuilder({
                     name: "Test",
-                    nodeDirective: new NodeDirective({ plural }),
+                    nodeDirective: new NodeDirective({}),
+                    plural,
                 }).instance();
 
                 expect(node.rootTypeFieldNames).toStrictEqual(rootTypeFieldNames);
@@ -539,7 +540,8 @@ describe("Node", () => {
             (plural: string, mutationResponseTypeNames: MutationResponseTypeNames) => {
                 const node = new NodeBuilder({
                     name: "Test",
-                    nodeDirective: new NodeDirective({ plural }),
+                    nodeDirective: new NodeDirective({}),
+                    plural,
                 }).instance();
 
                 expect(node.mutationResponseTypeNames).toStrictEqual(mutationResponseTypeNames);
@@ -859,7 +861,6 @@ describe("Node", () => {
                     jwt: {
                         movielabel: "Movie",
                     },
-                    myKey: "key",
                 })
                 .instance();
 
@@ -867,7 +868,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Movie"]);
-            expect(labelString).toBe(":`Movie`");
+            expect(labelString).toBe(":Movie");
         });
 
         test("should return labels updated with context values from Context", () => {
@@ -879,17 +880,13 @@ describe("Node", () => {
                 })
                 .instance();
 
-            const context = new ContextBuilder()
-                .with({
-                    myKey: "Movie",
-                })
-                .instance();
+            const context = new ContextBuilder().instance();
 
-            const labels = node.getLabels(context);
-            const labelString = node.getLabelString(context);
+            const labels = node.getLabels({ ...context, myKey: "Movie" } as Record<string, any>);
+            const labelString = node.getLabelString({ ...context, myKey: "Movie" } as Record<string, any>);
 
             expect(labels).toEqual(["Movie"]);
-            expect(labelString).toBe(":`Movie`");
+            expect(labelString).toBe(":Movie");
         });
 
         test("should return additional labels updated with jwt values from Context", () => {
@@ -906,7 +903,6 @@ describe("Node", () => {
                     jwt: {
                         movielabel: "Movie",
                     },
-                    myKey: "key",
                 })
                 .instance();
 
@@ -914,7 +910,7 @@ describe("Node", () => {
             const labelString = node.getLabelString(context);
 
             expect(labels).toEqual(["Film", "Movie"]);
-            expect(labelString).toBe(":`Film`:`Movie`");
+            expect(labelString).toBe(":Film:Movie");
         });
     });
 });

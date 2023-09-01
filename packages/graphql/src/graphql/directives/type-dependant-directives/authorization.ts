@@ -20,6 +20,7 @@
 import { astFromDirective, astFromInputObjectType } from "@graphql-tools/utils";
 import type { TypeDefinitionNode, DirectiveDefinitionNode } from "graphql";
 import {
+    GraphQLString,
     GraphQLSchema,
     GraphQLDirective,
     GraphQLInputObjectType,
@@ -193,3 +194,19 @@ export function createAuthorizationDefinitions(
     const authorizationAST = astFromDirective(authorization);
     return [authorizationWhereAST, authorizationFilterRuleAST, authorizationValidateRuleAST, authorizationAST];
 }
+
+export const authorizationDirectiveScaffold = new GraphQLDirective({
+    name: `authorization`,
+    description: "This is a simpler version of the authorization directive to be used in the validate-document step.",
+    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        filter: {
+            description: "filter",
+            type: new GraphQLList(GraphQLString),
+        },
+        validate: {
+            description: "validate",
+            type: new GraphQLList(GraphQLString),
+        },
+    },
+});

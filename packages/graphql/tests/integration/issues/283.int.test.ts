@@ -40,13 +40,14 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
                       post.id = randomUUID()
                     RETURN post
                     """
+                    columnName: "post"
                 )
         }
 
         type Post {
-            id: ID! @id
+            id: ID! @id @unique
             title: String!
-            datetime: DateTime @readonly @timestamp(operations: [CREATE])
+            datetime: DateTime @timestamp(operations: [CREATE])
         }
     `;
     // Presence of a custom resolver was causing the bug
@@ -90,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();

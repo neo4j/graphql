@@ -18,28 +18,24 @@
  */
 
 export { aliasDirective } from "./alias";
-export { callbackDirective } from "./callback";
 export { coalesceDirective } from "./coalesce";
-export { computedDirective } from "./computed";
 export { customResolverDirective } from "./customResolver";
 export { cypherDirective } from "./cypher";
 export { selectableDirective } from "./selectable";
 export { settableDirective } from "./settable";
 export { defaultDirective } from "./default";
-export { excludeDirective } from "./exclude";
 export { fulltextDirective } from "./fulltext";
 export { idDirective } from "./id";
 export { nodeDirective } from "./node";
 export { pluralDirective } from "./plural";
 export { populatedByDirective } from "./populatedBy";
 export { privateDirective } from "./private";
-export { queryOptionsDirective } from "./query-options";
-export { readonlyDirective } from "./readonly";
+export { limitDirective } from "./limit";
 export { relationshipPropertiesDirective } from "./relationship-properties";
 export { relationshipDirective } from "./relationship";
+export { relayIdDirective } from "./relay-id";
 export { timestampDirective } from "./timestamp";
 export { uniqueDirective } from "./unique";
-export { writeonlyDirective } from "./writeonly";
 export { mutationDirective } from "./mutation";
 export { queryDirective } from "./query";
 export { subscriptionDirective } from "./subscription";

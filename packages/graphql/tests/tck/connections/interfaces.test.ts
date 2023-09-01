@@ -83,17 +83,17 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
@@ -133,18 +133,18 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.title STARTS WITH $param1
                     WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
@@ -192,18 +192,18 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.runtime > $param0
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.episodes > $param1
                     WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
@@ -255,18 +255,18 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this0.screenTime > $param0
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this2.screenTime > $param1
                     WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
@@ -320,17 +320,17 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:\`Actor\`)
+                    "MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                             WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                             WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
@@ -374,17 +374,17 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:\`Actor\`)
+                    "MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                             WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                             WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
@@ -429,17 +429,17 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:\`Actor\`)
+                    "MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                             WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                             WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
@@ -482,17 +482,17 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:\`Actor\`)
+                    "MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
                             WITH this
-                            MATCH (this)-[this0:ACTED_IN]->(this1:\`Movie\`)
+                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                             WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
-                            MATCH (this)-[this2:ACTED_IN]->(this3:\`Series\`)
+                            MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                             WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }

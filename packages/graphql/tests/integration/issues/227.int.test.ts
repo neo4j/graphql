@@ -64,7 +64,8 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
                             MATCH (town:Town {id:$id})
                             OPTIONAL MATCH (town)<-[:BELONGS_TO]-(member:Member)
                             RETURN member
-                        """)
+                        """,
+                        columnName: "member")
                     }
                 `;
 
@@ -98,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { id: townId },
             });
 

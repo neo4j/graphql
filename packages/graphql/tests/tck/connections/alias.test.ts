@@ -38,7 +38,7 @@ describe("Connections Alias", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -62,10 +62,10 @@ describe("Connections Alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -105,11 +105,11 @@ describe("Connections Alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
+            "MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:\`Actor\`)
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
@@ -118,7 +118,7 @@ describe("Connections Alias", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:\`Actor\`)
+                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
                 WHERE this4.name = $param2
                 WITH { screenTime: this3.screenTime, node: { name: this4.name } } AS edge
                 WITH collect(edge) AS edges

@@ -29,7 +29,7 @@ const basicTypeDefs = `
     }
 
     type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
-        id: ID! @id @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+        id: ID! @id @unique @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -43,16 +43,16 @@ const basicTypeDefs = `
     }
 
     type TextBlock implements Block {
-        id: ID @id
+        id: ID @id @unique
         text: String
     }
 
     type DividerBlock implements Block {
-        id: ID @id
+        id: ID @id @unique
     }
 
     type ImageBlock implements Block {
-        id: ID @id
+        id: ID @id @unique
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 

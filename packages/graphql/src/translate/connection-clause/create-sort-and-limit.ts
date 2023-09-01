@@ -76,7 +76,7 @@ export function createSortAndLimitProjection({
         });
     });
     if (limit) {
-        // this limit is specified using `@queryOptions` directive
+        // this limit is specified using `@limit` directive
         addLimitOrOffsetOptionsToClause({
             optionsInput: { limit: firstArg, offset },
             projectionClause: withStatement,

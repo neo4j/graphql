@@ -39,7 +39,7 @@ describe("Field Level Aggregations Alias", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 time: Int
             }
         `;
@@ -67,10 +67,10 @@ describe("Field Level Aggregations Alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
+            "MATCH (this:Film)
             CALL {
                 WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this0:\`Person\`)
+                MATCH (this)<-[this1:ACTED_IN]-(this0:Person)
                 WITH this0
                 ORDER BY size(this0.name) DESC
                 WITH collect(this0.name) AS list

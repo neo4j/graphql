@@ -36,7 +36,7 @@ describe("Alias", () => {
                 rating: Float @alias(property: "ratingPropInDb")
             }
 
-            interface ActorActedInProps {
+            interface ActorActedInProps @relationshipProperties {
                 character: String! @alias(property: "characterPropInDb")
                 screenTime: Int
             }
@@ -457,7 +457,7 @@ describe("Alias", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -468,7 +468,7 @@ describe("Alias", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -617,7 +617,7 @@ describe("Alias", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

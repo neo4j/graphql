@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { generate } from "randomstring";
 import {
     generateMissingOrAliasedFields,
-    generateProjectionField,
+    generateResolveTree,
     getAliasedResolveTreeByFieldName,
     getResolveTreeByFieldName,
 } from "./resolveTree";
@@ -60,7 +60,7 @@ describe("resolveTree", () => {
     test("generate projection field", () => {
         const name = generate({ charset: "alphabetic" });
 
-        const field = generateProjectionField({ name });
+        const field = generateResolveTree({ name });
 
         expect(field).toStrictEqual({
             [name]: {
@@ -76,7 +76,7 @@ describe("resolveTree", () => {
         const alias = generate({ charset: "alphabetic" });
         const name = generate({ charset: "alphabetic" });
 
-        const resolveTree = generateProjectionField({ name, alias });
+        const resolveTree = generateResolveTree({ name, alias });
 
         expect(resolveTree).toStrictEqual({
             [name]: {

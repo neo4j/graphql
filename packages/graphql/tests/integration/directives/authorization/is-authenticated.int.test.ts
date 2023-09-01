@@ -26,7 +26,7 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { runCypher } from "../../../utils/run-cypher";
 import { UniqueType } from "../../../utils/graphql-types";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { cleanNodes } from "../../../utils/clean-nodes";
 
@@ -98,7 +98,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -140,7 +140,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -185,7 +185,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -230,7 +230,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -276,7 +276,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -322,7 +322,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -370,7 +370,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -418,7 +418,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -464,7 +464,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -517,7 +517,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -570,7 +570,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -604,9 +604,7 @@ describe("auth/is-authenticated", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -626,7 +624,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -663,7 +661,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -703,7 +701,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -744,7 +742,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -785,7 +783,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -810,10 +808,7 @@ describe("auth/is-authenticated", () => {
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                features: { authorization: { key: secret } },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
-                },
+                features: { authorization: { key: secret }, subscriptions: new TestSubscriptionsEngine() },
             });
 
             const query = `
@@ -832,7 +827,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -885,7 +880,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -938,7 +933,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -972,9 +967,7 @@ describe("auth/is-authenticated", () => {
                     authorization: {
                         key: secret,
                     },
-                },
-                plugins: {
-                    subscriptions: new TestSubscriptionsPlugin(),
+                    subscriptions: new TestSubscriptionsEngine(),
                 },
             });
 
@@ -994,7 +987,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1040,7 +1033,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1088,7 +1081,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1136,7 +1129,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1183,7 +1176,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1227,7 +1220,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1275,7 +1268,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1323,7 +1316,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1370,7 +1363,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1442,7 +1435,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1516,7 +1509,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1587,7 +1580,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -1662,7 +1655,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1734,7 +1727,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1808,7 +1801,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1879,7 +1872,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1951,7 +1944,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2025,7 +2018,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2096,7 +2089,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2171,7 +2164,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2243,7 +2236,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2317,7 +2310,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2388,7 +2381,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2460,7 +2453,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2534,7 +2527,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2605,7 +2598,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2680,7 +2673,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2752,7 +2745,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2826,7 +2819,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2897,7 +2890,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2941,7 +2934,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -2987,7 +2980,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3033,7 +3026,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3097,7 +3090,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3143,7 +3136,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3207,7 +3200,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3271,7 +3264,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3286,13 +3279,13 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication
                 }
             `;
 
@@ -3319,7 +3312,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3336,13 +3329,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3369,7 +3362,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3382,13 +3375,13 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication
                 }
             `;
 
@@ -3419,7 +3412,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3436,13 +3429,13 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3469,7 +3462,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3488,7 +3481,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication
                 }
             `;
 
@@ -3515,7 +3508,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3538,7 +3531,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3565,7 +3558,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3584,7 +3577,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication
                 }
             `;
 
@@ -3615,7 +3608,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3638,7 +3631,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -3665,7 +3658,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3686,7 +3679,7 @@ describe("auth/is-authenticated", () => {
                 type ${User} {
                     id: ID
                     history: [${History}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
                         @authentication(operations: [READ]) 
                 }
             `;
@@ -3716,7 +3709,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3741,7 +3734,7 @@ describe("auth/is-authenticated", () => {
                 type ${User} {
                     id: ID
                     history: [${History}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
                         @authentication(operations: [READ], jwt: {roles_INCLUDES: "admin"}) 
                 }
             `;
@@ -3771,7 +3764,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -3792,7 +3785,7 @@ describe("auth/is-authenticated", () => {
                 type ${User} {
                     id: ID
                     history: [${History}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
                         @authentication(operations: [READ]) 
                 }
             `;
@@ -3826,7 +3819,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -3851,7 +3844,7 @@ describe("auth/is-authenticated", () => {
                 type ${User} {
                     id: ID
                     history: [${History}]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h")
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
                         @authentication(operations: [READ], jwt: {roles_INCLUDES: "admin"}) 
                 }
             `;
@@ -3881,7 +3874,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                    contextValue: neo4j.getContextValues({ token }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4087,7 +4080,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4113,7 +4106,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4173,7 +4166,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4201,7 +4194,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4261,7 +4254,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4289,7 +4282,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4372,7 +4365,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4412,7 +4405,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4495,7 +4488,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4535,7 +4528,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4618,7 +4611,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4658,7 +4651,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4716,7 +4709,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4742,7 +4735,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
@@ -4761,7 +4754,7 @@ describe("auth/is-authenticated", () => {
                     name: String
                 }
                 type Query {
-                    allUsers: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u")
+                    allUsers: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u")
                 }
                 extend schema @authentication
             `;
@@ -4803,7 +4796,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -4829,7 +4822,7 @@ describe("auth/is-authenticated", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+                        contextValue: neo4j.getContextValues({ token }),
                     });
 
                     expect(gqlResult.errors).toBeUndefined();

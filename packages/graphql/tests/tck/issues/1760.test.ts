@@ -34,16 +34,17 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
 
             interface BusinessObject {
-                id: ID! @id(autogenerate: false)
+                id: ID!
                 nameDetails: NameDetails
             }
 
             type ApplicationVariant implements BusinessObject
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, UPDATE, DELETE]) {
+                @mutation(operations: []) {
                 markets: [Market!]! @relationship(type: "HAS_MARKETS", direction: OUT)
-                id: ID! @id(autogenerate: false)
-                relatedId: ID @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id")
+                id: ID! @unique
+                relatedId: ID
+                    @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res", columnName: "res")
                 baseObject: BaseObject! @relationship(type: "HAS_BASE", direction: IN)
                 current: Boolean!
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
@@ -51,21 +52,22 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
             type NameDetails
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
+                @mutation(operations: [])
+                @query(read: false, aggregate: false) {
                 fullName: String!
             }
 
             type Market implements BusinessObject
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id(autogenerate: false)
+                @mutation(operations: []) {
+                id: ID! @unique
                 nameDetails: NameDetails @relationship(type: "HAS_NAME", direction: OUT)
             }
 
             type BaseObject
                 @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "ALL" } } }])
-                @exclude(operations: [CREATE, UPDATE, DELETE]) {
-                id: ID! @id
+                @mutation(operations: []) {
+                id: ID! @id @unique
             }
         `;
 
@@ -130,22 +132,27 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`ApplicationVariant\`)
+            "MATCH (this:ApplicationVariant)
             WITH *
             WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this0
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id as res
+                }
+                UNWIND res AS this0
                 RETURN head(collect(this0)) AS this0
             }
             WITH *
             ORDER BY this0 ASC
-            SKIP $param5
-            LIMIT $param6
+            SKIP $param4
+            LIMIT $param5
             CALL {
                 WITH this
-                MATCH (this)-[this1:HAS_NAME]->(this2:\`NameDetails\`)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this1:HAS_NAME]->(this2:NameDetails)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param6 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { fullName: this2.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -153,12 +160,12 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this4:HAS_MARKETS]->(this5:\`Market\`)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param8 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this4:HAS_MARKETS]->(this5:Market)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this5
-                    MATCH (this5:\`Market\`)-[this6:HAS_NAME]->(this7:\`NameDetails\`)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param9 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MATCH (this5:Market)-[this6:HAS_NAME]->(this7:NameDetails)
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param8 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -171,8 +178,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this10:HAS_BASE]-(this11:\`BaseObject\`)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param10 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)<-[this10:HAS_BASE]-(this11:BaseObject)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param9 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { id: this11.id } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -189,22 +196,18 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
-                \\"param5\\": {
+                \\"param4\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param6\\": {
+                \\"param5\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
                 },
+                \\"param6\\": \\"ALL\\",
                 \\"param7\\": \\"ALL\\",
                 \\"param8\\": \\"ALL\\",
-                \\"param9\\": \\"ALL\\",
-                \\"param10\\": \\"ALL\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"param9\\": \\"ALL\\"
             }"
         `);
     });

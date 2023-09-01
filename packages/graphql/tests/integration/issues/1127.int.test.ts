@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
 
         const typeDefs = `
             type ${customerType.name} {
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/1127", () => {
             }
 
             type ${addressType.name} {
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 

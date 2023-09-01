@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
-                id: ID! @id
+                id: ID! @id @unique
             }
 
             type Actor {
@@ -560,7 +560,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
@@ -571,7 +571,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -725,7 +725,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

@@ -26,7 +26,7 @@ describe("200", () => {
     test("Preserve schema array non null", async () => {
         const typeDefs = gql`
             type Category {
-                categoryId: ID! @id
+                categoryId: ID! @id @unique
                 name: String!
                 description: String! @default(value: "")
                 exampleImageLocations: [String!]
@@ -144,13 +144,13 @@ describe("200", () => {
             }
 
             type CreateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
             type DeleteInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
@@ -198,7 +198,7 @@ describe("200", () => {
             }
 
             type UpdateInfo {
-              bookmark: String
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               nodesDeleted: Int!
               relationshipsCreated: Int!

@@ -55,17 +55,17 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             union Keyword = ${testEmoji.name} | ${testHashtag.name} | ${testText.name}
 
             type ${testEmoji.name} {
-                id: ID! @id
+                id: ID! @id @unique
                 type: String!
             }
 
             type ${testHashtag.name} {
-                id: ID! @id
+                id: ID! @id @unique
                 type: String!
             }
 
             type ${testText.name} {
-                id: ID! @id
+                id: ID! @id @unique
                 type: String!
             }
         `;
@@ -117,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues,
             });
 

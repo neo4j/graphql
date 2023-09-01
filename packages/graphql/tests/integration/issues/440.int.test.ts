@@ -23,19 +23,19 @@ import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("https://github.com/neo4j/graphql/issues/440", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const typeDefs = gql`
         type Video {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             categories: [Category!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
         }
 
         type Category {
-            id: ID! @id(autogenerate: false)
+            id: ID! @unique
             videos: [Video!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
         }
     `;
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues,
             });
 
@@ -168,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues,
             });
 
@@ -188,8 +188,8 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
+            features: {
+                subscriptions: new TestSubscriptionsEngine(),
             },
         });
         const videoID = generate({ charset: "alphabetic" });
@@ -241,7 +241,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues,
             });
 

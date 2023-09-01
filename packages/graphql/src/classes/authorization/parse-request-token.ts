@@ -17,28 +17,10 @@
  * limitations under the License.
  */
 
-import type { RequestLike } from "../../types";
 import { DEBUG_AUTH } from "../../constants";
 import Debug from "debug";
 
 const debug = Debug(DEBUG_AUTH);
-
-export function getToken(req: RequestLike | undefined): string | undefined {
-    if (!req) {
-        debug("Could not get .req or .request from context");
-        return;
-    }
-    if (!req.headers && !req.cookies) {
-        debug(".headers or .cookies not found on req");
-        return;
-    }
-    const authorization = req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token;
-    if (!authorization) {
-        debug("Could not get .authorization, .Authorization or .cookies.token from req");
-        return;
-    }
-    return authorization;
-}
 
 export function parseBearerToken(bearerAuth: string): string | undefined {
     if (!bearerAuth.startsWith("Bearer ")) {

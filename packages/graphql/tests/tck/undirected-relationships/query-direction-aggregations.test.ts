@@ -51,10 +51,10 @@ describe("QueryDirection in relationships aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                 RETURN count(this1) AS var2
             }
             RETURN this { friendsAggregate: { count: var2 } } AS this"
@@ -86,10 +86,10 @@ describe("QueryDirection in relationships aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]->(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                 RETURN count(this1) AS var2
             }
             RETURN this { friendsAggregate: { count: var2 } } AS this"
@@ -121,10 +121,10 @@ describe("QueryDirection in relationships aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
+            "MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                 RETURN count(this1) AS var2
             }
             RETURN this { friendsAggregate: { count: var2 } } AS this"

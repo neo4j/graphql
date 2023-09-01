@@ -49,7 +49,7 @@ describe("aggregations-where-edge-float", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someFloat: Float
             }
         `;
@@ -85,7 +85,7 @@ describe("aggregations-where-edge-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-float", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someFloat: Float
             }
         `;
@@ -155,7 +155,7 @@ describe("aggregations-where-edge-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -188,7 +188,7 @@ describe("aggregations-where-edge-float", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someFloat: Float
             }
         `;
@@ -224,7 +224,7 @@ describe("aggregations-where-edge-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -257,7 +257,7 @@ describe("aggregations-where-edge-float", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someFloat: Float
             }
         `;
@@ -294,7 +294,7 @@ describe("aggregations-where-edge-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {
@@ -327,7 +327,7 @@ describe("aggregations-where-edge-float", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someFloat: Float
             }
         `;
@@ -363,7 +363,7 @@ describe("aggregations-where-edge-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (gqlResult.errors) {

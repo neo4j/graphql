@@ -37,7 +37,7 @@ describe("Cypher Aggregations where edge with Time", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes {
+            interface Likes @relationshipProperties {
                 someTime: Time
                 someTimeAlias: Time @alias(property: "_someTimeAlias")
             }
@@ -60,10 +60,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -96,10 +96,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0._someTimeAlias) WHERE var2 = $param0) AS var3
             }
             WITH *
@@ -132,10 +132,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 > $param0) AS var3
             }
             WITH *
@@ -168,10 +168,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 >= $param0) AS var3
             }
             WITH *
@@ -204,10 +204,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 < $param0) AS var3
             }
             WITH *
@@ -240,10 +240,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN any(var2 IN collect(this0.someTime) WHERE var2 <= $param0) AS var3
             }
             WITH *
@@ -276,10 +276,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someTime) = $param0 AS var2
             }
             WITH *
@@ -312,10 +312,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someTime) > $param0 AS var2
             }
             WITH *
@@ -348,10 +348,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someTime) >= $param0 AS var2
             }
             WITH *
@@ -384,10 +384,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someTime) < $param0 AS var2
             }
             WITH *
@@ -420,10 +420,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someTime) <= $param0 AS var2
             }
             WITH *
@@ -456,10 +456,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someTime) = $param0 AS var2
             }
             WITH *
@@ -492,10 +492,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someTime) > $param0 AS var2
             }
             WITH *
@@ -528,10 +528,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someTime) >= $param0 AS var2
             }
             WITH *
@@ -564,10 +564,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someTime) < $param0 AS var2
             }
             WITH *
@@ -600,10 +600,10 @@ describe("Cypher Aggregations where edge with Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Post\`)
+            "MATCH (this:Post)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:LIKES]-(this1:\`User\`)
+                MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someTime) <= $param0 AS var2
             }
             WITH *

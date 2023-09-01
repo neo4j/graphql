@@ -23,14 +23,14 @@ import { Neo4jGraphQLError } from "../../../classes";
 import type Node from "../../../classes/Node";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
-import { SubscriptionAuth } from "./subscription-auth";
-import type { SubscriptionEventType, SubscriptionContext } from "./types";
+import type { SubscriptionEventType } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where/where";
 import { subscriptionAuthorization } from "./where/authorization";
 import type { GraphQLResolveInfo } from "graphql";
 import { checkAuthentication } from "./authentication/check-authentication";
 import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../composition/wrap-subscription";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -57,7 +57,7 @@ export function generateSubscribeMethod({
     return (
         _root: any,
         args: SubscriptionArgs,
-        context: SubscriptionContext,
+        context: Neo4jGraphQLComposedSubscriptionsContext,
         resolveInfo: GraphQLResolveInfo
     ): AsyncIterator<[SubscriptionsEvent]> => {
         checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
@@ -70,20 +70,7 @@ export function generateSubscribeMethod({
 
         checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
 
-        // TODO 4.0.0 remove this
-        if (node.auth) {
-            const authRules = node.auth.getRules(["SUBSCRIBE"]);
-            for (const rule of authRules) {
-                if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
-                    throw new Error("Error, request not authenticated");
-                }
-                if (!SubscriptionAuth.validateRolesRule(rule, context)) {
-                    throw new Error("Error, request not authorized");
-                }
-            }
-        }
-
-        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
+        const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.subscriptionsEngine.events, type);
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
@@ -104,7 +91,7 @@ export function generateSubscribeMethod({
                     return false;
                 }
                 const relationFieldName = node.relationFields.find(
-                    (r) => r.type === relationEventPayload.relationshipName
+                    (r) => r.typeUnescaped === relationEventPayload.relationshipName
                 )?.fieldName;
 
                 return (

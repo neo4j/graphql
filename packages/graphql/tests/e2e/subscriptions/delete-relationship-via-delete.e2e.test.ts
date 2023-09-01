@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
@@ -68,7 +68,7 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
                 year: Int!
             }
             
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
         
@@ -97,8 +97,8 @@ describe("Delete Subscriptions when only nodes are targeted - with interfaces, u
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
+            features: {
+                subscriptions: new TestSubscriptionsEngine(),
             },
         });
         // eslint-disable-next-line @typescript-eslint/require-await

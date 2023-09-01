@@ -21,15 +21,14 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
-import { createAuthPredicates } from "./create-auth-predicates";
+import type { GraphQLOptionsArg, GraphQLWhereArg, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
 import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection, generateResolveTree } from "./utils/resolveTree";
 import { filterTruthy, removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
@@ -38,28 +37,18 @@ import { translateCypherDirectiveProjection } from "./projection/subquery/transl
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
 interface Res {
     projection: Cypher.Expr[];
     params: any;
-    // TODO: Authorization - delete for 4.0.0
-    meta: ProjectionMeta;
     subqueries: Array<Cypher.Clause>;
     subqueriesBeforeSort: Array<Cypher.Clause>;
     predicates: Cypher.Predicate[];
 }
 
-// TODO: Authorization - delete for 4.0.0
-export interface ProjectionMeta {
-    authValidatePredicates?: Cypher.Predicate[];
-    authorizationPredicates: Cypher.Predicate[];
-    authorizationSubqueries: Cypher.CompositeClause | undefined;
-}
-
 export type ProjectionResult = {
     params: Record<string, any>;
-    // TODO: Authorization - delete for 4.0.0
-    meta: ProjectionMeta;
     // Subqueries required for sorting on fields before the projection
     subqueriesBeforeSort: Array<Cypher.Clause>;
     // Subqueries required for fields in the projection
@@ -81,7 +70,7 @@ export default function createProjectionAndParams({
 }: {
     resolveTree: ResolveTree;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;
@@ -122,32 +111,10 @@ export default function createProjectionAndParams({
 
                 if (predicate) {
                     res.predicates.push(predicate);
-                    res.meta.authorizationPredicates.push(predicate);
                 }
 
                 if (preComputedSubqueries && !preComputedSubqueries.empty) {
                     res.subqueries.push(preComputedSubqueries);
-                    res.meta.authorizationSubqueries = Cypher.concat(
-                        res.meta.authorizationSubqueries,
-                        preComputedSubqueries
-                    );
-                }
-            } else if (authableField.auth) {
-                // TODO: Authorization - delete for 4.0.0
-                const allowAndParams = createAuthPredicates({
-                    entity: authableField,
-                    operations: "READ",
-                    context,
-                    allow: {
-                        node,
-                        varName,
-                    },
-                });
-                if (allowAndParams) {
-                    if (!res.meta.authValidatePredicates) {
-                        res.meta.authValidatePredicates = [];
-                    }
-                    res.meta.authValidatePredicates?.push(allowAndParams);
                 }
             }
         }
@@ -168,8 +135,8 @@ export default function createProjectionAndParams({
         if (relationField) {
             const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name);
 
-            if (referenceNode?.queryOptions) {
-                optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
+            if (referenceNode?.limit) {
+                optionsInput.limit = referenceNode.limit.getLimit(optionsInput.limit);
             }
 
             const subqueryReturnAlias = new Cypher.Variable();
@@ -255,11 +222,9 @@ export default function createProjectionAndParams({
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
-                        authorizationPredicates: recurse.meta?.authorizationPredicates,
-                        authorizationSubqueries: recurse.meta?.authorizationSubqueries,
-                        authValidatePredicates: recurse.meta?.authValidatePredicates,
                         addSkipAndLimit: false,
                         collect: false,
+                        nestedPredicates: recurse.predicates,
                     });
 
                     const unionWith = new Cypher.With("*");
@@ -312,9 +277,7 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
-                authorizationPredicates: recurse.meta?.authorizationPredicates,
-                authorizationSubqueries: recurse.meta?.authorizationSubqueries,
-                authValidatePredicates: recurse.meta?.authValidatePredicates,
+                nestedPredicates: recurse.predicates,
             });
             res.subqueries.push(new Cypher.Call(subquery).innerWith(varName));
             res.projection.push(new Cypher.RawCypher((env) => `${alias}: ${compileCypher(subqueryReturnAlias, env)}`));
@@ -390,7 +353,7 @@ export default function createProjectionAndParams({
     }
     let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
 
-    if (context.fulltextIndex) {
+    if (context.fulltext) {
         return createFulltextProjection({
             resolveTree,
             node,
@@ -421,7 +384,7 @@ export default function createProjectionAndParams({
             // If fieldname is not found in fields of selection set
             ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
                 ? // generate a basic resolve tree
-                  generateProjectionField({ name: sortFieldName })
+                  generateResolveTree({ name: sortFieldName })
                 : {}),
         }),
         // and add it to existing fields for projection
@@ -440,33 +403,29 @@ export default function createProjectionAndParams({
     const mergedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
         mergedSelectedFields,
         generateMissingOrAliasedSortFields({ selection: mergedSelectedFields, resolveTree }),
-        generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
+        ...generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { params, meta, subqueriesBeforeSort, subqueries, predicates, projection } = Object.values(
-        mergedFields
-    ).reduce(reducer, {
-        projection: resolveType
-            ? [
-                  new Cypher.RawCypher(`__resolveType: "${node.name}"`),
-                  new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
-              ]
-            : [],
-        params: {},
-        meta: {
-            authorizationPredicates: [],
-            authorizationSubqueries: undefined,
-        },
-        subqueries: [],
-        subqueriesBeforeSort: [],
-        predicates: [],
-    });
+    const { params, subqueriesBeforeSort, subqueries, predicates, projection } = Object.values(mergedFields).reduce(
+        reducer,
+        {
+            projection: resolveType
+                ? [
+                      new Cypher.RawCypher(`__resolveType: "${node.name}"`),
+                      new Cypher.RawCypher((env) => `__id: id(${compileCypher(varName, env)})`),
+                  ]
+                : [],
+            params: {},
+            subqueries: [],
+            subqueriesBeforeSort: [],
+            predicates: [],
+        }
+    );
     const projectionCypher = new Cypher.RawCypher((env) => {
         return `{ ${projection.map((proj) => compileCypher(proj, env)).join(", ")} }`;
     });
     return {
         params,
-        meta,
         subqueriesBeforeSort,
         subqueries,
         predicates,
@@ -502,14 +461,14 @@ const generateMissingOrAliasedRequiredFields = ({
 }: {
     node: Node;
     selection: Record<string, ResolveTree>;
-}): Record<string, ResolveTree> => {
+}): Record<string, ResolveTree>[] => {
     const requiredFields = removeDuplicates(
         filterFieldsInSelection({ fields: node.customResolverFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );
 
-    return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
+    return requiredFields;
 };
 
 function createFulltextProjection({
@@ -523,7 +482,7 @@ function createFulltextProjection({
 }: {
     resolveTree: ResolveTree;
     node: Node;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     varName: Cypher.Node;
     literalElements?: boolean;
     resolveType?: boolean;
@@ -536,17 +495,13 @@ function createFulltextProjection({
         return {
             projection: new Cypher.Map(),
             params: {},
-            meta: {
-                authorizationPredicates: [],
-                authorizationSubqueries: undefined,
-            },
             subqueries: [],
             subqueriesBeforeSort: [],
             predicates: [],
         };
     }
 
-    const nodeContext = { ...context, fulltextIndex: false };
+    const nodeContext = { ...context, fulltext: undefined };
 
     return createProjectionAndParams({
         resolveTree: nodeResolveTree,

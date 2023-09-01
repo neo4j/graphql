@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 imdbId: Int @unique
             }
 
-            interface Review {
+            interface Review @relationshipProperties {
                 score: Int!
             }
 

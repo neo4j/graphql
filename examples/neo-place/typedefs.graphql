@@ -12,8 +12,9 @@ type Query {
             ORDER BY p.position ASC
             RETURN collect(color) as canvas
             """
+            columnName: "canvas"
         )
-        @auth(rules: [{ isAuthenticated: true }])
+        @authentication
 }
 
-extend type Pixel @auth(rules: [{ isAuthenticated: true }])
+extend type Pixel @authentication

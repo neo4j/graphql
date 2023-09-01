@@ -55,7 +55,7 @@ describe("@alias directive", () => {
             }
 
             type ${AliasDirectiveTestUser} implements AliasInterface {
-                id: ID! @id
+                id: ID! @id @unique
                 name: String! @alias(property: "dbName")
                 likes: [${AliasDirectiveTestMovie}!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
@@ -68,7 +68,7 @@ describe("@alias directive", () => {
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            interface AliasDirectiveTestLikesProps {
+            interface AliasDirectiveTestLikesProps @relationshipProperties {
                 comment: String! @alias(property: "dbComment")
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
@@ -130,7 +130,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -164,7 +164,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: protectedUsersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { token }),
+            contextValue: neo4j.getContextValues({ token }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -191,7 +191,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -229,7 +229,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -275,7 +275,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -342,7 +342,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -394,12 +394,12 @@ describe("@alias directive", () => {
             }
           }
         `;
-        const createResult = await graphql({
+
+        await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
             contextValue: neo4j.getContextValues(),
         });
-        const { bookmark } = (createResult.data as any)[AliasDirectiveTestUser.operations.create].info;
 
         const update = `
         mutation UpdateAll {
@@ -430,7 +430,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks([bookmark] as string[]),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

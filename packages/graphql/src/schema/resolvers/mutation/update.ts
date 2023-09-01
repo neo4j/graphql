@@ -21,24 +21,28 @@ import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../../classes";
 import { translateUpdate } from "../../../translate";
-import type { Context } from "../../../types";
 import { execute } from "../../../utils";
+import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export function updateResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
-    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
-        const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info, { args });
-        const [cypher, params] = await translateUpdate({ context, node });
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const [cypher, params] = await translateUpdate({ context: context as Neo4jGraphQLTranslationContext, node });
         const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "WRITE",
             context,
+            info,
         });
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions, context.schemaModel);
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
             (selection) => selection.kind === Kind.FIELD && selection.name.value === node.plural

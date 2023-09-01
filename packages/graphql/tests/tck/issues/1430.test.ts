@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
     beforeAll(() => {
         typeDefs = gql`
             type ABCE {
-                id: ID @id
+                id: ID @id @unique
                 name: String
                 interface: InterfaceMom @relationship(type: "HAS_INTERFACE", direction: OUT)
             }
@@ -40,13 +40,13 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
 
             type ChildOne implements InterfaceMom {
-                id: ID @id
+                id: ID @id @unique
                 name: String
                 feathur: String
             }
 
             type ChildTwo implements InterfaceMom {
-                id: ID @id
+                id: ID @id @unique
                 name: String
                 sth: String
             }
@@ -79,10 +79,10 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`ABCE\`)
+            "MATCH (this:ABCE)
             WHERE this.id = $param0
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            WITH *
+            WHERE apoc.util.validatePredicate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)) OR EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
@@ -92,12 +92,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:\`ChildOne\`)
+                    MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:ChildOne)
                     WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:\`ChildTwo\`)
+                    MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:ChildTwo)
                     WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
@@ -138,10 +138,10 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`ABCE\`)
+            "MATCH (this:ABCE)
             WHERE this.id = $param0
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            WITH *
+            WHERE apoc.util.validatePredicate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)) OR EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             WITH this
             CALL {
             	WITH this
@@ -155,9 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_interface0_node
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_interface0_node
             	RETURN count(*) AS connect_this_connect_interface_ChildOne
@@ -174,9 +172,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_interface1_node
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface1_node)
-            			RETURN count(*) AS _
             		}
-            		RETURN count(*) AS _
             	}
             WITH this, this_connect_interface1_node
             	RETURN count(*) AS connect_this_connect_interface_ChildTwo
@@ -186,12 +182,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:\`ChildOne\`)
+                    MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:ChildOne)
                     WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:\`ChildTwo\`)
+                    MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:ChildTwo)
                     WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
                     RETURN update_this4 AS update_var2
                 }

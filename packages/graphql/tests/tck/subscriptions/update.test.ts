@@ -19,17 +19,17 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
+import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Subscriptions metadata on update", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
-    let plugin: TestSubscriptionsPlugin;
+    let plugin: TestSubscriptionsEngine;
 
     beforeAll(() => {
-        plugin = new TestSubscriptionsPlugin();
+        plugin = new TestSubscriptionsEngine();
         typeDefs = gql`
             type Actor {
                 name: String!
@@ -44,9 +44,9 @@ describe("Subscriptions metadata on update", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            plugins: {
+            features: {
                 subscriptions: plugin,
-            } as any,
+            },
         });
     });
 
@@ -65,7 +65,7 @@ describe("Subscriptions metadata on update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:\`Movie\`)
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {
@@ -112,7 +112,7 @@ describe("Subscriptions metadata on update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:\`Movie\`)
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {

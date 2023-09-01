@@ -19,8 +19,9 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
-import { lexicographicSortSchema } from "graphql";
+import { GraphQLError, lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
+import { getErrorAsync, NoErrorThrownError } from "../../utils/get-error";
 
 describe("@populatedBy tests", () => {
     describe("Node property tests", () => {
@@ -37,28 +38,66 @@ describe("@populatedBy tests", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback1: () => "test",
+                            },
+                        },
+                    },
                 });
 
-                await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @default"
+                const errors = await getErrorAsync(() => neoSchema.getSchema());
+                expect(errors).toHaveLength(1);
+                expect((errors as Error[])[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect((errors as Error[])[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @populatedBy cannot be used in combination with @default"
                 );
+                expect((errors as Error[])[0]).toHaveProperty("path", ["Movie", "callback1"]);
+
+                await expect(neoSchema.getSchema()).rejects.toHaveLength(1);
+                await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                    new GraphQLError(
+                        "Invalid directive usage: Directive @populatedBy cannot be used in combination with @default"
+                    ),
+                ]);
             });
 
             test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
                     type Movie {
                         id: ID
-                        callback1: String! @populatedBy(operations: [CREATE], callback: "callback1") @id
+                        callback1: ID! @populatedBy(operations: [CREATE], callback: "callback1") @id
                     }
                 `;
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback1: () => "test",
+                            },
+                        },
+                    },
                 });
 
-                await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @id"
+                const errors = await getErrorAsync(() => neoSchema.getSchema());
+                expect(errors).toHaveLength(1);
+                expect((errors as Error[])[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect((errors as Error[])[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @populatedBy cannot be used in combination with @id"
                 );
+                expect((errors as Error[])[0]).toHaveProperty("path", ["Movie", "callback1"]);
+
+                await expect(neoSchema.getSchema()).rejects.toHaveLength(1);
+                await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                    new GraphQLError(
+                        "Invalid directive usage: Directive @populatedBy cannot be used in combination with @id"
+                    ),
+                ]);
             });
         });
 
@@ -74,9 +113,18 @@ describe("@populatedBy tests", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(
-                "PopulatedBy callback 'callback1' must be of type function"
+            const errors = await getErrorAsync(() => neoSchema.getSchema());
+            expect(errors).toHaveLength(1);
+            expect((errors as Error[])[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect((errors as Error[])[0]).toHaveProperty(
+                "message",
+                "@populatedBy.callback needs to be provided in features option."
             );
+            expect((errors as Error[])[0]).toHaveProperty("path", ["Movie", "callback1", "@populatedBy", "callback"]);
+            await expect(neoSchema.getSchema()).rejects.toHaveLength(1);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@populatedBy.callback needs to be provided in features option."),
+            ]);
         });
 
         test("PopulatedBy - String", async () => {
@@ -115,7 +163,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -126,7 +174,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -268,7 +316,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -318,7 +366,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -329,7 +377,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -467,7 +515,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -490,7 +538,7 @@ describe("@populatedBy tests", () => {
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
                         callback1: String!
                             @populatedBy(operations: [CREATE], callback: "callback4")
@@ -504,11 +552,30 @@ describe("@populatedBy tests", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback4: () => "test",
+                            },
+                        },
+                    },
                 });
 
-                await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @default"
+                const errors = await getErrorAsync(() => neoSchema.getSchema());
+                expect(errors).toHaveLength(1);
+                expect((errors as Error[])[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect((errors as Error[])[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @populatedBy cannot be used in combination with @default"
                 );
+                expect((errors as Error[])[0]).toHaveProperty("path", ["RelProperties", "callback1"]);
+
+                await expect(neoSchema.getSchema()).rejects.toHaveLength(1);
+                await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                    new GraphQLError(
+                        "Invalid directive usage: Directive @populatedBy cannot be used in combination with @default"
+                    ),
+                ]);
             });
 
             test("PopulatedBy and id directives", async () => {
@@ -518,9 +585,9 @@ describe("@populatedBy tests", () => {
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
 
-                    interface RelProperties {
+                    interface RelProperties @relationshipProperties {
                         id: ID!
-                        callback1: String! @populatedBy(operations: [CREATE], callback: "callback4") @id
+                        callback1: ID! @populatedBy(operations: [CREATE], callback: "callback4") @id
                     }
 
                     type Genre {
@@ -530,11 +597,30 @@ describe("@populatedBy tests", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
+                    features: {
+                        populatedBy: {
+                            callbacks: {
+                                callback4: () => "test",
+                            },
+                        },
+                    },
                 });
 
-                await expect(neoSchema.getSchema()).rejects.toThrow(
-                    "Directive @populatedBy cannot be used in combination with @id"
+                const errors = await getErrorAsync(() => neoSchema.getSchema());
+                expect(errors).toHaveLength(1);
+                expect((errors as Error[])[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect((errors as Error[])[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @populatedBy cannot be used in combination with @id"
                 );
+                expect((errors as Error[])[0]).toHaveProperty("path", ["RelProperties", "callback1"]);
+
+                await expect(neoSchema.getSchema()).rejects.toHaveLength(1);
+                await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                    new GraphQLError(
+                        "Invalid directive usage: Directive @populatedBy cannot be used in combination with @id"
+                    ),
+                ]);
             });
         });
 
@@ -545,7 +631,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback4")
                 }
@@ -559,9 +645,24 @@ describe("@populatedBy tests", () => {
                 typeDefs,
             });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(
-                "PopulatedBy callback 'callback4' must be of type function"
+            const errors = await getErrorAsync(() => neoSchema.getSchema());
+            expect(errors).toHaveLength(1);
+            expect((errors as Error[])[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect((errors as Error[])[0]).toHaveProperty(
+                "message",
+                "@populatedBy.callback needs to be provided in features option."
             );
+            expect((errors as Error[])[0]).toHaveProperty("path", [
+                "RelProperties",
+                "callback1",
+                "@populatedBy",
+                "callback",
+            ]);
+
+            await expect(neoSchema.getSchema()).rejects.toHaveLength(1);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError("@populatedBy.callback needs to be provided in features option."),
+            ]);
         });
         test("PopulatedBy - String", async () => {
             const callback1 = () => "random-string";
@@ -574,7 +675,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -613,7 +714,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -624,7 +725,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -1145,7 +1246,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!
@@ -1170,7 +1271,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties {
+                interface RelProperties @relationshipProperties {
                     id: ID!
                     callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -1209,7 +1310,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type CreateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   relationshipsCreated: Int!
                 }
@@ -1220,7 +1321,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type DeleteInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
@@ -1707,7 +1808,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type UpdateInfo {
-                  bookmark: String
+                  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
                   nodesDeleted: Int!
                   relationshipsCreated: Int!

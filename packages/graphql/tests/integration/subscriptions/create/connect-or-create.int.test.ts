@@ -25,15 +25,15 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src";
 import { getQuerySource } from "../../../utils/get-query-source";
 import { UniqueType } from "../../../utils/graphql-types";
-import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../../src/types";
-import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
+import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 
 describe("Create -> ConnectOrCreate", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
     let typeDefs: DocumentNode;
-    let plugin: Neo4jGraphQLSubscriptionsPlugin;
+    let plugin: Neo4jGraphQLSubscriptionsEngine;
 
     const typeMovie = new UniqueType("Movie");
     const typeActor = new UniqueType("Actor");
@@ -56,7 +56,7 @@ describe("Create -> ConnectOrCreate", () => {
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
-        interface ActedIn {
+        interface ActedIn @relationshipProperties {
             screentime: Int
         }
         `;
@@ -64,8 +64,8 @@ describe("Create -> ConnectOrCreate", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-        plugin = new TestSubscriptionsPlugin();
-        neoSchema = new Neo4jGraphQL({ typeDefs, plugins: { subscriptions: plugin } });
+        plugin = new TestSubscriptionsEngine();
+        neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: plugin } });
     });
 
     afterEach(async () => {
@@ -102,7 +102,7 @@ describe("Create -> ConnectOrCreate", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValues(),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.operations.create][`${typeActor.plural}`]).toEqual([

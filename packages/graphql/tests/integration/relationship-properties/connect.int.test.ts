@@ -49,7 +49,7 @@ describe("Relationship properties - connect", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -104,7 +104,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -147,7 +147,7 @@ describe("Relationship properties - connect", () => {
 
             union ActedInUnion = Movie | Show
 
-            interface ActedInInterface {
+            interface ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -196,7 +196,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -232,7 +232,7 @@ describe("Relationship properties - connect", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn {
+            interface ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -284,7 +284,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -323,7 +323,7 @@ describe("Relationship properties - connect", () => {
                     @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
             }
             union ActedInUnion = Movie | Show
-            interface ActedInInterface {
+            interface ActedInInterface @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -369,7 +369,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();

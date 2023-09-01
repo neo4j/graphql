@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import type { Context, PredicateReturn } from "../../../types";
+import type { PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import type { GraphElement, Neo4jDatabaseInfo } from "../../../classes";
+import type { GraphElement } from "../../../classes";
 import { Node } from "../../../classes";
 import type { WhereRegexGroups } from "../utils";
 import { whereRegEx } from "../utils";
@@ -33,6 +33,7 @@ import { createComparisonOperation } from "./create-comparison-operation";
 
 import { createRelationshipOperation } from "./create-relationship-operation";
 import { aggregatePreComputedWhereFields } from "../../create-aggregate-where-and-params";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 /** Translates a property into its predicate filter */
 export function createPropertyWhere({
@@ -48,7 +49,7 @@ export function createPropertyWhere({
     value: any;
     element: GraphElement;
     targetElement: Cypher.Variable;
-    context: Context;
+    context: Neo4jGraphQLTranslationContext;
     useExistExpr?: boolean;
     checkParameterExistence?: boolean;
 }): PredicateReturn {
@@ -174,8 +175,6 @@ export function createPropertyWhere({
         operator,
         durationField,
         pointField,
-        // Casting because this is definitely assigned in the wrapper
-        neo4jDatabaseInfo: context.neo4jDatabaseInfo as Neo4jDatabaseInfo,
     });
 
     const comparison = isNot ? Cypher.not(comparisonOp) : comparisonOp;

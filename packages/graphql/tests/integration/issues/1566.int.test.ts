@@ -56,6 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                         return pag
                         """
+                        columnName: "pag"
                     )
                 hasFeedItems(limit: Int = 10, page: Int = 0): [FeedItem!]!
                     @cypher(
@@ -63,6 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                         Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                            return pag SKIP ($limit * $page) LIMIT $limit
                         """
+                        columnName: "pag"
                     )
             }
         `;
@@ -107,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -155,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeUndefined();

@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
                 KeyGrip
             }
 
-            interface CrewPosition {
+            interface CrewPosition @relationshipProperties {
                 position: CrewPositionType
             }
 
@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
         const errors = validateSchema(schema);
         expect(errors).toEqual([]);
 
-        const relationship = neoSchema.relationships.find((r) => r.name === "CrewMemberMoviesRelationship");
+        const relationship = neoSchema["relationships"].find((r) => r.name === "CrewMemberMoviesRelationship");
         expect(relationship).toBeDefined();
         expect(relationship?.enumFields?.length).toBe(1);
         expect(relationship?.properties).toBe("CrewPosition");

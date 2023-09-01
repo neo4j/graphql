@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { SubscriptionContext } from "../types";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { upperFirst } from "../../../../utils/upper-first";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 
 export type SelectionFields = { [k: string]: ResolveTree };
 export function parseSelectionSetForAuthenticated({
@@ -34,7 +34,7 @@ export function parseSelectionSetForAuthenticated({
     entity: ConcreteEntity;
     entityTypeName: string;
     entityPayloadTypeName: string;
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
 }): { entity: ConcreteEntity; fieldSelection: SelectionFields }[] {
     const authenticated: { entity: ConcreteEntity; fieldSelection: SelectionFields }[] = [];
     const selectionSet = getSelected(resolveTree, entityTypeName);
@@ -97,7 +97,7 @@ function getTargetEntities({
     entity,
     relationshipField,
 }: {
-    context: SubscriptionContext;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
     entity: ConcreteEntity;
     relationshipField: ResolveTree;
 }): ConcreteEntity[] | undefined {

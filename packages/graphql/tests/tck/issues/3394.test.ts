@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Product\`)
+            "MATCH (this:Product)
             WITH *
             ORDER BY this.fg_item DESC
             RETURN this { id: this.fg_item_id, partNumber: this.fg_item, .description } AS this"
@@ -81,10 +81,10 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Employee\`)
+            "MATCH (this:Employee)
             CALL {
                 WITH this
-                MATCH (this)-[this0:CAN_ACCESS]->(this1:\`Product\`)
+                MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
                 WITH this1 { id: this1.fg_item_id, partNumber: this1.fg_item, .description } AS this1
                 ORDER BY this1.partNumber DESC
                 RETURN collect(this1) AS var2
@@ -113,17 +113,17 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this:\`Product\`)
-                            WITH collect(this) AS edges
-                            WITH edges, size(edges) AS totalCount
-                            UNWIND edges AS this
-                            WITH this, totalCount
-                            WITH *
-                            ORDER BY this.fg_item DESC
-                            WITH { node: this { id: this.fg_item_id, partNumber: this.fg_item, .description } } AS edge, totalCount, this
-                            WITH collect(edge) AS edges, totalCount
-                            RETURN { edges: edges, totalCount: totalCount } AS this"
-                    `);
+                "MATCH (this:Product)
+                WITH collect(this) AS edges
+                WITH edges, size(edges) AS totalCount
+                UNWIND edges AS this
+                WITH this, totalCount
+                WITH *
+                ORDER BY this.fg_item DESC
+                WITH { node: this { id: this.fg_item_id, partNumber: this.fg_item, .description } } AS edge, totalCount, this
+                WITH collect(edge) AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this"
+            `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
@@ -148,10 +148,10 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:\`Employee\`)
+                "MATCH (this:Employee)
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:CAN_ACCESS]->(this1:\`Product\`)
+                    MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
                     WITH this0, this1
                     ORDER BY this1.partNumber DESC
                     WITH { node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } } AS edge
