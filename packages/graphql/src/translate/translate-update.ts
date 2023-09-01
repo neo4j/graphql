@@ -67,13 +67,12 @@ export default async function translateUpdate({
     const createStrs: string[] = [];
     let deleteStr = "";
     let projAuth: Cypher.Clause | undefined = undefined;
-    let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
     const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "UPDATE", where });
     matchAndWhereStr = topLevelMatch.cypher;
-    cypherParams = { ...cypherParams, ...topLevelMatch.params };
+    let cypherParams = topLevelMatch.params;
 
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];

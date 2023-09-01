@@ -18,11 +18,11 @@
  */
 
 import { gql } from "graphql-tag";
-import { GraphQLSchema } from "graphql";
+import { GraphQLError, GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("schema/rfc/003", () => {
-    const msg = `List type relationship fields must be non-nullable and have non-nullable entries, please change type of Source.targets to [Target!]!`;
+    const msg = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [Target!]!`;
 
     describe("ObjectType", () => {
         test("should not throw when using valid relationship", async () => {
@@ -64,7 +64,7 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
         });
 
         test("This suggests a relationship with no target node", async () => {
@@ -79,7 +79,7 @@ describe("schema/rfc/003", () => {
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
         });
 
         test("should throw when ListType and not NonNullNamedType inside it", async () => {
@@ -95,7 +95,7 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
         });
     });
 
@@ -143,7 +143,7 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
         });
 
         test("This suggests a relationship with no target node", async () => {
@@ -164,7 +164,7 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
         });
 
         test("should throw when ListType and not NonNullNamedType inside it", async () => {
@@ -185,7 +185,7 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toThrow(msg);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
         });
     });
 });

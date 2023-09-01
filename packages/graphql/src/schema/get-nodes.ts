@@ -108,12 +108,6 @@ function getNodes(
             { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
         );
 
-        if (interfaceExcludeDirectives.length > 1) {
-            throw new Error(
-                `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`
-            );
-        }
-
         let exclude: Exclude;
         if (excludeDirective || interfaceExcludeDirectives.length) {
             exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
@@ -162,22 +156,6 @@ function getNodes(
 
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
-                const propertiesInterface = definitionNodes.interfaceTypes.find(
-                    (i) => i.name.value === relationship.properties
-                );
-                if (!propertiesInterface) {
-                    throw new Error(
-                        `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
-                    );
-                }
-                const relationshipPropertiesDirective = propertiesInterface.directives?.find(
-                    (directive) => directive.name.value === "relationshipProperties"
-                );
-                if (!relationshipPropertiesDirective) {
-                    throw new Error(
-                        `The \`@relationshipProperties\` directive could not be found on the \`${relationship.properties}\` interface`
-                    );
-                }
                 relationshipPropertyInterfaceNames.add(relationship.properties);
             }
             if (relationship.interface) {
@@ -194,22 +172,7 @@ function getNodes(
 
         const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
 
-        if (globalIdFields.length > 1) {
-            throw new Error("Only one field may be decorated with the `@relayId` directive");
-        }
-
         const globalIdField = globalIdFields[0];
-
-        const idField = definition.fields?.find((x) => x.name.value === "id");
-
-        if (globalIdField && idField) {
-            const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
-            if (!hasAlias) {
-                throw new Error(
-                    `Type ${definition.name.value} already has a field 'id', which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the '@alias' directive to access it via another field.`
-                );
-            }
-        }
 
         const node = new Node({
             name: definition.name.value,

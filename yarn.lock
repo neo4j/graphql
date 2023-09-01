@@ -99,21 +99,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/composition@npm:2.5.3":
-  version: 2.5.3
-  resolution: "@apollo/composition@npm:2.5.3"
+"@apollo/composition@npm:2.5.4":
+  version: 2.5.4
+  resolution: "@apollo/composition@npm:2.5.4"
   dependencies:
-    "@apollo/federation-internals": 2.5.3
-    "@apollo/query-graphs": 2.5.3
+    "@apollo/federation-internals": 2.5.4
+    "@apollo/query-graphs": 2.5.4
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 8b117c434e4f184df848fbaafb0ae4e4f4d24270d89c74298cef2787cbefd32b9058edbbc5c49af447a758f4bc585d1cdecd620d8bb6c31051df55624f0b22c7
+  checksum: c2ff474ccd42d0a28bfab48b6cc9bc0fa3390e9fb4161d238253fbaf5158987a966d0222cefb291ad7e5c796ea7b617dc7c4528e61141ac46dc0d96cf5d7cdc3
   languageName: node
   linkType: hard
 
-"@apollo/federation-internals@npm:2.5.3":
-  version: 2.5.3
-  resolution: "@apollo/federation-internals@npm:2.5.3"
+"@apollo/federation-internals@npm:2.5.4":
+  version: 2.5.4
+  resolution: "@apollo/federation-internals@npm:2.5.4"
   dependencies:
     "@types/uuid": ^9.0.0
     chalk: ^4.1.0
@@ -121,7 +121,7 @@ __metadata:
     uuid: ^9.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: bc3b90835f1e0908e515f63e3afd65795efb69a68a333063a522a88948ca52c6a73e339d7673d7d0ad7b43e7f94766872e5abcdb4e89ee6d7c0f167a27e5458c
+  checksum: 0640ed280d8e55d199d3aa78bf424748ac542df6817c62b1d7cb05ebae09a5d281725b4ca496015e0a477f396f1e6b88267e9f3230bf3c604cb2ab84f8cb8b7e
   languageName: node
   linkType: hard
 
@@ -154,13 +154,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/gateway@npm:2.5.3":
-  version: 2.5.3
-  resolution: "@apollo/gateway@npm:2.5.3"
+"@apollo/gateway@npm:2.5.4":
+  version: 2.5.4
+  resolution: "@apollo/gateway@npm:2.5.4"
   dependencies:
-    "@apollo/composition": 2.5.3
-    "@apollo/federation-internals": 2.5.3
-    "@apollo/query-planner": 2.5.3
+    "@apollo/composition": 2.5.4
+    "@apollo/federation-internals": 2.5.4
+    "@apollo/query-planner": 2.5.4
     "@apollo/server-gateway-interface": ^1.1.0
     "@apollo/usage-reporting-protobuf": ^4.1.0
     "@apollo/utils.createhash": ^2.0.0
@@ -178,7 +178,7 @@ __metadata:
     node-fetch: ^2.6.7
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 45ff8772d9499e73fc9463cf9158a45dea20811730142474257b870c4917f9008b54cd023233cabe711156488cb40893f2f26223cb8ccb93f9870ee6cdcec36b
+  checksum: 724193adf780410ebac5fba29505c2977b518846d4279dbe2097f32a77c93800c0ba3f809d8f37ad4193ed819b53285b94c4ab1eb18881d94e3637c7502cef46
   languageName: node
   linkType: hard
 
@@ -205,33 +205,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/query-graphs@npm:2.5.3":
-  version: 2.5.3
-  resolution: "@apollo/query-graphs@npm:2.5.3"
+"@apollo/query-graphs@npm:2.5.4":
+  version: 2.5.4
+  resolution: "@apollo/query-graphs@npm:2.5.4"
   dependencies:
-    "@apollo/federation-internals": 2.5.3
+    "@apollo/federation-internals": 2.5.4
     deep-equal: ^2.0.5
     ts-graphviz: ^1.5.4
     uuid: ^9.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 45b2761517805537a64dfae0a9ccddb12b3fdf412e66e9b56128e5eb1c6f347bc7182d490e04913e28ae2be8776ca4f64b038ffab7f0aa50d878ba3f4203d3fc
+  checksum: 0d2c2ae986b25d18917549316d2c1c18a3cbd0f22a5720d607d92b6e2aaec8600451d6f165cc5a3d21aea7576e9cc2badb438385258a7bd930968d14f188f112
   languageName: node
   linkType: hard
 
-"@apollo/query-planner@npm:2.5.3":
-  version: 2.5.3
-  resolution: "@apollo/query-planner@npm:2.5.3"
+"@apollo/query-planner@npm:2.5.4":
+  version: 2.5.4
+  resolution: "@apollo/query-planner@npm:2.5.4"
   dependencies:
-    "@apollo/federation-internals": 2.5.3
-    "@apollo/query-graphs": 2.5.3
+    "@apollo/federation-internals": 2.5.4
+    "@apollo/query-graphs": 2.5.4
     "@apollo/utils.keyvaluecache": ^2.1.0
     chalk: ^4.1.0
     deep-equal: ^2.0.5
     pretty-format: ^29.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 98bb2b1dd302de35b5460b5f92ebe9be90fd2d877fccaaa0902511f45792406676ff117c6871c77f7300e6d290ab67cee0ba83fc8e9f4f95d818bb52258ad11d
+  checksum: 7ad3f5f6f035e39b575537de2c844d9120246f54f30cda27e133a5e359226834a3ae708d348bf71b32c9017b74cbedc42d4fed835693e512cf39699ba8beb607
   languageName: node
   linkType: hard
 
@@ -300,14 +300,14 @@ __metadata:
   linkType: hard
 
 "@apollo/subgraph@npm:^2.2.3":
-  version: 2.5.3
-  resolution: "@apollo/subgraph@npm:2.5.3"
+  version: 2.5.4
+  resolution: "@apollo/subgraph@npm:2.5.4"
   dependencies:
     "@apollo/cache-control-types": ^1.0.2
-    "@apollo/federation-internals": 2.5.3
+    "@apollo/federation-internals": 2.5.4
   peerDependencies:
     graphql: ^16.5.0
-  checksum: b8c8175f086cece887a696f6b060dbf37b6d711d42b6d1ffa1b98dbe0391c9b44b6fac619cd325983d47d9c432b03ce1b67da63d20d044cfef4a871d904f8fe7
+  checksum: 57ab4c7f3752b4c7973408aa2543abed5304a342e04580e9e93c852c82bb97a803049eb3bd7bf967a6878e9153dc91268b7999ff6d7b816293479cb441f4ea6d
   languageName: node
   linkType: hard
 
@@ -1731,13 +1731,13 @@ __metadata:
   linkType: hard
 
 "@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.6.0, @codemirror/view@npm:^6.9.0":
-  version: 6.17.0
-  resolution: "@codemirror/view@npm:6.17.0"
+  version: 6.17.1
+  resolution: "@codemirror/view@npm:6.17.1"
   dependencies:
     "@codemirror/state": ^6.1.4
     style-mod: ^4.1.0
     w3c-keyname: ^2.2.4
-  checksum: a4b3098b2821c6fd354c2a7fdee8be848d346be11d6159b8573d3d9004a8608cb92d52beb3482357682d795a974b9d3f9dd96cea23d705baf84c15cbed27fefb
+  checksum: b70a50632817c75b39f60f1a962206e64787fc58fc7b1d6ce883dc2302d4dcfe077003c9c307358791c1150c96ae623140f069537a6b705f1c3526b2e41954a5
   languageName: node
   linkType: hard
 
@@ -3447,12 +3447,12 @@ __metadata:
     cors: ^2.8.5
     graphql-ws: 5.14.0
     jest: 29.6.4
-    neo4j-driver: 5.11.0
+    neo4j-driver: 5.12.0
     pluralize: 8.0.0
     randomstring: 1.3.0
     supertest: 6.3.3
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
     ws: 8.13.0
   peerDependencies:
     "@neo4j/graphql": ^4.0.0-beta.0
@@ -3481,7 +3481,7 @@ __metadata:
     randomstring: 1.3.0
     semver: 7.5.4
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^5.8.0
@@ -3532,7 +3532,7 @@ __metadata:
     jest: 29.6.4
     jest-environment-jsdom: 29.6.4
     markdown-it: 13.0.1
-    neo4j-driver: 5.11.0
+    neo4j-driver: 5.12.0
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 7.1.2
     postcss: 8.4.29
@@ -3550,7 +3550,7 @@ __metadata:
     ts-loader: 9.4.4
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.1.0
-    typescript: 5.2.2
+    typescript: 5.1.6
     webpack: 5.88.2
     webpack-cli: 5.1.4
     webpack-dev-server: 4.15.1
@@ -3563,7 +3563,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@apollo/gateway": 2.5.3
+    "@apollo/gateway": 2.5.4
     "@apollo/server": 4.9.3
     "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 8.0.2
@@ -3612,7 +3612,7 @@ __metadata:
     supertest: 6.3.3
     ts-jest: 29.1.1
     ts-node: 10.9.1
-    typescript: 5.2.2
+    typescript: 5.1.6
     typescript-memoize: ^1.1.1
     uuid: ^9.0.0
     ws: 8.13.0
@@ -3641,7 +3641,7 @@ __metadata:
     jest: 29.6.4
     pluralize: ^8.0.0
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   peerDependencies:
     neo4j-driver: ^5.8.0
   languageName: unknown
@@ -6770,90 +6770,90 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-darwin-arm64@npm:1.3.81"
+"@swc/core-darwin-arm64@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-darwin-arm64@npm:1.3.82"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-darwin-x64@npm:1.3.81"
+"@swc/core-darwin-x64@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-darwin-x64@npm:1.3.82"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.81"
+"@swc/core-linux-arm-gnueabihf@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.82"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.81"
+"@swc/core-linux-arm64-gnu@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.82"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-linux-arm64-musl@npm:1.3.81"
+"@swc/core-linux-arm64-musl@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-linux-arm64-musl@npm:1.3.82"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-linux-x64-gnu@npm:1.3.81"
+"@swc/core-linux-x64-gnu@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-linux-x64-gnu@npm:1.3.82"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-linux-x64-musl@npm:1.3.81"
+"@swc/core-linux-x64-musl@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-linux-x64-musl@npm:1.3.82"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.81"
+"@swc/core-win32-arm64-msvc@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.82"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.81"
+"@swc/core-win32-ia32-msvc@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.82"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:1.3.81":
-  version: 1.3.81
-  resolution: "@swc/core-win32-x64-msvc@npm:1.3.81"
+"@swc/core-win32-x64-msvc@npm:1.3.82":
+  version: 1.3.82
+  resolution: "@swc/core-win32-x64-msvc@npm:1.3.82"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
 "@swc/core@npm:^1.3.36":
-  version: 1.3.81
-  resolution: "@swc/core@npm:1.3.81"
+  version: 1.3.82
+  resolution: "@swc/core@npm:1.3.82"
   dependencies:
-    "@swc/core-darwin-arm64": 1.3.81
-    "@swc/core-darwin-x64": 1.3.81
-    "@swc/core-linux-arm-gnueabihf": 1.3.81
-    "@swc/core-linux-arm64-gnu": 1.3.81
-    "@swc/core-linux-arm64-musl": 1.3.81
-    "@swc/core-linux-x64-gnu": 1.3.81
-    "@swc/core-linux-x64-musl": 1.3.81
-    "@swc/core-win32-arm64-msvc": 1.3.81
-    "@swc/core-win32-ia32-msvc": 1.3.81
-    "@swc/core-win32-x64-msvc": 1.3.81
+    "@swc/core-darwin-arm64": 1.3.82
+    "@swc/core-darwin-x64": 1.3.82
+    "@swc/core-linux-arm-gnueabihf": 1.3.82
+    "@swc/core-linux-arm64-gnu": 1.3.82
+    "@swc/core-linux-arm64-musl": 1.3.82
+    "@swc/core-linux-x64-gnu": 1.3.82
+    "@swc/core-linux-x64-musl": 1.3.82
+    "@swc/core-win32-arm64-msvc": 1.3.82
+    "@swc/core-win32-ia32-msvc": 1.3.82
+    "@swc/core-win32-x64-msvc": 1.3.82
     "@swc/types": ^0.1.4
   peerDependencies:
     "@swc/helpers": ^0.5.0
@@ -6881,7 +6881,7 @@ __metadata:
   peerDependenciesMeta:
     "@swc/helpers":
       optional: true
-  checksum: 2d1f97294ab923dc15b0596ea792659cef72e6a35addf4d978cd1d6d99f2dc2ae3a86ffd0e31a9ba98c58e5260a819368587018658fa423a0d64cd2599c28d45
+  checksum: 4c4adbed22071c0af935129a6fe7cc35d1688a5c1a069efdd8c97740930fa7eaf324e75dc88634a4ea0520330f6c88101d5aa5cf7ed6e02d336cc46ee7131ea3
   languageName: node
   linkType: hard
 
@@ -7932,12 +7932,12 @@ __metadata:
   linkType: hard
 
 "@urql/core@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "@urql/core@npm:4.1.1"
+  version: 4.1.2
+  resolution: "@urql/core@npm:4.1.2"
   dependencies:
     "@0no-co/graphql.web": ^1.0.1
     wonka: ^6.3.2
-  checksum: 1dcca5c12efcb8066f14d9edc4ce9c76df07426864a678a7a8df040b1e01a91a880943f218c6f04c4e6dcbcf58929e578947ea459681e5b0d49497c8b0bebbcb
+  checksum: b446cfce8c59cccaa77cc3b5d89e788016c7af1e6870d344427915aca41462645dd0b06e6db9716e91b54a3bb419a9301399bc056d9e6a9f4cab216f495567a5
   languageName: node
   linkType: hard
 
@@ -8644,7 +8644,7 @@ __metadata:
     neo4j-driver: ^5.8.0
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: 4.1.0
-    typescript: 5.2.2
+    typescript: 5.1.6
     webpack: 5.88.2
   languageName: unknown
   linkType: soft
@@ -12389,9 +12389,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.477":
-  version: 1.4.506
-  resolution: "electron-to-chromium@npm:1.4.506"
-  checksum: 449966efca7ab56a308726eec952d0e5a673c12de23921da5336698adb49bfcc1e4e04f3e24c144db9ba8d40023c95bbe8a44a50eb709ddf55984884539eea91
+  version: 1.4.508
+  resolution: "electron-to-chromium@npm:1.4.508"
+  checksum: 4475eb18f5805d43f84d9542364045a39b183a14cd9f4626e0951ea61d0fa4f84a5ed579c2c32189f9af4a27a31041d09fed78f60930ac36b3baa08547dd3aa6
   languageName: node
   linkType: hard
 
@@ -13597,8 +13597,8 @@ __metadata:
   linkType: hard
 
 "fastify@npm:^4.17.0":
-  version: 4.22.0
-  resolution: "fastify@npm:4.22.0"
+  version: 4.22.1
+  resolution: "fastify@npm:4.22.1"
   dependencies:
     "@fastify/ajv-compiler": ^3.5.0
     "@fastify/error": ^3.2.0
@@ -13616,7 +13616,7 @@ __metadata:
     secure-json-parse: ^2.5.0
     semver: ^7.5.0
     tiny-lru: ^11.0.1
-  checksum: 0a0bbdd0b46246486f20c2b6b00dc37e35a5ce535cd1576e3de773960d7830fc3a31eac96094ae39b06c8683e4c8fb60e418ae8d6c3cb44dee70df0759de2ec1
+  checksum: a45d64ebf57920d02b85b9d3920796162dd0fcfe2efa99fd4d987c33391895faa9fbac325c45a715c4ea0a48cdcc60b4bd735c3500416122510cba448326eda3
   languageName: node
   linkType: hard
 
@@ -13991,9 +13991,9 @@ __metadata:
   linkType: hard
 
 "fraction.js@npm:^4.2.0":
-  version: 4.3.4
-  resolution: "fraction.js@npm:4.3.4"
-  checksum: 26fdecf114e3b693c760d3b2d5447f8ba9e815991ca7c7cdb930156780793b87f10936979a890b389676d960d7cd026273da9a44a6e20c12e3c4fd282a026ed3
+  version: 4.3.5
+  resolution: "fraction.js@npm:4.3.5"
+  checksum: 4c4b98ce56500a78a0f886d31c7a0d60822153cc851f1f7f9ec968af1c4f7750077534f5a3ea1f8d09b0715e566fe22507a2abf7e3122bbbf21e2f7ae4127420
   languageName: node
   linkType: hard
 
@@ -18669,7 +18669,7 @@ __metadata:
     "@apollo/server": ^4.7.0
     "@neo4j/graphql": ^4.0.0-beta.2
     graphql: 16.8.0
-    neo4j-driver: 5.11.0
+    neo4j-driver: 5.12.0
   languageName: unknown
   linkType: soft
 
@@ -19455,17 +19455,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:5.11.0":
-  version: 5.11.0
-  resolution: "neo4j-driver-bolt-connection@npm:5.11.0"
-  dependencies:
-    buffer: ^6.0.3
-    neo4j-driver-core: 5.11.0
-    string_decoder: ^1.3.0
-  checksum: 7f4f6f4d87f7765b4f7e327898608c7f46340933c40b906169a5a0d4911e5f1946f4b960965c37beb1be106445bd70db293a961b5d46fb56917bf38ad7919c44
-  languageName: node
-  linkType: hard
-
 "neo4j-driver-bolt-connection@npm:5.12.0":
   version: 5.12.0
   resolution: "neo4j-driver-bolt-connection@npm:5.12.0"
@@ -19477,13 +19466,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:5.11.0":
-  version: 5.11.0
-  resolution: "neo4j-driver-core@npm:5.11.0"
-  checksum: e515e1a44076748be9346ca787a3cd9d6833a6fbdc8013d9eb093fc2ff614ba2222bc4997c7817ec6065a0b53de5f4461c8cc58b0f6306a58236c7cfca6844e8
-  languageName: node
-  linkType: hard
-
 "neo4j-driver-core@npm:5.12.0":
   version: 5.12.0
   resolution: "neo4j-driver-core@npm:5.12.0"
@@ -19491,18 +19473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.11.0":
-  version: 5.11.0
-  resolution: "neo4j-driver@npm:5.11.0"
-  dependencies:
-    neo4j-driver-bolt-connection: 5.11.0
-    neo4j-driver-core: 5.11.0
-    rxjs: ^7.8.1
-  checksum: a8b59049e4f22fc51387b6a6168128924d00004584a9634eccba983dfedc4bb6f95c9d441e9309d009adfe3201e2cde73e7f71a45d49283a2a30b164cbfb2763
-  languageName: node
-  linkType: hard
-
-"neo4j-driver@npm:^5.8.0":
+"neo4j-driver@npm:5.12.0, neo4j-driver@npm:^5.8.0":
   version: 5.12.0
   resolution: "neo4j-driver@npm:5.12.0"
   dependencies:
@@ -19538,12 +19509,12 @@ __metadata:
     husky: 8.0.3
     jest: 29.6.4
     lint-staged: 14.0.1
-    neo4j-driver: 5.11.0
+    neo4j-driver: 5.12.0
     npm-run-all: 4.1.5
     prettier: 2.8.8
     set-tz: 0.2.0
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   languageName: unknown
   linkType: soft
 
@@ -25332,23 +25303,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
+"typescript@npm:5.1.6":
+  version: 5.1.6
+  resolution: "typescript@npm:5.1.6"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
+  checksum: b2f2c35096035fe1f5facd1e38922ccb8558996331405eb00a5111cc948b2e733163cc22fab5db46992aba7dd520fff637f2c1df4996ff0e134e77d3249a7350
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@5.2.2#~builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@patch:typescript@5.1.6#~builtin<compat/typescript>":
+  version: 5.1.6
+  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
+  checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
   languageName: node
   linkType: hard
 

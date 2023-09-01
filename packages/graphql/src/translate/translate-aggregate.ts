@@ -35,7 +35,7 @@ function translateAggregate({
 }): [Cypher.Clause, any] {
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
-    let cypherParams: Record<string, any> = context.cypherParams ? { ...context.cypherParams } : {};
+    let cypherParams: Record<string, any> = {};
     const cypherStrs: Cypher.Clause[] = [];
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = context.resolveTree.args.where as GraphQLWhereArg | undefined;

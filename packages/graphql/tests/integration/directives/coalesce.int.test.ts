@@ -18,7 +18,7 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLError } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
@@ -49,9 +49,9 @@ describe("@coalesce directive", () => {
             typeDefs,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(
-            "@coalesce directive can only be used on primitive type fields"
-        );
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+            new GraphQLError("@coalesce is not supported by Spatial types."),
+        ]);
     });
 
     test("on DateTime field should throw an error", async () => {
@@ -66,9 +66,9 @@ describe("@coalesce directive", () => {
             typeDefs,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(
-            "@coalesce is not supported by DateTime fields at this time"
-        );
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+            new GraphQLError("@coalesce is not supported by Temporal types."),
+        ]);
     });
 
     test("with an argument with a type which doesn't match the field should throw an error", async () => {
@@ -82,9 +82,9 @@ describe("@coalesce directive", () => {
             typeDefs,
         });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(
-            "coalesce() value for User.name does not have matching type String"
-        );
+        await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+            new GraphQLError("@coalesce.value on String fields must be of type String"),
+        ]);
     });
 
     test("allows querying with null properties without affecting the returned result", async () => {

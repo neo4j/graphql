@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { ArgumentNode, DirectiveNode } from "graphql";
-import { GraphQLError } from "graphql";
+import type { ArgumentNode, DirectiveNode, GraphQLError } from "graphql";
 import { VALIDATION_ERROR_CODES } from "./validation-error-codes";
 import { lowerFirst } from "../../../utils/lower-first";
+import { createGraphQLError } from "../custom-rules/utils/document-validation-error";
 
 export function mapError(error: GraphQLError): GraphQLError {
     const { nodes, message } = error;
@@ -32,25 +32,10 @@ export function mapError(error: GraphQLError): GraphQLError {
     if (!replacedMessage) {
         return error;
     }
-    const errorOpts = {
+    return createGraphQLError({
         nodes,
-        extensions: undefined,
-        path: undefined,
-        source: undefined,
-        positions: undefined,
-        originalError: undefined,
-    };
-
-    // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-    return new GraphQLError(
-        replacedMessage,
-        errorOpts.nodes,
-        errorOpts.source,
-        errorOpts.positions,
-        errorOpts.path,
-        errorOpts.originalError,
-        errorOpts.extensions
-    );
+        errorMsg: replacedMessage,
+    });
 }
 
 function isCustomRule(error: GraphQLError): boolean {
@@ -73,53 +58,23 @@ function mapCustomRuleError(error: GraphQLError): GraphQLError {
     let replacedMessage: string | undefined = undefined;
     replacedMessage = eraseDummyJWTValue(message);
     if (replacedMessage) {
-        const errorOpts = {
-            nodes: undefined,
-            extensions: undefined,
+        return createGraphQLError({
             path,
-            source: undefined,
-            positions: undefined,
-            originalError: undefined,
-        };
-
-        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-        return new GraphQLError(
-            replacedMessage,
-            errorOpts.nodes,
-            errorOpts.source,
-            errorOpts.positions,
-            errorOpts.path,
-            errorOpts.originalError,
-            errorOpts.extensions
-        );
+            errorMsg: replacedMessage,
+        });
     }
 
     replacedMessage = eraseMysteryType(message);
     if (replacedMessage) {
-        const errorOpts = {
-            nodes: undefined,
-            extensions: undefined,
+        return createGraphQLError({
             path,
-            source: undefined,
-            positions: undefined,
-            originalError: undefined,
-        };
-
-        // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
-        return new GraphQLError(
-            replacedMessage,
-            errorOpts.nodes,
-            errorOpts.source,
-            errorOpts.positions,
-            errorOpts.path,
-            errorOpts.originalError,
-            errorOpts.extensions
-        );
+            errorMsg: replacedMessage,
+        });
     }
     return error;
 }
 
-const RENAMED_DIRECTIVE_OR_TYPE = /(\s?"([^\s]*?(SubscriptionsAuthorization|Authorization|Authentication)[^\s]*?)")/;
+const RENAMED_DIRECTIVE_OR_TYPE = /(\s?"([^\s]*?([sS]ubscriptionsAuthorization|Authorization|Authentication)[^\s]*?)")/;
 const WHERE_TYPE = /type(\s\\?".+?\\?")/; // <typename>Where / JwtPayloadWhere
 const JWT_PAYLOAD_DUMMY_VALUE_ERROR =
     /(?:(?:String)|(?:Int)|(?:Float)|(?:Boolean))(?: cannot represent a?\s?)(?:(?:non string)|(?:non-integer)|(?:non numeric)|(?:non boolean))(?: value)(:.+)/;

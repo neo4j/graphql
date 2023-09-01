@@ -17,10 +17,23 @@
  * limitations under the License.
  */
 
+import type {
+    EnumTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+    UnionTypeDefinitionNode,
+} from "graphql";
 import gql from "graphql-tag";
+import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 import validateDocument from "./validate-document";
 
 describe("validateDuplicateRelationshipFields", () => {
+    const additionalDefinitions = {
+        enums: [] as EnumTypeDefinitionNode[],
+        interfaces: [] as InterfaceTypeDefinitionNode[],
+        unions: [] as UnionTypeDefinitionNode[],
+        objects: [] as ObjectTypeDefinitionNode[],
+    };
     test("should throw an error if multiple relationship fields in the same type have the same relationship type.", () => {
         const doc = gql`
             type Team {
@@ -36,9 +49,20 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {} })).toThrow(
-            "Multiple relationship fields with the same type and direction may not have the same relationship type."
+        const errors = getError(() =>
+            validateDocument({
+                document: doc,
+                features: {},
+                additionalDefinitions,
+            })
         );
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            "@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination."
+        );
+        expect(errors[0]).toHaveProperty("path", ["Team", "player2", "@relationship"]);
     });
 
     test("should not throw an error if multiple relationship fields of different types have the same relationship type.", () => {
@@ -59,7 +83,7 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
     });
 
     test("should not throw an error if multiple relationship fields in the same type have the same relationship type but have different directions.", () => {
@@ -71,6 +95,6 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {} })).not.toThrow();
+        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
     });
 });
