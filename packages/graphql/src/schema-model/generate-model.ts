@@ -241,8 +241,13 @@ function generateInterfaceEntity(
         return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
     });
 
-    // TODO: inherited annotations?
-    const annotations = createEntityAnnotations(definition.directives || []);
+    const inheritedDirectives =
+        definition.interfaces?.flatMap((interfaceNamedNode) => {
+            const interfaceName = interfaceNamedNode.name.value;
+            return definitionCollection.interfaceTypes.get(interfaceName)?.directives || [];
+        }) || [];
+    const mergedDirectives = (definition.directives || []).concat(inheritedDirectives);
+    const annotations = createEntityAnnotations(mergedDirectives);
 
     return new InterfaceEntity({
         ...interfaceEntity,
@@ -319,7 +324,6 @@ function hydrateRelationships(
     }
 
     for (const relationship of relationshipFieldsMap.values()) {
-        // entityWithRelationships.attributeToRelationship(relationship);
         entityWithRelationships.addRelationship(relationship);
     }
 }
@@ -425,6 +429,8 @@ function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     const entityAnnotations: Annotation[] = [];
+
+    // TODO: I think this is done already with the map change and we do not have repeatable directives
 
     // We only ever want to create one annotation even when an entity contains several key directives
     const keyDirectives = directives.filter((directive) => directive.name.value === "key");
