@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import createCreateAndParams from "./create-create-and-params";
-import type { Neo4jGraphQL } from "../classes";
-import { trimmer } from "../utils";
-import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import { trimmer } from "../utils";
+import createCreateAndParams from "./create-create-and-params";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {

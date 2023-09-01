@@ -20,6 +20,7 @@
 import { astFromDirective, astFromInputObjectType } from "@graphql-tools/utils";
 import type { TypeDefinitionNode, DirectiveDefinitionNode } from "graphql";
 import {
+    GraphQLString,
     GraphQLSchema,
     GraphQLDirective,
     GraphQLInputObjectType,
@@ -155,3 +156,16 @@ export function createSubscriptionsAuthorizationDefinitions(
     const subscriptionsAuthorizationAST = astFromDirective(subscriptionsAuthorization);
     return [subscriptionsAuthorizationWhereAST, subscriptionsAuthorizationFilterRuleAST, subscriptionsAuthorizationAST];
 }
+
+export const subscriptionsAuthorizationDirectiveScaffold = new GraphQLDirective({
+    name: `subscriptionsAuthorization`,
+    description:
+        "This is a simpler version of the subscriptionsAuthorization directive to be used in the validate-document step.",
+    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        filter: {
+            description: "filter",
+            type: new GraphQLList(GraphQLString),
+        },
+    },
+});

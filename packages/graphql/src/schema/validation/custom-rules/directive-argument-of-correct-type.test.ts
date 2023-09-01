@@ -34,7 +34,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(0);
             });
@@ -48,7 +48,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -65,7 +65,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -84,7 +84,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(0);
             });
@@ -98,7 +98,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -115,7 +115,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -134,7 +134,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(0);
             });
@@ -148,7 +148,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -165,7 +165,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -184,7 +184,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(0);
             });
@@ -198,7 +198,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -215,7 +215,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                         name: String!
                     }
                 `;
-                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+                const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
                 expect(errors).toBeInstanceOf(Array);
                 expect(errors).toHaveLength(1);
                 expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -240,7 +240,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(0);
         });
@@ -259,7 +259,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -283,7 +283,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(0);
         });
@@ -302,7 +302,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(0);
         });
@@ -321,7 +321,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -338,7 +338,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -366,7 +366,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(0);
         });
@@ -389,7 +389,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(0);
         });
@@ -412,7 +412,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -438,7 +438,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -464,7 +464,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(
@@ -490,7 +490,7 @@ describe("DirectiveArgumentOfCorrectType", () => {
                     name: String!
                 }
             `;
-            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType]);
+            const errors = validateSDL(userDocument, [DirectiveArgumentOfCorrectType()]);
             expect(errors).toBeInstanceOf(Array);
             expect(errors).toHaveLength(1);
             expect((errors[0] as GraphQLError).message).toMatchInlineSnapshot(

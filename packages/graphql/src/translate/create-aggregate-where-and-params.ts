@@ -19,19 +19,19 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField, GraphQLWhereArg, PredicateReturn } from "../types";
-import type { AggregationFieldRegexGroups } from "./where/utils";
-import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
+import { AGGREGATION_AGGREGATE_COUNT_OPERATORS, NODE_OR_EDGE_KEYS } from "../constants";
+import type { GraphQLWhereArg, PredicateReturn, RelationField } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
+import mapToDbProperty from "../utils/map-to-db-property";
+import { asArray } from "../utils/utils";
+import { getLogicalPredicate, isLogicalOperator } from "./utils/logical-operators";
 import {
     createBaseOperation,
     createComparisonOperation,
 } from "./where/property-operations/create-comparison-operation";
-import { NODE_OR_EDGE_KEYS, AGGREGATION_AGGREGATE_COUNT_OPERATORS } from "../constants";
-import { isLogicalOperator, getLogicalPredicate } from "./utils/logical-operators";
-import mapToDbProperty from "../utils/map-to-db-property";
-import { asArray } from "../utils/utils";
-import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import type { AggregationFieldRegexGroups } from "./where/utils";
+import { aggregationFieldRegEx, whereRegEx } from "./where/utils";
 
 type WhereFilter = Record<string, any>;
 
@@ -98,7 +98,7 @@ function aggregateWhere(
     refNode: Node,
     relationship: Relationship | undefined,
     aggregationTarget: Cypher.Node,
-    cypherRelation: Cypher.Relationship,
+    cypherRelation: Cypher.Relationship
 ): Cypher.Predicate {
     const innerPredicatesRes: Cypher.Predicate[] = [];
     Object.entries(aggregateWhereInput).forEach(([key, value]) => {
@@ -155,7 +155,7 @@ function createCountPredicateAndProjection(
 function aggregateEntityWhere(
     aggregateEntityWhereInput: WhereFilter,
     refNodeOrRelation: Node | Relationship,
-    target: Cypher.Node | Cypher.Relationship,
+    target: Cypher.Node | Cypher.Relationship
 ): Cypher.Predicate {
     const innerPredicatesRes: Cypher.Predicate[] = [];
     Object.entries(aggregateEntityWhereInput).forEach(([key, value]) => {

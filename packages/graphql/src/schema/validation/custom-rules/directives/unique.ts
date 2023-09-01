@@ -17,9 +17,16 @@
  * limitations under the License.
  */
 
-// add codes for which you want the error message to be mapped (types be stripped from message or renamed, ..)
-export const VALIDATION_ERROR_CODES = {
-    AUTHORIZATION: "@neo4j/graphql:AUTHORIZATION_VALIDATION",
-    SUBSCRIPTIONSAUTHORIZATION: "@neo4j/graphql:SUBSCRIPTIONS_AUTHORIZATION_VALIDATION",
-    AUTHENTICATION: "@neo4j/graphql:AUTHENTICATION_VALIDATION",
-};
+import { Kind } from "graphql";
+import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+
+export function verifyUnique({ parentDef }: { parentDef?: ObjectOrInterfaceWithExtensions }) {
+    if (!parentDef) {
+        console.error("No parent definition traversed");
+        return;
+    }
+    if (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+        throw new DocumentValidationError("Cannot use `@unique` on fields of Interface types.", []);
+    }
+}

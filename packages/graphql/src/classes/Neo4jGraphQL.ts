@@ -49,6 +49,7 @@ import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
 import { wrapSubscription } from "../schema/resolvers/composition/wrap-subscription";
+import { getDefinitionNodes } from "../schema/get-definition-nodes";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -351,7 +352,18 @@ class Neo4jGraphQL {
             const initialDocument = this.normalizeTypeDefinitions(this.typeDefs);
 
             if (this.validate) {
-                validateDocument({ document: initialDocument, features: this.features });
+                const {
+                    enumTypes: enums,
+                    interfaceTypes: interfaces,
+                    unionTypes: unions,
+                    objectTypes: objects,
+                } = getDefinitionNodes(initialDocument);
+
+                validateDocument({
+                    document: initialDocument,
+                    features: this.features,
+                    additionalDefinitions: { enums, interfaces, unions, objects },
+                });
             }
 
             const { document, typesExcludedFromGeneration } = makeDocumentToAugment(initialDocument);
@@ -394,11 +406,24 @@ class Neo4jGraphQL {
         const { directives, types } = subgraph.getValidationDefinitions();
 
         if (this.validate) {
+            const {
+                enumTypes: enums,
+                interfaceTypes: interfaces,
+                unionTypes: unions,
+                objectTypes: objects,
+            } = getDefinitionNodes(initialDocument);
+
             validateDocument({
                 document: initialDocument,
                 features: this.features,
-                additionalDirectives: directives,
-                additionalTypes: types,
+                additionalDefinitions: {
+                    additionalDirectives: directives,
+                    additionalTypes: types,
+                    enums,
+                    interfaces,
+                    unions,
+                    objects,
+                },
             });
         }
 
