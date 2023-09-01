@@ -114,16 +114,27 @@ export class ConnectionFilter extends Filter {
                 return Cypher.and(new Cypher.Exists(match), Cypher.not(new Cypher.Exists(negativeMatch)));
             }
             case "SINGLE": {
-                const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
-                    innerPredicate
-                );
-                return Cypher.single(nestedContext.target, patternComprehension, new Cypher.Literal(true));
+                return this.createSingleRelationshipOperation(pattern, nestedContext, innerPredicate);
             }
             default: {
+                if (!this.relationship.isList) {
+                    return this.createSingleRelationshipOperation(pattern, nestedContext, innerPredicate);
+                }
                 const match = new Cypher.Match(pattern).where(innerPredicate);
                 return new Cypher.Exists(match);
             }
         }
+    }
+
+    private createSingleRelationshipOperation(
+        pattern: Cypher.Pattern,
+        context: QueryASTContext,
+        innerPredicate: Cypher.Predicate
+    ) {
+        const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
+            innerPredicate
+        );
+        return Cypher.single(context.target, patternComprehension, new Cypher.Literal(true));
     }
 
     private getSubqueriesForDefaultOperations(
