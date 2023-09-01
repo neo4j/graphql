@@ -3429,12 +3429,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-amqp-subscriptions-engine@^1.0.0-beta.0, @neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine":
+"@neo4j/graphql-amqp-subscriptions-engine@^1.0.0, @neo4j/graphql-amqp-subscriptions-engine@^1.0.0-beta.0, @neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
     "@apollo/server": 4.9.3
-    "@neo4j/graphql": ^4.0.0-beta.0
+    "@neo4j/graphql": ^4.0.0
     "@types/amqplib": 0.10.1
     "@types/body-parser": 1.19.2
     "@types/cors": 2.8.13
@@ -3467,7 +3467,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^5.0.0
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
-    "@neo4j/graphql": ^4.0.0-beta.2
+    "@neo4j/graphql": ^4.0.0
     "@types/jest": 29.5.4
     "@types/node": 18.15.1
     camelcase: 6.3.0
@@ -3502,8 +3502,8 @@ __metadata:
     "@graphiql/react": 0.19.3
     "@neo4j-ndl/base": 1.10.2
     "@neo4j-ndl/react": 1.10.5
-    "@neo4j/graphql": 4.0.0-beta.2
-    "@neo4j/introspector": 2.0.0-beta.1
+    "@neo4j/graphql": 4.0.0
+    "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.37.1
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.9
@@ -3559,7 +3559,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@4.0.0-beta.2, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.0.0-beta.2, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@4.0.0, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3627,11 +3627,11 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/introspector@2.0.0-beta.1, @neo4j/introspector@workspace:packages/introspector":
+"@neo4j/introspector@2.0.0, @neo4j/introspector@workspace:packages/introspector":
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": ^4.0.0-beta.2
+    "@neo4j/graphql": ^4.0.0
     "@types/jest": 29.5.4
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.30
@@ -8636,7 +8636,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 1.2.2
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^10.0.0
-    "@neo4j/graphql": ^4.0.0-beta.2
+    "@neo4j/graphql": ^4.0.0
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.8.0
     graphql-tag: ^2.12.6
@@ -18666,7 +18666,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.0.0-beta.2
+    "@neo4j/graphql": ^4.0.0
     graphql: 16.8.0
     neo4j-driver: 5.12.0
   languageName: unknown
@@ -19438,8 +19438,8 @@ __metadata:
   resolution: "neo-place@workspace:examples/neo-place"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.0.0-beta.0
-    "@neo4j/graphql-amqp-subscriptions-engine": ^1.0.0-beta.0
+    "@neo4j/graphql": ^4.0.0
+    "@neo4j/graphql-amqp-subscriptions-engine": ^1.0.0
     concurrently: 8.2.1
     dotenv: ^16.0.3
     express: ^4.18.2

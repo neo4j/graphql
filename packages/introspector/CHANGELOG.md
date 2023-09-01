@@ -1,5 +1,15 @@
 # @neo4j/introspector
 
+## 2.0.0
+
+### Major Changes
+
+-   [#2773](https://github.com/neo4j/graphql/pull/2773) [`7462b9715`](https://github.com/neo4j/graphql/commit/7462b97158bb7a202a77ec389270151e8d49cfb3) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecated @node directive arguments `label` and `additionalLabels` have been removed. Please use the `labels` argument.
+
+### Patch Changes
+
+-   [#2773](https://github.com/neo4j/graphql/pull/2773) [`7462b9715`](https://github.com/neo4j/graphql/commit/7462b97158bb7a202a77ec389270151e8d49cfb3) Thanks [@angrykoala](https://github.com/angrykoala)! - Introspector now produces `@mutation` directive instead on `@exclude` when readonly
+
 ## 2.0.0-beta.1
 
 ### Patch Changes
