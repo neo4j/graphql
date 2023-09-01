@@ -4172,13 +4172,19 @@ describe("validation 2.0", () => {
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
 
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     "Invalid directive usage: Directive @jwt can only be used once in the Type Definitions."
                 );
-                expect(errors[0]).toHaveProperty("path", ["OtherJWTPayload", "@jwt"]);
+                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "@jwt"]);
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @jwt can only be used once in the Type Definitions."
+                );
+                expect(errors[1]).toHaveProperty("path", ["OtherJWTPayload", "@jwt"]);
             });
 
             test("@jwt fields not scalars", () => {
