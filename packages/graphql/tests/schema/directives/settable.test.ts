@@ -612,7 +612,7 @@ describe("@settable", () => {
 
                 input ActorActedInConnectFieldInput {
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: MovieConnectWhere
@@ -1061,7 +1061,7 @@ describe("@settable", () => {
 
                 input ActorActedInConnectFieldInput {
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: MovieConnectWhere
@@ -1502,7 +1502,7 @@ describe("@settable", () => {
                 input ActorActedInConnectFieldInput {
                   connect: [MovieConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: MovieConnectWhere
@@ -1796,7 +1796,7 @@ describe("@settable", () => {
                 input MovieActorsConnectFieldInput {
                   connect: [ActorConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: ActorConnectWhere
@@ -2125,7 +2125,7 @@ describe("@settable", () => {
                 input ActorActedInConnectFieldInput {
                   connect: [MovieConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: MovieConnectWhere
@@ -2427,7 +2427,7 @@ describe("@settable", () => {
                 input MovieActorsConnectFieldInput {
                   connect: [ActorConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: ActorConnectWhere
@@ -4012,7 +4012,7 @@ describe("@settable", () => {
                 input MovieActorsConnectFieldInput {
                   connect: [ActorConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: ActorConnectWhere
@@ -4706,7 +4706,7 @@ describe("@settable", () => {
                 input MovieActorsConnectFieldInput {
                   connect: [ActorConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: ActorConnectWhere
@@ -6520,7 +6520,7 @@ describe("@settable", () => {
                 input ProductionActorsConnectFieldInput {
                   connect: [ActorConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: ActorConnectWhere
@@ -7422,7 +7422,7 @@ describe("@settable", () => {
                 input ProductionActorsConnectFieldInput {
                   connect: [ActorConnectInput!]
                   \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+                  Whether or not to overwrite any matching relationship with the new properties.
                   \\"\\"\\"
                   overwrite: Boolean! = true
                   where: ActorConnectWhere
