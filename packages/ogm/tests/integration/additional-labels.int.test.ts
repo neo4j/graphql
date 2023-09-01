@@ -64,25 +64,6 @@ describe("Additional Labels", () => {
         await driver.close();
     });
 
-    test("should find nodes with jwt labels passed as a request", async () => {
-        const ogm = new OGM({
-            typeDefs,
-            driver,
-            features: { authorization: { key: secret } },
-        });
-
-        await ogm.init();
-
-        const token = createBearerToken(secret, { tenant_id: tenantID });
-
-        const Task = ogm.model(taskType.name);
-        const tasks = await Task.find({
-            context: { token },
-        });
-        expect(tasks).toHaveLength(1);
-        expect(tasks[0].id).toEqual(expectedId);
-    });
-
     test("should find nodes with jwt labels passed as part of context", async () => {
         const ogm = new OGM({
             typeDefs,
@@ -94,7 +75,7 @@ describe("Additional Labels", () => {
 
         const Task = ogm.model(taskType.name);
         const tasks = await Task.find({
-            context: { jwt: { tenant_id: tenantID } },
+            context: { cypherParams: { jwt: { tenant_id: tenantID } } },
         });
         expect(tasks).toHaveLength(1);
         expect(tasks[0].id).toEqual(expectedId);

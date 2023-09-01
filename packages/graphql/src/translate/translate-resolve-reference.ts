@@ -91,5 +91,5 @@ export function translateResolveReference({
         returnClause
     );
 
-    return readQuery.build(undefined, context.cypherParams ? { ...context.cypherParams } : {});
+    return readQuery.build();
 }
