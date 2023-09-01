@@ -4209,7 +4209,7 @@ __metadata:
     randomstring: 1.3.0
     semver: 7.5.4
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^4.1.0 || ^5.0.0
@@ -4229,7 +4229,7 @@ __metadata:
     jsonwebtoken: ^9.0.0
     jwks-rsa: ^3.0.0
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   languageName: unknown
   linkType: soft
 
@@ -4256,7 +4256,7 @@ __metadata:
     randomstring: 1.3.0
     supertest: 6.3.3
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
     ws: 8.13.0
   peerDependencies:
     "@neo4j/graphql": ^3.15.0
@@ -4325,7 +4325,7 @@ __metadata:
     ts-loader: 9.4.4
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.1.0
-    typescript: 5.2.2
+    typescript: 5.1.6
     webpack: 5.88.2
     webpack-cli: 5.1.4
     webpack-dev-server: 4.15.1
@@ -4387,7 +4387,7 @@ __metadata:
     supertest: 6.3.3
     ts-jest: 29.1.1
     ts-node: 10.9.1
-    typescript: 5.2.2
+    typescript: 5.1.6
     uuid: ^9.0.0
     ws: 8.13.0
   peerDependencies:
@@ -4415,7 +4415,7 @@ __metadata:
     jest: 29.6.4
     pluralize: ^8.0.0
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   peerDependencies:
     neo4j-driver: ^4.1.0 || ^5.0.0
   languageName: unknown
@@ -9535,7 +9535,7 @@ __metadata:
     neo4j-driver: ^5.5.0
     ts-loader: 9.4.4
     tsconfig-paths-webpack-plugin: 4.1.0
-    typescript: 5.2.2
+    typescript: 5.1.6
     webpack: 5.88.2
   languageName: unknown
   linkType: soft
@@ -22390,7 +22390,7 @@ __metadata:
     prettier: 2.8.8
     set-tz: 0.2.0
     ts-jest: 29.1.1
-    typescript: 5.2.2
+    typescript: 5.1.6
   languageName: unknown
   linkType: soft
 
@@ -29285,23 +29285,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
+"typescript@npm:5.1.6":
+  version: 5.1.6
+  resolution: "typescript@npm:5.1.6"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
+  checksum: b2f2c35096035fe1f5facd1e38922ccb8558996331405eb00a5111cc948b2e733163cc22fab5db46992aba7dd520fff637f2c1df4996ff0e134e77d3249a7350
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@5.2.2#~builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@patch:typescript@5.1.6#~builtin<compat/typescript>":
+  version: 5.1.6
+  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
+  checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
   languageName: node
   linkType: hard
 
