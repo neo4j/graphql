@@ -22,11 +22,9 @@ import type { Operation } from "./Operation";
 import type { Annotations, Annotation } from "./annotation/Annotation";
 import { annotationToKey } from "./annotation/Annotation";
 import type { CompositeEntity } from "./entity/CompositeEntity";
-import { ConcreteEntity } from "./entity/ConcreteEntity";
+import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
 import { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntity } from "./entity/InterfaceEntity";
-import { UnionEntity } from "./entity/UnionEntity";
 
 export type Operations = {
     Query?: Operation;
@@ -81,14 +79,6 @@ export class Neo4jGraphQLSchemaModel {
 
     public getEntitiesByNameAndLabels(name: string, labels: string[]): ConcreteEntity[] {
         return this.concreteEntities.filter((entity) => entity.name === name && entity.matchLabels(labels));
-    }
-
-    public isConcreteEntity(entity?: Entity): entity is ConcreteEntity {
-        return entity instanceof ConcreteEntity;
-    }
-
-    public isCompositeEntity(entity?: Entity): entity is CompositeEntity {
-        return entity instanceof InterfaceEntity || entity instanceof UnionEntity;
     }
 
     private addAnnotation(annotation: Annotation): void {

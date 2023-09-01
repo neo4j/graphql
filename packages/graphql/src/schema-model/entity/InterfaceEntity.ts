@@ -60,6 +60,13 @@ export class InterfaceEntity implements CompositeEntity {
         }
     }
 
+    isConcreteEntity(): this is ConcreteEntity {
+        return false;
+    }
+    isCompositeEntity(): this is CompositeEntity {
+        return true;
+    }
+
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
