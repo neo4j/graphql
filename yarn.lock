@@ -3597,7 +3597,7 @@ __metadata:
     jest: 29.6.4
     jest-extended: 4.0.1
     jose: ^4.13.1
-    jwks-rsa: ^3.0.1
+    jwks-rsa: 3.0.1
     koa: 2.14.2
     koa-jwt: 4.0.4
     koa-router: 12.0.0
@@ -17393,7 +17393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:^3.0.1":
+"jwks-rsa@npm:3.0.1":
   version: 3.0.1
   resolution: "jwks-rsa@npm:3.0.1"
   dependencies:
