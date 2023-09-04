@@ -45,76 +45,6 @@ import { parseAnnotations } from "./parser/parse-annotation";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
 
-/*
-export function generateModel2(document: DocumentNode): Neo4jGraphQLSchemaModel {
-    const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
-
-    const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
-        acc[definition.name.value] = generateOperation(definition);
-        return acc;
-    }, {});
-
-    // hydrate interface to typeNames map
-    hydrateInterfacesToTypeNamesMap(definitionCollection);
-
-    // === 1. add composites w/o concreteEntities connection
-    const unionEntities = Array.from(definitionCollection.unionTypes).map(([unionName, unionDefinition]) => {
-        return generateUnionEntity(
-            unionName,
-            unionDefinition.types?.map((t) => t.name.value) || [],
-            concreteEntitiesMap
-        );
-    });
-    const interfaceEntities = Array.from(definitionCollection.interfaceToImplementingTypeNamesMap.entries()).map(
-        ([name, concreteEntities]) => {
-            const interfaceNode = definitionCollection.interfaceTypes.get(name);
-            if (!interfaceNode) {
-                throw new Error(`Cannot find interface ${name}`);
-            }
-            return generateInterfaceEntity(
-                name,
-                interfaceNode,
-                concreteEntities,
-                concreteEntitiesMap,
-                definitionCollection
-            );
-        }
-    );
-
-    // === 2. add concretes with attributes, annotations and relationships already resolved (with inherited)
-    const concreteEntities = Array.from(definitionCollection.nodes.values()).map((node) =>
-        generateConcreteEntity(node, definitionCollection)
-    );
-
-    // === 3. update composites with links to concrete
-    // TODO
-
-    // TODO: still need this?
-    const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
-        if (acc.has(entity.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
-        }
-        acc.set(entity.name, entity);
-        return acc;
-    }, new Map<string, ConcreteEntity>());
-
-    // === 4. create schema model with everything
-    const annotations = createSchemaModelAnnotations(definitionCollection.schemaDirectives);
-    const schema = new Neo4jGraphQLSchemaModel({
-        compositeEntities: [...unionEntities, ...interfaceEntities],
-        concreteEntities,
-        operations,
-        annotations,
-    });
-
-    definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-    definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-
-    return schema;
-}
-*/
-// ===============================================================
-
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
@@ -171,9 +101,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-    // TODO: test - interface implements interface inheritance hydrate
-    // TODO: refactor flow??
-    // TODO: add tests for interfaces and relationshipProperties interface annotations
 
     return schema;
 }
