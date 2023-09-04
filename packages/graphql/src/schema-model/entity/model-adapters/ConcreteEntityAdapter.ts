@@ -30,6 +30,7 @@ import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
+    public readonly description: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
@@ -50,6 +51,7 @@ export class ConcreteEntityAdapter {
 
     constructor(entity: ConcreteEntity) {
         this.name = entity.name;
+        this.description = entity.description;
         this.labels = entity.labels;
         this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
@@ -75,10 +77,7 @@ export class ConcreteEntityAdapter {
 
     private initRelationships(relationships: Map<string, Relationship>) {
         for (const [relationshipName, relationship] of relationships.entries()) {
-            this.relationships.set(
-                relationshipName,
-                new RelationshipAdapter(relationship, this)
-            );
+            this.relationships.set(relationshipName, new RelationshipAdapter(relationship, this));
         }
     }
 
@@ -107,7 +106,7 @@ export class ConcreteEntityAdapter {
     }
 
     public getMainLabel(): string {
-        return this.getLabels()[0] as string; 
+        return this.getLabels()[0] as string;
     }
 
     public get singular(): string {

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, TypeNode } from "graphql";
+import type { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
@@ -36,6 +36,7 @@ import {
     Neo4jCartesianPointType,
 } from "../attribute/AttributeType";
 import { Attribute } from "../attribute/Attribute";
+import { Argument } from "../argument/Argument";
 import { Field } from "../attribute/Field";
 import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
@@ -43,19 +44,37 @@ import { aliasDirective } from "../../graphql/directives";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
 
+function parseAttributeArguments(
+    fieldArgs: readonly InputValueDefinitionNode[],
+    definitionCollection: DefinitionCollection
+): Argument[] {
+    return fieldArgs.map((fieldArg) => {
+        return new Argument({
+            name: fieldArg.name.value,
+            type: parseTypeNode(definitionCollection, fieldArg.type),
+            defaultValue: fieldArg.defaultValue,
+            description: fieldArg.description?.value || "",
+        });
+    });
+}
+
 export function parseAttribute(
     field: FieldDefinitionNode,
     definitionCollection: DefinitionCollection
 ): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
+    const args = parseAttributeArguments(field.arguments || [], definitionCollection);
+    console.log("args", field.arguments, args);
     const annotations = parseAnnotations(field.directives || []);
     const databaseName = getDatabaseName(field);
     return new Attribute({
         name,
         annotations,
         type,
+        args,
         databaseName,
+        description: field.description?.value || "",
     });
 }
 

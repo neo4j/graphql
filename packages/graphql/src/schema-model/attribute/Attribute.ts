@@ -19,6 +19,7 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
 import { annotationToKey, type Annotation, type Annotations } from "../annotation/Annotation";
+import type { Argument } from "../argument/Argument";
 import type { AttributeType } from "./AttributeType";
 
 export class Attribute {
@@ -26,21 +27,29 @@ export class Attribute {
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
     public readonly databaseName: string;
+    public readonly description: string;
+    public readonly args: Argument[];
 
     constructor({
         name,
         annotations = [],
         type,
+        args,
         databaseName,
+        description,
     }: {
         name: string;
         annotations: Annotation[];
         type: AttributeType;
+        args: Argument[];
         databaseName?: string;
+        description?: string;
     }) {
         this.name = name;
         this.type = type;
+        this.args = args;
         this.databaseName = databaseName ?? name;
+        this.description = description || "";
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);
@@ -52,7 +61,9 @@ export class Attribute {
             name: this.name,
             annotations: Object.values(this.annotations),
             type: this.type,
+            args: this.args,
             databaseName: this.databaseName,
+            description: this.description,
         });
     }
 
