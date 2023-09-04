@@ -20,7 +20,7 @@
 import type { DocumentNode, GraphQLSchema, SelectionSetNode } from "graphql";
 import { graphql, parse, print } from "graphql";
 import type { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
-import type { Neo4jGraphQLContext } from "@neo4j/graphql/src";
+import type { Neo4jGraphQLContext } from "@neo4j/graphql";
 
 type Neo4jGraphQLOGMContext = Omit<Neo4jGraphQLContext, "jwt" | "token">;
 
