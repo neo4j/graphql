@@ -1,5 +1,14 @@
 # @neo4j/graphql-ogm
 
+## 4.1.0
+
+### Patch Changes
+
+-   [#3880](https://github.com/neo4j/graphql/pull/3880) [`16e5575dc`](https://github.com/neo4j/graphql/commit/16e5575dc3c7bf11c46bb25835da4c514cf81f5a) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix non-relative import in the OGM
+
+-   Updated dependencies [[`a88db901f`](https://github.com/neo4j/graphql/commit/a88db901f4818eda10260f510aa77f43fc9dbbbf)]:
+    -   @neo4j/graphql@4.1.0
+
 ## 4.0.0
 
 ### Major Changes
