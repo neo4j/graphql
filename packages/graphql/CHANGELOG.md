@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 4.1.0
+
+### Minor Changes
+
+-   [#3882](https://github.com/neo4j/graphql/pull/3882) [`a88db901f`](https://github.com/neo4j/graphql/commit/a88db901f4818eda10260f510aa77f43fc9dbbbf) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add the ability to pass through arbitrary database transaction metadata into the request context
+
 ## 4.0.0
 
 ### Major Changes
