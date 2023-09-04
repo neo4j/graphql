@@ -83,6 +83,7 @@ export type ExecutorConstructorParam = {
     cypherQueryOptions?: CypherQueryOptions;
     sessionConfig?: SessionConfig;
     cypherParams?: Record<string, unknown>;
+    transactionMetadata?: Record<string, unknown>;
 };
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
@@ -100,14 +101,22 @@ export class Executor {
     private sessionConfig: SessionConfig | undefined;
 
     private cypherParams: Record<string, unknown>;
+    private transactionMetadata: Record<string, unknown>;
 
-    constructor({ executionContext, cypherQueryOptions, sessionConfig, cypherParams = {} }: ExecutorConstructorParam) {
+    constructor({
+        executionContext,
+        cypherQueryOptions,
+        sessionConfig,
+        cypherParams = {},
+        transactionMetadata = {},
+    }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
         this.lastBookmark = null;
         this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
         this.cypherParams = cypherParams;
+        this.transactionMetadata = transactionMetadata;
     }
 
     public async execute(
@@ -187,6 +196,7 @@ export class Executor {
 
         const transactionConfig: TransactionConfig = {
             metadata: {
+                ...this.transactionMetadata,
                 app,
                 type: "user-transpiled",
             },
