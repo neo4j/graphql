@@ -65,7 +65,6 @@ export function parseAttribute(
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
-    console.log("args", field.arguments, args);
     const annotations = parseAnnotations(field.directives || []);
     const databaseName = getDatabaseName(field);
     return new Attribute({
