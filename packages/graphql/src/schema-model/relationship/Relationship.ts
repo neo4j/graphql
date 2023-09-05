@@ -20,7 +20,6 @@
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { upperFirst } from "../../utils/upper-first";
 import type { Attribute } from "../attribute/Attribute";
-import type { ConcreteEntity } from "../entity/ConcreteEntity";
 import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
@@ -31,7 +30,7 @@ export class Relationship {
     public readonly name: string; // name of the relationship field, e.g. friends
     public readonly type: string; // name of the relationship type, e.g. "IS_FRIENDS_WITH"
     public readonly attributes: Map<string, Attribute> = new Map();
-    public readonly source: ConcreteEntity;
+    public readonly source: Entity;
     public readonly target: Entity;
     public readonly direction: RelationshipDirection;
     public readonly isList: boolean;
@@ -65,7 +64,7 @@ export class Relationship {
         name: string;
         type: string;
         attributes?: Attribute[];
-        source: ConcreteEntity;
+        source: Entity;
         target: Entity;
         direction: RelationshipDirection;
         isList: boolean;

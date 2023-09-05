@@ -18,10 +18,20 @@
  */
 
 import type { ConcreteEntity } from "./ConcreteEntity";
-import type { Entity } from "./Entity";
+import type { CompositeEntity } from "./CompositeEntity";
 
-/** models the concept of an Abstract Type */
-export interface CompositeEntity extends Entity {
-    readonly name: string;
-    concreteEntities: ConcreteEntity[];
+export class UnionEntity implements CompositeEntity {
+    public readonly name: string;
+    public concreteEntities: ConcreteEntity[];
+
+    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntity[] }) {
+        this.name = name;
+        this.concreteEntities = concreteEntities;
+    }
+    isConcreteEntity(): this is ConcreteEntity {
+        return false;
+    }
+    isCompositeEntity(): this is CompositeEntity {
+        return true;
+    }
 }

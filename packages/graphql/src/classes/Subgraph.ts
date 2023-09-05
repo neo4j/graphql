@@ -114,7 +114,7 @@ export class Subgraph {
             if (def.kind === Kind.OBJECT_TYPE_DEFINITION) {
                 const entity = schemaModel.getEntity(def.name.value);
 
-                if (schemaModel.isConcreteEntity(entity)) {
+                if (entity?.isConcreteEntity()) {
                     const keyAnnotation = entity.annotations.key;
 
                     // If there is a @key directive with `resolvable` set to false, then do not add __resolveReference
