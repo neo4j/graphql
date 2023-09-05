@@ -67,7 +67,7 @@ function getDatabaseName(
 ): string | undefined {
     const aliasUsage = findDirective(fieldDefinitionNode.directives, aliasDirective.name);
     if (aliasUsage) {
-        const { property } = parseArguments(aliasDirective, aliasUsage) as { property: string };
+        const { property } = parseArguments<{ property: string }>(aliasDirective, aliasUsage);
         return property;
     }
     const inheritedAliasUsage = inheritedFields?.reduce<DirectiveNode | undefined>((aliasUsage, field) => {
@@ -79,7 +79,7 @@ function getDatabaseName(
         return aliasUsage;
     }, undefined);
     if (inheritedAliasUsage) {
-        const { property } = parseArguments(aliasDirective, inheritedAliasUsage) as { property: string };
+        const { property } = parseArguments<{ property: string }>(aliasDirective, inheritedAliasUsage);
         return property;
     }
 }
