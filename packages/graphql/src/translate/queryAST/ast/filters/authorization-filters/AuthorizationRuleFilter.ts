@@ -56,8 +56,8 @@ export class AuthorizationRuleFilter extends Filter {
         return innerPredicate;
     }
 
-    public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
-        return this.children.flatMap((c) => c.getSubqueries(_parentNode));
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.children.flatMap((c) => c.getSubqueries(context));
     }
 
     public getChildren(): QueryASTNode[] {

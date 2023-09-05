@@ -28,7 +28,7 @@ export class AggregationFilter extends Filter {
         return [...this.filters];
     }
 
-    public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         this.subqueryReturnVariable = new Cypher.Variable();
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const relatedNode = new Cypher.Node({
@@ -39,16 +39,15 @@ export class AggregationFilter extends Filter {
             type: this.relationship.type,
         });
 
-        const pattern = new Cypher.Pattern(parentNode)
+        const pattern = new Cypher.Pattern(context.target)
             .withoutLabels()
             .related(relationshipTarget)
             .withDirection(this.relationship.getCypherDirection())
             .to(relatedNode);
 
-        const nestedContext = new QueryASTContext({
+        const nestedContext = context.push({
             target: relatedNode,
             relationship: relationshipTarget,
-            source: parentNode,
         });
 
         const predicates = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));

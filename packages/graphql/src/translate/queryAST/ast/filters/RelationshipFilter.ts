@@ -57,7 +57,7 @@ export class RelationshipFilter extends Filter {
         this.targetNodeFilters.push(...filter);
     }
 
-    public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
@@ -65,15 +65,14 @@ export class RelationshipFilter extends Filter {
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
         });
-        const nestedContext = new QueryASTContext({
+        const nestedContext = context.push({
             target,
-            source: parentNode,
             relationship,
         });
 
-        const subqueries = this.targetNodeFilters.flatMap((f) => f.getSubqueries(target));
+        const subqueries = this.targetNodeFilters.flatMap((f) => f.getSubqueries(nestedContext));
         if (subqueries.length > 0) {
-            const pattern = new Cypher.Pattern(parentNode)
+            const pattern = new Cypher.Pattern(context.target)
                 .withoutLabels()
                 .related(relationship)
                 .withoutVariable()
@@ -88,7 +87,7 @@ export class RelationshipFilter extends Filter {
 
                     const returnVar = new Cypher.Variable();
                     const nestedSubqueries = this.targetNodeFilters.flatMap((f) => {
-                        return f.getSubqueries(target).map((sq) => {
+                        return f.getSubqueries(nestedContext).map((sq) => {
                             return new Cypher.Call(sq).innerWith(target);
                         });
                     });
@@ -151,7 +150,7 @@ export class RelationshipFilter extends Filter {
         const subqueries = this.targetNodeFilters.map((f) => {
             const returnVar = new Cypher.Variable();
             returnVariables.push(returnVar);
-            const nestedSubqueries = f.getSubqueries(context.target).map((sq) => {
+            const nestedSubqueries = f.getSubqueries(context).map((sq) => {
                 return new Cypher.Call(sq).innerWith(context.target);
             });
 

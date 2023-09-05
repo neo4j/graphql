@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
@@ -43,8 +44,8 @@ export class OperationField extends Field {
         return { [this.alias]: this.projectionExpr };
     }
 
-    public getSubqueries(node: Cypher.Node): Cypher.Clause[] {
-        const result = this.operation.transpile({ returnVariable: new Cypher.Variable(), parentNode: node });
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const result = this.operation.transpile({ returnVariable: new Cypher.Variable(), parentNode: context.target });
         this.projectionExpr = result.projectionExpr;
         return result.clauses;
     }

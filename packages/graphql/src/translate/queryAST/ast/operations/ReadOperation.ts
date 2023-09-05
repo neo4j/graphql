@@ -90,7 +90,7 @@ export class ReadOperation extends Operation {
         const matchClause = new Cypher.Match(pattern);
         const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const filterPredicates = this.getPredicates(nestedContext);
-        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(targetNode) : [];
+        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
 
         const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
@@ -98,7 +98,7 @@ export class ReadOperation extends Operation {
         if (wherePredicate) {
             withWhere = new Cypher.With("*").where(wherePredicate);
         }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
 
         const ret = this.getProjectionClause(targetNode, returnVariable, entity.isList);
 
@@ -140,11 +140,11 @@ export class ReadOperation extends Operation {
         const node = createNodeFromEntity(this.entity, this.nodeAlias);
         const context = new QueryASTContext({ target: node });
         const filterSubqueries = this.filters
-            .flatMap((f) => f.getSubqueries(node))
+            .flatMap((f) => f.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
         const filterPredicates = this.getPredicates(context);
-        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(node) : [];
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(node), ...authFilterSubqueries);
+        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(context) : [];
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(context), ...authFilterSubqueries);
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(context) : undefined;
 
         const projection = this.getProjectionMap(node);
@@ -200,13 +200,13 @@ export class ReadOperation extends Operation {
         return filterTruthy([...this.filters, this.authFilters, ...this.fields, this.pagination, ...this.sortFields]);
     }
 
-    protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
+    protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
         return filterTruthy(
             this.fields.flatMap((f) => {
-                return f.getSubqueries(node);
+                return f.getSubqueries(context);
             })
         ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(node);
+            return new Cypher.Call(sq).innerWith(context.target);
         });
     }
 

@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 // Should Cypher be an operation?
 export class CypherAttributeField extends AttributeField {
@@ -43,11 +44,11 @@ export class CypherAttributeField extends AttributeField {
         return { [this.alias]: this.customCypherVar };
     }
 
-    public getSubqueries(node: Cypher.Node): Cypher.Clause[] {
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const cypherAnnotation = this.attribute.annotations.cypher;
         if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
 
-        const innerAlias = new Cypher.With([node, "this"]);
+        const innerAlias = new Cypher.With([context.target, "this"]);
         const cypherSubquery = new Cypher.RawCypher(cypherAnnotation.statement);
 
         const columnName = cypherAnnotation.columnName;
@@ -71,7 +72,7 @@ export class CypherAttributeField extends AttributeField {
             returnProjection = Cypher.head(returnProjection);
         }
 
-        const callClause = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery)).innerWith(node);
+        const callClause = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery)).innerWith(context.target);
 
         if (this.attribute.isScalar() || this.attribute.isEnum()) {
             callClause.unwind([returnVar, this.customCypherVar]);

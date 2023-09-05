@@ -102,12 +102,12 @@ export class ConnectionReadOperation extends Operation {
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.authFilters?.getPredicate(nestedContext);
 
-        const authFilterSubqueries = this.authFilters?.getSubqueries(node) || [];
+        const authFilterSubqueries = this.authFilters?.getSubqueries(nestedContext) || [];
 
         const filters = Cypher.and(...predicates, authPredicate);
 
         const nodeProjectionSubqueries = this.nodeFields
-            .flatMap((f) => f.getSubqueries(node))
+            .flatMap((f) => f.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
 
         const nodeProjectionMap = new Cypher.Map();

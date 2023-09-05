@@ -17,11 +17,18 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
+import type { QueryASTContext } from "./QueryASTContext";
+
 export abstract class QueryASTNode {
     public abstract getChildren(): QueryASTNode[];
 
     /** Prints the name of the Node */
     public print(): string {
         return this.constructor.name;
+    }
+
+    public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
     }
 }

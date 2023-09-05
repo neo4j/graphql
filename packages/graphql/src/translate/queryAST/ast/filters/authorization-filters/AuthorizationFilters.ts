@@ -63,8 +63,8 @@ export class AuthorizationFilters extends Filter {
         return Cypher.and(validatePredicate, wherePredicate);
     }
 
-    public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
-        return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSubqueries(_parentNode));
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSubqueries(context));
     }
 
     public getChildren(): QueryASTNode[] {

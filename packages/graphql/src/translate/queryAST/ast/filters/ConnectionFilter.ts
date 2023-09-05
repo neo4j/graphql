@@ -43,7 +43,7 @@ export class ConnectionFilter extends Filter {
         return `${super.print()} <${this.operator}>`;
     }
 
-    public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const relatedEntity = this.relationship.target as ConcreteEntity;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
@@ -52,16 +52,15 @@ export class ConnectionFilter extends Filter {
             type: this.relationship.type,
         });
 
-        const pattern = new Cypher.Pattern(parentNode)
+        const pattern = new Cypher.Pattern(context.target)
             .withoutLabels()
             .related(relationship)
             .withDirection(this.relationship.getCypherDirection())
             .to(target);
 
-        const nestedContext = new QueryASTContext({
-            target,
-            source: parentNode,
+        const nestedContext = context.push({
             relationship,
+            target,
         });
 
         switch (this.operator) {
@@ -147,7 +146,7 @@ export class ConnectionFilter extends Filter {
 
         const subqueries = this.innerFilters.flatMap((f) => {
             const nestedSubqueries = f
-                .getSubqueries(queryASTContext.target)
+                .getSubqueries(queryASTContext)
                 .map((sq) => new Cypher.Call(sq).innerWith(queryASTContext.target));
 
             const predicate = f.getPredicate(queryASTContext);
@@ -186,7 +185,7 @@ export class ConnectionFilter extends Filter {
         const falsyFilters: Cypher.Variable[] = [];
 
         const subqueries = this.innerFilters.flatMap((f) => {
-            const nestedSubqueries = f.getSubqueries(queryASTContext.target).map((sq) => {
+            const nestedSubqueries = f.getSubqueries(queryASTContext).map((sq) => {
                 const predicate = f.getPredicate(queryASTContext);
                 if (predicate) {
                     const returnVar = new Cypher.Variable();
@@ -205,7 +204,7 @@ export class ConnectionFilter extends Filter {
         if (subqueries.length === 0) return [];
 
         const subqueries2 = this.innerFilters.flatMap((f) => {
-            const nestedSubqueries = f.getSubqueries(queryASTContext.target).map((sq) => {
+            const nestedSubqueries = f.getSubqueries(queryASTContext).map((sq) => {
                 const predicate = f.getPredicate(queryASTContext);
                 if (predicate) {
                     const returnVar = new Cypher.Variable();
