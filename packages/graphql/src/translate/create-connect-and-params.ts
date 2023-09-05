@@ -50,6 +50,7 @@ function createConnectAndParams({
     parentNode,
     includeRelationshipValidation,
     isFirstLevel = true,
+    source,
 }: {
     withVars: string[];
     value: any;
@@ -63,6 +64,7 @@ function createConnectAndParams({
     parentNode: Node;
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
+    source: "CREATE" | "UPDATE" | "CONNECT";
 }): [string, any] {
     checkAuthentication({ context, node: parentNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
@@ -168,12 +170,16 @@ function createConnectAndParams({
             }
         }
 
+        const authorizationNodes = [{ node: relatedNode, variable: nodeName }];
+        // If the source is a create operation, it is likely that authorization
+        // rules are not satisfied until connect operation is complete
+        if (source !== "CREATE") {
+            authorizationNodes.push({ node: parentNode, variable: parentVar });
+        }
+
         const authorizationBeforeAndParams = createAuthorizationBeforeAndParams({
             context,
-            nodes: [
-                { node: parentNode, variable: parentVar },
-                { node: relatedNode, variable: nodeName },
-            ],
+            nodes: authorizationNodes,
             operations: ["CREATE_RELATIONSHIP"],
         });
 
@@ -356,6 +362,7 @@ function createConnectAndParams({
                                     labelOverride: relField.union ? newRefNode.name : "",
                                     includeRelationshipValidation: true,
                                     isFirstLevel: false,
+                                    source: "CONNECT",
                                 });
                                 r.connects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -405,6 +412,7 @@ function createConnectAndParams({
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",
                                         isFirstLevel: false,
+                                        source: "CONNECT",
                                     });
                                     r.connects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
