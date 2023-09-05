@@ -22,7 +22,6 @@ import type { Node } from "../../../classes";
 import type { GraphQLSortArg, CypherField, CypherFieldReferenceMap } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import createProjectionAndParams from "../../create-projection-and-params";
-import { CompositeEntity } from "../../../schema-model/entity/CompositeEntity";
 import { compileCypher } from "../../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
@@ -93,7 +92,7 @@ export function translateCypherDirectiveProjection({
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
         predicates.push(...nestedPredicates);
-    } else if (entity instanceof CompositeEntity) {
+    } else if (entity?.isCompositeEntity()) {
         const unionProjections: Array<{ predicate: Cypher.Predicate; projection: Cypher.Expr }> = [];
         const labelsSubPredicates: Cypher.Predicate[] = [];
 

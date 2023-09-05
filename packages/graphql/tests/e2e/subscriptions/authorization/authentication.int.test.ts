@@ -3598,7 +3598,7 @@ describe("Subscription authentication", () => {
                 expect(wsClient.events).toEqual([]);
                 expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
-            test("unauthenticated subscription sends events if interface field queried on unauthenticated implementing type  - create_relationship", async () => {
+            test("unauthenticated subscription does not send events if interface field queried on unauthenticated implementing type  - create_relationship", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
                 await wsClient.subscribe(`
                 subscription SubscriptionMovie {
@@ -3658,25 +3658,10 @@ describe("Subscription authentication", () => {
                 await wsClient.waitForEvents(1);
 
                 expect(result.body.errors).toBeUndefined();
-                expect(wsClient.events).toIncludeSameMembers([
-                    {
-                        [typeMovie.operations.subscribe.relationship_created]: {
-                            event: "CREATE_RELATIONSHIP",
-                            relationshipFieldName: "reviewers",
-                            createdRelationship: {
-                                reviewers: {
-                                    score: 10,
-                                    node: {
-                                        name: "Bob",
-                                        reputation: 10,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                ]);
-                expect(wsClient.errors).toEqual([]);
+                expect(wsClient.events).toEqual([]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
+
             test("unauthenticated subscription sends events if no authenticated field queried - create_relationship", async () => {
                 wsClient = new WebSocketTestClient(server.wsPath);
                 await wsClient.subscribe(`
@@ -4180,7 +4165,7 @@ describe("Subscription authentication", () => {
                 expect(wsClient.events).toEqual([]);
                 expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
-            test("unauthenticated subscription sends events if interface field queried on unauthenticated implementing type - delete_relationship", async () => {
+            test("unauthenticated subscription does not send events if interface field queried on unauthenticated implementing type - delete_relationship", async () => {
                 await supertest(server.path)
                     .post("")
                     .send({
@@ -4269,24 +4254,9 @@ describe("Subscription authentication", () => {
                 expect(result.body.errors).toBeUndefined();
                 await wsClient.waitForEvents(1);
 
-                expect(wsClient.events).toIncludeSameMembers([
-                    {
-                        [typeMovie.operations.subscribe.relationship_deleted]: {
-                            event: "DELETE_RELATIONSHIP",
-                            relationshipFieldName: "reviewers",
-                            deletedRelationship: {
-                                reviewers: {
-                                    score: 10,
-                                    node: {
-                                        name: "Bob",
-                                        reputation: 10,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                ]);
-                expect(wsClient.errors).toEqual([]);
+                expect(result.body.errors).toBeUndefined();
+                expect(wsClient.events).toEqual([]);
+                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
             test("unauthenticated subscription sends events if no authenticated field queried - delete_relationship", async () => {
                 await supertest(server.path)

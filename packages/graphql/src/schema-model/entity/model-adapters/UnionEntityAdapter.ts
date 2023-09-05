@@ -17,17 +17,24 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
+import type { ConcreteEntity } from "../ConcreteEntity";
+import type { UnionEntity } from "../UnionEntity";
+import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
 
-// As the composite entity is not yet implemented, this is a placeholder
-export class CompositeEntityAdapter {
+export class UnionEntityAdapter {
     public readonly name: string;
     public concreteEntities: ConcreteEntityAdapter[];
-    // TODO: add type interface or union, and for interface add fields
-    // TODO: add annotations
 
-    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntityAdapter[] }) {
-        this.name = name;
-        this.concreteEntities = concreteEntities;
+    constructor(entity: UnionEntity) {
+        this.name = entity.name;
+        this.concreteEntities = [];
+        this.initConcreteEntities(entity.concreteEntities);
+    }
+
+    private initConcreteEntities(entities: ConcreteEntity[]) {
+        for (const entity of entities) {
+            const entityAdapter = new ConcreteEntityAdapter(entity);
+            this.concreteEntities.push(entityAdapter);
+        }
     }
 }
