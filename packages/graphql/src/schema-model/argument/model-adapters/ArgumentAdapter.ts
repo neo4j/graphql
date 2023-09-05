@@ -35,6 +35,9 @@ import {
 } from "../../attribute/AttributeType";
 import type { Argument } from "../Argument";
 
+// TODO: this file has a lot in common with AttributeAdapter
+// if going to use this, design a solution to avoid this code duplication
+
 export class ArgumentAdapter {
     public name: string;
     public type: AttributeType;
