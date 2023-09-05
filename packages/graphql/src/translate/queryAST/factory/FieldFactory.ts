@@ -171,23 +171,33 @@ export class FieldFactory {
         fieldName: string;
         field: ResolveTree;
     }): CypherAttributeField {
-        const fields = Object.values(field.fieldsByTypeName)[0]; // TODO: use actual Field type
-
-        // TODO: get the actual entity related to this attribute!!
-
-        let cypherProjection: Record<string, string> | undefined; //Alias-value of cypher projection
-        if (fields) {
-            cypherProjection = Object.values(fields).reduce((acc, f) => {
-                acc[f.alias] = f.name;
-                return acc;
-            }, {});
+        // if the attribute is an object or an abstract type we may have nested fields
+        if (attribute.isAbstract() || attribute.isObject()) {
+            const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
+            const fields = field.fieldsByTypeName[typeName];
+            let cypherProjection: Record<string, string> | undefined;
+            if (fields) {
+                cypherProjection = Object.values(fields).reduce((acc, f) => {
+                    acc[f.alias] = f.name;
+                    return acc;
+                }, {});
+            }
+            
+            return new CypherAttributeField({
+                attribute,
+                alias: field.alias,
+                projection: cypherProjection,
+            });
         }
 
         return new CypherAttributeField({
             attribute,
             alias: field.alias,
-            projection: cypherProjection,
         });
+
+        //  const fields = Object.values(field.fieldsByTypeName)[0]; // TODO: use actual Field type
+        //  this.queryASTFactory.schemaModel.
+        // TODO: get the actual entity related to this attribute!!
     }
 
     private createConnectionField(

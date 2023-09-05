@@ -33,7 +33,7 @@ export class CypherAttributeField extends AttributeField {
     }: {
         alias: string;
         attribute: AttributeAdapter;
-        projection: Record<string, string> | undefined;
+        projection?: Record<string, string>;
     }) {
         super({ alias, attribute });
         this.projection = projection;
