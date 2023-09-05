@@ -21,11 +21,12 @@ import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-a
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
+import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
 
 export class SortAndPaginationFactory {
-    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter| RelationshipAdapter): PropertySort[] {
+    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter | RelationshipAdapter): Sort[] {
         return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 
@@ -33,7 +34,10 @@ export class SortAndPaginationFactory {
         options: ConnectionSortArg,
         relationship: RelationshipAdapter
     ): { edge: Sort[]; node: Sort[] } {
-        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target as ConcreteEntityAdapter);
+        const nodeSortFields = this.createPropertySort(
+            options.node || {},
+            relationship.target as ConcreteEntityAdapter
+        );
         const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
         return {
             edge: edgeSortFields,
@@ -50,11 +54,16 @@ export class SortAndPaginationFactory {
         }
     }
 
-    private createPropertySort(optionArg: GraphQLSortArg, entity: ConcreteEntityAdapter | RelationshipAdapter): PropertySort[] {
+    private createPropertySort(optionArg: GraphQLSortArg, entity: ConcreteEntityAdapter | RelationshipAdapter): Sort[] {
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) throw new Error(`no filter attribute ${fieldName}`);
-
+            if (attribute.annotations.cypher) {
+                return new CypherPropertySort({
+                    direction: sortDir,
+                    attribute,
+                });
+            }
             return new PropertySort({
                 direction: sortDir,
                 attribute,

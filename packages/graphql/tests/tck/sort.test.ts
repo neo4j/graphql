@@ -128,6 +128,38 @@ describe("Cypher sort tests", () => {
         });
     });
 
+    test("Simple Sort On Cypher Field Without Projection", async () => {
+        const query = gql`
+            {
+                movies(options: { sort: [{ totalGenres: DESC }] }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    WITH this AS this
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                }
+                UNWIND result AS this0
+                RETURN head(collect(this0)) AS this0
+            }
+            WITH *
+            ORDER BY this0 DESC
+            RETURN this { .title, totalGenres: this0 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
     test("Simple Sort On Cypher Field", async () => {
         const query = gql`
             {

@@ -21,10 +21,11 @@ import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../../QueryASTContext";
+import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
 
 // Should Cypher be an operation?
 export class CypherAttributeField extends AttributeField {
-    private customCypherVar = new Cypher.Node(); // Using node only to keep consistency with tck
+    private customCypherVar = new Cypher.Node(); // TODO: should be from context scope
     private projection: Record<string, string> | undefined;
 
     constructor({
@@ -45,41 +46,18 @@ export class CypherAttributeField extends AttributeField {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const cypherAnnotation = this.attribute.annotations.cypher;
-        if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
-
-        const innerAlias = new Cypher.With([context.target, "this"]);
-        const cypherSubquery = new Cypher.RawCypher(cypherAnnotation.statement);
-
-        const columnName = cypherAnnotation.columnName;
-        const returnVar = new Cypher.NamedNode(columnName);
-
-        let projection: Cypher.Expr = this.customCypherVar;
-        if (this.projection) {
-            projection = new Cypher.MapProjection(this.customCypherVar);
-            for (const [alias, name] of Object.entries(this.projection)) {
-                if (alias === name) projection.set(alias);
-                else {
-                    projection.set({
-                        [alias]: this.customCypherVar.property(name),
-                    });
-                }
-            }
+        const scope = context.getTargetScope();
+        if (scope.has(this.attribute.name)) {
+            throw new Error("Compile error, should execute attribute field before CypherPropertySort");
         }
 
-        let returnProjection: Cypher.Expr = Cypher.collect(projection);
-        if (!this.attribute.isList()) {
-            returnProjection = Cypher.head(returnProjection);
-        }
+        scope.set(this.attribute.name, this.customCypherVar);
+        const subquery = createCypherAnnotationSubquery({
+            context,
+            attribute: this.attribute,
+            projectionFields: this.projection,
+        });
 
-        const callClause = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery)).innerWith(context.target);
-
-        if (this.attribute.isScalar() || this.attribute.isEnum()) {
-            callClause.unwind([returnVar, this.customCypherVar]);
-        } else {
-            callClause.with([returnVar, this.customCypherVar]);
-        }
-
-        return [Cypher.concat(callClause, new Cypher.Return([returnProjection, this.customCypherVar]))];
+        return [subquery];
     }
 }
