@@ -42,8 +42,8 @@ export class LogicalFilter extends Filter {
         return `${super.print()} <${this.operation}>`;
     }
 
-    public getSubqueries(parentNode: Cypher.Node): Cypher.Clause[] {
-        return this.children.flatMap((c) => c.getSubqueries(parentNode));
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.children.flatMap((c) => c.getSubqueries(context));
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {

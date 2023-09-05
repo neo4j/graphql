@@ -29,7 +29,7 @@ import type { AggregationField } from "../fields/aggregation-fields/AggregationF
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTNode } from "../QueryASTNode";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -176,16 +176,6 @@ export class AggregationOperation extends Operation {
             clauses,
             projectionExpr: this.aggregationProjectionMap,
         };
-    }
-
-    protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
-        return filterTruthy(
-            this.fields.map((f) => {
-                return f.getSubqueries(node);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(Cypher.concat(...asArray(sq))).innerWith(node);
-        });
     }
 
     private addSortToClause(node: Cypher.Variable, clause: Cypher.With | Cypher.Return): void {
