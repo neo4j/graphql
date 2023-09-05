@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, TypeNode } from "graphql";
+import type { DirectiveNode, FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
@@ -45,12 +45,14 @@ import { findDirective } from "./utils";
 
 export function parseAttribute(
     field: FieldDefinitionNode,
+    inheritedField: FieldDefinitionNode[] | undefined,
     definitionCollection: DefinitionCollection
 ): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
-    const annotations = parseAnnotations(field.directives || []);
-    const databaseName = getDatabaseName(field);
+    const inheritedDirectives = inheritedField?.flatMap((f) => f.directives || []) || [];
+    const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
+    const databaseName = getDatabaseName(field, inheritedField);
     return new Attribute({
         name,
         annotations,
@@ -59,10 +61,25 @@ export function parseAttribute(
     });
 }
 
-function getDatabaseName(fieldDefinitionNode: FieldDefinitionNode): string | undefined {
+function getDatabaseName(
+    fieldDefinitionNode: FieldDefinitionNode,
+    inheritedFields: FieldDefinitionNode[] | undefined
+): string | undefined {
     const aliasUsage = findDirective(fieldDefinitionNode.directives, aliasDirective.name);
     if (aliasUsage) {
         const { property } = parseArguments(aliasDirective, aliasUsage) as { property: string };
+        return property;
+    }
+    const inheritedAliasUsage = inheritedFields?.reduce<DirectiveNode | undefined>((aliasUsage, field) => {
+        // TODO: takes the first one
+        // multiple interfaces can have this annotation - must constrain this flexibility by design
+        if (!aliasUsage) {
+            aliasUsage = findDirective(field.directives, aliasDirective.name);
+        }
+        return aliasUsage;
+    }, undefined);
+    if (inheritedAliasUsage) {
+        const { property } = parseArguments(aliasDirective, inheritedAliasUsage) as { property: string };
         return property;
     }
 }

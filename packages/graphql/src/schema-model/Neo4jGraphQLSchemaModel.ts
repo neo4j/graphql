@@ -21,8 +21,8 @@ import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { Operation } from "./Operation";
 import type { Annotations, Annotation } from "./annotation/Annotation";
 import { annotationToKey } from "./annotation/Annotation";
-import { CompositeEntity } from "./entity/CompositeEntity";
-import { ConcreteEntity } from "./entity/ConcreteEntity";
+import type { CompositeEntity } from "./entity/CompositeEntity";
+import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
 import { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 
@@ -79,14 +79,6 @@ export class Neo4jGraphQLSchemaModel {
 
     public getEntitiesByNameAndLabels(name: string, labels: string[]): ConcreteEntity[] {
         return this.concreteEntities.filter((entity) => entity.name === name && entity.matchLabels(labels));
-    }
-
-    public isConcreteEntity(entity?: Entity): entity is ConcreteEntity {
-        return entity instanceof ConcreteEntity;
-    }
-
-    public isCompositeEntity(entity?: Entity): entity is CompositeEntity {
-        return entity instanceof CompositeEntity;
     }
 
     private addAnnotation(annotation: Annotation): void {

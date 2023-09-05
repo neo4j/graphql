@@ -24,15 +24,18 @@ import type { NestedOperation, QueryDirection, Relationship, RelationshipDirecti
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Attribute } from "../../attribute/Attribute";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
-import { CompositeEntity } from "../../entity/CompositeEntity";
+import { InterfaceEntity } from "../../entity/InterfaceEntity";
+import { UnionEntity } from "../../entity/UnionEntity";
+import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
+import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 
 export class RelationshipAdapter {
     public readonly name: string;
     public readonly type: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
-    public readonly source: ConcreteEntityAdapter;
+    public readonly source: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
     private rawEntity: Entity;
-    private _target: Entity | undefined;
+    private _target: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
@@ -58,7 +61,10 @@ export class RelationshipAdapter {
         )}${nestedFieldStr}${aggregationStr}Selection`;
     }
 
-    constructor(relationship: Relationship, sourceAdapter?: ConcreteEntityAdapter) {
+    constructor(
+        relationship: Relationship,
+        sourceAdapter?: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
+    ) {
         const {
             name,
             type,
@@ -76,7 +82,15 @@ export class RelationshipAdapter {
         if (sourceAdapter) {
             this.source = sourceAdapter;
         } else {
-            this.source = new ConcreteEntityAdapter(source);
+            if (source instanceof ConcreteEntity) {
+                this.source = new ConcreteEntityAdapter(source);
+            } else if (source instanceof InterfaceEntity) {
+                this.source = new InterfaceEntityAdapter(source);
+            } else if (source instanceof UnionEntity) {
+                this.source = new UnionEntityAdapter(source);
+            } else {
+                throw new Error("relationship source must be an Entity");
+            }
         }
         this.direction = direction;
         this.isList = isList;
@@ -131,12 +145,14 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
-    get target(): Entity {
+    get target(): ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
                 this._target = new ConcreteEntityAdapter(this.rawEntity);
-            } else if (this.rawEntity instanceof CompositeEntity) {
-                this._target = new CompositeEntity(this.rawEntity);
+            } else if (this.rawEntity instanceof InterfaceEntity) {
+                this._target = new InterfaceEntityAdapter(this.rawEntity);
+            } else if (this.rawEntity instanceof UnionEntity) {
+                this._target = new UnionEntityAdapter(this.rawEntity);
             } else {
                 throw new Error("invalid target entity type");
             }

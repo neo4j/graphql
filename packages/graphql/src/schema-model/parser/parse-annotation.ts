@@ -40,64 +40,75 @@ import { parseJWTPayloadAnnotation } from "./annotations-parser/jwt-payload-anno
 import { parseAuthorizationAnnotation } from "./annotations-parser/authorization-annotation";
 import { parseAuthenticationAnnotation } from "./annotations-parser/authentication-annotation";
 import { parseSubscriptionsAuthorizationAnnotation } from "./annotations-parser/subscriptions-authorization-annotation";
-import { filterTruthy } from "../../utils/utils";
 import type { Annotation } from "../annotation/Annotation";
 import { AnnotationsKey } from "../annotation/Annotation";
 import { IDAnnotation } from "../annotation/IDAnnotation";
 
 export function parseAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    return filterTruthy(
-        directives.map((directive) => {
-            switch (directive.name.value) {
-                case AnnotationsKey.authentication:
-                    return parseAuthenticationAnnotation(directive);
-                case AnnotationsKey.authorization:
-                    return parseAuthorizationAnnotation(directive);
-                case AnnotationsKey.coalesce:
-                    return parseCoalesceAnnotation(directive);
-                case AnnotationsKey.customResolver:
-                    return parseCustomResolverAnnotation(directive);
-                case AnnotationsKey.cypher:
-                    return parseCypherAnnotation(directive);
-                case AnnotationsKey.default:
-                    return parseDefaultAnnotation(directive);
-                case AnnotationsKey.filterable:
-                    return parseFilterableAnnotation(directive);
-                case AnnotationsKey.fulltext:
-                    return parseFullTextAnnotation(directive);
-                case AnnotationsKey.id:
-                    return new IDAnnotation();
-                case AnnotationsKey.jwtClaim:
-                    return parseJWTClaimAnnotation(directive);
-                case AnnotationsKey.jwtPayload:
-                    return parseJWTPayloadAnnotation(directive);
-                case AnnotationsKey.mutation:
-                    return parseMutationAnnotation(directive);
-                case AnnotationsKey.plural:
-                    return parsePluralAnnotation(directive);
-                case AnnotationsKey.populatedBy:
-                    return parsePopulatedByAnnotation(directive);
-                case AnnotationsKey.private:
-                    return parsePrivateAnnotation(directive);
-                case AnnotationsKey.query:
-                    return parseQueryAnnotation(directive);
-                case AnnotationsKey.limit:
-                    return parseLimitAnnotation(directive);
-                case AnnotationsKey.selectable:
-                    return parseSelectableAnnotation(directive);
-                case AnnotationsKey.settable:
-                    return parseSettableAnnotation(directive);
-                case AnnotationsKey.subscription:
-                    return parseSubscriptionAnnotation(directive);
-                case AnnotationsKey.subscriptionsAuthorization:
-                    return parseSubscriptionsAuthorizationAnnotation(directive);
-                case AnnotationsKey.timestamp:
-                    return parseTimestampAnnotation(directive);
-                case AnnotationsKey.unique:
-                    return parseUniqueAnnotation(directive);
-                default:
-                    return undefined;
-            }
-        })
-    );
+    const annotations = directives.reduce((directivesMap, directive) => {
+        if (directivesMap.has(directive.name.value)) {
+            // TODO: takes the first one
+            // multiple interfaces can have this annotation - must constrain this flexibility by design
+            return directivesMap;
+        }
+        const annotation = parseDirective(directive);
+        if (annotation) {
+            directivesMap.set(directive.name.value, annotation);
+        }
+        return directivesMap;
+    }, new Map<string, Annotation>());
+    return Array.from(annotations.values());
+}
+
+function parseDirective(directive: DirectiveNode): Annotation | undefined {
+    switch (directive.name.value) {
+        case AnnotationsKey.authentication:
+            return parseAuthenticationAnnotation(directive);
+        case AnnotationsKey.authorization:
+            return parseAuthorizationAnnotation(directive);
+        case AnnotationsKey.coalesce:
+            return parseCoalesceAnnotation(directive);
+        case AnnotationsKey.customResolver:
+            return parseCustomResolverAnnotation(directive);
+        case AnnotationsKey.cypher:
+            return parseCypherAnnotation(directive);
+        case AnnotationsKey.default:
+            return parseDefaultAnnotation(directive);
+        case AnnotationsKey.filterable:
+            return parseFilterableAnnotation(directive);
+        case AnnotationsKey.fulltext:
+            return parseFullTextAnnotation(directive);
+        case AnnotationsKey.id:
+            return new IDAnnotation();
+        case AnnotationsKey.jwtClaim:
+            return parseJWTClaimAnnotation(directive);
+        case AnnotationsKey.jwtPayload:
+            return parseJWTPayloadAnnotation(directive);
+        case AnnotationsKey.mutation:
+            return parseMutationAnnotation(directive);
+        case AnnotationsKey.plural:
+            return parsePluralAnnotation(directive);
+        case AnnotationsKey.populatedBy:
+            return parsePopulatedByAnnotation(directive);
+        case AnnotationsKey.private:
+            return parsePrivateAnnotation(directive);
+        case AnnotationsKey.query:
+            return parseQueryAnnotation(directive);
+        case AnnotationsKey.limit:
+            return parseLimitAnnotation(directive);
+        case AnnotationsKey.selectable:
+            return parseSelectableAnnotation(directive);
+        case AnnotationsKey.settable:
+            return parseSettableAnnotation(directive);
+        case AnnotationsKey.subscription:
+            return parseSubscriptionAnnotation(directive);
+        case AnnotationsKey.subscriptionsAuthorization:
+            return parseSubscriptionsAuthorizationAnnotation(directive);
+        case AnnotationsKey.timestamp:
+            return parseTimestampAnnotation(directive);
+        case AnnotationsKey.unique:
+            return parseUniqueAnnotation(directive);
+        default:
+            return undefined;
+    }
 }

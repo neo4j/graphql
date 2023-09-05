@@ -18,36 +18,35 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
 import type { CompositeEntity } from "./CompositeEntity";
-import type { Entity } from "./Entity";
+import type { ConcreteEntity } from "./ConcreteEntity";
 
-export class ConcreteEntity implements Entity {
+export class InterfaceEntity implements CompositeEntity {
     public readonly name: string;
-    public readonly labels: Set<string>;
+    public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
     public readonly annotations: Partial<Annotations> = {};
 
     constructor({
         name,
-        labels,
+        concreteEntities,
         attributes = [],
         annotations = [],
         relationships = [],
     }: {
         name: string;
-        labels: string[];
+        concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
         annotations?: Annotation[];
         relationships?: Relationship[];
     }) {
         this.name = name;
-        this.labels = new Set(labels);
+        this.concreteEntities = concreteEntities;
         for (const attribute of attributes) {
             this.addAttribute(attribute);
         }
@@ -60,15 +59,12 @@ export class ConcreteEntity implements Entity {
             this.addRelationship(relationship);
         }
     }
+
     isConcreteEntity(): this is ConcreteEntity {
-        return true;
-    }
-    isCompositeEntity(): this is CompositeEntity {
         return false;
     }
-
-    public matchLabels(labels: string[]) {
-        return setsAreEqual(new Set(labels), this.labels);
+    isCompositeEntity(): this is CompositeEntity {
+        return true;
     }
 
     private addAttribute(attribute: Attribute): void {
