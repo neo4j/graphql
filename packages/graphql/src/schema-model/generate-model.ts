@@ -16,7 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, DocumentNode, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import type {
+    DirectiveNode,
+    DocumentNode,
+    FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
@@ -24,7 +30,6 @@ import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
-import { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { findDirective } from "./parser/utils";
 import { parseArguments } from "./parser/parse-arguments";
@@ -37,6 +42,8 @@ import { parseAttribute, parseField } from "./parser/parse-attribute";
 import { nodeDirective, relationshipDirective } from "../graphql/directives";
 import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import { parseAnnotations } from "./parser/parse-annotation";
+import { InterfaceEntity } from "./entity/InterfaceEntity";
+import { UnionEntity } from "./entity/UnionEntity";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -63,11 +70,21 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
 
     const interfaceEntities = Array.from(definitionCollection.interfaceToImplementingTypeNamesMap.entries()).map(
         ([name, concreteEntities]) => {
-            return generateCompositeEntity(name, concreteEntities, concreteEntitiesMap);
+            const interfaceNode = definitionCollection.interfaceTypes.get(name);
+            if (!interfaceNode) {
+                throw new Error(`Cannot find interface ${name}`);
+            }
+            return generateInterfaceEntity(
+                name,
+                interfaceNode,
+                concreteEntities,
+                concreteEntitiesMap,
+                definitionCollection
+            );
         }
     );
     const unionEntities = Array.from(definitionCollection.unionTypes).map(([unionName, unionDefinition]) => {
-        return generateCompositeEntity(
+        return generateUnionEntity(
             unionName,
             unionDefinition.types?.map((t) => t.name.value) || [],
             concreteEntitiesMap
@@ -83,6 +100,8 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         annotations,
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+    definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
+
     return schema;
 }
 
@@ -109,11 +128,66 @@ function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollect
     });
 }
 
+function generateUnionEntity(
+    entityDefinitionName: string,
+    entityImplementingTypeNames: string[],
+    concreteEntities: Map<string, ConcreteEntity>
+): UnionEntity {
+    const unionEntity = generateCompositeEntity(entityDefinitionName, entityImplementingTypeNames, concreteEntities);
+    return new UnionEntity(unionEntity);
+}
+
+function generateInterfaceEntity(
+    entityDefinitionName: string,
+    definition: InterfaceTypeDefinitionNode,
+    entityImplementingTypeNames: string[],
+    concreteEntities: Map<string, ConcreteEntity>,
+    definitionCollection: DefinitionCollection
+): InterfaceEntity {
+    const interfaceEntity = generateCompositeEntity(
+        entityDefinitionName,
+        entityImplementingTypeNames,
+        concreteEntities
+    );
+    const inheritedFields =
+        definition.interfaces?.flatMap((interfaceNamedNode) => {
+            const interfaceName = interfaceNamedNode.name.value;
+            return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+        }) || [];
+    const fields = (definition.fields || []).map((fieldDefinition) => {
+        const inheritedField = inheritedFields?.filter(
+            (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
+        );
+        const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
+        const isInheritedRelationshipAttribute = inheritedField?.some((inheritedField) =>
+            findDirective(inheritedField.directives, relationshipDirective.name)
+        );
+        if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
+            return;
+        }
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+    });
+
+    const inheritedDirectives =
+        definition.interfaces?.flatMap((interfaceNamedNode) => {
+            const interfaceName = interfaceNamedNode.name.value;
+            return definitionCollection.interfaceTypes.get(interfaceName)?.directives || [];
+        }) || [];
+    const mergedDirectives = (definition.directives || []).concat(inheritedDirectives);
+    const annotations = createEntityAnnotations(mergedDirectives);
+
+    return new InterfaceEntity({
+        ...interfaceEntity,
+        attributes: filterTruthy(fields) as Attribute[],
+        annotations,
+    });
+}
+
 function generateCompositeEntity(
     entityDefinitionName: string,
     entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
-): CompositeEntity {
+): { name: string; concreteEntities: ConcreteEntity[] } {
     const compositeFields = entityImplementingTypeNames.map((type) => {
         const concreteEntity = concreteEntities.get(type);
         if (!concreteEntity) {
@@ -129,37 +203,62 @@ function generateCompositeEntity(
             `Composite entity ${entityDefinitionName} has no concrete entities`
         );
     } */
-    // TODO: add annotations
-    return new CompositeEntity({
+    return {
         name: entityDefinitionName,
         concreteEntities: compositeFields,
-    });
+    };
 }
 
 function hydrateRelationships(
-    definition: ObjectTypeDefinitionNode,
+    definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
     definitionCollection: DefinitionCollection
 ): void {
     const name = definition.name.value;
     const entity = schema.getEntity(name);
 
-    if (!schema.isConcreteEntity(entity)) {
-        throw new Error(`Cannot add relationship to non-concrete entity ${name}`);
+    if (!entity) {
+        throw new Error(`Cannot find entity ${name}`);
     }
-    const relationshipFields = (definition.fields || []).map((fieldDefinition) => {
-        return generateRelationshipField(fieldDefinition, schema, entity, definitionCollection);
-    });
+    if (entity instanceof UnionEntity) {
+        throw new Error(`Cannot add relationship to union entity ${name}`);
+    }
+    // TODO: fix ts
+    const entityWithRelationships: ConcreteEntity | InterfaceEntity = entity as ConcreteEntity | InterfaceEntity;
+    const inheritedFields =
+        definition.interfaces?.flatMap((interfaceNamedNode) => {
+            const interfaceName = interfaceNamedNode.name.value;
+            return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+        }) || [];
+    // TODO: directives on definition have priority over interfaces
+    const mergedFields = (definition.fields || []).concat(inheritedFields);
+    const relationshipFieldsMap = new Map<string, Relationship>();
+    for (const fieldDefinition of mergedFields) {
+        // TODO: takes the first one
+        // multiple interfaces can have this annotation - must constrain this flexibility by design
+        if (relationshipFieldsMap.has(fieldDefinition.name.value)) {
+            continue;
+        }
+        const relationshipField = generateRelationshipField(
+            fieldDefinition,
+            schema,
+            entityWithRelationships,
+            definitionCollection
+        );
+        if (relationshipField) {
+            relationshipFieldsMap.set(fieldDefinition.name.value, relationshipField);
+        }
+    }
 
-    for (const relationship of filterTruthy(relationshipFields)) {
-        entity.addRelationship(relationship);
+    for (const relationship of relationshipFieldsMap.values()) {
+        entityWithRelationships.addRelationship(relationship);
     }
 }
 
 function generateRelationshipField(
     field: FieldDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
-    source: ConcreteEntity,
+    source: ConcreteEntity | InterfaceEntity,
     definitionCollection: DefinitionCollection
 ): Relationship | undefined {
     const fieldTypeMeta = getFieldTypeMeta(field.type);
@@ -184,7 +283,17 @@ function generateRelationshipField(
             );
         }
 
-        const fields = (propertyInterface.fields || []).map((field) => parseAttribute(field, definitionCollection));
+        const inheritedFields =
+            propertyInterface.interfaces?.flatMap((interfaceNamedNode) => {
+                const interfaceName = interfaceNamedNode.name.value;
+                return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+            }) || [];
+        const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
+            const inheritedField = inheritedFields?.filter(
+                (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
+            );
+            return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+        });
 
         attributes = filterTruthy(fields) as Attribute[];
     }
@@ -206,13 +315,26 @@ function generateConcreteEntity(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
-    const fields = (definition.fields || []).map((fieldDefinition) =>
-        parseAttribute(fieldDefinition, definitionCollection)
-    );
+    const inheritedFields = definition.interfaces?.flatMap((interfaceNamedNode) => {
+        const interfaceName = interfaceNamedNode.name.value;
+        return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
+    });
+    const fields = (definition.fields || []).map((fieldDefinition) => {
+        const inheritedField = inheritedFields?.filter(
+            (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
+        );
+        const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
+        const isInheritedRelationshipAttribute = inheritedField?.some((inheritedField) =>
+            findDirective(inheritedField.directives, relationshipDirective.name)
+        );
+        if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
+            return;
+        }
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+    });
 
     const annotations = createEntityAnnotations(definition.directives || []);
 
-    // TODO: add annotations inherited from interface
     return new ConcreteEntity({
         name: definition.name.value,
         labels: getLabels(definition),
@@ -234,6 +356,8 @@ function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
 
 function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     const entityAnnotations: Annotation[] = [];
+
+    // TODO: I think this is done already with the map change and we do not have repeatable directives
 
     // We only ever want to create one annotation even when an entity contains several key directives
     const keyDirectives = directives.filter((directive) => directive.name.value === "key");

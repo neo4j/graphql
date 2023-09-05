@@ -20,13 +20,14 @@
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Relationship } from "../../relationship/Relationship";
 import { getFromMap } from "../../utils/get-from-map";
-import type { Entity } from "../Entity";
 import { singular, plural } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { Attribute } from "../../attribute/Attribute";
 import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
 import type { Annotations } from "../../annotation/Annotation";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
+import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "./UnionEntityAdapter";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
@@ -41,7 +42,7 @@ export class ConcreteEntityAdapter {
     private uniqueFieldsKeys: string[] = [];
     private constrainableFieldsKeys: string[] = [];
 
-    private _relatedEntities: Entity[] | undefined;
+    private _relatedEntities: (ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter)[] | undefined;
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -93,7 +94,7 @@ export class ConcreteEntityAdapter {
         return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
-    public get relatedEntities(): Entity[] {
+    public get relatedEntities(): (ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter)[] {
         if (!this._relatedEntities) {
             this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
         }

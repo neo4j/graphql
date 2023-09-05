@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 4.1.1
+
+### Patch Changes
+
+-   [#3890](https://github.com/neo4j/graphql/pull/3890) [`6d434108f`](https://github.com/neo4j/graphql/commit/6d434108ff2b88f265945586d8958aa6a40ce771) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix: authorization checks are no longer added for the source nodes of connect operations, when the operation started with a create. The connect operation is likely required to complete before the authorization rules will be satisfied.
+
 ## 4.1.0
 
 ### Minor Changes

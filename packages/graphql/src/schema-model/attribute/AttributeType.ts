@@ -69,7 +69,7 @@ export class Neo4jCartesianPointType {
 export class Neo4jPointType {
     public readonly name: string;
     public readonly isRequired: boolean;
-    constructor( isRequired: boolean) {
+    constructor(isRequired: boolean) {
         this.name = Neo4jGraphQLSpatialType.Point;
         this.isRequired = isRequired;
     }
@@ -88,13 +88,14 @@ export class ObjectType {
     public readonly name: string;
     public readonly isRequired: boolean;
     // TODO: add fields
-    
+
     constructor(name: string, isRequired: boolean) {
         this.name = name;
         this.isRequired = isRequired;
     }
 }
 
+// TODO: consider replacing this with a isList field on the other classes
 export class ListType {
     public readonly name: string;
     public readonly ofType: Exclude<AttributeType, ListType>;
