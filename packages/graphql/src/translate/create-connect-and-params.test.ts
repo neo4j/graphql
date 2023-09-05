@@ -114,6 +114,7 @@ describe("createConnectAndParams", () => {
             refNodes: [node],
             parentNode: node,
             callbackBucket: new CallbackBucket(context),
+            source: "CONNECT",
         });
 
         expect(result[0]).toMatchInlineSnapshot(`
