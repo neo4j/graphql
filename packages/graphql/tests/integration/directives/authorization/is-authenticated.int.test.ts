@@ -3279,7 +3279,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -3329,7 +3329,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -3375,7 +3375,7 @@ describe("auth/is-authenticated", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
@@ -3429,7 +3429,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @exclude {
+                type ${User} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }

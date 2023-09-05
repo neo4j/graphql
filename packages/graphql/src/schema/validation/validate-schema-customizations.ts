@@ -20,13 +20,11 @@
 import type { DocumentNode, GraphQLSchema } from "graphql";
 import { getDefinitionNodes } from "../get-definition-nodes";
 import { validateCustomResolverRequires } from "./validate-custom-resolver-requires";
-import { validateDuplicateRelationshipFields } from "./validate-duplicate-relationship-fields";
 
 export function validateSchemaCustomizations({ document, schema }: { document: DocumentNode; schema: GraphQLSchema }) {
     const definitionNodes = getDefinitionNodes(document);
 
     for (const objectType of definitionNodes.objectTypes) {
         validateCustomResolverRequires(objectType, schema);
-        validateDuplicateRelationshipFields(objectType);
     }
 }

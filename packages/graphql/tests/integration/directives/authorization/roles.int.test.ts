@@ -1063,16 +1063,13 @@ describe("auth/roles", () => {
                     roles: [String!]!
                 }
 
-                type ${typeUser} @exclude {
+                type ${typeUser} @mutation(operations: []) @query(read: false, aggregate: false) {
                     id: ID
                     name: String
                 }
 
                 type Query {
-                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u AS u", columnName: "u") @authorization(validate: [{
-                        when: [BEFORE],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
-                    }])
+                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u AS u", columnName: "u")  @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 
@@ -1122,10 +1119,7 @@ describe("auth/roles", () => {
                 }
 
                 type Mutation {
-                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u AS u", columnName: "u") @authorization(validate: [{
-                        when: [BEFORE],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
-                    }])
+                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u AS u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
                 }
             `;
 

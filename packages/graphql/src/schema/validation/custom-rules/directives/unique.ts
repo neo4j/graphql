@@ -17,11 +17,16 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective } from "graphql";
+import { Kind } from "graphql";
+import { DocumentValidationError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
-export const writeonlyDirective = new GraphQLDirective({
-    name: "writeonly",
-    description:
-        "Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself.",
-    locations: [DirectiveLocation.FIELD_DEFINITION],
-});
+export function verifyUnique({ parentDef }: { parentDef?: ObjectOrInterfaceWithExtensions }) {
+    if (!parentDef) {
+        console.error("No parent definition traversed");
+        return;
+    }
+    if (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
+        throw new DocumentValidationError("Cannot use `@unique` on fields of Interface types.", []);
+    }
+}

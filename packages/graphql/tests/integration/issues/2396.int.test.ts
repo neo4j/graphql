@@ -52,18 +52,18 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         session = await neo4j.getSession();
 
         const typeDefs = `
-            type ${PostalCode} @exclude(operations: [DELETE]) {
+            type ${PostalCode} @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
-                number: String! @id(autogenerate: false)
+                number: String! @unique
 
                 address: [${Address}!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }
 
             extend type ${PostalCode} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Address} @exclude(operations: [DELETE]) {
+            type ${Address} @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -72,9 +72,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             extend type ${Address} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Mandate} @exclude(operations: [DELETE]) {
+            type ${Mandate} @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
-                number: ID! @id # numéro
+                number: ID! @id @unique # numéro
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -85,9 +85,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
 
             extend type ${Mandate} @authorization(filter: [{ where: { node: { archivedAt: null } } }])
 
-            type ${Valuation} @exclude(operations: [DELETE]) {
+            type ${Valuation} @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 
@@ -111,9 +111,9 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 BUSINESS_FUND
             }
 
-            type ${Estate} @exclude(operations: [DELETE]) {
+            type ${Estate} @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
-                uuid: ID! @id
+                uuid: ID! @id @unique
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
 

@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective } from "graphql";
+import { authenticationDirectiveScaffold } from "./authentication";
+import { authorizationDirectiveScaffold } from "./authorization";
+import { subscriptionsAuthorizationDirectiveScaffold } from "./subscriptions-authorization";
 
-export const readonlyDirective = new GraphQLDirective({
-    name: "readonly",
-    description:
-        "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
-    locations: [DirectiveLocation.FIELD_DEFINITION],
-});
+export const typeDependantDirectivesScaffolds = [
+    authenticationDirectiveScaffold,
+    authorizationDirectiveScaffold,
+    subscriptionsAuthorizationDirectiveScaffold,
+];

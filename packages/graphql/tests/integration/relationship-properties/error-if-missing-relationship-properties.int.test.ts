@@ -20,6 +20,7 @@
 import gql from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { getErrorAsync } from "../../utils/get-error";
 import Neo4j from "../neo4j";
 
 describe("Throw error if missing @relationshipProperties", () => {
@@ -54,9 +55,18 @@ describe("Throw error if missing @relationshipProperties", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-        await expect(neoSchema.getSchema()).rejects.toThrow(
-            "The `@relationshipProperties` directive could not be found on the `ActedIn` interface"
+        const errors: Error[] = await getErrorAsync(() => neoSchema.getSchema());
+        expect(errors).toHaveLength(2);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            "@relationship.properties invalid. Properties interface ActedIn must use directive `@relationshipProperties`."
         );
+        expect(errors[0]).toHaveProperty("path", ["Movie", "actors", "@relationship", "properties"]);
+        expect(errors[1]).toHaveProperty(
+            "message",
+            "@relationship.properties invalid. Properties interface ActedIn must use directive `@relationshipProperties`."
+        );
+        expect(errors[1]).toHaveProperty("path", ["Actor", "movies", "@relationship", "properties"]);
     });
 
     test("should not throw error if the @relationshipProperties directive is used", async () => {
@@ -78,8 +88,6 @@ describe("Throw error if missing @relationshipProperties", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-        await expect(neoSchema.getSchema()).resolves.not.toThrow(
-            "The `@relationshipProperties` directive could not be found on the `ActedIn` interface"
-        );
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 });

@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             interface ResourceEntity {
-                id: ID! @id(autogenerate: false)
+                id: ID!
                 name: String
                 """
                 Allowed resource types (enums)
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type Resource implements ResourceEntity {
-                id: ID! @id(autogenerate: false)
+                id: ID! @unique
                 name: String
                 type: ResourceType!
                 externalIds: [ID!]

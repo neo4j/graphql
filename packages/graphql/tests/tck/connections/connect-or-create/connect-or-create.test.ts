@@ -173,7 +173,7 @@ describe("Create or Connect", () => {
         beforeAll(() => {
             typeDefs = gql`
                 type Movie {
-                    id: ID! @id
+                    id: ID! @id @unique
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     title: String! @unique
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)

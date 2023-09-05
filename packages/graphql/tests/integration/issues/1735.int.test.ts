@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
           }
 
           type ${movieType.name} {
-              dbId: ID! @id(global: true) @alias(property: "id")
+              dbId: ID! @id @unique @relayId @alias(property: "id")
               title: String!
               actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "MovieActorEdgeProperties")
               leadActorsCount: Int! @cypher(statement:"""
@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
           }
 
           type ${actorType.name} {
-              dbId: ID! @id(global: true) @alias(property: "id")
+              dbId: ID! @id @unique @relayId @alias(property: "id")
               name: String!
               movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "MovieActorEdgeProperties")
           }

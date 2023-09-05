@@ -48,7 +48,7 @@ describe("413", () => {
             }
 
             type JobPlan {
-                id: ID! @id
+                id: ID! @id @unique
                 tenantID: ID!
                 name: String!
             }

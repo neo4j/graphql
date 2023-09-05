@@ -36,17 +36,17 @@ describe("#488", () => {
             union Keyword = Emoji | Hashtag | Text
 
             type Emoji {
-                id: ID! @id
+                id: ID! @id @unique
                 type: String!
             }
 
             type Hashtag {
-                id: ID! @id
+                id: ID! @id @unique
                 type: String!
             }
 
             type Text {
-                id: ID! @id
+                id: ID! @id @unique
                 type: String!
             }
         `;

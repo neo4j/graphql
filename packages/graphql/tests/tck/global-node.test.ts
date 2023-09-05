@@ -26,12 +26,12 @@ describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
         const typeDefs = gql`
             type Actor {
-                name: ID! @id(global: true)
+                name: ID! @id @unique @relayId
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
-                title: ID! @id(global: true)
+                title: ID! @id @unique @relayId
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -66,12 +66,12 @@ describe("Global nodes", () => {
     test("it should project the correct node and fields when id is the idField", async () => {
         const typeDefs = gql`
             type Actor {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Movie {
-                title: ID! @id(global: true)
+                title: ID! @id @unique @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -109,12 +109,12 @@ describe("Global nodes", () => {
     test("it should project the correct selectionSet when id is used as a where argument", async () => {
         const typeDefs = gql`
             type Actor {
-                dbId: ID! @id(global: true) @alias(property: "id")
+                dbId: ID! @id @unique @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Movie {
-                title: ID! @id(global: true)
+                title: ID! @id @unique @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -153,7 +153,7 @@ describe("Global nodes", () => {
     test("it should project the param as an integer when the underlying field is a number (fixes 1560)", async () => {
         const typeDefs = gql`
             type Actor {
-                dbId: Int! @id(global: true, autogenerate: false)
+                dbId: Int! @relayId
                 name: String!
             }
         `;

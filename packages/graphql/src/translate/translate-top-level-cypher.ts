@@ -63,10 +63,7 @@ export function translateTopLevelCypher({
     }
 
     const { resolveTree } = context;
-    let params = {
-        ...args,
-        cypherParams: context.cypherParams,
-    };
+    let params = args;
     if (statement.includes("$jwt")) {
         params.jwt = context.authorization.jwtParam.value;
     }
@@ -182,7 +179,7 @@ export function translateTopLevelCypher({
         { params }
     );
 
-    params = { ...params, ...apocParams.params, ...(context.cypherParams || {}) };
+    params = { ...params, ...apocParams.params };
 
     if (type === "Query") {
         const cypherStatement = createCypherDirectiveSubquery({

@@ -19,7 +19,7 @@
 
 import { astFromDirective } from "@graphql-tools/utils";
 import type { DirectiveDefinitionNode } from "graphql";
-import { GraphQLDirective, GraphQLInputObjectType, GraphQLList, DirectiveLocation } from "graphql";
+import { GraphQLString, GraphQLDirective, GraphQLInputObjectType, GraphQLList, DirectiveLocation } from "graphql";
 import { AUTHENTICATION_OPERATION } from "./static-definitions";
 
 const authenticationDefaultOperations = [
@@ -55,3 +55,18 @@ export function createAuthenticationDirectiveDefinition(): DirectiveDefinitionNo
     const authenticationAST = astFromDirective(authentication);
     return authenticationAST;
 }
+
+export const authenticationDirectiveScaffold = new GraphQLDirective({
+    name: "authentication",
+    description: "This is a simpler version of the authentication directive to be used in the validate-document step.",
+    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.SCHEMA],
+    args: {
+        operations: {
+            description: "operations",
+            type: new GraphQLList(GraphQLString),
+        },
+        jwt: {
+            type: GraphQLString,
+        },
+    },
+});

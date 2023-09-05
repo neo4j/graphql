@@ -2512,7 +2512,7 @@ describe("Relationship nested operations", () => {
         test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
             const typeDefs = gql`
                 type Person {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String
                 }
 
@@ -6733,12 +6733,12 @@ describe("Relationship nested operations", () => {
         test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
             const typeDefs = gql`
                 type PersonOne {
-                    id: ID! @id
+                    id: ID! @id @unique
                     name: String
                 }
 
                 type PersonTwo {
-                    id: ID! @id
+                    id: ID! @id @unique
                     nameTwo: String
                 }
 
