@@ -22,11 +22,11 @@ import { parseValueNode } from "../parser/parse-value-node";
 import type { AttributeType } from "../attribute/AttributeType";
 
 export class Argument {
-    // these are arguments (eg field arguments)
     public readonly name: string;
     public readonly type: AttributeType;
     public readonly defaultValue?: string;
     public readonly description: string;
+    // Arguments can have annotations but we don't seem to use this feature
     // public readonly annotations: Partial<Annotations> = {};
 
     constructor({

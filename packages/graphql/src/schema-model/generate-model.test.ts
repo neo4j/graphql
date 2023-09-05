@@ -32,7 +32,7 @@ import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapt
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
-import { GraphQLBuiltInScalarType, ListType, ObjectType, ScalarType } from "./attribute/AttributeType";
+import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
