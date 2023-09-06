@@ -61,19 +61,10 @@ export class CypherAttributeField extends AttributeField {
             context,
             attribute: this.attribute,
             projectionFields: this.projection,
+            nestedFields: this.nestedFields,
         });
 
         return [subquery];
     }
 }
 
-
-/* 
-   if (this.nestedFields && (this.attribute.isObject() || this.attribute.isAbstract())) {
-            projection = new Cypher.MapProjection(this.customCypherVar);
-            const subqueriesProjection = this.nestedFields?.map((f) => f.getProjectionField(this.customCypherVar));
-            for (const subqueryProjection of subqueriesProjection) {
-                projection.set(subqueryProjection);
-            }
-        }
-*/

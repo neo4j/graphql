@@ -185,22 +185,21 @@ export class FieldFactory {
         let nestedFields: Field[] | undefined;
 
         if (rawFields) {
+            cypherProjection = Object.values(rawFields).reduce((acc, f) => {
+                acc[f.alias] = f.name;
+                return acc;
+            }, {});
             // if the attribute is an object or an abstract type we may have nested fields
             if (attribute.isAbstract() || attribute.isObject()) {
                 // TODO: this code block could be handled directly in the schema model or in some schema model helper
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities
-                if (!targetEntity) throw new Error(`Entity ${typeName} not found`); 
+                if (!targetEntity) throw new Error(`Entity ${typeName} not found`);
                 if (this.queryASTFactory.schemaModel.isConcreteEntity(targetEntity)) {
                     const concreteEntityAdapter = new ConcreteEntityAdapter(targetEntity);
                     nestedFields = this.createFields(concreteEntityAdapter, rawFields, context);
                 }
                 // TODO: implement composite entities
-            } else {
-                cypherProjection = Object.values(rawFields).reduce((acc, f) => {
-                    acc[f.alias] = f.name;
-                    return acc;
-                }, {});
             }
         }
 
