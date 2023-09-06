@@ -18,17 +18,18 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { parseArguments } from "../schema-model/parser/parse-arguments";
 import { QueryDirective } from "../classes/QueryDirective";
 import { queryDirective as queryDirectiveDefinition } from "../graphql/directives/query";
+import { parseArguments } from "../schema-model/parser/parse-arguments";
 
 function parseQueryDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== queryDirectiveDefinition.name) {
         throw new Error("Undefined or incorrect directive passed into parseQueryDirective function");
     }
-    const arg = parseArguments(queryDirectiveDefinition, directiveNode) as ConstructorParameters<
-        typeof QueryDirective
-    >[0];
+    const arg = parseArguments<ConstructorParameters<typeof QueryDirective>[0]>(
+        queryDirectiveDefinition,
+        directiveNode
+    );
 
     return new QueryDirective(arg);
 }
