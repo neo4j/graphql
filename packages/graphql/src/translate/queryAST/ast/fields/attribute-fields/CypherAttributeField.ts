@@ -55,7 +55,7 @@ export class CypherAttributeField extends AttributeField {
         if (scope.has(this.attribute.name)) {
             throw new Error("Compile error, should execute attribute field before CypherPropertySort");
         }
-    
+
         scope.set(this.attribute.name, this.customCypherVar);
         const subquery = createCypherAnnotationSubquery({
             context,
@@ -66,5 +66,5 @@ export class CypherAttributeField extends AttributeField {
 
         return [subquery];
     }
+    
 }
-

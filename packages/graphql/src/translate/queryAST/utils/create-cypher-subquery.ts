@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { QueryASTContext } from "../ast/QueryASTContext";
+import { QueryASTContext } from "../ast/QueryASTContext";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
 import type { Field } from "../ast/fields/Field";
@@ -37,10 +37,11 @@ export function createCypherAnnotationSubquery({
     const cypherAnnotation = attribute.annotations.cypher;
     if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
 
-    const statementSubquery = getStatementSubquery(context, cypherAnnotation);
-
     const columnName = new Cypher.NamedVariable(cypherAnnotation.columnName);
-    const returnVariable = context.getScopeVariable(attribute.name);
+    const returnVariable = context.getScopeVariable(attribute.name) as Cypher.Node;
+
+    const statementSubquery = getStatementSubquery(context, cypherAnnotation);
+    const nestedFieldsSubqueries = getNestedFieldsSubqueries(returnVariable, context, nestedFields);
 
     if (attribute.isScalar() || attribute.isEnum()) {
         statementSubquery.unwind([columnName, returnVariable]);
@@ -54,8 +55,27 @@ export function createCypherAnnotationSubquery({
         attribute,
         nestedFields,
     });
-    return statementSubquery.return([returnProjection, returnVariable]);
+
+    return Cypher.concat(
+        statementSubquery,
+        nestedFieldsSubqueries,
+        new Cypher.Return([returnProjection, returnVariable])
+    );
 }
+
+function getNestedFieldsSubqueries(
+    target: Cypher.Node,
+    context: QueryASTContext,
+    nestedFields: Field[] | undefined
+): Cypher.Clause | undefined {
+    if (!nestedFields) return undefined;
+
+    const nodeProjectionSubqueries = nestedFields.flatMap((f) =>
+        f.getSubqueries(new QueryASTContext({ target, queryASTEnv: context.env })).map((sq) => new Cypher.Call(sq).innerWith(target))
+    );
+    return Cypher.concat(...nodeProjectionSubqueries);
+}
+
 
 function getStatementSubquery(context: QueryASTContext, cypherAnnotation: CypherAnnotation): Cypher.Call {
     const innerAlias = new Cypher.With([context.target, "this"]);
@@ -73,12 +93,13 @@ function getProjectionExpr({
     fromVariable: Cypher.Variable;
     fields: Record<string, string> | undefined;
     attribute: AttributeAdapter;
-    nestedFields: Field[] | undefined;
+    nestedFields?: Field[];
 }): Cypher.Expr {
     let projection: Cypher.Expr = fromVariable;
     if (fields) {
         projection = new Cypher.MapProjection(fromVariable);
-        if (nestedFields && (attribute.isObject() || attribute.isAbstract())) {
+        // nested fields are presents only if the attribute is an object or an abstract type, and they produce a different projection
+        if (nestedFields) {
             const subqueriesProjection = nestedFields?.map((f) => f.getProjectionField(fromVariable));
             for (const subqueryProjection of subqueriesProjection) {
                 projection.set(subqueryProjection);
@@ -94,16 +115,6 @@ function getProjectionExpr({
             }
         }
     }
-
-    /* 
-   if (this.nestedFields && (this.attribute.isObject() || this.attribute.isAbstract())) {
-            projection = new Cypher.MapProjection(this.customCypherVar);
-            const subqueriesProjection = this.nestedFields?.map((f) => f.getProjectionField(this.customCypherVar));
-            for (const subqueryProjection of subqueriesProjection) {
-                projection.set(subqueryProjection);
-            }
-        }
-*/
 
     const collectedProjection = Cypher.collect(projection);
 
