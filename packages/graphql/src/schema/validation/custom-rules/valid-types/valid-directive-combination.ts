@@ -196,6 +196,9 @@ function assertValidDirectives(directives: DirectiveNode[], kind: ASTNode["kind"
     directives.forEach((directive) => {
         if (invalidCombinations[directive.name.value]) {
             directives.forEach((d) => {
+                if (d.name.value === directive.name.value) {
+                    return;
+                }
                 if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
                     throw new DocumentValidationError(
                         `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
