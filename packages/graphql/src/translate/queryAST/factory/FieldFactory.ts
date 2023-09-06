@@ -34,8 +34,6 @@ import type { AttributeAdapter } from "../../../schema-model/attribute/model-ada
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { Entity } from "../../../schema-model/entity/Entity";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
