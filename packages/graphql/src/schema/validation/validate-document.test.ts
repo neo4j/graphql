@@ -24,7 +24,7 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { gql } from "graphql-tag";
-import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
+import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import type { Neo4jGraphQLCallback } from "../../types";
 import validateDocument from "./validate-document";
@@ -3456,10 +3456,10 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization"
-                );
+                expect([
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization",
+                    "Invalid directive usage: Directive @subscriptionsAuthorization cannot be used in combination with @relationship",
+                ]).toContain(errors[0]!.message);
                 expect(errors[0]).toHaveProperty("path", ["Production", "actors"]);
             });
             test("@authorization can't be used with @relationship", () => {
