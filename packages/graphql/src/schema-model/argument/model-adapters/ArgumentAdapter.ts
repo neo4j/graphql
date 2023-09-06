@@ -17,15 +17,9 @@
  * limitations under the License.
  */
 
-import { MathAdapter } from "./MathAdapter";
-import { AggregationAdapter } from "./AggregationAdapter";
-import { ListAdapter } from "./ListAdapter";
-import type { Attribute } from "../Attribute";
-import type { Annotations } from "../../annotation/Annotation";
-import type { AttributeType } from "../AttributeType";
+import type { AttributeType } from "../../attribute/AttributeType";
 import {
     EnumType,
-    UserScalarType,
     GraphQLBuiltInScalarType,
     InterfaceType,
     ListType,
@@ -34,119 +28,36 @@ import {
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     Neo4jPointType,
+    ObjectType,
     ScalarType,
     UnionType,
-    ObjectType,
-} from "../AttributeType";
-import type { Argument } from "../../argument/Argument";
+    UserScalarType,
+} from "../../attribute/AttributeType";
+import type { Argument } from "../Argument";
 
-export class AttributeAdapter {
-    private _listModel: ListAdapter | undefined;
-    private _mathModel: MathAdapter | undefined;
-    private _aggregationModel: AggregationAdapter | undefined;
-    public readonly name: string;
-    public readonly annotations: Partial<Annotations>;
-    public readonly type: AttributeType;
-    public readonly args: Argument[];
-    public readonly databaseName: string;
-    public readonly description: string;
+// TODO: this file has a lot in common with AttributeAdapter
+// if going to use this, design a solution to avoid this code duplication
+
+export class ArgumentAdapter {
+    public name: string;
+    public type: AttributeType;
+    public description: string;
+    public defaultValue?: string;
     private assertionOptions: {
         includeLists: boolean;
     };
-    constructor(attribute: Attribute) {
-        this.name = attribute.name;
-        this.type = attribute.type;
-        this.args = attribute.args;
-        this.annotations = attribute.annotations;
-        this.databaseName = attribute.databaseName;
-        this.description = attribute.description;
+    constructor(argument: Argument) {
+        this.name = argument.name;
+        this.type = argument.type;
+        this.defaultValue = argument.defaultValue;
+        this.description = argument.description;
         this.assertionOptions = {
             includeLists: true,
         };
     }
 
     /**
-     * Previously defined as:
-     * [
-            ...this.temporalFields,
-            ...this.enumFields,
-            ...this.objectFields,
-            ...this.scalarFields, 
-            ...this.primitiveFields, 
-            ...this.interfaceFields,
-            ...this.objectFields,
-            ...this.unionFields,
-            ...this.pointFields,
-        ];
-     */
-    isMutable(): boolean {
-        return (
-            (this.isTemporal() ||
-                this.isEnum() ||
-                this.isInterface() ||
-                this.isUnion() ||
-                this.isSpatial() ||
-                this.isScalar() ||
-                this.isObject()) &&
-            !this.isCypher()
-        );
-    }
-
-    isUnique(): boolean {
-        return this.annotations.unique ? true : false;
-    }
-
-    isCypher(): boolean {
-        return this.annotations.cypher ? true : false;
-    }
-
-    /**
-     *  Previously defined as:
-     * [...this.primitiveFields,
-       ...this.scalarFields,
-       ...this.enumFields,
-       ...this.temporalFields,
-       ...this.pointFields,]
-     */
-    isConstrainable(): boolean {
-        return (
-            this.isGraphQLBuiltInScalar() ||
-            this.isUserScalar() ||
-            this.isEnum() ||
-            this.isTemporal() ||
-            this.isPoint() ||
-            this.isCartesianPoint()
-        );
-    }
-
-    /**
-     * @throws {Error} if the attribute is not a list
-     */
-    get listModel(): ListAdapter {
-        if (!this._listModel) {
-            this._listModel = new ListAdapter(this);
-        }
-        return this._listModel;
-    }
-
-    /**
-     * @throws {Error} if the attribute is not a scalar
-     */
-    get mathModel(): MathAdapter {
-        if (!this._mathModel) {
-            this._mathModel = new MathAdapter(this);
-        }
-        return this._mathModel;
-    }
-
-    get aggregationModel(): AggregationAdapter {
-        if (!this._aggregationModel) {
-            this._aggregationModel = new AggregationAdapter(this);
-        }
-        return this._aggregationModel;
-    }
-    /**
-     * Just an helper to get the wrapped type in case of a list, useful for the assertions
+     * Just a helper to get the wrapped type in case of a list, useful for the assertions
      */
     private getTypeForAssertion(includeLists: boolean) {
         if (includeLists) {
@@ -254,8 +165,9 @@ export class AttributeAdapter {
         return type instanceof UserScalarType;
     }
 
-    isRequired(): boolean {
-        return this.type.isRequired;
+    isTemporal(options = this.assertionOptions): boolean {
+        const type = this.getTypeForAssertion(options.includeLists);
+        return type.name in Neo4jGraphQLTemporalType;
     }
 
     isListElementRequired(): boolean {
@@ -265,8 +177,14 @@ export class AttributeAdapter {
         return this.type.ofType.isRequired;
     }
 
+    isRequired(): boolean {
+        return this.type.isRequired;
+    }
+
     /**
-     *  START of category assertions
+     *
+     * Schema Generator Stuff
+     *
      */
     isGraphQLBuiltInScalar(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
@@ -276,11 +194,6 @@ export class AttributeAdapter {
     isSpatial(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type.name in Neo4jGraphQLSpatialType;
-    }
-
-    isTemporal(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type.name in Neo4jGraphQLTemporalType;
     }
 
     isAbstract(options = this.assertionOptions): boolean {
@@ -305,4 +218,21 @@ export class AttributeAdapter {
     /**
      *  END of category assertions
      */
+
+    /**
+     *
+     * Schema Generator Stuff
+     *
+     */
+
+    getTypePrettyName(): string {
+        if (this.isList()) {
+            return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
+        }
+        return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
+    }
+
+    getTypeName(): string {
+        return this.isList() ? this.type.ofType.name : this.type.name;
+    }
 }

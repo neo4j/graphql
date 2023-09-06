@@ -32,6 +32,7 @@ import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapt
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
+import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
 
@@ -586,6 +587,54 @@ describe("ConcreteEntity Annotations & Attributes", () => {
 
         expect(accountName?.databaseName).toBeDefined();
         expect(accountName?.databaseName).toBe("accountName");
+    });
+
+    describe("Arguments", () => {
+        test("attribute argument scalar", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID!
+                    name(something: Int): String!
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            const schemaModel = generateModel(document);
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.has("id")).toBeTrue();
+            expect(userEntity?.attributes.has("name")).toBeTrue();
+            const idAttribute = userEntity?.findAttribute("id");
+            expect(idAttribute?.args).toHaveLength(0);
+            const nameAttribute = userEntity?.findAttribute("name");
+            expect(nameAttribute?.args).toHaveLength(1);
+            expect(nameAttribute?.args[0]?.name).toBe("something");
+            expect(nameAttribute?.args[0]?.type.name).toBe(GraphQLBuiltInScalarType.Int);
+            expect(nameAttribute?.args[0]?.type.isRequired).toBeFalse();
+        });
+
+        test("attribute argument object", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID!
+                    favoritePet(from: [Animal]!): String!
+                }
+                type Animal {
+                    sound: String
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            const schemaModel = generateModel(document);
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.has("id")).toBeTrue();
+            expect(userEntity?.attributes.has("favoritePet")).toBeTrue();
+            const idAttribute = userEntity?.findAttribute("id");
+            expect(idAttribute?.args).toHaveLength(0);
+            const favoritePetAttribute = userEntity?.findAttribute("favoritePet");
+            expect(favoritePetAttribute?.args).toHaveLength(1);
+            expect(favoritePetAttribute?.args[0]?.name).toBe("from");
+            expect(favoritePetAttribute?.args[0]?.type).toEqual(new ListType(new ObjectType("Animal", false), true));
+        });
     });
 });
 

@@ -26,6 +26,7 @@ describe("Attribute", () => {
             name: "test",
             annotations: [],
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+            args: [],
         });
         const clone = attribute.clone();
         expect(attribute).toStrictEqual(clone);

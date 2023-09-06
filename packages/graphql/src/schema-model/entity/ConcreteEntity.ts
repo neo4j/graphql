@@ -28,6 +28,7 @@ import type { Entity } from "./Entity";
 
 export class ConcreteEntity implements Entity {
     public readonly name: string;
+    public readonly description: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
@@ -35,6 +36,7 @@ export class ConcreteEntity implements Entity {
 
     constructor({
         name,
+        description,
         labels,
         attributes = [],
         annotations = [],
@@ -45,8 +47,10 @@ export class ConcreteEntity implements Entity {
         attributes?: Attribute[];
         annotations?: Annotation[];
         relationships?: Relationship[];
+        description?: string;
     }) {
         this.name = name;
+        this.description = description || "";
         this.labels = new Set(labels);
         for (const attribute of attributes) {
             this.addAttribute(attribute);

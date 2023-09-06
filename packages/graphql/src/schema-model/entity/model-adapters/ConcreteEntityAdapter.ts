@@ -31,6 +31,7 @@ import type { UnionEntityAdapter } from "./UnionEntityAdapter";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
+    public readonly description: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
@@ -51,6 +52,7 @@ export class ConcreteEntityAdapter {
 
     constructor(entity: ConcreteEntity) {
         this.name = entity.name;
+        this.description = entity.description;
         this.labels = entity.labels;
         this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
