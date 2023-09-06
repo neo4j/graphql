@@ -19,9 +19,19 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTContext } from "../QueryASTContext";
 
 export type SortField = [Cypher.Expr, Cypher.Order] | [Cypher.Expr];
 
 export abstract class Sort extends QueryASTNode {
-    public abstract getSortFields(variable: Cypher.Variable | Cypher.Property, aliased?: boolean): SortField[];
+    public abstract getSortFields(
+        context: QueryASTContext,
+        variable: Cypher.Variable | Cypher.Property,
+        aliased?: boolean
+    ): SortField[];
+    public abstract getProjectionField(context: QueryASTContext): string | Record<string, Cypher.Expr>;
+
+    public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
+    }
 }

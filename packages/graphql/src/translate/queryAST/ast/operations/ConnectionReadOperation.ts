@@ -102,12 +102,12 @@ export class ConnectionReadOperation extends Operation {
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.authFilters?.getPredicate(nestedContext);
 
-        const authFilterSubqueries = this.authFilters?.getSubqueries(node) || [];
+        const authFilterSubqueries = this.authFilters?.getSubqueries(nestedContext) || [];
 
         const filters = Cypher.and(...predicates, authPredicate);
 
         const nodeProjectionSubqueries = this.nodeFields
-            .flatMap((f) => f.getSubqueries(node))
+            .flatMap((f) => f.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
 
         const nodeProjectionMap = new Cypher.Map();
@@ -161,13 +161,13 @@ export class ConnectionReadOperation extends Operation {
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();
 
-            sortSubquery = this.getPaginationSubquery(edgesVar, paginationField);
+            sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
             sortSubquery.addColumns(totalCount);
         }
 
         let extraWithOrder: Cypher.Clause | undefined;
         if (this.sortFields.length > 0) {
-            const sortFields = this.getSortFields(node, relationship);
+            const sortFields = this.getSortFields(nestedContext, node, relationship);
 
             extraWithOrder = new Cypher.With(relationship, node).orderBy(...sortFields);
         }
@@ -201,6 +201,7 @@ export class ConnectionReadOperation extends Operation {
     }
 
     private getPaginationSubquery(
+        context: QueryASTContext,
         edgesVar: Cypher.Variable,
         paginationField: PaginationField | undefined
     ): Cypher.With {
@@ -208,7 +209,7 @@ export class ConnectionReadOperation extends Operation {
 
         const subquery = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar);
         if (this.sortFields.length > 0) {
-            const sortFields = this.getSortFields(edgeVar.property("node"), edgeVar);
+            const sortFields = this.getSortFields(context, edgeVar.property("node"), edgeVar);
             subquery.orderBy(...sortFields);
         }
         if (paginationField && paginationField.limit) {
@@ -222,12 +223,13 @@ export class ConnectionReadOperation extends Operation {
     }
 
     private getSortFields(
+        context: QueryASTContext,
         nodeVar: Cypher.Variable | Cypher.Property,
         edgeVar: Cypher.Variable | Cypher.Property
     ): SortField[] {
         return this.sortFields.flatMap(({ node, edge }) => {
-            const nodeFields = node.flatMap((s) => s.getSortFields(nodeVar, false));
-            const edgeFields = edge.flatMap((s) => s.getSortFields(edgeVar, false));
+            const nodeFields = node.flatMap((s) => s.getSortFields(context, nodeVar, false));
+            const edgeFields = edge.flatMap((s) => s.getSortFields(context, edgeVar, false));
 
             return [...nodeFields, ...edgeFields];
         });

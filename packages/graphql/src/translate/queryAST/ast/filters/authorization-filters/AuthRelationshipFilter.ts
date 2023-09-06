@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTContext } from "../../QueryASTContext";
 import { RelationshipFilter } from "../RelationshipFilter";
 import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import { Memoize } from "typescript-memoize";
@@ -27,14 +27,13 @@ import type { QueryASTNode } from "../../QueryASTNode";
 export class AuthRelationshipFilter extends RelationshipFilter {
     private countVar = new Cypher.Variable();
 
-    public getSubqueries(_parentNode: Cypher.Node): Cypher.Clause[] {
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const relatedNode = this.relatedNode;
         const relVar = this.relationshipVar;
 
-        const nestedContext = new QueryASTContext({
+        const nestedContext = context.push({
             target: relatedNode,
             relationship: relVar,
-            source: _parentNode,
         });
 
         const pattern = this.getPattern(nestedContext);

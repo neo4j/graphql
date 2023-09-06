@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import { asArray, filterTruthy } from "../../../../utils/utils";
+import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
-import type { PropertySort } from "../sort/PropertySort";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
 import { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTNode } from "../QueryASTNode";
+import type { Sort } from "../sort/Sort";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -44,7 +44,7 @@ export class AggregationOperation extends Operation {
 
     protected filters: Filter[] = [];
     protected pagination: Pagination | undefined;
-    protected sortFields: PropertySort[] = [];
+    protected sortFields: Sort[] = [];
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
@@ -58,7 +58,7 @@ export class AggregationOperation extends Operation {
         this.fields = fields;
     }
 
-    public addSort(...sort: PropertySort[]): void {
+    public addSort(...sort: Sort[]): void {
         this.sortFields.push(...sort);
     }
 
@@ -102,7 +102,7 @@ export class AggregationOperation extends Operation {
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
-            this.addSortToClause(target, sortClause);
+            this.addSortToClause(queryASTContext, target, sortClause);
         }
         // return Cypher.concat(matchClause, subqueries, sortClause, ret);
         return Cypher.concat(matchClause, sortClause, ret);
@@ -178,18 +178,12 @@ export class AggregationOperation extends Operation {
         };
     }
 
-    protected getFieldsSubqueries(node: Cypher.Node): Cypher.Clause[] {
-        return filterTruthy(
-            this.fields.map((f) => {
-                return f.getSubqueries(node);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(Cypher.concat(...asArray(sq))).innerWith(node);
-        });
-    }
-
-    private addSortToClause(node: Cypher.Variable, clause: Cypher.With | Cypher.Return): void {
-        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(node));
+    private addSortToClause(
+        context: QueryASTContext,
+        node: Cypher.Variable,
+        clause: Cypher.With | Cypher.Return
+    ): void {
+        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(context, node));
         const pagination = this.pagination ? this.pagination.getPagination() : undefined;
         clause.orderBy(...orderByFields);
 

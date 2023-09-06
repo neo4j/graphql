@@ -21,10 +21,12 @@ import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { Field } from "../Field";
+import type { QueryASTContext } from "../../QueryASTContext";
+import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
 
 // Should Cypher be an operation?
 export class CypherAttributeField extends AttributeField {
-    private customCypherVar = new Cypher.Node(); // Using node only to keep consistency with tck
+    private customCypherVar = new Cypher.Node(); // TODO: should be from context scope
     private projection: Record<string, string> | undefined;
     private nestedFields: Field[] | undefined;
 
@@ -48,60 +50,30 @@ export class CypherAttributeField extends AttributeField {
         return { [this.alias]: this.customCypherVar };
     }
 
-    public getSubqueries(node: Cypher.Node): Cypher.Clause[] {
-        const cypherAnnotation = this.attribute.annotations.cypher;
-        if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
-
-        const innerAlias = new Cypher.With([node, "this"]);
-        const cypherSubquery = new Cypher.RawCypher(cypherAnnotation.statement);
-
-        const columnName = cypherAnnotation.columnName;
-        const returnVar = new Cypher.NamedNode(columnName);
-
-        let projection: Cypher.Expr = this.customCypherVar;
-        if (this.projection && !this.nestedFields) {
-            projection = new Cypher.MapProjection(this.customCypherVar);
-            for (const [alias, name] of Object.entries(this.projection)) {
-                if (alias === name) projection.set(alias);
-                else {
-                    projection.set({
-                        [alias]: this.customCypherVar.property(name),
-                    });
-                }
-            }
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const scope = context.getTargetScope();
+        if (scope.has(this.attribute.name)) {
+            throw new Error("Compile error, should execute attribute field before CypherPropertySort");
         }
-        if (this.nestedFields && (this.attribute.isObject() || this.attribute.isAbstract())) {
+    
+        scope.set(this.attribute.name, this.customCypherVar);
+        const subquery = createCypherAnnotationSubquery({
+            context,
+            attribute: this.attribute,
+            projectionFields: this.projection,
+        });
+
+        return [subquery];
+    }
+}
+
+
+/* 
+   if (this.nestedFields && (this.attribute.isObject() || this.attribute.isAbstract())) {
             projection = new Cypher.MapProjection(this.customCypherVar);
             const subqueriesProjection = this.nestedFields?.map((f) => f.getProjectionField(this.customCypherVar));
             for (const subqueryProjection of subqueriesProjection) {
                 projection.set(subqueryProjection);
             }
         }
-
-        let returnProjection: Cypher.Expr = Cypher.collect(projection);
-        if (!this.attribute.isList()) {
-            returnProjection = Cypher.head(returnProjection);
-        }
-
-        const callClause = new Cypher.Call(Cypher.concat(innerAlias, cypherSubquery)).innerWith(node);
-
-        if (this.attribute.isScalar() || this.attribute.isEnum()) {
-            callClause.unwind([returnVar, this.customCypherVar]);
-        } else {
-            callClause.with([returnVar, this.customCypherVar]);
-        }
-        const nestedFieldClause = this.getFieldsSubquery();
-        return [
-            Cypher.concat(callClause, nestedFieldClause, new Cypher.Return([returnProjection, this.customCypherVar])),
-        ];
-    }
-
-    private getFieldsSubquery(): Cypher.Clause | undefined {
-        if (this.nestedFields) {
-            const nodeProjectionSubqueries = this.nestedFields
-            ?.flatMap((f) => f.getSubqueries(this.customCypherVar))
-            .map((sq) => new Cypher.Call(sq).innerWith(this.customCypherVar));
-            return Cypher.concat(...nodeProjectionSubqueries);
-        }
-    }
-}
+*/

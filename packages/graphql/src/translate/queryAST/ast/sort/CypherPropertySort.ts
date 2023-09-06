@@ -23,8 +23,9 @@ import { Sort } from "./Sort";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTContext } from "../QueryASTContext";
+import { createCypherAnnotationSubquery } from "../../utils/create-cypher-subquery";
 
-export class PropertySort extends Sort {
+export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
     private direction: Cypher.Order;
 
@@ -47,14 +48,36 @@ export class PropertySort extends Sort {
         variable: Cypher.Variable | Cypher.Property,
         sortByDatabaseName = true
     ): SortField[] {
-        const attributeName = sortByDatabaseName ? this.attribute.databaseName : this.attribute.name;
+        const isNested = context.source;
+        if (isNested) {
+            const attributeName = sortByDatabaseName ? this.attribute.databaseName : this.attribute.name;
 
-        const nodeProperty = variable.property(attributeName);
-        return [[nodeProperty, this.direction]];
+            const nodeProperty = variable.property(attributeName);
+            return [[nodeProperty, this.direction]];
+        }
+
+        const projectionVar = context.getScopeVariable(this.attribute.name);
+        return [[projectionVar, this.direction]];
     }
 
-    public getProjectionField(_context: QueryASTContext): string | Record<string, Cypher.Expr> {
-        if (this.attribute.databaseName !== this.attribute.name) return {};
-        return this.attribute.databaseName;
+    public getProjectionField(context: QueryASTContext): string | Record<string, Cypher.Expr> {
+        const projectionVar = context.getScopeVariable(this.attribute.name);
+
+        return {
+            [this.attribute.databaseName]: projectionVar,
+        };
+    }
+
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const scope = context.getTargetScope();
+        if (scope.has(this.attribute.name)) {
+            return [];
+        }
+
+        const subquery = createCypherAnnotationSubquery({
+            context,
+            attribute: this.attribute,
+        });
+        return [subquery];
     }
 }
