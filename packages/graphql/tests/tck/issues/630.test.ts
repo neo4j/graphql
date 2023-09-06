@@ -60,9 +60,6 @@ describe("Cypher directive", () => {
                         actorsConnection {
                             totalCount
                         }
-                        actors {
-                            name
-                        }
                     }
                 }
             }

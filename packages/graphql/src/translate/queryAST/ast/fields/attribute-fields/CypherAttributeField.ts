@@ -20,23 +20,28 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { Field } from "../Field";
 
 // Should Cypher be an operation?
 export class CypherAttributeField extends AttributeField {
     private customCypherVar = new Cypher.Node(); // Using node only to keep consistency with tck
     private projection: Record<string, string> | undefined;
+    private nestedFields: Field[] | undefined;
 
     constructor({
         alias,
         attribute,
         projection,
+        nestedFields,
     }: {
         alias: string;
         attribute: AttributeAdapter;
         projection?: Record<string, string>;
+        nestedFields?: Field[];
     }) {
         super({ alias, attribute });
         this.projection = projection;
+        this.nestedFields = nestedFields;
     }
 
     public getProjectionField(_variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
@@ -54,7 +59,7 @@ export class CypherAttributeField extends AttributeField {
         const returnVar = new Cypher.NamedNode(columnName);
 
         let projection: Cypher.Expr = this.customCypherVar;
-        if (this.projection) {
+        if (this.projection && !this.nestedFields) {
             projection = new Cypher.MapProjection(this.customCypherVar);
             for (const [alias, name] of Object.entries(this.projection)) {
                 if (alias === name) projection.set(alias);
@@ -63,6 +68,13 @@ export class CypherAttributeField extends AttributeField {
                         [alias]: this.customCypherVar.property(name),
                     });
                 }
+            }
+        }
+        if (this.nestedFields && (this.attribute.isObject() || this.attribute.isAbstract())) {
+            projection = new Cypher.MapProjection(this.customCypherVar);
+            const subqueriesProjection = this.nestedFields?.map((f) => f.getProjectionField(this.customCypherVar));
+            for (const subqueryProjection of subqueriesProjection) {
+                projection.set(subqueryProjection);
             }
         }
 
@@ -78,7 +90,18 @@ export class CypherAttributeField extends AttributeField {
         } else {
             callClause.with([returnVar, this.customCypherVar]);
         }
+        const nestedFieldClause = this.getFieldsSubquery();
+        return [
+            Cypher.concat(callClause, nestedFieldClause, new Cypher.Return([returnProjection, this.customCypherVar])),
+        ];
+    }
 
-        return [Cypher.concat(callClause, new Cypher.Return([returnProjection, this.customCypherVar]))];
+    private getFieldsSubquery(): Cypher.Clause | undefined {
+        if (this.nestedFields) {
+            const nodeProjectionSubqueries = this.nestedFields
+            ?.flatMap((f) => f.getSubqueries(this.customCypherVar))
+            .map((sq) => new Cypher.Call(sq).innerWith(this.customCypherVar));
+            return Cypher.concat(...nodeProjectionSubqueries);
+        }
     }
 }

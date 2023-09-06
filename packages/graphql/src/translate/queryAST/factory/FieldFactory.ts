@@ -34,6 +34,8 @@ import type { AttributeAdapter } from "../../../schema-model/attribute/model-ada
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { Entity } from "../../../schema-model/entity/Entity";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -74,6 +76,7 @@ export class FieldFactory {
                 entity,
                 fieldName,
                 field,
+                context,
             });
         });
     }
@@ -123,10 +126,12 @@ export class FieldFactory {
         entity,
         fieldName,
         field,
+        context,
     }: {
         entity: ConcreteEntityAdapter | RelationshipAdapter;
         fieldName: string;
         field: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
     }): AttributeField {
         const attribute = entity.findAttribute(fieldName);
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
@@ -137,6 +142,7 @@ export class FieldFactory {
                 fieldName,
                 field,
                 attribute,
+                context,
             });
         }
 
@@ -165,39 +171,45 @@ export class FieldFactory {
         fieldName,
         field,
         attribute,
+        context,
     }: {
         entity: ConcreteEntityAdapter | RelationshipAdapter;
         attribute: AttributeAdapter;
         fieldName: string;
         field: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
     }): CypherAttributeField {
-        // if the attribute is an object or an abstract type we may have nested fields
-        if (attribute.isAbstract() || attribute.isObject()) {
-            const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
-            const fields = field.fieldsByTypeName[typeName];
-            let cypherProjection: Record<string, string> | undefined;
-            if (fields) {
-                cypherProjection = Object.values(fields).reduce((acc, f) => {
+        const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
+        const rawFields = field.fieldsByTypeName[typeName];
+        let cypherProjection: Record<string, string> | undefined;
+        let nestedFields: Field[] | undefined;
+
+        if (rawFields) {
+            // if the attribute is an object or an abstract type we may have nested fields
+            if (attribute.isAbstract() || attribute.isObject()) {
+                // TODO: this code block could be handled directly in the schema model or in some schema model helper
+                const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
+                // Raise an error as we expect that any complex attributes type are always entities
+                if (!targetEntity) throw new Error(`Entity ${typeName} not found`); 
+                if (this.queryASTFactory.schemaModel.isConcreteEntity(targetEntity)) {
+                    const concreteEntityAdapter = new ConcreteEntityAdapter(targetEntity);
+                    nestedFields = this.createFields(concreteEntityAdapter, rawFields, context);
+                }
+                // TODO: implement composite entities
+            } else {
+                cypherProjection = Object.values(rawFields).reduce((acc, f) => {
                     acc[f.alias] = f.name;
                     return acc;
                 }, {});
             }
-            
-            return new CypherAttributeField({
-                attribute,
-                alias: field.alias,
-                projection: cypherProjection,
-            });
         }
 
         return new CypherAttributeField({
             attribute,
             alias: field.alias,
+            projection: cypherProjection,
+            nestedFields,
         });
-
-        //  const fields = Object.values(field.fieldsByTypeName)[0]; // TODO: use actual Field type
-        //  this.queryASTFactory.schemaModel.
-        // TODO: get the actual entity related to this attribute!!
     }
 
     private createConnectionField(
