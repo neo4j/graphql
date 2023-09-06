@@ -244,7 +244,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: ActorConnectWhere
@@ -765,7 +765,7 @@ describe("Subscriptions", () => {
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -1057,7 +1057,7 @@ describe("Subscriptions", () => {
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: ActorConnectWhere
@@ -1972,7 +1972,7 @@ describe("Subscriptions", () => {
             input PersonMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -2280,7 +2280,7 @@ describe("Subscriptions", () => {
             input StarMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -2694,7 +2694,7 @@ describe("Subscriptions", () => {
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -3000,7 +3000,7 @@ describe("Subscriptions", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: ActorConnectWhere
@@ -3627,7 +3627,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: ActorConnectWhere
@@ -4037,7 +4037,7 @@ describe("Subscriptions", () => {
 
             input AgreementOwnerConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: UserConnectWhere
@@ -5079,7 +5079,7 @@ describe("Subscriptions", () => {
             input PersonMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -5373,7 +5373,7 @@ describe("Subscriptions", () => {
             input StarMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere

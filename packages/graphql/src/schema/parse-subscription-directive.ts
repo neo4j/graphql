@@ -18,17 +18,18 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { parseArguments } from "../schema-model/parser/parse-arguments";
 import { SubscriptionDirective } from "../classes/SubscriptionDirective";
 import { subscriptionDirective as subscriptionDirectiveDefinition } from "../graphql/directives/subscription";
+import { parseArguments } from "../schema-model/parser/parse-arguments";
 
 function parseSubscriptionDirective(directiveNode: DirectiveNode | undefined) {
     if (!directiveNode || directiveNode.name.value !== subscriptionDirectiveDefinition.name) {
         throw new Error("Undefined or incorrect directive passed into parseSubscriptionDirective function");
     }
-    const arg = parseArguments(subscriptionDirectiveDefinition, directiveNode) as {
+
+    const arg = parseArguments<{
         events: ConstructorParameters<typeof SubscriptionDirective>[0];
-    };
+    }>(subscriptionDirectiveDefinition, directiveNode);
 
     return new SubscriptionDirective(arg.events);
 }

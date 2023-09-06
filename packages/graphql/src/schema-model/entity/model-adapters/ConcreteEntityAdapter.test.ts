@@ -36,12 +36,14 @@ describe("ConcreteEntityAdapter", () => {
             name: "id",
             annotations: [new UniqueAnnotation({ constraintName: "User_id_unique" })],
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
+            args: [],
         });
 
         const nameAttribute = new Attribute({
             name: "name",
             annotations: [],
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+            args: [],
         });
 
         const closestUserAttribute = new Attribute({
@@ -53,6 +55,7 @@ describe("ConcreteEntityAdapter", () => {
                 }),
             ],
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+            args: [],
         });
 
         const userEntity = new ConcreteEntity({

@@ -139,7 +139,7 @@ describe("Sort", () => {
             input Node1RelatedToConnectFieldInput {
               connect: [Node2ConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: Node2ConnectWhere
@@ -327,7 +327,7 @@ describe("Sort", () => {
             input Node2RelatedToConnectFieldInput {
               connect: [Node1ConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: Node1ConnectWhere

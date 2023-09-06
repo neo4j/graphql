@@ -23,10 +23,12 @@ import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
+import type { CompositeEntity } from "./CompositeEntity";
 import type { Entity } from "./Entity";
 
 export class ConcreteEntity implements Entity {
     public readonly name: string;
+    public readonly description: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
@@ -34,6 +36,7 @@ export class ConcreteEntity implements Entity {
 
     constructor({
         name,
+        description,
         labels,
         attributes = [],
         annotations = [],
@@ -44,8 +47,10 @@ export class ConcreteEntity implements Entity {
         attributes?: Attribute[];
         annotations?: Annotation[];
         relationships?: Relationship[];
+        description?: string;
     }) {
         this.name = name;
+        this.description = description || "";
         this.labels = new Set(labels);
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -58,6 +63,12 @@ export class ConcreteEntity implements Entity {
         for (const relationship of relationships) {
             this.addRelationship(relationship);
         }
+    }
+    isConcreteEntity(): this is ConcreteEntity {
+        return true;
+    }
+    isCompositeEntity(): this is CompositeEntity {
+        return false;
     }
 
     public matchLabels(labels: string[]) {

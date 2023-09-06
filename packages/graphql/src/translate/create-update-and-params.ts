@@ -372,6 +372,7 @@ export default function createUpdateAndParams({
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
                             parentNode: node,
+                            source: "UPDATE",
                         });
                         subquery.push(connectAndParams[0]);
                         if (context.subscriptionsEnabled) {

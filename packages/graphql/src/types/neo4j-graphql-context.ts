@@ -34,7 +34,7 @@ export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
      * ```
      * This can be referred to like `@cypher(statement: "RETURN $title AS title", columnName: "title")`.
      */
-    cypherParams?: Record<string, any>;
+    cypherParams?: Record<string, unknown>;
     /**
      * Configures which {@link https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/ | Cypher query options} to use when executing the translated query.
      */
@@ -47,4 +47,10 @@ export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
      * Configuration that will be used during session construction if a driver was passed into the library on construction or if {@link executionContext} is an instance of a driver.
      */
     sessionConfig?: Neo4jGraphQLSessionConfig;
+    /**
+     * Attach metadata to the database transaction.
+     * This can be used to output information to the query log not related to the query itself.
+     * Will be ignored if {@link executionContext} is an instance of a transaction.
+     */
+    transactionMetadata?: Record<string, unknown>;
 }

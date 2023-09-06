@@ -169,7 +169,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             input BookTitle_ENBookConnectFieldInput {
               connect: BookConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: BookConnectWhere
@@ -415,7 +415,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             input BookTitle_SVBookConnectFieldInput {
               connect: BookConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: BookConnectWhere

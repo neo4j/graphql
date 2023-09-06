@@ -5,7 +5,6 @@ on:
     branches:
       - dev
       - master
-      - 4.0.0
 
 jobs:
   cla-check:
@@ -14,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: neo-technology/whitelist-check
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

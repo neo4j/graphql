@@ -106,7 +106,7 @@ describe("connect or create with id", () => {
 
             input ActorMoviesConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -598,7 +598,7 @@ describe("connect or create with id", () => {
             input PostCreatorConnectFieldInput {
               connect: UserConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: UserConnectWhere
@@ -945,7 +945,7 @@ describe("connect or create with id", () => {
             input UserPostsConnectFieldInput {
               connect: [PostConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: PostConnectWhere

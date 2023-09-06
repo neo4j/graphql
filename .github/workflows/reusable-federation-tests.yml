@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -20,7 +20,7 @@ jobs:
         run: |
           yarn build
         working-directory: packages/apollo-federation-subgraph-compatibility
-      - uses: apollographql/federation-subgraph-compatibility@6d8b346f2c023e4e549e12c34f7c4fc81576d3fc # v1.3.4
+      - uses: apollographql/federation-subgraph-compatibility@1f46c97fc518fbda88f9add78ad5b4fb39e2562c # v2.0.0
         with:
           # [Required] Docker Compose file to start up the subgraph
           compose: "packages/apollo-federation-subgraph-compatibility/docker-compose-gha.yml"
