@@ -76,7 +76,6 @@ function getNestedFieldsSubqueries(
     return Cypher.concat(...nodeProjectionSubqueries);
 }
 
-
 function getStatementSubquery(context: QueryASTContext, cypherAnnotation: CypherAnnotation): Cypher.Call {
     const innerAlias = new Cypher.With([context.target, "this"]);
     const statementSubquery = new Cypher.RawCypher(cypherAnnotation.statement);

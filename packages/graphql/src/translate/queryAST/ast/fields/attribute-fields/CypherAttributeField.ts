@@ -66,5 +66,4 @@ export class CypherAttributeField extends AttributeField {
 
         return [subquery];
     }
-    
 }
