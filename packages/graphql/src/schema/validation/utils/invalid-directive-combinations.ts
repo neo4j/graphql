@@ -17,11 +17,16 @@
  * limitations under the License.
  */
 
-export const invalidCombinations = {
-    // FIELD_DEFINITION
+import type { INTERFACE_DIRECTIVES } from "../../../constants";
+import { FIELD_DIRECTIVES, OBJECT_DIRECTIVES } from "../../../constants";
+
+export const invalidFieldCombinations: Record<
+    (typeof FIELD_DIRECTIVES)[number],
+    ReadonlyArray<(typeof FIELD_DIRECTIVES)[number] | "private">
+> = {
     alias: ["cypher", "customResolver", "relationship"],
-    authentication: ["customResolver", "relationship", "relationshipProperties"],
-    authorization: ["customResolver", "relationship", "relationshipProperties"],
+    authentication: ["customResolver", "relationship"],
+    authorization: ["customResolver", "relationship"],
     callback: ["id", "default", "relationship"],
     coalesce: ["relationship"],
     customResolver: [
@@ -39,7 +44,6 @@ export const invalidCombinations = {
     default: ["callback", "populatedBy", "relationship"],
     id: ["cypher", "populatedBy", "callback", "customResolver", "relationship", "timestamp"],
     populatedBy: ["id", "default", "relationship"],
-    private: [],
     readonly: ["cypher", "customResolver", "relationship"],
     relationship: [
         "alias",
@@ -59,28 +63,36 @@ export const invalidCombinations = {
     timestamp: ["id", "unique"],
     unique: ["cypher", "customResolver", "relationship", "timestamp"],
     writeonly: ["cypher", "customResolver"],
-    // OBJECT
+    jwtClaim: FIELD_DIRECTIVES,
+    relayId: ["jwtClaim"],
+    subscriptionsAuthorization: ["customResolver", "relationship"],
+    selectable: ["customResolver"],
+    settable: ["customResolver"],
+    filterable: ["customResolver"],
+};
+
+export const invalidInterfaceCombinations: Record<
+    (typeof INTERFACE_DIRECTIVES)[number],
+    ReadonlyArray<(typeof INTERFACE_DIRECTIVES)[number]>
+> = {
+    relationshipProperties: [],
+};
+
+export const invalidObjectCombinations: Record<
+    (typeof OBJECT_DIRECTIVES)[number],
+    ReadonlyArray<(typeof OBJECT_DIRECTIVES)[number]>
+> = {
+    authentication: [],
+    authorization: [],
+    deprecated: [],
+    fulltext: [],
+    jwt: OBJECT_DIRECTIVES,
+    mutation: [],
     node: [],
     plural: [],
-    // INTERFACE
-    relationshipProperties: ["authorization", "authentication", "subscriptionsAuthorization"],
-    // OBJECT and INTERFACE
-    exclude: [],
-    jwtClaim: [
-        "alias",
-        "authentication",
-        "authorization",
-        "subscriptionsAuthorization",
-        "callback",
-        "coalesce",
-        "cypher",
-        "default",
-        "id",
-        "timestamp",
-        "relayId",
-        "customResolver",
-        "readonly",
-        "populatedBy",
-        "unique",
-    ],
+    query: [],
+    queryOptions: [],
+    shareable: [],
+    subscription: [],
+    subscriptionsAuthorization: [],
 };

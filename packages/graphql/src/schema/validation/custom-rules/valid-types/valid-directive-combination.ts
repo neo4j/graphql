@@ -18,11 +18,9 @@
  */
 
 import type {
+    ASTNode,
     ASTVisitor,
     DirectiveNode,
-    ASTNode,
-    InterfaceTypeDefinitionNode,
-    ObjectTypeDefinitionNode,
     EnumTypeDefinitionNode,
     EnumTypeExtensionNode,
     EnumValueDefinitionNode,
@@ -34,7 +32,9 @@ import type {
     InputObjectTypeDefinitionNode,
     InputObjectTypeExtensionNode,
     InputValueDefinitionNode,
+    InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
+    ObjectTypeDefinitionNode,
     ObjectTypeExtensionNode,
     OperationDefinitionNode,
     ScalarTypeDefinitionNode,
@@ -47,8 +47,12 @@ import type {
 } from "graphql";
 import { Kind, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { invalidCombinations } from "../../utils/invalid-directive-combinations";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import {
+    invalidFieldCombinations,
+    invalidInterfaceCombinations,
+    invalidObjectCombinations,
+} from "../../utils/invalid-directive-combinations";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
 import {
     getInheritedTypeNames,
     hydrateInterfaceWithImplementedTypesMap,
@@ -156,7 +160,9 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
                 return;
             }
 
-            const { isValid, errorMsg, errorPath } = assertValid(() => assertValidDirectives(directivesToCheck));
+            const { isValid, errorMsg, errorPath } = assertValid(() =>
+                assertValidDirectives(directivesToCheck, node.kind)
+            );
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
@@ -170,7 +176,23 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
     };
 }
 
-function assertValidDirectives(directives: DirectiveNode[]) {
+function getInvalidCombinations(kind: ASTNode["kind"]): Record<PropertyKey, ReadonlyArray<unknown>> {
+    if (kind === Kind.OBJECT_TYPE_DEFINITION || kind === Kind.OBJECT_TYPE_EXTENSION) {
+        return invalidObjectCombinations;
+    }
+    if (kind === Kind.FIELD_DEFINITION) {
+        return invalidFieldCombinations;
+    }
+    if (kind === Kind.INTERFACE_TYPE_DEFINITION || kind === Kind.INTERFACE_TYPE_EXTENSION) {
+        return invalidInterfaceCombinations;
+    }
+    // Allow user directives to be used anywhere
+    return {};
+}
+
+function assertValidDirectives(directives: DirectiveNode[], kind: ASTNode["kind"]) {
+    const invalidCombinations = getInvalidCombinations(kind);
+
     directives.forEach((directive) => {
         if (invalidCombinations[directive.name.value]) {
             directives.forEach((d) => {
