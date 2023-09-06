@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { INTERFACE_DIRECTIVES } from "../../../constants";
-import { FIELD_DIRECTIVES, OBJECT_DIRECTIVES } from "../../../constants";
+import type { INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES } from "../../../constants";
+import { FIELD_DIRECTIVES } from "../../../constants";
 
 export const invalidFieldCombinations: Record<
     (typeof FIELD_DIRECTIVES)[number],
@@ -79,14 +79,14 @@ export const invalidInterfaceCombinations: Record<
 };
 
 export const invalidObjectCombinations: Record<
-    (typeof OBJECT_DIRECTIVES)[number],
+    Exclude<(typeof OBJECT_DIRECTIVES)[number], "jwt">,
     ReadonlyArray<(typeof OBJECT_DIRECTIVES)[number]>
 > = {
     authentication: [],
     authorization: [],
     deprecated: [],
     fulltext: [],
-    jwt: OBJECT_DIRECTIVES,
+    // jwt: OBJECT_DIRECTIVES, // This is deliberately commented out. JWT is a special case. We do different validations for jwt.
     mutation: [],
     node: [],
     plural: [],
