@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
+import { customResolverDirective } from "../../../graphql/directives";
 import { CustomResolverAnnotation } from "../../annotation/CustomResolverAnnotation";
 import { parseArguments } from "../parse-arguments";
-import { customResolverDirective } from "../../../graphql/directives";
 
 export function parseCustomResolverAnnotation(directive: DirectiveNode): CustomResolverAnnotation {
-    const { requires } = parseArguments(customResolverDirective, directive) as { requires: string };
+    const { requires } = parseArguments<{ requires: string }>(customResolverDirective, directive);
 
     return new CustomResolverAnnotation({
         requires,
