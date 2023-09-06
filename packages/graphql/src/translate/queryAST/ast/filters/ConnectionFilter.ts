@@ -2,7 +2,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
-import { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
 
@@ -89,7 +89,7 @@ export class ConnectionFilter extends Filter {
                 .withDirection(this.relationship.getCypherDirection())
                 .to(target);
 
-            const nestedContext = new QueryASTContext({ target, relationship, source: queryASTContext.target });
+            const nestedContext = queryASTContext.push({ target, relationship });
 
             const predicate = this.createRelationshipOperation(pattern, nestedContext);
             if (!predicate) return undefined;
