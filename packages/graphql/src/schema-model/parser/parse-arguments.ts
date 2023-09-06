@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -20,10 +19,10 @@
 
 import { inspect } from "@graphql-tools/utils";
 import type { Maybe } from "@graphql-tools/utils/typings/types";
-import { isNonNullType, Kind, valueFromAST, print } from "graphql";
+import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
+import { Kind, isNonNullType, print, valueFromAST } from "graphql";
 import type { ObjMap } from "graphql/jsutils/ObjMap";
 import { parseValueNode } from "./parse-value-node";
-import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
 
 export function parseArgumentsFromUnknownDirective(directive: DirectiveNode): Record<string, unknown> {
     return (directive.arguments || [])?.reduce((acc, argument) => {
@@ -42,11 +41,11 @@ export function parseArgumentsFromUnknownDirective(directive: DirectiveNode): Re
  * exposed to user code. Care should be taken to not pull values from the
  * Object prototype.
  */
-export function parseArguments(
+export function parseArguments<T extends Record<string, unknown>>(
     def: GraphQLField<unknown, unknown> | GraphQLDirective,
     node: FieldNode | DirectiveNode,
     variableValues?: Maybe<ObjMap<unknown>>
-): { [argument: string]: unknown } {
+): T {
     const coercedValues: { [argument: string]: unknown } = {};
     const argumentNodes = node.arguments ?? [];
     const argNodeMap = new Map(argumentNodes.map((arg) => [arg.name.value, arg]));
@@ -94,5 +93,5 @@ export function parseArguments(
         }
         coercedValues[name] = coercedValue;
     }
-    return coercedValues;
+    return coercedValues as T;
 }

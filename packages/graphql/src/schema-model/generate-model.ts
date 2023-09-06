@@ -346,7 +346,7 @@ function generateConcreteEntity(
 function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
     const nodeDirectiveUsage = findDirective(entityDefinition.directives, nodeDirective.name);
     if (nodeDirectiveUsage) {
-        const nodeArguments = parseArguments(nodeDirective, nodeDirectiveUsage) as { labels?: string[] };
+        const nodeArguments = parseArguments<{ labels?: string[] }>(nodeDirective, nodeDirectiveUsage);
         if (nodeArguments.labels?.length) {
             return nodeArguments.labels;
         }
