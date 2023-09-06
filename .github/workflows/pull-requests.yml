@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 18.13.0
@@ -44,7 +44,7 @@ jobs:
       typescript_files: ${{ steps.filter.outputs.typescript_files }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # tag=v2.11.1
         id: filter
         with:
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version: "^1.17.0"
