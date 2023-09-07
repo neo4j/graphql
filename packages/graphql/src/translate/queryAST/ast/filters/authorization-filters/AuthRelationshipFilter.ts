@@ -20,7 +20,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { RelationshipFilter } from "../RelationshipFilter";
-import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import { Memoize } from "typescript-memoize";
 import type { QueryASTNode } from "../../QueryASTNode";
 
@@ -75,7 +74,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
 
     @Memoize()
     private get relatedNode(): Cypher.Node {
-        const relatedEntity = this.relationship.target as ConcreteEntity;
+        const relatedEntity = this.relationship.target as any;
         return new Cypher.Node({
             labels: relatedEntity.labels,
         });

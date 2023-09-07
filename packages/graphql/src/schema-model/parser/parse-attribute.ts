@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, TypeNode } from "graphql";
+import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
@@ -36,6 +36,7 @@ import {
     Neo4jCartesianPointType,
 } from "../attribute/AttributeType";
 import { Attribute } from "../attribute/Attribute";
+import { Argument } from "../argument/Argument";
 import { Field } from "../attribute/Field";
 import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
@@ -43,26 +44,60 @@ import { aliasDirective } from "../../graphql/directives";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
 
+function parseAttributeArguments(
+    fieldArgs: readonly InputValueDefinitionNode[],
+    definitionCollection: DefinitionCollection
+): Argument[] {
+    return fieldArgs.map((fieldArg) => {
+        return new Argument({
+            name: fieldArg.name.value,
+            type: parseTypeNode(definitionCollection, fieldArg.type),
+            defaultValue: fieldArg.defaultValue,
+            description: fieldArg.description?.value || "",
+        });
+    });
+}
+
 export function parseAttribute(
     field: FieldDefinitionNode,
+    inheritedField: FieldDefinitionNode[] | undefined,
     definitionCollection: DefinitionCollection
 ): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
-    const annotations = parseAnnotations(field.directives || []);
-    const databaseName = getDatabaseName(field);
+    const args = parseAttributeArguments(field.arguments || [], definitionCollection);
+    const inheritedDirectives = inheritedField?.flatMap((f) => f.directives || []) || [];
+    const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
+    const databaseName = getDatabaseName(field, inheritedField);
     return new Attribute({
         name,
         annotations,
         type,
+        args,
         databaseName,
+        description: field.description?.value || "",
     });
 }
 
-function getDatabaseName(fieldDefinitionNode: FieldDefinitionNode): string | undefined {
+function getDatabaseName(
+    fieldDefinitionNode: FieldDefinitionNode,
+    inheritedFields: FieldDefinitionNode[] | undefined
+): string | undefined {
     const aliasUsage = findDirective(fieldDefinitionNode.directives, aliasDirective.name);
     if (aliasUsage) {
-        const { property } = parseArguments(aliasDirective, aliasUsage) as { property: string };
+        const { property } = parseArguments<{ property: string }>(aliasDirective, aliasUsage);
+        return property;
+    }
+    const inheritedAliasUsage = inheritedFields?.reduce<DirectiveNode | undefined>((aliasUsage, field) => {
+        // TODO: takes the first one
+        // multiple interfaces can have this annotation - must constrain this flexibility by design
+        if (!aliasUsage) {
+            aliasUsage = findDirective(field.directives, aliasDirective.name);
+        }
+        return aliasUsage;
+    }, undefined);
+    if (inheritedAliasUsage) {
+        const { property } = parseArguments<{ property: string }>(aliasDirective, inheritedAliasUsage);
         return property;
     }
 }

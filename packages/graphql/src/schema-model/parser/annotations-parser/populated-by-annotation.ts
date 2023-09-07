@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
+import { populatedByDirective } from "../../../graphql/directives";
 import { PopulatedByAnnotation } from "../../annotation/PopulatedByAnnotation";
 import { parseArguments } from "../parse-arguments";
-import { populatedByDirective } from "../../../graphql/directives";
 
 export function parsePopulatedByAnnotation(directive: DirectiveNode): PopulatedByAnnotation {
-    const { callback, operations } = parseArguments(populatedByDirective, directive) as {
+    const { callback, operations } = parseArguments<{
         callback: string;
         operations: string[];
-    };
+    }>(populatedByDirective, directive);
 
     return new PopulatedByAnnotation({
         callback,

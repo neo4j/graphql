@@ -32,6 +32,9 @@ import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapt
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
+import { InterfaceEntity } from "./entity/InterfaceEntity";
+import { UnionEntity } from "./entity/UnionEntity";
+import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -291,6 +294,13 @@ describe("ComposeEntity generation", () => {
         expect(humanEntities?.concreteEntities).toHaveLength(1); // User
     });
 
+    test("composite entities has correct type", () => {
+        const toolEntities = schemaModel.compositeEntities.find((e) => e.name === "Tool");
+        expect(toolEntities).toBeInstanceOf(UnionEntity);
+        const humanEntities = schemaModel.compositeEntities.find((e) => e.name === "Human");
+        expect(humanEntities).toBeInstanceOf(InterfaceEntity);
+    });
+
     test("concrete entity has correct attributes", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
         expect(userEntity?.attributes.has("id")).toBeTrue();
@@ -312,19 +322,41 @@ describe("Relationship", () => {
                 favoriteShow: [Show!]! @relationship(type: "FAVORITE_SHOW", direction: OUT)
             }
 
+            interface Person {
+                favoriteActors: [Actor!]! @relationship(type: "FAVORITE_ACTOR", direction: OUT)
+            }
+
+            interface Human implements Person {
+                favoriteActors: [Actor!]! @relationship(type: "LIKES", direction: OUT)
+            }
+
+            interface Worker implements Person {
+                favoriteActors: [Actor!]!
+            }
+
             interface hasAccount @relationshipProperties {
                 creationTime: DateTime!
             }
 
             union Show = Movie | TvShow
 
-            type Movie {
-                name: String!
+            type Actor {
+                name: String
             }
 
-            type TvShow {
+            interface Production {
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie implements Production {
+                name: String!
+                actors: [Actor!]!
+            }
+
+            type TvShow implements Production {
                 name: String!
                 episodes: Int
+                actors: [Actor!]! @relationship(type: "STARED_IN", direction: OUT)
             }
 
             type Account {
@@ -332,8 +364,9 @@ describe("Relationship", () => {
                 username: String!
             }
 
-            extend type User {
+            extend type User implements Worker & Human & Person {
                 password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
+                favoriteActors: [Actor!]!
             }
         `;
 
@@ -359,9 +392,117 @@ describe("Relationship", () => {
         expect(accounts?.target.name).toBe("Account");
         expect(accounts?.attributes.has("creationTime")).toBeTrue();
     });
+
+    test("composite interface entity has correct relationship", () => {
+        const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
+        const actors = productionEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("ACTED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has inherited relationship", () => {
+        const movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie");
+        const actors = movieEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("ACTED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has overwritten the inherited relationship", () => {
+        const showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow");
+        const actors = showEntity?.relationships.get("actors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("STARED_IN");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("composite entity has overwritten the inherited relationship", () => {
+        const humanEntity = schemaModel.compositeEntities.find((e) => e.name === "Human") as InterfaceEntity;
+        const actors = humanEntity?.relationships.get("favoriteActors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("LIKES");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("composite entity has inherited relationship", () => {
+        const workerEntity = schemaModel.compositeEntities.find((e) => e.name === "Worker") as InterfaceEntity;
+        const actors = workerEntity?.relationships.get("favoriteActors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("FAVORITE_ACTOR");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
+
+    test("concrete entity has inherited relationship of first implemented interface with defined relationship", () => {
+        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+        const actors = userEntity?.relationships.get("favoriteActors");
+        expect(actors).toBeDefined();
+        expect(actors?.type).toBe("LIKES");
+        expect(actors?.direction).toBe("OUT");
+        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
+        expect(actors?.nestedOperations).toEqual([
+            "CREATE",
+            "UPDATE",
+            "DELETE",
+            "CONNECT",
+            "DISCONNECT",
+            "CONNECT_OR_CREATE",
+        ]);
+        expect(actors?.target.name).toBe("Actor");
+    });
 });
 
-describe("Annotations & Attributes", () => {
+describe("ConcreteEntity Annotations & Attributes", () => {
     let schemaModel: Neo4jGraphQLSchemaModel;
     let userEntity: ConcreteEntity;
     let accountEntity: ConcreteEntity;
@@ -444,6 +585,206 @@ describe("Annotations & Attributes", () => {
 
         expect(accountName?.databaseName).toBeDefined();
         expect(accountName?.databaseName).toBe("accountName");
+    });
+
+    describe("Arguments", () => {
+        test("attribute argument scalar", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID!
+                    name(something: Int): String!
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            const schemaModel = generateModel(document);
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.has("id")).toBeTrue();
+            expect(userEntity?.attributes.has("name")).toBeTrue();
+            const idAttribute = userEntity?.findAttribute("id");
+            expect(idAttribute?.args).toHaveLength(0);
+            const nameAttribute = userEntity?.findAttribute("name");
+            expect(nameAttribute?.args).toHaveLength(1);
+            expect(nameAttribute?.args[0]?.name).toBe("something");
+            expect(nameAttribute?.args[0]?.type.name).toBe(GraphQLBuiltInScalarType.Int);
+            expect(nameAttribute?.args[0]?.type.isRequired).toBeFalse();
+        });
+
+        test("attribute argument object", () => {
+            const typeDefs = gql`
+                type User {
+                    id: ID!
+                    favoritePet(from: [Animal]!): String!
+                }
+                type Animal {
+                    sound: String
+                }
+            `;
+
+            const document = mergeTypeDefs(typeDefs);
+            const schemaModel = generateModel(document);
+            const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+            expect(userEntity?.attributes.has("id")).toBeTrue();
+            expect(userEntity?.attributes.has("favoritePet")).toBeTrue();
+            const idAttribute = userEntity?.findAttribute("id");
+            expect(idAttribute?.args).toHaveLength(0);
+            const favoritePetAttribute = userEntity?.findAttribute("favoritePet");
+            expect(favoritePetAttribute?.args).toHaveLength(1);
+            expect(favoritePetAttribute?.args[0]?.name).toBe("from");
+            expect(favoritePetAttribute?.args[0]?.type).toEqual(new ListType(new ObjectType("Animal", false), true));
+        });
+    });
+});
+
+describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
+    test("concrete entity inherits from composite entity", () => {
+        const typeDefs = gql`
+            interface Production {
+                year: Int @populatedBy(callback: "thisCallback", operations: [CREATE])
+                defaultName: String! @default(value: "AwesomeProduction")
+                aliasedProp: String! @alias(property: "dbName")
+            }
+
+            type Movie implements Production {
+                name: String!
+                year: Int
+                defaultName: String!
+                aliasedProp: String! @alias(property: "movieDbName")
+            }
+
+            type TvShow implements Production {
+                name: String!
+                episodes: Int
+                year: Int @populatedBy(callback: "thisOtherCallback", operations: [CREATE])
+                aliasedProp: String!
+            }
+
+            extend type TvShow {
+                defaultName: String! @default(value: "AwesomeShow")
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        const schemaModel = generateModel(document);
+        const movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie") as ConcreteEntity;
+        const showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow") as ConcreteEntity;
+        const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
+
+        const productionYear = productionEntity?.attributes.get("year");
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const movieYear = movieEntity?.attributes.get("year");
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const showYear = showEntity?.attributes.get("year");
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisOtherCallback");
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const productionDefaultName = productionEntity?.attributes.get("defaultName");
+        expect(productionDefaultName).toBeDefined();
+        expect(productionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(productionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+
+        const movieDefaultName = movieEntity?.attributes.get("defaultName");
+        expect(movieDefaultName).toBeDefined();
+        expect(movieDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(movieDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+
+        const showDefaultName = showEntity?.attributes.get("defaultName");
+        expect(showDefaultName).toBeDefined();
+        expect(showDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(showDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeShow");
+
+        const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
+        const movieAliasedProp = movieEntity?.attributes.get("aliasedProp");
+        const showAliasedProp = showEntity?.attributes.get("aliasedProp");
+        expect(productionAliasedProp?.databaseName).toBeDefined();
+        expect(productionAliasedProp?.databaseName).toBe("dbName");
+        expect(movieAliasedProp?.databaseName).toBeDefined();
+        expect(movieAliasedProp?.databaseName).toBe("movieDbName");
+        expect(showAliasedProp?.databaseName).toBeDefined();
+        expect(showAliasedProp?.databaseName).toBe("dbName");
+    });
+
+    test("composite entity inherits from composite entity", () => {
+        const typeDefs = gql`
+            interface Production {
+                year: Int @populatedBy(callback: "thisCallback", operations: [CREATE])
+                defaultName: String! @default(value: "AwesomeProduction")
+                aliasedProp: String! @alias(property: "dbName")
+            }
+
+            interface TvProduction implements Production {
+                name: String!
+                year: Int
+                defaultName: String!
+                aliasedProp: String! @alias(property: "movieDbName")
+            }
+
+            type TvShow implements TvProduction & Production {
+                name: String!
+                episodes: Int
+                year: Int @populatedBy(callback: "thisOtherCallback", operations: [CREATE])
+                aliasedProp: String!
+            }
+
+            extend type TvShow {
+                defaultName: String! @default(value: "AwesomeShow")
+            }
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+        const schemaModel = generateModel(document);
+        const tvProductionEntity = schemaModel.compositeEntities.find(
+            (e) => e.name === "TvProduction"
+        ) as InterfaceEntity;
+        const showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow") as ConcreteEntity;
+        const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
+
+        const productionYear = productionEntity?.attributes.get("year");
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const tvProductionYear = tvProductionEntity?.attributes.get("year");
+        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
+        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const showYear = showEntity?.attributes.get("year");
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisOtherCallback");
+        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+
+        const productionDefaultName = productionEntity?.attributes.get("defaultName");
+        expect(productionDefaultName).toBeDefined();
+        expect(productionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(productionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+
+        const tvProductionDefaultName = tvProductionEntity?.attributes.get("defaultName");
+        expect(tvProductionDefaultName).toBeDefined();
+        expect(tvProductionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(tvProductionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+
+        const showDefaultName = showEntity?.attributes.get("defaultName");
+        expect(showDefaultName).toBeDefined();
+        expect(showDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
+        expect(showDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeShow");
+
+        const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
+        const tvProductionAliasedProp = tvProductionEntity?.attributes.get("aliasedProp");
+        const showAliasedProp = showEntity?.attributes.get("aliasedProp");
+        expect(productionAliasedProp?.databaseName).toBeDefined();
+        expect(productionAliasedProp?.databaseName).toBe("dbName");
+        expect(tvProductionAliasedProp?.databaseName).toBeDefined();
+        expect(tvProductionAliasedProp?.databaseName).toBe("movieDbName");
+        expect(showAliasedProp?.databaseName).toBeDefined();
+        expect(showAliasedProp?.databaseName).toBe("movieDbName"); // first one listed in the implements list decides
     });
 });
 

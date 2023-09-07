@@ -1,10 +1,9 @@
 import Cypher from "@neo4j/cypher-builder";
 import { Filter } from "../Filter";
 import type { CountFilter } from "./CountFilter";
-import type { ConcreteEntity } from "../../../../../schema-model/entity/ConcreteEntity";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { LogicalFilter } from "../LogicalFilter";
-import { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../../QueryASTNode";
 
@@ -30,7 +29,7 @@ export class AggregationFilter extends Filter {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         this.subqueryReturnVariable = new Cypher.Variable();
-        const relatedEntity = this.relationship.target as ConcreteEntity;
+        const relatedEntity = this.relationship.target as any;
         const relatedNode = new Cypher.Node({
             labels: relatedEntity.labels,
         });

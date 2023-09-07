@@ -106,7 +106,7 @@ export class FieldFactory {
                 if (field.name === "count") {
                     return new CountField({
                         alias: field.alias,
-                        entity,
+                        entity: entity as any,
                     });
                 } else {
                     const attribute = entity.findAttribute(field.name);

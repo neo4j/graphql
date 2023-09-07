@@ -215,6 +215,7 @@ function createCreateAndParams({
                         refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
+                        source: "CREATE",
                     });
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
@@ -249,6 +250,7 @@ function createCreateAndParams({
                     refNodes,
                     labelOverride: "",
                     parentNode: node,
+                    source: "CREATE",
                 });
                 res.creates.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };

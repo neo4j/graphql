@@ -175,7 +175,6 @@ describe("issues/3591", () => {
               disconnect?: InputMaybe<UserDisconnectInput>;
               create?: InputMaybe<UserRelationInput>;
               delete?: InputMaybe<UserDeleteInput>;
-              connectOrCreate?: InputMaybe<UserConnectOrCreateInput>;
             };
 
             export type MutationCreateCompaniesArgs = {
@@ -467,21 +466,11 @@ describe("issues/3591", () => {
               edges: Array<UserEdge>;
             };
 
-            export type CompanyConnectOrCreateWhere = {
-              node: CompanyUniqueWhere;
-            };
-
             export type CompanyConnectWhere = {
               node: CompanyWhere;
             };
 
             export type CompanyCreateInput = {
-              field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-              field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
-            };
-
-            export type CompanyOnCreateInput = {
               field1?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field2?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               field3?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -500,10 +489,6 @@ describe("issues/3591", () => {
               field1?: InputMaybe<SortDirection>;
               field2?: InputMaybe<SortDirection>;
               field3?: InputMaybe<SortDirection>;
-            };
-
-            export type CompanyUniqueWhere = {
-              id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
             };
 
             export type CompanyUpdateInput = {
@@ -637,7 +622,7 @@ describe("issues/3591", () => {
 
             export type UserCompanyConnectFieldInput = {
               where?: InputMaybe<CompanyConnectWhere>;
-              /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
+              /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
@@ -654,15 +639,6 @@ describe("issues/3591", () => {
               node_NOT?: InputMaybe<CompanyWhere>;
             };
 
-            export type UserCompanyConnectOrCreateFieldInput = {
-              where: CompanyConnectOrCreateWhere;
-              onCreate: UserCompanyConnectOrCreateFieldInputOnCreate;
-            };
-
-            export type UserCompanyConnectOrCreateFieldInputOnCreate = {
-              node: CompanyOnCreateInput;
-            };
-
             export type UserCompanyCreateFieldInput = {
               node: CompanyCreateInput;
             };
@@ -676,7 +652,6 @@ describe("issues/3591", () => {
             };
 
             export type UserCompanyFieldInput = {
-              connectOrCreate?: InputMaybe<Array<UserCompanyConnectOrCreateFieldInput>>;
               create?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
               connect?: InputMaybe<Array<UserCompanyConnectFieldInput>>;
             };
@@ -860,7 +835,6 @@ describe("issues/3591", () => {
 
             export type UserCompanyUpdateFieldInput = {
               where?: InputMaybe<UserCompanyConnectionWhere>;
-              connectOrCreate?: InputMaybe<Array<UserCompanyConnectOrCreateFieldInput>>;
               create?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
               connect?: InputMaybe<Array<UserCompanyConnectFieldInput>>;
               update?: InputMaybe<UserCompanyUpdateConnectionInput>;
@@ -873,10 +847,6 @@ describe("issues/3591", () => {
               favoriteRestaurants?: InputMaybe<
                 Array<UserFavoriteRestaurantsConnectFieldInput>
               >;
-            };
-
-            export type UserConnectOrCreateInput = {
-              company?: InputMaybe<Array<UserCompanyConnectOrCreateFieldInput>>;
             };
 
             export type UserCreateInput = {
@@ -912,7 +882,7 @@ describe("issues/3591", () => {
 
             export type UserFavoriteRestaurantsConnectFieldInput = {
               where?: InputMaybe<RestaurantConnectWhere>;
-              /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
+              /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
@@ -1149,7 +1119,7 @@ describe("issues/3591", () => {
                 connect?: UserConnectInput;
                 disconnect?: UserDisconnectInput;
                 create?: UserCreateInput;
-                connectOrCreate?: UserConnectOrCreateInput;
+
                 selectionSet?: string | DocumentNode | SelectionSetNode;
                 args?: any;
                 context?: any;

@@ -38,23 +38,28 @@ import {
     UnionType,
     ObjectType,
 } from "../AttributeType";
+import type { Argument } from "../../argument/Argument";
 
 export class AttributeAdapter {
     private _listModel: ListAdapter | undefined;
     private _mathModel: MathAdapter | undefined;
     private _aggregationModel: AggregationAdapter | undefined;
-    public name: string;
-    public annotations: Partial<Annotations>;
-    public type: AttributeType;
-    public databaseName: string;
+    public readonly name: string;
+    public readonly annotations: Partial<Annotations>;
+    public readonly type: AttributeType;
+    public readonly args: Argument[];
+    public readonly databaseName: string;
+    public readonly description: string;
     private assertionOptions: {
         includeLists: boolean;
     };
     constructor(attribute: Attribute) {
         this.name = attribute.name;
         this.type = attribute.type;
+        this.args = attribute.args;
         this.annotations = attribute.annotations;
         this.databaseName = attribute.databaseName;
+        this.description = attribute.description;
         this.assertionOptions = {
             includeLists: true,
         };

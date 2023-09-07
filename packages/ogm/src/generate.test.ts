@@ -1296,7 +1296,7 @@ describe("generate", () => {
             export type MovieActorsConnectFieldInput = {
               where?: InputMaybe<PersonConnectWhere>;
               edge: ActedInCreateInput;
-              /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
+              /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
@@ -2166,7 +2166,7 @@ describe("generate", () => {
               where?: InputMaybe<FaqEntryConnectWhere>;
               connect?: InputMaybe<Array<FaqEntryConnectInput>>;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
-              /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
+              /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
@@ -2438,7 +2438,7 @@ describe("generate", () => {
               where?: InputMaybe<FaqConnectWhere>;
               connect?: InputMaybe<Array<FaqConnectInput>>;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
-              /** Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0. */
+              /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 

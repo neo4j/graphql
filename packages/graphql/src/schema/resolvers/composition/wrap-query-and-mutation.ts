@@ -111,6 +111,7 @@ export const wrapQueryAndMutation =
             cypherQueryOptions: context.cypherQueryOptions,
             sessionConfig: context.sessionConfig,
             cypherParams: context.cypherParams,
+            transactionMetadata: context.transactionMetadata,
         });
 
         if (dbInfo) {

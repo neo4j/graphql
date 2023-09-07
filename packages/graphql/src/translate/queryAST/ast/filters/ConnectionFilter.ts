@@ -44,7 +44,7 @@ export class ConnectionFilter extends Filter {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const relatedEntity = this.relationship.target as ConcreteEntity;
+        const relatedEntity = this.relationship.target as any;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
         });
@@ -75,7 +75,7 @@ export class ConnectionFilter extends Filter {
         if (this.subqueryPredicate) return this.subqueryPredicate;
         else {
             //TODO: not concrete entities
-            const relatedEntity = this.relationship.target as ConcreteEntity;
+            const relatedEntity = this.relationship.target as any;
             const target = new Cypher.Node({
                 labels: relatedEntity.labels,
             });

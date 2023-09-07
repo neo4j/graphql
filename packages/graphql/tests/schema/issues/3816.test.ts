@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             input GenreMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere
@@ -355,7 +355,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             input MovieGenreConnectFieldInput {
               connect: GenreConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: GenreConnectWhere
@@ -656,7 +656,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
 
             input GenreMoviesConnectFieldInput {
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: MovieConnectWhere

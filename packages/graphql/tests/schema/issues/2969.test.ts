@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             input PostAuthorConnectFieldInput {
               connect: UserConnectInput
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: UserConnectWhere
@@ -420,7 +420,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             input UserPostsConnectFieldInput {
               connect: [PostConnectInput!]
               \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties. Will default to \`false\` in 4.0.0.
+              Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
               overwrite: Boolean! = true
               where: PostConnectWhere

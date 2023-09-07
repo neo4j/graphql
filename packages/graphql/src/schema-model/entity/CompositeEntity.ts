@@ -20,15 +20,8 @@
 import type { ConcreteEntity } from "./ConcreteEntity";
 import type { Entity } from "./Entity";
 
-/** Entity for abstract GraphQL types, Interface and Union */
-export class CompositeEntity implements Entity {
-    public readonly name: string;
-    public concreteEntities: ConcreteEntity[];
-    // TODO: add type interface or union, and for interface add fields
-    // TODO: add annotations
-
-    constructor({ name, concreteEntities }: { name: string; concreteEntities: ConcreteEntity[] }) {
-        this.name = name;
-        this.concreteEntities = concreteEntities;
-    }
+/** models the concept of an Abstract Type */
+export interface CompositeEntity extends Entity {
+    readonly name: string;
+    concreteEntities: ConcreteEntity[];
 }
