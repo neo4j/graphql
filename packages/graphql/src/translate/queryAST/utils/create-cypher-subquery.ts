@@ -38,7 +38,7 @@ export function createCypherAnnotationSubquery({
     if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
 
     const columnName = new Cypher.NamedVariable(cypherAnnotation.columnName);
-    const returnVariable = context.getScopeVariable(attribute.name) as Cypher.Node;
+    const returnVariable = context.getScopeVariable(attribute.name);
 
     const statementSubquery = getStatementSubquery(context, cypherAnnotation);
     const nestedFieldsSubqueries = getNestedFieldsSubqueries(returnVariable, context, nestedFields);
@@ -63,15 +63,23 @@ export function createCypherAnnotationSubquery({
     );
 }
 
+function isCypherNode(variable: Cypher.Variable): asserts variable is Cypher.Node {
+    if (!(variable instanceof Cypher.Node)) {
+        throw new Error("Compile Error: Expected Cypher.Variable to be a Cypher.Node");
+    }
+}
+
 function getNestedFieldsSubqueries(
-    target: Cypher.Node,
+    target: Cypher.Variable,
     context: QueryASTContext,
     nestedFields: Field[] | undefined
 ): Cypher.Clause | undefined {
     if (!nestedFields) return undefined;
-
+    isCypherNode(target);
     const nodeProjectionSubqueries = nestedFields.flatMap((f) =>
-        f.getSubqueries(new QueryASTContext({ target, queryASTEnv: context.env })).map((sq) => new Cypher.Call(sq).innerWith(target))
+        f
+            .getSubqueries(new QueryASTContext({ target, queryASTEnv: context.env }))
+            .map((sq) => new Cypher.Call(sq).innerWith(target))
     );
     return Cypher.concat(...nodeProjectionSubqueries);
 }
@@ -99,19 +107,9 @@ function getProjectionExpr({
         projection = new Cypher.MapProjection(fromVariable);
         // nested fields are presents only if the attribute is an object or an abstract type, and they produce a different projection
         if (nestedFields) {
-            const subqueriesProjection = nestedFields?.map((f) => f.getProjectionField(fromVariable));
-            for (const subqueryProjection of subqueriesProjection) {
-                projection.set(subqueryProjection);
-            }
+            setSubqueriesProjection(projection, nestedFields, fromVariable);
         } else {
-            for (const [alias, name] of Object.entries(fields)) {
-                if (alias === name) projection.set(alias);
-                else {
-                    projection.set({
-                        [alias]: fromVariable.property(name),
-                    });
-                }
-            }
+            setLeafsProjection(projection, fields, fromVariable);
         }
     }
 
@@ -121,4 +119,26 @@ function getProjectionExpr({
         return Cypher.head(collectedProjection);
     }
     return collectedProjection;
+}
+
+function setSubqueriesProjection(projection: Cypher.MapProjection, fields: Field[], fromVariable: Cypher.Variable) {
+    const subqueriesProjection = fields?.map((f) => f.getProjectionField(fromVariable));
+    for (const subqueryProjection of subqueriesProjection) {
+        projection.set(subqueryProjection);
+    }
+}
+
+function setLeafsProjection(
+    projection: Cypher.MapProjection,
+    fields: Record<string, string>,
+    fromVariable: Cypher.Variable
+) {
+    for (const [alias, name] of Object.entries(fields)) {
+        if (alias === name) projection.set(alias);
+        else {
+            projection.set({
+                [alias]: fromVariable.property(name),
+            });
+        }
+    }
 }
