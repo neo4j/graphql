@@ -83,6 +83,7 @@ describe("RelationshipAdapter", () => {
             queryDirection: "DEFAULT_DIRECTED",
             nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "CONNECT_OR_CREATE"],
             aggregate: false,
+            isNullable: false,
         });
         userEntity.addRelationship(relationship);
 
