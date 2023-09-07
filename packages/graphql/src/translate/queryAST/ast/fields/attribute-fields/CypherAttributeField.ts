@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { Field } from "../Field";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
 
@@ -27,18 +28,22 @@ import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-sub
 export class CypherAttributeField extends AttributeField {
     private customCypherVar = new Cypher.Node(); // TODO: should be from context scope
     private projection: Record<string, string> | undefined;
+    private nestedFields: Field[] | undefined;
 
     constructor({
         alias,
         attribute,
         projection,
+        nestedFields,
     }: {
         alias: string;
         attribute: AttributeAdapter;
-        projection: Record<string, string> | undefined;
+        projection?: Record<string, string>;
+        nestedFields?: Field[];
     }) {
         super({ alias, attribute });
         this.projection = projection;
+        this.nestedFields = nestedFields;
     }
 
     public getProjectionField(_variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
@@ -56,6 +61,7 @@ export class CypherAttributeField extends AttributeField {
             context,
             attribute: this.attribute,
             projectionFields: this.projection,
+            nestedFields: this.nestedFields,
         });
 
         return [subquery];
