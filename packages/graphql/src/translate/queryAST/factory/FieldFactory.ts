@@ -193,7 +193,7 @@ export class FieldFactory {
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities
                 if (!targetEntity) throw new Error(`Entity ${typeName} not found`);
-                if (this.queryASTFactory.schemaModel.isConcreteEntity(targetEntity)) {
+                if (targetEntity.isConcreteEntity()) {
                     const concreteEntityAdapter = new ConcreteEntityAdapter(targetEntity);
                     nestedFields = this.createFields(concreteEntityAdapter, rawFields, context);
                 }
