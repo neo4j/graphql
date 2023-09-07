@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import type { INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES } from "../../../constants";
+import type { FieldDirective, InterfaceDirective, ObjectDirective } from "../../../constants";
 import { FIELD_DIRECTIVES } from "../../../constants";
 
-export const invalidFieldCombinations: Record<
-    (typeof FIELD_DIRECTIVES)[number],
-    ReadonlyArray<(typeof FIELD_DIRECTIVES)[number] | "private">
-> = {
+type InvalidFieldCombinations = Record<FieldDirective, ReadonlyArray<FieldDirective | "private">>;
+
+export const invalidFieldCombinations: InvalidFieldCombinations = {
     alias: ["cypher", "customResolver", "relationship"],
     authentication: ["customResolver", "relationship"],
     authorization: ["customResolver", "relationship"],
@@ -71,17 +70,15 @@ export const invalidFieldCombinations: Record<
     filterable: ["customResolver"],
 };
 
-export const invalidInterfaceCombinations: Record<
-    (typeof INTERFACE_DIRECTIVES)[number],
-    ReadonlyArray<(typeof INTERFACE_DIRECTIVES)[number]>
-> = {
+type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<InterfaceDirective>>;
+
+export const invalidInterfaceCombinations: InvalidInterfaceCombinations = {
     relationshipProperties: [],
 };
 
-export const invalidObjectCombinations: Record<
-    Exclude<(typeof OBJECT_DIRECTIVES)[number], "jwt">,
-    ReadonlyArray<(typeof OBJECT_DIRECTIVES)[number]>
-> = {
+type InvalidObjectCombinations = Record<Exclude<ObjectDirective, "jwt">, ReadonlyArray<ObjectDirective>>;
+
+export const invalidObjectCombinations: InvalidObjectCombinations = {
     authentication: [],
     authorization: [],
     deprecated: [],

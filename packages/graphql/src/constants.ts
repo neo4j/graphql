@@ -131,6 +131,8 @@ export const FIELD_DIRECTIVES = [
     "writeonly",
 ] as const;
 
+export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
+
 export const OBJECT_DIRECTIVES = [
     "authentication",
     "authorization",
@@ -147,7 +149,11 @@ export const OBJECT_DIRECTIVES = [
     "subscriptionsAuthorization",
 ] as const;
 
+export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
+
 export const INTERFACE_DIRECTIVES = ["relationshipProperties"] as const;
+
+export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 
 export const DEPRECATED = "deprecated";
 
