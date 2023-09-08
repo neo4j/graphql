@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
+import type { DirectiveNode } from "graphql";
 import { DEPRECATED } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type {
     CustomEnumField,
     CustomScalarField,
@@ -47,7 +49,7 @@ function getWhereFields({
     fields: Fields;
     isInterface?: boolean;
     features?: Neo4jFeaturesSettings;
-}): { [k: string]: string } {
+}) {
     return {
         ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]`, NOT: `${typeName}Where` }),
         ...[
@@ -165,3 +167,147 @@ function getWhereFields({
 }
 
 export default getWhereFields;
+
+export function getWhereFieldsFromConcreteEntity({
+    concreteEntityAdapter,
+    userDefinedFieldDirectives,
+    features,
+}: {
+    concreteEntityAdapter: ConcreteEntityAdapter;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    features?: Neo4jFeaturesSettings;
+}): Record<string, any> {
+    // Add the default where fields
+    const result = {
+        OR: `[${concreteEntityAdapter.name}Where!]`,
+        AND: `[${concreteEntityAdapter.name}Where!]`,
+        NOT: `${concreteEntityAdapter.name}Where`,
+    };
+
+    // Add the where fields for each attribute
+    for (const field of concreteEntityAdapter.attributes.values()) {
+        // If the field is not a where field, skip it
+        if (field.isWhereField() === false) {
+            continue;
+        }
+
+        // If the attribute is not filterable, skip it
+        if (field.isFilterable() === false) {
+            continue;
+        }
+
+        // If the field has a custom resolver, skip it
+        if (field.isCustomResolvable()) {
+            continue;
+        }
+
+        // If the field is a custom cypher field, skip it
+        if (field.isCypher()) {
+            continue;
+        }
+
+        const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
+        );
+
+        result[field.name] = {
+            type: field.getInputTypeNames().where.pretty,
+            directives: deprecatedDirectives,
+        };
+
+        result[`${field.name}_NOT`] = {
+            type: field.getInputTypeNames().where.pretty,
+            directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+        };
+
+        // If the field is a boolean, skip it
+        // This is done here because the previous additions are still added for boolean fields
+        if (field.isBoolean()) {
+            continue;
+        }
+
+        // If the field is an array, add the includes and not includes fields
+        // if (field.isArray()) {
+        if (field.isList()) {
+            result[`${field.name}_INCLUDES`] = {
+                type: field.getInputTypeNames().where.type,
+                directives: deprecatedDirectives,
+            };
+            result[`${field.name}_NOT_INCLUDES`] = {
+                type: field.getInputTypeNames().where.type,
+                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+            };
+            continue;
+        }
+
+        // If the field is not an array, add the in and not in fields
+        result[`${field.name}_IN`] = {
+            type: field.getFilterableInputTypeName(),
+            directives: deprecatedDirectives,
+        };
+
+        result[`${field.name}_NOT_IN`] = {
+            type: field.getFilterableInputTypeName(),
+            directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+        };
+
+        // If the field is a number or temporal, add the comparison operators
+        if (field.isNumericalOrTemporal()) {
+            ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                result[`${field.name}${comparator}`] = {
+                    type: field.getInputTypeNames().where.type,
+                    directives: deprecatedDirectives,
+                };
+            });
+            continue;
+        }
+
+        // If the field is spatial, add the point comparison operators
+        if (field.isSpatial()) {
+            ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                result[`${field.name}${comparator}`] = {
+                    type: `${field.getTypeName()}Distance`,
+                    directives: deprecatedDirectives,
+                };
+            });
+            continue;
+        }
+
+        // If the field is a string, add the string comparison operators
+        if (field.isString() || field.isID()) {
+            const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
+                { comparator: "_CONTAINS", typeName: field.getInputTypeNames().where.type },
+                { comparator: "_STARTS_WITH", typeName: field.getInputTypeNames().where.type },
+                { comparator: "_ENDS_WITH", typeName: field.getInputTypeNames().where.type },
+            ];
+
+            Object.entries(features?.filters?.[field.getInputTypeNames().where.type] || {}).forEach(
+                ([filter, enabled]) => {
+                    if (enabled) {
+                        if (filter === "MATCHES") {
+                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: "String" });
+                        } else {
+                            stringWhereOperators.push({
+                                comparator: `_${filter}`,
+                                typeName: field.getInputTypeNames().where.type,
+                            });
+                        }
+                    }
+                }
+            );
+            stringWhereOperators.forEach(({ comparator, typeName }) => {
+                result[`${field.name}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
+            });
+
+            ["_NOT_CONTAINS", "_NOT_STARTS_WITH", "_NOT_ENDS_WITH"].forEach((comparator) => {
+                result[`${field.name}${comparator}`] = {
+                    type: field.getInputTypeNames().where.type,
+                    directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_NOT],
+                };
+            });
+        }
+    }
+
+    return result;
+}
