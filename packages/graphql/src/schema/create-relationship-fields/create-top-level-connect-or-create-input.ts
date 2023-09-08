@@ -19,6 +19,7 @@
 
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { upperFirst } from "graphql-compose";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationField } from "../../types";
 
 export function createTopLevelConnectOrCreateInput({
@@ -40,6 +41,28 @@ export function createTopLevelConnectOrCreateInput({
 
     nodeConnectOrCreateInput.addFields({
         [rel.fieldName]: rel.typeMeta.array
+            ? `[${nodeFieldConnectOrCreateInputName}!]`
+            : nodeFieldConnectOrCreateInputName,
+    });
+}
+
+export function createTopLevelConnectOrCreateInput2({
+    schemaComposer,
+    sourceName,
+    relationshipAdapter,
+}: {
+    schemaComposer: SchemaComposer;
+    sourceName: string;
+    relationshipAdapter: RelationshipAdapter;
+}): void {
+    const nodeConnectOrCreateInput: InputTypeComposer<any> = schemaComposer.getOrCreateITC(
+        `${sourceName}ConnectOrCreateInput`
+    );
+
+    const nodeFieldConnectOrCreateInputName = relationshipAdapter.connectOrCreateFieldInputTypeName;
+
+    nodeConnectOrCreateInput.addFields({
+        [relationshipAdapter.name]: relationshipAdapter.isList
             ? `[${nodeFieldConnectOrCreateInputName}!]`
             : nodeFieldConnectOrCreateInputName,
     });
