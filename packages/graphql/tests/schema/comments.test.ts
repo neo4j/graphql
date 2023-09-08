@@ -65,6 +65,7 @@ describe("Comments", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -79,6 +80,7 @@ describe("Comments", () => {
             \\"\\"\\"A custom scalar.\\"\\"\\"
             scalar CustomScalar
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -117,8 +119,11 @@ describe("Comments", () => {
               actorCount: Int
               \\"\\"\\"The average rating for the movie.\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               customScalar: CustomScalar
+              \\"\\"\\"\\"\\"\\"
               genre: Genre
+              \\"\\"\\"\\"\\"\\"
               id: ID
               \\"\\"\\"
               Is the movie active?
@@ -253,6 +258,7 @@ describe("Comments", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -260,6 +266,7 @@ describe("Comments", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -297,7 +304,9 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Actor {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -366,6 +375,7 @@ describe("Comments", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -377,6 +387,7 @@ describe("Comments", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -388,11 +399,13 @@ describe("Comments", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -648,6 +661,7 @@ describe("Comments", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -665,6 +679,7 @@ describe("Comments", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -747,10 +762,12 @@ describe("Comments", () => {
                   screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  \\"\\"\\"\\"\\"\\"
                   name: String!
                 }
 
@@ -915,6 +932,7 @@ describe("Comments", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -931,6 +949,7 @@ describe("Comments", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -944,8 +963,11 @@ describe("Comments", () => {
                   sum: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie implements Production {
+                  \\"\\"\\"\\"\\"\\"
                   runtime: Int!
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -1109,8 +1131,11 @@ describe("Comments", () => {
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Series implements Production {
+                  \\"\\"\\"\\"\\"\\"
                   episodes: Int!
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -1184,6 +1209,7 @@ describe("Comments", () => {
                   title_STARTS_WITH: String
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1201,6 +1227,7 @@ describe("Comments", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1249,6 +1276,7 @@ describe("Comments", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1260,13 +1288,16 @@ describe("Comments", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Genre {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -1335,11 +1366,14 @@ describe("Comments", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                   \\"\\"\\"\\"\\"\\"
                   search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
                   searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
+                  \\"\\"\\"\\"\\"\\"
                   searchNoDirective: Search
                 }
 
@@ -1598,6 +1632,7 @@ describe("Comments", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -1610,6 +1645,7 @@ describe("Comments", () => {
                   Movie: MovieWhere
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1622,6 +1658,7 @@ describe("Comments", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!

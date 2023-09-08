@@ -45,6 +45,7 @@ describe("Directive-preserve", () => {
 
             directive @preservedTopLevel(boolean: Boolean, float: Float, int: Int, string: String) on OBJECT
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -56,6 +57,7 @@ describe("Directive-preserve", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -67,7 +69,9 @@ describe("Directive-preserve", () => {
               shortest: ID
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie @preservedTopLevel {
+              \\"\\"\\"\\"\\"\\"
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
             }
 
@@ -147,6 +151,7 @@ describe("Directive-preserve", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -154,6 +159,7 @@ describe("Directive-preserve", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -197,6 +203,7 @@ describe("Directive-preserve", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -208,6 +215,7 @@ describe("Directive-preserve", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -221,10 +229,13 @@ describe("Directive-preserve", () => {
               sum: Float
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Genre {
+              \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String
             }
 
@@ -520,12 +531,17 @@ describe("Directive-preserve", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
               genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use\\")
               genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"\\"\\"\\"
               imdbRating: Float
+              \\"\\"\\"\\"\\"\\"
               title: String
+              \\"\\"\\"\\"\\"\\"
               year: Int
             }
 
@@ -818,6 +834,7 @@ describe("Directive-preserve", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -835,6 +852,7 @@ describe("Directive-preserve", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2813,10 +2831,13 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Blog {
+              \\"\\"\\"\\"\\"\\"
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(directed: Boolean = true, where: PostWhere): BlogPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [BlogPostsConnectionSort!], where: BlogPostsConnectionWhere): BlogPostsConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String
             }
 
@@ -3062,6 +3083,7 @@ describe("Directive-preserve", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3078,6 +3100,7 @@ describe("Directive-preserve", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -3104,7 +3127,9 @@ describe("Directive-preserve", () => {
               startCursor: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Post {
+              \\"\\"\\"\\"\\"\\"
               content: String @deprecated(reason: \\"Do not use post.content\\")
             }
 
@@ -3180,11 +3205,13 @@ describe("Directive-preserve", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3202,6 +3229,7 @@ describe("Directive-preserve", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3220,9 +3248,12 @@ describe("Directive-preserve", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type User {
+              \\"\\"\\"\\"\\"\\"
               content(directed: Boolean = true, options: QueryOptions, where: ContentWhere): [Content!]! @deprecated(reason: \\"Do not use user.content\\")
               contentConnection(after: String, directed: Boolean = true, first: Int, where: UserContentConnectionWhere): UserContentConnection! @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"\\"\\"\\"
               name: String
             }
 

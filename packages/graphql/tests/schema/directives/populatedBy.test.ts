@@ -162,6 +162,7 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -173,6 +174,7 @@ describe("@populatedBy tests", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -184,10 +186,15 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   callback1: String!
+                  \\"\\"\\"\\"\\"\\"
                   callback2: String!
+                  \\"\\"\\"\\"\\"\\"
                   callback3: String!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -303,6 +310,7 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -315,6 +323,7 @@ describe("@populatedBy tests", () => {
                   shortest: String!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -365,6 +374,7 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -376,6 +386,7 @@ describe("@populatedBy tests", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -394,10 +405,15 @@ describe("@populatedBy tests", () => {
                   sum: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   callback1: Int!
+                  \\"\\"\\"\\"\\"\\"
                   callback2: Int!
+                  \\"\\"\\"\\"\\"\\"
                   callback3: Int!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -507,6 +523,7 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -514,6 +531,7 @@ describe("@populatedBy tests", () => {
                   DESC
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -713,6 +731,7 @@ describe("@populatedBy tests", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -724,13 +743,16 @@ describe("@populatedBy tests", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Genre {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
                 }
 
@@ -804,10 +826,13 @@ describe("@populatedBy tests", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
                   genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -1228,6 +1253,7 @@ describe("@populatedBy tests", () => {
                   id_STARTS_WITH: ID
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1245,6 +1271,7 @@ describe("@populatedBy tests", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1309,6 +1336,7 @@ describe("@populatedBy tests", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1320,13 +1348,16 @@ describe("@populatedBy tests", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Genre {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
                 }
 
@@ -1407,10 +1438,13 @@ describe("@populatedBy tests", () => {
                   sum: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]!
                   genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -1795,6 +1829,7 @@ describe("@populatedBy tests", () => {
                   id_STARTS_WITH: ID
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1807,6 +1842,7 @@ describe("@populatedBy tests", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!

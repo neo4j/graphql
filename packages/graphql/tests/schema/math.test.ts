@@ -38,6 +38,7 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -49,6 +50,7 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -67,8 +69,11 @@ describe("Algebraic", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               viewers: Int!
             }
 
@@ -162,6 +167,7 @@ describe("Algebraic", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -169,6 +175,7 @@ describe("Algebraic", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -211,6 +218,7 @@ describe("Algebraic", () => {
               sum: BigInt!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -222,6 +230,7 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -233,8 +242,11 @@ describe("Algebraic", () => {
               shortest: ID
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               viewers: BigInt!
             }
 
@@ -328,6 +340,7 @@ describe("Algebraic", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -335,6 +348,7 @@ describe("Algebraic", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -366,6 +380,7 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -377,6 +392,7 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -395,8 +411,11 @@ describe("Algebraic", () => {
               shortest: ID
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               viewers: Float!
             }
 
@@ -492,6 +511,7 @@ describe("Algebraic", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -499,6 +519,7 @@ describe("Algebraic", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -540,6 +561,7 @@ describe("Algebraic", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -551,16 +573,20 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Director {
+              \\"\\"\\"\\"\\"\\"
               directs(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               directsAggregate(directed: Boolean = true, where: MovieWhere): DirectorMovieDirectsAggregationSelection
               directsConnection(after: String, directed: Boolean = true, first: Int, sort: [DirectorDirectsConnectionSort!], where: DirectorDirectsConnectionWhere): DirectorDirectsConnection!
+              \\"\\"\\"\\"\\"\\"
               lastName: String!
             }
 
@@ -801,11 +827,15 @@ describe("Algebraic", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               directedBy(directed: Boolean = true, options: DirectorOptions, where: DirectorWhere): Director
               directedByAggregate(directed: Boolean = true, where: DirectorWhere): MovieDirectorDirectedByAggregationSelection
               directedByConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectedByConnectionSort!], where: MovieDirectedByConnectionWhere): MovieDirectedByConnection!
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               viewers: Int!
             }
 
@@ -1058,6 +1088,7 @@ describe("Algebraic", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1075,6 +1106,7 @@ describe("Algebraic", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1115,6 +1147,7 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1131,6 +1164,7 @@ describe("Algebraic", () => {
               people: [Person!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1149,9 +1183,13 @@ describe("Algebraic", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements Production {
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               viewers: Int!
+              \\"\\"\\"\\"\\"\\"
               workers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
               workersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonWorkersAggregationSelection
               workersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieWorkersConnectionSort!], where: MovieWorkersConnectionWhere): MovieWorkersConnection!
@@ -1423,8 +1461,11 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Person {
+              \\"\\"\\"\\"\\"\\"
               name: String!
+              \\"\\"\\"\\"\\"\\"
               worksInProduction(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
               worksInProductionConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
             }
@@ -1667,6 +1708,7 @@ describe("Algebraic", () => {
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1679,6 +1721,7 @@ describe("Algebraic", () => {
               shortest: String!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1769,6 +1812,7 @@ describe("Algebraic", () => {
               roles_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1785,6 +1829,7 @@ describe("Algebraic", () => {
               people: [Person!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1798,10 +1843,13 @@ describe("Algebraic", () => {
               sum: Float
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
               actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -2106,10 +2154,13 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Person {
+              \\"\\"\\"\\"\\"\\"
               actedInMovies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               actedInMoviesAggregate(directed: Boolean = true, where: MovieWhere): PersonMovieActedInMoviesAggregationSelection
               actedInMoviesConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonActedInMoviesConnectionSort!], where: PersonActedInMoviesConnectionWhere): PersonActedInMoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -2394,6 +2445,7 @@ describe("Algebraic", () => {
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -2406,6 +2458,7 @@ describe("Algebraic", () => {
               shortest: String!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

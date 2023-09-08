@@ -100,11 +100,13 @@ describe("Relationship-properties", () => {
               startDate_NOT_IN: [Date!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -392,6 +394,7 @@ describe("Relationship-properties", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -406,6 +409,7 @@ describe("Relationship-properties", () => {
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -419,11 +423,13 @@ describe("Relationship-properties", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -732,6 +738,7 @@ describe("Relationship-properties", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -749,6 +756,7 @@ describe("Relationship-properties", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -845,11 +853,13 @@ describe("Relationship-properties", () => {
               timestamp_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -1155,6 +1165,7 @@ describe("Relationship-properties", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1174,6 +1185,7 @@ describe("Relationship-properties", () => {
               min: DateTime!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1192,11 +1204,13 @@ describe("Relationship-properties", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -1523,6 +1537,7 @@ describe("Relationship-properties", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1540,6 +1555,7 @@ describe("Relationship-properties", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1615,11 +1631,13 @@ describe("Relationship-properties", () => {
               timestamp_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -1895,6 +1913,7 @@ describe("Relationship-properties", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1914,6 +1933,7 @@ describe("Relationship-properties", () => {
               min: DateTime!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1925,11 +1945,13 @@ describe("Relationship-properties", () => {
               shortest: ID!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -2226,6 +2248,7 @@ describe("Relationship-properties", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -2243,6 +2266,7 @@ describe("Relationship-properties", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

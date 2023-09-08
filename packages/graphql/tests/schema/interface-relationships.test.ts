@@ -89,9 +89,12 @@ describe("Interface Relationships", () => {
               screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -256,6 +259,7 @@ describe("Interface Relationships", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -272,6 +276,7 @@ describe("Interface Relationships", () => {
               series: [Series!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -285,8 +290,11 @@ describe("Interface Relationships", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements Production {
+              \\"\\"\\"\\"\\"\\"
               runtime: Int!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -450,8 +458,11 @@ describe("Interface Relationships", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements Production {
+              \\"\\"\\"\\"\\"\\"
               episodes: Int!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -525,6 +536,7 @@ describe("Interface Relationships", () => {
               title_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -542,6 +554,7 @@ describe("Interface Relationships", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

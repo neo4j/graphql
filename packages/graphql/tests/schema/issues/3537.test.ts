@@ -69,8 +69,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               password: String!
+              \\"\\"\\"\\"\\"\\"
               username: String!
             }
 
@@ -143,6 +146,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -154,13 +158,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               title: String
             }
 
@@ -240,6 +247,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -252,6 +260,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -332,8 +341,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               password: String!
+              \\"\\"\\"\\"\\"\\"
               username: String!
             }
 
@@ -397,7 +409,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               title: String
             }
 
@@ -467,6 +481,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -554,8 +569,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               password: String!
+              \\"\\"\\"\\"\\"\\"
               username: String!
             }
 
@@ -672,6 +690,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -683,6 +702,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -697,7 +717,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               UPDATE
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               title: String
             }
 
@@ -811,6 +833,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -838,6 +861,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

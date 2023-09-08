@@ -59,7 +59,9 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -167,6 +169,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -178,6 +181,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -211,14 +215,19 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actorCount: Int
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               isActive: Boolean
             }
 
@@ -617,6 +626,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -645,6 +655,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -691,6 +702,7 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -987,6 +999,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -998,6 +1011,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1031,14 +1045,19 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actorCount: Int
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               isActive: Boolean
             }
 
@@ -1373,6 +1392,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1398,6 +1418,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1456,6 +1477,7 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1477,6 +1499,7 @@ describe("Subscriptions", () => {
               stars: [Star!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1510,13 +1533,18 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actorCount: Int
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: QueryOptions, where: ActorWhere): [Actor!]!
               actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               isActive: Boolean
             }
 
@@ -1901,6 +1929,7 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Person {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -2198,11 +2227,13 @@ describe("Subscriptions", () => {
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -2210,6 +2241,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Star {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -2519,6 +2551,7 @@ describe("Subscriptions", () => {
               starUpdated: StarUpdatedEvent!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2625,6 +2658,7 @@ describe("Subscriptions", () => {
               screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -2921,6 +2955,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2932,6 +2967,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -2972,14 +3008,19 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actorCount: Int
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               isActive: Boolean
             }
 
@@ -3381,6 +3422,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3406,6 +3448,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3450,7 +3493,9 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -3558,6 +3603,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3569,6 +3615,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -3602,14 +3649,19 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actorCount: Int
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               isActive: Boolean
             }
 
@@ -3900,6 +3952,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3923,6 +3976,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3965,8 +4019,11 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Agreement {
+              \\"\\"\\"\\"\\"\\"
               id: Int!
+              \\"\\"\\"\\"\\"\\"
               name: String
               \\"\\"\\"\\"\\"\\"
               owner(directed: Boolean = true, options: UserOptions, where: UserWhere): User
@@ -4327,12 +4384,14 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -4377,6 +4436,7 @@ describe("Subscriptions", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -4407,6 +4467,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -4415,8 +4476,11 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type User {
+              \\"\\"\\"\\"\\"\\"
               name: String
+              \\"\\"\\"\\"\\"\\"
               username: String!
             }
 
@@ -4570,6 +4634,7 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -4591,6 +4656,7 @@ describe("Subscriptions", () => {
               stars: [Star!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -4624,13 +4690,18 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actorCount: Int
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: QueryOptions, where: ActorWhere): [Actor!]!
               actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               averageRating: Float
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               isActive: Boolean
             }
 
@@ -5015,6 +5086,7 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Person {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -5312,11 +5384,13 @@ describe("Subscriptions", () => {
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -5324,6 +5398,7 @@ describe("Subscriptions", () => {
               DESC
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Star {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
@@ -5571,6 +5646,7 @@ describe("Subscriptions", () => {
               personUpdated: PersonUpdatedEvent!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

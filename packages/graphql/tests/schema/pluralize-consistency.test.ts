@@ -43,6 +43,7 @@ describe("Pluralize consistency", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -59,6 +60,7 @@ describe("Pluralize consistency", () => {
               superUsers: [super_user!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -91,6 +93,7 @@ describe("Pluralize consistency", () => {
               superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -115,6 +118,7 @@ describe("Pluralize consistency", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -133,7 +137,9 @@ describe("Pluralize consistency", () => {
               superUsers: [super_user!]!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type super_friend {
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -191,10 +197,13 @@ describe("Pluralize consistency", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type super_user {
+              \\"\\"\\"\\"\\"\\"
               my_friend(directed: Boolean = true, options: super_friendOptions, where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(directed: Boolean = true, where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
+              my_friendAggregate(directed: Boolean = true, where: super_friendWhere): super_userSuper_friendMy_friendAggregationSelection
               my_friendConnection(after: String, directed: Boolean = true, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -359,6 +368,15 @@ describe("Pluralize consistency", () => {
               name: SortDirection
             }
 
+            type super_userSuper_friendMy_friendAggregationSelection {
+              count: Int!
+              node: super_userSuper_friendMy_friendNodeAggregateSelection
+            }
+
+            type super_userSuper_friendMy_friendNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
+
             input super_userUpdateInput {
               my_friend: [super_userMy_friendUpdateFieldInput!]
               name: String
@@ -415,15 +433,6 @@ describe("Pluralize consistency", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
-            }
-
-            type super_usersuper_friendMy_friendAggregationSelection {
-              count: Int!
-              node: super_usersuper_friendMy_friendNodeAggregateSelection
-            }
-
-            type super_usersuper_friendMy_friendNodeAggregateSelection {
-              name: StringAggregateSelectionNonNullable!
             }"
         `);
     });

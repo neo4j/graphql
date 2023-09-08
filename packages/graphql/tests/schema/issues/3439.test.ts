@@ -79,6 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -95,6 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               series: [Series!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -109,7 +111,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               UPDATE
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Genre {
+              \\"\\"\\"\\"\\"\\"
               name: String!
               \\"\\"\\"\\"\\"\\"
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
@@ -511,12 +515,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements INode & IProduct {
               \\"\\"\\"\\"\\"\\"
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -884,12 +891,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements INode & IProduct {
               \\"\\"\\"\\"\\"\\"
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesGenreConnectionSort!], where: SeriesGenreConnectionWhere): SeriesGenreConnection!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -1225,6 +1235,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1260,6 +1271,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2499,6 +2511,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2515,6 +2528,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               series: [Series!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -2529,7 +2543,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               UPDATE
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Genre {
+              \\"\\"\\"\\"\\"\\"
               name: String!
               \\"\\"\\"\\"\\"\\"
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
@@ -2881,9 +2897,13 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre: Genre!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -3039,9 +3059,13 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre: Genre!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -3165,6 +3189,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3196,6 +3221,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
