@@ -20,6 +20,7 @@
 import { GraphQLInt } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
 import { SCALAR_TYPES } from "../constants";
+import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { BaseField } from "../types";
 
 export function addArrayMethodsToITC(itc: InputTypeComposer, fields: BaseField[]): void {
@@ -32,6 +33,18 @@ export function addArrayMethodsToITC(itc: InputTypeComposer, fields: BaseField[]
         itc.addFields({
             [`${arrayField.fieldName}_POP`]: GraphQLInt,
             [`${arrayField.fieldName}_PUSH`]: arrayField.typeMeta.input.update.pretty,
+        });
+    });
+}
+
+export function addArrayMethodsToITC2(itc: InputTypeComposer, arrayMethodFields: AttributeAdapter[]): void {
+    // TODO: Did we need to consider the deprecated directives here?
+    // It wasn't done before
+
+    arrayMethodFields.forEach((arrayField) => {
+        itc.addFields({
+            [`${arrayField.name}_POP`]: GraphQLInt,
+            [`${arrayField.name}_PUSH`]: arrayField.getInputTypeNames().update.pretty,
         });
     });
 }
