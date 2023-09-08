@@ -239,11 +239,15 @@ function hydrateRelationships(
         if (relationshipFieldsMap.has(fieldDefinition.name.value)) {
             continue;
         }
+        const mergedDirectives = mergedFields
+            .filter((f) => f.name.value === fieldDefinition.name.value)
+            .flatMap((f) => f.directives || []);
         const relationshipField = generateRelationshipField(
             fieldDefinition,
             schema,
             entityWithRelationships,
-            definitionCollection
+            definitionCollection,
+            mergedDirectives
         );
         if (relationshipField) {
             relationshipFieldsMap.set(fieldDefinition.name.value, relationshipField);
@@ -259,8 +263,10 @@ function generateRelationshipField(
     field: FieldDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
     source: ConcreteEntity | InterfaceEntity,
-    definitionCollection: DefinitionCollection
+    definitionCollection: DefinitionCollection,
+    mergedDirectives: DirectiveNode[]
 ): Relationship | undefined {
+    // TODO: remove reference to getFieldTypeMeta
     const fieldTypeMeta = getFieldTypeMeta(field.type);
     const relationshipUsage = findDirective(field.directives, "relationship");
     if (!relationshipUsage) return undefined;
@@ -275,6 +281,7 @@ function generateRelationshipField(
     );
 
     let attributes: Attribute[] = [];
+    let propertiesTypeName: string | undefined = undefined;
     if (properties && typeof properties === "string") {
         const propertyInterface = definitionCollection.relationshipProperties.get(properties);
         if (!propertyInterface) {
@@ -282,6 +289,7 @@ function generateRelationshipField(
                 `The \`@relationshipProperties\` directive could not be found on the \`${properties}\` interface`
             );
         }
+        propertiesTypeName = properties;
 
         const inheritedFields =
             propertyInterface.interfaces?.flatMap((interfaceNamedNode) => {
@@ -297,6 +305,10 @@ function generateRelationshipField(
 
         attributes = filterTruthy(fields) as Attribute[];
     }
+
+    const annotations = parseAnnotations(mergedDirectives);
+
+    // TODO: add property interface name
     return new Relationship({
         name: fieldName,
         type: type as string,
@@ -308,6 +320,10 @@ function generateRelationshipField(
         queryDirection: queryDirection as QueryDirection,
         nestedOperations: nestedOperations as NestedOperation[],
         aggregate: aggregate as boolean,
+        isNullable: !fieldTypeMeta.required,
+        description: field.description?.value || "",
+        annotations: annotations,
+        propertiesTypeName,
     });
 }
 
@@ -333,10 +349,12 @@ function generateConcreteEntity(
         return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
     });
 
-    const annotations = createEntityAnnotations(definition.directives || []);
+    const inheritedDirectives = inheritedFields?.flatMap((f) => f.directives || []) || [];
+    const annotations = createEntityAnnotations((definition.directives || []).concat(inheritedDirectives));
 
     return new ConcreteEntity({
         name: definition.name.value,
+        description: definition.description?.value,
         labels: getLabels(definition),
         attributes: filterTruthy(fields) as Attribute[],
         annotations,
