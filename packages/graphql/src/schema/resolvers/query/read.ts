@@ -18,14 +18,21 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import { execute } from "../../../utils";
-import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { translateRead } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({ node }: { node: Node }) {
+export function findResolver({
+    node,
+    concreteEntityAdapter,
+}: {
+    node: Node;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
@@ -45,15 +52,15 @@ export function findResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `[${node.name}!]!`,
+        type: `[${concreteEntityAdapter.name}!]!`,
         resolve,
         args: {
-            where: `${node.name}Where`,
-            options: `${node.name}Options`,
-            ...(node.fulltextDirective
+            where: concreteEntityAdapter.operations.whereInputTypeName,
+            options: concreteEntityAdapter.operations.optionsInputTypeName,
+            ...(concreteEntityAdapter.annotations.fulltext
                 ? {
                       fulltext: {
-                          type: `${node.name}Fulltext`,
+                          type: `${concreteEntityAdapter.name}Fulltext`,
                           description:
                               "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
                       },
