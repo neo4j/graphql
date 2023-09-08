@@ -21,6 +21,7 @@ import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLStr
 
 export const CartesianPoint = new GraphQLObjectType({
     name: "CartesianPoint",
+    description: "CartesianPoint type",
     fields: {
         x: {
             type: new GraphQLNonNull(GraphQLFloat),

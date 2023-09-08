@@ -21,6 +21,7 @@ import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLStr
 
 export const Point = new GraphQLObjectType({
     name: "Point",
+    description: "Point type",
     fields: {
         longitude: {
             type: new GraphQLNonNull(GraphQLFloat),
