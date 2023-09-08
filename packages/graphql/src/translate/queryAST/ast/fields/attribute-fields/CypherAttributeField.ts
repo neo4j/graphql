@@ -29,21 +29,25 @@ export class CypherAttributeField extends AttributeField {
     private customCypherVar = new Cypher.Node(); // TODO: should be from context scope
     private projection: Record<string, string> | undefined;
     private nestedFields: Field[] | undefined;
+    private rawArguments: Record<string, any>;
 
     constructor({
         alias,
         attribute,
         projection,
         nestedFields,
+        rawArguments = {},
     }: {
         alias: string;
         attribute: AttributeAdapter;
         projection?: Record<string, string>;
         nestedFields?: Field[];
+        rawArguments: Record<string, any>;
     }) {
         super({ alias, attribute });
         this.projection = projection;
         this.nestedFields = nestedFields;
+        this.rawArguments = rawArguments;
     }
 
     public getProjectionField(_variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
@@ -62,6 +66,7 @@ export class CypherAttributeField extends AttributeField {
             attribute: this.attribute,
             projectionFields: this.projection,
             nestedFields: this.nestedFields,
+            rawArguments: this.rawArguments,
         });
 
         return [subquery];
