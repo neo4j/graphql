@@ -30,35 +30,35 @@ import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import { cypherResolver } from "./resolvers/field/cypher";
-import { numericalResolver } from "./resolvers/field/numerical";
-import { aggregateResolver } from "./resolvers/query/aggregate";
-import { findResolver } from "./resolvers/query/read";
-import { rootConnectionResolver } from "./resolvers/query/root-connection";
-import { createResolver } from "./resolvers/mutation/create";
-import { deleteResolver } from "./resolvers/mutation/delete";
-import { updateResolver } from "./resolvers/mutation/update";
-import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
-import { augmentFulltextSchema } from "./augment/fulltext";
-import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
 import type Relationship from "../classes/Relationship";
+import * as Scalars from "../graphql/scalars";
+import { upperFirst } from "../utils/upper-first";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
 import createConnectionFields from "./create-connection-fields";
+import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
+import { getDefinitionNodes } from "./get-definition-nodes";
 import type { ObjectFields } from "./get-obj-field-meta";
 import getObjFieldMeta from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
+import getUniqueFields from "./get-unique-fields";
+import getWhereFields from "./get-where-fields";
+import { cypherResolver } from "./resolvers/field/cypher";
+import { numericalResolver } from "./resolvers/field/numerical";
+import { createResolver } from "./resolvers/mutation/create";
+import { deleteResolver } from "./resolvers/mutation/delete";
+import { updateResolver } from "./resolvers/mutation/update";
+import { aggregateResolver } from "./resolvers/query/aggregate";
+import { findResolver } from "./resolvers/query/read";
+import { rootConnectionResolver } from "./resolvers/query/root-connection";
 import {
     graphqlDirectivesToCompose,
     objectFieldsToComposeFields,
     objectFieldsToCreateInputFields,
     objectFieldsToUpdateInputFields,
 } from "./to-compose";
-import getUniqueFields from "./get-unique-fields";
-import getWhereFields from "./get-where-fields";
-import { upperFirst } from "../utils/upper-first";
-import { ensureNonEmptyInput } from "./ensure-non-empty-input";
-import { getDefinitionNodes } from "./get-definition-nodes";
 
 // GraphQL type imports
 import type { Subgraph } from "../classes/Subgraph";
@@ -75,16 +75,17 @@ import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
 import { Point } from "../graphql/objects/Point";
 import { UpdateInfo } from "../graphql/objects/UpdateInfo";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import type { BaseField, Neo4jFeaturesSettings } from "../types";
 import { addArrayMethodsToITC } from "./array-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
+import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { addMathOperatorsToITC } from "./math";
 import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import type { BaseField, Neo4jFeaturesSettings } from "../types";
-import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -102,7 +103,9 @@ function makeAugmentedSchema(
         generateSubscriptions?: boolean;
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
-    } = {}
+    } = {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    schemaModel: Neo4jGraphQLSchemaModel
 ): {
     nodes: Node[];
     relationships: Relationship[];

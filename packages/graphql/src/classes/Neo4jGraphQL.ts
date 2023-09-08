@@ -342,7 +342,7 @@ class Neo4jGraphQL {
         // This can be run several times but it will always be the same result,
         // so we memoize the schemaModel.
         if (!this.schemaModel) {
-            this.schemaModel = generateModel(document);
+            return generateModel(document);
         }
         return this.schemaModel;
     }
@@ -372,13 +372,17 @@ class Neo4jGraphQL {
                 this.jwtFieldsMap = jwt.jwtFieldsMap;
             }
 
-            this.generateSchemaModel(document);
+            this.schemaModel = this.generateSchemaModel(document);
 
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
-                features: this.features,
-                generateSubscriptions: Boolean(this.features?.subscriptions),
-                userCustomResolvers: this.resolvers,
-            });
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(
+                document,
+                {
+                    features: this.features,
+                    generateSubscriptions: Boolean(this.features?.subscriptions),
+                    userCustomResolvers: this.resolvers,
+                },
+                this.schemaModel
+            );
 
             if (this.validate) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
@@ -433,14 +437,18 @@ class Neo4jGraphQL {
             this.jwtFieldsMap = jwt.jwtFieldsMap;
         }
 
-        const schemaModel = this.generateSchemaModel(document);
+        this.schemaModel = this.generateSchemaModel(document);
 
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(document, {
-            features: this.features,
-            generateSubscriptions: Boolean(this.features?.subscriptions),
-            userCustomResolvers: this.resolvers,
-            subgraph,
-        });
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(
+            document,
+            {
+                features: this.features,
+                generateSubscriptions: Boolean(this.features?.subscriptions),
+                userCustomResolvers: this.resolvers,
+                subgraph,
+            },
+            this.schemaModel
+        );
 
         if (this.validate) {
             validateUserDefinition({
@@ -456,7 +464,7 @@ class Neo4jGraphQL {
         this._relationships = relationships;
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
-        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, schemaModel);
+        const referenceResolvers = subgraph.getReferenceResolvers(this._nodes, this.schemaModel);
 
         const schema = subgraph.buildSchema({
             typeDefs,
