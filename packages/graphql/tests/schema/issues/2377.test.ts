@@ -385,14 +385,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceOnCreateInput {
-              createdAt: DateTime!
               externalIds: [ID!]
               id: ID!
               name: String
               properties: [Property!]
               tags: [Tag!]
               type: ResourceType!
-              updatedAt: DateTime!
             }
 
             input ResourceOptions {

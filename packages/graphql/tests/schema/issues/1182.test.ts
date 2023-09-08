@@ -88,7 +88,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             input ActorOnCreateInput {
               dob: DateTime!
               homeAddress: PointInput!
-              id: ID!
               name: String!
             }
 
