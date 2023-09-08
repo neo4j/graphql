@@ -27,7 +27,46 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function createResolver({
+export function createResolver({ node }: { node: Node }) {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = await translateCreate({ context: context as Neo4jGraphQLTranslationContext, node });
+
+        const executeResult = await execute({
+            cypher,
+            params,
+            defaultAccessMode: "WRITE",
+            context,
+            info,
+        });
+
+        const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
+            (selection) => selection.kind === Kind.FIELD && selection.name.value === node.plural
+        ) as FieldNode;
+        const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
+
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
+
+        return {
+            info: {
+                bookmark: executeResult.bookmark,
+                ...executeResult.statistics,
+            },
+            ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
+        };
+    }
+
+    return {
+        type: `${node.mutationResponseTypeNames.create}!`,
+        resolve,
+        args: { input: `[${node.name}CreateInput!]!` },
+    };
+}
+
+export function createResolver2({
     node,
     concreteEntityAdapter,
 }: {

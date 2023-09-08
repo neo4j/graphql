@@ -26,7 +26,50 @@ import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function aggregateResolver({
+export function aggregateResolver({ node }: { node: Node }) {
+    async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info);
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const [aggregateCypher, aggregateParams] = translateAggregate({
+            context: context as Neo4jGraphQLTranslationContext,
+            node,
+        });
+
+        const { cypher, params: builtParams } = aggregateCypher.build();
+        const params = { ...aggregateParams, ...builtParams };
+
+        const executeResult = await execute({
+            cypher,
+            params,
+            defaultAccessMode: "READ",
+            context,
+            info,
+        });
+
+        return Object.values(executeResult.records[0] || {})[0];
+    }
+
+    return {
+        type: `${node.aggregateTypeNames.selection}!`,
+        resolve,
+        args: {
+            where: `${node.name}Where`,
+            ...(node.fulltextDirective
+                ? {
+                      fulltext: {
+                          type: `${node.name}Fulltext`,
+                          description:
+                              "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
+                      },
+                  }
+                : {}),
+        },
+    };
+}
+
+export function aggregateResolver2({
     node,
     concreteEntityAdapter,
 }: {

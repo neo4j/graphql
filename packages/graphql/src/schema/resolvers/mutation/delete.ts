@@ -28,7 +28,43 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function deleteResolver({
+export function deleteResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = translateDelete({ context: context as Neo4jGraphQLTranslationContext, node });
+        const executeResult = await execute({
+            cypher,
+            params,
+            defaultAccessMode: "WRITE",
+            context,
+            info,
+        });
+
+        publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
+
+        return { bookmark: executeResult.bookmark, ...executeResult.statistics };
+    }
+
+    const hasDeleteInput = composer.has(`${node.name}DeleteInput`);
+
+    return {
+        type: `DeleteInfo!`,
+        resolve,
+        args: {
+            where: `${node.name}Where`,
+            ...(hasDeleteInput
+                ? {
+                      delete: `${node.name}DeleteInput`,
+                  }
+                : {}),
+        },
+    };
+}
+
+export function deleteResolver2({
     node,
     composer,
     concreteEntityAdapter,

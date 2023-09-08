@@ -40,12 +40,12 @@ import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper"
 import { augmentFulltextSchema } from "./augment/fulltext";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
-import { createResolver } from "./resolvers/mutation/create";
-import { deleteResolver } from "./resolvers/mutation/delete";
-import { updateResolver } from "./resolvers/mutation/update";
-import { aggregateResolver } from "./resolvers/query/aggregate";
-import { findResolver } from "./resolvers/query/read";
-import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { createResolver2 } from "./resolvers/mutation/create";
+import { deleteResolver2 } from "./resolvers/mutation/delete";
+import { updateResolver2 } from "./resolvers/mutation/update";
+import { aggregateResolver2 } from "./resolvers/query/aggregate";
+import { findResolver2 } from "./resolvers/query/read";
+import { rootConnectionResolver2 } from "./resolvers/query/root-connection";
 // import * as constants from "../constants";
 import type { Node } from "../classes";
 import type Relationship from "../classes/Relationship";
@@ -1220,7 +1220,7 @@ function makeAugmentedSchema(
 
         if (schemaConfigurationFlags.read) {
             composer.Query.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver2({
                     node,
                     concreteEntityAdapter,
                 }),
@@ -1230,7 +1230,7 @@ function makeAugmentedSchema(
                 graphqlDirectivesToCompose(propagatedDirectives)
             );
             composer.Query.addFields({
-                [`${concreteEntityAdapter.plural}Connection`]: rootConnectionResolver({
+                [`${concreteEntityAdapter.plural}Connection`]: rootConnectionResolver2({
                     node,
                     composer,
                     concreteEntityAdapter,
@@ -1244,7 +1244,7 @@ function makeAugmentedSchema(
         }
         if (schemaConfigurationFlags.aggregate) {
             composer.Query.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver2({
                     node,
                     concreteEntityAdapter,
                 }),
@@ -1257,7 +1257,7 @@ function makeAugmentedSchema(
 
         if (schemaConfigurationFlags.create) {
             composer.Mutation.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver2({
                     node,
                     concreteEntityAdapter,
                 }),
@@ -1270,7 +1270,7 @@ function makeAugmentedSchema(
 
         if (schemaConfigurationFlags.delete) {
             composer.Mutation.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.delete]: deleteResolver({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.delete]: deleteResolver2({
                     node,
                     composer,
                     concreteEntityAdapter,
@@ -1284,7 +1284,7 @@ function makeAugmentedSchema(
 
         if (schemaConfigurationFlags.update) {
             composer.Mutation.addFields({
-                [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver2({
                     node,
                     composer,
                     concreteEntityAdapter,

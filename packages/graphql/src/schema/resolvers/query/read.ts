@@ -26,7 +26,45 @@ import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({
+export function findResolver({ node }: { node: Node }) {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info, { args });
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
+
+        const executeResult = await execute({
+            cypher,
+            params,
+            defaultAccessMode: "READ",
+            context,
+            info,
+        });
+
+        return executeResult.records.map((x) => x.this);
+    }
+
+    return {
+        type: `[${node.name}!]!`,
+        resolve,
+        args: {
+            where: `${node.name}Where`,
+            options: `${node.name}Options`,
+            ...(node.fulltextDirective
+                ? {
+                      fulltext: {
+                          type: `${node.name}Fulltext`,
+                          description:
+                              "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
+                      },
+                  }
+                : {}),
+        },
+    };
+}
+
+export function findResolver2({
     node,
     concreteEntityAdapter,
 }: {
