@@ -28,11 +28,13 @@ export function createCypherAnnotationSubquery({
     attribute,
     projectionFields,
     nestedFields,
+    rawArguments = {},
 }: {
     context: QueryASTContext;
     attribute: AttributeAdapter;
     projectionFields?: Record<string, string>;
     nestedFields?: Field[];
+    rawArguments?: Record<string, any>;
 }): Cypher.Clause {
     const cypherAnnotation = attribute.annotations.cypher;
     if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
@@ -40,7 +42,7 @@ export function createCypherAnnotationSubquery({
     const columnName = new Cypher.NamedVariable(cypherAnnotation.columnName);
     const returnVariable = context.getScopeVariable(attribute.name);
 
-    const statementSubquery = getStatementSubquery(context, cypherAnnotation);
+    const statementSubquery = getStatementSubquery(context, cypherAnnotation, attribute, rawArguments);
     const nestedFieldsSubqueries = getNestedFieldsSubqueries(returnVariable, context, nestedFields);
 
     if (attribute.isScalar() || attribute.isEnum()) {
@@ -84,9 +86,27 @@ function getNestedFieldsSubqueries(
     return Cypher.concat(...nodeProjectionSubqueries);
 }
 
-function getStatementSubquery(context: QueryASTContext, cypherAnnotation: CypherAnnotation): Cypher.Call {
+function getStatementSubquery(
+    context: QueryASTContext,
+    cypherAnnotation: CypherAnnotation,
+    attribute: AttributeAdapter,
+    rawArguments: Record<string, any>
+): Cypher.Call {
     const innerAlias = new Cypher.With([context.target, "this"]);
-    const statementSubquery = new Cypher.RawCypher(cypherAnnotation.statement);
+
+    const statementSubquery = new Cypher.RawCypher((env) => {
+        let statement = cypherAnnotation.statement;
+        attribute.args.forEach((arg) => {
+            const value = rawArguments[arg.name];
+            if (value) {
+                const paramName = new Cypher.Param(value).getCypher(env);
+                statement = statement.replaceAll(`$${arg.name}`, paramName);
+            }  else {
+                statement = statement.replaceAll(`$${arg.name}`, "NULL");
+            }
+        });
+        return statement;
+    });
 
     return new Cypher.Call(Cypher.concat(innerAlias, statementSubquery)).innerWith(context.target);
 }

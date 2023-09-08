@@ -206,6 +206,7 @@ export class FieldFactory {
             alias: field.alias,
             projection: cypherProjection,
             nestedFields,
+            rawArguments: field.args,
         });
     }
 
