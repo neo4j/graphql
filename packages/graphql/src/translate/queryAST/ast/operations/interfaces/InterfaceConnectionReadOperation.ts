@@ -60,14 +60,6 @@ export class InterfaceConnectionReadOperation extends Operation {
         const union = new Cypher.Union(...nestedSubqueries);
         const nestedSubquery = new Cypher.Call(union);
 
-        // let sortSubquery: Cypher.With | undefined;
-        // if (this.pagination || this.sortFields.length > 0) {
-        //     const paginationField = this.pagination && this.pagination.getPagination();
-
-        //     sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
-        //     sortSubquery.addColumns(totalCount);
-        // }
-
         let extraWithOrder: Cypher.Clause | undefined;
         if (this.sortFields.length > 0) {
             const context = new QueryASTContext({

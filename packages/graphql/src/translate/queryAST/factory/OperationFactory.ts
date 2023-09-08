@@ -258,25 +258,6 @@ export class OperationsFactory {
             operation,
         });
 
-        // const first = resolveTree.args.first as number | Integer | undefined;
-        // const sort = resolveTree.args.sort as ConnectionSortArg[];
-
-        // if (first) {
-        //     const pagination = this.sortAndPaginationFactory.createPagination({
-        //         limit: first,
-        //     });
-        //     if (pagination) {
-        //         operation.addPagination(pagination);
-        //     }
-        // }
-
-        // if (sort) {
-        //     sort.forEach((options) => {
-        //         const sort = this.sortAndPaginationFactory.createConnectionSortFields(options, relationship);
-        //         operation.addSort(sort);
-        //     });
-        // }
-
         const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
