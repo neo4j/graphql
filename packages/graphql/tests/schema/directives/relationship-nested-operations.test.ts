@@ -18,10 +18,10 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import type { GraphQLNamedInputType } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
-import type { GraphQLNamedInputType } from "graphql";
 
 describe("Relationship nested operations", () => {
     describe("Related to a concrete type", () => {
@@ -78,6 +78,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -420,6 +421,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -753,6 +755,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -769,6 +772,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -780,10 +784,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -1003,7 +1010,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -1070,6 +1079,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1082,6 +1092,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1150,6 +1161,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -1502,6 +1514,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -1858,6 +1871,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -2215,6 +2229,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -2564,6 +2579,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -2930,6 +2946,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2946,6 +2963,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -2957,11 +2975,15 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
+                  \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
@@ -3341,7 +3363,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -3408,6 +3432,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -3420,6 +3445,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -3489,10 +3515,12 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
+                  \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
@@ -8378,6 +8406,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -8779,6 +8808,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -9204,6 +9234,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -9628,6 +9659,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -10049,6 +10081,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -10464,6 +10497,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -10880,9 +10914,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
+                  \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
@@ -11408,9 +11444,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
+                  \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
