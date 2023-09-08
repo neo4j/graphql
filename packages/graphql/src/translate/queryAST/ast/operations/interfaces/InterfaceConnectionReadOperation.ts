@@ -23,16 +23,21 @@ import { Operation } from "../operations";
 
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { InterfaceConnectionPartial } from "./InterfaceConnectionPartial";
+import type { Sort, SortField } from "../../sort/Sort";
+import type { Pagination } from "../../pagination/Pagination";
+import { QueryASTContext } from "../../QueryASTContext";
 
 export class InterfaceConnectionReadOperation extends Operation {
     private children: InterfaceConnectionPartial[];
+    protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
     constructor(children: InterfaceConnectionPartial[]) {
         super();
+
         this.children = children;
     }
 
-    transpile(options: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(options: OperationTranspileOptions): OperationTranspileResult {
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
@@ -55,31 +60,71 @@ export class InterfaceConnectionReadOperation extends Operation {
         const union = new Cypher.Union(...nestedSubqueries);
         const nestedSubquery = new Cypher.Call(union);
 
-        nestedSubquery
-            .with([Cypher.collect(edgeVar), edgesVar])
-            .with(edgesVar, [Cypher.size(edgesVar), totalCount])
-            .return([
-                new Cypher.Map({
-                    edges: edgesVar,
-                    totalCount: totalCount,
-                }),
-                options.returnVariable,
-            ]);
+        // let sortSubquery: Cypher.With | undefined;
+        // if (this.pagination || this.sortFields.length > 0) {
+        //     const paginationField = this.pagination && this.pagination.getPagination();
 
-        // .with([Cypher.collect(edgeVar), edgesVar])
-        // .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+        //     sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
+        //     sortSubquery.addColumns(totalCount);
+        // }
 
-        // const returnClause = new Cypher.Return([
-        //     new Cypher.Map({
-        //         edges: edgesVar,
-        //         totalCount: totalCount,
-        //     }),
-        //     options.returnVariable,
-        // ]);
+        let extraWithOrder: Cypher.Clause | undefined;
+        if (this.sortFields.length > 0) {
+            const context = new QueryASTContext({
+                // NOOP context
+                target: new Cypher.Node(),
+            });
 
-        return { clauses: [nestedSubquery], projectionExpr: options.returnVariable };
+            const sortFields = this.getSortFields(context, edgeVar.property("node"), edgeVar);
+            extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar])
+                .with(edgeVar, totalCount)
+                .orderBy(...sortFields)
+                .with([Cypher.collect(edgeVar), edgesVar], totalCount);
+        }
+
+        nestedSubquery.with([Cypher.collect(edgeVar), edgesVar]).with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+
+        const returnClause = new Cypher.Return([
+            new Cypher.Map({
+                edges: edgesVar,
+                totalCount: totalCount,
+            }),
+            options.returnVariable,
+        ]);
+
+        return {
+            clauses: [Cypher.concat(nestedSubquery, extraWithOrder, returnClause)],
+            projectionExpr: options.returnVariable,
+        };
     }
+
+    public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
+        this.sortFields.push(sortElement);
+    }
+
+    public addPagination(_pagination: Pagination): void {
+        return undefined;
+        // this.pagination = pagination;
+    }
+
     public getChildren(): QueryASTNode[] {
-        return this.children;
+        const sortFields = this.sortFields.flatMap((s) => {
+            return [...s.edge, ...s.node];
+        });
+
+        return [...this.children, ...sortFields];
+    }
+
+    protected getSortFields(
+        context: QueryASTContext,
+        nodeVar: Cypher.Variable | Cypher.Property,
+        edgeVar: Cypher.Variable | Cypher.Property
+    ): SortField[] {
+        return this.sortFields.flatMap(({ node, edge }) => {
+            const nodeFields = node.flatMap((s) => s.getSortFields(context, nodeVar, false));
+            const edgeFields = edge.flatMap((s) => s.getSortFields(context, edgeVar, false));
+
+            return [...nodeFields, ...edgeFields];
+        });
     }
 }

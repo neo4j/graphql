@@ -22,6 +22,8 @@ import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
 import { QueryASTContext } from "../../QueryASTContext";
 import { ConnectionReadOperation } from "../ConnectionReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
+import type { Sort } from "../../sort/Sort";
+import type { Pagination } from "../../pagination/Pagination";
 
 export class InterfaceConnectionPartial extends ConnectionReadOperation {
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
@@ -49,38 +51,46 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
 
         const nodeProjectionMap = new Cypher.Map();
 
-        // THis bit is different than normal connection ops
+        // This bit is different than normal connection ops
         const targetNodeName = this.target.name;
         nodeProjectionMap.set({
             __resolveType: new Cypher.Literal(targetNodeName),
             __id: Cypher.id(node),
         });
 
-        this.nodeFields
-            .map((f) => f.getProjectionField(node))
-            .forEach((p) => {
-                if (typeof p === "string") {
-                    nodeProjectionMap.set(p, node.property(p));
-                } else {
-                    nodeProjectionMap.set(p);
-                }
-            });
+        const nodeProjectionFields = this.nodeFields.map((f) => f.getProjectionField(node));
+        const nodeSortProjectionFields = this.sortFields.flatMap((f) =>
+            f.node.map((ef) => ef.getProjectionField(nestedContext))
+        );
+
+        const uniqueNodeProjectionFields = Array.from(new Set([...nodeProjectionFields, ...nodeSortProjectionFields]));
+
+        uniqueNodeProjectionFields.forEach((p) => {
+            if (typeof p === "string") {
+                nodeProjectionMap.set(p, node.property(p));
+            } else {
+                nodeProjectionMap.set(p);
+            }
+        });
 
         const edgeVar = new Cypher.NamedVariable("edge");
-        const edgesVar = new Cypher.NamedVariable("edges");
-        const totalCount = new Cypher.NamedVariable("totalCount");
 
         const edgeProjectionMap = new Cypher.Map();
 
-        this.edgeFields
-            .map((f) => f.getProjectionField(relationship))
-            .forEach((p) => {
-                if (typeof p === "string") {
-                    edgeProjectionMap.set(p, relationship.property(p));
-                } else {
-                    edgeProjectionMap.set(p);
-                }
-            });
+        const edgeProjectionFields = this.edgeFields.map((f) => f.getProjectionField(relationship));
+        const edgeSortProjectionFields = this.sortFields.flatMap((f) =>
+            f.edge.map((ef) => ef.getProjectionField(nestedContext))
+        );
+
+        const uniqueEdgeProjectionFields = Array.from(new Set([...edgeProjectionFields, ...edgeSortProjectionFields]));
+
+        uniqueEdgeProjectionFields.forEach((p) => {
+            if (typeof p === "string") {
+                edgeProjectionMap.set(p, relationship.property(p));
+            } else {
+                edgeProjectionMap.set(p);
+            }
+        });
 
         edgeProjectionMap.set("node", nodeProjectionMap);
 
@@ -94,28 +104,13 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
             }
         }
 
-        let sortSubquery: Cypher.With | undefined;
-        if (this.pagination || this.sortFields.length > 0) {
-            const paginationField = this.pagination && this.pagination.getPagination();
-
-            sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
-            sortSubquery.addColumns(totalCount);
-        }
-
-        let extraWithOrder: Cypher.Clause | undefined;
-        if (this.sortFields.length > 0) {
-            const sortFields = this.getSortFields(nestedContext, node, relationship);
-
-            extraWithOrder = new Cypher.With(relationship, node).orderBy(...sortFields);
-        }
-
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(returnVariable);
 
         const subClause = Cypher.concat(
             clause,
             ...authFilterSubqueries,
             withWhere,
-            extraWithOrder,
+            // extraWithOrder,
             ...nodeProjectionSubqueries,
             projectionClauses
         );
@@ -124,5 +119,15 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
             clauses: [subClause],
             projectionExpr: returnVariable,
         };
+    }
+
+    // Sort is handled by InterfaceConnectionReadOperation
+    public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
+        this.sortFields.push(sortElement);
+    }
+
+    // Pagination is handled by InterfaceConnectionReadOperation
+    public addPagination(_pagination: Pagination): void {
+        return undefined;
     }
 }

@@ -178,8 +178,50 @@ export class OperationsFactory {
                     });
                 }
             );
-            return new InterfaceConnectionReadOperation(concreteConnectionOperations);
+            const interfaceConnectionOp = new InterfaceConnectionReadOperation(concreteConnectionOperations);
+
+            // These sort fields will be duplicated on nested "InterfaceConnectionPartial"
+            this.hydrateConnectionOperationsASTWithSort({
+                relationship,
+                resolveTree,
+                operation: interfaceConnectionOp,
+            });
+            return interfaceConnectionOp;
         }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/comma-dangle
+    private hydrateConnectionOperationsASTWithSort<
+        T extends ConnectionReadOperation | InterfaceConnectionReadOperation
+    >({
+        relationship,
+        resolveTree,
+        operation,
+    }: {
+        relationship: RelationshipAdapter;
+        resolveTree: ResolveTree;
+        operation: T;
+    }): T {
+        const first = resolveTree.args.first as number | Integer | undefined;
+        const sort = resolveTree.args.sort as ConnectionSortArg[];
+
+        if (first) {
+            const pagination = this.sortAndPaginationFactory.createPagination({
+                limit: first,
+            });
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
+        if (sort) {
+            sort.forEach((options) => {
+                const sort = this.sortAndPaginationFactory.createConnectionSortFields(options, relationship);
+                operation.addSort(sort);
+            });
+        }
+
+        return operation;
     }
 
     private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
@@ -210,30 +252,36 @@ export class OperationsFactory {
         delete edgeRawFields.node;
         delete edgeRawFields.edge;
 
-        const first = resolveTree.args.first as number | Integer | undefined;
-        const sort = resolveTree.args.sort as ConnectionSortArg[];
+        this.hydrateConnectionOperationsASTWithSort({
+            relationship,
+            resolveTree,
+            operation,
+        });
 
-        if (first) {
-            const pagination = this.sortAndPaginationFactory.createPagination({
-                limit: first,
-            });
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
-        }
+        // const first = resolveTree.args.first as number | Integer | undefined;
+        // const sort = resolveTree.args.sort as ConnectionSortArg[];
 
-        if (sort) {
-            sort.forEach((options) => {
-                const sort = this.sortAndPaginationFactory.createConnectionSortFields(options, relationship);
-                operation.addSort(sort);
-            });
-        }
+        // if (first) {
+        //     const pagination = this.sortAndPaginationFactory.createPagination({
+        //         limit: first,
+        //     });
+        //     if (pagination) {
+        //         operation.addPagination(pagination);
+        //     }
+        // }
+
+        // if (sort) {
+        //     sort.forEach((options) => {
+        //         const sort = this.sortAndPaginationFactory.createConnectionSortFields(options, relationship);
+        //         operation.addSort(sort);
+        //     });
+        // }
 
         const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
 
-        const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);
+        const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
