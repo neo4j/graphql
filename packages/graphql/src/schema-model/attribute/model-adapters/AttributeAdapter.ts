@@ -17,15 +17,13 @@
  * limitations under the License.
  */
 
-import { MathAdapter } from "./MathAdapter";
-import { AggregationAdapter } from "./AggregationAdapter";
-import { ListAdapter } from "./ListAdapter";
-import type { Attribute } from "../Attribute";
 import type { Annotations } from "../../annotation/Annotation";
+import type { FullTextField } from "../../annotation/FullTextAnnotation";
+import type { Argument } from "../../argument/Argument";
+import type { Attribute } from "../Attribute";
 import type { AttributeType } from "../AttributeType";
 import {
     EnumType,
-    UserScalarType,
     GraphQLBuiltInScalarType,
     InterfaceType,
     ListType,
@@ -34,11 +32,14 @@ import {
     Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     Neo4jPointType,
+    ObjectType,
     ScalarType,
     UnionType,
-    ObjectType,
+    UserScalarType,
 } from "../AttributeType";
-import type { Argument } from "../../argument/Argument";
+import { AggregationAdapter } from "./AggregationAdapter";
+import { ListAdapter } from "./ListAdapter";
+import { MathAdapter } from "./MathAdapter";
 
 export class AttributeAdapter {
     private _listModel: ListAdapter | undefined;
@@ -93,11 +94,11 @@ export class AttributeAdapter {
     }
 
     isUnique(): boolean {
-        return this.annotations.unique ? true : false;
+        return !!this.annotations.unique || this.isGlobalIDAttribute() === true;
     }
 
     isCypher(): boolean {
-        return this.annotations.cypher ? true : false;
+        return !!this.annotations.cypher;
     }
 
     /**
@@ -117,6 +118,205 @@ export class AttributeAdapter {
             this.isPoint() ||
             this.isCartesianPoint()
         );
+    }
+
+    /**
+    * Previously defined as:
+    * const nodeFields = objectFieldsToComposeFields([
+        ...node.primitiveFields,
+        ...node.cypherFields,
+        ...node.enumFields,
+        ...node.scalarFields,
+        ...node.interfaceFields,
+        ...node.objectFields,
+        ...node.unionFields,
+        ...node.temporalFields,
+        ...node.pointFields,
+        ...node.customResolverFields,
+    ]);
+    */
+    isObjectField(): boolean {
+        return (
+            this.isGraphQLBuiltInScalar() ||
+            this.isCypher() ||
+            this.isEnum() ||
+            this.isUserScalar() ||
+            this.isInterface() ||
+            this.isObject() ||
+            this.isUnion() ||
+            this.isTemporal() ||
+            this.isPoint() ||
+            this.isCartesianPoint() ||
+            this.isBigInt()
+            // this.isCustomResolver()
+        );
+    }
+
+    /*
+    return [
+        ...obj.primitiveFields,
+        ...obj.scalarFields,
+        ...obj.enumFields,
+        ...obj.temporalFields,
+        ...obj.pointFields,
+        ...obj.cypherFields.filter((field) =>
+            [
+                "Boolean",
+                "ID",
+                "Int",
+                "BigInt",
+                "Float",
+                "String",
+                "DateTime",
+                "LocalDateTime",
+                "Time",
+                "LocalTime",
+                "Date",
+                "Duration",
+            ].includes(field.typeMeta.name)
+        ),
+    ].filter((field) => !field.typeMeta.array);
+    */
+    isSortableField(): boolean {
+        return (
+            !this.isList() &&
+            !this.isCustomResolvable() &&
+            (this.isGraphQLBuiltInScalar() ||
+                this.isUserScalar() ||
+                this.isEnum() ||
+                this.isTemporal() ||
+                this.isPoint() ||
+                this.isCartesianPoint() ||
+                this.isBigInt() ||
+                this.isCypher())
+        );
+    }
+
+    /**
+    * 
+        fields: {
+            temporalFields: node.temporalFields,
+            enumFields: node.enumFields,
+            pointFields: node.pointFields,
+            primitiveFields: node.primitiveFields,
+            scalarFields: node.scalarFields,
+        },
+    */
+    isWhereField(): boolean {
+        return (
+            this.isGraphQLBuiltInScalar() ||
+            this.isTemporal() ||
+            this.isEnum() ||
+            this.isPoint() ||
+            this.isCartesianPoint() ||
+            this.isUserScalar() ||
+            this.isBigInt()
+        );
+    }
+
+    /**
+     * [
+     * ...node.primitiveFields,
+        ...node.scalarFields,
+        ...node.enumFields,
+        ...node.pointFields,
+        ...node.temporalFields
+     ]
+     */
+    isOnCreateField(): boolean {
+        return (
+            this.isGraphQLBuiltInScalar() ||
+            this.isTemporal() ||
+            this.isEnum() ||
+            this.isPoint() ||
+            this.isCartesianPoint() ||
+            this.isUserScalar() ||
+            this.isBigInt()
+        );
+    }
+
+    /**
+     * 
+        if (
+            [
+                "Float",
+                "Int",
+                "BigInt",
+                "DateTime",
+                "Date",
+                "LocalDateTime",
+                "Time",
+                "LocalTime",
+                "Duration",
+            ].includes(f.typeMeta.name)
+        ),
+    */
+    isNumericalOrTemporal(): boolean {
+        return (
+            this.isFloat() ||
+            this.isInt() ||
+            this.isBigInt() ||
+            this.isDateTime() ||
+            this.isDate() ||
+            this.isLocalDateTime() ||
+            this.isTime() ||
+            this.isLocalTime() ||
+            this.isDuration()
+        );
+    }
+
+    isTemporalField(): boolean {
+        // TODO: why is .isTemporal() not enough??
+        return (
+            this.isTemporal() ||
+            this.isDateTime() ||
+            this.isDate() ||
+            this.isLocalDateTime() ||
+            this.isTime() ||
+            this.isLocalTime() ||
+            this.isDuration()
+        );
+    }
+
+    isPrimitiveField(): boolean {
+        return this.isGraphQLBuiltInScalar() || this.isUserScalar() || this.isEnum() || this.isBigInt();
+    }
+
+    isAggregableField(): boolean {
+        return !this.isList() && (this.isPrimitiveField() || this.isTemporalField()) && this.isAggregable();
+    }
+
+    isAggregationWhereField(): boolean {
+        const isGraphQLBuiltInScalarWithoutBoolean = this.isGraphQLBuiltInScalar() && !this.isBoolean();
+        const isTemporalWithoutDate = this.isTemporalField() && !this.isDate();
+        return (
+            !this.isList() &&
+            (isGraphQLBuiltInScalarWithoutBoolean || isTemporalWithoutDate || this.isBigInt()) &&
+            this.isAggregationFilterable()
+        );
+    }
+
+    isCreateInputField(): boolean {
+        return this.isNonGeneratedField() && this.annotations.settable?.onCreate !== false;
+    }
+
+    isNonGeneratedField(): boolean {
+        return (
+            this.isCypher() === false &&
+            this.isCustomResolvable() === false &&
+            (this.isPrimitiveField() || this.isScalar() || this.isSpatial()) &&
+            !this.annotations.id &&
+            !this.annotations.populatedBy &&
+            !this.annotations.timestamp
+        );
+    }
+
+    isUpdateInputField(): boolean {
+        return this.isNonGeneratedField() && this.annotations.settable?.onUpdate !== false;
+    }
+
+    isArrayMethodField(): boolean {
+        return this.isList() && !this.isUserScalar() && (this.isScalar() || this.isSpatial());
     }
 
     /**
@@ -254,8 +454,9 @@ export class AttributeAdapter {
         return type instanceof UserScalarType;
     }
 
-    isRequired(): boolean {
-        return this.type.isRequired;
+    isTemporal(options = this.assertionOptions): boolean {
+        const type = this.getTypeForAssertion(options.includeLists);
+        return type.name in Neo4jGraphQLTemporalType;
     }
 
     isListElementRequired(): boolean {
@@ -265,8 +466,14 @@ export class AttributeAdapter {
         return this.type.ofType.isRequired;
     }
 
+    isRequired(): boolean {
+        return this.type.isRequired;
+    }
+
     /**
-     *  START of category assertions
+     *
+     * Schema Generator Stuff
+     *
      */
     isGraphQLBuiltInScalar(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
@@ -276,11 +483,6 @@ export class AttributeAdapter {
     isSpatial(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type.name in Neo4jGraphQLSpatialType;
-    }
-
-    isTemporal(options = this.assertionOptions): boolean {
-        const type = this.getTypeForAssertion(options.includeLists);
-        return type.name in Neo4jGraphQLTemporalType;
     }
 
     isAbstract(options = this.assertionOptions): boolean {
@@ -305,4 +507,170 @@ export class AttributeAdapter {
     /**
      *  END of category assertions
      */
+
+    isGlobalIDAttribute(): boolean {
+        return !!this.annotations.relayId;
+    }
+
+    /**
+     *
+     * Schema Generator Stuff
+     *
+     */
+
+    getTypePrettyName(): string {
+        if (this.isList()) {
+            return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
+        }
+        return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
+    }
+
+    getTypeName(): string {
+        return this.isList() ? this.type.ofType.name : this.type.name;
+    }
+
+    getFieldTypeName(): string {
+        return this.isList() ? `[${this.getTypeName()}]` : this.getTypeName();
+    }
+
+    getInputTypeName(): string {
+        if (this.isSpatial()) {
+            if (this.getTypeName() === "Point") {
+                return "PointInput";
+            } else {
+                return "CartesianPointInput";
+            }
+        }
+        return this.getTypeName();
+    }
+
+    // TODO: We should probably have this live in a different, more specific adapter
+    getFilterableInputTypeName(): string {
+        return `[${this.getInputTypeName()}${this.isRequired() ? "!" : ""}]`;
+    }
+
+    getInputTypeNames(): InputTypeNames {
+        const pretty = this.isList()
+            ? `[${this.getInputTypeName()}${this.isListElementRequired() ? "!" : ""}]`
+            : this.getInputTypeName();
+
+        return {
+            where: { type: this.getInputTypeName(), pretty },
+            create: {
+                type: this.getTypeName(),
+                pretty: `${pretty}${this.isRequired() ? "!" : ""}`,
+            },
+            update: {
+                type: this.getTypeName(),
+                pretty,
+            },
+        };
+    }
+
+    getDefaultValue() {
+        return this.annotations.default?.value;
+    }
+
+    isReadable(): boolean {
+        return this.annotations.selectable?.onRead !== false;
+    }
+
+    isAggregable(): boolean {
+        return (
+            this.annotations.selectable?.onAggregate !== false &&
+            this.isCustomResolvable() === false &&
+            this.isCypher() === false
+        );
+    }
+    isAggregationFilterable(): boolean {
+        return (
+            this.annotations.filterable?.byAggregate !== false &&
+            this.isCustomResolvable() === false &&
+            this.isCypher() === false
+        );
+    }
+
+    isFilterable(): boolean {
+        return this.annotations.filterable?.byValue !== false;
+    }
+
+    isCustomResolvable(): boolean {
+        return !!this.annotations.customResolver;
+    }
+
+    // TODO: Check if this is the right place for this
+    isFulltext(): boolean {
+        return !!this.annotations.fulltext;
+    }
+
+    // TODO: Check if this is the right place for this
+    getFulltextIndexes(): FullTextField[] | undefined {
+        return this.annotations.fulltext?.indexes;
+    }
+
+    getPropagatedAnnotations(): Partial<Annotations> {
+        // TODO: use constants
+        return Object.fromEntries(
+            Object.entries(this.annotations).filter(
+                ([name]) =>
+                    ![
+                        "relationship",
+                        "cypher",
+                        "id",
+                        "authorization",
+                        "authentication",
+                        "readonly",
+                        "writeonly",
+                        "customResolver",
+                        "default",
+                        "coalesce",
+                        "timestamp",
+                        "alias",
+                        "unique",
+                        "callback",
+                        "populatedBy",
+                        "jwtClaim",
+                        "selectable",
+                        "settable",
+                        "subscriptionsAuthorization",
+                        "filterable",
+                    ].includes(name)
+            )
+        );
+    }
+
+    isPartOfUpdateInputType(): boolean {
+        if (this.isScalar() || this.isEnum() || this.isSpatial()) {
+            return true;
+        }
+        if (this.isGraphQLBuiltInScalar()) {
+            const isAutogenerated = !!this.annotations.id;
+            const isCallback = !!this.annotations.populatedBy;
+            return !isAutogenerated && !isCallback; // && !readonly
+        }
+        if (this.isTemporal()) {
+            return !this.annotations.timestamp;
+        }
+        return false;
+    }
+
+    isPartOfCreateInputType(): boolean {
+        if (this.isScalar() || this.isEnum() || this.isSpatial() || this.isTemporal()) {
+            return true;
+        }
+        if (this.isGraphQLBuiltInScalar()) {
+            const isAutogenerated = !!this.annotations.id;
+            const isCallback = !!this.annotations.populatedBy;
+            return !isAutogenerated && !isCallback;
+        }
+        return false;
+    }
+
+    isPartOfWhereInputType(): boolean {
+        return (
+            this.isScalar() || this.isEnum() || this.isTemporal() || this.isSpatial() || this.isGraphQLBuiltInScalar()
+        );
+    }
 }
+
+type InputTypeNames = Record<"where" | "create" | "update", { type: string; pretty: string }>;
