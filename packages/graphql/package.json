@@ -73,7 +73,7 @@
         "koa": "2.14.2",
         "koa-jwt": "4.0.4",
         "koa-router": "12.0.0",
-        "libnpmsearch": "6.0.2",
+        "libnpmsearch": "7.0.0",
         "mock-jwks": "1.0.10",
         "nock": "13.3.3",
         "npm-run-all": "4.1.5",
