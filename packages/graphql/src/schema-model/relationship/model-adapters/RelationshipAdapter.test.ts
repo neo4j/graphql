@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+import { SelectableAnnotation } from "../../annotation/SelectableAnnotation";
+import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { Attribute } from "../../attribute/Attribute";
 import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeType";
-import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { Relationship } from "../Relationship";
@@ -77,6 +78,8 @@ describe("RelationshipAdapter", () => {
             args: [],
         });
 
+        const selectable = new SelectableAnnotation({ onRead: false, onAggregate: true });
+
         relationship = new Relationship({
             name: "accounts",
             type: "HAS_ACCOUNT",
@@ -88,6 +91,8 @@ describe("RelationshipAdapter", () => {
             queryDirection: "DEFAULT_DIRECTED",
             nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "CONNECT_OR_CREATE"],
             aggregate: false,
+            description: "",
+            annotations: [selectable],
         });
         userEntity.addRelationship(relationship);
 
@@ -131,5 +136,11 @@ describe("RelationshipAdapter", () => {
     test("should generate a valid relationshipFieldTypename", () => {
         const relationshipAdapter = userAdapter.relationships.get("accounts");
         expect(relationshipAdapter?.relationshipFieldTypename).toBe("UserAccountsRelationship");
+    });
+
+    test("should parse selectable", () => {
+        const relationshipAdapter = userAdapter.relationships.get("accounts");
+        expect(relationshipAdapter?.isAggregable()).toBeTrue();
+        expect(relationshipAdapter?.isReadable()).toBeFalse();
     });
 });

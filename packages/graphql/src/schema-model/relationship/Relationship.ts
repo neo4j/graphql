@@ -18,13 +18,18 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
+import type { RelationshipQueryDirectionOption, RelationshipNestedOperationsOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
+import type { Annotation, Annotations } from "../annotation/Annotation";
+import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "../entity/Entity";
 
 export type RelationshipDirection = "IN" | "OUT";
-export type QueryDirection = "DEFAULT_DIRECTED" | "DEFAULT_UNDIRECTED" | "DIRECTED_ONLY" | "UNDIRECTED_ONLY";
-export type NestedOperation = "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
+export type QueryDirection = keyof typeof RelationshipQueryDirectionOption;
+// "DEFAULT_DIRECTED" | "DEFAULT_UNDIRECTED" | "DIRECTED_ONLY" | "UNDIRECTED_ONLY";
+export type NestedOperation = keyof typeof RelationshipNestedOperationsOption;
+// "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
 
 export class Relationship {
     public readonly name: string; // name of the relationship field, e.g. friends
@@ -37,6 +42,10 @@ export class Relationship {
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
+    public readonly isNullable: boolean;
+    public readonly description: string;
+    public readonly annotations: Partial<Annotations> = {};
+    public readonly propertiesTypeName: string | undefined;
 
     // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
     /**Note: Required for now to infer the types without ResolveTree */
@@ -60,6 +69,10 @@ export class Relationship {
         queryDirection,
         nestedOperations,
         aggregate,
+        isNullable,
+        description,
+        annotations = [],
+        propertiesTypeName,
     }: {
         name: string;
         type: string;
@@ -71,6 +84,10 @@ export class Relationship {
         queryDirection: QueryDirection;
         nestedOperations: NestedOperation[];
         aggregate: boolean;
+        isNullable: boolean;
+        description: string;
+        annotations: Annotation[];
+        propertiesTypeName?: string;
     }) {
         this.type = type;
         this.source = source;
@@ -81,9 +98,16 @@ export class Relationship {
         this.queryDirection = queryDirection;
         this.nestedOperations = nestedOperations;
         this.aggregate = aggregate;
+        this.isNullable = isNullable;
+        this.description = description;
+        this.propertiesTypeName = propertiesTypeName;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
+        }
+
+        for (const annotation of annotations) {
+            this.addAnnotation(annotation);
         }
     }
 
@@ -99,7 +123,22 @@ export class Relationship {
             queryDirection: this.queryDirection,
             nestedOperations: this.nestedOperations,
             aggregate: this.aggregate,
+            isNullable: this.isNullable,
+            description: this.description,
+            annotations: Object.values(this.annotations),
+            propertiesTypeName: this.propertiesTypeName,
         });
+    }
+
+    private addAnnotation(annotation: Annotation): void {
+        const annotationKey = annotationToKey(annotation);
+        if (this.annotations[annotationKey]) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
+        }
+
+        // We cast to any because we aren't narrowing the Annotation type here.
+        // There's no reason to narrow either, since we care more about performance.
+        this.annotations[annotationKey] = annotation as any;
     }
 
     private addAttribute(attribute: Attribute): void {
