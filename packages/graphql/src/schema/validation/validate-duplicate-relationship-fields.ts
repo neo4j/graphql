@@ -52,6 +52,7 @@ export function validateDuplicateRelationshipFields(objType: ObjectTypeDefinitio
             throw new Error("@relationship direction expects an enum");
         }
 
+        // TODO: remove reference to getFieldTypeMeta
         const typeMeta = getFieldTypeMeta(field.type);
 
         if (relationshipUsages.has(`${typeMeta.name}__${typeArg.value.value}__${directionArg.value.value}`)) {
