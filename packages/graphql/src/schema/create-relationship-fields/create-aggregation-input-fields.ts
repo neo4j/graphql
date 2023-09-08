@@ -21,6 +21,9 @@ import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { upperFirst } from "graphql-compose";
 import { Node } from "../../classes";
 import { AGGREGATION_COMPARISON_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
+import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { BaseField, RelationField } from "../../types";
 import { DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
 import type { ObjectFields } from "../get-obj-field-meta";
@@ -170,6 +173,149 @@ function createStringAggregationInputFields(aggregationInput: InputTypeComposer,
 function createIDAggregationInputFields(aggregationInput: InputTypeComposer, field: BaseField) {
     aggregationInput.addFields({
         [`${field.fieldName}_EQUAL`]: {
+            type: `ID`,
+            directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+        },
+    });
+
+    return;
+}
+
+export function createAggregationInputFields2(
+    entity: ConcreteEntityAdapter | RelationshipAdapter,
+    rel: RelationshipAdapter,
+    schemaComposer: SchemaComposer
+): InputTypeComposer | undefined {
+    const aggregationFields = entity.aggregationWhereFields;
+    if (!aggregationFields.length) {
+        return;
+    }
+
+    const aggregationInputName = rel.getAggregationWhereInputTypeName(
+        entity instanceof ConcreteEntityAdapter ? `Node` : `Edge`
+    );
+    const aggregationInput = schemaComposer.createInputTC({
+        name: aggregationInputName,
+        fields: {
+            AND: `[${aggregationInputName}!]`,
+            OR: `[${aggregationInputName}!]`,
+            NOT: aggregationInputName,
+        },
+    });
+
+    for (const aggregationField of aggregationFields) {
+        switch (aggregationField.getTypeName()) {
+            case "ID":
+                createIDAggregationInputFields2(aggregationInput, aggregationField);
+                break;
+
+            case "String":
+                createStringAggregationInputFields2(aggregationInput, aggregationField);
+                break;
+
+            // Types that you can average
+            // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
+            // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
+            // String uses avg(size())
+            case "Int":
+            case "Float":
+            case "BigInt":
+            case "Duration":
+                createAverageAggregationInputFields2(aggregationInput, aggregationField);
+                break;
+
+            default:
+                createComparisonAggregationInputFields2(aggregationInput, aggregationField);
+                break;
+        }
+    }
+
+    return aggregationInput;
+}
+
+function createComparisonAggregationInputFields2(aggregationInput: InputTypeComposer, field: AttributeAdapter) {
+    aggregationInput.addFields(
+        AGGREGATION_COMPARISON_OPERATORS.reduce(
+            (res, operator) => ({
+                ...res,
+                [`${field.name}_${operator}`]: {
+                    type: field.getTypeName(),
+                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                },
+                [`${field.name}_MIN_${operator}`]: field.getTypeName(),
+                [`${field.name}_MAX_${operator}`]: field.getTypeName(),
+            }),
+            {}
+        )
+    );
+}
+
+function createAverageAggregationInputFields2(aggregationInput: InputTypeComposer, field: AttributeAdapter) {
+    aggregationInput.addFields(
+        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
+            let averageType = "Float";
+
+            if (field.getTypeName() === "BigInt") {
+                averageType = "BigInt";
+            }
+
+            if (field.getTypeName() === "Duration") {
+                averageType = "Duration";
+            }
+
+            return {
+                ...res,
+                [`${field.name}_${operator}`]: {
+                    type: field.getTypeName(),
+                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                },
+                [`${field.name}_AVERAGE_${operator}`]: averageType,
+                [`${field.name}_MIN_${operator}`]: field.getTypeName(),
+                [`${field.name}_MAX_${operator}`]: field.getTypeName(),
+                ...(field.getTypeName() !== "Duration"
+                    ? { [`${field.name}_SUM_${operator}`]: field.getTypeName() }
+                    : {}),
+            };
+        }, {})
+    );
+
+    return;
+}
+
+function createStringAggregationInputFields2(aggregationInput: InputTypeComposer, field: AttributeAdapter) {
+    aggregationInput.addFields(
+        AGGREGATION_COMPARISON_OPERATORS.reduce((res, operator) => {
+            return {
+                ...res,
+                [`${field.name}_${operator}`]: {
+                    type: `${operator === "EQUAL" ? "String" : "Int"}`,
+                    directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
+                },
+                [`${field.name}_AVERAGE_${operator}`]: {
+                    type: "Float",
+                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                },
+                [`${field.name}_LONGEST_${operator}`]: {
+                    type: "Int",
+                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                },
+                [`${field.name}_SHORTEST_${operator}`]: {
+                    type: "Int",
+                    directives: [DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS],
+                },
+                [`${field.name}_AVERAGE_LENGTH_${operator}`]: "Float",
+                [`${field.name}_LONGEST_LENGTH_${operator}`]: "Int",
+                [`${field.name}_SHORTEST_LENGTH_${operator}`]: "Int",
+            };
+        }, {})
+    );
+
+    return;
+}
+
+function createIDAggregationInputFields2(aggregationInput: InputTypeComposer, field: AttributeAdapter) {
+    aggregationInput.addFields({
+        [`${field.name}_EQUAL`]: {
             type: `ID`,
             directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
         },
