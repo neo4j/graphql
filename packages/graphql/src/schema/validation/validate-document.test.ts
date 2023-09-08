@@ -4846,6 +4846,61 @@ describe("validation 2.0", () => {
                 expect(errors[1]).toHaveProperty("message", error);
             });
         });
+        describe("@subscriptionsAuthorization", () => {
+            test("should throw error if there are no arguments", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID!
+                        title: String @subscriptionsAuthorization
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    `Directive "@subscriptionsAuthorization" argument "filter" of type "[String]!" is required, but it was not provided.`
+                );
+            });
+
+            test("should not throw error when there is a valid argument", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID!
+                        title: String @subscriptionsAuthorization(filter: ["filter"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should throw error when there is an invalid argument", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID!
+                        title: String @subscriptionsAuthorization(test: "test")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(2);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    `Unknown argument "test" on directive "@subscriptionsAuthorization".`
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    `Directive "@subscriptionsAuthorization" argument "filter" of type "[String]!" is required, but it was not provided.`
+                );
+            });
+        });
 
         describe("@relationshipProperties", () => {
             describe("invalid", () => {
