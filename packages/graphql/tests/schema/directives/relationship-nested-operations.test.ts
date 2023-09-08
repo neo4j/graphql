@@ -50,6 +50,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -66,6 +67,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -77,11 +79,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -278,7 +282,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -341,6 +347,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -353,6 +360,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -393,6 +401,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -409,6 +418,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -420,11 +430,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -640,7 +652,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -703,6 +717,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -715,6 +730,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1133,6 +1149,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1149,6 +1166,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -1160,11 +1178,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -1371,7 +1391,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -1434,6 +1456,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1446,6 +1469,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1486,6 +1510,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1502,6 +1527,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -1513,11 +1539,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -1728,7 +1756,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -1791,6 +1821,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1803,6 +1834,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1843,6 +1875,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1859,6 +1892,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -1870,11 +1904,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -2085,7 +2121,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -2148,6 +2186,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -2160,6 +2199,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2201,6 +2241,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2217,6 +2258,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -2228,11 +2270,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -2429,7 +2473,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -2492,6 +2538,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -2504,6 +2551,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2546,6 +2594,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2562,6 +2611,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -2578,11 +2628,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -2805,8 +2857,11 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -2893,6 +2948,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -2905,6 +2961,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -3487,6 +3544,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -3503,6 +3561,7 @@ describe("Relationship nested operations", () => {
                   people: [Person!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -3514,11 +3573,13 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                   \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
@@ -3866,7 +3927,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -3929,6 +3992,7 @@ describe("Relationship nested operations", () => {
                   peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -3941,6 +4005,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -3994,6 +4059,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -4015,6 +4081,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -4026,10 +4093,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -4161,7 +4230,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -4221,7 +4292,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -4298,11 +4371,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -4315,6 +4390,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -4366,6 +4442,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -4387,6 +4464,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -4398,10 +4476,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -4580,7 +4660,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -4640,7 +4722,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -4717,11 +4801,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -4734,6 +4820,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -4785,6 +4872,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -4806,6 +4894,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -4817,10 +4906,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -4999,7 +5090,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -5063,7 +5156,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -5144,11 +5239,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -5161,6 +5258,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -5212,6 +5310,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -5233,6 +5332,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -5244,10 +5344,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -5403,7 +5505,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -5463,7 +5567,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -5540,11 +5646,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -5557,6 +5665,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -5608,6 +5717,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -5629,6 +5739,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -5640,10 +5751,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -5808,7 +5921,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -5868,7 +5983,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -5945,11 +6062,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -5962,6 +6081,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6013,6 +6133,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6034,6 +6155,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -6045,10 +6167,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -6213,7 +6337,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -6273,7 +6399,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -6350,11 +6478,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -6367,6 +6497,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6419,6 +6550,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6440,6 +6572,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -6451,10 +6584,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -6586,7 +6721,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -6646,7 +6783,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -6723,11 +6862,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -6740,6 +6881,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6794,6 +6936,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6815,6 +6958,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -6831,9 +6975,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -7022,8 +7169,11 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -7107,8 +7257,11 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -7209,11 +7362,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -7226,6 +7381,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -7278,6 +7434,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -7299,6 +7456,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -7310,10 +7468,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                   \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
@@ -7644,7 +7804,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -7708,7 +7870,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -7789,11 +7953,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -7806,6 +7972,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -7858,6 +8025,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -7879,6 +8047,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -7890,10 +8059,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                   \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
@@ -8158,7 +8329,9 @@ describe("Relationship nested operations", () => {
 
                 union Person = PersonOne | PersonTwo
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -8218,7 +8391,9 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo {
+                  \\"\\"\\"\\"\\"\\"
                   nameTwo: String
                 }
 
@@ -8295,11 +8470,13 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -8312,6 +8489,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -8373,6 +8551,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -8394,6 +8573,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -8405,10 +8585,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -8538,8 +8720,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -8623,7 +8808,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -8709,6 +8896,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -8721,6 +8909,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -8775,6 +8964,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -8796,6 +8986,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -8807,10 +8998,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -8964,8 +9157,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -9049,7 +9245,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -9135,6 +9333,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -9147,6 +9346,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -9201,6 +9401,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -9222,6 +9423,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -9233,10 +9435,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -9389,8 +9593,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -9474,7 +9681,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -9560,6 +9769,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -9572,6 +9782,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -9626,6 +9837,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -9647,6 +9859,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -9658,10 +9871,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -9806,8 +10021,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -9891,7 +10109,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -9982,6 +10202,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -9994,6 +10215,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -10048,6 +10270,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -10069,6 +10292,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -10080,10 +10304,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -10227,8 +10453,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -10312,7 +10541,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -10398,6 +10629,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -10410,6 +10642,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -10464,6 +10697,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -10485,6 +10719,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -10496,10 +10731,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                 }
 
@@ -10643,8 +10880,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -10728,7 +10968,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -10814,6 +11056,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -10826,6 +11069,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -10881,6 +11125,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -10902,6 +11147,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -10913,10 +11159,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                   \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
@@ -11167,8 +11415,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -11252,7 +11503,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -11343,6 +11596,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -11355,6 +11609,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -11411,6 +11666,7 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -11432,6 +11688,7 @@ describe("Relationship nested operations", () => {
                   personTwos: [PersonTwo!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -11443,10 +11700,12 @@ describe("Relationship nested operations", () => {
                   shortest: ID
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
                   \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID
                   \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
@@ -11667,8 +11926,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoWhere
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonOne implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
+                  \\"\\"\\"\\"\\"\\"
                   someExtraProp: [Int!]!
                 }
 
@@ -11752,7 +12014,9 @@ describe("Relationship nested operations", () => {
                   name: SortDirection
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type PersonTwo implements Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -11838,6 +12102,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -11850,6 +12115,7 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!

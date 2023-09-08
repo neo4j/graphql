@@ -59,7 +59,7 @@ export function createTopLevelConnectOrCreateInput2({
         `${sourceName}ConnectOrCreateInput`
     );
 
-    const nodeFieldConnectOrCreateInputName = relationshipAdapter.connectOrCreateFieldInputTypeName;
+    const nodeFieldConnectOrCreateInputName = relationshipAdapter.getConnectOrCreateFieldInputTypeName();
 
     nodeConnectOrCreateInput.addFields({
         [relationshipAdapter.name]: relationshipAdapter.isList

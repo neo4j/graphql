@@ -163,7 +163,7 @@ export function createConnectOrCreateField2({
         return undefined;
     }
 
-    const connectOrCreateName = relationshipAdapter.connectOrCreateFieldInputTypeName;
+    const connectOrCreateName = relationshipAdapter.getConnectOrCreateFieldInputTypeName(targetEntityAdapter);
 
     createOnCreateITC2({
         schemaComposer,
@@ -193,7 +193,7 @@ function createOnCreateITC2({
     targetEntityAdapter: ConcreteEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposer {
-    const onCreateName = relationshipAdapter.connectOrCreateOnCreateFieldInputTypeName;
+    const onCreateName = relationshipAdapter.getConnectOrCreateOnCreateFieldInputTypeName(targetEntityAdapter);
 
     const onCreateFields = getOnCreateFields2({
         relationshipAdapter,
