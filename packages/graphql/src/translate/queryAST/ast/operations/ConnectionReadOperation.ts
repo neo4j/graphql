@@ -34,18 +34,29 @@ import type { QueryASTNode } from "../QueryASTNode";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter;
-    private directed: boolean;
+    public readonly target: ConcreteEntityAdapter;
+
+    protected directed: boolean;
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
-    private filters: Filter[] = [];
-    private authFilters: AuthorizationFilters | undefined;
-    private pagination: Pagination | undefined;
-    private sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
+    protected filters: Filter[] = [];
+    protected authFilters: AuthorizationFilters | undefined;
+    protected pagination: Pagination | undefined;
+    protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
-    constructor({ relationship, directed }: { relationship: RelationshipAdapter; directed: boolean }) {
+    constructor({
+        relationship,
+        directed,
+        target,
+    }: {
+        relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter;
+        directed: boolean;
+    }) {
         super();
         this.relationship = relationship;
         this.directed = directed;
+        this.target = target;
     }
 
     public setNodeFields(fields: Field[]) {
@@ -89,7 +100,7 @@ export class ConnectionReadOperation extends Operation {
 
     public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
         if (!parentNode) throw new Error();
-        const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter);
+        const node = createNodeFromEntity(this.target);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
@@ -122,7 +133,7 @@ export class ConnectionReadOperation extends Operation {
             });
 
         if (nodeProjectionMap.size === 0) {
-            const targetNodeName = this.relationship.target.name;
+            const targetNodeName = this.target.name;
             nodeProjectionMap.set({
                 __resolveType: new Cypher.Literal(targetNodeName),
                 __id: Cypher.id(node),
@@ -200,7 +211,7 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
-    private getPaginationSubquery(
+    protected getPaginationSubquery(
         context: QueryASTContext,
         edgesVar: Cypher.Variable,
         paginationField: PaginationField | undefined
@@ -222,7 +233,7 @@ export class ConnectionReadOperation extends Operation {
         return new Cypher.Call(subquery).innerWith(edgesVar).with([returnVar, edgesVar]);
     }
 
-    private getSortFields(
+    protected getSortFields(
         context: QueryASTContext,
         nodeVar: Cypher.Variable | Cypher.Property,
         edgeVar: Cypher.Variable | Cypher.Property

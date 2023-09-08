@@ -33,6 +33,9 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { AuthorizationFactory } from "./AuthorizationFactory";
 import { AuthFilterFactory } from "./AuthFilterFactory";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { InterfaceConnectionReadOperation } from "../ast/operations/interfaces/InterfaceConnectionReadOperation";
+import { isConcreteEntity } from "../utils/is-concreate-entity";
+import { InterfaceConnectionPartial } from "../ast/operations/interfaces/InterfaceConnectionPartial";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -141,20 +144,72 @@ export class OperationsFactory {
         relationship: RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
-    ): ConnectionReadOperation {
+    ): ConnectionReadOperation | InterfaceConnectionReadOperation {
+        const target = relationship.target;
+
+        if (isConcreteEntity(target)) {
+            const directed = Boolean(resolveTree.args.directed) ?? true;
+
+            const operation = new ConnectionReadOperation({ relationship, directed, target });
+
+            return this.hydrateConnectionOperationAST({
+                relationship,
+                target: target,
+                resolveTree,
+                context,
+                operation,
+            });
+        } else {
+            const directed = Boolean(resolveTree.args.directed) ?? true;
+
+            const concreteConnectionOperations = target.concreteEntities.map(
+                (concreteEntity: ConcreteEntityAdapter) => {
+                    const connectionPartial = new InterfaceConnectionPartial({
+                        relationship,
+                        directed,
+                        target: concreteEntity,
+                    });
+                    return this.hydrateConnectionOperationAST({
+                        relationship,
+                        target: concreteEntity,
+                        resolveTree,
+                        context,
+                        operation: connectionPartial,
+                    });
+                }
+            );
+            return new InterfaceConnectionReadOperation(concreteConnectionOperations);
+        }
+    }
+
+    private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
+        relationship,
+        target,
+        resolveTree,
+        context,
+        operation,
+    }: {
+        relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        operation: T;
+    }): T {
         const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
             ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
         };
-        const nodeRawFields = { ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name] };
+
+        // Getting fields for relationship and target to get both, interface and concrete entity types
+        const nodeRawFields = {
+            ...edgeRawFields.node?.fieldsByTypeName[target.name],
+            ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name],
+        };
 
         delete edgeRawFields.node;
         delete edgeRawFields.edge;
 
-        const directed = Boolean(resolveTree.args.directed) ?? true;
-
-        const operation = new ConnectionReadOperation({ relationship, directed });
         const first = resolveTree.args.first as number | Integer | undefined;
         const sort = resolveTree.args.sort as ConnectionSortArg[];
 
@@ -174,17 +229,9 @@ export class OperationsFactory {
             });
         }
 
-        const nodeFields = this.fieldFactory.createFields(
-            relationship.target as ConcreteEntityAdapter,
-            nodeRawFields,
-            context
-        );
+        const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
-        const authFilters = this.authorizationFactory.createEntityAuthFilters(
-            relationship.target as ConcreteEntityAdapter,
-            ["READ"],
-            context
-        );
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);
         operation.setNodeFields(nodeFields);
