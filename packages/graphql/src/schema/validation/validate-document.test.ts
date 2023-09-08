@@ -23,7 +23,7 @@ import type {
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { AuthorizationAnnotationArguments } from "../../schema-model/annotation/AuthorizationAnnotation";
