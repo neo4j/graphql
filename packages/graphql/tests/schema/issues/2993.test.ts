@@ -234,6 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type User implements Profile {
+              \\"\\"\\"\\"\\"\\"
               following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
               followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!

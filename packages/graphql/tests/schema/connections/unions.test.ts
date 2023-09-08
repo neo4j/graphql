@@ -57,6 +57,7 @@ describe("Unions", () => {
 
             type Author {
               name: String!
+              \\"\\"\\"\\"\\"\\"
               publications(directed: Boolean = true, options: QueryOptions, where: PublicationWhere): [Publication!]!
               publicationsConnection(after: String, directed: Boolean = true, first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
@@ -309,6 +310,7 @@ describe("Unions", () => {
             }
 
             type Book {
+              \\"\\"\\"\\"\\"\\"
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
@@ -627,6 +629,7 @@ describe("Unions", () => {
             }
 
             type Journal {
+              \\"\\"\\"\\"\\"\\"
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!

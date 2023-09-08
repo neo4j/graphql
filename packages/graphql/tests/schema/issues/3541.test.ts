@@ -118,6 +118,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type Movie @key(fields: \\"title\\") @shareable {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -473,6 +474,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type Movie @key(fields: \\"title\\") @key(fields: \\"id\\") @shareable {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!

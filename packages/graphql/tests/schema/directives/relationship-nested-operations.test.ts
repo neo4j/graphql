@@ -3999,6 +3999,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -4370,6 +4371,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -4788,6 +4790,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -5214,6 +5217,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -5609,6 +5613,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -6013,6 +6018,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -6418,6 +6424,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
@@ -7276,9 +7283,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
+                  \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   producersConnection(after: String, directed: Boolean = true, first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
@@ -7854,9 +7863,11 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
+                  \\"\\"\\"\\"\\"\\"
                   producers(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                   producersConnection(after: String, directed: Boolean = true, first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }

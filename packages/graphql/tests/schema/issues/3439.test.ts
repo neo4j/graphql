@@ -111,6 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Genre {
               name: String!
+              \\"\\"\\"\\"\\"\\"
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
@@ -511,6 +512,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type Movie implements INode & IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
@@ -883,6 +885,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type Series implements INode & IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesGenreConnectionSort!], where: SeriesGenreConnectionWhere): SeriesGenreConnection!
@@ -2528,6 +2531,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type Genre {
               name: String!
+              \\"\\"\\"\\"\\"\\"
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }

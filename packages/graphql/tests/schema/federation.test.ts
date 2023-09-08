@@ -109,6 +109,7 @@ describe("Apollo Federation", () => {
             }
 
             type Post {
+              \\"\\"\\"\\"\\"\\"
               author: User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
@@ -366,6 +367,7 @@ describe("Apollo Federation", () => {
 
             type User @shareable {
               name: String!
+              \\"\\"\\"\\"\\"\\"
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(directed: Boolean = true, where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
@@ -712,6 +714,7 @@ describe("Apollo Federation", () => {
             }
 
             type Post {
+              \\"\\"\\"\\"\\"\\"
               author: User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!

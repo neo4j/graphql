@@ -92,6 +92,7 @@ describe("Authorization", () => {
             }
 
             type Post {
+              \\"\\"\\"\\"\\"\\"
               author(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
@@ -362,6 +363,7 @@ describe("Authorization", () => {
             type User {
               id: ID!
               name: String!
+              \\"\\"\\"\\"\\"\\"
               posts(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
               postsAggregate(directed: Boolean = true, where: UserWhere): UserUserPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!

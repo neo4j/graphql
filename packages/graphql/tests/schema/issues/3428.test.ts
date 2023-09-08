@@ -77,6 +77,7 @@ describe("Relationship nested operations", () => {
             }
 
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
               actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -445,6 +446,7 @@ describe("Relationship nested operations", () => {
             }
 
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
               actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID

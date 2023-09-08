@@ -139,6 +139,7 @@ describe("Unions", () => {
 
             type Movie {
               id: ID
+              \\"\\"\\"\\"\\"\\"
               search(directed: Boolean = true, options: QueryOptions, where: SearchWhere): [Search!]!
               searchConnection(after: String, directed: Boolean = true, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
