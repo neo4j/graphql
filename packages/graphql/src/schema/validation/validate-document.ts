@@ -63,6 +63,8 @@ import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 
 function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings | undefined): DocumentNode {
+    let authorizationDetected = false;
+
     const nodeNames = document.definitions
         .filter((definition) => {
             if (definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
@@ -123,14 +125,13 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             })
             .map((field) => {
                 if (
+                    !authorizationDetected &&
                     field.directives?.some((directive) =>
                         ["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value)
                     ) &&
                     !features?.authorization
                 ) {
-                    console.warn(
-                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
-                    );
+                    authorizationDetected = true;
                 }
 
                 return {
@@ -140,7 +141,7 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             });
     };
 
-    return {
+    const filteredDocument: DocumentNode = {
         ...document,
         definitions: document.definitions.reduce((res: DefinitionNode[], def) => {
             if (def.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION) {
@@ -170,12 +171,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
                 }
 
                 if (
+                    !authorizationDetected &&
                     def.directives?.some((x) => ["authentication", "authorization"].includes(x.name.value)) &&
                     !features?.authorization
                 ) {
-                    console.warn(
-                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
-                    );
+                    authorizationDetected = true;
                 }
 
                 return [
@@ -189,12 +189,11 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
 
             if (def.kind === Kind.SCHEMA_EXTENSION) {
                 if (
+                    !authorizationDetected &&
                     def.directives?.some((x) => ["authentication"].includes(x.name.value)) &&
                     !features?.authorization
                 ) {
-                    console.warn(
-                        "@authentication and/or @authorization detected - please ensure that you either specify authorization settings in features.authorization, or pass a decoded JWT into context.jwt on each request"
-                    );
+                    authorizationDetected = true;
                 }
 
                 return [...res, def];
@@ -203,6 +202,14 @@ function filterDocument(document: DocumentNode, features: Neo4jFeaturesSettings 
             return [...res, def];
         }, []),
     };
+
+    if (authorizationDetected) {
+        console.warn(
+            "'@authentication', '@authorization' and/or @subscriptionsAuthorization detected - please ensure that you either specify authorization settings in 'features.authorization'. This warning can be ignored if you intend to pass a decoded JWT into 'context.jwt' on every request."
+        );
+    }
+
+    return filteredDocument;
 }
 
 function runValidationRulesOnFilteredDocument({
