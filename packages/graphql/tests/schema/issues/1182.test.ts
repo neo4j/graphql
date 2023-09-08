@@ -47,10 +47,15 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               dob: DateTime!
+              \\"\\"\\"\\"\\"\\"
               homeAddress: Point!
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -83,6 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             input ActorOnCreateInput {
               dob: DateTime!
               homeAddress: PointInput!
+              id: ID!
               name: String!
             }
 
@@ -169,6 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -188,6 +195,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               min: DateTime!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -199,12 +207,15 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               shortest: ID!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
               \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -496,6 +507,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               startCursor: String
             }
 
+            \\"\\"\\"Point type\\"\\"\\"
             type Point {
               crs: String!
               height: Float
@@ -504,12 +516,14 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               srid: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input PointDistance {
               \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
               distance: Float!
               point: PointInput!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
@@ -525,6 +539,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -542,6 +557,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

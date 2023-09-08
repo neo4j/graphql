@@ -52,8 +52,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Book {
+              \\"\\"\\"\\"\\"\\"
               isbn: String!
+              \\"\\"\\"\\"\\"\\"
               originalTitle: String!
               \\"\\"\\"\\"\\"\\"
               translatedTitle(directed: Boolean = true, options: QueryOptions, where: BookTitleWhere): BookTitle
@@ -133,11 +136,13 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               BookTitle_SV: BookTitle_SVWhere
             }
 
+            \\"\\"\\"\\"\\"\\"
             type BookTitle_EN {
               \\"\\"\\"\\"\\"\\"
               book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
               bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_ENBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_ENBookConnectionSort!], where: BookTitle_ENBookConnectionWhere): BookTitle_ENBookConnection!
+              \\"\\"\\"\\"\\"\\"
               value: String!
             }
 
@@ -380,11 +385,13 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               value_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type BookTitle_SV {
               \\"\\"\\"\\"\\"\\"
               book(directed: Boolean = true, options: BookOptions, where: BookWhere): Book!
               bookAggregate(directed: Boolean = true, where: BookWhere): BookTitle_SVBookBookAggregationSelection
               bookConnection(after: String, directed: Boolean = true, first: Int, sort: [BookTitle_SVBookConnectionSort!], where: BookTitle_SVBookConnectionWhere): BookTitle_SVBookConnection!
+              \\"\\"\\"\\"\\"\\"
               value: String!
             }
 
@@ -818,12 +825,14 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -862,11 +871,13 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -894,6 +905,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

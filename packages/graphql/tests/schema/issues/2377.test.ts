@@ -84,6 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -103,6 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               min: DateTime!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -140,6 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Resource implements ResourceEntity {
               \\"\\"\\"
               Resources encapsulating the given resource (e.g., a github org contains a repo)
@@ -147,14 +150,21 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               containedBy(directed: Boolean = true, options: ResourceOptions, where: ResourceWhere): [Resource!]!
               containedByAggregate(directed: Boolean = true, where: ResourceWhere): ResourceResourceContainedByAggregationSelection
               containedByConnection(after: String, directed: Boolean = true, first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
+              \\"\\"\\"\\"\\"\\"
               createdAt: DateTime!
+              \\"\\"\\"\\"\\"\\"
               externalIds: [ID!]
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               name: String
+              \\"\\"\\"\\"\\"\\"
               properties: [Property!]
               \\"\\"\\"Globally tracked tags for this resource\\"\\"\\"
               tags: [Tag!]
+              \\"\\"\\"\\"\\"\\"
               type: ResourceType!
+              \\"\\"\\"\\"\\"\\"
               updatedAt: DateTime!
             }
 
@@ -375,12 +385,14 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceOnCreateInput {
+              createdAt: DateTime!
               externalIds: [ID!]
               id: ID!
               name: String
               properties: [Property!]
               tags: [Tag!]
               type: ResourceType!
+              updatedAt: DateTime!
             }
 
             input ResourceOptions {
@@ -534,6 +546,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -552,6 +565,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               TagC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

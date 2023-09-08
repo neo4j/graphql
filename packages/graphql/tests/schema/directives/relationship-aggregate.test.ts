@@ -227,8 +227,11 @@ describe("@relationship directive, aggregate argument", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Actor {
+                  \\"\\"\\"\\"\\"\\"
                   password: String!
+                  \\"\\"\\"\\"\\"\\"
                   username: String!
                 }
 
@@ -311,6 +314,7 @@ describe("@relationship directive, aggregate argument", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -322,15 +326,19 @@ describe("@relationship directive, aggregate argument", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   title: String
                 }
 
@@ -612,6 +620,7 @@ describe("@relationship directive, aggregate argument", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -634,6 +643,7 @@ describe("@relationship directive, aggregate argument", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -671,8 +681,11 @@ describe("@relationship directive, aggregate argument", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Actor {
+                  \\"\\"\\"\\"\\"\\"
                   password: String!
+                  \\"\\"\\"\\"\\"\\"
                   username: String!
                 }
 
@@ -755,6 +768,7 @@ describe("@relationship directive, aggregate argument", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -766,16 +780,20 @@ describe("@relationship directive, aggregate argument", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   title: String
                 }
 
@@ -1067,6 +1085,7 @@ describe("@relationship directive, aggregate argument", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1089,6 +1108,7 @@ describe("@relationship directive, aggregate argument", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1132,8 +1152,11 @@ describe("@relationship directive, aggregate argument", () => {
                       mutation: Mutation
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor implements Person {
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -1212,6 +1235,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -1223,15 +1247,19 @@ describe("@relationship directive, aggregate argument", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -1478,6 +1506,7 @@ describe("@relationship directive, aggregate argument", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -1500,6 +1529,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -1541,8 +1571,11 @@ describe("@relationship directive, aggregate argument", () => {
                       mutation: Mutation
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor implements Person {
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -1621,6 +1654,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -1632,15 +1666,19 @@ describe("@relationship directive, aggregate argument", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -1887,6 +1925,7 @@ describe("@relationship directive, aggregate argument", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -1909,6 +1948,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -1954,8 +1994,11 @@ describe("@relationship directive, aggregate argument", () => {
                       mutation: Mutation
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -2045,6 +2088,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -2061,15 +2105,19 @@ describe("@relationship directive, aggregate argument", () => {
                       people: [Person!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: QueryOptions, where: CastMemberWhere): [CastMember!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -2321,7 +2369,9 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Person {
+                      \\"\\"\\"\\"\\"\\"
                       name: String!
                     }
 
@@ -2391,11 +2441,13 @@ describe("@relationship directive, aggregate argument", () => {
                       peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -2418,6 +2470,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -2465,8 +2518,11 @@ describe("@relationship directive, aggregate argument", () => {
                       mutation: Mutation
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -2556,6 +2612,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -2572,15 +2629,19 @@ describe("@relationship directive, aggregate argument", () => {
                       people: [Person!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: QueryOptions, where: CastMemberWhere): [CastMember!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -2832,7 +2893,9 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Person {
+                      \\"\\"\\"\\"\\"\\"
                       name: String!
                     }
 
@@ -2902,11 +2965,13 @@ describe("@relationship directive, aggregate argument", () => {
                       peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -2929,6 +2994,7 @@ describe("@relationship directive, aggregate argument", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!

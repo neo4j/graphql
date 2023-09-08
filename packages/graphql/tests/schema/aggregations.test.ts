@@ -60,6 +60,7 @@ describe("Aggregations", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -79,6 +80,7 @@ describe("Aggregations", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -130,17 +132,29 @@ describe("Aggregations", () => {
               min: LocalTime
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               createdAt: DateTime
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               imdbRating: Float
+              \\"\\"\\"\\"\\"\\"
               isbn: String!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Duration
+              \\"\\"\\"\\"\\"\\"
               someBigInt: BigInt
+              \\"\\"\\"\\"\\"\\"
               someInt: Int
+              \\"\\"\\"\\"\\"\\"
               someLocalDateTime: LocalDateTime
+              \\"\\"\\"\\"\\"\\"
               someLocalTime: LocalTime
+              \\"\\"\\"\\"\\"\\"
               someTime: Time
+              \\"\\"\\"\\"\\"\\"
               title: String
             }
 
@@ -352,6 +366,7 @@ describe("Aggregations", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -377,6 +392,7 @@ describe("Aggregations", () => {
               min: Time
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -446,6 +462,7 @@ describe("Aggregations", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -470,6 +487,7 @@ describe("Aggregations", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -688,10 +706,13 @@ describe("Aggregations", () => {
               startCursor: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Post {
+              \\"\\"\\"\\"\\"\\"
               likes(directed: Boolean = true, options: UserOptions, where: UserWhere): [User!]!
               likesAggregate(directed: Boolean = true, where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, directed: Boolean = true, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String
             }
 
@@ -1323,6 +1344,7 @@ describe("Aggregations", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1343,6 +1365,7 @@ describe("Aggregations", () => {
               min: Time
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1361,16 +1384,27 @@ describe("Aggregations", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type User {
+              \\"\\"\\"\\"\\"\\"
               someBigInt: BigInt
+              \\"\\"\\"\\"\\"\\"
               someDateTime: DateTime
+              \\"\\"\\"\\"\\"\\"
               someDuration: Duration
+              \\"\\"\\"\\"\\"\\"
               someFloat: Float
+              \\"\\"\\"\\"\\"\\"
               someId: ID
+              \\"\\"\\"\\"\\"\\"
               someInt: Int
+              \\"\\"\\"\\"\\"\\"
               someLocalDateTime: LocalDateTime
+              \\"\\"\\"\\"\\"\\"
               someLocalTime: LocalTime
+              \\"\\"\\"\\"\\"\\"
               someString: String
+              \\"\\"\\"\\"\\"\\"
               someTime: Time
             }
 

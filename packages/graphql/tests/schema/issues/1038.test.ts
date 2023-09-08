@@ -44,8 +44,11 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"\\"\\"\\"
             type AWSAccount {
+              \\"\\"\\"\\"\\"\\"
               accountName: String
+              \\"\\"\\"\\"\\"\\"
               code: String
             }
 
@@ -129,14 +132,18 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type DNSZone {
+              \\"\\"\\"\\"\\"\\"
               awsId: String
+              \\"\\"\\"\\"\\"\\"
               zoneType: String
             }
 
@@ -204,6 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               zoneType_STARTS_WITH: String
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -242,6 +250,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DnsZonesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -264,6 +273,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
