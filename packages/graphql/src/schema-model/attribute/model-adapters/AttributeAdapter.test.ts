@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 
+import { CypherAnnotation } from "../../annotation/CypherAnnotation";
+import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
+import { Attribute } from "../Attribute";
 import {
     EnumType,
     GraphQLBuiltInScalarType,
@@ -31,13 +34,58 @@ import {
     UnionType,
     UserScalarType,
 } from "../AttributeType";
-import { Attribute } from "../Attribute";
 import { AttributeAdapter } from "./AttributeAdapter";
-import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
-import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 
 describe("Attribute", () => {
     describe("type assertions", () => {
+        test("getTypePrettyName String", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.String, false),
+                    args: [],
+                })
+            );
+
+            expect(attribute.getTypePrettyName()).toBe("String");
+        });
+        test("getTypePrettyName required String", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                    args: [],
+                })
+            );
+
+            expect(attribute.getTypePrettyName()).toBe("String!");
+        });
+        test("getTypePrettyName required String, required List", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), true),
+                    args: [],
+                })
+            );
+
+            expect(attribute.getTypePrettyName()).toBe("[String!]!");
+        });
+        test("getTypePrettyName non-required String, required List", () => {
+            const attribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, false), true),
+                    args: [],
+                })
+            );
+
+            expect(attribute.getTypePrettyName()).toBe("[String]!");
+        });
         test("isID", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
