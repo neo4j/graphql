@@ -37,7 +37,7 @@ import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, Obje
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
-import { augmentFulltextSchema } from "./augment/fulltext";
+import { augmentFulltextSchema2 } from "./augment/fulltext";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { createResolver2 } from "./resolvers/mutation/create";
@@ -1120,7 +1120,7 @@ function makeAugmentedSchema(
         });
 
         // TODO: Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
-        augmentFulltextSchema(node, composer, concreteEntityAdapter);
+        augmentFulltextSchema2(node, composer, concreteEntityAdapter);
 
         composer.createInputTC({
             name: `${concreteEntityAdapter.name}UniqueWhere`,

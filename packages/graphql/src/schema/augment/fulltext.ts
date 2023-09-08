@@ -29,6 +29,82 @@ import { fulltextResolver } from "../resolvers/query/fulltext";
 export function augmentFulltextSchema(
     node: Node,
     composer: SchemaComposer,
+    nodeWhereTypeName: string,
+    nodeSortTypeName: string
+) {
+    if (node.fulltextDirective) {
+        const fields = node.fulltextDirective.indexes.reduce((res, index) => {
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            return {
+                ...res,
+                [indexName]: composer.createInputTC({
+                    name: `${node.name}${upperFirst(indexName)}Fulltext`,
+                    fields: {
+                        phrase: new GraphQLNonNull(GraphQLString),
+                    },
+                }),
+            };
+        }, {});
+
+        const fulltextResultDescription = `The result of a fulltext search on an index of ${node.name}`;
+        const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
+        const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
+
+        composer.createInputTC({
+            name: `${node.name}Fulltext`,
+            fields,
+        });
+
+        composer.createInputTC({
+            name: node.fulltextTypeNames.sort,
+            description: fulltextSortDescription,
+            fields: {
+                [SCORE_FIELD]: "SortDirection",
+                [node.singular]: nodeSortTypeName,
+            },
+        });
+
+        composer.createInputTC({
+            name: node.fulltextTypeNames.where,
+            description: fulltextWhereDescription,
+            fields: {
+                [SCORE_FIELD]: FloatWhere.name,
+                [node.singular]: nodeWhereTypeName,
+            },
+        });
+
+        composer.createObjectTC({
+            name: node.fulltextTypeNames.result,
+            description: fulltextResultDescription,
+            fields: {
+                [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
+                [node.singular]: `${node.name}!`,
+            },
+        });
+
+        node.fulltextDirective.indexes.forEach((index) => {
+            // TODO: remove indexName assignment and undefined check once the name argument has been removed.
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
+            if (index.queryName) {
+                queryName = index.queryName;
+            }
+            composer.Query.addFields({
+                [queryName]: fulltextResolver({ node }, index),
+            });
+        });
+    }
+}
+
+export function augmentFulltextSchema2(
+    node: Node,
+    composer: SchemaComposer,
     concreteEntityAdapter: ConcreteEntityAdapter
 ) {
     if (!node.fulltextDirective) {
