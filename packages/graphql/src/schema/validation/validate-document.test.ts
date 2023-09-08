@@ -23,9 +23,10 @@ import type {
     ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { gql } from "graphql-tag";
-import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
+import gql from "graphql-tag";
+import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
 import { RESERVED_TYPE_NAMES } from "../../constants";
+import { AuthorizationAnnotationArguments } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { Neo4jGraphQLCallback } from "../../types";
 import validateDocument from "./validate-document";
 
@@ -4790,6 +4791,59 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 expect(executeValidate).not.toThrow();
+            });
+        });
+        describe("@authorization", () => {
+            test("should throw error if there are no arguments", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID!
+                        title: String @authorization
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+
+                const error = `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(
+                    ", "
+                )} arguments`;
+                expect(errors[0]).toHaveProperty("message", error);
+            });
+
+            test("should not throw error when there is a valid argument", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID!
+                        title: String @authorization(filter: ["filter"])
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("should throw error when there is an invalid argument", () => {
+                const doc = gql`
+                    type Movie {
+                        id: ID!
+                        title: String @authorization(test: "test")
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                const error = `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(
+                    ", "
+                )} arguments`;
+                expect(errors).toHaveLength(2);
+                expect(errors[0]).toHaveProperty("message", `Unknown argument "test" on directive "@authorization".`);
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty("message", error);
             });
         });
 
