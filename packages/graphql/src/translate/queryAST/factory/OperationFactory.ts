@@ -36,6 +36,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { InterfaceConnectionReadOperation } from "../ast/operations/interfaces/InterfaceConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concreate-entity";
 import { InterfaceConnectionPartial } from "../ast/operations/interfaces/InterfaceConnectionPartial";
+import { UnionEntity } from "../../../schema-model/entity/UnionEntity";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -169,6 +171,7 @@ export class OperationsFactory {
                         directed,
                         target: concreteEntity,
                     });
+
                     return this.hydrateConnectionOperationAST({
                         relationship,
                         target: concreteEntity,
@@ -237,7 +240,7 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         operation: T;
     }): T {
-        const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
+        let whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
             ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
@@ -261,6 +264,11 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
+
+        if (relationship.target instanceof UnionEntityAdapter) {
+            // Small hack due to where arguments being one level nested for unions
+            whereArgs = whereArgs[target.name];
+        }
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);
         operation.setNodeFields(nodeFields);

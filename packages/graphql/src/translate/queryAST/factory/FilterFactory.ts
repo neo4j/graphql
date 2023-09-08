@@ -204,11 +204,7 @@ export class FilterFactory {
     }
 
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
-    public createNodeFilters(
-        // entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
-        entity: ConcreteEntityAdapter,
-        where: Record<string, unknown>
-    ): Filter[] {
+    public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Filter[] {
         const filters = filterTruthy(
             Object.entries(where).flatMap(([key, value]): Filter | undefined => {
                 if (key === "_on") {
