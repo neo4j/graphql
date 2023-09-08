@@ -21,14 +21,15 @@ import type { GraphQLResolveInfo } from "graphql";
 import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../classes";
 import { Relationship } from "../classes";
+import { DEPRECATED } from "../constants";
 import type { ConnectionField, ConnectionQueryArgs } from "../types";
+import { addRelationshipArrayFilters } from "./augment/add-relationship-array-filters";
+import { DEPRECATE_NOT } from "./constants";
+import { addDirectedArgument } from "./directed-argument";
 import type { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
-import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
-import { DEPRECATE_NOT } from "./constants";
-import { addRelationshipArrayFilters } from "./augment/add-relationship-array-filters";
 
 function createConnectionFields({
     connectionFields,
@@ -57,7 +58,7 @@ function createConnectionFields({
             });
         });
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            connectionField.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
         );
 
         const connectionWhereName = `${connectionField.typeMeta.name}Where`;
@@ -101,7 +102,6 @@ function createConnectionFields({
                 },
             });
         }
-        
 
         // n..m Relationships
         if (connectionField.relationship.typeMeta.array && connectionField.relationship.filterableOptions.byValue) {
@@ -245,7 +245,7 @@ function createConnectionFields({
 
         if (!connectionField.relationship.writeonly && connectionField.selectableOptions.onRead) {
             const deprecatedDirectives = graphqlDirectivesToCompose(
-                connectionField.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                connectionField.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
             );
             composeNode.addFields({
                 [connectionField.fieldName]: {

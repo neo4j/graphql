@@ -19,10 +19,11 @@
 
 import type { DirectiveNode, InputValueDefinitionNode } from "graphql";
 import type { Directive, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import { DEPRECATED } from "../constants";
+import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { DEPRECATE_NOT } from "./constants";
 import getFieldTypeMeta from "./get-field-type-meta";
-import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 
@@ -98,7 +99,7 @@ export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<str
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;
             const deprecatedDirectives = graphqlDirectivesToCompose(
-                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                f.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
             );
 
             if (defaultValue !== undefined) {
@@ -192,7 +193,7 @@ export function objectFieldsToSubscriptionsWhereInputFields(
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            f.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
         );
 
         const staticField = f.readonly || (f as PrimitiveField)?.autogenerate;

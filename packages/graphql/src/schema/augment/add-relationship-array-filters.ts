@@ -19,6 +19,7 @@
 
 import type { Directive, InputTypeComposer } from "graphql-compose";
 import pluralize from "pluralize";
+import { DEPRECATED } from "../../constants";
 
 export function addRelationshipArrayFilters({
     whereInput,
@@ -52,11 +53,11 @@ export function addRelationshipArrayFilters({
         )
     );
 
-    whereInput.setFieldDirectiveByName(fieldName, "deprecated", {
+    whereInput.setFieldDirectiveByName(fieldName, DEPRECATED, {
         reason: `Use \`${fieldName}_SOME\` instead.`,
     });
 
-    whereInput.setFieldDirectiveByName(`${fieldName}_NOT`, "deprecated", {
+    whereInput.setFieldDirectiveByName(`${fieldName}_NOT`, DEPRECATED, {
         reason: `Use \`${fieldName}_NONE\` instead.`,
     });
 }

@@ -21,7 +21,7 @@ import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compo
 import { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { Subgraph } from "../../classes/Subgraph";
-import { RelationshipNestedOperationsOption } from "../../constants";
+import { DEPRECATED, RelationshipNestedOperationsOption } from "../../constants";
 import type { RelationField } from "../../types";
 import { upperFirst } from "../../utils/upper-first";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
@@ -101,7 +101,7 @@ function createRelationshipFields({
         }
 
         const deprecatedDirectives = graphqlDirectivesToCompose(
-            rel.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+            rel.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
         );
         const nestedOperations = new Set(rel.nestedOperations);
         const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);

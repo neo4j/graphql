@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { DEPRECATED } from "../constants";
 import type {
     CustomEnumField,
     CustomScalarField,
@@ -25,8 +26,8 @@ import type {
     PrimitiveField,
     TemporalField,
 } from "../types";
-import { graphqlDirectivesToCompose } from "./to-compose";
 import { DEPRECATE_NOT } from "./constants";
+import { graphqlDirectivesToCompose } from "./to-compose";
 
 interface Fields {
     scalarFields: CustomScalarField[];
@@ -61,7 +62,7 @@ function getWhereFields({
             }
 
             const deprecatedDirectives = graphqlDirectivesToCompose(
-                f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
+                f.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
             );
 
             res[f.fieldName] = {
