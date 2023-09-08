@@ -29,12 +29,13 @@ import { IDAnnotation } from "./IDAnnotation";
 import { JWTClaimAnnotation } from "./JWTClaimAnnotation";
 import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
 import { KeyAnnotation } from "./KeyAnnotation";
+import { LimitAnnotation } from "./LimitAnnotation";
 import { MutationAnnotation } from "./MutationAnnotation";
 import { PluralAnnotation } from "./PluralAnnotation";
 import { PopulatedByAnnotation } from "./PopulatedByAnnotation";
 import { PrivateAnnotation } from "./PrivateAnnotation";
 import { QueryAnnotation } from "./QueryAnnotation";
-import { LimitAnnotation } from "./LimitAnnotation";
+import { RelayIDAnnotation } from "./RelayIDAnnotation";
 import { SelectableAnnotation } from "./SelectableAnnotation";
 import { SettableAnnotation } from "./SettableAnnotation";
 import { SubscriptionAnnotation } from "./SubscriptionAnnotation";
@@ -66,7 +67,8 @@ export type Annotation =
     | UniqueAnnotation
     | SubscriptionAnnotation
     | JWTClaimAnnotation
-    | JWTPayloadAnnotation;
+    | JWTPayloadAnnotation
+    | RelayIDAnnotation;
 
 export enum AnnotationsKey {
     authentication = "authentication",
@@ -93,6 +95,7 @@ export enum AnnotationsKey {
     subscriptionsAuthorization = "subscriptionsAuthorization",
     timestamp = "timestamp",
     unique = "unique",
+    relayId = "relayId",
 }
 
 export type Annotations = {
@@ -120,6 +123,7 @@ export type Annotations = {
     [AnnotationsKey.subscription]: SubscriptionAnnotation;
     [AnnotationsKey.jwtClaim]: JWTClaimAnnotation;
     [AnnotationsKey.jwtPayload]: JWTPayloadAnnotation;
+    [AnnotationsKey.relayId]: RelayIDAnnotation;
 };
 
 export function annotationToKey(ann: Annotation): keyof Annotations {
@@ -147,5 +151,6 @@ export function annotationToKey(ann: Annotation): keyof Annotations {
     if (ann instanceof SubscriptionAnnotation) return AnnotationsKey.subscription;
     if (ann instanceof JWTClaimAnnotation) return AnnotationsKey.jwtClaim;
     if (ann instanceof JWTPayloadAnnotation) return AnnotationsKey.jwtPayload;
+    if (ann instanceof RelayIDAnnotation) return AnnotationsKey.relayId;
     throw new Error("annotation not known");
 }

@@ -17,19 +17,4 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode } from "graphql";
-import type { DefaultAnnotationValue } from "../../annotation/DefaultAnnotation";
-import { DefaultAnnotation } from "../../annotation/DefaultAnnotation";
-import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
-
-export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
-    const args = parseArgumentsFromUnknownDirective(directive) as Record<string, DefaultAnnotationValue>;
-
-    if (args.value === undefined) {
-        throw new Error("@default directive must have a value");
-    }
-
-    return new DefaultAnnotation({
-        value: args.value,
-    });
-}
+export class RelayIDAnnotation {}
