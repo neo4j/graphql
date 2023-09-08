@@ -18,11 +18,13 @@
  */
 
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import type { ObjectFields } from "../get-obj-field-meta";
 import type { Node } from "../../classes";
+import type { Subgraph } from "../../classes/Subgraph";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { ObjectFields } from "../get-obj-field-meta";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
-import type { Subgraph } from "../../classes/Subgraph";
 
 export enum FieldAggregationSchemaTypes {
     field = "AggregationSelection",
@@ -110,5 +112,59 @@ export class FieldAggregationComposer {
             });
         }
         return undefined;
+    }
+
+    public createAggregationTypeObject2(relationshipAdapter: RelationshipAdapter): ObjectTypeComposer {
+        let aggregateSelectionEdge: ObjectTypeComposer | undefined;
+
+        const aggregateSelectionNodeFields = this.getAggregationFields2(
+            relationshipAdapter.target as ConcreteEntityAdapter
+        ); // TODO: fix ts
+        const aggregateSelectionNodeName = relationshipAdapter.getAggregationFieldTypename("node");
+
+        const aggregateSelectionNode = this.createAggregationField(
+            aggregateSelectionNodeName,
+            aggregateSelectionNodeFields
+        );
+
+        if (relationshipAdapter.attributes.size > 0) {
+            const aggregateSelectionEdgeFields = this.getAggregationFields2(relationshipAdapter);
+            const aggregateSelectionEdgeName = relationshipAdapter.getAggregationFieldTypename("edge");
+
+            aggregateSelectionEdge = this.createAggregationField(
+                aggregateSelectionEdgeName,
+                aggregateSelectionEdgeFields
+            );
+        }
+
+        return this.composer.createObjectTC({
+            name: relationshipAdapter.getAggregationFieldTypename(),
+            fields: {
+                count: {
+                    type: "Int!",
+                    resolve: numericalResolver,
+                    args: {},
+                },
+                ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
+                ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
+            },
+        });
+    }
+
+    private getAggregationFields2(
+        entity: RelationshipAdapter | ConcreteEntityAdapter
+    ): Record<string, ObjectTypeComposer> {
+        return entity.aggregableFields.reduce((res, field) => {
+            const objectTypeComposer = this.aggregationTypesMapper.getAggregationType({
+                fieldName: field.getTypeName(),
+                nullable: !field.isRequired(),
+            });
+
+            if (!objectTypeComposer) return res;
+
+            res[field.name] = objectTypeComposer.NonNull;
+
+            return res;
+        }, {});
     }
 }
