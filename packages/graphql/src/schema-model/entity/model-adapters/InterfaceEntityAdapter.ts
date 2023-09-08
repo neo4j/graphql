@@ -22,6 +22,7 @@ import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
 import type { Relationship } from "../../relationship/Relationship";
+import { getFromMap } from "../../utils/get-from-map";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { InterfaceEntity } from "../InterfaceEntity";
 import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
@@ -32,6 +33,7 @@ export class InterfaceEntityAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
+    private uniqueFieldsKeys: string[] = [];
 
     constructor(entity: InterfaceEntity) {
         this.name = entity.name;
@@ -53,6 +55,9 @@ export class InterfaceEntityAdapter {
         for (const [attributeName, attribute] of attributes.entries()) {
             const attributeAdapter = new AttributeAdapter(attribute);
             this.attributes.set(attributeName, attributeAdapter);
+            if (attributeAdapter.isConstrainable() && attributeAdapter.isUnique()) {
+                this.uniqueFieldsKeys.push(attribute.name);
+            }
         }
     }
 
@@ -60,5 +65,9 @@ export class InterfaceEntityAdapter {
         for (const [relationshipName, relationship] of relationships.entries()) {
             this.relationships.set(relationshipName, new RelationshipAdapter(relationship, this));
         }
+    }
+
+    public get uniqueFields(): AttributeAdapter[] {
+        return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 }
