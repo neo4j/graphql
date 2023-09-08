@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import { Neo4jGraphQL } from "../../../src";
+import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
-import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { gql } from "graphql-tag";
+import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
 describe("@filterable directive", () => {
@@ -98,47 +98,7 @@ describe("@filterable directive", () => {
                 "ActorMoviesNodeAggregationWhereInput"
             ) as GraphQLInputObjectType;
 
-            expect(aggregationWhereInput).toBeDefined();
-
-            const aggregationWhereInputFields = aggregationWhereInput.getFields();
-
-            const title_AVERAGE_LENGTH_EQUAL = aggregationWhereInputFields["title_AVERAGE_LENGTH_EQUAL"];
-            const title_LONGEST_LENGTH_EQUAL = aggregationWhereInputFields["title_LONGEST_LENGTH_EQUAL"];
-            const title_SHORTEST_LENGTH_EQUAL = aggregationWhereInputFields["title_SHORTEST_LENGTH_EQUAL"];
-            const title_AVERAGE_LENGTH_GT = aggregationWhereInputFields["title_AVERAGE_LENGTH_GT"];
-            const title_LONGEST_LENGTH_GT = aggregationWhereInputFields["title_LONGEST_LENGTH_GT"];
-            const title_SHORTEST_LENGTH_GT = aggregationWhereInputFields["title_SHORTEST_LENGTH_GT"];
-            const title_AVERAGE_LENGTH_GTE = aggregationWhereInputFields["title_AVERAGE_LENGTH_GTE"];
-            const title_LONGEST_LENGTH_GTE = aggregationWhereInputFields["title_LONGEST_LENGTH_GTE"];
-            const title_SHORTEST_LENGTH_GTE = aggregationWhereInputFields["title_SHORTEST_LENGTH_GTE"];
-            const title_AVERAGE_LENGTH_LT = aggregationWhereInputFields["title_AVERAGE_LENGTH_LT"];
-            const title_LONGEST_LENGTH_LT = aggregationWhereInputFields["title_LONGEST_LENGTH_LT"];
-            const title_SHORTEST_LENGTH_LT = aggregationWhereInputFields["title_SHORTEST_LENGTH_LT"];
-            const title_AVERAGE_LENGTH_LTE = aggregationWhereInputFields["title_AVERAGE_LENGTH_LTE"];
-            const title_LONGEST_LENGTH_LTE = aggregationWhereInputFields["title_LONGEST_LENGTH_LTE"];
-            const title_SHORTEST_LENGTH_LTE = aggregationWhereInputFields["title_SHORTEST_LENGTH_LTE"];
-
-            const aggregationFilters = [
-                title_AVERAGE_LENGTH_EQUAL,
-                title_LONGEST_LENGTH_EQUAL,
-                title_SHORTEST_LENGTH_EQUAL,
-                title_AVERAGE_LENGTH_GT,
-                title_LONGEST_LENGTH_GT,
-                title_SHORTEST_LENGTH_GT,
-                title_AVERAGE_LENGTH_GTE,
-                title_LONGEST_LENGTH_GTE,
-                title_SHORTEST_LENGTH_GTE,
-                title_AVERAGE_LENGTH_LT,
-                title_LONGEST_LENGTH_LT,
-                title_SHORTEST_LENGTH_LT,
-                title_AVERAGE_LENGTH_LTE,
-                title_LONGEST_LENGTH_LTE,
-                title_SHORTEST_LENGTH_LTE,
-            ];
-
-            for (const aggregationFilter of aggregationFilters) {
-                expect(aggregationFilter).toBeUndefined();
-            }
+            expect(aggregationWhereInput).toBeUndefined();
         });
 
         test("enable value and aggregation filters", async () => {
@@ -957,11 +917,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -1037,7 +1001,6 @@ describe("@filterable directive", () => {
                       count_GTE: Int
                       count_LT: Int
                       count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -1088,12 +1051,6 @@ describe("@filterable directive", () => {
                     input ActorMoviesFieldInput {
                       connect: [ActorMoviesConnectFieldInput!]
                       create: [ActorMoviesCreateFieldInput!]
-                    }
-
-                    input ActorMoviesNodeAggregationWhereInput {
-                      AND: [ActorMoviesNodeAggregationWhereInput!]
-                      NOT: ActorMoviesNodeAggregationWhereInput
-                      OR: [ActorMoviesNodeAggregationWhereInput!]
                     }
 
                     type ActorMoviesRelationship {
@@ -1280,6 +1237,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -1291,6 +1249,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -1305,10 +1264,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -1694,6 +1656,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -1729,6 +1692,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -1772,11 +1736,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -2130,6 +2098,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -2141,6 +2110,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -2155,10 +2125,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -2544,6 +2517,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -2579,6 +2553,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -2622,11 +2597,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -2970,6 +2949,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -2981,6 +2961,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -2995,10 +2976,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -3356,6 +3340,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -3391,6 +3376,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -3437,11 +3423,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -3795,6 +3785,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -3806,6 +3797,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -3820,10 +3812,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -4120,6 +4115,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -4155,6 +4151,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -4200,11 +4197,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -4558,6 +4559,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -4569,6 +4571,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -4583,10 +4586,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -4972,6 +4978,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -5007,6 +5014,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -5052,11 +5060,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -5410,6 +5422,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -5421,6 +5434,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -5435,10 +5449,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -5796,6 +5813,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -5831,6 +5849,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -5876,11 +5895,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -6234,6 +6257,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -6245,6 +6269,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -6259,10 +6284,13 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                       actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -6559,6 +6587,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -6594,6 +6623,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -6644,11 +6674,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor implements Person {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -6998,6 +7032,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -7009,6 +7044,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -7023,9 +7059,12 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -7402,6 +7441,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -7437,6 +7477,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -7487,11 +7528,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor implements Person {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -7841,6 +7886,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -7852,6 +7898,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -7866,9 +7913,12 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -8245,6 +8295,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -8280,6 +8331,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -8330,11 +8382,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor implements Person {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -8684,6 +8740,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -8695,6 +8752,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -8709,9 +8767,12 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -9088,6 +9149,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -9123,6 +9185,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -9177,11 +9240,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -9530,11 +9597,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Appearance {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): AppearanceMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -9893,6 +9964,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -9904,6 +9976,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -9918,9 +9991,12 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -10293,11 +10369,13 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -10343,6 +10421,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -10397,11 +10476,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -10750,11 +10833,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Appearance {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): AppearanceMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -11113,6 +11200,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -11124,6 +11212,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -11138,9 +11227,12 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -11513,11 +11605,13 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -11563,6 +11657,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -11617,11 +11712,15 @@ describe("@filterable directive", () => {
                       subscription: Subscription
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Actor {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -11970,11 +12069,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Appearance {
+                      \\"\\"\\"\\"\\"\\"
                       movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(directed: Boolean = true, where: MovieWhere): AppearanceMovieMoviesAggregationSelection
                       moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -12333,6 +12436,7 @@ describe("@filterable directive", () => {
                       info: CreateInfo!
                     }
 
+                    \\"\\"\\"CreateInfo\\"\\"\\"
                     type CreateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
@@ -12344,6 +12448,7 @@ describe("@filterable directive", () => {
                       movies: [Movie!]!
                     }
 
+                    \\"\\"\\"DeleteInfo\\"\\"\\"
                     type DeleteInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesDeleted: Int!
@@ -12358,9 +12463,12 @@ describe("@filterable directive", () => {
                       UPDATE
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     type Movie {
+                      \\"\\"\\"\\"\\"\\"
                       actors(directed: Boolean = true, options: QueryOptions, where: PersonWhere): [Person!]!
                       actorsConnection(after: String, directed: Boolean = true, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                      \\"\\"\\"\\"\\"\\"
                       title: String
                     }
 
@@ -12733,11 +12841,13 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
+                    \\"\\"\\"\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
                     }
 
+                    \\"\\"\\"SortDirection\\"\\"\\"
                     enum SortDirection {
                       \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                       ASC
@@ -12783,6 +12893,7 @@ describe("@filterable directive", () => {
                       info: UpdateInfo!
                     }
 
+                    \\"\\"\\"UpdateInfo\\"\\"\\"
                     type UpdateInfo {
                       bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                       nodesCreated: Int!
