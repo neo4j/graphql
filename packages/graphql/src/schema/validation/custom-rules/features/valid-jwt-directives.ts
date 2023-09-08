@@ -21,7 +21,7 @@ import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode, ObjectTypeExt
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
@@ -31,12 +31,12 @@ export function ValidJwtDirectives(context: SDLValidationContext): ASTVisitor {
     const typeMap = new Map<string, ObjectOrInterfaceWithExtensions[]>();
     const defs = context.getDocument().definitions;
     const objectsAndInterfaces: ObjectOrInterfaceWithExtensions[] = defs.filter(
-        (d) =>
+        (d): d is ObjectOrInterfaceWithExtensions =>
             d.kind === Kind.OBJECT_TYPE_DEFINITION ||
             d.kind === Kind.OBJECT_TYPE_EXTENSION ||
             d.kind === Kind.INTERFACE_TYPE_DEFINITION ||
             d.kind === Kind.INTERFACE_TYPE_EXTENSION
-    ) as ObjectOrInterfaceWithExtensions[];
+    );
     for (const def of objectsAndInterfaces) {
         const prev = typeMap.get(def.name.value) || [];
         typeMap.set(def.name.value, prev.concat(def));
