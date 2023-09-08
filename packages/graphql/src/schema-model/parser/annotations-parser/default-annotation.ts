@@ -25,7 +25,7 @@ import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
     const args = parseArgumentsFromUnknownDirective(directive) as Record<string, DefaultAnnotationValue>;
 
-    if (!args || args.value === undefined) {
+    if (args.value === undefined) {
         throw new Error("@default directive must have a value");
     }
 
