@@ -69,6 +69,7 @@ describe("Apollo Federation", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -85,6 +86,7 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -108,11 +110,13 @@ describe("Apollo Federation", () => {
               startCursor: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Post {
               \\"\\"\\"\\"\\"\\"
               author: User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
+              \\"\\"\\"\\"\\"\\"
               content: String!
             }
 
@@ -335,6 +339,7 @@ describe("Apollo Federation", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -347,6 +352,7 @@ describe("Apollo Federation", () => {
               shortest: String!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -365,7 +371,9 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type User @shareable {
+              \\"\\"\\"\\"\\"\\"
               name: String!
               \\"\\"\\"\\"\\"\\"
               posts(directed: Boolean = true, options: PostOptions, where: PostWhere): [Post!]!
@@ -674,6 +682,7 @@ describe("Apollo Federation", () => {
 
             directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -690,6 +699,7 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -713,11 +723,13 @@ describe("Apollo Federation", () => {
               startCursor: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Post {
               \\"\\"\\"\\"\\"\\"
               author: User!
               authorAggregate(directed: Boolean = true, where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
+              \\"\\"\\"\\"\\"\\"
               content: String!
             }
 
@@ -934,6 +946,7 @@ describe("Apollo Federation", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -946,6 +959,7 @@ describe("Apollo Federation", () => {
               shortest: String!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -964,7 +978,9 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type User @key(fields: \\"name\\", resolvable: false) {
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 

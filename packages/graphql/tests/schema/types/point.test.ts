@@ -38,6 +38,7 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -49,13 +50,16 @@ describe("Point", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               filmedAt: Point!
             }
 
@@ -127,6 +131,7 @@ describe("Point", () => {
               startCursor: String
             }
 
+            \\"\\"\\"Point type\\"\\"\\"
             type Point {
               crs: String!
               height: Float
@@ -135,12 +140,14 @@ describe("Point", () => {
               srid: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input PointDistance {
               \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
               distance: Float!
               point: PointInput!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
@@ -153,6 +160,7 @@ describe("Point", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -160,6 +168,7 @@ describe("Point", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -190,6 +199,7 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CartesianPoint type\\"\\"\\"
             type CartesianPoint {
               crs: String!
               srid: Int!
@@ -198,17 +208,20 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"\\"\\"\\"
             input CartesianPointDistance {
               distance: Float!
               point: CartesianPointInput!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input CartesianPointInput {
               x: Float!
               y: Float!
               z: Float
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -220,13 +233,16 @@ describe("Point", () => {
               machines: [Machine!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Machine {
+              \\"\\"\\"\\"\\"\\"
               partLocation: CartesianPoint!
             }
 
@@ -304,6 +320,7 @@ describe("Point", () => {
               machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -311,6 +328,7 @@ describe("Point", () => {
               DESC
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -341,6 +359,7 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -352,13 +371,16 @@ describe("Point", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
+              \\"\\"\\"\\"\\"\\"
               filmedAt: [Point!]!
             }
 
@@ -416,6 +438,7 @@ describe("Point", () => {
               startCursor: String
             }
 
+            \\"\\"\\"Point type\\"\\"\\"
             type Point {
               crs: String!
               height: Float
@@ -424,6 +447,7 @@ describe("Point", () => {
               srid: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
@@ -436,6 +460,7 @@ describe("Point", () => {
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -466,6 +491,7 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CartesianPoint type\\"\\"\\"
             type CartesianPoint {
               crs: String!
               srid: Int!
@@ -474,12 +500,14 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"\\"\\"\\"
             input CartesianPointInput {
               x: Float!
               y: Float!
               z: Float
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -491,13 +519,16 @@ describe("Point", () => {
               machines: [Machine!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Machine {
+              \\"\\"\\"\\"\\"\\"
               partLocations: [CartesianPoint!]!
             }
 
@@ -561,6 +592,7 @@ describe("Point", () => {
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

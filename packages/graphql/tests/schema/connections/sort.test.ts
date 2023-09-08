@@ -43,6 +43,7 @@ describe("Sort", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -59,6 +60,7 @@ describe("Sort", () => {
               node2s: [Node2!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -74,7 +76,9 @@ describe("Sort", () => {
               updateNode2s(connect: Node2ConnectInput, create: Node2RelationInput, delete: Node2DeleteInput, disconnect: Node2DisconnectInput, update: Node2UpdateInput, where: Node2Where): UpdateNode2sMutationResponse!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Node1 {
+              \\"\\"\\"\\"\\"\\"
               property: String!
               \\"\\"\\"\\"\\"\\"
               relatedTo(directed: Boolean = true, options: Node2Options, where: Node2Where): [Node2!]!
@@ -264,6 +268,7 @@ describe("Sort", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Node2 {
               \\"\\"\\"\\"\\"\\"
               relatedTo(directed: Boolean = true, options: Node1Options, where: Node1Where): [Node1!]!
@@ -497,6 +502,7 @@ describe("Sort", () => {
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -509,6 +515,7 @@ describe("Sort", () => {
               shortest: String!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

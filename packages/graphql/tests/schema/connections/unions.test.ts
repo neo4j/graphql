@@ -55,7 +55,9 @@ describe("Unions", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Author {
+              \\"\\"\\"\\"\\"\\"
               name: String!
               \\"\\"\\"\\"\\"\\"
               publications(directed: Boolean = true, options: QueryOptions, where: PublicationWhere): [Publication!]!
@@ -309,11 +311,13 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Book {
               \\"\\"\\"\\"\\"\\"
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -604,6 +608,7 @@ describe("Unions", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -615,6 +620,7 @@ describe("Unions", () => {
               journals: [Journal!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -628,11 +634,13 @@ describe("Unions", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Journal {
               \\"\\"\\"\\"\\"\\"
               author(directed: Boolean = true, options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorAggregate(directed: Boolean = true, where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
+              \\"\\"\\"\\"\\"\\"
               subject: String!
             }
 
@@ -952,11 +960,13 @@ describe("Unions", () => {
               journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -979,6 +989,7 @@ describe("Unions", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

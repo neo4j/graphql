@@ -53,6 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -64,6 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -77,11 +79,13 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Float
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Genre {
               \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true, where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String
             }
 
@@ -377,13 +381,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Int
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie {
               \\"\\"\\"\\"\\"\\"
               genres(directed: Boolean = true, options: GenreOptions, where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use genre\\")
               genresAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use genre\\")
               genresConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"\\"\\"\\"
               imdbRating: Float
+              \\"\\"\\"\\"\\"\\"
               title: String @deprecated(reason: \\"Do not use title\\")
+              \\"\\"\\"\\"\\"\\"
               year: Int
             }
 
@@ -676,6 +684,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -693,6 +702,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
