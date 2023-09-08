@@ -26,7 +26,8 @@ describe("Node Interface Types", () => {
     test("nodes should implement the Node Interface and generate a top-level node query", async () => {
         const typeDefs = gql`
             type Movie {
-                title: String! @relayId
+                title: String!
+                imdb: ID! @relayId
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -38,6 +39,7 @@ describe("Node Interface Types", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -49,23 +51,35 @@ describe("Node Interface Types", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
+
+            \\"\\"\\"\\"\\"\\"
             type Movie implements Node {
               id: ID!
+              \\"\\"\\"\\"\\"\\"
+              imdb: ID!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
             type MovieAggregateSelection {
               count: Int!
+              imdb: IDAggregateSelectionNonNullable!
               title: StringAggregateSelectionNonNullable!
             }
 
             input MovieCreateInput {
+              imdb: ID!
               title: String!
             }
 
@@ -87,10 +101,12 @@ describe("Node Interface Types", () => {
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
             input MovieSort {
+              imdb: SortDirection
               title: SortDirection
             }
 
             input MovieUpdateInput {
+              imdb: ID
               title: String
             }
 
@@ -99,6 +115,16 @@ describe("Node Interface Types", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
+              imdb: ID
+              imdb_CONTAINS: ID
+              imdb_ENDS_WITH: ID
+              imdb_IN: [ID!]
+              imdb_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              imdb_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              imdb_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              imdb_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              imdb_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              imdb_STARTS_WITH: ID
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -148,6 +174,7 @@ describe("Node Interface Types", () => {
               ): Node
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -160,6 +187,7 @@ describe("Node Interface Types", () => {
               shortest: String!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
