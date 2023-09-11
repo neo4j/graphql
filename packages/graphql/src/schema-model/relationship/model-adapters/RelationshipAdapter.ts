@@ -19,6 +19,7 @@
 
 import { upperFirst } from "graphql-compose";
 import type { Annotations } from "../../annotation/Annotation";
+import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
@@ -47,6 +48,59 @@ export class RelationshipAdapter {
     public readonly inheritedFrom: string | undefined;
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
+    public readonly args: Argument[];
+
+    constructor(
+        relationship: Relationship,
+        sourceAdapter?: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
+    ) {
+        const {
+            name,
+            type,
+            args,
+            attributes = new Map<string, Attribute>(),
+            source,
+            target,
+            direction,
+            isList,
+            queryDirection,
+            nestedOperations,
+            aggregate,
+            isNullable,
+            description,
+            annotations,
+            propertiesTypeName,
+            inheritedFrom,
+        } = relationship;
+        this.name = name;
+        this.type = type;
+        this.args = args;
+        if (sourceAdapter) {
+            this.source = sourceAdapter;
+        } else {
+            if (source instanceof ConcreteEntity) {
+                this.source = new ConcreteEntityAdapter(source);
+            } else if (source instanceof InterfaceEntity) {
+                this.source = new InterfaceEntityAdapter(source);
+            } else if (source instanceof UnionEntity) {
+                this.source = new UnionEntityAdapter(source);
+            } else {
+                throw new Error("relationship source must be an Entity");
+            }
+        }
+        this.direction = direction;
+        this.isList = isList;
+        this.queryDirection = queryDirection;
+        this.nestedOperations = nestedOperations;
+        this.aggregate = aggregate;
+        this.isNullable = isNullable;
+        this.rawEntity = target;
+        this.initAttributes(attributes);
+        this.description = description;
+        this.annotations = annotations;
+        this.propertiesTypeName = propertiesTypeName;
+        this.inheritedFrom = inheritedFrom;
+    }
 
     public get prefixForTypename(): string {
         // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
@@ -161,56 +215,6 @@ export class RelationshipAdapter {
         return `${this.source.name}${upperFirst(this.target.name)}${upperFirst(
             this.name
         )}${nestedFieldStr}${aggregationStr}Selection`;
-    }
-
-    constructor(
-        relationship: Relationship,
-        sourceAdapter?: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
-    ) {
-        const {
-            name,
-            type,
-            attributes = new Map<string, Attribute>(),
-            source,
-            target,
-            direction,
-            isList,
-            queryDirection,
-            nestedOperations,
-            aggregate,
-            isNullable,
-            description,
-            annotations,
-            propertiesTypeName,
-            inheritedFrom,
-        } = relationship;
-        this.name = name;
-        this.type = type;
-        if (sourceAdapter) {
-            this.source = sourceAdapter;
-        } else {
-            if (source instanceof ConcreteEntity) {
-                this.source = new ConcreteEntityAdapter(source);
-            } else if (source instanceof InterfaceEntity) {
-                this.source = new InterfaceEntityAdapter(source);
-            } else if (source instanceof UnionEntity) {
-                this.source = new UnionEntityAdapter(source);
-            } else {
-                throw new Error("relationship source must be an Entity");
-            }
-        }
-        this.direction = direction;
-        this.isList = isList;
-        this.queryDirection = queryDirection;
-        this.nestedOperations = nestedOperations;
-        this.aggregate = aggregate;
-        this.isNullable = isNullable;
-        this.rawEntity = target;
-        this.initAttributes(attributes);
-        this.description = description;
-        this.annotations = annotations;
-        this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {

@@ -18,10 +18,11 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import type { RelationshipQueryDirectionOption, RelationshipNestedOperationsOption } from "../../constants";
+import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
 import type { Annotation, Annotations } from "../annotation/Annotation";
 import { annotationToKey } from "../annotation/Annotation";
+import type { Argument } from "../argument/Argument";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "../entity/Entity";
 
@@ -34,6 +35,7 @@ export type NestedOperation = keyof typeof RelationshipNestedOperationsOption;
 export class Relationship {
     public readonly name: string; // name of the relationship field, e.g. friends
     public readonly type: string; // name of the relationship type, e.g. "IS_FRIENDS_WITH"
+    public readonly args: Argument[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly source: Entity;
     public readonly target: Entity;
@@ -48,20 +50,10 @@ export class Relationship {
     public readonly propertiesTypeName: string | undefined;
     public readonly inheritedFrom: string | undefined;
 
-    // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get connectionFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Connection`;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get relationshipFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Relationship`;
-    }
-
     constructor({
         name,
         type,
+        args,
         attributes = [],
         source,
         target,
@@ -78,6 +70,7 @@ export class Relationship {
     }: {
         name: string;
         type: string;
+        args: Argument[];
         attributes?: Attribute[];
         source: Entity;
         target: Entity;
@@ -96,6 +89,7 @@ export class Relationship {
         this.source = source;
         this.target = target;
         this.name = name;
+        this.args = args;
         this.direction = direction;
         this.isList = isList;
         this.queryDirection = queryDirection;
@@ -119,6 +113,7 @@ export class Relationship {
         return new Relationship({
             name: this.name,
             type: this.type,
+            args: this.args,
             attributes: Array.from(this.attributes.values()).map((a) => a.clone()),
             source: this.source,
             target: this.target,
@@ -155,5 +150,16 @@ export class Relationship {
 
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
+    }
+
+    // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
+    /**Note: Required for now to infer the types without ResolveTree */
+    public get connectionFieldTypename(): string {
+        return `${this.source.name}${upperFirst(this.name)}Connection`;
+    }
+
+    /**Note: Required for now to infer the types without ResolveTree */
+    public get relationshipFieldTypename(): string {
+        return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 }
