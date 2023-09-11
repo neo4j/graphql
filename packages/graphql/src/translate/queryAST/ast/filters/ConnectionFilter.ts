@@ -1,14 +1,15 @@
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
     private relationship: RelationshipAdapter;
+    private target: ConcreteEntityAdapter;
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
@@ -18,10 +19,12 @@ export class ConnectionFilter extends Filter {
 
     constructor({
         relationship,
+        target,
         operator,
         isNot,
     }: {
         relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter;
         operator: RelationshipWhereOperator | undefined;
         isNot: boolean;
     }) {
@@ -29,6 +32,7 @@ export class ConnectionFilter extends Filter {
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator || "SOME";
+        this.target = target;
     }
 
     public addFilters(filters: Filter[]): void {
@@ -44,7 +48,7 @@ export class ConnectionFilter extends Filter {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const relatedEntity = this.relationship.target as any;
+        const relatedEntity = this.target;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
         });
@@ -75,7 +79,7 @@ export class ConnectionFilter extends Filter {
         if (this.subqueryPredicate) return this.subqueryPredicate;
         else {
             //TODO: not concrete entities
-            const relatedEntity = this.relationship.target as any;
+            const relatedEntity = this.target;
             const target = new Cypher.Node({
                 labels: relatedEntity.labels,
             });

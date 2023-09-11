@@ -36,8 +36,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { InterfaceConnectionReadOperation } from "../ast/operations/interfaces/InterfaceConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concreate-entity";
 import { InterfaceConnectionPartial } from "../ast/operations/interfaces/InterfaceConnectionPartial";
-import { UnionEntity } from "../../../schema-model/entity/UnionEntity";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -121,7 +121,10 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
 
-        const filters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntityAdapter, whereArgs); // Aggregation filters only apply to target node
+        const filters = this.filterFactory.createNodeFilters(
+            relationship.target as ConcreteEntityAdapter | InterfaceEntityAdapter,
+            whereArgs
+        ); // Aggregation filters only apply to target node
 
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
