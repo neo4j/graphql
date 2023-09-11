@@ -17,14 +17,19 @@
  * limitations under the License.
  */
 
-export const invalidCombinations = {
-    // FIELD_DEFINITION
-    alias: ["cypher", "customResolver", "relationship"],
-    authentication: ["customResolver", "relationship", "relationshipProperties"],
-    authorization: ["customResolver", "relationship", "relationshipProperties"],
-    callback: ["id", "default", "relationship"],
-    coalesce: ["relationship"],
+import type { FieldDirective, InterfaceDirective, ObjectDirective } from "../../../constants";
+import { FIELD_DIRECTIVES } from "../../../constants";
+
+type InvalidFieldCombinations = Record<FieldDirective, ReadonlyArray<FieldDirective | "private">>;
+
+export const invalidFieldCombinations: InvalidFieldCombinations = {
+    alias: ["jwtClaim", "cypher", "customResolver", "relationship"],
+    authentication: ["jwtClaim", "customResolver", "relationship"],
+    authorization: ["jwtClaim", "customResolver", "relationship"],
+    callback: ["jwtClaim", "id", "default", "relationship"],
+    coalesce: ["jwtClaim", "relationship"],
     customResolver: [
+        "jwtClaim",
         "alias",
         "authentication",
         "authorization",
@@ -34,14 +39,17 @@ export const invalidCombinations = {
         "relationship",
         "unique",
         "writeonly",
+        "filterable",
+        "settable",
+        "selectable",
     ],
-    cypher: ["alias", "id", "readonly", "relationship", "unique", "writeonly"],
-    default: ["callback", "populatedBy", "relationship"],
-    id: ["cypher", "populatedBy", "callback", "customResolver", "relationship", "timestamp"],
-    populatedBy: ["id", "default", "relationship"],
-    private: [],
-    readonly: ["cypher", "customResolver", "relationship"],
+    cypher: ["jwtClaim", "alias", "id", "readonly", "relationship", "unique", "writeonly"],
+    default: ["jwtClaim", "callback", "populatedBy", "relationship"],
+    id: ["jwtClaim", "cypher", "populatedBy", "callback", "customResolver", "relationship", "timestamp"],
+    populatedBy: ["jwtClaim", "id", "default", "relationship"],
+    readonly: ["jwtClaim", "cypher", "customResolver", "relationship"],
     relationship: [
+        "jwtClaim",
         "alias",
         "authentication",
         "authorization",
@@ -56,31 +64,37 @@ export const invalidCombinations = {
         "populatedBy",
         "unique",
     ],
-    timestamp: ["id", "unique"],
-    unique: ["cypher", "customResolver", "relationship", "timestamp"],
-    writeonly: ["cypher", "customResolver"],
-    // OBJECT
+    timestamp: ["jwtClaim", "id", "unique"],
+    unique: ["jwtClaim", "cypher", "customResolver", "relationship", "timestamp"],
+    writeonly: ["jwtClaim", "cypher", "customResolver"],
+    jwtClaim: FIELD_DIRECTIVES,
+    relayId: ["jwtClaim"],
+    subscriptionsAuthorization: ["jwtClaim", "customResolver", "relationship"],
+    selectable: ["jwtClaim", "customResolver"],
+    settable: ["jwtClaim", "customResolver"],
+    filterable: ["jwtClaim", "customResolver"],
+};
+
+type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<InterfaceDirective>>;
+
+export const invalidInterfaceCombinations: InvalidInterfaceCombinations = {
+    relationshipProperties: [],
+};
+
+type InvalidObjectCombinations = Record<Exclude<ObjectDirective, "jwt">, ReadonlyArray<ObjectDirective>>;
+
+export const invalidObjectCombinations: InvalidObjectCombinations = {
+    authentication: [],
+    authorization: [],
+    deprecated: [],
+    fulltext: [],
+    // jwt: OBJECT_DIRECTIVES, // This is deliberately commented out. JWT is a special case. We do different validations for jwt.
+    mutation: [],
     node: [],
     plural: [],
-    // INTERFACE
-    relationshipProperties: ["authorization", "authentication", "subscriptionsAuthorization"],
-    // OBJECT and INTERFACE
-    exclude: [],
-    jwtClaim: [
-        "alias",
-        "authentication",
-        "authorization",
-        "subscriptionsAuthorization",
-        "callback",
-        "coalesce",
-        "cypher",
-        "default",
-        "id",
-        "timestamp",
-        "relayId",
-        "customResolver",
-        "readonly",
-        "populatedBy",
-        "unique",
-    ],
+    query: [],
+    queryOptions: [],
+    shareable: [],
+    subscription: [],
+    subscriptionsAuthorization: [],
 };
