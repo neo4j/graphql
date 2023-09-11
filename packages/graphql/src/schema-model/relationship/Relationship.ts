@@ -46,6 +46,7 @@ export class Relationship {
     public readonly description: string;
     public readonly annotations: Partial<Annotations> = {};
     public readonly propertiesTypeName: string | undefined;
+    public readonly inheritedFrom: string | undefined;
 
     // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
     /**Note: Required for now to infer the types without ResolveTree */
@@ -73,6 +74,7 @@ export class Relationship {
         description,
         annotations = [],
         propertiesTypeName,
+        inheritedFrom,
     }: {
         name: string;
         type: string;
@@ -88,6 +90,7 @@ export class Relationship {
         description: string;
         annotations: Annotation[];
         propertiesTypeName?: string;
+        inheritedFrom?: string;
     }) {
         this.type = type;
         this.source = source;
@@ -101,6 +104,7 @@ export class Relationship {
         this.isNullable = isNullable;
         this.description = description;
         this.propertiesTypeName = propertiesTypeName;
+        this.inheritedFrom = inheritedFrom;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
@@ -127,6 +131,7 @@ export class Relationship {
             description: this.description,
             annotations: Object.values(this.annotations),
             propertiesTypeName: this.propertiesTypeName,
+            inheritedFrom: this.inheritedFrom,
         });
     }
 
