@@ -149,9 +149,8 @@ export class OperationsFactory {
     ): ConnectionReadOperation | InterfaceConnectionReadOperation {
         const target = relationship.target;
 
+        const directed = Boolean(resolveTree.args.directed) ?? true;
         if (isConcreteEntity(target)) {
-            const directed = Boolean(resolveTree.args.directed) ?? true;
-
             const operation = new ConnectionReadOperation({ relationship, directed, target });
 
             return this.hydrateConnectionOperationAST({
@@ -162,8 +161,6 @@ export class OperationsFactory {
                 operation,
             });
         } else {
-            const directed = Boolean(resolveTree.args.directed) ?? true;
-
             const concreteConnectionOperations = target.concreteEntities.map(
                 (concreteEntity: ConcreteEntityAdapter) => {
                     const connectionPartial = new InterfaceConnectionPartial({
@@ -277,7 +274,6 @@ export class OperationsFactory {
         if (authFilters) {
             operation.setAuthFilters(authFilters);
         }
-        operation.setEdgeFields(edgeFields);
         return operation;
     }
 }
