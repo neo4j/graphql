@@ -18,8 +18,12 @@
  */
 
 import type { DirectiveNode } from "graphql";
+import { StringMappingType } from "typescript";
 import { DEPRECATED } from "../constants";
+import { Attribute } from "../schema-model/attribute/Attribute";
+import { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type {
     CustomEnumField,
     CustomScalarField,
@@ -184,8 +188,53 @@ export function getWhereFieldsFromConcreteEntity({
         NOT: `${concreteEntityAdapter.name}Where`,
     };
 
+    const fields = getWhereFieldsForAttributes({
+        attributes: Array.from(concreteEntityAdapter.attributes.values()),
+        userDefinedFieldDirectives,
+        features,
+    });
+
+    return { ...result, ...fields };
+}
+
+export function getWhereFieldsFromRelationshipProperties({
+    relationshipAdapter,
+    userDefinedFieldDirectives,
+    features,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    features?: Neo4jFeaturesSettings;
+}): Record<string, any> {
+    // Add the default where fields
+    const result = {
+        OR: `[${relationshipAdapter.propertiesTypeName}Where!]`,
+        AND: `[${relationshipAdapter.propertiesTypeName}Where!]`,
+        NOT: `${relationshipAdapter.propertiesTypeName}Where`,
+    };
+
+    const fields = getWhereFieldsForAttributes({
+        attributes: Array.from(relationshipAdapter.attributes.values()),
+        userDefinedFieldDirectives,
+        features,
+    });
+
+    return { ...result, ...fields };
+}
+
+function getWhereFieldsForAttributes({
+    attributes,
+    userDefinedFieldDirectives,
+    features,
+}: {
+    attributes: AttributeAdapter[];
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    features?: Neo4jFeaturesSettings;
+}): Record<string, string>[] {
+    const result: Record<string, string>[] = [];
+
     // Add the where fields for each attribute
-    for (const field of concreteEntityAdapter.attributes.values()) {
+    for (const field of attributes) {
         // If the field is not a where field, skip it
         if (field.isWhereField() === false) {
             continue;
