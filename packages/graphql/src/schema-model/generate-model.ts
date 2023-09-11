@@ -185,6 +185,7 @@ function generateInterfaceEntity(
 
     return new InterfaceEntity({
         ...interfaceEntity,
+        description: definition.description?.value || "",
         attributes: filterTruthy(fields) as Attribute[],
         annotations,
     });
