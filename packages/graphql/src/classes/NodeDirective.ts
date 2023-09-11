@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-
 import { Neo4jGraphQLError } from "./Error";
 import Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
@@ -38,13 +37,15 @@ export class NodeDirective {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
-        const labels = this.getLabels(typeName, context);
+        const labels = this.getLabels(typeName, context).map((label) => Cypher.utils.escapeLabel(label));
         return `:${labels.join(":")}`;
     }
-
+    /**
+     * Returns the list containing labels mapped with the values contained in the Context.
+     * Be careful when using this method, labels returned are unescaped.
+     **/
     public getLabels(typeName: string, context: Neo4jGraphQLContext): string[] {
         const labels = !this.labels.length ? [typeName] : this.labels;
         return mapLabelsWithContext(labels, context);
     }
-
 }

@@ -25,7 +25,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
-import type { QueryASTContext, QueryASTEnv } from "../QueryASTContext";
+import type { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";

@@ -19,7 +19,6 @@
 
 import dotProp from "dot-prop";
 import type { Neo4jGraphQLContext } from "../../types/neo4j-graphql-context";
-import Cypher from "@neo4j/cypher-builder";
 /**
  * Given a list of strings, representing labels, and a context, replace any labels that start with $ with the value from the context
  **/
@@ -32,10 +31,10 @@ export function mapLabelsWithContext(labels: string[], context: Neo4jGraphQLCont
             if (!labelValue) {
                 throw new Error(`Label value not found in context.`);
             }
-            return Cypher.utils.escapeLabel(labelValue);
+            return labelValue;
         }
 
-        return Cypher.utils.escapeLabel(label);
+        return label;
     });
 }
 
