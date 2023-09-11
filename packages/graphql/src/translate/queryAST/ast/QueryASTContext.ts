@@ -26,7 +26,7 @@ export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
     public neo4jGraphQLContext: Neo4jGraphQLContext | undefined;
 
-    constructor(neo4jGraphQLContext?: Neo4jGraphQLContext) {
+    constructor(neo4jGraphQLContext: Neo4jGraphQLContext) {
         this.neo4jGraphQLContext = neo4jGraphQLContext;
     }
 
@@ -53,17 +53,17 @@ export class QueryASTContext {
         target,
         relationship,
         source,
-        queryASTEnv,
+        env,
     }: {
         target: Cypher.Node;
         relationship?: Cypher.Relationship;
         source?: Cypher.Node;
-        queryASTEnv: QueryASTEnv;
+        env: QueryASTEnv;
     }) {
         this.target = target;
         this.relationship = relationship;
         this.source = source;
-        this.env = queryASTEnv;
+        this.env = env;
     }
 
     public getRelationshipScope(): Scope {
@@ -97,7 +97,7 @@ export class QueryASTContext {
             source: this.target,
             relationship: relationship,
             target: target,
-            queryASTEnv: this.env,
+            env: this.env,
         });
     }
 }

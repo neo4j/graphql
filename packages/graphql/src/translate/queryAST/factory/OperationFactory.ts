@@ -33,6 +33,11 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { AuthorizationFactory } from "./AuthorizationFactory";
 import { AuthFilterFactory } from "./AuthFilterFactory";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { InterfaceConnectionReadOperation } from "../ast/operations/interfaces/InterfaceConnectionReadOperation";
+import { isConcreteEntity } from "../utils/is-concreate-entity";
+import { InterfaceConnectionPartial } from "../ast/operations/interfaces/InterfaceConnectionPartial";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -116,7 +121,10 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
 
-        const filters = this.filterFactory.createNodeFilters(relationship.target as ConcreteEntityAdapter, whereArgs); // Aggregation filters only apply to target node
+        const filters = this.filterFactory.createNodeFilters(
+            relationship.target as ConcreteEntityAdapter | InterfaceEntityAdapter,
+            whereArgs
+        ); // Aggregation filters only apply to target node
 
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
@@ -141,20 +149,62 @@ export class OperationsFactory {
         relationship: RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
-    ): ConnectionReadOperation {
-        const whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
-        const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
-        const edgeRawFields = {
-            ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
-        };
-        const nodeRawFields = { ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name] };
-
-        delete edgeRawFields.node;
-        delete edgeRawFields.edge;
+    ): ConnectionReadOperation | InterfaceConnectionReadOperation {
+        const target = relationship.target;
 
         const directed = Boolean(resolveTree.args.directed) ?? true;
+        if (isConcreteEntity(target)) {
+            const operation = new ConnectionReadOperation({ relationship, directed, target });
 
-        const operation = new ConnectionReadOperation({ relationship, directed });
+            return this.hydrateConnectionOperationAST({
+                relationship,
+                target: target,
+                resolveTree,
+                context,
+                operation,
+            });
+        } else {
+            const concreteConnectionOperations = target.concreteEntities.map(
+                (concreteEntity: ConcreteEntityAdapter) => {
+                    const connectionPartial = new InterfaceConnectionPartial({
+                        relationship,
+                        directed,
+                        target: concreteEntity,
+                    });
+
+                    return this.hydrateConnectionOperationAST({
+                        relationship,
+                        target: concreteEntity,
+                        resolveTree,
+                        context,
+                        operation: connectionPartial,
+                    });
+                }
+            );
+            const interfaceConnectionOp = new InterfaceConnectionReadOperation(concreteConnectionOperations);
+
+            // These sort fields will be duplicated on nested "InterfaceConnectionPartial"
+            this.hydrateConnectionOperationsASTWithSort({
+                relationship,
+                resolveTree,
+                operation: interfaceConnectionOp,
+            });
+            return interfaceConnectionOp;
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/comma-dangle
+    private hydrateConnectionOperationsASTWithSort<
+        T extends ConnectionReadOperation | InterfaceConnectionReadOperation
+    >({
+        relationship,
+        resolveTree,
+        operation,
+    }: {
+        relationship: RelationshipAdapter;
+        resolveTree: ResolveTree;
+        operation: T;
+    }): T {
         const first = resolveTree.args.first as number | Integer | undefined;
         const sort = resolveTree.args.sort as ConnectionSortArg[];
 
@@ -174,26 +224,59 @@ export class OperationsFactory {
             });
         }
 
-        const nodeFields = this.fieldFactory.createFields(
-            relationship.target as ConcreteEntityAdapter,
-            nodeRawFields,
-            context
-        );
-        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
-        const authFilters = this.authorizationFactory.createEntityAuthFilters(
-            relationship.target as ConcreteEntityAdapter,
-            ["READ"],
-            context
-        );
+        return operation;
+    }
 
-        const filters = this.filterFactory.createConnectionPredicates(relationship, whereArgs);
+    private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
+        relationship,
+        target,
+        resolveTree,
+        context,
+        operation,
+    }: {
+        relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        operation: T;
+    }): T {
+        let whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
+        const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
+        const edgeRawFields = {
+            ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
+        };
+
+        // Getting fields for relationship and target to get both, interface and concrete entity types
+        const nodeRawFields = {
+            ...edgeRawFields.node?.fieldsByTypeName[target.name],
+            ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name],
+        };
+
+        delete edgeRawFields.node;
+        delete edgeRawFields.edge;
+
+        this.hydrateConnectionOperationsASTWithSort({
+            relationship,
+            resolveTree,
+            operation,
+        });
+
+        const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
+        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
+
+        if (relationship.target instanceof UnionEntityAdapter) {
+            // Small hack due to where arguments being one level nested for unions
+            whereArgs = whereArgs[target.name];
+        }
+
+        const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
         if (authFilters) {
             operation.setAuthFilters(authFilters);
         }
-        operation.setEdgeFields(edgeFields);
         return operation;
     }
 }

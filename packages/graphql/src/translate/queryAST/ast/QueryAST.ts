@@ -50,7 +50,7 @@ export class QueryAST {
         );
         const context = new QueryASTContext({
             target: node,
-            queryASTEnv,
+            env: queryASTEnv,
         });
         const result = this.operation.transpile({ context, returnVariable: new Cypher.NamedVariable("this") });
         return result.clauses[0] as Cypher.Clause;

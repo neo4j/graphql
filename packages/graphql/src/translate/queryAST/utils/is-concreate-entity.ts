@@ -17,20 +17,12 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-import { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTContext } from "../QueryASTContext";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
-export type OperationTranspileOptions = {
-    returnVariable: Cypher.Variable; // TODO: Remove
-    context: QueryASTContext;
-};
-
-export type OperationTranspileResult = {
-    projectionExpr: Cypher.Expr;
-    clauses: Cypher.Clause[];
-};
-
-export abstract class Operation extends QueryASTNode {
-    abstract transpile(options: OperationTranspileOptions): OperationTranspileResult;
+export function isConcreteEntity(
+    entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
+): entity is ConcreteEntityAdapter {
+    return entity instanceof ConcreteEntityAdapter;
 }

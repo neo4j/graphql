@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/1685", () => {
+describe("https://github.com/neo4j/graphql/issues/3923", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -40,6 +40,12 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                 genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
 
+            type Series implements Production {
+                id: ID
+                title: String
+                tagline: String
+            }
+
             type Genre {
                 name: String
                 movies: [Production!]! @relationship(type: "HAS_GENRE", direction: IN)
@@ -51,15 +57,16 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
         });
     });
 
-    test("should be possible to count connection using list predicates", async () => {
+    test("should be able to return all the genres related to the Matrix movie or series using connection fields", async () => {
         const query = gql`
             query Genres {
-                genres {
-                    moviesConnection(
-                        where: { node: { _on: { Movie: { genresConnection_SOME: { node: { name: "Action" } } } } } }
-                    ) {
-                        totalCount
+                genres(
+                    where: {
+                        moviesConnection_ALL: {
+                            node: { _on: { Movie: { title: "Matrix" }, Series: { tagline: "Mr.Anderson" } } }
+                        }
                     }
+                ) {
                     name
                 }
             }
@@ -69,27 +76,26 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Genre)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)<-[this0:HAS_GENRE]-(this1:Movie)
-                    WHERE EXISTS {
-                        MATCH (this1)-[this2:HAS_GENRE]->(this3:Genre)
-                        WHERE this3.name = $param0
-                    }
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
-                    RETURN edge
-                }
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
-            }
-            RETURN this { .name, moviesConnection: var4 } AS this"
+            WHERE ((EXISTS {
+                MATCH (this)<-[this0:HAS_GENRE]-(this1:Movie)
+                WHERE this1.title = $param0
+            } AND NOT (EXISTS {
+                MATCH (this)<-[this0:HAS_GENRE]-(this1:Movie)
+                WHERE NOT (this1.title = $param0)
+            })) AND (EXISTS {
+                MATCH (this)<-[this2:HAS_GENRE]-(this3:Series)
+                WHERE this3.tagline = $param1
+            } AND NOT (EXISTS {
+                MATCH (this)<-[this2:HAS_GENRE]-(this3:Series)
+                WHERE NOT (this3.tagline = $param1)
+            })))
+            RETURN this { .name } AS this"
         `);
+
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Action\\"
+                \\"param0\\": \\"Matrix\\",
+                \\"param1\\": \\"Mr.Anderson\\"
             }"
         `);
     });

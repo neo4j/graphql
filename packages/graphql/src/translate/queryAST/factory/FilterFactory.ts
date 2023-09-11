@@ -34,10 +34,13 @@ import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter"
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { AggregationDurationFilter } from "../ast/filters/aggregation/AggregationDurationPropertyFilter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { getConcreteEntities } from "../utils/get-concrete-entities";
 
 type AggregateWhereInput = {
     count: number;
@@ -78,23 +81,33 @@ export class FilterFactory {
         relationship: RelationshipAdapter,
         where: ConnectionWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): ConnectionFilter {
-        const connectionFilter = new ConnectionFilter({
-            relationship: relationship,
-            isNot: filterOps.isNot,
-            operator: filterOps.operator,
-        });
+    ): ConnectionFilter[] {
+        const concreteEntities = getConcreteEntities(relationship.target);
+        const connectionFilters: ConnectionFilter[] = [];
+        for (const concreteEntity of concreteEntities) {
+            const connectionFilter = new ConnectionFilter({
+                relationship: relationship,
+                target: concreteEntity,
+                isNot: filterOps.isNot,
+                operator: filterOps.operator,
+            });
 
-        const filters = this.createConnectionPredicates(relationship, where);
-        connectionFilter.addFilters(filters);
-        return connectionFilter;
+            const filters = this.createConnectionPredicates(relationship, concreteEntity, where);
+            connectionFilter.addFilters(filters);
+            connectionFilters.push(connectionFilter);
+        }
+        return connectionFilters;
     }
 
-    public createConnectionPredicates(rel: RelationshipAdapter, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
+    public createConnectionPredicates(
+        rel: RelationshipAdapter,
+        concreteEntity: ConcreteEntityAdapter,
+        where: GraphQLWhereArg | GraphQLWhereArg[]
+    ): Filter[] {
         const filters = asArray(where).flatMap((nestedWhere) => {
             return Object.entries(nestedWhere).flatMap(([key, value]: [string, GraphQLWhereArg]) => {
                 if (isLogicalOperator(key)) {
-                    const nestedFilters = this.createConnectionPredicates(rel, value);
+                    const nestedFilters = this.createConnectionPredicates(rel, concreteEntity, value);
                     return [
                         new LogicalFilter({
                             operation: key,
@@ -108,7 +121,7 @@ export class FilterFactory {
                     return this.createEdgeFilters(rel, value);
                 }
                 if (connectionWhereField.fieldName === "node") {
-                    return this.createNodeFilters(rel.target as ConcreteEntityAdapter, value);
+                    return this.createNodeFilters(concreteEntity, value);
                 }
             });
         });
@@ -198,15 +211,52 @@ export class FilterFactory {
         return new RelationshipFilter(options);
     }
 
+    private getConcreteWhere(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        value: Record<string, unknown>
+    ): Record<string, unknown> {
+        const concreteEntities = getConcreteEntities(entity);
+
+        let concreteWhere: Record<string, unknown> = {};
+        for (const concreteEntity of concreteEntities) {
+            const concreteEntityWhere = (value as any)[concreteEntity.name];
+            concreteWhere = { ...concreteEntityWhere, ...concreteWhere };
+        }
+
+        return concreteWhere;
+    }
+
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
-    public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Filter[] {
+    public createNodeFilters(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
+        where: Record<string, unknown>
+    ): Filter[] {
         const filters = filterTruthy(
-            Object.entries(where).map(([key, value]): Filter | undefined => {
+            Object.entries(where).flatMap(([key, value]): Filter | undefined => {
+                if (key === "_on") {
+                    const concreteEntities = getConcreteEntities(entity);
+
+                    const nodeFilters: Filter[] = [];
+                    for (const concreteEntity of concreteEntities) {
+                        const concreteEntityWhere = (value as any)[concreteEntity.name];
+                        if (!concreteEntityWhere) continue;
+                        const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
+
+                        nodeFilters.push(...concreteEntityFilters);
+                    }
+
+                    return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
+                }
+
                 if (isLogicalOperator(key)) {
                     return this.createNodeLogicalFilter(key, value as any, entity);
                 }
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
-                const relationship = entity.findRelationship(fieldName);
+
+                let relationship: RelationshipAdapter | undefined;
+                if (entity instanceof ConcreteEntityAdapter) {
+                    relationship = entity.findRelationship(fieldName);
+                }
 
                 if (isConnection) {
                     if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
@@ -214,10 +264,11 @@ export class FilterFactory {
                         throw new Error(`Invalid operator ${operator} for relationship`);
                     }
 
-                    return this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
+                    const connectionFilters = this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
                         isNot,
                         operator,
                     });
+                    return this.wrapMultipleFiltersInLogical(connectionFilters)[0];
                 }
                 if (isAggregate) {
                     if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
@@ -277,7 +328,7 @@ export class FilterFactory {
     private createNodeLogicalFilter(
         operation: "OR" | "AND" | "NOT",
         where: GraphQLWhereArg[] | GraphQLWhereArg,
-        entity: ConcreteEntityAdapter
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter
     ): LogicalFilter {
         const nestedFilters = asArray(where).flatMap((nestedWhere) => {
             return this.createNodeFilters(entity, nestedWhere);

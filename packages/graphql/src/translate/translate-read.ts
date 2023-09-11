@@ -40,8 +40,8 @@ function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationConte
     const entity = context.schemaModel.getEntity(node.name);
     if (!entity) throw new Error("Entity not found");
     const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity, context);
-    const clause = queryAST.transpile(context);
     debug(queryAST.print());
+    const clause = queryAST.transpile(context);
     return clause.build();
 }
 
