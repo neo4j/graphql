@@ -939,9 +939,12 @@ describe("Directive-preserve", () => {
               role_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -1113,6 +1116,7 @@ describe("Directive-preserve", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1129,6 +1133,7 @@ describe("Directive-preserve", () => {
               series: [Series!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1142,11 +1147,15 @@ describe("Directive-preserve", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements Production {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"\\"\\"\\"
               runtime: Int!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -1565,11 +1574,15 @@ describe("Directive-preserve", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements Production {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               episodes: Int!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -1799,6 +1812,7 @@ describe("Directive-preserve", () => {
               title_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1816,6 +1830,7 @@ describe("Directive-preserve", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1905,9 +1920,12 @@ describe("Directive-preserve", () => {
               role_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Actor {
+              \\"\\"\\"\\"\\"\\"
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -2079,6 +2097,7 @@ describe("Directive-preserve", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2095,6 +2114,7 @@ describe("Directive-preserve", () => {
               series: [Series!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -2108,11 +2128,15 @@ describe("Directive-preserve", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements Production {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
               actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"\\"\\"\\"
               runtime: Int!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -2531,11 +2555,15 @@ describe("Directive-preserve", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements Production {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
               actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"\\"\\"\\"
               episodes: Int!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -2765,6 +2793,7 @@ describe("Directive-preserve", () => {
               title_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -2782,6 +2811,7 @@ describe("Directive-preserve", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

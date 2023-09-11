@@ -6263,9 +6263,12 @@ describe("@settable", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Actor {
+                  \\"\\"\\"\\"\\"\\"
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  \\"\\"\\"\\"\\"\\"
                   name: String!
                 }
 
@@ -6416,6 +6419,7 @@ describe("@settable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -6432,17 +6436,22 @@ describe("@settable", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie implements Production {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -6895,11 +6904,15 @@ describe("@settable", () => {
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Series implements Production {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -7082,6 +7095,7 @@ describe("@settable", () => {
                   title_STARTS_WITH: String
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -7104,6 +7118,7 @@ describe("@settable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -7157,9 +7172,12 @@ describe("@settable", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Actor {
+                  \\"\\"\\"\\"\\"\\"
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  \\"\\"\\"\\"\\"\\"
                   name: String!
                 }
 
@@ -7318,6 +7336,7 @@ describe("@settable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"CreateInfo\\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -7334,17 +7353,22 @@ describe("@settable", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"DeleteInfo\\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Movie implements Production {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -7809,11 +7833,15 @@ describe("@settable", () => {
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
+                \\"\\"\\"\\"\\"\\"
                 type Series implements Production {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -7996,6 +8024,7 @@ describe("@settable", () => {
                   title_STARTS_WITH: String
                 }
 
+                \\"\\"\\"SortDirection\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -8018,6 +8047,7 @@ describe("@settable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"UpdateInfo\\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!

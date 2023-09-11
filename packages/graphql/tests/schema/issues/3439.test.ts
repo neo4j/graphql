@@ -1342,6 +1342,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: CreateInfo!
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1358,6 +1359,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               series: [Series!]!
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1372,8 +1374,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               UPDATE
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Genre {
+              \\"\\"\\"\\"\\"\\"
               name: String!
+              \\"\\"\\"\\"\\"\\"
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
@@ -1844,11 +1849,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): MovieGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -2141,11 +2150,15 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre(directed: Boolean = true, options: GenreOptions, where: GenreWhere): Genre!
               genreAggregate(directed: Boolean = true, where: GenreWhere): SeriesGenreGenreAggregationSelection
               genreConnection(after: String, directed: Boolean = true, first: Int, sort: [IProductGenreConnectionSort!], where: IProductGenreConnectionWhere): IProductGenreConnection!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -2406,6 +2419,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -2441,6 +2455,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: UpdateInfo!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

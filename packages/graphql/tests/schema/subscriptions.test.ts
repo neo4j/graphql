@@ -5688,20 +5688,15 @@ describe("Subscriptions", () => {
             }
 
             interface Production {
-                #title: String!
                 id: ID
                 director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person implements Creature {
-                #name: String!
-                #id: ID @unique
                 movies: Production!
             }
 
             interface Creature {
-                #name: String!
-                #id: ID
                 movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
         `;
@@ -5722,6 +5717,7 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"CreateInfo\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -5867,6 +5863,7 @@ describe("Subscriptions", () => {
               moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
 
+            \\"\\"\\"DeleteInfo\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -5893,10 +5890,14 @@ describe("Subscriptions", () => {
               sum: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Movie implements Production {
+              \\"\\"\\"\\"\\"\\"
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -6074,7 +6075,9 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Person implements Creature {
+              \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
@@ -6398,11 +6401,16 @@ describe("Subscriptions", () => {
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
             }
 
+            \\"\\"\\"\\"\\"\\"
             type Series implements Production {
+              \\"\\"\\"\\"\\"\\"
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              \\"\\"\\"\\"\\"\\"
               episode: Int!
+              \\"\\"\\"\\"\\"\\"
               id: ID
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -6631,6 +6639,7 @@ describe("Subscriptions", () => {
               title_STARTS_WITH: String
             }
 
+            \\"\\"\\"SortDirection\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -6656,6 +6665,7 @@ describe("Subscriptions", () => {
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 
+            \\"\\"\\"UpdateInfo\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
