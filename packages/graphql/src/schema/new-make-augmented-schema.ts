@@ -22,6 +22,7 @@ import type {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,
+    FieldDefinitionNode,
     GraphQLEnumType,
     GraphQLInputObjectType,
     GraphQLInterfaceType,
@@ -51,7 +52,7 @@ import type { Node } from "../classes";
 import type Relationship from "../classes/Relationship";
 import * as Scalars from "../graphql/scalars";
 import { isRootType } from "../utils/is-root-type";
-import createConnectionFields from "./create-connection-fields";
+import { createConnectionFields } from "./create-connection-fields";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import type { DefinitionNodes } from "./get-definition-nodes";
@@ -503,6 +504,38 @@ class ToComposer {
     }
 }
 */
+
+function getUserDefinedFieldDirectivesForDefinition(
+    definitionNode: ObjectTypeDefinitionNode,
+    definitionNodes: DefinitionNodes
+): Map<string, DirectiveNode[]> {
+    const userDefinedFieldDirectives = new Map<string, DirectiveNode[]>();
+
+    const allFields: Array<FieldDefinitionNode> = [...(definitionNode.fields || [])];
+    if (definitionNode.interfaces) {
+        for (const inheritsFrom of definitionNode.interfaces) {
+            const interfaceDefinition = definitionNodes.interfaceTypes.find(
+                (type) => type.name.value === inheritsFrom.name.value
+            );
+            const inheritedFields = interfaceDefinition?.fields;
+            if (inheritedFields) {
+                allFields.push(...inheritedFields);
+            }
+        }
+    }
+    for (const field of allFields) {
+        if (!field.directives) {
+            return userDefinedFieldDirectives;
+        }
+
+        const matched = field.directives.filter((directive) => !isInArray(FIELD_DIRECTIVES, directive.name.value));
+        if (matched.length) {
+            userDefinedFieldDirectives.set(field.name.value, matched);
+        }
+    }
+
+    return userDefinedFieldDirectives;
+}
 
 function makeAugmentedSchema(
     document: DocumentNode,
@@ -995,17 +1028,7 @@ function makeAugmentedSchema(
             return;
         }
 
-        const userDefinedFieldDirectives = new Map<string, DirectiveNode[]>();
-        for (const field of definitionNode.fields || []) {
-            if (!field.directives) {
-                return;
-            }
-
-            const matched = field.directives.filter((directive) => !isInArray(FIELD_DIRECTIVES, directive.name.value));
-            if (matched.length) {
-                userDefinedFieldDirectives.set(field.name.value, matched);
-            }
-        }
+        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
 
         const nodeFields = concreteEntityToComposeFields(
             concreteEntityAdapter.objectFields,
