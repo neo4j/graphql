@@ -86,15 +86,20 @@ export class RelationshipAdapter {
     public get disconnectFieldInputTypeName(): string {
         return `${this.prefixForTypename}${upperFirst(this.name)}DisconnectFieldInput`;
     }
-    public get connectOrCreateFieldInputTypeName(): string {
-        if (this.target instanceof UnionEntity) {
-            return `${this.prefixForTypename}${upperFirst(this.name)}${this.target.name}ConnectOrCreateFieldInput`;
+    public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
+        if (this.target instanceof UnionEntityAdapter) {
+            if (!concreteTargetEntityAdapter) {
+                throw new Error("missing concreteTargetEntityAdapter");
+            }
+            return `${this.prefixForTypename}${upperFirst(this.name)}${
+                concreteTargetEntityAdapter.name
+            }ConnectOrCreateFieldInput`;
         }
         return `${this.prefixForTypename}${upperFirst(this.name)}ConnectOrCreateFieldInput`;
     }
 
-    public get connectOrCreateOnCreateFieldInputTypeName(): string {
-        return `${this.connectOrCreateFieldInputTypeName}OnCreate`;
+    public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
+        return `${this.getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter)}OnCreate`;
     }
 
     public get connectionFieldName(): string {
@@ -133,7 +138,7 @@ export class RelationshipAdapter {
         // }
         return {
             where: `${target.operations.connectOrCreateWhereInputTypeName}!`,
-            onCreate: `${this.connectOrCreateOnCreateFieldInputTypeName}!`,
+            onCreate: `${this.getConnectOrCreateOnCreateFieldInputTypeName(target)}!`,
         };
     }
 
