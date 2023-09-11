@@ -87,17 +87,17 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
-        if (!parentNode) throw new Error();
-        const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter);
+    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
+        if (!context.target) throw new Error();
+        const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter, context.env);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
         const clause = new Cypher.Match(
-            new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
+            new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
 
-        const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
+        const nestedContext = context.push({target: node, relationship});
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.authFilters?.getPredicate(nestedContext);

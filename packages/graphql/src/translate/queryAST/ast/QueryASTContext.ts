@@ -23,6 +23,11 @@ type Scope = Map<string, Cypher.Variable>;
 
 export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
+    public cypherParams: Map<string, any>;
+
+    constructor() {
+        this.cypherParams = new Map([["movie", "MOVIE"]]);
+    }
 
     public getScope(element: Cypher.Node | Cypher.Relationship): Scope {
         const scope = this.scopes.get(element);
@@ -80,7 +85,13 @@ export class QueryASTContext {
         return scopeVar;
     }
 
-    public push({ relationship, target }: { relationship: Cypher.Relationship; target: Cypher.Node }): QueryASTContext {
+    public push({
+        relationship,
+        target,
+    }: {
+        relationship: Cypher.Relationship;
+        target: Cypher.Node;
+    }): QueryASTContext {
         return new QueryASTContext({
             source: this.target,
             relationship: relationship,

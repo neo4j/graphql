@@ -20,13 +20,14 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTEnv } from "../ast/QueryASTContext";
 
-export function createNodeFromEntity(entity: ConcreteEntityAdapter, name?: string): Cypher.Node {
+export function createNodeFromEntity(entity: ConcreteEntityAdapter, env: QueryASTEnv, name?: string): Cypher.Node {
     if (name) {
-        return new Cypher.NamedNode(name, { labels: entity.labels });
+        return new Cypher.NamedNode(name, { labels: entity.getLabels(env.cypherParams) });
     }
     return new Cypher.Node({
-        labels: entity.labels,
+        labels: entity.getLabels(env.cypherParams),
     });
 }
 

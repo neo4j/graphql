@@ -20,6 +20,9 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ReadOperation } from "./operations/ReadOperation";
 import type { QueryASTNode } from "./QueryASTNode";
+import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
+import { createNodeFromEntity } from "../utils/create-node-from-entity";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export class QueryAST {
     private operation: ReadOperation;
@@ -38,8 +41,17 @@ export class QueryAST {
         //         target: new Cypher.NamedVariable("this"),
         //     })
         // );
-
-        const result = this.operation.transpile({ returnVariable: new Cypher.NamedVariable("this") });
+        const queryASTEnv = new QueryASTEnv();
+        const node = createNodeFromEntity(
+            this.operation.entity as ConcreteEntityAdapter,
+            queryASTEnv,
+            this.operation.nodeAlias
+        );
+        const context = new QueryASTContext({
+            target: node,
+            queryASTEnv,
+        });
+        const result = this.operation.transpile({ context, returnVariable: new Cypher.NamedVariable("this") });
         return result.clauses[0] as Cypher.Clause;
         // const visitor = new QueryASTVisitor();
         // visitor.visit(this.operation);

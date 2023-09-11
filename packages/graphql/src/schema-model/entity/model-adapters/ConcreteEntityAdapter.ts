@@ -28,6 +28,10 @@ import type { Annotations } from "../../annotation/Annotation";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
+import { Neo4jGraphQLError } from "../../../classes/Error";
+import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import dotProp from "dot-prop";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
@@ -102,10 +106,57 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
-    public getLabels(): string[] {
-        return Array.from(this.labels);
+
+    /**
+     *  Labels helpers
+     */
+   /*  public getLabelsString1(typeName: string, context: Neo4jGraphQLContext): string {
+        if (!typeName) {
+            throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
+        }
+        const labels = this.getLabels1(context).map((l) => Cypher.utils.escapeLabel(l));
+        return `:${labels.join(":")}`;
     }
 
+    public getLabels1(context: Neo4jGraphQLContext): string[] {
+        const labels = !this.labels.size ? [this.name] : this.labels;
+        return this.mapLabelsWithContext([...labels], context);
+    }
+
+    private mapLabelsWithContext(labels: string[], context: Neo4jGraphQLContext): string[] {
+        return labels.map((label: string) => {
+            if (label.startsWith("$")) {
+                // Trim $context. OR $ off the beginning of the string
+                const path = label.substring(label.startsWith("$context") ? 9 : 1);
+                const labelValue = this.searchLabel(context, path);
+                if (!labelValue) {
+                    throw new Error(`Label value not found in context.`);
+                }
+                return labelValue;
+            }
+
+            return label;
+        });
+    }
+
+    private searchLabel(context, path): string | undefined {
+        // Search for the key at the root of the context
+        let labelValue = dotProp.get<string>(context, path);
+        if (!labelValue) {
+            // Search for the key in cypherParams
+            labelValue = dotProp.get<string>(context.cypherParams, path);
+        }
+        return labelValue;
+    } */
+
+    public getLabels(cypherParams?: Record<string, any>): string[] {
+        const labels = Array.from(this.labels);
+        if (cypherParams) {
+            return labels.map((label) => label);
+        }
+        return labels;
+    }
+   
     public getMainLabel(): string {
         return this.getLabels()[0] as string;
     }
