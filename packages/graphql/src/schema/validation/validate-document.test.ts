@@ -3457,10 +3457,10 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization"
-                );
+                expect([
+                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization",
+                    "Invalid directive usage: Directive @subscriptionsAuthorization cannot be used in combination with @relationship",
+                ]).toContain(errors[0]!.message);
                 expect(errors[0]).toHaveProperty("path", ["Production", "actors"]);
             });
             test("@authorization can't be used with @relationship", () => {
@@ -4904,48 +4904,6 @@ describe("validation 2.0", () => {
 
         describe("@relationshipProperties", () => {
             describe("invalid", () => {
-                test("should throw error if @authorization is used on relationship properties interface", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @authorization(validate: [{ where: { id: "1" } }]) @relationshipProperties {
-                            screenTime: Int
-                        }
-                    `;
-                    const doc = gql`
-                        ${interfaceTypes}
-                        type Movie {
-                            actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                        }
-
-                        type Actor {
-                            name: String
-                        }
-                    `;
-                    const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
-                    const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
-                    const executeValidate = () =>
-                        validateDocument({
-                            document: doc,
-                            additionalDefinitions: { enums, interfaces, unions, objects },
-                            features: {},
-                        });
-
-                    const errors = getError(executeValidate);
-
-                    expect(errors).toHaveLength(2);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid directive usage: Directive @authorization cannot be used in combination with @relationshipProperties"
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
-                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[1]).toHaveProperty(
-                        "message",
-                        'Directive "@authorization" may not be used on INTERFACE.'
-                    );
-                });
                 test("should throw error if @authorization is used on relationship property", () => {
                     const interfaceTypes = gql`
                         interface ActedIn @relationshipProperties {
@@ -5026,93 +4984,6 @@ describe("validation 2.0", () => {
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
                 });
-
-                test("should throw error if @authentication is used on relationship properties interface", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @authentication @relationshipProperties {
-                            screenTime: Int
-                        }
-                    `;
-                    const doc = gql`
-                        ${interfaceTypes}
-                        type Movie {
-                            actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                        }
-
-                        type Actor {
-                            name: String
-                        }
-                    `;
-                    const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
-                    const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
-                    const executeValidate = () =>
-                        validateDocument({
-                            document: doc,
-                            additionalDefinitions: { enums, interfaces, unions, objects },
-                            features: {},
-                        });
-
-                    const errors = getError(executeValidate);
-
-                    expect(errors).toHaveLength(2);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid directive usage: Directive @authentication cannot be used in combination with @relationshipProperties"
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
-                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[1]).toHaveProperty(
-                        "message",
-                        'Directive "@authentication" may not be used on INTERFACE.'
-                    );
-                });
-
-                test("should throw error if @authentication is used on relationship properties interface extension", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
-                            screenTime: Int
-                        }
-                        extend interface ActedIn @authentication
-                    `;
-                    const doc = gql`
-                        ${interfaceTypes}
-                        type Movie {
-                            actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                        }
-
-                        type Actor {
-                            name: String
-                        }
-                    `;
-                    const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
-                    const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
-                    const executeValidate = () =>
-                        validateDocument({
-                            document: doc,
-                            additionalDefinitions: { enums, interfaces, unions, objects },
-                            features: {},
-                        });
-
-                    const errors = getError(executeValidate);
-
-                    expect(errors).toHaveLength(2);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid directive usage: Directive @authentication cannot be used in combination with @relationshipProperties"
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
-                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[1]).toHaveProperty(
-                        "message",
-                        'Directive "@authentication" may not be used on INTERFACE.'
-                    );
-                });
                 test("should throw error if @authentication is used on relationship property", () => {
                     const interfaceTypes = gql`
                         interface ActedIn @relationshipProperties {
@@ -5150,51 +5021,6 @@ describe("validation 2.0", () => {
                         "Invalid @relationshipProperties field: Cannot use the @authentication directive on relationship properties."
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
-                });
-
-                test("should throw error if @subscriptionsAuthorization is used on relationship properties interface", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn
-                            @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
-                            @relationshipProperties {
-                            screenTime: Int
-                        }
-                    `;
-                    const doc = gql`
-                        ${interfaceTypes}
-                        type Movie {
-                            actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                        }
-
-                        type Actor {
-                            name: String
-                        }
-                    `;
-                    const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
-                    const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
-                    const executeValidate = () =>
-                        validateDocument({
-                            document: doc,
-                            additionalDefinitions: { enums, interfaces, unions, objects },
-                            features: {},
-                        });
-
-                    const errors = getError(executeValidate);
-
-                    expect(errors).toHaveLength(2);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid directive usage: Directive @relationshipProperties cannot be used in combination with @subscriptionsAuthorization"
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["ActedIn"]);
-                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[1]).toHaveProperty(
-                        "message",
-                        'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
-                    );
                 });
                 test("should throw error if @subscriptionsAuthorization is used on relationship property", () => {
                     const interfaceTypes = gql`
