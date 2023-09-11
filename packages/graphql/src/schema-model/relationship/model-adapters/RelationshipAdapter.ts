@@ -190,9 +190,19 @@ export class RelationshipAdapter {
     public get edgeCreateInputTypeName(): string {
         return `${this.propertiesTypeName}CreateInput${this.hasNonNullNonGeneratedProperties ? `!` : ""}`;
     }
+    public get edgeCreateInputTypeName2(): string {
+        return `${this.propertiesTypeName}CreateInput`;
+    }
 
     public get edgeUpdateInputTypeName(): string {
         return `${this.propertiesTypeName}UpdateInput`;
+    }
+
+    public get edgeWhereInputTypeName(): string {
+        return `${this.propertiesTypeName}Where`;
+    }
+    public get edgeSortInputTypeName(): string {
+        return `${this.propertiesTypeName}Sort`;
     }
 
     public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {
@@ -331,5 +341,17 @@ export class RelationshipAdapter {
 
     public get aggregationWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
+    }
+
+    public get createInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isCreateInputField());
+    }
+
+    public get updateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
+    }
+
+    public get arrayMethodFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isArrayMethodField());
     }
 }
