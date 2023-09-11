@@ -52,7 +52,6 @@ import type { Node } from "../classes";
 import type Relationship from "../classes/Relationship";
 import * as Scalars from "../graphql/scalars";
 import { isRootType } from "../utils/is-root-type";
-import { createConnectionFields } from "./create-connection-fields";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import type { DefinitionNodes } from "./get-definition-nodes";
@@ -97,6 +96,7 @@ import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionE
 import type { BaseField, Neo4jFeaturesSettings } from "../types";
 import { isInArray } from "../utils/is-in-array";
 import { addArrayMethodsToITC, addArrayMethodsToITC2 } from "./array-methods";
+import createConnectionFields, { createConnectionFields2 } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import createRelationshipFields, {
     createRelationshipFieldsFromConcreteEntityAdapter,
@@ -1216,15 +1216,26 @@ function makeAugmentedSchema(
             userDefinedFieldDirectives,
         });
 
+        // relationships = [
+        //     ...relationships,
+        //     ...createConnectionFields({
+        //         connectionFields: node.connectionFields,
+        //         schemaComposer: composer,
+        //         composeNode,
+        //         sourceName: concreteEntityAdapter.name,
+        //         nodes,
+        //         relationshipPropertyFields: relationshipFields,
+        //     }),
+        // ];
+
         relationships = [
             ...relationships,
-            ...createConnectionFields({
-                connectionFields: node.connectionFields,
+            ...createConnectionFields2({
+                concreteEntityAdapter,
                 schemaComposer: composer,
                 composeNode,
-                sourceName: concreteEntityAdapter.name,
-                nodes,
-                relationshipPropertyFields: relationshipFields,
+                userDefinedFieldDirectives,
+                relationshipFields,
             }),
         ];
 

@@ -60,6 +60,34 @@ export function connectionFieldResolver({
     };
 }
 
+export function connectionFieldResolver2({
+    connectionFieldName,
+    source,
+    args,
+    info,
+}: {
+    connectionFieldName: string;
+    source: any;
+    args: ConnectionQueryArgs;
+    info: GraphQLResolveInfo;
+}) {
+    const firstField = info.fieldNodes[0] as FieldNode;
+    const { selectionSet } = firstField;
+
+    let value = source[connectionFieldName];
+    if (firstField.alias) {
+        value = source[firstField.alias.value];
+    }
+
+    const totalCountKey = getAliasKey({ selectionSet, key: "totalCount" });
+    const { totalCount } = value;
+
+    return {
+        [totalCountKey]: isNeoInt(totalCount) ? totalCount.toNumber() : totalCount,
+        ...createConnectionWithEdgeProperties({ source: value, selectionSet, args, totalCount }),
+    };
+}
+
 /**
  * Adapted from graphql-relay-js ConnectionFromArraySlice
  */

@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
+import type { DirectiveNode, GraphQLResolveInfo } from "graphql";
 import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../classes";
 import { Relationship } from "../classes";
 import { DEPRECATED } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { ConnectionField, ConnectionQueryArgs } from "../types";
 import { addRelationshipArrayFilters } from "./augment/add-relationship-array-filters";
 import { DEPRECATE_NOT } from "./constants";
-import { addDirectedArgument } from "./directed-argument";
+import { addDirectedArgument, addDirectedArgument2 } from "./directed-argument";
 import type { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
-import { connectionFieldResolver } from "./pagination";
+import { connectionFieldResolver, connectionFieldResolver2 } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 function createConnectionFields({
@@ -290,3 +293,261 @@ function createConnectionFields({
 }
 
 export default createConnectionFields;
+
+export function createConnectionFields2({
+    concreteEntityAdapter,
+    schemaComposer,
+    composeNode,
+    userDefinedFieldDirectives,
+    relationshipFields,
+}: {
+    concreteEntityAdapter: ConcreteEntityAdapter;
+    schemaComposer: SchemaComposer;
+    composeNode: ObjectTypeComposer | InterfaceTypeComposer;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    relationshipFields: Map<string, ObjectFields>;
+}): Relationship[] {
+    const relationships: Relationship[] = [];
+
+    concreteEntityAdapter.relationships.forEach((relationship) => {
+        const relationshipObjectType = schemaComposer.getOrCreateOTC(relationship.relationshipFieldTypename, (tc) => {
+            tc.addFields({
+                cursor: "String!",
+                node: `${relationship.target.name}!`,
+            });
+        });
+
+        const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(relationship.name);
+        const deprecatedDirectives = graphqlDirectivesToCompose(
+            (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
+        );
+
+        const connectionWhereName = `${relationship.connectionFieldTypename}Where`;
+        const connectionWhere = schemaComposer.getOrCreateITC(connectionWhereName);
+
+        // if (!connectionField.relationship.union) {
+        const relatedEntityIsUnionEntity = relationship.target instanceof UnionEntityAdapter;
+        if (!relatedEntityIsUnionEntity) {
+            connectionWhere.addFields({
+                AND: `[${connectionWhereName}!]`,
+                OR: `[${connectionWhereName}!]`,
+                NOT: connectionWhereName,
+            });
+        }
+
+        const connection = schemaComposer.getOrCreateOTC(relationship.connectionFieldTypename, (tc) => {
+            tc.addFields({
+                edges: relationshipObjectType.NonNull.List.NonNull,
+                totalCount: "Int!",
+                pageInfo: "PageInfo!",
+            });
+        });
+
+        if (relationship.propertiesTypeName && !relatedEntityIsUnionEntity) {
+            const propertiesInterface = schemaComposer.getIFTC(relationship.propertiesTypeName);
+            relationshipObjectType.addInterface(propertiesInterface);
+            relationshipObjectType.addFields(propertiesInterface.getFields());
+
+            connectionWhere.addFields({
+                edge: `${relationship.propertiesTypeName}Where`,
+                edge_NOT: {
+                    type: `${relationship.propertiesTypeName}Where`,
+                    directives: [DEPRECATE_NOT],
+                },
+            });
+        }
+
+        const whereInput = schemaComposer.getITC(`${composeNode.getTypeName()}Where`);
+        if (relationship.isFilterableByValue()) {
+            whereInput.addFields({
+                [relationship.connectionFieldName]: connectionWhere,
+                [`${relationship.connectionFieldName}_NOT`]: {
+                    type: connectionWhere,
+                },
+            });
+        }
+
+        // n..m Relationships
+        if (relationship.isList && relationship.isFilterableByValue()) {
+            addRelationshipArrayFilters({
+                whereInput,
+                fieldName: relationship.connectionFieldName,
+                sourceName: concreteEntityAdapter.name,
+                relatedType: relationship.connectionFieldTypename,
+                whereType: connectionWhere,
+                directives: deprecatedDirectives,
+            });
+        }
+
+        const composeNodeBaseArgs: {
+            where: any;
+            sort?: any;
+            first?: any;
+            after?: any;
+        } = {
+            where: connectionWhere,
+            first: {
+                type: "Int",
+            },
+            after: {
+                type: "String",
+            },
+        };
+
+        const composeNodeArgs = addDirectedArgument2(composeNodeBaseArgs, relationship);
+
+        if (relationship.propertiesTypeName) {
+            const connectionSort = schemaComposer.getOrCreateITC(`${relationship.connectionFieldTypename}Sort`);
+            connectionSort.addFields({
+                edge: `${relationship.propertiesTypeName}Sort`,
+            });
+            composeNodeArgs.sort = connectionSort.NonNull.List;
+        }
+
+        const relatedEntityIsInterfaceEntity = relationship.target instanceof InterfaceEntityAdapter;
+        if (relatedEntityIsInterfaceEntity) {
+            connectionWhere.addFields({
+                OR: connectionWhere.NonNull.List,
+                AND: connectionWhere.NonNull.List,
+                NOT: connectionWhereName,
+                node: `${relationship.target.name}Where`,
+                node_NOT: {
+                    type: `${relationship.target.name}Where`,
+                    directives: [DEPRECATE_NOT],
+                },
+            });
+
+            if (schemaComposer.has(`${relationship.target.name}Sort`)) {
+                const connectionSort = schemaComposer.getOrCreateITC(`${relationship.connectionFieldTypename}Sort`);
+                connectionSort.addFields({
+                    node: `${relationship.target.name}Sort`,
+                });
+                if (!composeNodeArgs.sort) {
+                    composeNodeArgs.sort = connectionSort.NonNull.List;
+                }
+            }
+
+            if (relationship.propertiesTypeName) {
+                const propertiesInterface = schemaComposer.getIFTC(relationship.propertiesTypeName);
+                relationshipObjectType.addInterface(propertiesInterface);
+                relationshipObjectType.addFields(propertiesInterface.getFields());
+
+                connectionWhere.addFields({
+                    edge: `${relationship.propertiesTypeName}Where`,
+                    edge_NOT: {
+                        type: `${relationship.propertiesTypeName}Where`,
+                        directives: [DEPRECATE_NOT],
+                    },
+                });
+            }
+        } else if (relatedEntityIsUnionEntity) {
+            // const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
+
+            relationship.target.concreteEntities.forEach((n) => {
+                const connectionName = relationship.connectionFieldTypename;
+
+                // Append union member name before "ConnectionWhere"
+                const unionWhereName = `${connectionName.substring(0, connectionName.length - "Connection".length)}${
+                    n.name
+                }ConnectionWhere`;
+
+                const unionWhere = schemaComposer.createInputTC({
+                    name: unionWhereName,
+                    fields: {
+                        OR: `[${unionWhereName}!]`,
+                        AND: `[${unionWhereName}!]`,
+                        NOT: unionWhereName,
+                    },
+                });
+
+                unionWhere.addFields({
+                    node: `${n.name}Where`,
+                    node_NOT: {
+                        type: `${n.name}Where`,
+                        directives: [DEPRECATE_NOT],
+                    },
+                });
+
+                if (relationship.propertiesTypeName) {
+                    const propertiesInterface = schemaComposer.getIFTC(relationship.propertiesTypeName);
+                    relationshipObjectType.addInterface(propertiesInterface);
+                    relationshipObjectType.addFields(propertiesInterface.getFields());
+
+                    unionWhere.addFields({
+                        edge: `${relationship.propertiesTypeName}Where`,
+                        edge_NOT: {
+                            type: `${relationship.propertiesTypeName}Where`,
+                            directives: [DEPRECATE_NOT],
+                        },
+                    });
+                }
+
+                connectionWhere.addFields({
+                    [n.name]: unionWhere,
+                });
+            });
+        } else {
+            // const relatedNode = nodes.find((n) => n.name === connectionField.relationship.typeMeta.name) as Node;
+
+            connectionWhere.addFields({
+                node: `${relationship.target.name}Where`,
+                node_NOT: {
+                    type: `${relationship.target.name}Where`,
+                    directives: [DEPRECATE_NOT],
+                },
+            });
+
+            if (relationship.target.sortableFields.length) {
+                const connectionSort = schemaComposer.getOrCreateITC(`${relationship.connectionFieldTypename}Sort`);
+                connectionSort.addFields({
+                    node: `${relationship.target.name}Sort`,
+                });
+                if (!composeNodeArgs.sort) {
+                    composeNodeArgs.sort = connectionSort.NonNull.List;
+                }
+            }
+        }
+
+        // if (!connectionField.relationship.writeonly && connectionField.selectableOptions.onRead) {
+        if (relationship.isReadable()) {
+            composeNode.addFields({
+                [relationship.connectionFieldName]: {
+                    type: connection.NonNull,
+                    args: composeNodeArgs,
+                    directives: deprecatedDirectives,
+                    resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
+                        return connectionFieldResolver2({
+                            connectionFieldName: relationship.connectionFieldName,
+                            args,
+                            info,
+                            source,
+                        });
+                    },
+                },
+            });
+        }
+
+        const relFields = relationship.propertiesTypeName
+            ? relationshipFields.get(relationship.propertiesTypeName)
+            : ({} as ObjectFields | undefined);
+
+        const r = new Relationship({
+            name: relationship.relationshipFieldTypename,
+            type: relationship.type,
+            properties: relationship.propertiesTypeName,
+            ...(relFields
+                ? {
+                      temporalFields: relFields.temporalFields,
+                      scalarFields: relFields.scalarFields,
+                      primitiveFields: relFields.primitiveFields,
+                      enumFields: relFields.enumFields,
+                      pointFields: relFields.pointFields,
+                      customResolverFields: relFields.customResolverFields,
+                  }
+                : {}),
+        });
+        relationships.push(r);
+    });
+
+    return relationships;
+}
