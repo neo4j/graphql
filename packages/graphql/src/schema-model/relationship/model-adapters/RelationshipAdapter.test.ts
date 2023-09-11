@@ -83,6 +83,7 @@ describe("RelationshipAdapter", () => {
         relationship = new Relationship({
             name: "accounts",
             type: "HAS_ACCOUNT",
+            args: [],
             source: userEntity,
             target: accountEntity,
             direction: "OUT",
