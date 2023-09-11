@@ -374,9 +374,13 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               node: Resource!
             }
 
+            \\"\\"\\"\\"\\"\\"
             interface ResourceEntity {
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               name: String
+              \\"\\"\\"\\"\\"\\"
               properties: [Property!]
               \\"\\"\\"Globally tracked tags for this resource (enum)\\"\\"\\"
               tags: [Tag!]

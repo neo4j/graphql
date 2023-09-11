@@ -131,7 +131,9 @@ describe("@private directive", () => {
               node: User!
             }
 
+            \\"\\"\\"\\"\\"\\"
             interface UserInterface {
+              \\"\\"\\"\\"\\"\\"
               id: ID
             }
 

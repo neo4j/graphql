@@ -375,7 +375,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"\\"\\"\\"
             interface INode {
+              \\"\\"\\"\\"\\"\\"
               id: String!
             }
 

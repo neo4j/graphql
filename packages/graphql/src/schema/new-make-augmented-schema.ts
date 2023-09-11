@@ -61,18 +61,25 @@ import getObjFieldMeta from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import getWhereFields, { getWhereFieldsFromConcreteEntity } from "./get-where-fields";
 import {
-    concreteEntityToComposeFields,
+    attributeAdapterToComposeFields,
     concreteEntityToCreateInputFields,
     concreteEntityToUpdateInputFields,
     graphqlDirectivesToCompose,
     objectFieldsToComposeFields,
     objectFieldsToCreateInputFields,
     objectFieldsToUpdateInputFields,
+    relationshipAdapterToComposeFields,
 } from "./to-compose";
 
 // GraphQL type imports
 import type { Subgraph } from "../classes/Subgraph";
-import { DEPRECATED, FIELD_DIRECTIVES, OBJECT_DIRECTIVES, PROPAGATED_DIRECTIVES } from "../constants";
+import {
+    DEPRECATED,
+    FIELD_DIRECTIVES,
+    INTERFACE_DIRECTIVES,
+    OBJECT_DIRECTIVES,
+    PROPAGATED_DIRECTIVES,
+} from "../constants";
 import { SortDirection } from "../graphql/enums/SortDirection";
 import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
 import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
@@ -506,7 +513,7 @@ class ToComposer {
 */
 
 function getUserDefinedFieldDirectivesForDefinition(
-    definitionNode: ObjectTypeDefinitionNode,
+    definitionNode: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     definitionNodes: DefinitionNodes
 ): Map<string, DirectiveNode[]> {
     const userDefinedFieldDirectives = new Map<string, DirectiveNode[]>();
@@ -1030,7 +1037,7 @@ function makeAugmentedSchema(
 
         const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
 
-        const nodeFields = concreteEntityToComposeFields(
+        const nodeFields = attributeAdapterToComposeFields(
             concreteEntityAdapter.objectFields,
             userDefinedFieldDirectives
         );
@@ -1398,29 +1405,39 @@ function makeAugmentedSchema(
     });
 
     filteredInterfaceTypes.forEach((inter) => {
-        const objectFields = getObjFieldMeta({
-            obj: inter,
-            scalars: scalarTypes,
-            enums: enumTypes,
-            interfaces: filteredInterfaceTypes,
-            unions: unionTypes,
-            objects: objectTypes,
-            callbacks,
-        });
+        const interfaceEntity = schemaModel.getEntity(inter.name.value);
+        if (interfaceEntity?.isCompositeEntity() && interfaceEntity instanceof InterfaceEntity) {
+            const definitionNode = definitionNodes.interfaceTypes.find(
+                (type) => type.name.value === interfaceEntity.name
+            );
 
-        const baseFields: BaseField[][] = Object.values(objectFields);
-        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
+            if (!definitionNode) {
+                console.error(`Definition node not found for ${interfaceEntity.name}`);
+                return;
+            }
 
-        composer.createInterfaceTC({
-            name: inter.name.value,
-            description: inter.description?.value,
-            fields: objectComposeFields,
-            directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter(
-                    (x) => !["auth", "authorization", "authentication", "exclude"].includes(x.name.value)
-                )
-            ),
-        });
+            const userDefinedInterfaceDirectives =
+                definitionNode.directives?.filter(
+                    (directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)
+                ) || [];
+
+            const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
+            composer.createInterfaceTC({
+                name: interfaceEntityAdapter.name,
+                description: interfaceEntity.description,
+                fields: {
+                    ...attributeAdapterToComposeFields(
+                        Array.from(interfaceEntityAdapter.attributes.values()),
+                        getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
+                    ),
+                    ...relationshipAdapterToComposeFields(
+                        Array.from(interfaceEntityAdapter.relationships.values()),
+                        getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
+                    ),
+                },
+                directives: graphqlDirectivesToCompose(userDefinedInterfaceDirectives),
+            });
+        }
     });
 
     if (!Object.values(composer.Mutation.getFields()).length) {

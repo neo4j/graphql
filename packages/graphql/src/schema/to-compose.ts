@@ -24,6 +24,7 @@ import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { DEPRECATE_NOT } from "./constants";
 import getFieldTypeMeta from "./get-field-type-meta";
@@ -104,10 +105,49 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
     }, {});
 }
 
-export function concreteEntityToComposeFields(
+export function relationshipAdapterToComposeFields(
+    objectFields: RelationshipAdapter[],
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>
+): Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> {
+    const composeFields: Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {};
+    for (const field of objectFields) {
+        if (field.isReadable() === false) {
+            continue;
+        }
+
+        const relationshipFields = [
+            {
+                typeName: field.getTargetTypePrettyName(),
+                fieldName: field.name,
+            },
+            {
+                typeName: `${field.connectionFieldTypename}!`, // TODO: Move Adapter so we aren't manually adding the !
+                fieldName: field.connectionFieldName,
+            },
+        ];
+        for (const { typeName, fieldName } of relationshipFields) {
+            const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
+                type: typeName,
+                args: graphqlArgsToCompose2(field.args),
+                description: field.description,
+            };
+
+            const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
+            if (userDefinedDirectivesOnField) {
+                newField.directives = graphqlDirectivesToCompose(userDefinedDirectivesOnField);
+            }
+
+            composeFields[fieldName] = newField;
+        }
+    }
+
+    return composeFields;
+}
+
+export function attributeAdapterToComposeFields(
     objectFields: AttributeAdapter[],
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>
-) {
+): Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> {
     const composeFields: Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {};
     for (const field of objectFields) {
         if (field.isReadable() === false) {

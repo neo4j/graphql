@@ -206,8 +206,11 @@ describe("@default directive", () => {
               node: User!
             }
 
+            \\"\\"\\"\\"\\"\\"
             interface UserInterface {
+              \\"\\"\\"\\"\\"\\"
               fromInterface: String!
+              \\"\\"\\"\\"\\"\\"
               toBeOverridden: String!
             }
 

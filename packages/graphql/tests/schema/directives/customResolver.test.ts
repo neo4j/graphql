@@ -157,7 +157,9 @@ describe("@customResolver directive", () => {
               node: User!
             }
 
+            \\"\\"\\"\\"\\"\\"
             interface UserInterface {
+              \\"\\"\\"\\"\\"\\"
               customResolver: String
             }
 
