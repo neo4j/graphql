@@ -44,6 +44,7 @@ export class RelationshipAdapter {
     public readonly isNullable: boolean;
     public readonly description: string;
     public readonly propertiesTypeName: string | undefined;
+    public readonly inheritedFrom: string | undefined;
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
 
@@ -51,7 +52,17 @@ export class RelationshipAdapter {
         // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
         // then return this.interface.name
         // TODO: how to get implemented interfaces here??
-        return this.source.name;
+        // console.log(this.inheritedFrom, this.source.name, this.name);
+
+        return this.inheritedFrom || this.source.name;
+    }
+
+    public get fieldInputPrefixForTypename(): string {
+        const isTargetInterface = this.target instanceof InterfaceEntityAdapter;
+        if (isTargetInterface) {
+            return this.source.name;
+        }
+        return this.prefixForTypename;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -69,23 +80,24 @@ export class RelationshipAdapter {
     }
 
     public get updateFieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}UpdateFieldInput`;
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateFieldInput`;
     }
 
     public get createFieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}CreateFieldInput`;
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}CreateFieldInput`;
     }
 
     public get deleteFieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}DeleteFieldInput`;
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DeleteFieldInput`;
+    }
+    public get connectFieldInputTypeName(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}ConnectFieldInput`;
     }
 
-    public get connectFieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectFieldInput`;
-    }
     public get disconnectFieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}DisconnectFieldInput`;
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DisconnectFieldInput`;
     }
+
     public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
         if (this.target instanceof UnionEntityAdapter) {
             if (!concreteTargetEntityAdapter) {
@@ -110,7 +122,7 @@ export class RelationshipAdapter {
         return `${this.prefixForTypename}${upperFirst(this.name)}ConnectionWhere`;
     }
     public get updateConnectionInputTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}UpdateConnectionInput`;
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateConnectionInput`;
     }
 
     public get aggregateInputTypeName(): string {
@@ -170,6 +182,7 @@ export class RelationshipAdapter {
             description,
             annotations,
             propertiesTypeName,
+            inheritedFrom,
         } = relationship;
         this.name = name;
         this.type = type;
@@ -197,6 +210,7 @@ export class RelationshipAdapter {
         this.description = description;
         this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
+        this.inheritedFrom = inheritedFrom;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {
