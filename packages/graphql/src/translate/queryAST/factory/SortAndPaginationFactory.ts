@@ -18,6 +18,8 @@
  */
 
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
@@ -34,10 +36,7 @@ export class SortAndPaginationFactory {
         options: ConnectionSortArg,
         relationship: RelationshipAdapter
     ): { edge: Sort[]; node: Sort[] } {
-        const nodeSortFields = this.createPropertySort(
-            options.node || {},
-            relationship.target as ConcreteEntityAdapter
-        );
+        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target);
         const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
         return {
             edge: edgeSortFields,
@@ -54,7 +53,14 @@ export class SortAndPaginationFactory {
         }
     }
 
-    private createPropertySort(optionArg: GraphQLSortArg, entity: ConcreteEntityAdapter | RelationshipAdapter): Sort[] {
+    private createPropertySort(
+        optionArg: GraphQLSortArg,
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter
+    ): Sort[] {
+        if (entity instanceof UnionEntityAdapter) {
+            return [];
+        }
+
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) throw new Error(`no filter attribute ${fieldName}`);

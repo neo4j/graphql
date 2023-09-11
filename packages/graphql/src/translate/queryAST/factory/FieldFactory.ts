@@ -237,10 +237,6 @@ export class FieldFactory {
         field: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): OperationField {
-        // const nestedFields = field.fieldsByTypeName[entity.name];
-        // if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
-        // const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(relationship, field);
-
         const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field, context);
 
         return new OperationField({

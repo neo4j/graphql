@@ -85,16 +85,21 @@ export class FilterFactory {
             operator: filterOps.operator,
         });
 
-        const filters = this.createConnectionPredicates(relationship, where);
+        const concreteEntity = relationship.target as ConcreteEntityAdapter;
+        const filters = this.createConnectionPredicates(relationship, concreteEntity, where);
         connectionFilter.addFilters(filters);
         return connectionFilter;
     }
 
-    public createConnectionPredicates(rel: RelationshipAdapter, where: GraphQLWhereArg | GraphQLWhereArg[]): Filter[] {
+    public createConnectionPredicates(
+        rel: RelationshipAdapter,
+        concreteEntity: ConcreteEntityAdapter,
+        where: GraphQLWhereArg | GraphQLWhereArg[]
+    ): Filter[] {
         const filters = asArray(where).flatMap((nestedWhere) => {
             return Object.entries(nestedWhere).flatMap(([key, value]: [string, GraphQLWhereArg]) => {
                 if (isLogicalOperator(key)) {
-                    const nestedFilters = this.createConnectionPredicates(rel, value);
+                    const nestedFilters = this.createConnectionPredicates(rel, concreteEntity, value);
                     return [
                         new LogicalFilter({
                             operation: key,
@@ -108,7 +113,7 @@ export class FilterFactory {
                     return this.createEdgeFilters(rel, value);
                 }
                 if (connectionWhereField.fieldName === "node") {
-                    return this.createNodeFilters(rel.target as ConcreteEntityAdapter, value);
+                    return this.createNodeFilters(concreteEntity, value);
                 }
             });
         });
@@ -201,7 +206,14 @@ export class FilterFactory {
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
     public createNodeFilters(entity: ConcreteEntityAdapter, where: Record<string, unknown>): Filter[] {
         const filters = filterTruthy(
-            Object.entries(where).map(([key, value]): Filter | undefined => {
+            Object.entries(where).flatMap(([key, value]): Filter | undefined => {
+                if (key === "_on") {
+                    const concreteWhere = (value as any)[entity.name];
+                    if (!concreteWhere) return undefined;
+                    const nodeFilters = this.createNodeFilters(entity, concreteWhere);
+                    return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
+                }
+
                 if (isLogicalOperator(key)) {
                     return this.createNodeLogicalFilter(key, value as any, entity);
                 }
