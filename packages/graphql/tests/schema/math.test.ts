@@ -1769,7 +1769,9 @@ describe("Algebraic", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               pay: Float
+              \\"\\"\\"\\"\\"\\"
               roles: [String!]
             }
 
@@ -1992,7 +1994,9 @@ describe("Algebraic", () => {
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
               node: Person!
+              \\"\\"\\"\\"\\"\\"
               pay: Float
+              \\"\\"\\"\\"\\"\\"
               roles: [String!]
             }
 
@@ -2303,7 +2307,9 @@ describe("Algebraic", () => {
             type PersonActedInMoviesRelationship implements ActedIn {
               cursor: String!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               pay: Float
+              \\"\\"\\"\\"\\"\\"
               roles: [String!]
             }
 

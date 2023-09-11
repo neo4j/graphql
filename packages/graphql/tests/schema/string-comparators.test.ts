@@ -528,6 +528,7 @@ describe("String Comparators", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               screenTime: String
             }
 
@@ -722,6 +723,7 @@ describe("String Comparators", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               screenTime: String
             }
 
@@ -1061,6 +1063,7 @@ describe("String Comparators", () => {
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               screenTime: String
             }
 

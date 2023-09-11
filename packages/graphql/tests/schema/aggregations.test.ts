@@ -522,15 +522,25 @@ describe("Aggregations", () => {
             }
 
             interface Likes {
+              \\"\\"\\"\\"\\"\\"
               someBigInt: BigInt
+              \\"\\"\\"\\"\\"\\"
               someDateTime: DateTime
+              \\"\\"\\"\\"\\"\\"
               someDuration: Duration
+              \\"\\"\\"\\"\\"\\"
               someFloat: Float
+              \\"\\"\\"\\"\\"\\"
               someId: ID
+              \\"\\"\\"\\"\\"\\"
               someInt: Int
+              \\"\\"\\"\\"\\"\\"
               someLocalDateTime: LocalDateTime
+              \\"\\"\\"\\"\\"\\"
               someLocalTime: LocalTime
+              \\"\\"\\"\\"\\"\\"
               someString: String
+              \\"\\"\\"\\"\\"\\"
               someTime: Time
             }
 
@@ -1201,15 +1211,25 @@ describe("Aggregations", () => {
             type PostLikesRelationship implements Likes {
               cursor: String!
               node: User!
+              \\"\\"\\"\\"\\"\\"
               someBigInt: BigInt
+              \\"\\"\\"\\"\\"\\"
               someDateTime: DateTime
+              \\"\\"\\"\\"\\"\\"
               someDuration: Duration
+              \\"\\"\\"\\"\\"\\"
               someFloat: Float
+              \\"\\"\\"\\"\\"\\"
               someId: ID
+              \\"\\"\\"\\"\\"\\"
               someInt: Int
+              \\"\\"\\"\\"\\"\\"
               someLocalDateTime: LocalDateTime
+              \\"\\"\\"\\"\\"\\"
               someLocalTime: LocalTime
+              \\"\\"\\"\\"\\"\\"
               someString: String
+              \\"\\"\\"\\"\\"\\"
               someTime: Time
             }
 

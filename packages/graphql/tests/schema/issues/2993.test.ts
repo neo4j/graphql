@@ -73,6 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             interface FOLLOWS {
+              \\"\\"\\"\\"\\"\\"
               since: DateTime!
             }
 
@@ -324,6 +325,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type UserFollowingRelationship implements FOLLOWS {
               cursor: String!
               node: Profile!
+              \\"\\"\\"\\"\\"\\"
               since: DateTime!
             }
 

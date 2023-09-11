@@ -51,8 +51,11 @@ describe("Relationship-properties", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               leadRole: Boolean!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
+              \\"\\"\\"\\"\\"\\"
               startDate: Date!
             }
 
@@ -293,9 +296,12 @@ describe("Relationship-properties", () => {
 
             type ActorMoviesRelationship implements ActedIn {
               cursor: String!
+              \\"\\"\\"\\"\\"\\"
               leadRole: Boolean!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
+              \\"\\"\\"\\"\\"\\"
               startDate: Date!
             }
 
@@ -585,9 +591,12 @@ describe("Relationship-properties", () => {
 
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
+              \\"\\"\\"\\"\\"\\"
               leadRole: Boolean!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
+              \\"\\"\\"\\"\\"\\"
               startDate: Date!
             }
 
@@ -800,8 +809,11 @@ describe("Relationship-properties", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
+              \\"\\"\\"\\"\\"\\"
               timestamp: DateTime!
             }
 
@@ -1064,9 +1076,12 @@ describe("Relationship-properties", () => {
 
             type ActorMoviesRelationship implements ActedIn {
               cursor: String!
+              \\"\\"\\"\\"\\"\\"
               id: ID!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
+              \\"\\"\\"\\"\\"\\"
               timestamp: DateTime!
             }
 
@@ -1384,9 +1399,12 @@ describe("Relationship-properties", () => {
 
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
+              \\"\\"\\"\\"\\"\\"
               id: ID!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
+              \\"\\"\\"\\"\\"\\"
               timestamp: DateTime!
             }
 
@@ -1598,7 +1616,9 @@ describe("Relationship-properties", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               timestamp: DateTime!
             }
 
@@ -1814,8 +1834,10 @@ describe("Relationship-properties", () => {
 
             type ActorMoviesRelationship implements ActedIn {
               cursor: String!
+              \\"\\"\\"\\"\\"\\"
               id: ID!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               timestamp: DateTime!
             }
 
@@ -2097,8 +2119,10 @@ describe("Relationship-properties", () => {
 
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
+              \\"\\"\\"\\"\\"\\"
               id: ID!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               timestamp: DateTime!
             }
 

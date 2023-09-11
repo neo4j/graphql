@@ -247,6 +247,7 @@ describe("Unions", () => {
             type AuthorPublicationsRelationship implements Wrote {
               cursor: String!
               node: Publication!
+              \\"\\"\\"\\"\\"\\"
               words: Int!
             }
 
@@ -479,6 +480,7 @@ describe("Unions", () => {
             type BookAuthorRelationship implements Wrote {
               cursor: String!
               node: Author!
+              \\"\\"\\"\\"\\"\\"
               words: Int!
             }
 
@@ -802,6 +804,7 @@ describe("Unions", () => {
             type JournalAuthorRelationship implements Wrote {
               cursor: String!
               node: Author!
+              \\"\\"\\"\\"\\"\\"
               words: Int!
             }
 
@@ -1004,6 +1007,7 @@ describe("Unions", () => {
             }
 
             interface Wrote {
+              \\"\\"\\"\\"\\"\\"
               words: Int!
             }
 

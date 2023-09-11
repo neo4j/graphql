@@ -56,6 +56,7 @@ describe("Connect Or Create", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 
@@ -203,6 +204,7 @@ describe("Connect Or Create", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 

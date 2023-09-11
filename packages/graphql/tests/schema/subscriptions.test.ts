@@ -2613,6 +2613,7 @@ describe("Subscriptions", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 
@@ -3133,6 +3134,7 @@ describe("Subscriptions", () => {
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 

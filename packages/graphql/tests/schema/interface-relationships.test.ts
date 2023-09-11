@@ -58,6 +58,7 @@ describe("Interface Relationships", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 
@@ -145,6 +146,7 @@ describe("Interface Relationships", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 

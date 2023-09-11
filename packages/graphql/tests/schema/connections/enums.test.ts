@@ -54,6 +54,7 @@ describe("Enums", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               roleType: RoleType!
             }
 
@@ -236,6 +237,7 @@ describe("Enums", () => {
             type ActorMoviesRelationship implements ActedIn {
               cursor: String!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               roleType: RoleType!
             }
 
@@ -479,6 +481,7 @@ describe("Enums", () => {
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               roleType: RoleType!
             }
 

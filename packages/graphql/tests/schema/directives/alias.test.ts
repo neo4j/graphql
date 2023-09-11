@@ -256,7 +256,9 @@ describe("Alias", () => {
             }
 
             interface ActorActedInProps {
+              \\"\\"\\"\\"\\"\\"
               character: String!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int
             }
 
@@ -302,9 +304,11 @@ describe("Alias", () => {
             }
 
             type ActorActedInRelationship implements ActorActedInProps {
+              \\"\\"\\"\\"\\"\\"
               character: String!
               cursor: String!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int
             }
 

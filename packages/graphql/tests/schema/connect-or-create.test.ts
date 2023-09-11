@@ -537,7 +537,9 @@ describe("Connect Or Create", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               characterName: String
+              \\"\\"\\"\\"\\"\\"
               screentime: Int!
             }
 
@@ -854,9 +856,11 @@ describe("Connect Or Create", () => {
             }
 
             type ActorMoviesRelationship implements ActedIn {
+              \\"\\"\\"\\"\\"\\"
               characterName: String
               cursor: String!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               screentime: Int!
             }
 

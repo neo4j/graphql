@@ -1061,10 +1061,14 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresRelationship implements RelProperties {
+                  \\"\\"\\"\\"\\"\\"
                   callback1: String!
+                  \\"\\"\\"\\"\\"\\"
                   callback2: String!
+                  \\"\\"\\"\\"\\"\\"
                   callback3: String!
                   cursor: String!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
                   node: Genre!
                 }
@@ -1186,9 +1190,13 @@ describe("@populatedBy tests", () => {
                 }
 
                 interface RelProperties {
+                  \\"\\"\\"\\"\\"\\"
                   callback1: String!
+                  \\"\\"\\"\\"\\"\\"
                   callback2: String!
+                  \\"\\"\\"\\"\\"\\"
                   callback3: String!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
                 }
 
@@ -1643,10 +1651,14 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresRelationship implements RelProperties {
+                  \\"\\"\\"\\"\\"\\"
                   callback1: Int!
+                  \\"\\"\\"\\"\\"\\"
                   callback2: Int!
+                  \\"\\"\\"\\"\\"\\"
                   callback3: Int!
                   cursor: String!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
                   node: Genre!
                 }
@@ -1768,9 +1780,13 @@ describe("@populatedBy tests", () => {
                 }
 
                 interface RelProperties {
+                  \\"\\"\\"\\"\\"\\"
                   callback1: Int!
+                  \\"\\"\\"\\"\\"\\"
                   callback2: Int!
+                  \\"\\"\\"\\"\\"\\"
                   callback3: Int!
+                  \\"\\"\\"\\"\\"\\"
                   id: ID!
                 }
 

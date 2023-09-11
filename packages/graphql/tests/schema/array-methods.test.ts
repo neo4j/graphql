@@ -51,6 +51,7 @@ describe("Arrays Methods", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               pay: [Float]
             }
 
@@ -186,6 +187,7 @@ describe("Arrays Methods", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Movie!
+              \\"\\"\\"\\"\\"\\"
               pay: [Float]
             }
 
@@ -486,6 +488,7 @@ describe("Arrays Methods", () => {
             type MovieActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               pay: [Float]
             }
 

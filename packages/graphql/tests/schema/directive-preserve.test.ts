@@ -908,6 +908,7 @@ describe("Directive-preserve", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               role: String!
             }
 
@@ -998,6 +999,7 @@ describe("Directive-preserve", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
+              \\"\\"\\"\\"\\"\\"
               role: String!
             }
 
@@ -1464,6 +1466,7 @@ describe("Directive-preserve", () => {
             type ProductionActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               role: String!
             }
 
@@ -1889,6 +1892,7 @@ describe("Directive-preserve", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               role: String!
             }
 
@@ -1979,6 +1983,7 @@ describe("Directive-preserve", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
+              \\"\\"\\"\\"\\"\\"
               role: String!
             }
 
@@ -2445,6 +2450,7 @@ describe("Directive-preserve", () => {
             type ProductionActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               role: String!
             }
 
