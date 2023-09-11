@@ -225,13 +225,14 @@ export class AttributeAdapter {
      */
     isOnCreateField(): boolean {
         return (
-            this.isGraphQLBuiltInScalar() ||
-            this.isTemporal() ||
-            this.isEnum() ||
-            this.isPoint() ||
-            this.isCartesianPoint() ||
-            this.isUserScalar() ||
-            this.isBigInt()
+            this.isNonGeneratedField() &&
+            (this.isGraphQLBuiltInScalar() ||
+                this.isTemporal() ||
+                this.isEnum() ||
+                this.isPoint() ||
+                this.isCartesianPoint() ||
+                this.isUserScalar() ||
+                this.isBigInt())
         );
     }
 
