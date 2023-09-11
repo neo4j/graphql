@@ -5,7 +5,7 @@ on:
     branches:
       - dev
       - master
-      - *.*.*
+      - '*.*.*'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
