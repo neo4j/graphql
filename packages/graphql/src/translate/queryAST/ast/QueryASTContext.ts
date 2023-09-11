@@ -18,15 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 type Scope = Map<string, Cypher.Variable>;
 
 export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
-    public cypherParams: Map<string, any>;
+    public neo4jGraphQLContext: Neo4jGraphQLContext | undefined;
 
-    constructor() {
-        this.cypherParams = new Map([["movie", "MOVIE"]]);
+    constructor(neo4jGraphQLContext?: Neo4jGraphQLContext) {
+        this.neo4jGraphQLContext = neo4jGraphQLContext;
     }
 
     public getScope(element: Cypher.Node | Cypher.Relationship): Scope {
@@ -57,12 +58,12 @@ export class QueryASTContext {
         target: Cypher.Node;
         relationship?: Cypher.Relationship;
         source?: Cypher.Node;
-        queryASTEnv?: QueryASTEnv;
+        queryASTEnv: QueryASTEnv;
     }) {
         this.target = target;
         this.relationship = relationship;
         this.source = source;
-        this.env = queryASTEnv ?? new QueryASTEnv();
+        this.env = queryASTEnv;
     }
 
     public getRelationshipScope(): Scope {

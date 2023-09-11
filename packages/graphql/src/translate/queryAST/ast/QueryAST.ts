@@ -23,6 +23,7 @@ import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 export class QueryAST {
     private operation: ReadOperation;
@@ -31,7 +32,7 @@ export class QueryAST {
         this.operation = operation;
     }
 
-    public transpile(): Cypher.Clause {
+    public transpile(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
         // const tree = this.operation.getCypherTree({
         //     returnVariable: new Cypher.NamedNode("this"),
         // });
@@ -41,10 +42,10 @@ export class QueryAST {
         //         target: new Cypher.NamedVariable("this"),
         //     })
         // );
-        const queryASTEnv = new QueryASTEnv();
+        const queryASTEnv = new QueryASTEnv(neo4jGraphQLContext);
         const node = createNodeFromEntity(
             this.operation.entity as ConcreteEntityAdapter,
-            queryASTEnv,
+            queryASTEnv.neo4jGraphQLContext,
             this.operation.nodeAlias
         );
         const context = new QueryASTContext({

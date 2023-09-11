@@ -116,7 +116,7 @@ export class AggregationOperation extends Operation {
         //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.env);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.env.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)

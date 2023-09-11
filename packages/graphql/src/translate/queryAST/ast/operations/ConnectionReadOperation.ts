@@ -25,7 +25,7 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { Sort, SortField } from "../sort/Sort";
-import { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
@@ -89,7 +89,7 @@ export class ConnectionReadOperation extends Operation {
 
     public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
-        const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter, context.env);
+        const node = createNodeFromEntity(this.relationship.target as ConcreteEntityAdapter, context.env.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 

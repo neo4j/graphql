@@ -40,7 +40,7 @@ function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationConte
     const entity = context.schemaModel.getEntity(node.name);
     if (!entity) throw new Error("Entity not found");
     const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity, context);
-    const clause = queryAST.transpile();
+    const clause = queryAST.transpile(context);
     debug(queryAST.print());
     return clause.build();
 }
@@ -58,11 +58,11 @@ export function translateRead(
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
-    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
-
     if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase) {
         return testQueryAST({ context, node });
     }
+
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
     const cypherFieldAliasMap: CypherFieldReferenceMap = {};
 

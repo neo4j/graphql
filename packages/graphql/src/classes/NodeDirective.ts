@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import dotProp from "dot-prop";
+
 import { Neo4jGraphQLError } from "./Error";
 import Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
+import { mapLabelsWithContext } from "../schema-model/utils/map-labels-with-context";
 
 export interface NodeDirectiveConstructor {
     labels?: string[];
@@ -37,42 +38,13 @@ export class NodeDirective {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
-        const labels = this.getLabels(typeName, context).map((l) => this.escapeLabel(l));
+        const labels = this.getLabels(typeName, context);
         return `:${labels.join(":")}`;
     }
 
     public getLabels(typeName: string, context: Neo4jGraphQLContext): string[] {
         const labels = !this.labels.length ? [typeName] : this.labels;
-        return this.mapLabelsWithContext(labels, context);
+        return mapLabelsWithContext(labels, context);
     }
 
-    private mapLabelsWithContext(labels: string[], context: Neo4jGraphQLContext): string[] {
-        return labels.map((label: string) => {
-            if (label.startsWith("$")) {
-                // Trim $context. OR $ off the beginning of the string
-                const path = label.substring(label.startsWith("$context") ? 9 : 1);
-                const labelValue = this.searchLabel(context, path);
-                if (!labelValue) {
-                    throw new Error(`Label value not found in context.`);
-                }
-                return labelValue;
-            }
-
-            return label;
-        });
-    }
-
-    private searchLabel(context, path): string | undefined {
-        // Search for the key at the root of the context
-        let labelValue = dotProp.get<string>(context, path);
-        if (!labelValue) {
-            // Search for the key in cypherParams
-            labelValue = dotProp.get<string>(context.cypherParams, path);
-        }
-        return labelValue;
-    }
-
-    private escapeLabel(label: string): string {
-        return Cypher.utils.escapeLabel(label);
-    }
 }

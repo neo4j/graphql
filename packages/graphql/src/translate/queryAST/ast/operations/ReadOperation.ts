@@ -78,7 +78,7 @@ export class ReadOperation extends Operation {
         //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.env);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.env.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)
@@ -151,8 +151,7 @@ export class ReadOperation extends Operation {
                 context,
             });
         }
-        const node = createNodeFromEntity(this.entity, context.env, this.nodeAlias);
-        //const context = new QueryASTContext({ target: node, queryASTEnv: env });
+        const node = createNodeFromEntity(this.entity, context.env.neo4jGraphQLContext, this.nodeAlias);
         const filterSubqueries = this.filters
             .flatMap((f) => f.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
