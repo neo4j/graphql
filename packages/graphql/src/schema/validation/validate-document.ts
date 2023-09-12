@@ -62,6 +62,7 @@ import { ValidRelationshipProperties } from "./custom-rules/features/valid-relat
 import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
+import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -205,6 +206,7 @@ function runValidationRulesOnFilteredDocument({
             ValidDirectiveInheritance,
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
+            WarnIfListOfListsFieldDefinition,
         ],
         schema
     );
