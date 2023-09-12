@@ -22,6 +22,7 @@ import type {
     DirectiveNode,
     DocumentNode,
     EnumTypeDefinitionNode,
+    InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
@@ -41,6 +42,7 @@ export type DefinitionCollection = {
     unionTypes: Map<string, UnionTypeDefinitionNode>;
     directives: Map<string, DirectiveDefinitionNode>;
     relationshipProperties: Map<string, InterfaceTypeDefinitionNode>;
+    inputTypes: Map<string, InputObjectTypeDefinitionNode>;
     schemaExtension: SchemaExtensionNode | undefined;
     jwtPayload: ObjectTypeDefinitionNode | undefined;
     interfaceToImplementingTypeNamesMap: Map<string, string[]>; // TODO: change this logic, this was the logic contained in initInterfacesToTypeNamesMap but potentially can be simplified now.
@@ -68,9 +70,7 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
                     definitionCollection.enumTypes.set(definition.name.value, definition);
                     break;
                 case Kind.INTERFACE_TYPE_DEFINITION:
-                    if (
-                        findDirective(definition.directives, relationshipPropertiesDirective.name)
-                    ) {
+                    if (findDirective(definition.directives, relationshipPropertiesDirective.name)) {
                         definitionCollection.relationshipProperties.set(definition.name.value, definition);
                     } else {
                         definitionCollection.interfaceTypes.set(definition.name.value, definition);
@@ -83,10 +83,15 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
                 case Kind.UNION_TYPE_DEFINITION:
                     definitionCollection.unionTypes.set(definition.name.value, definition);
                     break;
+                case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+                    definitionCollection.inputTypes.set(definition.name.value, definition);
+                    break;
                 case Kind.SCHEMA_EXTENSION:
                     // This is based on the assumption that mergeTypeDefs is used and therefore there is only one schema extension (merged), this assumption is currently used as well for object extensions.
                     definitionCollection.schemaExtension = definition;
-                    definitionCollection.schemaDirectives = definition.directives ? Array.from(definition.directives) : [];
+                    definitionCollection.schemaDirectives = definition.directives
+                        ? Array.from(definition.directives)
+                        : [];
                     break;
             }
 
@@ -100,6 +105,7 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
             directives: new Map(),
             unionTypes: new Map(),
             relationshipProperties: new Map(),
+            inputTypes: new Map(),
             schemaExtension: undefined,
             jwtPayload: undefined,
             interfaceToImplementingTypeNamesMap: new Map(),

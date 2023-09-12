@@ -143,4 +143,22 @@ export class InterfaceType {
     }
 }
 
-export type AttributeType = ScalarType | UserScalarType | ObjectType | ListType | EnumType | UnionType | InterfaceType;
+export class InputType {
+    public name: string;
+    public isRequired: boolean;
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export type AttributeType =
+    | ScalarType
+    | UserScalarType
+    | ObjectType
+    | ListType
+    | EnumType
+    | UnionType
+    | InterfaceType
+    | InputType;

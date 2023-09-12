@@ -24,6 +24,7 @@ import { Argument } from "../argument/Argument";
 import { Attribute } from "../attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
+    InputType,
     EnumType,
     GraphQLBuiltInScalarType,
     InterfaceType,
@@ -135,6 +136,8 @@ function parseTypeNode(
                 return new UnionType(typeNode.name.value, isRequired);
             } else if (isInterface(definitionCollection, typeNode.name.value)) {
                 return new InterfaceType(typeNode.name.value, isRequired);
+            } else if (isInput(definitionCollection, typeNode.name.value)) {
+                return new InputType(typeNode.name.value, isRequired);
             } else {
                 throw new Error(`Error while parsing Attribute with name: ${typeNode.name.value}`);
             }
@@ -167,6 +170,9 @@ function isUserScalar(definitionCollection: DefinitionCollection, name: string) 
 
 function isObject(definitionCollection, name: string) {
     return definitionCollection.nodes.has(name);
+}
+function isInput(definitionCollection: DefinitionCollection, name: string) {
+    return definitionCollection.inputTypes.has(name);
 }
 
 function isPoint(value: string): boolean {
