@@ -121,10 +121,6 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
     }
 
-    public get primitiveFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isPrimitiveField());
-    }
-
     public get aggregableFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
     }
