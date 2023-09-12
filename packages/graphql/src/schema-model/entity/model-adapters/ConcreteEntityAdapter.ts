@@ -157,7 +157,7 @@ export class ConcreteEntityAdapter {
     // }
 
     public get temporalFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporalField());
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
