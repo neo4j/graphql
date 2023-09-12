@@ -799,7 +799,6 @@ function makeAugmentedSchema(
         const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
 
         // TODO
-        // 1. use interfaceEntityAdapter everywhere
         // 2. move this to a separate function
         // 3. call separate function from inside the nodes.forEach(), for each relationship where relationship.target is Interface, after doing the relationshipProperties interfaces
 
