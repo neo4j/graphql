@@ -82,13 +82,7 @@ export class AttributeAdapter {
      */
     isMutable(): boolean {
         return (
-            (this.isTemporal() ||
-                this.isEnum() ||
-                this.isInterface() ||
-                this.isUnion() ||
-                this.isSpatial() ||
-                this.isScalar() ||
-                this.isObject()) &&
+            (this.isEnum() || this.isAbstract() || this.isSpatial() || this.isScalar() || this.isObject()) &&
             !this.isCypher()
         );
     }
@@ -115,8 +109,7 @@ export class AttributeAdapter {
             this.isUserScalar() ||
             this.isEnum() ||
             this.isTemporal() ||
-            this.isPoint() ||
-            this.isCartesianPoint()
+            this.isSpatial()
         );
     }
 
@@ -137,17 +130,7 @@ export class AttributeAdapter {
     */
     isObjectField(): boolean {
         return (
-            this.isGraphQLBuiltInScalar() ||
-            this.isCypher() ||
-            this.isEnum() ||
-            this.isUserScalar() ||
-            this.isInterface() ||
-            this.isObject() ||
-            this.isUnion() ||
-            this.isTemporal() ||
-            this.isPoint() ||
-            this.isCartesianPoint() ||
-            this.isBigInt()
+            this.isScalar() || this.isEnum() || this.isAbstract() || this.isObject() || this.isSpatial()
             // this.isCustomResolver()
         );
     }
@@ -181,14 +164,7 @@ export class AttributeAdapter {
         return (
             !this.isList() &&
             !this.isCustomResolvable() &&
-            (this.isGraphQLBuiltInScalar() ||
-                this.isUserScalar() ||
-                this.isEnum() ||
-                this.isTemporal() ||
-                this.isPoint() ||
-                this.isCartesianPoint() ||
-                this.isBigInt() ||
-                this.isCypher())
+            (this.isScalar() || this.isEnum() || this.isSpatial() || this.isCypher())
         );
     }
 
@@ -203,15 +179,7 @@ export class AttributeAdapter {
         },
     */
     isWhereField(): boolean {
-        return (
-            this.isGraphQLBuiltInScalar() ||
-            this.isTemporal() ||
-            this.isEnum() ||
-            this.isPoint() ||
-            this.isCartesianPoint() ||
-            this.isUserScalar() ||
-            this.isBigInt()
-        );
+        return this.isEnum() || this.isSpatial() || this.isScalar();
     }
 
     /**
@@ -224,16 +192,7 @@ export class AttributeAdapter {
      ]
      */
     isOnCreateField(): boolean {
-        return (
-            this.isNonGeneratedField() &&
-            (this.isGraphQLBuiltInScalar() ||
-                this.isTemporal() ||
-                this.isEnum() ||
-                this.isPoint() ||
-                this.isCartesianPoint() ||
-                this.isUserScalar() ||
-                this.isBigInt())
-        );
+        return this.isNonGeneratedField() && (this.isScalar() || this.isEnum() || this.isAbstract());
     }
 
     /**
@@ -253,17 +212,7 @@ export class AttributeAdapter {
         ),
     */
     isNumericalOrTemporal(): boolean {
-        return (
-            this.isFloat() ||
-            this.isInt() ||
-            this.isBigInt() ||
-            this.isDateTime() ||
-            this.isDate() ||
-            this.isLocalDateTime() ||
-            this.isTime() ||
-            this.isLocalTime() ||
-            this.isDuration()
-        );
+        return this.isFloat() || this.isInt() || this.isBigInt() || this.isTemporal();
     }
 
     isAggregableField(): boolean {
