@@ -28,9 +28,6 @@ import type { Annotations } from "../../annotation/Annotation";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import dotProp from "dot-prop";
-import Cypher from "@neo4j/cypher-builder";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
