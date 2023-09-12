@@ -18,11 +18,10 @@
  */
 
 import type { ASTVisitor, DirectiveNode } from "graphql";
-import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import type { Neo4jAuthorizationSettings, Neo4jFeaturesSettings } from "../../../../types";
+import type { Neo4jAuthorizationSettings } from "../../../../types";
 
 export function WarnIfAuthorizationFeatureDisabled(authorization: Neo4jAuthorizationSettings | undefined) {
-    return function (context: SDLValidationContext): ASTVisitor {
+    return function (): ASTVisitor {
         let warningAlreadyIssued = false;
 
         return {
