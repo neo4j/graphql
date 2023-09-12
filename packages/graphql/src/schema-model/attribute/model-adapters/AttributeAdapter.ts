@@ -135,6 +135,30 @@ export class AttributeAdapter {
         );
     }
 
+    /**
+    * Previously defined as:
+    *  ...objectFields.enumFields,
+       ...objectFields.interfaceFields,
+       ...objectFields.primitiveFields,
+       ...objectFields.relationFields,
+       ...objectFields.scalarFields,
+       ...objectFields.unionFields,
+       ...objectFields.objectFields,
+       ...objectFields.temporalFields,
+    */
+    isRootTypeObjectField(): boolean {
+        return (
+            this.isGraphQLBuiltInScalar() ||
+            this.isEnum() ||
+            this.isUserScalar() ||
+            this.isInterface() ||
+            this.isObject() ||
+            this.isUnion() ||
+            this.isTemporal() ||
+            this.isBigInt()
+        );
+    }
+
     /*
     return [
         ...obj.primitiveFields,
