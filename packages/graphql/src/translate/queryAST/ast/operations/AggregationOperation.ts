@@ -116,7 +116,7 @@ export class AggregationOperation extends Operation {
         //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.env.neo4jGraphQLContext);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)
@@ -125,7 +125,7 @@ export class AggregationOperation extends Operation {
             .withDirection(relDirection)
             .to(targetNode);
 
-        const nestedContext = context.push({ relationship: relVar, target: targetNode }); //new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
+        const nestedContext = context.push({ relationship: relVar, target: targetNode });
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));

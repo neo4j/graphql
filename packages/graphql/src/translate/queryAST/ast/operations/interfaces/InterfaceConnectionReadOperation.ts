@@ -61,6 +61,7 @@ export class InterfaceConnectionReadOperation extends Operation {
                 // NOOP context
                 target: new Cypher.Node(),
                 env: context.env,
+                neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
 
             const sortFields = this.getSortFields(nestedContext, edgeVar.property("node"), edgeVar);

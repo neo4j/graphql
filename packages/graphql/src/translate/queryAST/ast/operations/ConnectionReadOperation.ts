@@ -100,7 +100,7 @@ export class ConnectionReadOperation extends Operation {
 
     public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
-        const node = createNodeFromEntity(this.target, context.env.neo4jGraphQLContext);
+        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
