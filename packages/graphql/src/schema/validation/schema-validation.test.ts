@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
-import { parse, GraphQLError } from "graphql";
+import { GraphQLError, parse } from "graphql";
+import { gql } from "graphql-tag";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
 import { Subgraph } from "../../classes/Subgraph";
 import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
-import { getError, NoErrorThrownError } from "../../../tests/utils/get-error";
 
 describe("schema validation", () => {
     describe("JWT", () => {
@@ -635,11 +635,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
 
@@ -677,11 +682,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
         });
@@ -718,11 +728,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
 
@@ -771,11 +786,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
         });
@@ -1002,11 +1022,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
 
@@ -1046,11 +1071,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
         });
@@ -1154,11 +1184,16 @@ describe("schema validation", () => {
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[PostSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
         });
@@ -1291,11 +1326,16 @@ describe("schema validation", () => {
                     });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
 
@@ -1364,11 +1404,16 @@ describe("schema validation", () => {
                     });
 
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
+                expect(errors).toHaveLength(2);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
                     'Unknown argument "wrongFilter" on directive "@subscriptionsAuthorization". Did you mean "filter"?'
+                );
+                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[1]).toHaveProperty(
+                    "message",
+                    'Directive "@subscriptionsAuthorization" argument "filter" of type "[UserSubscriptionsAuthorizationFilterRule]!" is required, but it was not provided.'
                 );
             });
         });
