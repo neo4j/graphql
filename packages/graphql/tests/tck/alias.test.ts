@@ -70,14 +70,9 @@ describe("Cypher Alias", () => {
 
         const result = await translateQuery(neoSchema, query);
 
+        // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1 { aliasActorsName: this1.name } AS this1
-                RETURN collect(this1) AS var2
-            }
             CALL {
                 WITH this
                 CALL {
@@ -86,10 +81,16 @@ describe("Cypher Alias", () => {
                     MATCH (m:Movie)
                     RETURN m
                 }
-                WITH m AS this3
-                RETURN collect(this3 { aliasCustomId: this3.id }) AS this3
+                WITH m AS this0
+                RETURN collect(this0 { aliasCustomId: this0.id }) AS this0
             }
-            RETURN this { movieId: this.id, actors: var2, custom: this3 } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this1:ACTED_IN]-(this2:Actor)
+                WITH this2 { aliasActorsName: this2.name } AS this2
+                RETURN collect(this2) AS var3
+            }
+            RETURN this { movieId: this.id, actors: var3, custom: this0 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
