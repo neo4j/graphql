@@ -32,6 +32,7 @@ import type { AuthorizationFilters } from "../filters/authorization-filters/Auth
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Sort } from "../sort/Sort";
 import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
+import { CypherPropertySort } from "../sort/CypherPropertySort";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -177,7 +178,6 @@ export class ReadOperation extends Operation {
             .flatMap((sq) => sq.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
         const subqueries = Cypher.concat(...fieldSubqueries, ...authFilterSubqueries);
-        const preSortSubqueries = Cypher.concat(...cypherFieldSubqueries, ...sortSubqueries);
 
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(context) : undefined;
 
@@ -214,13 +214,22 @@ export class ReadOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(context, node, sortClause);
         }
+
+        const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
+
+        let sortAndLimitBlock: Cypher.Clause;
+        if (this.hasCypherSort()) {
+            // This is a performance optimisation
+            sortAndLimitBlock = Cypher.concat(...cypherFieldSubqueries, sortBlock);
+        } else {
+            sortAndLimitBlock = Cypher.concat(sortBlock, ...cypherFieldSubqueries);
+        }
+
         const clause = Cypher.concat(
             matchClause,
             filterSubqueriesClause,
             filterSubqueryWith,
-            // authWith,
-            preSortSubqueries,
-            sortClause,
+            sortAndLimitBlock,
             subqueries,
             ret
         );
@@ -229,6 +238,14 @@ export class ReadOperation extends Operation {
             clauses: [clause],
             projectionExpr: returnVariable,
         };
+    }
+
+    private hasCypherSort() {
+        return (
+            this.sortFields.filter((s) => {
+                return s instanceof CypherPropertySort;
+            }).length > 0
+        );
     }
 
     public getChildren(): QueryASTNode[] {
