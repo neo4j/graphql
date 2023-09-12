@@ -151,6 +151,7 @@ describe("Custom-mutations", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
+              \\"\\"\\"\\"\\"\\"
               testCypherMutation(input: ExampleInput): String
               testMutation(input: ExampleInput): String
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
@@ -168,6 +169,7 @@ describe("Custom-mutations", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              \\"\\"\\"\\"\\"\\"
               testCypherQuery(input: ExampleInput): String
               testQuery(input: ExampleInput): String
             }
