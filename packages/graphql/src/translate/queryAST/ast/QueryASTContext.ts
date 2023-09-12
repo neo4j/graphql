@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 type Scope = Map<string, Cypher.Variable>;
 
@@ -42,22 +43,26 @@ export class QueryASTContext {
     public readonly source?: Cypher.Node;
 
     public env: QueryASTEnv;
+    public neo4jGraphQLContext: Neo4jGraphQLContext;
 
     constructor({
         target,
         relationship,
         source,
-        queryASTEnv,
+        env,
+        neo4jGraphQLContext,
     }: {
         target: Cypher.Node;
         relationship?: Cypher.Relationship;
         source?: Cypher.Node;
-        queryASTEnv?: QueryASTEnv;
+        env?: QueryASTEnv;
+        neo4jGraphQLContext: Neo4jGraphQLContext;
     }) {
         this.target = target;
         this.relationship = relationship;
         this.source = source;
-        this.env = queryASTEnv ?? new QueryASTEnv();
+        this.env = env ?? new QueryASTEnv();
+        this.neo4jGraphQLContext = neo4jGraphQLContext;
     }
 
     public getRelationshipScope(): Scope {
@@ -80,12 +85,19 @@ export class QueryASTContext {
         return scopeVar;
     }
 
-    public push({ relationship, target }: { relationship: Cypher.Relationship; target: Cypher.Node }): QueryASTContext {
+    public push({
+        relationship,
+        target,
+    }: {
+        relationship: Cypher.Relationship;
+        target: Cypher.Node;
+    }): QueryASTContext {
         return new QueryASTContext({
             source: this.target,
             relationship: relationship,
             target: target,
-            queryASTEnv: this.env,
+            env: this.env,
+            neo4jGraphQLContext: this.neo4jGraphQLContext,
         });
     }
 }

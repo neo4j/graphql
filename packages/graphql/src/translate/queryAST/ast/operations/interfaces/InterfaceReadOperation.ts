@@ -52,13 +52,14 @@ export class InterfaceReadOperation extends Operation {
     }
 
     public transpile(options: OperationTranspileOptions): OperationTranspileResult {
+        const parentNode = options.context.target;
+        // if (!parentNode) throw new Error("Top level interfaces not suported");
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({
-                parentNode: options.parentNode,
+                context: options.context,
                 returnVariable: options.returnVariable,
             });
             // const callSubqueries = result.clauses.map((sq) => new Cypher.Call(sq));
-            const parentNode = options.parentNode;
 
             let clauses = result.clauses;
             if (parentNode) {

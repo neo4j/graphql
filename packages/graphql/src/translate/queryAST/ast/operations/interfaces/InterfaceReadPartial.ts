@@ -25,9 +25,9 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "../ope
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class InterfaceReadPartial extends ReadOperation {
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
-            return this.transpileNestedInterfaceRelationship(this.relationship, { returnVariable, parentNode });
+            return this.transpileNestedInterfaceRelationship(this.relationship, { returnVariable, context });
         } else {
             throw new Error("Top level interfaces are not supported");
         }
@@ -35,10 +35,9 @@ export class InterfaceReadPartial extends ReadOperation {
 
     private transpileNestedInterfaceRelationship(
         entity: RelationshipAdapter,
-        { returnVariable, parentNode }: OperationTranspileOptions
+        { returnVariable, context }: OperationTranspileOptions
     ): OperationTranspileResult {
-        //TODO: dupe from transpile
-        if (!parentNode) throw new Error("No parent node found!");
+        const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(this.target);
         const relDirection = entity.getCypherDirection(this.directed);
@@ -50,7 +49,9 @@ export class InterfaceReadPartial extends ReadOperation {
             .to(targetNode);
 
         const matchClause = new Cypher.Match(pattern);
-        const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
+
+        const nestedContext = context.push({ target: targetNode, relationship: relVar });
+        // const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;

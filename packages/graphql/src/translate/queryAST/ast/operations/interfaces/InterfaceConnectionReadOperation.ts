@@ -37,37 +37,34 @@ export class InterfaceConnectionReadOperation extends Operation {
         this.children = children;
     }
 
-    public transpile(options: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
 
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({
-                parentNode: options.parentNode,
+                context,
                 returnVariable: edgeVar,
             });
-            // const callSubqueries = result.clauses.map((sq) => new Cypher.Call(sq));
-            const parentNode = options.parentNode;
-
-            let clauses = result.clauses;
-            if (parentNode) {
-                clauses = clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
-            }
-            return clauses;
+            const parentNode = context.target;
+            return result.clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
         });
 
         const union = new Cypher.Union(...nestedSubqueries);
+
         const nestedSubquery = new Cypher.Call(union);
 
         let extraWithOrder: Cypher.Clause | undefined;
         if (this.sortFields.length > 0) {
-            const context = new QueryASTContext({
+            const nestedContext = new QueryASTContext({
                 // NOOP context
                 target: new Cypher.Node(),
+                env: context.env,
+                neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
 
-            const sortFields = this.getSortFields(context, edgeVar.property("node"), edgeVar);
+            const sortFields = this.getSortFields(nestedContext, edgeVar.property("node"), edgeVar);
             extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar])
                 .with(edgeVar, totalCount)
                 .orderBy(...sortFields)
@@ -81,12 +78,12 @@ export class InterfaceConnectionReadOperation extends Operation {
                 edges: edgesVar,
                 totalCount: totalCount,
             }),
-            options.returnVariable,
+            returnVariable,
         ]);
 
         return {
             clauses: [Cypher.concat(nestedSubquery, extraWithOrder, returnClause)],
-            projectionExpr: options.returnVariable,
+            projectionExpr: returnVariable,
         };
     }
 
