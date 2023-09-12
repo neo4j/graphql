@@ -123,7 +123,7 @@ export class OperationsFactory {
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
 
-        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
         if (options) {
             const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
             operation.addSort(...sort);
@@ -350,7 +350,8 @@ export class OperationsFactory {
             operation.setAuthFilters(authFilters);
         }
 
-        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
+
         if (options) {
             const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
             operation.addSort(...sort);
@@ -362,5 +363,24 @@ export class OperationsFactory {
         }
 
         return operation;
+    }
+
+    private getOptions(entity: ConcreteEntityAdapter, options: Record<string, any>): GraphQLOptionsArg | undefined {
+        const limitDirective = entity.annotations.limit;
+
+        let limit: number | undefined = options?.limit ?? limitDirective?.default;
+
+        const maxLimit = limitDirective?.max;
+        if (limit !== undefined && maxLimit !== undefined) {
+            limit = Math.min(limit, maxLimit);
+        }
+
+        if (limit === undefined && options.offset === undefined && options.sort === undefined) return undefined;
+
+        return {
+            limit,
+            offset: options.offset,
+            sort: options.sort,
+        };
     }
 }
