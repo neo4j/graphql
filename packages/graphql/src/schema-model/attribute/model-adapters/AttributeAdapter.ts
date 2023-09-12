@@ -266,12 +266,8 @@ export class AttributeAdapter {
         );
     }
 
-    isPrimitiveField(): boolean {
-        return this.isGraphQLBuiltInScalar() || this.isUserScalar() || this.isEnum() || this.isBigInt();
-    }
-
     isAggregableField(): boolean {
-        return !this.isList() && (this.isPrimitiveField() || this.isTemporal()) && this.isAggregable();
+        return !this.isList() && (this.isScalar() || this.isEnum()) && this.isAggregable();
     }
 
     isAggregationWhereField(): boolean {
@@ -292,7 +288,7 @@ export class AttributeAdapter {
         return (
             this.isCypher() === false &&
             this.isCustomResolvable() === false &&
-            (this.isPrimitiveField() || this.isScalar() || this.isSpatial()) &&
+            (this.isEnum() || this.isScalar() || this.isSpatial()) &&
             !this.annotations.id &&
             !this.annotations.populatedBy &&
             !this.annotations.timestamp
