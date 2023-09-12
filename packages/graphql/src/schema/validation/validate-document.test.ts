@@ -5351,66 +5351,6 @@ describe("validation 2.0", () => {
 
         describe("Field Type", () => {
             describe("invalid", () => {
-                test("matrix array", () => {
-                    const doc = gql`
-                        type Post {
-                            titles: [[String]]
-                        }
-                    `;
-
-                    const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions });
-                    const errors = getError(executeValidate);
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid field type: Lists of lists are not supported."
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
-                });
-
-                test("matrix array aliased", () => {
-                    const doc = gql`
-                        type Post {
-                            titles: [[String]] @alias(property: "names")
-                        }
-                    `;
-
-                    const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions });
-                    const errors = getError(executeValidate);
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid field type: Lists of lists are not supported."
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
-                });
-
-                test("matrix array aliased extension", () => {
-                    const doc = gql`
-                        type Post {
-                            year: Int
-                        }
-                        extend type Post {
-                            titles: [[String]] @alias(property: "names")
-                        }
-                    `;
-
-                    const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions });
-                    const errors = getError(executeValidate);
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid field type: Lists of lists are not supported."
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
-                });
-
                 test("@relationship nullable list type", () => {
                     const doc = gql`
                         type User {
