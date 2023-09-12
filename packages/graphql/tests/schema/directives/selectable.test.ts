@@ -3012,7 +3012,9 @@ describe("@selectable", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -3516,7 +3518,9 @@ describe("@selectable", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 

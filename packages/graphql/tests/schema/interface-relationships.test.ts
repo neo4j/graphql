@@ -391,6 +391,7 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -2167,7 +2168,9 @@ describe("Interface Relationships", () => {
             }
 
             interface Interface1 {
+              \\"\\"\\"\\"\\"\\"
               field1: String!
+              \\"\\"\\"\\"\\"\\"
               interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
               interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
@@ -2333,6 +2336,7 @@ describe("Interface Relationships", () => {
             }
 
             interface Interface2 {
+              \\"\\"\\"\\"\\"\\"
               field2: String
             }
 
@@ -3388,9 +3392,12 @@ describe("Interface Relationships", () => {
             }
 
             interface Content {
+              \\"\\"\\"\\"\\"\\"
               content: String
+              \\"\\"\\"\\"\\"\\"
               creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
               creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              \\"\\"\\"\\"\\"\\"
               id: ID
             }
 

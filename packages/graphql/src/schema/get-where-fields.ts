@@ -18,10 +18,9 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import { StringMappingType } from "typescript";
+import type { Directive } from "graphql-compose";
 import { DEPRECATED } from "../constants";
-import { Attribute } from "../schema-model/attribute/Attribute";
-import { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type {
@@ -222,7 +221,7 @@ export function getWhereFieldsFromRelationshipProperties({
     return { ...result, ...fields };
 }
 
-function getWhereFieldsForAttributes({
+export function getWhereFieldsForAttributes({
     attributes,
     userDefinedFieldDirectives,
     features,
@@ -230,8 +229,20 @@ function getWhereFieldsForAttributes({
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features?: Neo4jFeaturesSettings;
-}): Record<string, string>[] {
-    const result: Record<string, string>[] = [];
+}): Record<
+    string,
+    {
+        type: string;
+        directives: Directive[];
+    }
+> {
+    const result: Record<
+        string,
+        {
+            type: string;
+            directives: Directive[];
+        }
+    > = {};
 
     // Add the where fields for each attribute
     for (const field of attributes) {

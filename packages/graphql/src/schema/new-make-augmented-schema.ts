@@ -58,8 +58,8 @@ import type { DefinitionNodes } from "./get-definition-nodes";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import type { ObjectFields } from "./get-obj-field-meta";
 import getObjFieldMeta from "./get-obj-field-meta";
-import getSortableFields from "./get-sortable-fields";
-import getWhereFields, {
+import {
+    getWhereFieldsForAttributes,
     getWhereFieldsFromConcreteEntity,
     getWhereFieldsFromRelationshipProperties,
 } from "./get-where-fields";
@@ -69,8 +69,6 @@ import {
     concreteEntityToUpdateInputFields,
     graphqlDirectivesToCompose,
     objectFieldsToComposeFields,
-    objectFieldsToCreateInputFields,
-    objectFieldsToUpdateInputFields,
     relationshipAdapterToComposeFields,
 } from "./to-compose";
 
@@ -103,14 +101,13 @@ import type { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { BaseField, Neo4jFeaturesSettings } from "../types";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { Neo4jFeaturesSettings } from "../types";
 import { isInArray } from "../utils/is-in-array";
-import { addArrayMethodsToITC, addArrayMethodsToITC2 } from "./array-methods";
-import createConnectionFields, { createConnectionFields2 } from "./create-connection-fields";
+import { addArrayMethodsToITC2 } from "./array-methods";
+import { createConnectionFields2 } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
-import createRelationshipFields, {
-    createRelationshipFieldsFromConcreteEntityAdapter,
-} from "./create-relationship-fields/create-relationship-fields";
+import { createRelationshipFieldsFromConcreteEntityAdapter } from "./create-relationship-fields/create-relationship-fields";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
@@ -121,7 +118,6 @@ import {
     schemaConfigurationFromSchemaExtensions,
 } from "./schema-configuration";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -790,15 +786,23 @@ function makeAugmentedSchema(
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
         const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
 
+        // We wanted to get the userDefinedDirectives
+        const definitionNode = definitionNodes.interfaceTypes.find(
+            (type) => type.name.value === interfaceEntityAdapter.name
+        );
+        if (!definitionNode) {
+            console.error(`Definition node not found for ${interfaceEntityAdapter.name}`);
+            return;
+        }
+
+        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
+
         // TODO
         // 1. use interfaceEntityAdapter everywhere
         // 2. move this to a separate function
         // 3. call separate function from inside the nodes.forEach(), for each relationship where relationship.target is Interface, after doing the relationshipProperties interfaces
 
-        const implementations = objectTypes.filter((n) =>
-            n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
-        );
-
+        // TODO: Remove this
         const interfaceFields = getObjFieldMeta({
             enums: enumTypes,
             interfaces: [...filteredInterfaceTypes, ...interfaceRelationships],
@@ -809,66 +813,77 @@ function makeAugmentedSchema(
             callbacks,
         });
 
-        const baseFields: BaseField[][] = Object.values(interfaceFields);
-        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
+        const objectComposeFields = attributeAdapterToComposeFields(
+            Array.from(interfaceEntityAdapter.attributes.values()),
+            userDefinedFieldDirectives
+        );
 
         const composeInterface = composer.createInterfaceTC({
-            name: interfaceRelationship.name.value,
+            name: interfaceEntityAdapter.name,
             fields: objectComposeFields,
         });
 
-        interfaceCommonFields.set(interfaceRelationship.name.value, interfaceFields);
+        interfaceCommonFields.set(interfaceEntityAdapter.name, interfaceFields);
 
-        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
+        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}Options`, (tc) => {
             tc.addFields({
                 limit: "Int",
                 offset: "Int",
             });
         });
 
-        const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
-            (res, f) => ({
-                ...res,
-                [f.fieldName]: {
-                    type: "SortDirection",
-                    directives: graphqlDirectivesToCompose(
-                        f.otherDirectives.filter((directive) => directive.name.value === DEPRECATED)
-                    ),
-                },
-            }),
+        const interfaceSortableFields = interfaceEntityAdapter.sortableFields.reduce(
+            (res: InputTypeComposerFieldConfigMapDefinition, attributeAdapter) => {
+                const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attributeAdapter.name) || [];
+                return {
+                    ...res,
+                    [attributeAdapter.name]: {
+                        type: "SortDirection",
+                        directives: graphqlDirectivesToCompose(
+                            userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
+                        ),
+                    },
+                };
+            },
             {}
         );
 
         if (Object.keys(interfaceSortableFields).length) {
-            const interfaceSortInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Sort`, (tc) => {
+            const interfaceSortInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}Sort`, (tc) => {
                 tc.addFields(interfaceSortableFields);
                 tc.setDescription(
                     `Fields to sort ${pluralize(
-                        interfaceRelationship.name.value
-                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
+                        interfaceEntityAdapter.name
+                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceEntityAdapter.name}Sort`} object.`
                 );
             });
 
             interfaceOptionsInput.addFields({
                 sort: {
-                    description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
-                        interfaceRelationship.name.value
+                    description: `Specify one or more ${`${interfaceEntityAdapter.name}Sort`} objects to sort ${pluralize(
+                        interfaceEntityAdapter.name
                     )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                     type: interfaceSortInput.List,
                 },
             });
         }
 
-        const interfaceWhereFields = getWhereFields({
-            typeName: interfaceRelationship.name.value,
-            fields: {
-                scalarFields: interfaceFields.scalarFields,
-                enumFields: interfaceFields.enumFields,
-                temporalFields: interfaceFields.temporalFields,
-                pointFields: interfaceFields.pointFields,
-                primitiveFields: interfaceFields.primitiveFields,
-            },
-            isInterface: true,
+        // const interfaceWhereFields = getWhereFields({
+        //     typeName: interfaceEntityAdapter.name,
+        //     fields: {
+        //         scalarFields: interfaceFields.scalarFields,
+        //         enumFields: interfaceFields.enumFields,
+        //         temporalFields: interfaceFields.temporalFields,
+        //         pointFields: interfaceFields.pointFields,
+        //         primitiveFields: interfaceFields.primitiveFields,
+        //     },
+        //     isInterface: true,
+        //     features,
+        // });
+
+        const interfaceWhereFields = getWhereFieldsForAttributes({
+            attributes: Array.from(interfaceEntityAdapter.attributes.values()),
+            userDefinedFieldDirectives,
             features,
         });
 
@@ -880,103 +895,102 @@ function makeAugmentedSchema(
             implementationsWhereInput,
         ] = ["ConnectInput", "DeleteInput", "DisconnectInput", "UpdateInput", "Where"].map((suffix) =>
             composer.createInputTC({
-                name: `${interfaceRelationship.name.value}Implementations${suffix}`,
+                name: `${interfaceEntityAdapter.name}Implementations${suffix}`,
                 fields: {},
             })
         ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
 
         composer.createInputTC({
-            name: `${interfaceRelationship.name.value}Where`,
+            name: `${interfaceEntityAdapter.name}Where`,
             fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
         });
 
-        const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
+        const interfaceCreateInput = composer.createInputTC(`${interfaceEntityAdapter.name}CreateInput`);
 
-        const interfaceRelationshipITC = composer.getOrCreateITC(
-            `${interfaceRelationship.name.value}UpdateInput`,
-            (tc) => {
-                tc.addFields({
-                    ...objectFieldsToUpdateInputFields([
-                        ...interfaceFields.primitiveFields,
-                        ...interfaceFields.scalarFields,
-                        ...interfaceFields.enumFields,
-                        ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
-                        ...interfaceFields.pointFields,
-                    ]),
-                    _on: implementationsUpdateInput,
-                });
-            }
-        );
+        const interfaceRelationshipITC = composer.getOrCreateITC(`${interfaceEntityAdapter.name}UpdateInput`, (tc) => {
+            tc.addFields({
+                ...concreteEntityToUpdateInputFields(
+                    interfaceEntityAdapter.updateInputFields,
+                    userDefinedFieldDirectives
+                ),
+                _on: implementationsUpdateInput,
+            });
+        });
 
         addMathOperatorsToITC(interfaceRelationshipITC);
 
-        createRelationshipFields({
-            relationshipFields: interfaceFields.relationFields,
+        // createRelationshipFields({
+        //     relationshipFields: interfaceFields.relationFields,
+        //     schemaComposer: composer,
+        //     composeNode: composeInterface,
+        //     sourceName: interfaceRelationship.name.value,
+        //     nodes,
+        //     relationshipPropertyFields: relationshipFields,
+        //     subgraph,
+        // });
+
+        createRelationshipFieldsFromConcreteEntityAdapter({
+            entityAdapter: interfaceEntityAdapter,
             schemaComposer: composer,
             composeNode: composeInterface,
-            sourceName: interfaceRelationship.name.value,
-            nodes,
-            relationshipPropertyFields: relationshipFields,
             subgraph,
+            userDefinedFieldDirectives,
         });
 
         relationships = [
             ...relationships,
-            ...createConnectionFields({
-                connectionFields: interfaceFields.connectionFields,
+            ...createConnectionFields2({
+                entityAdapter: interfaceEntityAdapter,
                 schemaComposer: composer,
                 composeNode: composeInterface,
-                sourceName: interfaceRelationship.name.value,
-                nodes,
-                relationshipPropertyFields: relationshipFields,
+                userDefinedFieldDirectives,
+                relationshipFields,
             }),
         ];
 
-        implementations.forEach((implementation) => {
-            const node = nodes.find((n) => n.name === implementation.name.value) as Node;
-
+        interfaceEntityAdapter.concreteEntities.forEach((implementation) => {
             implementationsWhereInput.addFields({
-                [implementation.name.value]: {
-                    type: `${implementation.name.value}Where`,
+                [implementation.name]: {
+                    type: `${implementation.name}Where`,
                 },
             });
 
-            if (node.relationFields.length) {
+            if (implementation.relationships.size) {
                 implementationsConnectInput.addFields({
-                    [implementation.name.value]: {
-                        type: `[${implementation.name.value}ConnectInput!]`,
+                    [implementation.name]: {
+                        type: `[${implementation.name}ConnectInput!]`,
                     },
                 });
 
                 implementationsDeleteInput.addFields({
-                    [implementation.name.value]: {
-                        type: `[${implementation.name.value}DeleteInput!]`,
+                    [implementation.name]: {
+                        type: `[${implementation.name}DeleteInput!]`,
                     },
                 });
 
                 implementationsDisconnectInput.addFields({
-                    [implementation.name.value]: {
-                        type: `[${implementation.name.value}DisconnectInput!]`,
+                    [implementation.name]: {
+                        type: `[${implementation.name}DisconnectInput!]`,
                     },
                 });
             }
 
             interfaceCreateInput.addFields({
-                [implementation.name.value]: {
-                    type: `${implementation.name.value}CreateInput`,
+                [implementation.name]: {
+                    type: `${implementation.name}CreateInput`,
                 },
             });
 
             implementationsUpdateInput.addFields({
-                [implementation.name.value]: {
-                    type: `${implementation.name.value}UpdateInput`,
+                [implementation.name]: {
+                    type: `${implementation.name}UpdateInput`,
                 },
             });
         });
 
         if (implementationsConnectInput.getFieldNames().length) {
             const interfaceConnectInput = composer.getOrCreateITC(
-                `${interfaceRelationship.name.value}ConnectInput`,
+                `${interfaceEntityAdapter.name}ConnectInput`,
                 (tc) => {
                     tc.addFields({ _on: implementationsConnectInput });
                 }
@@ -985,18 +999,15 @@ function makeAugmentedSchema(
         }
 
         if (implementationsDeleteInput.getFieldNames().length) {
-            const interfaceDeleteInput = composer.getOrCreateITC(
-                `${interfaceRelationship.name.value}DeleteInput`,
-                (tc) => {
-                    tc.addFields({ _on: implementationsDeleteInput });
-                }
-            );
+            const interfaceDeleteInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}DeleteInput`, (tc) => {
+                tc.addFields({ _on: implementationsDeleteInput });
+            });
             interfaceDeleteInput.setField("_on", implementationsDeleteInput);
         }
 
         if (implementationsDisconnectInput.getFieldNames().length) {
             const interfaceDisconnectInput = composer.getOrCreateITC(
-                `${interfaceRelationship.name.value}DisconnectInput`,
+                `${interfaceEntityAdapter.name}DisconnectInput`,
                 (tc) => {
                     tc.addFields({ _on: implementationsDisconnectInput });
                 }
@@ -1004,8 +1015,8 @@ function makeAugmentedSchema(
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
 
-        ensureNonEmptyInput(composer, `${interfaceRelationship.name.value}CreateInput`);
-        ensureNonEmptyInput(composer, `${interfaceRelationship.name.value}UpdateInput`);
+        ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}CreateInput`);
+        ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}UpdateInput`);
         [
             implementationsConnectInput,
             implementationsDeleteInput,
@@ -1220,7 +1231,7 @@ function makeAugmentedSchema(
         // });
 
         createRelationshipFieldsFromConcreteEntityAdapter({
-            concreteEntityAdapter,
+            entityAdapter: concreteEntityAdapter,
             schemaComposer: composer,
             composeNode,
             // sourceName: concreteEntityAdapter.name,
@@ -1244,7 +1255,7 @@ function makeAugmentedSchema(
         relationships = [
             ...relationships,
             ...createConnectionFields2({
-                concreteEntityAdapter,
+                entityAdapter: concreteEntityAdapter,
                 schemaComposer: composer,
                 composeNode,
                 userDefinedFieldDirectives,

@@ -23,9 +23,11 @@ import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapte
 import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
 import type { Relationship } from "../../relationship/Relationship";
 import { getFromMap } from "../../utils/get-from-map";
+import { plural, singular } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { InterfaceEntity } from "../InterfaceEntity";
 import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
+import { InterfaceEntityOperations } from "./InterfaceEntityOperations";
 
 export class InterfaceEntityAdapter {
     public readonly name: string;
@@ -34,6 +36,12 @@ export class InterfaceEntityAdapter {
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
     private uniqueFieldsKeys: string[] = [];
+
+    private _singular: string | undefined;
+    private _plural: string | undefined;
+
+    // specialize models
+    private _operations: InterfaceEntityOperations | undefined;
 
     constructor(entity: InterfaceEntity) {
         this.name = entity.name;
@@ -67,7 +75,40 @@ export class InterfaceEntityAdapter {
         }
     }
 
+    public get singular(): string {
+        if (!this._singular) {
+            this._singular = singular(this.name);
+        }
+        return this._singular;
+    }
+
+    public get plural(): string {
+        if (!this._plural) {
+            if (this.annotations.plural) {
+                this._plural = plural(this.annotations.plural.value);
+            } else {
+                this._plural = plural(this.name);
+            }
+        }
+        return this._plural;
+    }
+
+    get operations(): InterfaceEntityOperations {
+        if (!this._operations) {
+            return new InterfaceEntityOperations(this);
+        }
+        return this._operations;
+    }
+
     public get uniqueFields(): AttributeAdapter[] {
         return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
+    }
+
+    public get sortableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
+    }
+
+    public get updateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
     }
 }

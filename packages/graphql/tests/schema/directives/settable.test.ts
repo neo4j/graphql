@@ -5529,7 +5529,9 @@ describe("@settable", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -6037,7 +6039,9 @@ describe("@settable", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -6655,9 +6659,12 @@ describe("@settable", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 
@@ -7572,9 +7579,12 @@ describe("@settable", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  \\"\\"\\"\\"\\"\\"
                   description: String
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 

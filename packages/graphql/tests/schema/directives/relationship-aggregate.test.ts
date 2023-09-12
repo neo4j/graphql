@@ -1430,7 +1430,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     interface Person {
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -1849,7 +1851,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     interface Person {
+                      \\"\\"\\"\\"\\"\\"
                       password: String!
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 

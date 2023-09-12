@@ -1621,6 +1621,7 @@ describe("Algebraic", () => {
             }
 
             interface Production {
+              \\"\\"\\"\\"\\"\\"
               viewers: Int!
             }
 

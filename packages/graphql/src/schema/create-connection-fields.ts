@@ -295,13 +295,13 @@ function createConnectionFields({
 export default createConnectionFields;
 
 export function createConnectionFields2({
-    concreteEntityAdapter,
+    entityAdapter,
     schemaComposer,
     composeNode,
     userDefinedFieldDirectives,
     relationshipFields,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
@@ -309,7 +309,7 @@ export function createConnectionFields2({
 }): Relationship[] {
     const relationships: Relationship[] = [];
 
-    concreteEntityAdapter.relationships.forEach((relationship) => {
+    entityAdapter.relationships.forEach((relationship) => {
         const relationshipObjectType = schemaComposer.getOrCreateOTC(relationship.relationshipFieldTypename, (tc) => {
             tc.addFields({
                 cursor: "String!",
@@ -372,7 +372,7 @@ export function createConnectionFields2({
             addRelationshipArrayFilters({
                 whereInput,
                 fieldName: relationship.connectionFieldName,
-                sourceName: concreteEntityAdapter.name,
+                sourceName: entityAdapter.name,
                 relatedType: relationship.connectionFieldTypename,
                 whereType: connectionWhere,
                 directives: deprecatedDirectives,

@@ -7329,6 +7329,7 @@ describe("@filterable directive", () => {
                     }
 
                     interface Person {
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -8183,6 +8184,7 @@ describe("@filterable directive", () => {
                     }
 
                     interface Person {
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 
@@ -9037,6 +9039,7 @@ describe("@filterable directive", () => {
                     }
 
                     interface Person {
+                      \\"\\"\\"\\"\\"\\"
                       username: String!
                     }
 

@@ -509,7 +509,7 @@ function relationshipTargetHasRelationshipWithNestedOperation(
 export default createRelationshipFields;
 
 export function createRelationshipFieldsFromConcreteEntityAdapter({
-    concreteEntityAdapter,
+    entityAdapter,
     schemaComposer,
     // TODO: Ideally we come up with a solution where we don't have to pass the following into these kind of functions
     composeNode,
@@ -517,20 +517,20 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
     subgraph,
     userDefinedFieldDirectives,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     // relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): void {
-    if (!concreteEntityAdapter.relatedEntities.length) {
+    if (!entityAdapter.relationships.size) {
         return;
     }
 
-    concreteEntityAdapter.relationships.forEach((relationshipAdapter) => {
+    entityAdapter.relationships.forEach((relationshipAdapter) => {
         const relFields = relationshipAdapter.attributes;
-        const sourceName = concreteEntityAdapter.name;
+        const sourceName = entityAdapter.name;
 
         if (!relationshipAdapter) {
             return;
@@ -583,8 +583,8 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
         }
 
         const nestedOperations = new Set(relationshipAdapter.nestedOperations);
-        const nodeCreateInput = schemaComposer.getITC(concreteEntityAdapter.operations.createInputTypeName);
-        const nodeUpdateInput = schemaComposer.getITC(concreteEntityAdapter.operations.updateInputTypeName);
+        const nodeCreateInput = schemaComposer.getITC(entityAdapter.operations.createInputTypeName);
+        const nodeUpdateInput = schemaComposer.getITC(entityAdapter.operations.updateInputTypeName);
 
         // Don't generate empty input type
         let nodeFieldInput: InputTypeComposer | undefined;
@@ -646,7 +646,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             }
         });
 
-        const whereInput = schemaComposer.getITC(concreteEntityAdapter.operations.whereInputTypeName);
+        const whereInput = schemaComposer.getITC(entityAdapter.operations.whereInputTypeName);
 
         if (relationshipAdapter.isFilterableByValue()) {
             whereInput.addFields({
@@ -674,7 +674,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             addRelationshipArrayFilters({
                 whereInput,
                 fieldName: relationshipAdapter.name,
-                sourceName: concreteEntityAdapter.name,
+                sourceName: entityAdapter.name,
                 relatedType: relationshipAdapter.target.name,
                 whereType: `${relationshipAdapter.target.name}Where`,
                 directives: deprecatedDirectives,
@@ -773,7 +773,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
 
                 createTopLevelConnectOrCreateInput2({
                     schemaComposer,
-                    sourceName: concreteEntityAdapter.name,
+                    sourceName: entityAdapter.name,
                     relationshipAdapter,
                 });
             }
@@ -806,9 +806,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
                 });
             }
 
-            const nodeRelationInput = schemaComposer.getOrCreateITC(
-                concreteEntityAdapter.operations.relationInputTypeName
-            );
+            const nodeRelationInput = schemaComposer.getOrCreateITC(entityAdapter.operations.relationInputTypeName);
             nodeRelationInput.addFields({
                 [relationshipAdapter.name]: {
                     type: create,
@@ -863,9 +861,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
                 nodeFieldInput.addFields({ connect });
             }
 
-            const nodeConnectInput = schemaComposer.getOrCreateITC(
-                concreteEntityAdapter.operations.connectInputTypeName
-            );
+            const nodeConnectInput = schemaComposer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
             nodeConnectInput.addFields({
                 [relationshipAdapter.name]: {
                     type: connect,
@@ -954,9 +950,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
                     : nodeFieldDisconnectInputName,
             });
 
-            const nodeDisconnectInput = schemaComposer.getOrCreateITC(
-                concreteEntityAdapter.operations.disconnectInputTypeName
-            );
+            const nodeDisconnectInput = schemaComposer.getOrCreateITC(entityAdapter.operations.disconnectInputTypeName);
             nodeDisconnectInput.addFields({
                 [relationshipAdapter.name]: {
                     type: relationshipAdapter.isList

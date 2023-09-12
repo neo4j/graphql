@@ -115,7 +115,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             interface Profile {
+              \\"\\"\\"\\"\\"\\"
               id: ID!
+              \\"\\"\\"\\"\\"\\"
               userName: String!
             }
 

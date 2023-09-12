@@ -1064,6 +1064,7 @@ describe("Comments", () => {
                 }
 
                 interface Production {
+                  \\"\\"\\"\\"\\"\\"
                   title: String!
                 }
 

@@ -8712,6 +8712,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -9144,6 +9145,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -9581,6 +9583,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -10008,6 +10011,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -10445,6 +10449,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -10872,6 +10877,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -11393,6 +11399,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 
@@ -11913,6 +11920,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 interface Person {
+                  \\"\\"\\"\\"\\"\\"
                   name: String
                 }
 

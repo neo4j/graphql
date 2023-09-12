@@ -382,8 +382,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             interface IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre: Genre!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -1641,8 +1644,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             interface IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre: Genre!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 
@@ -2806,8 +2812,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             interface IProduct {
+              \\"\\"\\"\\"\\"\\"
               genre: Genre!
+              \\"\\"\\"\\"\\"\\"
               id: String!
+              \\"\\"\\"\\"\\"\\"
               name: String!
             }
 

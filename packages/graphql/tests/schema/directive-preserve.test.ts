@@ -1408,7 +1408,9 @@ describe("Directive-preserve", () => {
             }
 
             interface Production {
+              \\"\\"\\"\\"\\"\\"
               actors: [Actor!]!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -2392,7 +2394,9 @@ describe("Directive-preserve", () => {
             }
 
             interface Production {
+              \\"\\"\\"\\"\\"\\"
               actors: [Actor!]! @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 

@@ -5742,6 +5742,7 @@ describe("Subscriptions", () => {
             }
 
             interface Creature {
+              \\"\\"\\"\\"\\"\\"
               movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
@@ -6220,8 +6221,10 @@ describe("Subscriptions", () => {
             }
 
             interface Production {
+              \\"\\"\\"\\"\\"\\"
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              \\"\\"\\"\\"\\"\\"
               id: ID
             }
 
