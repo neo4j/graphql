@@ -25,6 +25,7 @@ import type { AttributeType } from "../AttributeType";
 import {
     EnumType,
     GraphQLBuiltInScalarType,
+    InputType,
     InterfaceType,
     ListType,
     Neo4jCartesianPointType,
@@ -406,6 +407,11 @@ export class AttributeAdapter {
         return this.type instanceof ListType;
     }
 
+    isInput(options = this.assertionOptions): boolean {
+        const type = this.getTypeForAssertion(options.includeLists);
+        return type instanceof InputType;
+    }
+
     isUserScalar(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof UserScalarType;
@@ -453,7 +459,8 @@ export class AttributeAdapter {
             this.isGraphQLBuiltInScalar(options) ||
             this.isTemporal(options) ||
             this.isBigInt(options) ||
-            this.isUserScalar(options)
+            this.isUserScalar(options) ||
+            this.isInput(options)
         );
     }
 
