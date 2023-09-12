@@ -65,16 +65,9 @@ export class InterfaceReadPartial extends ReadOperation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList);
+        const ret = this.getProjectionClause(nestedContext, returnVariable);
 
-        const clause = Cypher.concat(
-            matchClause,
-            ...authFilterSubqueries,
-            // withWhere,
-            subqueries,
-            ...sortSubqueries,
-            ret
-        );
+        const clause = Cypher.concat(matchClause, ...authFilterSubqueries, subqueries, ...sortSubqueries, ret);
 
         return {
             clauses: [clause],
@@ -82,11 +75,7 @@ export class InterfaceReadPartial extends ReadOperation {
         };
     }
 
-    protected getProjectionClause(
-        context: QueryASTContext,
-        returnVariable: Cypher.Variable,
-        isArray: boolean
-    ): Cypher.Return {
+    protected getProjectionClause(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
         const projection = this.getProjectionMap(context);
 
         const targetNodeName = this.target.name;
@@ -94,15 +83,8 @@ export class InterfaceReadPartial extends ReadOperation {
             __resolveType: new Cypher.Literal(targetNodeName),
             __id: Cypher.id(context.source!), // NOTE: I think this is a bug and should be target
         });
-        // let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);
-        // if (!isArray) {
-        //     aggregationExpr = Cypher.head(aggregationExpr);
-        // }
 
         const withClause = new Cypher.With([projection, context.target]);
-        // if (this.sortFields.length > 0 || this.pagination) {
-        //     this.addSortToClause(context, context.target, withClause);
-        // }
 
         return withClause.return([context.target, returnVariable]);
     }

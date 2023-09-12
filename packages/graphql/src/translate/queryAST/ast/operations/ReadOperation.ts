@@ -21,7 +21,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
-import Cypher, { relationships } from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
@@ -33,7 +33,6 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { Sort } from "../sort/Sort";
 
 export class ReadOperation extends Operation {
-    // public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter | undefined;
 
