@@ -25,7 +25,7 @@ import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperati
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
-import type { Integer } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -368,8 +368,10 @@ export class OperationsFactory {
     private getOptions(entity: ConcreteEntityAdapter, options: Record<string, any>): GraphQLOptionsArg | undefined {
         const limitDirective = entity.annotations.limit;
 
-        let limit: number | undefined = options?.limit ?? limitDirective?.default;
-
+        let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
+        if (limit instanceof Integer) {
+            limit = limit.toNumber();
+        }
         const maxLimit = limitDirective?.max;
         if (limit !== undefined && maxLimit !== undefined) {
             limit = Math.min(limit, maxLimit);
