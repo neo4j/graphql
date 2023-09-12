@@ -592,37 +592,6 @@ export class AttributeAdapter {
         return this.annotations.fulltext?.indexes;
     }
 
-    getPropagatedAnnotations(): Partial<Annotations> {
-        // TODO: use constants
-        return Object.fromEntries(
-            Object.entries(this.annotations).filter(
-                ([name]) =>
-                    ![
-                        "relationship",
-                        "cypher",
-                        "id",
-                        "authorization",
-                        "authentication",
-                        "readonly",
-                        "writeonly",
-                        "customResolver",
-                        "default",
-                        "coalesce",
-                        "timestamp",
-                        "alias",
-                        "unique",
-                        "callback",
-                        "populatedBy",
-                        "jwtClaim",
-                        "selectable",
-                        "settable",
-                        "subscriptionsAuthorization",
-                        "filterable",
-                    ].includes(name)
-            )
-        );
-    }
-
     isPartOfUpdateInputType(): boolean {
         if (this.isScalar() || this.isEnum() || this.isSpatial()) {
             return true;
