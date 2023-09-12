@@ -19,24 +19,23 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
-import { QueryASTContext } from "../../QueryASTContext";
 import { ConnectionReadOperation } from "../ConnectionReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { Sort } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 
 export class InterfaceConnectionPartial extends ConnectionReadOperation {
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
-        if (!parentNode) throw new Error();
-        const node = createNodeFromEntity(this.target);
+    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
+        if (!context.target) throw new Error();
+        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
         const clause = new Cypher.Match(
-            new Cypher.Pattern(parentNode).withoutLabels().related(relationship).withDirection(relDirection).to(node)
+            new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
         );
 
-        const nestedContext = new QueryASTContext({ target: node, relationship, source: parentNode });
+        const nestedContext = context.push({ target: node, relationship});
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.authFilters?.getPredicate(nestedContext);

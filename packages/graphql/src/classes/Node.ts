@@ -286,7 +286,10 @@ class Node extends GraphElement {
     public getLabelString(context: Neo4jGraphQLContext): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
-
+    /**
+     * Returns the list containing labels mapped with the values contained in the Context.
+     * Be careful when using this method, labels returned are unescaped.
+     **/
     public getLabels(context: Neo4jGraphQLContext): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
@@ -294,6 +297,7 @@ class Node extends GraphElement {
     public getMainLabel(): string {
         return this.nodeDirective?.labels?.[0] || this.name;
     }
+
     public getAllLabels(): string[] {
         return this.nodeDirective?.labels || [this.name];
     }

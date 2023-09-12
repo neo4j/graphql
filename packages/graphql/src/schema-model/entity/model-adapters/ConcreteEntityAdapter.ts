@@ -102,6 +102,7 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
+
     public getLabels(): string[] {
         return Array.from(this.labels);
     }

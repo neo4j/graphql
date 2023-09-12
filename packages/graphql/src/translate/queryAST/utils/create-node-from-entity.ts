@@ -20,13 +20,23 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import { mapLabelsWithContext } from "../../../schema-model/utils/map-labels-with-context";
 
-export function createNodeFromEntity(entity: ConcreteEntityAdapter, name?: string): Cypher.Node {
+export function createNodeFromEntity(
+    entity: ConcreteEntityAdapter,
+    neo4jGraphQLContext?: Neo4jGraphQLContext,
+    name?: string
+): Cypher.Node {
+    const labels = neo4jGraphQLContext
+        ? mapLabelsWithContext(entity.getLabels(), neo4jGraphQLContext)
+        : entity.getLabels();
+
     if (name) {
-        return new Cypher.NamedNode(name, { labels: entity.labels });
+        return new Cypher.NamedNode(name, { labels });
     }
     return new Cypher.Node({
-        labels: entity.labels,
+        labels,
     });
 }
 

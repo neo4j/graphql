@@ -80,7 +80,7 @@ function getNestedFieldsSubqueries(
     isCypherNode(target);
     const nodeProjectionSubqueries = nestedFields.flatMap((f) =>
         f
-            .getSubqueries(new QueryASTContext({ target, queryASTEnv: context.env }))
+            .getSubqueries(new QueryASTContext({ target, env: context.env, neo4jGraphQLContext: context.neo4jGraphQLContext }))
             .map((sq) => new Cypher.Call(sq).innerWith(target))
     );
     return Cypher.concat(...nodeProjectionSubqueries);

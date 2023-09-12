@@ -19,10 +19,11 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTContext } from "../QueryASTContext";
 
 export type OperationTranspileOptions = {
-    parentNode?: Cypher.Node;
     returnVariable: Cypher.Variable; // TODO: Remove
+    context: QueryASTContext;
 };
 
 export type OperationTranspileResult = {

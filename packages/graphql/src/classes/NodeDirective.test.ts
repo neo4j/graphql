@@ -99,4 +99,13 @@ describe("NodeDirective", () => {
             instance.getLabelsString("label", context);
         }).toThrow("Label value not found in context.");
     });
+
+    test("should map labels from cypherParams", () => {
+        const context = new ContextBuilder({ cypherParams: { tenant: "BULK" } }).instance();
+        const instance = new NodeDirective({
+            labels: ["label", "$tenant"],
+        });
+        const labelString = instance.getLabelsString("label", context);
+        expect(labelString).toBe(":label:BULK");
+    });
 });

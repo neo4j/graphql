@@ -25,7 +25,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
-import { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
@@ -73,23 +73,23 @@ export class ReadOperation extends Operation {
 
     private transpileNestedRelationship(
         entity: RelationshipAdapter,
-        { returnVariable, parentNode }: OperationTranspileOptions
+        { context, returnVariable }: OperationTranspileOptions
     ): OperationTranspileResult {
         //TODO: dupe from transpile
-        if (!parentNode) throw new Error("No parent node found!");
+        if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter);
+        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
-        const pattern = new Cypher.Pattern(parentNode)
+        const pattern = new Cypher.Pattern(context.target)
             .withoutLabels()
             .related(relVar)
             .withDirection(relDirection)
             .to(targetNode);
 
         const matchClause = new Cypher.Match(pattern);
-        const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
-        const filterPredicates = this.getPredicates(nestedContext);
+        const nestedContext = context.push({ target: targetNode, relationship: relVar });
+        const filterPredicates = this.getPredicates(context);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
 
@@ -103,7 +103,7 @@ export class ReadOperation extends Operation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList);
+        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList); 
 
         const clause = Cypher.concat(
             matchClause,
@@ -144,12 +144,14 @@ export class ReadOperation extends Operation {
         return Cypher.and(...[...this.filters].map((f) => f.getPredicate(queryASTContext)));
     }
 
-    public transpile({ returnVariable, parentNode }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
         if (this.entity instanceof RelationshipAdapter) {
-            return this.transpileNestedRelationship(this.entity, { returnVariable, parentNode });
+            return this.transpileNestedRelationship(this.entity, {
+                returnVariable: new Cypher.Variable(),
+                context,
+            });
         }
-        const node = createNodeFromEntity(this.entity, this.nodeAlias);
-        const context = new QueryASTContext({ target: node });
+        const node = createNodeFromEntity(this.entity, context.neo4jGraphQLContext, this.nodeAlias);
         const filterSubqueries = this.filters
             .flatMap((f) => f.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
