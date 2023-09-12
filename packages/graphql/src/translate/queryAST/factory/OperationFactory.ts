@@ -28,7 +28,7 @@ import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import type { Integer } from "neo4j-driver";
 import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { AuthorizationFactory } from "./AuthorizationFactory";
 import { AuthFilterFactory } from "./AuthFilterFactory";
@@ -38,6 +38,8 @@ import { isConcreteEntity } from "../utils/is-concreate-entity";
 import { InterfaceConnectionPartial } from "../ast/operations/interfaces/InterfaceConnectionPartial";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceReadOperation";
+import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -60,42 +62,33 @@ export class OperationsFactory {
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
-    ): ReadOperation {
-        const entity = (
-            entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel
-        ) as ConcreteEntityAdapter;
-        const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
+    ): ReadOperation | InterfaceReadOperation {
+        const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
 
-        const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-        const operation = new ReadOperation(entityOrRel, Boolean(resolveTree.args?.directed ?? true));
-        const fields = this.fieldFactory.createFields(entity, projectionFields, context);
+        const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
 
-        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
-
-        let filters: Filter[];
-        if (entityOrRel instanceof RelationshipAdapter) {
-            filters = this.filterFactory.createRelationshipFilters(entityOrRel, whereArgs);
+        if (!(entity instanceof ConcreteEntityAdapter)) {
+            return this.createInterfaceReadOperationAST({
+                entity: entity as InterfaceEntityAdapter,
+                relationship,
+                resolveTree,
+                context,
+            });
         } else {
-            filters = this.filterFactory.createNodeFilters(entityOrRel, whereArgs);
-        }
-        operation.setFields(fields);
-        operation.setFilters(filters);
-        if (authFilters) {
-            operation.setAuthFilters(authFilters);
-        }
+            const operation = new ReadOperation({
+                target: entity,
+                relationship,
+                directed: Boolean(resolveTree.args?.directed ?? true),
+            });
 
-        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
-        if (options) {
-            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
-            operation.addSort(...sort);
-
-            const pagination = this.sortAndPaginationFactory.createPagination(options);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
+            return this.hydrateReadOperation({
+                operation,
+                entity,
+                relationship,
+                resolveTree,
+                context,
+            });
         }
-
-        return operation;
     }
 
     // TODO: dupe from read operation
@@ -277,6 +270,130 @@ export class OperationsFactory {
         if (authFilters) {
             operation.setAuthFilters(authFilters);
         }
+        return operation;
+    }
+
+    private createInterfaceReadOperationAST({
+        entity,
+        relationship,
+        resolveTree,
+        context,
+    }: {
+        entity: InterfaceEntityAdapter; //| UnionEntityAdapter;
+        relationship?: RelationshipAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+    }): InterfaceReadOperation {
+        const directed = Boolean(resolveTree.args?.directed ?? true);
+        // const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
+        // const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
+
+        // const operation = new InterfaceReadOperation({
+        //     target: entity,
+        //     relationship,
+        //     directed,
+        // });
+
+        const concreteOperations = entity.concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+            const connectionPartial = new InterfaceReadPartial({
+                relationship,
+                directed,
+                target: concreteEntity,
+            });
+
+            return this.hydrateReadOperation({
+                relationship,
+                entity: concreteEntity,
+                interfaceEntity: entity,
+                resolveTree,
+                context,
+                operation: connectionPartial,
+            });
+        });
+
+        const operation = new InterfaceReadOperation(concreteOperations);
+
+        // const fields = this.fieldFactory.createFields(entity, projectionFields, context);
+
+        // const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
+
+        // let filters: Filter[];
+        // if (relationship) {
+        //     filters = this.filterFactory.createRelationshipFilters(relationship, whereArgs);
+        // } else {
+        //     filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+        // }
+        // operation.setFields(fields);
+        // operation.setFilters(filters);
+        // if (authFilters) {
+        //     operation.setAuthFilters(authFilters);
+        // }
+
+        // const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        // if (options) {
+        //     const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+        //     operation.addSort(...sort);
+
+        //     const pagination = this.sortAndPaginationFactory.createPagination(options);
+        //     if (pagination) {
+        //         operation.addPagination(pagination);
+        //     }
+        // }
+
+        return operation;
+    }
+
+    private hydrateReadOperation<T extends ReadOperation>({
+        entity,
+        relationship,
+        operation,
+        resolveTree,
+        context,
+        interfaceEntity,
+    }: {
+        entity: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+        operation: T;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        interfaceEntity?: InterfaceEntityAdapter | UnionEntityAdapter;
+    }): T {
+        // TODO: get abstract types of concrete entity
+        let projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
+        if (interfaceEntity) {
+            projectionFields = { ...resolveTree.fieldsByTypeName[interfaceEntity.name], ...projectionFields };
+        }
+
+        const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
+
+        const fields = this.fieldFactory.createFields(entity, projectionFields, context);
+
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
+
+        let filters: Filter[];
+
+        if (relationship) {
+            filters = this.filterFactory.createRelationshipFilters(relationship, whereArgs);
+        } else {
+            filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+        }
+        operation.setFields(fields);
+        operation.setFilters(filters);
+        if (authFilters) {
+            operation.setAuthFilters(authFilters);
+        }
+
+        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        if (options) {
+            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+            operation.addSort(...sort);
+
+            const pagination = this.sortAndPaginationFactory.createPagination(options);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
         return operation;
     }
 }
