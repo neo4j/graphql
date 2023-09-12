@@ -20,22 +20,23 @@
 import type {
     ASTVisitor,
     DirectiveNode,
-    ObjectTypeDefinitionNode,
     EnumTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import type { Neo4jGraphQLCallbacks } from "../../../../types";
+import type { ValidationFunction } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import { verifyAuthorization } from "./authorization";
 import { verifyCoalesce } from "./coalesce";
 import { verifyDefault } from "./default";
 import { verifyFulltext } from "./fulltext";
-import { verifyPopulatedBy } from "./populatedBy";
 import { verifyLimit } from "./limit";
+import { verifyPopulatedBy } from "./populatedBy";
 import { verifyRelationshipArgumentValue } from "./relationship";
-import type { ValidationFunction } from "../utils/document-validation-error";
-import { createGraphQLError, assertValid } from "../utils/document-validation-error";
-import { getPathToNode } from "../utils/path-parser";
 
 function getValidationFunction(
     directiveName: string,
@@ -69,6 +70,8 @@ function getValidationFunction(
                 interfaceToImplementationsMap,
                 extra
             );
+        case "authorization":
+            return verifyAuthorization();
         default:
             return;
     }
@@ -110,7 +113,7 @@ export function directiveIsValid(
         >();
         const interfaceToImplementationsMap = new Map<string, Set<string>>();
         return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancenstors) {
+            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
                 const validationFn = getValidationFunction(
                     directiveNode.name.value,
                     objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,
@@ -122,7 +125,7 @@ export function directiveIsValid(
                     return;
                 }
 
-                const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancenstors);
+                const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
                 const pathToHere = [...pathToNode, `@${directiveNode.name.value}`];
 
                 if (!traversedDef) {

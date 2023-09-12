@@ -17,34 +17,20 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 import type { SubscriptionsAuthorizationFilterRuleConstructor } from "../../annotation/SubscriptionsAuthorizationAnnotation";
 import {
     SubscriptionsAuthorizationAnnotation,
-    SubscriptionsAuthorizationAnnotationArguments,
     SubscriptionsAuthorizationFilterRule,
 } from "../../annotation/SubscriptionsAuthorizationAnnotation";
 
 export function parseSubscriptionsAuthorizationAnnotation(
     directive: DirectiveNode
 ): SubscriptionsAuthorizationAnnotation {
-    const { filter, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
+    const { filter } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
     };
-    if (!filter) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `@subscriptionsAuthorization requires at least one of ${SubscriptionsAuthorizationAnnotationArguments.join(
-                ", "
-            )} arguments`
-        );
-    }
-    if (Object.keys(unrecognizedArguments).length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `@subscriptionsAuthorization unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
-        );
-    }
 
     const filterRules = filter?.map(
         (rule) => new SubscriptionsAuthorizationFilterRule(rule as SubscriptionsAuthorizationFilterRuleConstructor)
