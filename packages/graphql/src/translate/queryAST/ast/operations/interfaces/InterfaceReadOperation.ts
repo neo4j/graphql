@@ -22,15 +22,29 @@ import type { QueryASTNode } from "../../QueryASTNode";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 import type { InterfaceReadPartial } from "./InterfaceReadPartial";
+import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class InterfaceReadOperation extends Operation {
     private children: InterfaceReadPartial[];
+    private entity: InterfaceEntityAdapter | UnionEntityAdapter;
+    private relationship: RelationshipAdapter | undefined;
     // protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
 
-    constructor(children: InterfaceReadPartial[]) {
+    constructor({
+        interfaceEntity,
+        children,
+        relationship,
+    }: {
+        interfaceEntity: InterfaceEntityAdapter | UnionEntityAdapter;
+        children: InterfaceReadPartial[];
+        relationship: RelationshipAdapter | undefined;
+    }) {
         super();
-
+        this.entity = interfaceEntity;
         this.children = children;
+        this.relationship = relationship;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -53,9 +67,14 @@ export class InterfaceReadOperation extends Operation {
             return clauses;
         });
 
+        let aggrExpr: Cypher.Expr = Cypher.collect(options.returnVariable);
+        if (this.relationship && !this.relationship.isList) {
+            aggrExpr = Cypher.head(aggrExpr);
+        }
+
         const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries))
             .with(options.returnVariable)
-            .return([Cypher.collect(options.returnVariable), options.returnVariable]);
+            .return([aggrExpr, options.returnVariable]);
 
         return {
             projectionExpr: options.returnVariable,

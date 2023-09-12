@@ -285,15 +285,6 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
     }): InterfaceReadOperation {
         const directed = Boolean(resolveTree.args?.directed ?? true);
-        // const projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-        // const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-
-        // const operation = new InterfaceReadOperation({
-        //     target: entity,
-        //     relationship,
-        //     directed,
-        // });
-
         const concreteOperations = entity.concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
             const connectionPartial = new InterfaceReadPartial({
                 relationship,
@@ -311,7 +302,11 @@ export class OperationsFactory {
             });
         });
 
-        const operation = new InterfaceReadOperation(concreteOperations);
+        const operation = new InterfaceReadOperation({
+            relationship,
+            children: concreteOperations,
+            interfaceEntity: entity,
+        });
 
         // const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 

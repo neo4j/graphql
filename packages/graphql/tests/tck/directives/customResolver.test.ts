@@ -416,12 +416,12 @@ describe("@customResolver directive", () => {
                     CALL {
                         WITH *
                         MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title } AS this1
+                        WITH this1 { .title, __resolveType: \\"Book\\", __id: id(this) } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
                         MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject } AS this4
+                        WITH this4 { .subject, __resolveType: \\"Journal\\", __id: id(this) } AS this4
                         RETURN this4 AS var2
                     }
                     WITH var2
@@ -597,12 +597,12 @@ describe("@customResolver directive", () => {
                     CALL {
                         WITH *
                         MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { __resolveType: \\"Book\\", __id: id(this), .title, .publicationYear } AS this1
+                        WITH this1 { .publicationYear, .title, __resolveType: \\"Book\\", __id: id(this) } AS this1
                         RETURN this1 AS var2
                         UNION
                         WITH *
                         MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { __resolveType: \\"Journal\\", __id: id(this), .subject, .publicationYear } AS this4
+                        WITH this4 { .publicationYear, .subject, __resolveType: \\"Journal\\", __id: id(this) } AS this4
                         RETURN this4 AS var2
                     }
                     WITH var2

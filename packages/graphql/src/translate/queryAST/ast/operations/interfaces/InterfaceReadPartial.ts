@@ -56,9 +56,9 @@ export class InterfaceReadPartial extends ReadOperation {
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
 
         const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
-        let withWhere: Cypher.Clause | undefined;
         if (wherePredicate) {
-            withWhere = new Cypher.With("*").where(wherePredicate);
+            // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
+            matchClause.where(wherePredicate);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const sortSubqueries = this.sortFields
@@ -70,7 +70,7 @@ export class InterfaceReadPartial extends ReadOperation {
         const clause = Cypher.concat(
             matchClause,
             ...authFilterSubqueries,
-            withWhere,
+            // withWhere,
             subqueries,
             ...sortSubqueries,
             ret

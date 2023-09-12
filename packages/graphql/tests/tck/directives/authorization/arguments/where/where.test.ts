@@ -489,17 +489,17 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this0:HAS_POST]->(this1:Post)
                     OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                    WITH *, count(this2) AS creatorCount
+                    WITH *, count(this2) AS var3
                     WITH *
-                    WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
+                    WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
                     WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, contentConnection: var3 } AS this"
+            RETURN this { .id, contentConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
