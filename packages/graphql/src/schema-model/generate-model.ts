@@ -49,7 +49,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
     const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
-        acc[definition.name.value] = generateOperation(definition);
+        acc[definition.name.value] = generateOperation(definition, definitionCollection);
         return acc;
     }, {});
 
@@ -456,12 +456,19 @@ function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Ann
     return schemaModelAnnotations.concat(annotations);
 }
 
-function generateOperation(definition: ObjectTypeDefinitionNode): Operation {
+function generateOperation(
+    definition: ObjectTypeDefinitionNode,
+    definitionCollection: DefinitionCollection
+): Operation {
     const fields = (definition.fields || []).map((fieldDefinition) => parseField(fieldDefinition));
+    const attributes = (definition.fields || []).map((fieldDefinition) =>
+        parseAttribute(fieldDefinition, undefined, definitionCollection)
+    );
 
     return new Operation({
         name: definition.name.value,
         fields: filterTruthy(fields),
+        attributes: filterTruthy(attributes) as Attribute[],
         annotations: createEntityAnnotations(definition.directives || []),
     });
 }
