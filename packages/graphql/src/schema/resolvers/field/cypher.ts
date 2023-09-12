@@ -20,12 +20,13 @@
 import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import type { CypherField } from "../../../types";
-import { graphqlArgsToCompose } from "../../to-compose";
+import { graphqlArgsToCompose, graphqlArgsToCompose2 } from "../../to-compose";
 import { isNeoInt } from "../../../utils/utils";
 import { translateTopLevelCypher } from "../../../translate";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export function cypherResolver({
     field,
@@ -90,5 +91,71 @@ export function cypherResolver({
         type: field.typeMeta.pretty,
         resolve,
         args: graphqlArgsToCompose(field.arguments),
+    };
+}
+export function cypherResolver2({
+    field,
+    attributeAdapter,
+    type,
+}: {
+    field: CypherField; // TODO: make this go away
+    attributeAdapter: AttributeAdapter;
+    type: "Query" | "Mutation";
+}) {
+    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+        const resolveTree = getNeo4jResolveTree(info);
+        const statement = attributeAdapter.annotations.cypher?.statement as string; // this is known because of how we get here
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = translateTopLevelCypher({
+            context: context as Neo4jGraphQLTranslationContext,
+            field,
+            args,
+            type,
+            statement,
+        });
+
+        const executeResult = await execute({
+            cypher,
+            params,
+            defaultAccessMode: type === "Query" ? "READ" : "WRITE",
+            context,
+            info,
+        });
+
+        const values = executeResult.result.records.map((record) => {
+            const value = record.get(0);
+
+            if (["number", "string", "boolean"].includes(typeof value)) {
+                return value;
+            }
+
+            if (!value) {
+                return undefined;
+            }
+
+            if (isNeoInt(value)) {
+                return Number(value);
+            }
+
+            if (value.identity && value.labels && value.properties) {
+                return value.properties;
+            }
+
+            return value;
+        });
+
+        if (!attributeAdapter.isList()) {
+            return values[0];
+        }
+
+        return values;
+    }
+
+    return {
+        type: attributeAdapter.getTypePrettyName(),
+        resolve,
+        args: graphqlArgsToCompose2(attributeAdapter.args),
     };
 }
