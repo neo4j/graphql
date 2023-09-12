@@ -37,6 +37,42 @@ const additionalDefinitions = {
     objects: [] as ObjectTypeDefinitionNode[],
 };
 
+describe("authorization warning", () => {
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warn.mockReset();
+    });
+
+    test("authorization warning only occurs once for multiple directives", () => {
+        const doc = gql`
+            type Movie @authorization(validate: [{ where: { id: "1" } }]) {
+                id: ID @authorization(validate: [{ where: { id: "1" } }])
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Actor {
+                name: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "'@authentication', '@authorization' and/or @subscriptionsAuthorization detected - please ensure that you either specify authorization settings in 'features.authorization'. This warning can be ignored if you intend to pass a decoded JWT into 'context.jwt' on every request."
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+});
+
 describe("validation 2.0", () => {
     describe("Directive Argument (existence)", () => {
         describe("@cypher", () => {
