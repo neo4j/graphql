@@ -266,30 +266,17 @@ export class AttributeAdapter {
         );
     }
 
-    isTemporalField(): boolean {
-        // TODO: why is .isTemporal() not enough??
-        return (
-            this.isTemporal() ||
-            this.isDateTime() ||
-            this.isDate() ||
-            this.isLocalDateTime() ||
-            this.isTime() ||
-            this.isLocalTime() ||
-            this.isDuration()
-        );
-    }
-
     isPrimitiveField(): boolean {
         return this.isGraphQLBuiltInScalar() || this.isUserScalar() || this.isEnum() || this.isBigInt();
     }
 
     isAggregableField(): boolean {
-        return !this.isList() && (this.isPrimitiveField() || this.isTemporalField()) && this.isAggregable();
+        return !this.isList() && (this.isPrimitiveField() || this.isTemporal()) && this.isAggregable();
     }
 
     isAggregationWhereField(): boolean {
         const isGraphQLBuiltInScalarWithoutBoolean = this.isGraphQLBuiltInScalar() && !this.isBoolean();
-        const isTemporalWithoutDate = this.isTemporalField() && !this.isDate();
+        const isTemporalWithoutDate = this.isTemporal() && !this.isDate();
         return (
             !this.isList() &&
             (isGraphQLBuiltInScalarWithoutBoolean || isTemporalWithoutDate || this.isBigInt()) &&
