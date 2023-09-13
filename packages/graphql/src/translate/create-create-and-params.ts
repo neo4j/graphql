@@ -55,6 +55,7 @@ function createCreateAndParams({
     withVars,
     includeRelationshipValidation,
     topLevelNodeVariable,
+    nested = false,
 }: {
     input: any;
     varName: string;
@@ -64,6 +65,7 @@ function createCreateAndParams({
     withVars: string[];
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
+    nested?: boolean;
 }): [string, any] {
     const conflictingProperties = findConflictingProperties({ node, input });
     if (conflictingProperties.length > 0) {
@@ -143,6 +145,7 @@ function createCreateAndParams({
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
                             topLevelNodeVariable,
+                            nested: true,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -168,6 +171,38 @@ function createCreateAndParams({
                             });
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
+                        }
+
+                        const authorizationPredicates: string[] = [];
+                        const authorizationSubqueries: string[] = [];
+
+                        const authorizationAndParams = createAuthorizationAfterAndParams({
+                            context,
+                            nodes: [
+                                {
+                                    variable: nodeName,
+                                    node: refNode,
+                                },
+                            ],
+                            operations: ["CREATE"],
+                        });
+
+                        if (authorizationAndParams) {
+                            const { cypher, params: authParams, subqueries } = authorizationAndParams;
+                            if (subqueries) {
+                                authorizationSubqueries.push(subqueries);
+                            }
+                            authorizationPredicates.push(cypher);
+                            res.params = { ...res.params, ...authParams };
+                        }
+
+                        if (authorizationPredicates.length) {
+                            res.creates.push("WITH *");
+                            if (authorizationSubqueries.length) {
+                                res.creates.push(...authorizationSubqueries);
+                                res.creates.push("WITH *");
+                            }
+                            res.creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
                         }
 
                         if (context.subscriptionsEnabled) {
@@ -336,34 +371,36 @@ function createCreateAndParams({
         creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
     }
 
-    const { authorizationPredicates, authorizationSubqueries } = meta;
-    const authorizationAndParams = createAuthorizationAfterAndParams({
-        context,
-        nodes: [
-            {
-                variable: varName,
-                node,
-            },
-        ],
-        operations: ["CREATE"],
-    });
+    if (!nested) {
+        const { authorizationPredicates, authorizationSubqueries } = meta;
+        const authorizationAndParams = createAuthorizationAfterAndParams({
+            context,
+            nodes: [
+                {
+                    variable: varName,
+                    node,
+                },
+            ],
+            operations: ["CREATE"],
+        });
 
-    if (authorizationAndParams) {
-        const { cypher, params: authParams, subqueries } = authorizationAndParams;
-        if (subqueries) {
-            authorizationSubqueries.push(subqueries);
+        if (authorizationAndParams) {
+            const { cypher, params: authParams, subqueries } = authorizationAndParams;
+            if (subqueries) {
+                authorizationSubqueries.push(subqueries);
+            }
+            authorizationPredicates.push(cypher);
+            params = { ...params, ...authParams };
         }
-        authorizationPredicates.push(cypher);
-        params = { ...params, ...authParams };
-    }
 
-    if (authorizationPredicates.length) {
-        creates.push(`WITH ${withVars.join(", ")}`);
-        if (authorizationSubqueries.length) {
-            creates.push(...authorizationSubqueries);
-            creates.push(`WITH *`);
+        if (authorizationPredicates.length) {
+            creates.push(`WITH ${withVars.join(", ")}`);
+            if (authorizationSubqueries.length) {
+                creates.push(...authorizationSubqueries);
+                creates.push(`WITH *`);
+            }
+            creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
         }
-        creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
     }
 
     if (includeRelationshipValidation) {

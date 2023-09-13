@@ -36,6 +36,7 @@ import { createConnectionEventMeta } from "../translate/subscriptions/create-con
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 
 export default async function translateUpdate({
     node,
@@ -386,6 +387,7 @@ export default async function translateUpdate({
                         varName: nodeName,
                         withVars: [...withVars, nodeName],
                         includeRelationshipValidation: false,
+                        nested: true,
                     });
                     createStrs.push(createAndParams[0]);
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
@@ -405,6 +407,38 @@ export default async function translateUpdate({
                         });
                         createStrs.push(setA[0]);
                         cypherParams = { ...cypherParams, ...setA[1] };
+                    }
+
+                    const authorizationPredicates: string[] = [];
+                    const authorizationSubqueries: string[] = [];
+
+                    const authorizationAndParams = createAuthorizationAfterAndParams({
+                        context,
+                        nodes: [
+                            {
+                                variable: nodeName,
+                                node: refNode,
+                            },
+                        ],
+                        operations: ["CREATE"],
+                    });
+
+                    if (authorizationAndParams) {
+                        const { cypher, params: authParams, subqueries } = authorizationAndParams;
+                        if (subqueries) {
+                            authorizationSubqueries.push(subqueries);
+                        }
+                        authorizationPredicates.push(cypher);
+                        cypherParams = { ...cypherParams, ...authParams };
+                    }
+
+                    if (authorizationPredicates.length) {
+                        creates.push("WITH *");
+                        if (authorizationSubqueries.length) {
+                            creates.push(...authorizationSubqueries);
+                            creates.push("WITH *");
+                        }
+                        creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
                     }
 
                     if (context.subscriptionsEnabled) {

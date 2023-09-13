@@ -423,12 +423,12 @@ export default function createUpdateAndParams({
                             const createAndParams = createCreateAndParams({
                                 context,
                                 node: refNode,
-
                                 callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
                                 ...createNodeInput,
+                                nested: true,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
@@ -450,6 +450,38 @@ export default function createUpdateAndParams({
                                     }[${index}].create[${i}].edge`,
                                 });
                                 subquery.push(setA);
+                            }
+
+                            const authorizationPredicates: string[] = [];
+                            const authorizationSubqueries: string[] = [];
+
+                            const authorizationAndParams = createAuthorizationAfterAndParams({
+                                context,
+                                nodes: [
+                                    {
+                                        variable: nodeName,
+                                        node: refNode,
+                                    },
+                                ],
+                                operations: ["CREATE"],
+                            });
+
+                            if (authorizationAndParams) {
+                                const { cypher, params: authParams, subqueries } = authorizationAndParams;
+                                if (subqueries) {
+                                    authorizationSubqueries.push(subqueries);
+                                }
+                                authorizationPredicates.push(cypher);
+                                res.params = { ...res.params, ...authParams };
+                            }
+
+                            if (authorizationPredicates.length) {
+                                subquery.push("WITH *");
+                                if (authorizationSubqueries.length) {
+                                    subquery.push(...authorizationSubqueries);
+                                    subquery.push("WITH *");
+                                }
+                                subquery.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
                             }
 
                             if (context.subscriptionsEnabled) {

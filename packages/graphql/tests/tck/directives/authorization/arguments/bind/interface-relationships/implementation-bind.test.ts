@@ -128,15 +128,15 @@ describe("Cypher Auth Allow", () => {
             WITH this0, this0_contentPost0_node
             CREATE (this0_contentPost0_node_creator0_node:User)
             SET this0_contentPost0_node_creator0_node.id = $this0_contentPost0_node_creator0_node_id
-            WITH this0, this0_contentPost0_node, this0_contentPost0_node_creator0_node
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentPost0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_contentPost0_node)<-[:HAS_CONTENT]-(this0_contentPost0_node_creator0_node)
-            WITH this0, this0_contentPost0_node
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentPost0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            MERGE (this0)-[:HAS_CONTENT]->(this0_contentPost0_node)
+            WITH *
             OPTIONAL MATCH (this0_contentPost0_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this0)-[:HAS_CONTENT]->(this0_contentPost0_node)
             WITH this0, this0_contentPost0_node
             CALL {
             	WITH this0_contentPost0_node
@@ -216,9 +216,9 @@ describe("Cypher Auth Allow", () => {
             WITH this0, this0_contentComment0_node
             CREATE (this0_contentComment0_node_creator0_node:User)
             SET this0_contentComment0_node_creator0_node.id = $this0_contentComment0_node_creator0_node_id
-            WITH this0, this0_contentComment0_node, this0_contentComment0_node_creator0_node
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentComment0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_contentComment0_node)<-[:HAS_CONTENT]-(this0_contentComment0_node_creator0_node)
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentComment0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0)-[:HAS_CONTENT]->(this0_contentComment0_node)
             WITH this0, this0_contentComment0_node
             CALL {

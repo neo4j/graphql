@@ -129,7 +129,8 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             CREATE (this0_seasons0_node:Season)
             SET this0_seasons0_node.id = randomUUID()
             SET this0_seasons0_node.number = $this0_seasons0_node_number
-            WITH this0, this0_seasons0_node
+            MERGE (this0)<-[:SEASON_OF]-(this0_seasons0_node)
+            WITH *
             CALL {
                 WITH this0_seasons0_node
                 MATCH (this0_seasons0_node)-[:SEASON_OF]->(authorization_this1:Serie)
@@ -141,7 +142,6 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             }
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_var0 = true AND $authorization_param1 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this0)<-[:SEASON_OF]-(this0_seasons0_node)
             WITH this0, this0_seasons0_node
             CALL {
             	WITH this0_seasons0_node
