@@ -104,7 +104,18 @@ export class PropertyFilter extends Filter {
         property: Cypher.Expr;
         param: Cypher.Expr;
     }): Cypher.ComparisonOp {
-        return createComparisonOperation({ operator, property, param });
+        const coalesceProperty = this.coalesceValueIfNeeded(property);
+
+        return createComparisonOperation({ operator, property: coalesceProperty, param });
+    }
+
+    protected coalesceValueIfNeeded(expr: Cypher.Expr): Cypher.Expr {
+        if (this.attribute.annotations.coalesce) {
+            const value = this.attribute.annotations.coalesce.value;
+            const literal = new Cypher.Literal(value);
+            return Cypher.coalesce(expr, literal);
+        }
+        return expr;
     }
 
     private getNullPredicate(propertyRef: Cypher.Property): Cypher.Predicate {

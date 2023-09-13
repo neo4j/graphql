@@ -39,7 +39,6 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { AggregationDurationFilter } from "../ast/filters/aggregation/AggregationDurationPropertyFilter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 
 type AggregateWhereInput = {
@@ -210,21 +209,6 @@ export class FilterFactory {
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
         return new RelationshipFilter(options);
-    }
-
-    private getConcreteWhere(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
-        value: Record<string, unknown>
-    ): Record<string, unknown> {
-        const concreteEntities = getConcreteEntities(entity);
-
-        let concreteWhere: Record<string, unknown> = {};
-        for (const concreteEntity of concreteEntities) {
-            const concreteEntityWhere = (value as any)[concreteEntity.name];
-            concreteWhere = { ...concreteEntityWhere, ...concreteWhere };
-        }
-
-        return concreteWhere;
     }
 
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
