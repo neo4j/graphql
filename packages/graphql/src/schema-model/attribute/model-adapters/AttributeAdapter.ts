@@ -217,7 +217,9 @@ export class AttributeAdapter {
      ]
      */
     isOnCreateField(): boolean {
-        return this.isNonGeneratedField() && (this.isScalar() || this.isEnum() || this.isAbstract());
+        return (
+            this.isNonGeneratedField() && (this.isScalar() || this.isSpatial() || this.isEnum() || this.isAbstract())
+        );
     }
 
     /**

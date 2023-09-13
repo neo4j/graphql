@@ -80,11 +80,11 @@ type ActorEdge {
   node: Actor!
 }
 
-            input ActorOnCreateInput {
-              dob: DateTime!
-              homeAddress: PointInput!
-              name: String!
-            }
+input ActorOnCreateInput {
+  dob: DateTime!
+  homeAddress: PointInput!
+  name: String!
+}
 
 input ActorOptions {
   limit: Int
