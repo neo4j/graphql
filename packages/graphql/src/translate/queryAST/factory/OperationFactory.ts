@@ -23,9 +23,9 @@ import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
-import type { ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
+import type { ConnectionQueryArgs, ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
-import type { Integer } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -123,7 +123,7 @@ export class OperationsFactory {
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
 
-        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
         if (options) {
             const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
             operation.addSort(...sort);
@@ -197,8 +197,15 @@ export class OperationsFactory {
         resolveTree: ResolveTree;
         operation: T;
     }): T {
-        const first = resolveTree.args.first as number | Integer | undefined;
-        const sort = resolveTree.args.sort as ConnectionSortArg[];
+        let options: Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined;
+        if (!(relationship.target instanceof UnionEntityAdapter)) {
+            options = this.getConnectionOptions(relationship.target, resolveTree.args);
+        } else {
+            options = resolveTree.args;
+        }
+        const first = options?.first;
+        const sort = options?.sort;
+        // const after = options?.after;
 
         if (first) {
             const pagination = this.sortAndPaginationFactory.createPagination({
@@ -350,7 +357,8 @@ export class OperationsFactory {
             operation.setAuthFilters(authFilters);
         }
 
-        const options = resolveTree.args.options as GraphQLOptionsArg | undefined;
+        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
+
         if (options) {
             const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
             operation.addSort(...sort);
@@ -362,5 +370,53 @@ export class OperationsFactory {
         }
 
         return operation;
+    }
+
+    private getOptions(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
+        options: Record<string, any>
+    ): GraphQLOptionsArg | undefined {
+        const limitDirective = entity.annotations.limit;
+
+        let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
+        if (limit instanceof Integer) {
+            limit = limit.toNumber();
+        }
+        const maxLimit = limitDirective?.max;
+        if (limit !== undefined && maxLimit !== undefined) {
+            limit = Math.min(limit, maxLimit);
+        }
+
+        if (limit === undefined && options.offset === undefined && options.sort === undefined) return undefined;
+
+        return {
+            limit,
+            offset: options.offset,
+            sort: options.sort,
+        };
+    }
+
+    private getConnectionOptions(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
+        options: Record<string, any>
+    ): Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined {
+        const limitDirective = entity.annotations.limit;
+
+        let limit: Integer | number | undefined = options?.first ?? limitDirective?.default ?? limitDirective?.max;
+        if (limit instanceof Integer) {
+            limit = limit.toNumber();
+        }
+        const maxLimit = limitDirective?.max;
+        if (limit !== undefined && maxLimit !== undefined) {
+            limit = Math.min(limit, maxLimit);
+        }
+
+        if (limit === undefined && options.after === undefined && options.sort === undefined) return undefined;
+
+        return {
+            first: limit,
+            after: options.after,
+            sort: options.sort,
+        };
     }
 }

@@ -31,6 +31,8 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Sort } from "../sort/Sort";
+import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
+import { CypherPropertySort } from "../sort/CypherPropertySort";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -175,10 +177,11 @@ export class ReadOperation extends Operation {
 
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(context) : [];
         const fieldSubqueries = this.getFieldsSubqueries(context);
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
-        const subqueries = Cypher.concat(...fieldSubqueries, ...authFilterSubqueries, ...sortSubqueries);
+        const subqueries = Cypher.concat(...fieldSubqueries, ...authFilterSubqueries);
 
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(context) : undefined;
 
@@ -215,13 +218,23 @@ export class ReadOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(context, node, sortClause);
         }
+
+        const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
+
+        let sortAndLimitBlock: Cypher.Clause;
+        if (this.hasCypherSort()) {
+            // This is a performance optimisation
+            sortAndLimitBlock = Cypher.concat(...cypherFieldSubqueries, sortBlock);
+        } else {
+            sortAndLimitBlock = Cypher.concat(sortBlock, ...cypherFieldSubqueries);
+        }
+
         const clause = Cypher.concat(
             matchClause,
             filterSubqueriesClause,
             filterSubqueryWith,
-            // authWith,
+            sortAndLimitBlock,
             subqueries,
-            sortClause,
             ret
         );
 
@@ -231,6 +244,10 @@ export class ReadOperation extends Operation {
         };
     }
 
+    private hasCypherSort(): boolean {
+        return this.sortFields.some((s) => s instanceof CypherPropertySort);
+    }
+
     public getChildren(): QueryASTNode[] {
         return filterTruthy([...this.filters, this.authFilters, ...this.fields, this.pagination, ...this.sortFields]);
     }
@@ -238,10 +255,29 @@ export class ReadOperation extends Operation {
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
         return filterTruthy(
             this.fields.flatMap((f) => {
+                if (f instanceof CypherAttributeField) {
+                    return;
+                }
                 return f.getSubqueries(context);
             })
         ).map((sq) => {
             return new Cypher.Call(sq).innerWith(context.target);
+        });
+    }
+
+    protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return filterTruthy(
+            this.getCypherFields().flatMap((f) => {
+                return f.getSubqueries(context);
+            })
+        ).map((sq) => {
+            return new Cypher.Call(sq).innerWith(context.target);
+        });
+    }
+
+    private getCypherFields(): Field[] {
+        return this.fields.filter((f) => {
+            return f instanceof CypherAttributeField;
         });
     }
 
