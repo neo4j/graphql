@@ -102,14 +102,18 @@ export class ReadOperation extends Operation {
 
         const matchClause = new Cypher.Match(pattern);
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
-        const filterPredicates = this.getPredicates(context);
+        const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
 
         const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
-        let withWhere: Cypher.Clause | undefined;
+        let withWhere: Cypher.With | undefined;
         if (wherePredicate) {
-            withWhere = new Cypher.With("*").where(wherePredicate);
+            if (authFiltersPredicate) {
+                withWhere = new Cypher.With("*").where(wherePredicate);
+            } else {
+                matchClause.where(wherePredicate);
+            }
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const sortSubqueries = this.sortFields
