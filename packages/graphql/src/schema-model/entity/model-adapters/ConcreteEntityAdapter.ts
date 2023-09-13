@@ -26,6 +26,7 @@ import type { Relationship } from "../../relationship/Relationship";
 import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
 import { getFromMap } from "../../utils/get-from-map";
 import { plural, singular } from "../../utils/string-manipulation";
+import type { CompositeEntity } from "../CompositeEntity";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
@@ -38,6 +39,7 @@ export class ConcreteEntityAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
+    public readonly compositeEntities: CompositeEntity[] = [];
 
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
@@ -61,6 +63,7 @@ export class ConcreteEntityAdapter {
         this.initAttributes(entity.attributes);
         this.initRelationships(entity.relationships);
         this.description = entity.description;
+        this.compositeEntities = entity.compositeEntities;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {
