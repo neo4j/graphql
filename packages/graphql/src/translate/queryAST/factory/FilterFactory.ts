@@ -65,14 +65,15 @@ export class FilterFactory {
                 return this.createEdgeLogicalFilter(key, value as any, relationship);
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
-            const attr = relationship.findAttribute(fieldName);
+            const attr = (relationship.target as ConcreteEntityAdapter).findAttribute(fieldName);
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
+
             return this.createPropertyFilter({
                 attribute: attr,
                 comparisonValue: value,
                 isNot,
                 operator,
-                attachedTo: "relationship",
+                attachedTo: "node",
             });
         });
     }
