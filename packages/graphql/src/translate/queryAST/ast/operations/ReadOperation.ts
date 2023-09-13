@@ -240,12 +240,8 @@ export class ReadOperation extends Operation {
         };
     }
 
-    private hasCypherSort() {
-        return (
-            this.sortFields.filter((s) => {
-                return s instanceof CypherPropertySort;
-            }).length > 0
-        );
+    private hasCypherSort(): boolean {
+        return this.sortFields.some((s) => s instanceof CypherPropertySort);
     }
 
     public getChildren(): QueryASTNode[] {
@@ -253,13 +249,11 @@ export class ReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const nonCypherFields = this.fields.filter((f) => {
-            const isCypher = f instanceof CypherAttributeField;
-            return !isCypher;
-        });
-
         return filterTruthy(
-            nonCypherFields.flatMap((f) => {
+            this.fields.flatMap((f) => {
+                if (f instanceof CypherAttributeField) {
+                    return;
+                }
                 return f.getSubqueries(context);
             })
         ).map((sq) => {
