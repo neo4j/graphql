@@ -39,248 +39,242 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type AWSAccount {
-              \\"\\"\\"\\"\\"\\"
-              accountName: String
-              \\"\\"\\"\\"\\"\\"
-              code: String
-            }
+type AWSAccount {
+  accountName: String
+  code: String
+}
 
-            type AWSAccountAggregateSelection {
-              accountName: StringAggregateSelectionNullable!
-              code: StringAggregateSelectionNullable!
-              count: Int!
-            }
+type AWSAccountAggregateSelection {
+  accountName: StringAggregateSelectionNullable!
+  code: StringAggregateSelectionNullable!
+  count: Int!
+}
 
-            input AWSAccountCreateInput {
-              accountName: String
-              code: String
-            }
+input AWSAccountCreateInput {
+  accountName: String
+  code: String
+}
 
-            type AWSAccountEdge {
-              cursor: String!
-              node: AWSAccount!
-            }
+type AWSAccountEdge {
+  cursor: String!
+  node: AWSAccount!
+}
 
-            input AWSAccountOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more AWSAccountSort objects to sort AwsAccounts by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [AWSAccountSort!]
-            }
+input AWSAccountOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more AWSAccountSort objects to sort AwsAccounts by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [AWSAccountSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort AwsAccounts by. The order in which sorts are applied is not guaranteed when specifying many fields in one AWSAccountSort object.
-            \\"\\"\\"
-            input AWSAccountSort {
-              accountName: SortDirection
-              code: SortDirection
-            }
+\\"\\"\\"
+Fields to sort AwsAccounts by. The order in which sorts are applied is not guaranteed when specifying many fields in one AWSAccountSort object.
+\\"\\"\\"
+input AWSAccountSort {
+  accountName: SortDirection
+  code: SortDirection
+}
 
-            input AWSAccountUpdateInput {
-              accountName: String
-              code: String
-            }
+input AWSAccountUpdateInput {
+  accountName: String
+  code: String
+}
 
-            input AWSAccountWhere {
-              AND: [AWSAccountWhere!]
-              NOT: AWSAccountWhere
-              OR: [AWSAccountWhere!]
-              accountName: String
-              accountName_CONTAINS: String
-              accountName_ENDS_WITH: String
-              accountName_IN: [String]
-              accountName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              accountName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              accountName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              accountName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              accountName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              accountName_STARTS_WITH: String
-              code: String
-              code_CONTAINS: String
-              code_ENDS_WITH: String
-              code_IN: [String]
-              code_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              code_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              code_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              code_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              code_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              code_STARTS_WITH: String
-            }
+input AWSAccountWhere {
+  AND: [AWSAccountWhere!]
+  NOT: AWSAccountWhere
+  OR: [AWSAccountWhere!]
+  accountName: String
+  accountName_CONTAINS: String
+  accountName_ENDS_WITH: String
+  accountName_IN: [String]
+  accountName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  accountName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  accountName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  accountName_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  accountName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  accountName_STARTS_WITH: String
+  code: String
+  code_CONTAINS: String
+  code_ENDS_WITH: String
+  code_IN: [String]
+  code_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  code_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  code_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  code_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  code_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  code_STARTS_WITH: String
+}
 
-            type AwsAccountsConnection {
-              edges: [AWSAccountEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type AwsAccountsConnection {
+  edges: [AWSAccountEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type CreateAwsAccountsMutationResponse {
-              awsAccounts: [AWSAccount!]!
-              info: CreateInfo!
-            }
+type CreateAwsAccountsMutationResponse {
+  awsAccounts: [AWSAccount!]!
+  info: CreateInfo!
+}
 
-            type CreateDnsZonesMutationResponse {
-              dnsZones: [DNSZone!]!
-              info: CreateInfo!
-            }
+type CreateDnsZonesMutationResponse {
+  dnsZones: [DNSZone!]!
+  info: CreateInfo!
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type DNSZone {
-              \\"\\"\\"\\"\\"\\"
-              awsId: String
-              \\"\\"\\"\\"\\"\\"
-              zoneType: String
-            }
+type DNSZone {
+  awsId: String
+  zoneType: String
+}
 
-            type DNSZoneAggregateSelection {
-              awsId: StringAggregateSelectionNullable!
-              count: Int!
-              zoneType: StringAggregateSelectionNullable!
-            }
+type DNSZoneAggregateSelection {
+  awsId: StringAggregateSelectionNullable!
+  count: Int!
+  zoneType: StringAggregateSelectionNullable!
+}
 
-            input DNSZoneCreateInput {
-              awsId: String
-              zoneType: String
-            }
+input DNSZoneCreateInput {
+  awsId: String
+  zoneType: String
+}
 
-            type DNSZoneEdge {
-              cursor: String!
-              node: DNSZone!
-            }
+type DNSZoneEdge {
+  cursor: String!
+  node: DNSZone!
+}
 
-            input DNSZoneOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more DNSZoneSort objects to sort DnsZones by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [DNSZoneSort!]
-            }
+input DNSZoneOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more DNSZoneSort objects to sort DnsZones by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [DNSZoneSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort DnsZones by. The order in which sorts are applied is not guaranteed when specifying many fields in one DNSZoneSort object.
-            \\"\\"\\"
-            input DNSZoneSort {
-              awsId: SortDirection
-              zoneType: SortDirection
-            }
+\\"\\"\\"
+Fields to sort DnsZones by. The order in which sorts are applied is not guaranteed when specifying many fields in one DNSZoneSort object.
+\\"\\"\\"
+input DNSZoneSort {
+  awsId: SortDirection
+  zoneType: SortDirection
+}
 
-            input DNSZoneUpdateInput {
-              awsId: String
-              zoneType: String
-            }
+input DNSZoneUpdateInput {
+  awsId: String
+  zoneType: String
+}
 
-            input DNSZoneWhere {
-              AND: [DNSZoneWhere!]
-              NOT: DNSZoneWhere
-              OR: [DNSZoneWhere!]
-              awsId: String
-              awsId_CONTAINS: String
-              awsId_ENDS_WITH: String
-              awsId_IN: [String]
-              awsId_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              awsId_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              awsId_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              awsId_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              awsId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              awsId_STARTS_WITH: String
-              zoneType: String
-              zoneType_CONTAINS: String
-              zoneType_ENDS_WITH: String
-              zoneType_IN: [String]
-              zoneType_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              zoneType_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              zoneType_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              zoneType_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              zoneType_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              zoneType_STARTS_WITH: String
-            }
+input DNSZoneWhere {
+  AND: [DNSZoneWhere!]
+  NOT: DNSZoneWhere
+  OR: [DNSZoneWhere!]
+  awsId: String
+  awsId_CONTAINS: String
+  awsId_ENDS_WITH: String
+  awsId_IN: [String]
+  awsId_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  awsId_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  awsId_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  awsId_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  awsId_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  awsId_STARTS_WITH: String
+  zoneType: String
+  zoneType_CONTAINS: String
+  zoneType_ENDS_WITH: String
+  zoneType_IN: [String]
+  zoneType_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  zoneType_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  zoneType_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  zoneType_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  zoneType_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  zoneType_STARTS_WITH: String
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            type DnsZonesConnection {
-              edges: [DNSZoneEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type DnsZonesConnection {
+  edges: [DNSZoneEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createAwsAccounts(input: [AWSAccountCreateInput!]!): CreateAwsAccountsMutationResponse!
-              createDnsZones(input: [DNSZoneCreateInput!]!): CreateDnsZonesMutationResponse!
-              deleteAwsAccounts(where: AWSAccountWhere): DeleteInfo!
-              deleteDnsZones(where: DNSZoneWhere): DeleteInfo!
-              updateAwsAccounts(update: AWSAccountUpdateInput, where: AWSAccountWhere): UpdateAwsAccountsMutationResponse!
-              updateDnsZones(update: DNSZoneUpdateInput, where: DNSZoneWhere): UpdateDnsZonesMutationResponse!
-            }
+type Mutation {
+  createAwsAccounts(input: [AWSAccountCreateInput!]!): CreateAwsAccountsMutationResponse!
+  createDnsZones(input: [DNSZoneCreateInput!]!): CreateDnsZonesMutationResponse!
+  deleteAwsAccounts(where: AWSAccountWhere): DeleteInfo!
+  deleteDnsZones(where: DNSZoneWhere): DeleteInfo!
+  updateAwsAccounts(update: AWSAccountUpdateInput, where: AWSAccountWhere): UpdateAwsAccountsMutationResponse!
+  updateDnsZones(update: DNSZoneUpdateInput, where: DNSZoneWhere): UpdateDnsZonesMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            type Query {
-              awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
-              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
-              awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AwsAccountsConnection!
-              dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
-              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
-              dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DnsZonesConnection!
-            }
+type Query {
+  awsAccounts(options: AWSAccountOptions, where: AWSAccountWhere): [AWSAccount!]!
+  awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
+  awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort], where: AWSAccountWhere): AwsAccountsConnection!
+  dnsZones(options: DNSZoneOptions, where: DNSZoneWhere): [DNSZone!]!
+  dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
+  dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort], where: DNSZoneWhere): DnsZonesConnection!
+}
 
-            \\"\\"\\"SortDirection\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
+\\"\\"\\"SortDirection\\"\\"\\"
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
-            }
+type StringAggregateSelectionNullable {
+  longest: String
+  shortest: String
+}
 
-            type UpdateAwsAccountsMutationResponse {
-              awsAccounts: [AWSAccount!]!
-              info: UpdateInfo!
-            }
+type UpdateAwsAccountsMutationResponse {
+  awsAccounts: [AWSAccount!]!
+  info: UpdateInfo!
+}
 
-            type UpdateDnsZonesMutationResponse {
-              dnsZones: [DNSZone!]!
-              info: UpdateInfo!
-            }
+type UpdateDnsZonesMutationResponse {
+  dnsZones: [DNSZone!]!
+  info: UpdateInfo!
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }"
-        `);
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}"
+`);
     });
 });

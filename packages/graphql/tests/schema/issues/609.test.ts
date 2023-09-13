@@ -33,138 +33,136 @@ describe("609", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            type CreateDeprecatedsMutationResponse {
-              deprecateds: [Deprecated!]!
-              info: CreateInfo!
-            }
+type CreateDeprecatedsMutationResponse {
+  deprecateds: [Deprecated!]!
+  info: CreateInfo!
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type Deprecated {
-              \\"\\"\\"\\"\\"\\"
-              deprecatedField: String @deprecated
-            }
+type Deprecated {
+  deprecatedField: String @deprecated
+}
 
-            type DeprecatedAggregateSelection {
-              count: Int!
-              deprecatedField: StringAggregateSelectionNullable!
-            }
+type DeprecatedAggregateSelection {
+  count: Int!
+  deprecatedField: StringAggregateSelectionNullable!
+}
 
-            input DeprecatedCreateInput {
-              deprecatedField: String @deprecated
-            }
+input DeprecatedCreateInput {
+  deprecatedField: String @deprecated
+}
 
-            type DeprecatedEdge {
-              cursor: String!
-              node: Deprecated!
-            }
+type DeprecatedEdge {
+  cursor: String!
+  node: Deprecated!
+}
 
-            input DeprecatedOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [DeprecatedSort!]
-            }
+input DeprecatedOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more DeprecatedSort objects to sort Deprecateds by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [DeprecatedSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.
-            \\"\\"\\"
-            input DeprecatedSort {
-              deprecatedField: SortDirection @deprecated
-            }
+\\"\\"\\"
+Fields to sort Deprecateds by. The order in which sorts are applied is not guaranteed when specifying many fields in one DeprecatedSort object.
+\\"\\"\\"
+input DeprecatedSort {
+  deprecatedField: SortDirection @deprecated
+}
 
-            input DeprecatedUpdateInput {
-              deprecatedField: String @deprecated
-            }
+input DeprecatedUpdateInput {
+  deprecatedField: String @deprecated
+}
 
-            input DeprecatedWhere {
-              AND: [DeprecatedWhere!]
-              NOT: DeprecatedWhere
-              OR: [DeprecatedWhere!]
-              deprecatedField: String @deprecated
-              deprecatedField_CONTAINS: String @deprecated
-              deprecatedField_ENDS_WITH: String @deprecated
-              deprecatedField_IN: [String] @deprecated
-              deprecatedField_NOT: String @deprecated
-              deprecatedField_NOT_CONTAINS: String @deprecated
-              deprecatedField_NOT_ENDS_WITH: String @deprecated
-              deprecatedField_NOT_IN: [String] @deprecated
-              deprecatedField_NOT_STARTS_WITH: String @deprecated
-              deprecatedField_STARTS_WITH: String @deprecated
-            }
+input DeprecatedWhere {
+  AND: [DeprecatedWhere!]
+  NOT: DeprecatedWhere
+  OR: [DeprecatedWhere!]
+  deprecatedField: String @deprecated
+  deprecatedField_CONTAINS: String @deprecated
+  deprecatedField_ENDS_WITH: String @deprecated
+  deprecatedField_IN: [String] @deprecated
+  deprecatedField_NOT: String @deprecated
+  deprecatedField_NOT_CONTAINS: String @deprecated
+  deprecatedField_NOT_ENDS_WITH: String @deprecated
+  deprecatedField_NOT_IN: [String] @deprecated
+  deprecatedField_NOT_STARTS_WITH: String @deprecated
+  deprecatedField_STARTS_WITH: String @deprecated
+}
 
-            type DeprecatedsConnection {
-              edges: [DeprecatedEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type DeprecatedsConnection {
+  edges: [DeprecatedEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createDeprecateds(input: [DeprecatedCreateInput!]!): CreateDeprecatedsMutationResponse!
-              deleteDeprecateds(where: DeprecatedWhere): DeleteInfo!
-              updateDeprecateds(update: DeprecatedUpdateInput, where: DeprecatedWhere): UpdateDeprecatedsMutationResponse!
-            }
+type Mutation {
+  createDeprecateds(input: [DeprecatedCreateInput!]!): CreateDeprecatedsMutationResponse!
+  deleteDeprecateds(where: DeprecatedWhere): DeleteInfo!
+  updateDeprecateds(update: DeprecatedUpdateInput, where: DeprecatedWhere): UpdateDeprecatedsMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            type Query {
-              deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
-              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
-              deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
-            }
+type Query {
+  deprecateds(options: DeprecatedOptions, where: DeprecatedWhere): [Deprecated!]!
+  deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
+  deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort], where: DeprecatedWhere): DeprecatedsConnection!
+}
 
-            \\"\\"\\"SortDirection\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
+\\"\\"\\"SortDirection\\"\\"\\"
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
 
-            type StringAggregateSelectionNullable {
-              longest: String
-              shortest: String
-            }
+type StringAggregateSelectionNullable {
+  longest: String
+  shortest: String
+}
 
-            type UpdateDeprecatedsMutationResponse {
-              deprecateds: [Deprecated!]!
-              info: UpdateInfo!
-            }
+type UpdateDeprecatedsMutationResponse {
+  deprecateds: [Deprecated!]!
+  info: UpdateInfo!
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }"
-        `);
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}"
+`);
     });
 });

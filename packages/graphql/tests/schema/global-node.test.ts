@@ -34,172 +34,169 @@ describe("Node Interface Types", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
+type CreateMoviesMutationResponse {
+  info: CreateInfo!
+  movies: [Movie!]!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
+type IDAggregateSelectionNonNullable {
+  longest: ID!
+  shortest: ID!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type Movie implements Node {
-              id: ID!
-              \\"\\"\\"\\"\\"\\"
-              imdb: ID!
-              \\"\\"\\"\\"\\"\\"
-              title: String!
-            }
+type Movie implements Node {
+  id: ID!
+  imdb: ID!
+  title: String!
+}
 
-            type MovieAggregateSelection {
-              count: Int!
-              imdb: IDAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
-            }
+type MovieAggregateSelection {
+  count: Int!
+  imdb: IDAggregateSelectionNonNullable!
+  title: StringAggregateSelectionNonNullable!
+}
 
-            input MovieCreateInput {
-              imdb: ID!
-              title: String!
-            }
+input MovieCreateInput {
+  imdb: ID!
+  title: String!
+}
 
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
+type MovieEdge {
+  cursor: String!
+  node: Movie!
+}
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
+input MovieOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [MovieSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              imdb: SortDirection
-              title: SortDirection
-            }
+\\"\\"\\"
+Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+\\"\\"\\"
+input MovieSort {
+  imdb: SortDirection
+  title: SortDirection
+}
 
-            input MovieUpdateInput {
-              imdb: ID
-              title: String
-            }
+input MovieUpdateInput {
+  imdb: ID
+  title: String
+}
 
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              id: ID
-              imdb: ID
-              imdb_CONTAINS: ID
-              imdb_ENDS_WITH: ID
-              imdb_IN: [ID!]
-              imdb_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              imdb_STARTS_WITH: ID
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_STARTS_WITH: String
-            }
+input MovieWhere {
+  AND: [MovieWhere!]
+  NOT: MovieWhere
+  OR: [MovieWhere!]
+  id: ID
+  imdb: ID
+  imdb_CONTAINS: ID
+  imdb_ENDS_WITH: ID
+  imdb_IN: [ID!]
+  imdb_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  imdb_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  imdb_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  imdb_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  imdb_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  imdb_STARTS_WITH: ID
+  title: String
+  title_CONTAINS: String
+  title_ENDS_WITH: String
+  title_IN: [String!]
+  title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  title_STARTS_WITH: String
+}
 
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type MoviesConnection {
+  edges: [MovieEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
+type Mutation {
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+}
 
-            \\"\\"\\"An object with an ID\\"\\"\\"
-            interface Node {
-              \\"\\"\\"The id of the object.\\"\\"\\"
-              id: ID!
-            }
+\\"\\"\\"An object with an ID\\"\\"\\"
+interface Node {
+  \\"\\"\\"The id of the object.\\"\\"\\"
+  id: ID!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              \\"\\"\\"Fetches an object given its ID\\"\\"\\"
-              node(
-                \\"\\"\\"The ID of an object\\"\\"\\"
-                id: ID!
-              ): Node
-            }
+type Query {
+  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+  \\"\\"\\"Fetches an object given its ID\\"\\"\\"
+  node(
+    \\"\\"\\"The ID of an object\\"\\"\\"
+    id: ID!
+  ): Node
+}
 
-            \\"\\"\\"SortDirection\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
+\\"\\"\\"SortDirection\\"\\"\\"
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
+type StringAggregateSelectionNonNullable {
+  longest: String!
+  shortest: String!
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
 
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
+type UpdateMoviesMutationResponse {
+  info: UpdateInfo!
+  movies: [Movie!]!
+}"
+`);
     });
 });

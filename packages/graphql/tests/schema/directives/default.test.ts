@@ -52,291 +52,278 @@ describe("@default directive", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            type CreateUsersMutationResponse {
-              info: CreateInfo!
-              users: [User!]!
-            }
+type CreateUsersMutationResponse {
+  info: CreateInfo!
+  users: [User!]!
+}
 
-            \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
-            scalar DateTime
+\\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
+scalar DateTime
 
-            type DateTimeAggregateSelectionNonNullable {
-              max: DateTime!
-              min: DateTime!
-            }
+type DateTimeAggregateSelectionNonNullable {
+  max: DateTime!
+  min: DateTime!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
-            }
+type FloatAggregateSelectionNonNullable {
+  average: Float!
+  max: Float!
+  min: Float!
+  sum: Float!
+}
 
-            type IDAggregateSelectionNonNullable {
-              longest: ID!
-              shortest: ID!
-            }
+type IDAggregateSelectionNonNullable {
+  longest: ID!
+  shortest: ID!
+}
 
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
+type IntAggregateSelectionNonNullable {
+  average: Float!
+  max: Int!
+  min: Int!
+  sum: Int!
+}
 
-            enum Location {
-              EVERYWHERE
-              HERE
-              THERE
-            }
+enum Location {
+  EVERYWHERE
+  HERE
+  THERE
+}
 
-            type Mutation {
-              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-              deleteUsers(where: UserWhere): DeleteInfo!
-              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-            }
+type Mutation {
+  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+  deleteUsers(where: UserWhere): DeleteInfo!
+  updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            type Query {
-              users(options: UserOptions, where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
-              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
-            }
+type Query {
+  users(options: UserOptions, where: UserWhere): [User!]!
+  usersAggregate(where: UserWhere): UserAggregateSelection!
+  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+}
 
-            \\"\\"\\"SortDirection\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
+\\"\\"\\"SortDirection\\"\\"\\"
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
 
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
+type StringAggregateSelectionNonNullable {
+  longest: String!
+  shortest: String!
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
 
-            type UpdateUsersMutationResponse {
-              info: UpdateInfo!
-              users: [User!]!
-            }
+type UpdateUsersMutationResponse {
+  info: UpdateInfo!
+  users: [User!]!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type User implements UserInterface {
-              \\"\\"\\"\\"\\"\\"
-              fromInterface: String!
-              \\"\\"\\"\\"\\"\\"
-              id: ID!
-              \\"\\"\\"\\"\\"\\"
-              location: Location!
-              \\"\\"\\"\\"\\"\\"
-              name: String!
-              \\"\\"\\"\\"\\"\\"
-              numberOfFriends: Int!
-              \\"\\"\\"\\"\\"\\"
-              rating: Float!
-              \\"\\"\\"\\"\\"\\"
-              toBeOverridden: String!
-              \\"\\"\\"\\"\\"\\"
-              verified: Boolean!
-              \\"\\"\\"\\"\\"\\"
-              verifiedDate: DateTime!
-            }
+type User implements UserInterface {
+  fromInterface: String!
+  id: ID!
+  location: Location!
+  name: String!
+  numberOfFriends: Int!
+  rating: Float!
+  toBeOverridden: String!
+  verified: Boolean!
+  verifiedDate: DateTime!
+}
 
-            type UserAggregateSelection {
-              count: Int!
-              fromInterface: StringAggregateSelectionNonNullable!
-              id: IDAggregateSelectionNonNullable!
-              name: StringAggregateSelectionNonNullable!
-              numberOfFriends: IntAggregateSelectionNonNullable!
-              rating: FloatAggregateSelectionNonNullable!
-              toBeOverridden: StringAggregateSelectionNonNullable!
-              verifiedDate: DateTimeAggregateSelectionNonNullable!
-            }
+type UserAggregateSelection {
+  count: Int!
+  fromInterface: StringAggregateSelectionNonNullable!
+  id: IDAggregateSelectionNonNullable!
+  name: StringAggregateSelectionNonNullable!
+  numberOfFriends: IntAggregateSelectionNonNullable!
+  rating: FloatAggregateSelectionNonNullable!
+  toBeOverridden: StringAggregateSelectionNonNullable!
+  verifiedDate: DateTimeAggregateSelectionNonNullable!
+}
 
-            input UserCreateInput {
-              fromInterface: String! = \\"Interface default value\\"
-              id: ID! = \\"00000000-00000000-00000000-00000000\\"
-              location: Location! = HERE
-              name: String! = \\"Jane Smith\\"
-              numberOfFriends: Int! = 0
-              rating: Float! = 0
-              toBeOverridden: String! = \\"Overridden value\\"
-              verified: Boolean! = false
-              verifiedDate: DateTime! = \\"1970-01-01T00:00:00.000Z\\"
-            }
+input UserCreateInput {
+  fromInterface: String! = \\"Interface default value\\"
+  id: ID! = \\"00000000-00000000-00000000-00000000\\"
+  location: Location! = HERE
+  name: String! = \\"Jane Smith\\"
+  numberOfFriends: Int! = 0
+  rating: Float! = 0
+  toBeOverridden: String! = \\"Overridden value\\"
+  verified: Boolean! = false
+  verifiedDate: DateTime! = \\"1970-01-01T00:00:00.000Z\\"
+}
 
-            type UserEdge {
-              cursor: String!
-              node: User!
-            }
+type UserEdge {
+  cursor: String!
+  node: User!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            interface UserInterface {
-              \\"\\"\\"\\"\\"\\"
-              fromInterface: String!
-              \\"\\"\\"\\"\\"\\"
-              toBeOverridden: String!
-            }
+interface UserInterface {
+  fromInterface: String!
+  toBeOverridden: String!
+}
 
-            input UserOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserSort!]
-            }
+input UserOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [UserSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-            \\"\\"\\"
-            input UserSort {
-              fromInterface: SortDirection
-              id: SortDirection
-              location: SortDirection
-              name: SortDirection
-              numberOfFriends: SortDirection
-              rating: SortDirection
-              toBeOverridden: SortDirection
-              verified: SortDirection
-              verifiedDate: SortDirection
-            }
+\\"\\"\\"
+Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+\\"\\"\\"
+input UserSort {
+  fromInterface: SortDirection
+  id: SortDirection
+  location: SortDirection
+  name: SortDirection
+  numberOfFriends: SortDirection
+  rating: SortDirection
+  toBeOverridden: SortDirection
+  verified: SortDirection
+  verifiedDate: SortDirection
+}
 
-            input UserUpdateInput {
-              fromInterface: String
-              id: ID
-              location: Location
-              name: String
-              numberOfFriends: Int
-              numberOfFriends_DECREMENT: Int
-              numberOfFriends_INCREMENT: Int
-              rating: Float
-              rating_ADD: Float
-              rating_DIVIDE: Float
-              rating_MULTIPLY: Float
-              rating_SUBTRACT: Float
-              toBeOverridden: String
-              verified: Boolean
-              verifiedDate: DateTime
-            }
+input UserUpdateInput {
+  fromInterface: String
+  id: ID
+  location: Location
+  name: String
+  numberOfFriends: Int
+  numberOfFriends_DECREMENT: Int
+  numberOfFriends_INCREMENT: Int
+  rating: Float
+  rating_ADD: Float
+  rating_DIVIDE: Float
+  rating_MULTIPLY: Float
+  rating_SUBTRACT: Float
+  toBeOverridden: String
+  verified: Boolean
+  verifiedDate: DateTime
+}
 
-            input UserWhere {
-              AND: [UserWhere!]
-              NOT: UserWhere
-              OR: [UserWhere!]
-              fromInterface: String
-              fromInterface_CONTAINS: String
-              fromInterface_ENDS_WITH: String
-              fromInterface_IN: [String!]
-              fromInterface_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              fromInterface_STARTS_WITH: String
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID!]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              location: Location
-              location_IN: [Location!]
-              location_NOT: Location @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              location_NOT_IN: [Location!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_IN: [String!]
-              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              name_STARTS_WITH: String
-              numberOfFriends: Int
-              numberOfFriends_GT: Int
-              numberOfFriends_GTE: Int
-              numberOfFriends_IN: [Int!]
-              numberOfFriends_LT: Int
-              numberOfFriends_LTE: Int
-              numberOfFriends_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              numberOfFriends_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              rating: Float
-              rating_GT: Float
-              rating_GTE: Float
-              rating_IN: [Float!]
-              rating_LT: Float
-              rating_LTE: Float
-              rating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              rating_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden: String
-              toBeOverridden_CONTAINS: String
-              toBeOverridden_ENDS_WITH: String
-              toBeOverridden_IN: [String!]
-              toBeOverridden_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              toBeOverridden_STARTS_WITH: String
-              verified: Boolean
-              verifiedDate: DateTime
-              verifiedDate_GT: DateTime
-              verifiedDate_GTE: DateTime
-              verifiedDate_IN: [DateTime!]
-              verifiedDate_LT: DateTime
-              verifiedDate_LTE: DateTime
-              verifiedDate_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              verifiedDate_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              verified_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
+input UserWhere {
+  AND: [UserWhere!]
+  NOT: UserWhere
+  OR: [UserWhere!]
+  fromInterface: String
+  fromInterface_CONTAINS: String
+  fromInterface_ENDS_WITH: String
+  fromInterface_IN: [String!]
+  fromInterface_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  fromInterface_STARTS_WITH: String
+  id: ID
+  id_CONTAINS: ID
+  id_ENDS_WITH: ID
+  id_IN: [ID!]
+  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  id_STARTS_WITH: ID
+  location: Location
+  location_IN: [Location!]
+  location_NOT: Location @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  location_NOT_IN: [Location!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  name: String
+  name_CONTAINS: String
+  name_ENDS_WITH: String
+  name_IN: [String!]
+  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  name_STARTS_WITH: String
+  numberOfFriends: Int
+  numberOfFriends_GT: Int
+  numberOfFriends_GTE: Int
+  numberOfFriends_IN: [Int!]
+  numberOfFriends_LT: Int
+  numberOfFriends_LTE: Int
+  numberOfFriends_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  numberOfFriends_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  rating: Float
+  rating_GT: Float
+  rating_GTE: Float
+  rating_IN: [Float!]
+  rating_LT: Float
+  rating_LTE: Float
+  rating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  rating_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  toBeOverridden: String
+  toBeOverridden_CONTAINS: String
+  toBeOverridden_ENDS_WITH: String
+  toBeOverridden_IN: [String!]
+  toBeOverridden_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  toBeOverridden_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  toBeOverridden_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  toBeOverridden_STARTS_WITH: String
+  verified: Boolean
+  verifiedDate: DateTime
+  verifiedDate_GT: DateTime
+  verifiedDate_GTE: DateTime
+  verifiedDate_IN: [DateTime!]
+  verifiedDate_LT: DateTime
+  verifiedDate_LTE: DateTime
+  verifiedDate_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  verifiedDate_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  verified_NOT: Boolean @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+}
 
-            type UsersConnection {
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }"
-        `);
+type UsersConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}"
+`);
     });
 });

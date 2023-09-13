@@ -33,155 +33,153 @@ describe("Point", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
+type CreateMoviesMutationResponse {
+  info: CreateInfo!
+  movies: [Movie!]!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type Movie {
-              \\"\\"\\"\\"\\"\\"
-              filmedAt: Point!
-            }
+type Movie {
+  filmedAt: Point!
+}
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
+type MovieAggregateSelection {
+  count: Int!
+}
 
-            input MovieCreateInput {
-              filmedAt: PointInput!
-            }
+input MovieCreateInput {
+  filmedAt: PointInput!
+}
 
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
+type MovieEdge {
+  cursor: String!
+  node: Movie!
+}
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
+input MovieOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [MovieSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              filmedAt: SortDirection
-            }
+\\"\\"\\"
+Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+\\"\\"\\"
+input MovieSort {
+  filmedAt: SortDirection
+}
 
-            input MovieUpdateInput {
-              filmedAt: PointInput
-            }
+input MovieUpdateInput {
+  filmedAt: PointInput
+}
 
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              filmedAt: PointInput
-              filmedAt_DISTANCE: PointDistance
-              filmedAt_GT: PointDistance
-              filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput!]
-              filmedAt_LT: PointDistance
-              filmedAt_LTE: PointDistance
-              filmedAt_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              filmedAt_NOT_IN: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
+input MovieWhere {
+  AND: [MovieWhere!]
+  NOT: MovieWhere
+  OR: [MovieWhere!]
+  filmedAt: PointInput
+  filmedAt_DISTANCE: PointDistance
+  filmedAt_GT: PointDistance
+  filmedAt_GTE: PointDistance
+  filmedAt_IN: [PointInput!]
+  filmedAt_LT: PointDistance
+  filmedAt_LTE: PointDistance
+  filmedAt_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  filmedAt_NOT_IN: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+}
 
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type MoviesConnection {
+  edges: [MovieEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
+type Mutation {
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            \\"\\"\\"Point type\\"\\"\\"
-            type Point {
-              crs: String!
-              height: Float
-              latitude: Float!
-              longitude: Float!
-              srid: Int!
-            }
+\\"\\"\\"Point type\\"\\"\\"
+type Point {
+  crs: String!
+  height: Float
+  latitude: Float!
+  longitude: Float!
+  srid: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            input PointDistance {
-              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
-              distance: Float!
-              point: PointInput!
-            }
+\\"\\"\\"\\"\\"\\"
+input PointDistance {
+  \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+  distance: Float!
+  point: PointInput!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            input PointInput {
-              height: Float
-              latitude: Float!
-              longitude: Float!
-            }
+\\"\\"\\"\\"\\"\\"
+input PointInput {
+  height: Float
+  latitude: Float!
+  longitude: Float!
+}
 
-            type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-            }
+type Query {
+  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+}
 
-            \\"\\"\\"SortDirection\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
+\\"\\"\\"SortDirection\\"\\"\\"
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
 
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
+type UpdateMoviesMutationResponse {
+  info: UpdateInfo!
+  movies: [Movie!]!
+}"
+`);
     });
 
     test("CartesianPoint", async () => {
@@ -194,154 +192,152 @@ describe("Point", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"CartesianPoint type\\"\\"\\"
-            type CartesianPoint {
-              crs: String!
-              srid: Int!
-              x: Float!
-              y: Float!
-              z: Float
-            }
+\\"\\"\\"CartesianPoint type\\"\\"\\"
+type CartesianPoint {
+  crs: String!
+  srid: Int!
+  x: Float!
+  y: Float!
+  z: Float
+}
 
-            \\"\\"\\"\\"\\"\\"
-            input CartesianPointDistance {
-              distance: Float!
-              point: CartesianPointInput!
-            }
+\\"\\"\\"\\"\\"\\"
+input CartesianPointDistance {
+  distance: Float!
+  point: CartesianPointInput!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            input CartesianPointInput {
-              x: Float!
-              y: Float!
-              z: Float
-            }
+\\"\\"\\"\\"\\"\\"
+input CartesianPointInput {
+  x: Float!
+  y: Float!
+  z: Float
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            type CreateMachinesMutationResponse {
-              info: CreateInfo!
-              machines: [Machine!]!
-            }
+type CreateMachinesMutationResponse {
+  info: CreateInfo!
+  machines: [Machine!]!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type Machine {
-              \\"\\"\\"\\"\\"\\"
-              partLocation: CartesianPoint!
-            }
+type Machine {
+  partLocation: CartesianPoint!
+}
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
+type MachineAggregateSelection {
+  count: Int!
+}
 
-            input MachineCreateInput {
-              partLocation: CartesianPointInput!
-            }
+input MachineCreateInput {
+  partLocation: CartesianPointInput!
+}
 
-            type MachineEdge {
-              cursor: String!
-              node: Machine!
-            }
+type MachineEdge {
+  cursor: String!
+  node: Machine!
+}
 
-            input MachineOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MachineSort!]
-            }
+input MachineOptions {
+  limit: Int
+  offset: Int
+  \\"\\"\\"
+  Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array.
+  \\"\\"\\"
+  sort: [MachineSort!]
+}
 
-            \\"\\"\\"
-            Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.
-            \\"\\"\\"
-            input MachineSort {
-              partLocation: SortDirection
-            }
+\\"\\"\\"
+Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object.
+\\"\\"\\"
+input MachineSort {
+  partLocation: SortDirection
+}
 
-            input MachineUpdateInput {
-              partLocation: CartesianPointInput
-            }
+input MachineUpdateInput {
+  partLocation: CartesianPointInput
+}
 
-            input MachineWhere {
-              AND: [MachineWhere!]
-              NOT: MachineWhere
-              OR: [MachineWhere!]
-              partLocation: CartesianPointInput
-              partLocation_DISTANCE: CartesianPointDistance
-              partLocation_GT: CartesianPointDistance
-              partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput!]
-              partLocation_LT: CartesianPointDistance
-              partLocation_LTE: CartesianPointDistance
-              partLocation_NOT: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              partLocation_NOT_IN: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
+input MachineWhere {
+  AND: [MachineWhere!]
+  NOT: MachineWhere
+  OR: [MachineWhere!]
+  partLocation: CartesianPointInput
+  partLocation_DISTANCE: CartesianPointDistance
+  partLocation_GT: CartesianPointDistance
+  partLocation_GTE: CartesianPointDistance
+  partLocation_IN: [CartesianPointInput!]
+  partLocation_LT: CartesianPointDistance
+  partLocation_LTE: CartesianPointDistance
+  partLocation_NOT: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  partLocation_NOT_IN: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+}
 
-            type MachinesConnection {
-              edges: [MachineEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type MachinesConnection {
+  edges: [MachineEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
-              deleteMachines(where: MachineWhere): DeleteInfo!
-              updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
-            }
+type Mutation {
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
+  deleteMachines(where: MachineWhere): DeleteInfo!
+  updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            type Query {
-              machines(options: MachineOptions, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
-            }
+type Query {
+  machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+  machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+  machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
+}
 
-            \\"\\"\\"SortDirection\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
+\\"\\"\\"SortDirection\\"\\"\\"
+enum SortDirection {
+  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+  ASC
+  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+  DESC
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
 
-            type UpdateMachinesMutationResponse {
-              info: UpdateInfo!
-              machines: [Machine!]!
-            }"
-        `);
+type UpdateMachinesMutationResponse {
+  info: UpdateInfo!
+  machines: [Machine!]!
+}"
+`);
     });
 
     test("Points", async () => {
@@ -354,126 +350,124 @@ describe("Point", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
+type CreateMoviesMutationResponse {
+  info: CreateInfo!
+  movies: [Movie!]!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type Movie {
-              \\"\\"\\"\\"\\"\\"
-              filmedAt: [Point!]!
-            }
+type Movie {
+  filmedAt: [Point!]!
+}
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
+type MovieAggregateSelection {
+  count: Int!
+}
 
-            input MovieCreateInput {
-              filmedAt: [PointInput!]!
-            }
+input MovieCreateInput {
+  filmedAt: [PointInput!]!
+}
 
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
+type MovieEdge {
+  cursor: String!
+  node: Movie!
+}
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-            }
+input MovieOptions {
+  limit: Int
+  offset: Int
+}
 
-            input MovieUpdateInput {
-              filmedAt: [PointInput!]
-              filmedAt_POP: Int
-              filmedAt_PUSH: [PointInput!]
-            }
+input MovieUpdateInput {
+  filmedAt: [PointInput!]
+  filmedAt_POP: Int
+  filmedAt_PUSH: [PointInput!]
+}
 
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              filmedAt: [PointInput!]
-              filmedAt_INCLUDES: PointInput
-              filmedAt_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              filmedAt_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
+input MovieWhere {
+  AND: [MovieWhere!]
+  NOT: MovieWhere
+  OR: [MovieWhere!]
+  filmedAt: [PointInput!]
+  filmedAt_INCLUDES: PointInput
+  filmedAt_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  filmedAt_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+}
 
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type MoviesConnection {
+  edges: [MovieEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
+type Mutation {
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            \\"\\"\\"Point type\\"\\"\\"
-            type Point {
-              crs: String!
-              height: Float
-              latitude: Float!
-              longitude: Float!
-              srid: Int!
-            }
+\\"\\"\\"Point type\\"\\"\\"
+type Point {
+  crs: String!
+  height: Float
+  latitude: Float!
+  longitude: Float!
+  srid: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            input PointInput {
-              height: Float
-              latitude: Float!
-              longitude: Float!
-            }
+\\"\\"\\"\\"\\"\\"
+input PointInput {
+  height: Float
+  latitude: Float!
+  longitude: Float!
+}
 
-            type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
-            }
+type Query {
+  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+  moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
 
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
+type UpdateMoviesMutationResponse {
+  info: UpdateInfo!
+  movies: [Movie!]!
+}"
+`);
     });
 
     test("CartesianPoints", async () => {
@@ -486,125 +480,123 @@ describe("Point", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
+"schema {
+  query: Query
+  mutation: Mutation
+}
 
-            \\"\\"\\"CartesianPoint type\\"\\"\\"
-            type CartesianPoint {
-              crs: String!
-              srid: Int!
-              x: Float!
-              y: Float!
-              z: Float
-            }
+\\"\\"\\"CartesianPoint type\\"\\"\\"
+type CartesianPoint {
+  crs: String!
+  srid: Int!
+  x: Float!
+  y: Float!
+  z: Float
+}
 
-            \\"\\"\\"\\"\\"\\"
-            input CartesianPointInput {
-              x: Float!
-              y: Float!
-              z: Float
-            }
+\\"\\"\\"\\"\\"\\"
+input CartesianPointInput {
+  x: Float!
+  y: Float!
+  z: Float
+}
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
+\\"\\"\\"CreateInfo\\"\\"\\"
+type CreateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  relationshipsCreated: Int!
+}
 
-            type CreateMachinesMutationResponse {
-              info: CreateInfo!
-              machines: [Machine!]!
-            }
+type CreateMachinesMutationResponse {
+  info: CreateInfo!
+  machines: [Machine!]!
+}
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"DeleteInfo\\"\\"\\"
+type DeleteInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
 
-            \\"\\"\\"\\"\\"\\"
-            type Machine {
-              \\"\\"\\"\\"\\"\\"
-              partLocations: [CartesianPoint!]!
-            }
+type Machine {
+  partLocations: [CartesianPoint!]!
+}
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
+type MachineAggregateSelection {
+  count: Int!
+}
 
-            input MachineCreateInput {
-              partLocations: [CartesianPointInput!]!
-            }
+input MachineCreateInput {
+  partLocations: [CartesianPointInput!]!
+}
 
-            type MachineEdge {
-              cursor: String!
-              node: Machine!
-            }
+type MachineEdge {
+  cursor: String!
+  node: Machine!
+}
 
-            input MachineOptions {
-              limit: Int
-              offset: Int
-            }
+input MachineOptions {
+  limit: Int
+  offset: Int
+}
 
-            input MachineUpdateInput {
-              partLocations: [CartesianPointInput!]
-              partLocations_POP: Int
-              partLocations_PUSH: [CartesianPointInput!]
-            }
+input MachineUpdateInput {
+  partLocations: [CartesianPointInput!]
+  partLocations_POP: Int
+  partLocations_PUSH: [CartesianPointInput!]
+}
 
-            input MachineWhere {
-              AND: [MachineWhere!]
-              NOT: MachineWhere
-              OR: [MachineWhere!]
-              partLocations: [CartesianPointInput!]
-              partLocations_INCLUDES: CartesianPointInput
-              partLocations_NOT: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              partLocations_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-            }
+input MachineWhere {
+  AND: [MachineWhere!]
+  NOT: MachineWhere
+  OR: [MachineWhere!]
+  partLocations: [CartesianPointInput!]
+  partLocations_INCLUDES: CartesianPointInput
+  partLocations_NOT: [CartesianPointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+  partLocations_NOT_INCLUDES: CartesianPointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+}
 
-            type MachinesConnection {
-              edges: [MachineEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
+type MachinesConnection {
+  edges: [MachineEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
-            type Mutation {
-              createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
-              deleteMachines(where: MachineWhere): DeleteInfo!
-              updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
-            }
+type Mutation {
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
+  deleteMachines(where: MachineWhere): DeleteInfo!
+  updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
+}
 
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
+\\"\\"\\"Pagination information (Relay)\\"\\"\\"
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
 
-            type Query {
-              machines(options: MachineOptions, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
-              machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
-            }
+type Query {
+  machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+  machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+  machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
+}
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
+\\"\\"\\"UpdateInfo\\"\\"\\"
+type UpdateInfo {
+  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+  nodesCreated: Int!
+  nodesDeleted: Int!
+  relationshipsCreated: Int!
+  relationshipsDeleted: Int!
+}
 
-            type UpdateMachinesMutationResponse {
-              info: UpdateInfo!
-              machines: [Machine!]!
-            }"
-        `);
+type UpdateMachinesMutationResponse {
+  info: UpdateInfo!
+  machines: [Machine!]!
+}"
+`);
     });
 });
