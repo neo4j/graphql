@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Integer } from "neo4j-driver";
+import { int, type Integer } from "neo4j-driver";
 import { QueryASTNode } from "../QueryASTNode";
 
 export type PaginationField = {
@@ -27,13 +27,13 @@ export type PaginationField = {
 };
 
 export class Pagination extends QueryASTNode {
-    private skip: Integer | number | undefined;
-    private limit: Integer | number | undefined;
+    private skip: Integer | undefined;
+    private limit: Integer | undefined;
 
     constructor({ skip, limit }: { skip?: number | Integer; limit?: number | Integer }) {
         super();
-        this.skip = skip;
-        this.limit = limit;
+        this.skip = this.toNeo4jInt(skip);
+        this.limit = this.toNeo4jInt(limit);
     }
 
     public getPagination(): PaginationField | undefined {
@@ -45,5 +45,12 @@ export class Pagination extends QueryASTNode {
 
     public getChildren(): QueryASTNode[] {
         return [];
+    }
+
+    private toNeo4jInt(n: Integer | number | undefined): Integer | undefined {
+        if (typeof n === "number") {
+            return int(n);
+        }
+        return n;
     }
 }
