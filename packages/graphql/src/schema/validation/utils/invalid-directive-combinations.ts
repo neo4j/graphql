@@ -97,4 +97,5 @@ export const invalidObjectCombinations: InvalidObjectCombinations = {
     shareable: [],
     subscription: [],
     subscriptionsAuthorization: [],
+    limit: [],
 };

@@ -144,6 +144,7 @@ export const OBJECT_DIRECTIVES = [
     "plural",
     "query",
     "queryOptions",
+    "limit",
     "shareable",
     "subscription",
     "subscriptionsAuthorization",
