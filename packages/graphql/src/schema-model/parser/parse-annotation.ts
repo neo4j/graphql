@@ -43,6 +43,7 @@ import { parseSubscriptionsAuthorizationAnnotation } from "./annotations-parser/
 import type { Annotation } from "../annotation/Annotation";
 import { AnnotationsKey } from "../annotation/Annotation";
 import { IDAnnotation } from "../annotation/IDAnnotation";
+import { RelayIDAnnotation } from "../annotation/RelayIDAnnotation";
 
 export function parseAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
     const annotations = directives.reduce((directivesMap, directive) => {
@@ -108,6 +109,8 @@ function parseDirective(directive: DirectiveNode): Annotation | undefined {
             return parseTimestampAnnotation(directive);
         case AnnotationsKey.unique:
             return parseUniqueAnnotation(directive);
+        case AnnotationsKey.relayId:
+            return new RelayIDAnnotation();
         default:
             return undefined;
     }

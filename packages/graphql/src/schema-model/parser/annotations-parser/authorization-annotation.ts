@@ -17,35 +17,22 @@
  * limitations under the License.
  */
 import type { DirectiveNode } from "graphql";
-import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import type {
     AuthorizationFilterRuleConstructor,
     AuthorizationValidateRuleConstructor,
 } from "../../annotation/AuthorizationAnnotation";
 import {
     AuthorizationAnnotation,
-    AuthorizationAnnotationArguments,
     AuthorizationFilterRule,
     AuthorizationValidateRule,
 } from "../../annotation/AuthorizationAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 export function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
-    const { filter, validate, ...unrecognizedArguments } = parseArgumentsFromUnknownDirective(directive) as {
+    const { filter, validate } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
         validate?: Record<string, any>[];
     };
-    if (!filter && !validate) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(", ")} arguments`
-        );
-    }
-    if (Object.keys(unrecognizedArguments).length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `@authorization unrecognized arguments: ${Object.keys(unrecognizedArguments).join(", ")}`
-        );
-    }
-
     const filterRules = filter?.map((rule) => new AuthorizationFilterRule(rule as AuthorizationFilterRuleConstructor));
     const validateRules = validate?.map(
         (rule) => new AuthorizationValidateRule(rule as AuthorizationValidateRuleConstructor)

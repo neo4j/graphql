@@ -18,15 +18,16 @@
  */
 
 import { astFromDirective, astFromInputObjectType } from "@graphql-tools/utils";
-import type { TypeDefinitionNode, DirectiveDefinitionNode } from "graphql";
+import type { DirectiveDefinitionNode, TypeDefinitionNode } from "graphql";
 import {
-    GraphQLString,
-    GraphQLSchema,
+    DirectiveLocation,
+    GraphQLBoolean,
     GraphQLDirective,
     GraphQLInputObjectType,
     GraphQLList,
-    GraphQLBoolean,
-    DirectiveLocation,
+    GraphQLNonNull,
+    GraphQLSchema,
+    GraphQLString,
 } from "graphql";
 
 function createSubscriptionsAuthorizationWhere(
@@ -112,7 +113,7 @@ function createSubscriptionsAuthorization({
         args: {
             filter: {
                 description: "filter",
-                type: new GraphQLList(filterRule),
+                type: new GraphQLNonNull(new GraphQLList(filterRule)),
             },
         },
     });
@@ -165,7 +166,7 @@ export const subscriptionsAuthorizationDirectiveScaffold = new GraphQLDirective(
     args: {
         filter: {
             description: "filter",
-            type: new GraphQLList(GraphQLString),
+            type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
         },
     },
 });
