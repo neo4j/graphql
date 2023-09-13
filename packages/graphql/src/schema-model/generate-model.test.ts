@@ -254,11 +254,15 @@ describe("ComposeEntity generation", () => {
                 colour: String
             }
 
+            interface Animal {
+                favoriteFood: String
+            }
+
             interface Human {
                 id: ID!
             }
 
-            type User implements Human
+            type User implements Human & Animal
                 @authorization(
                     validate: [
                         { when: "BEFORE", where: { node: { id: { equals: "$jwt.sub" } } } }
@@ -284,7 +288,7 @@ describe("ComposeEntity generation", () => {
     });
 
     test("creates the composite entity", () => {
-        expect(schemaModel.compositeEntities).toHaveLength(2); // Human, Tool
+        expect(schemaModel.compositeEntities).toHaveLength(3); // Human, Animal, Tool
     });
 
     test("composite entities has correct concrete entities", () => {
@@ -307,6 +311,15 @@ describe("ComposeEntity generation", () => {
         expect(userEntity?.attributes.has("name")).toBeTrue();
         expect(userEntity?.attributes.has("password")).toBeTrue();
         expect(userEntity?.attributes.has("favoriteTool")).toBeTrue();
+    });
+
+    test("concrete entity has correct references of the composite entities that implements", () => {
+        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
+        expect(userEntity?.compositeEntities).toBeArrayOfSize(2);
+        expect(userEntity?.compositeEntities.map(e => e.name)).toStrictEqual(expect.arrayContaining(["Human", "Animal"]));
+        const pencilEntity = schemaModel.concreteEntities.find((e) => e.name === "Pencil");
+        expect(pencilEntity?.compositeEntities).toBeArrayOfSize(1);
+        expect(pencilEntity?.compositeEntities.map(e => e.name)).toStrictEqual(expect.arrayContaining(["Tool"]));
     });
 });
 
