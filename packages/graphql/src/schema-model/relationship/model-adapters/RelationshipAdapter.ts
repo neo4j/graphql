@@ -43,7 +43,7 @@ export class RelationshipAdapter {
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly propertiesTypeName: string | undefined;
     public readonly inheritedFrom: string | undefined;
     public readonly isList: boolean;

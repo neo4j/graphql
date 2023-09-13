@@ -185,7 +185,7 @@ function generateInterfaceEntity(
 
     return new InterfaceEntity({
         ...interfaceEntity,
-        description: definition.description?.value || "",
+        description: definition.description?.value,
         attributes: filterTruthy(fields) as Attribute[],
         annotations,
     });
@@ -369,7 +369,7 @@ function generateRelationshipField(
         nestedOperations: nestedOperations as NestedOperation[],
         aggregate: aggregate as boolean,
         isNullable: !fieldTypeMeta.required,
-        description: field.description?.value || "",
+        description: field.description?.value,
         annotations: annotations,
         propertiesTypeName,
         inheritedFrom,

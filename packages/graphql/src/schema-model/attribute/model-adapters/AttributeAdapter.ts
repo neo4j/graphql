@@ -50,7 +50,7 @@ export class AttributeAdapter {
     public readonly type: AttributeType;
     public readonly args: Argument[];
     public readonly databaseName: string;
-    public readonly description: string;
+    public readonly description?: string;
     private assertionOptions: {
         includeLists: boolean;
     };
