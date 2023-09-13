@@ -301,7 +301,6 @@ export class OperationsFactory {
             return this.hydrateReadOperation({
                 relationship,
                 entity: concreteEntity,
-                interfaceEntity: entity,
                 resolveTree,
                 context,
                 operation: connectionPartial,
@@ -323,18 +322,18 @@ export class OperationsFactory {
         operation,
         resolveTree,
         context,
-        interfaceEntity,
     }: {
         entity: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         operation: T;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-        interfaceEntity?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
-        // TODO: get abstract types of concrete entity
         let projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-        if (interfaceEntity) {
+
+        // Get the abstract types of the interface
+        const entityInterfaces = entity.compositeEntities;
+        for (const interfaceEntity of entityInterfaces) {
             projectionFields = { ...resolveTree.fieldsByTypeName[interfaceEntity.name], ...projectionFields };
         }
 
