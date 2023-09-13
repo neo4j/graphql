@@ -44,6 +44,7 @@ import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import { parseAnnotations } from "./parser/parse-annotation";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
+import type { CompositeEntity } from "./entity/CompositeEntity";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -101,8 +102,17 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-
+    addCompositeEntitiesToConcreteEntity(interfaceEntities);
+    addCompositeEntitiesToConcreteEntity(unionEntities);
     return schema;
+}
+
+function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity[]): void {
+    compositeEntities.forEach((compositeEntity: CompositeEntity) => {
+        compositeEntity.concreteEntities.forEach((concreteEntity: ConcreteEntity) =>
+            concreteEntity.addCompositeEntities(compositeEntity)
+        );
+    });
 }
 
 function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollection) {

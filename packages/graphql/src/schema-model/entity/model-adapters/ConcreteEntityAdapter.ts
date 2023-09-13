@@ -28,6 +28,7 @@ import type { Annotations } from "../../annotation/Annotation";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
+import type { CompositeEntity } from "../CompositeEntity";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
@@ -36,7 +37,8 @@ export class ConcreteEntityAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
-
+    public readonly compositeEntities: CompositeEntity[] = [];
+    
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
     private uniqueFieldsKeys: string[] = [];
@@ -57,6 +59,7 @@ export class ConcreteEntityAdapter {
         this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
         this.initRelationships(entity.relationships);
+        this.compositeEntities = entity.compositeEntities;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {

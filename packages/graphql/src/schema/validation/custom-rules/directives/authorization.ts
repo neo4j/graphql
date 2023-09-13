@@ -16,20 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type { DirectiveNode } from "graphql";
-import type { DefaultAnnotationValue } from "../../annotation/DefaultAnnotation";
-import { DefaultAnnotation } from "../../annotation/DefaultAnnotation";
-import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
+import { AuthorizationAnnotationArguments } from "../../../../schema-model/annotation/AuthorizationAnnotation";
+import { DocumentValidationError } from "../utils/document-validation-error";
 
-export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
-    const args = parseArgumentsFromUnknownDirective(directive) as Record<string, DefaultAnnotationValue>;
+export function verifyAuthorization() {
+    return function ({ directiveNode }: { directiveNode: DirectiveNode }) {
+        for (const arg of AuthorizationAnnotationArguments) {
+            if (directiveNode.arguments?.find((a) => a.name.value === arg)) {
+                return;
+            }
+        }
 
-    if (args.value === undefined) {
-        throw new Error("@default directive must have a value");
-    }
-
-    return new DefaultAnnotation({
-        value: args.value,
-    });
+        throw new DocumentValidationError(
+            `@authorization requires at least one of ${AuthorizationAnnotationArguments.join(", ")} arguments`,
+            []
+        );
+    };
 }

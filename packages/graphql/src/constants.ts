@@ -107,3 +107,55 @@ export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";
 
 export const DBMS_COMPONENTS_QUERY =
     "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
+
+export const FIELD_DIRECTIVES = [
+    "alias",
+    "authentication",
+    "authorization",
+    "callback",
+    "coalesce",
+    "customResolver",
+    "cypher",
+    "default",
+    "filterable",
+    "id",
+    "jwtClaim",
+    "populatedBy",
+    "readonly",
+    "relationship",
+    "relayId",
+    "selectable",
+    "settable",
+    "subscriptionsAuthorization",
+    "timestamp",
+    "unique",
+    "writeonly",
+] as const;
+
+export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
+
+export const OBJECT_DIRECTIVES = [
+    "authentication",
+    "authorization",
+    "deprecated",
+    "fulltext",
+    "jwt",
+    "mutation",
+    "node",
+    "plural",
+    "query",
+    "queryOptions",
+    "shareable",
+    "subscription",
+    "subscriptionsAuthorization",
+] as const;
+
+export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
+
+export const INTERFACE_DIRECTIVES = ["relationshipProperties"] as const;
+
+export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
+
+export const DEPRECATED = "deprecated";
+
+export const PROPAGATED_DIRECTIVES = ["shareable", DEPRECATED] as const;
