@@ -17,28 +17,30 @@
  * limitations under the License.
  */
 
+import { upperFirst } from "graphql-compose";
+import { toGlobalId } from "../../../utils/global-ids";
+import type { Annotations } from "../../annotation/Annotation";
+import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Relationship } from "../../relationship/Relationship";
-import { getFromMap } from "../../utils/get-from-map";
-import { singular, plural } from "../../utils/string-manipulation";
-import type { ConcreteEntity } from "../ConcreteEntity";
-import type { Attribute } from "../../attribute/Attribute";
 import { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
-import type { Annotations } from "../../annotation/Annotation";
+import { getFromMap } from "../../utils/get-from-map";
+import { plural, singular } from "../../utils/string-manipulation";
+import type { CompositeEntity } from "../CompositeEntity";
+import type { ConcreteEntity } from "../ConcreteEntity";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
-import type { CompositeEntity } from "../CompositeEntity";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
     public readonly compositeEntities: CompositeEntity[] = [];
-    
+
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
     private uniqueFieldsKeys: string[] = [];
@@ -48,6 +50,7 @@ export class ConcreteEntityAdapter {
 
     private _singular: string | undefined;
     private _plural: string | undefined;
+    private _globalIdField: AttributeAdapter | undefined;
 
     // specialize models
     private _operations: ConcreteEntityOperations | undefined;
@@ -59,6 +62,7 @@ export class ConcreteEntityAdapter {
         this.annotations = entity.annotations;
         this.initAttributes(entity.attributes);
         this.initRelationships(entity.relationships);
+        this.description = entity.description;
         this.compositeEntities = entity.compositeEntities;
     }
 
@@ -75,6 +79,10 @@ export class ConcreteEntityAdapter {
                 if (attributeAdapter.isUnique()) {
                     this.uniqueFieldsKeys.push(attribute.name);
                 }
+            }
+
+            if (attributeAdapter.isGlobalIDAttribute()) {
+                this._globalIdField = attributeAdapter;
             }
         }
     }
@@ -104,6 +112,53 @@ export class ConcreteEntityAdapter {
         return this._relatedEntities;
     }
 
+    public get objectFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isObjectField());
+    }
+
+    public get sortableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
+    }
+
+    public get whereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
+    public get aggregableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
+    }
+
+    public get aggregationWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
+    }
+
+    public get createInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isCreateInputField());
+    }
+
+    public get updateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
+    }
+
+    public get arrayMethodFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isArrayMethodField());
+    }
+
+    public get onCreateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isOnCreateField());
+    }
+    // public get scalarFields(): AttributeAdapter[] {
+    //     return Array.from(this.attributes.values()).filter((attribute) => attribute.isScalarField());
+    // }
+
+    // public get enumFields(): AttributeAdapter[] {
+    //     return Array.from(this.attributes.values()).filter((attribute) => attribute.isEnumField());
+    // }
+
+    public get temporalFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
+    }
+
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
     public getLabels(): string[] {
         return Array.from(this.labels);
@@ -131,6 +186,10 @@ export class ConcreteEntityAdapter {
         return this._plural;
     }
 
+    public get upperFirstPlural(): string {
+        return upperFirst(this.plural);
+    }
+
     get operations(): ConcreteEntityOperations {
         if (!this._operations) {
             return new ConcreteEntityOperations(this);
@@ -139,4 +198,23 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
+    get globalIdField() {
+        return this._globalIdField;
+    }
+
+    public isGlobalNode(): this is this & { globalIdField: AttributeAdapter } {
+        return !!this._globalIdField;
+    }
+
+    public toGlobalId(id: string | number): string {
+        if (!this.isGlobalNode()) {
+            throw new Error(`Entity ${this.name} is not a global node`);
+        }
+
+        return toGlobalId({
+            typeName: this.name,
+            field: this.globalIdField.name,
+            id,
+        });
+    }
 }
