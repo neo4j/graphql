@@ -25,6 +25,5 @@ export function getConcreteEntities(
     entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
 ): ConcreteEntityAdapter[] {
     if (entity instanceof ConcreteEntityAdapter) return [entity];
-
-    return Array.from(new Set(entity.concreteEntities.flatMap((e) => getConcreteEntities(e))));
+    return entity.concreteEntities;
 }

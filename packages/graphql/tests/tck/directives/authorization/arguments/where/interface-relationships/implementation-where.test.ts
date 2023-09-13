@@ -254,17 +254,17 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
                     OPTIONAL MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WITH *, count(this4) AS creatorCount
+                    WITH *, count(this4) AS var5
                     WITH *
-                    WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)))
+                    WHERE ($isAuthenticated = true AND (var5 <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)))
                     WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var5
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .id, contentConnection: var5 } AS this"
+            RETURN this { .id, contentConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -317,17 +317,17 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
                     OPTIONAL MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WITH *, count(this4) AS creatorCount
+                    WITH *, count(this4) AS var5
                     WITH *
-                    WHERE (this3.id = $param3 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub))))
+                    WHERE (this3.id = $param3 AND ($isAuthenticated = true AND (var5 <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub))))
                     WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var5
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .id, contentConnection: var5 } AS this"
+            RETURN this { .id, contentConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

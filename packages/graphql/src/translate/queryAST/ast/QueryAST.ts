@@ -22,8 +22,7 @@ import type { ReadOperation } from "./operations/ReadOperation";
 import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
-import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 export class QueryAST {
     private operation: ReadOperation;
@@ -34,18 +33,14 @@ export class QueryAST {
 
     public transpile(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
         const queryASTEnv = new QueryASTEnv();
-        const node = createNodeFromEntity(
-            this.operation.entity as ConcreteEntityAdapter,
-            neo4jGraphQLContext,
-            this.operation.nodeAlias
-        );
+        const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
         const context = new QueryASTContext({
             target: node,
             env: queryASTEnv,
-            neo4jGraphQLContext
+            neo4jGraphQLContext,
         });
         const result = this.operation.transpile({ context, returnVariable: new Cypher.NamedVariable("this") });
-        return result.clauses[0] as Cypher.Clause;
+        return Cypher.concat(...result.clauses);
     }
 
     public print(): string {

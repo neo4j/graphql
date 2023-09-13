@@ -27,13 +27,15 @@ import { Operation } from "./operations";
 import type { Pagination } from "../pagination/Pagination";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Sort } from "../sort/Sort";
 
 export class ReadOperation extends Operation {
-    public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
+    public readonly target: ConcreteEntityAdapter;
+    public readonly relationship: RelationshipAdapter | undefined;
+
     protected directed: boolean;
 
     public fields: Field[] = [];
@@ -45,10 +47,19 @@ export class ReadOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    constructor(entity: ConcreteEntityAdapter | RelationshipAdapter, directed = true) {
+    constructor({
+        target,
+        relationship,
+        directed,
+    }: {
+        target: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+        directed?: boolean;
+    }) {
         super();
-        this.entity = entity;
-        this.directed = directed;
+        this.target = target;
+        this.directed = directed ?? true;
+        this.relationship = relationship;
     }
 
     public setFields(fields: Field[]) {
@@ -103,7 +114,7 @@ export class ReadOperation extends Operation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList); 
+        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList);
 
         const clause = Cypher.concat(
             matchClause,
@@ -120,7 +131,7 @@ export class ReadOperation extends Operation {
         };
     }
 
-    private getProjectionClause(
+    protected getProjectionClause(
         context: QueryASTContext,
         returnVariable: Cypher.Variable,
         isArray: boolean
@@ -140,18 +151,19 @@ export class ReadOperation extends Operation {
         return withClause.return([aggregationExpr, returnVariable]);
     }
 
-    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         return Cypher.and(...[...this.filters].map((f) => f.getPredicate(queryASTContext)));
     }
 
     public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
-        if (this.entity instanceof RelationshipAdapter) {
-            return this.transpileNestedRelationship(this.entity, {
+        if (this.relationship) {
+            return this.transpileNestedRelationship(this.relationship, {
                 returnVariable: new Cypher.Variable(),
                 context,
             });
         }
-        const node = createNodeFromEntity(this.entity, context.neo4jGraphQLContext, this.nodeAlias);
+        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
+
         const filterSubqueries = this.filters
             .flatMap((f) => f.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
@@ -229,7 +241,7 @@ export class ReadOperation extends Operation {
         });
     }
 
-    private getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
+    protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
         const projectionFields = this.fields.map((f) => f.getProjectionField(context.target));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField(context));
 
@@ -248,7 +260,7 @@ export class ReadOperation extends Operation {
         return new Cypher.MapProjection(context.target, stringFields, otherFields);
     }
 
-    private addSortToClause(context: QueryASTContext, node: Cypher.Node, clause: Cypher.With | Cypher.Return): void {
+    protected addSortToClause(context: QueryASTContext, node: Cypher.Node, clause: Cypher.With | Cypher.Return): void {
         const isNested = Boolean(context.source); // This is to keep Cypher compatibility
         const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(context, node, !isNested));
         const pagination = this.pagination ? this.pagination.getPagination() : undefined;

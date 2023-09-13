@@ -117,13 +117,13 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     WITH this1
                     CALL {
                         WITH this1
-                        MATCH (this1:DriveComposition)-[this2:HAS]->(this3:Battery)
+                        MATCH (this1)-[this2:HAS]->(this3:Battery)
                         WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                         WITH { current: this2.current, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
                         RETURN edge
                         UNION
                         WITH this1
-                        MATCH (this1:DriveComposition)-[this4:HAS]->(this5:CombustionEngine)
+                        MATCH (this1)-[this4:HAS]->(this5:CombustionEngine)
                         WHERE this4.current = $param6
                         WITH { current: this4.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this5), id: this5.id } } AS edge
                         RETURN edge

@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("#583", () => {
+describe("https://github.com/neo4j/graphql/issues/583", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -62,7 +62,7 @@ describe("#583", () => {
         });
     });
 
-    test("Should replicate issue and return correct cypher", async () => {
+    test("Should resolve properties from common interface", async () => {
         const query = gql`
             query shows {
                 actors {
