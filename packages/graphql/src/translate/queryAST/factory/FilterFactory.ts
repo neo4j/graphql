@@ -66,10 +66,7 @@ export class FilterFactory {
             }
             const { fieldName, operator, isNot } = parseWhereField(key);
             const attr = (relationship.target as ConcreteEntityAdapter).findAttribute(fieldName);
-            if (!attr) {
-                console.trace("here");
-                throw new Error(`Attribute ${fieldName} not found`);
-            }
+            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
             return this.createPropertyFilter({
                 attribute: attr,
