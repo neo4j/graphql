@@ -49,7 +49,7 @@ export class Attribute {
         this.type = type;
         this.args = args;
         this.databaseName = databaseName ?? name;
-        this.description = description || "";
+        this.description = description;
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);
