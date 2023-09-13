@@ -40,7 +40,7 @@ export class QueryAST {
             neo4jGraphQLContext,
         });
         const result = this.operation.transpile({ context, returnVariable: new Cypher.NamedVariable("this") });
-        return result.clauses[0] as Cypher.Clause;
+        return Cypher.concat(...result.clauses);
     }
 
     public print(): string {

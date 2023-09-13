@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
-import { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -51,7 +51,6 @@ export class InterfaceReadPartial extends ReadOperation {
         const matchClause = new Cypher.Match(pattern);
 
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
-        // const nestedContext = new QueryASTContext({ target: targetNode, relationship: relVar, source: parentNode });
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
