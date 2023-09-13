@@ -27,7 +27,7 @@ export class Attribute {
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
     public readonly databaseName: string;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly args: Argument[];
 
     constructor({

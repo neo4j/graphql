@@ -51,7 +51,7 @@ export class AttributeAdapter {
     public readonly type: AttributeType;
     public readonly args: Argument[];
     public readonly databaseName: string;
-    public readonly description: string;
+    public readonly description?: string;
     private assertionOptions: {
         includeLists: boolean;
     };
@@ -217,9 +217,7 @@ export class AttributeAdapter {
      ]
      */
     isOnCreateField(): boolean {
-        return (
-            this.isNonGeneratedField() && (this.isScalar() || this.isSpatial() || this.isEnum() || this.isAbstract())
-        );
+        return this.isNonGeneratedField() && (this.isScalar() || this.isEnum() || this.isAbstract());
     }
 
     /**

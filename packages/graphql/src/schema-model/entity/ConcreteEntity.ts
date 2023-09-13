@@ -28,11 +28,12 @@ import type { Entity } from "./Entity";
 
 export class ConcreteEntity implements Entity {
     public readonly name: string;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly labels: Set<string>;
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
     public readonly annotations: Partial<Annotations> = {};
+    public readonly compositeEntities: CompositeEntity[] = []; // The composite entities that this entity is a part of
 
     constructor({
         name,
@@ -41,6 +42,7 @@ export class ConcreteEntity implements Entity {
         attributes = [],
         annotations = [],
         relationships = [],
+        compositeEntities = [],
     }: {
         name: string;
         labels: string[];
@@ -48,6 +50,7 @@ export class ConcreteEntity implements Entity {
         annotations?: Annotation[];
         relationships?: Relationship[];
         description?: string;
+        compositeEntities?: CompositeEntity[];
     }) {
         this.name = name;
         this.description = description || "";
@@ -63,10 +66,16 @@ export class ConcreteEntity implements Entity {
         for (const relationship of relationships) {
             this.addRelationship(relationship);
         }
+
+        for (const entity of compositeEntities) {
+            this.addCompositeEntities(entity);
+        }
     }
+
     isConcreteEntity(): this is ConcreteEntity {
         return true;
     }
+
     isCompositeEntity(): this is CompositeEntity {
         return false;
     }
@@ -102,6 +111,10 @@ export class ConcreteEntity implements Entity {
             );
         }
         this.relationships.set(relationship.name, relationship);
+    }
+
+    public addCompositeEntities(entity: CompositeEntity): void {
+        this.compositeEntities.push(entity);
     }
 
     public findAttribute(name: string): Attribute | undefined {

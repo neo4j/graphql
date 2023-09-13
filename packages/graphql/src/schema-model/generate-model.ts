@@ -32,6 +32,7 @@ import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { Operation } from "./Operation";
 import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
+import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
@@ -101,8 +102,17 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-
+    addCompositeEntitiesToConcreteEntity(interfaceEntities);
+    addCompositeEntitiesToConcreteEntity(unionEntities);
     return schema;
+}
+
+function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity[]): void {
+    compositeEntities.forEach((compositeEntity: CompositeEntity) => {
+        compositeEntity.concreteEntities.forEach((concreteEntity: ConcreteEntity) =>
+            concreteEntity.addCompositeEntities(compositeEntity)
+        );
+    });
 }
 
 function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollection) {
@@ -185,7 +195,7 @@ function generateInterfaceEntity(
 
     return new InterfaceEntity({
         ...interfaceEntity,
-        description: definition.description?.value || "",
+        description: definition.description?.value,
         attributes: filterTruthy(fields) as Attribute[],
         annotations,
     });
@@ -369,7 +379,7 @@ function generateRelationshipField(
         nestedOperations: nestedOperations as NestedOperation[],
         aggregate: aggregate as boolean,
         isNullable: !fieldTypeMeta.required,
-        description: field.description?.value || "",
+        description: field.description?.value,
         annotations: annotations,
         propertiesTypeName,
         inheritedFrom,

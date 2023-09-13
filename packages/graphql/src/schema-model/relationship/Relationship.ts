@@ -45,7 +45,7 @@ export class Relationship {
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly annotations: Partial<Annotations> = {};
     public readonly propertiesTypeName: string | undefined;
     public readonly inheritedFrom: string | undefined;
@@ -80,7 +80,7 @@ export class Relationship {
         nestedOperations: NestedOperation[];
         aggregate: boolean;
         isNullable: boolean;
-        description: string;
+        description?: string;
         annotations: Annotation[];
         propertiesTypeName?: string;
         inheritedFrom?: string;

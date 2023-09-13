@@ -27,7 +27,7 @@ import type { ConcreteEntity } from "./ConcreteEntity";
 
 export class InterfaceEntity implements CompositeEntity {
     public readonly name: string;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
@@ -42,7 +42,7 @@ export class InterfaceEntity implements CompositeEntity {
         relationships = [],
     }: {
         name: string;
-        description: string;
+        description?: string;
         concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
         annotations?: Annotation[];

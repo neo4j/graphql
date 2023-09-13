@@ -24,9 +24,9 @@ import { Argument } from "../argument/Argument";
 import { Attribute } from "../attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
-    InputType,
     EnumType,
     GraphQLBuiltInScalarType,
+    InputType,
     InterfaceType,
     ListType,
     Neo4jCartesianPointType,
