@@ -706,6 +706,7 @@ function makeAugmentedSchema(
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
     const seenRelationshipPropertiesInterfaces = new Set<string>();
 
+    // TODO: keeping this for backwards compatibility on translation layer
     relationshipProperties.forEach((relationship) => {
         const relFields = getObjFieldMeta({
             enums: enumTypes,
@@ -783,6 +784,24 @@ function makeAugmentedSchema(
         */
     });
 
+    // this is the new way for the above forEach
+    schemaModel.concreteEntities.forEach((concreteEntity) => {
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
+
+        for (const relationship of concreteEntityAdapter.relationships.values()) {
+            {
+                if (
+                    !relationship.propertiesTypeName ||
+                    seenRelationshipPropertiesInterfaces.has(relationship.propertiesTypeName)
+                ) {
+                    continue;
+                }
+                doForRelationshipPropertiesInterface(composer, relationship, definitionNodes, features);
+                seenRelationshipPropertiesInterfaces.add(relationship.propertiesTypeName);
+            }
+        }
+    });
+
     interfaceRelationships.forEach((interfaceRelationship) => {
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
         const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
@@ -797,11 +816,6 @@ function makeAugmentedSchema(
         if (updatedRelationships) {
             relationships = updatedRelationships;
         }
-
-        // TODO
-        // 2. move this to a separate function
-        // 3. call separate function from inside the nodes.forEach(), for each relationship where relationship.target is Interface, after doing the relationshipProperties interfaces
-
         // TODO: Remove this
         const interfaceFields = getObjFieldMeta({
             enums: enumTypes,
@@ -818,19 +832,6 @@ function makeAugmentedSchema(
     nodes.forEach((node) => {
         const concreteEntity = schemaModel.getEntity(node.name) as ConcreteEntity;
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
-
-        for (const relationship of concreteEntityAdapter.relationships.values()) {
-            {
-                if (
-                    !relationship.propertiesTypeName ||
-                    seenRelationshipPropertiesInterfaces.has(relationship.propertiesTypeName)
-                ) {
-                    continue;
-                }
-                doForRelationshipPropertiesInterface(composer, relationship, definitionNodes, features);
-                seenRelationshipPropertiesInterfaces.add(relationship.propertiesTypeName);
-            }
-        }
 
         // We wanted to get the userDefinedDirectives
         const definitionNode = definitionNodes.objectTypes.find(

@@ -622,6 +622,7 @@ describe("Interface Relationships", () => {
             }
 
             interface ActedIn {
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 
@@ -712,6 +713,7 @@ describe("Interface Relationships", () => {
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 
@@ -1363,8 +1365,10 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
+              \\"\\"\\"\\"\\"\\"
               actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              \\"\\"\\"\\"\\"\\"
               title: String!
             }
 
@@ -1507,6 +1511,7 @@ describe("Interface Relationships", () => {
             type ProductionActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              \\"\\"\\"\\"\\"\\"
               screenTime: Int!
             }
 
