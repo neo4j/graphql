@@ -87,17 +87,17 @@ describe("https://github.com/neo4j/graphql/issues/583", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .title, .awardsGiven } AS this1
+                    WITH this1 { .awardsGiven, .title, __resolveType: \\"Movie\\", __id: id(this) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WITH this4 { __resolveType: \\"Series\\", __id: id(this), .title, .awardsGiven } AS this4
+                    WITH this4 { .awardsGiven, .title, __resolveType: \\"Series\\", __id: id(this) } AS this4
                     RETURN this4 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this5:ACTED_IN]->(this6:ShortFilm)
-                    WITH this6 { __resolveType: \\"ShortFilm\\", __id: id(this), .title } AS this6
+                    WITH this6 { .title, __resolveType: \\"ShortFilm\\", __id: id(this) } AS this6
                     RETURN this6 AS var2
                 }
                 WITH var2
