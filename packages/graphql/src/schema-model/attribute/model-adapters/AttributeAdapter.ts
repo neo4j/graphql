@@ -549,7 +549,6 @@ export class AttributeAdapter {
         );
     }
     isAggregationFilterable(): boolean {
-        console.log("isAggregationFilterable", this.annotations.filterable?.byAggregate);
         return (
             this.annotations.filterable?.byAggregate !== false &&
             this.isCustomResolvable() === false &&
