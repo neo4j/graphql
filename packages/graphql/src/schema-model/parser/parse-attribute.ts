@@ -54,7 +54,7 @@ export function parseAttributeArguments(
             name: fieldArg.name.value,
             type: parseTypeNode(definitionCollection, fieldArg.type),
             defaultValue: fieldArg.defaultValue,
-            description: fieldArg.description?.value || "",
+            description: fieldArg.description?.value,
         });
     });
 }
@@ -76,7 +76,7 @@ export function parseAttribute(
         type,
         args,
         databaseName,
-        description: field.description?.value || "",
+        description: field.description?.value,
     });
 }
 

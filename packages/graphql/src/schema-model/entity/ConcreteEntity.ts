@@ -53,7 +53,7 @@ export class ConcreteEntity implements Entity {
         compositeEntities?: CompositeEntity[];
     }) {
         this.name = name;
-        this.description = description || "";
+        this.description = description;
         this.labels = new Set(labels);
         for (const attribute of attributes) {
             this.addAttribute(attribute);
