@@ -177,7 +177,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                         RETURN count(this2) = 1 AS var4
                     }
                     WITH *
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var4 = true)
+                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var4 = true)
                     RETURN count(this1) = 1 AS var5
                 }
                 WITH *
@@ -208,14 +208,14 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 \\"param0\\": [
                     \\"13001\\"
                 ],
-                \\"param1\\": 0,
-                \\"param2\\": {
+                \\"param1\\": [
+                    \\"APARTMENT\\"
+                ],
+                \\"param2\\": 0,
+                \\"param3\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param3\\": [
-                    \\"APARTMENT\\"
-                ],
                 \\"param4\\": 0,
                 \\"isAuthenticated\\": true
             }"
@@ -280,7 +280,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                         RETURN count(this2) = 1 AS var4
                     }
                     WITH *
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var4 = true)
+                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var4 = true)
                     RETURN count(this1) = 1 AS var5
                 }
                 WITH *
@@ -314,14 +314,14 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 \\"param0\\": [
                     \\"13001\\"
                 ],
-                \\"param1\\": 0,
-                \\"param2\\": {
+                \\"param1\\": [
+                    \\"APARTMENT\\"
+                ],
+                \\"param2\\": 0,
+                \\"param3\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param3\\": [
-                    \\"APARTMENT\\"
-                ],
                 \\"param4\\": 0,
                 \\"isAuthenticated\\": true,
                 \\"param6\\": {
@@ -394,7 +394,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                         RETURN count(this2) = 1 AS var4
                     }
                     WITH *
-                    WHERE (this1.area >= $param1 AND this1.floor >= $param2 AND this1.estateType IN $param3 AND var4 = true)
+                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var4 = true)
                     RETURN count(this1) = 1 AS var5
                 }
                 WITH *
@@ -428,14 +428,14 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 \\"param0\\": [
                     \\"13001\\"
                 ],
-                \\"param1\\": 0,
-                \\"param2\\": {
+                \\"param1\\": [
+                    \\"APARTMENT\\"
+                ],
+                \\"param2\\": 0,
+                \\"param3\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },
-                \\"param3\\": [
-                    \\"APARTMENT\\"
-                ],
                 \\"param4\\": 0,
                 \\"isAuthenticated\\": true,
                 \\"param6\\": {

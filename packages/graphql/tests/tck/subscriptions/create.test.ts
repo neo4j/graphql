@@ -399,18 +399,18 @@ describe("Subscriptions metadata on create", () => {
             WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            CREATE (this0_directors_Actor0_node:Actor)
-            SET this0_directors_Actor0_node.name = $this0_directors_Actor0_node_name
-            WITH meta + { event: \\"create\\", id: id(this0_directors_Actor0_node), properties: { old: null, new: this0_directors_Actor0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_directors_Actor0_node
-            MERGE (this0)<-[this0_directors_Actor0_relationship:DIRECTED]-(this0_directors_Actor0_node)
-            SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
-            WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_directors_Actor0_node), id_to: id(this0), id: id(this0_directors_Actor0_relationship), relationshipName: \\"DIRECTED\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: this0_directors_Actor0_node { .* }, to: this0 { .* }, relationship: this0_directors_Actor0_relationship { .* } } } AS meta, this0, this0_directors_Actor0_node
             CREATE (this0_directors_Person0_node:Person)
             SET this0_directors_Person0_node.name = $this0_directors_Person0_node_name
             WITH meta + { event: \\"create\\", id: id(this0_directors_Person0_node), properties: { old: null, new: this0_directors_Person0_node { .* } }, timestamp: timestamp(), typename: \\"Person\\" } AS meta, this0, this0_directors_Person0_node
             MERGE (this0)<-[this0_directors_Person0_relationship:DIRECTED]-(this0_directors_Person0_node)
             SET this0_directors_Person0_relationship.year = $this0_directors_Person0_relationship_year
             WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_directors_Person0_node), id_to: id(this0), id: id(this0_directors_Person0_relationship), relationshipName: \\"DIRECTED\\", fromTypename: \\"Person\\", toTypename: \\"Movie\\", properties: { from: this0_directors_Person0_node { .* }, to: this0 { .* }, relationship: this0_directors_Person0_relationship { .* } } } AS meta, this0, this0_directors_Person0_node
+            CREATE (this0_directors_Actor0_node:Actor)
+            SET this0_directors_Actor0_node.name = $this0_directors_Actor0_node_name
+            WITH meta + { event: \\"create\\", id: id(this0_directors_Actor0_node), properties: { old: null, new: this0_directors_Actor0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0, this0_directors_Actor0_node
+            MERGE (this0)<-[this0_directors_Actor0_relationship:DIRECTED]-(this0_directors_Actor0_node)
+            SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
+            WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_directors_Actor0_node), id_to: id(this0), id: id(this0_directors_Actor0_relationship), relationshipName: \\"DIRECTED\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: this0_directors_Actor0_node { .* }, to: this0 { .* }, relationship: this0_directors_Actor0_relationship { .* } } } AS meta, this0, this0_directors_Actor0_node
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
@@ -436,14 +436,14 @@ describe("Subscriptions metadata on create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"The Matrix\\",
-                \\"this0_directors_Actor0_node_name\\": \\"Keanu Reeves\\",
-                \\"this0_directors_Actor0_relationship_year\\": {
-                    \\"low\\": 2420,
-                    \\"high\\": 0
-                },
                 \\"this0_directors_Person0_node_name\\": \\"Lilly Wachowski\\",
                 \\"this0_directors_Person0_relationship_year\\": {
                     \\"low\\": 1999,
+                    \\"high\\": 0
+                },
+                \\"this0_directors_Actor0_node_name\\": \\"Keanu Reeves\\",
+                \\"this0_directors_Actor0_relationship_year\\": {
+                    \\"low\\": 2420,
                     \\"high\\": 0
                 },
                 \\"resolvedCallbacks\\": {}
@@ -539,6 +539,12 @@ describe("Subscriptions metadata on create", () => {
             WITH [] AS meta
             CREATE (this0:Movie)
             SET this0.title = $this0_title
+            CREATE (this0_directors_Person0_node:Person)
+            SET this0_directors_Person0_node.name = $this0_directors_Person0_node_name
+            WITH meta + { event: \\"create\\", id: id(this0_directors_Person0_node), properties: { old: null, new: this0_directors_Person0_node { .* } }, timestamp: timestamp(), typename: \\"Person\\" } AS meta, this0, this0_directors_Person0_node
+            MERGE (this0)<-[this0_directors_Person0_relationship:DIRECTED]-(this0_directors_Person0_node)
+            SET this0_directors_Person0_relationship.year = $this0_directors_Person0_relationship_year
+            WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_directors_Person0_node), id_to: id(this0), id: id(this0_directors_Person0_relationship), relationshipName: \\"DIRECTED\\", fromTypename: \\"Person\\", toTypename: \\"Movie\\", properties: { from: this0_directors_Person0_node { .* }, to: this0 { .* }, relationship: this0_directors_Person0_relationship { .* } } } AS meta, this0, this0_directors_Person0_node
             CREATE (this0_directors_Actor0_node:Actor)
             SET this0_directors_Actor0_node.name = $this0_directors_Actor0_node_name
             CREATE (this0_directors_Actor0_node_movies0_node:Movie)
@@ -551,12 +557,6 @@ describe("Subscriptions metadata on create", () => {
             MERGE (this0)<-[this0_directors_Actor0_relationship:DIRECTED]-(this0_directors_Actor0_node)
             SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
             WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_directors_Actor0_node), id_to: id(this0), id: id(this0_directors_Actor0_relationship), relationshipName: \\"DIRECTED\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: this0_directors_Actor0_node { .* }, to: this0 { .* }, relationship: this0_directors_Actor0_relationship { .* } } } AS meta, this0, this0_directors_Actor0_node
-            CREATE (this0_directors_Person0_node:Person)
-            SET this0_directors_Person0_node.name = $this0_directors_Person0_node_name
-            WITH meta + { event: \\"create\\", id: id(this0_directors_Person0_node), properties: { old: null, new: this0_directors_Person0_node { .* } }, timestamp: timestamp(), typename: \\"Person\\" } AS meta, this0, this0_directors_Person0_node
-            MERGE (this0)<-[this0_directors_Person0_relationship:DIRECTED]-(this0_directors_Person0_node)
-            SET this0_directors_Person0_relationship.year = $this0_directors_Person0_relationship_year
-            WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_directors_Person0_node), id_to: id(this0), id: id(this0_directors_Person0_relationship), relationshipName: \\"DIRECTED\\", fromTypename: \\"Person\\", toTypename: \\"Movie\\", properties: { from: this0_directors_Person0_node { .* }, to: this0 { .* }, relationship: this0_directors_Person0_relationship { .* } } } AS meta, this0, this0_directors_Person0_node
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta, this0
             RETURN this0, meta AS this0_meta
             }
@@ -588,6 +588,11 @@ describe("Subscriptions metadata on create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"The Matrix\\",
+                \\"this0_directors_Person0_node_name\\": \\"Lilly Wachowski\\",
+                \\"this0_directors_Person0_relationship_year\\": {
+                    \\"low\\": 1999,
+                    \\"high\\": 0
+                },
                 \\"this0_directors_Actor0_node_name\\": \\"Keanu Reeves\\",
                 \\"this0_directors_Actor0_node_movies0_node_title\\": \\"Funny movie\\",
                 \\"this0_directors_Actor0_node_movies0_relationship_screenTime\\": {
@@ -596,11 +601,6 @@ describe("Subscriptions metadata on create", () => {
                 },
                 \\"this0_directors_Actor0_relationship_year\\": {
                     \\"low\\": 2420,
-                    \\"high\\": 0
-                },
-                \\"this0_directors_Person0_node_name\\": \\"Lilly Wachowski\\",
-                \\"this0_directors_Person0_relationship_year\\": {
-                    \\"low\\": 1999,
                     \\"high\\": 0
                 },
                 \\"resolvedCallbacks\\": {}
