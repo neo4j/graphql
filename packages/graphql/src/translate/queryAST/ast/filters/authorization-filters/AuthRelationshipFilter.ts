@@ -24,8 +24,6 @@ import { Memoize } from "typescript-memoize";
 import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AuthRelationshipFilter extends RelationshipFilter {
-    private countVar = new Cypher.Variable();
-
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const relatedNode = this.relatedNode;
         const relVar = this.relationshipVar;
@@ -40,7 +38,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         if (!this.relationship.isList && this.relationship.isNullable) {
             return [];
         }
-        return [new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVar])];
+        return [new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVariable])];
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -65,7 +63,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             return Cypher.single(nestedContext.target, comprehension, Cypher.true);
         }
 
-        return Cypher.and(Cypher.neq(this.countVar, new Cypher.Literal(0)), innerPredicate);
+        return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
     }
 
     public getChildren(): QueryASTNode[] {

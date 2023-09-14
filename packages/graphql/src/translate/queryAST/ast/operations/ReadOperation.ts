@@ -187,7 +187,16 @@ export class ReadOperation extends Operation {
 
         const projection = this.getProjectionMap(context);
 
-        const matchClause = new Cypher.Match(node);
+        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
+
+        let extraMatches = this.filters.flatMap((f) => {
+            return f.getSelection(context);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
 
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
@@ -230,6 +239,7 @@ export class ReadOperation extends Operation {
         }
 
         const clause = Cypher.concat(
+            ...extraMatches,
             matchClause,
             filterSubqueriesClause,
             filterSubqueryWith,

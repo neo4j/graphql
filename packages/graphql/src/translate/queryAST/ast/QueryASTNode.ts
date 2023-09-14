@@ -31,4 +31,8 @@ export abstract class QueryASTNode {
     public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         return [];
     }
+
+    public getSelection(_queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
+        return [];
+    }
 }
