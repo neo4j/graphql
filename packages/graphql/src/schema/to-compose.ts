@@ -55,7 +55,9 @@ export function graphqlArgsToCompose2(args: Argument[]) {
             [arg.name]: {
                 type: inputValueAdapter.getTypePrettyName(),
                 description: inputValueAdapter.description,
-                ...(inputValueAdapter.defaultValue ? { defaultValue: inputValueAdapter.defaultValue } : {}),
+                ...(inputValueAdapter.defaultValue !== undefined
+                    ? { defaultValue: inputValueAdapter.defaultValue }
+                    : {}),
             },
         };
     }, {});
