@@ -212,7 +212,7 @@ export class RelationshipAdapter {
     public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
         const nestedFieldStr = upperFirst(nestedField || "");
         const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
-        return `${this.source.name}${upperFirst(this.target.name)}${upperFirst(
+        return `${this.source.name}${this.target.name}${upperFirst(
             this.name
         )}${nestedFieldStr}${aggregationStr}Selection`;
     }
