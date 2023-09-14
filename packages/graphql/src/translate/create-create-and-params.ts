@@ -41,10 +41,16 @@ interface Res {
 }
 
 interface CreateMeta {
-    authStrs: string[];
     authorizationPredicates: string[];
     authorizationSubqueries: string[];
 }
+
+type CreateAndParams = {
+    create: string;
+    params: Record<string, unknown>;
+    authorizationPredicates: string[];
+    authorizationSubqueries: string[];
+};
 
 function createCreateAndParams({
     input,
@@ -55,7 +61,6 @@ function createCreateAndParams({
     withVars,
     includeRelationshipValidation,
     topLevelNodeVariable,
-    nested = false,
 }: {
     input: any;
     varName: string;
@@ -65,8 +70,7 @@ function createCreateAndParams({
     withVars: string[];
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
-    nested?: boolean;
-}): [string, any] {
+}): CreateAndParams {
     const conflictingProperties = findConflictingProperties({ node, input });
     if (conflictingProperties.length > 0) {
         throw new Neo4jGraphQLError(
@@ -136,7 +140,12 @@ function createCreateAndParams({
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
-                        const recurse = createCreateAndParams({
+                        const {
+                            create: nestedCreate,
+                            params,
+                            authorizationPredicates,
+                            authorizationSubqueries,
+                        } = createCreateAndParams({
                             input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
                             callbackBucket,
@@ -145,10 +154,9 @@ function createCreateAndParams({
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
                             topLevelNodeVariable,
-                            nested: true,
                         });
-                        res.creates.push(recurse[0]);
-                        res.params = { ...res.params, ...recurse[1] };
+                        res.creates.push(nestedCreate);
+                        res.params = { ...res.params, ...params };
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
@@ -171,29 +179,6 @@ function createCreateAndParams({
                             });
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
-                        }
-
-                        const authorizationPredicates: string[] = [];
-                        const authorizationSubqueries: string[] = [];
-
-                        const authorizationAndParams = createAuthorizationAfterAndParams({
-                            context,
-                            nodes: [
-                                {
-                                    variable: nodeName,
-                                    node: refNode,
-                                },
-                            ],
-                            operations: ["CREATE"],
-                        });
-
-                        if (authorizationAndParams) {
-                            const { cypher, params: authParams, subqueries } = authorizationAndParams;
-                            if (subqueries) {
-                                authorizationSubqueries.push(subqueries);
-                            }
-                            authorizationPredicates.push(cypher);
-                            res.params = { ...res.params, ...authParams };
                         }
 
                         if (authorizationPredicates.length) {
@@ -359,7 +344,6 @@ function createCreateAndParams({
         creates: initial,
         params: {},
         meta: {
-            authStrs: [],
             authorizationPredicates: [],
             authorizationSubqueries: [],
         },
@@ -371,37 +355,35 @@ function createCreateAndParams({
         creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
     }
 
-    if (!nested) {
-        const { authorizationPredicates, authorizationSubqueries } = meta;
-        const authorizationAndParams = createAuthorizationAfterAndParams({
-            context,
-            nodes: [
-                {
-                    variable: varName,
-                    node,
-                },
-            ],
-            operations: ["CREATE"],
-        });
+    const { authorizationPredicates, authorizationSubqueries } = meta;
+    const authorizationAndParams = createAuthorizationAfterAndParams({
+        context,
+        nodes: [
+            {
+                variable: varName,
+                node,
+            },
+        ],
+        operations: ["CREATE"],
+    });
 
-        if (authorizationAndParams) {
-            const { cypher, params: authParams, subqueries } = authorizationAndParams;
-            if (subqueries) {
-                authorizationSubqueries.push(subqueries);
-            }
-            authorizationPredicates.push(cypher);
-            params = { ...params, ...authParams };
+    if (authorizationAndParams) {
+        const { cypher, params: authParams, subqueries } = authorizationAndParams;
+        if (subqueries) {
+            authorizationSubqueries.push(subqueries);
         }
-
-        if (authorizationPredicates.length) {
-            creates.push(`WITH ${withVars.join(", ")}`);
-            if (authorizationSubqueries.length) {
-                creates.push(...authorizationSubqueries);
-                creates.push(`WITH *`);
-            }
-            creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
-        }
+        authorizationPredicates.push(cypher);
+        params = { ...params, ...authParams };
     }
+
+    // if (authorizationPredicates.length) {
+    //     creates.push(`WITH ${withVars.join(", ")}`);
+    //     if (authorizationSubqueries.length) {
+    //         creates.push(...authorizationSubqueries);
+    //         creates.push(`WITH *`);
+    //     }
+    //     creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
+    // }
 
     if (includeRelationshipValidation) {
         const str = createRelationshipValidationStr({ node, context, varName });
@@ -412,7 +394,7 @@ function createCreateAndParams({
         }
     }
 
-    return [creates.join("\n"), params];
+    return { create: creates.join("\n"), params, authorizationPredicates, authorizationSubqueries };
 }
 
 export default createCreateAndParams;

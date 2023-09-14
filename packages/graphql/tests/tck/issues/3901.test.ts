@@ -169,11 +169,6 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             	RETURN count(*) AS connect_this0_publisher_connect_User
             }
             WITH this0
-            OPTIONAL MATCH (this0)<-[:PUBLISHER]-(authorization_this0:User)
-            WITH *, count(authorization_this0) AS publisherCount
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)) AND $authorization_param2 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this0
             CALL {
             	WITH this0
             	MATCH (this0)<-[this0_publisher_User_unique:PUBLISHER]-(:User)
@@ -181,6 +176,11 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSerie.publisher required exactly once', [0])
             	RETURN c AS this0_publisher_User_unique_ignored
             }
+            WITH *
+            OPTIONAL MATCH (this0)<-[:PUBLISHER]-(authorization_this0:User)
+            WITH *, count(authorization_this0) AS publisherCount
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)) AND $authorization_param2 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             RETURN [this0 { .id, .title }] AS data"

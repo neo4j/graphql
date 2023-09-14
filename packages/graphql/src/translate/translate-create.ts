@@ -87,7 +87,12 @@ export default async function translateCreate({
                 withVars.push(META_CYPHER_VARIABLE);
             }
 
-            const createAndParams = createCreateAndParams({
+            const {
+                create: nestedCreate,
+                params,
+                authorizationPredicates,
+                authorizationSubqueries,
+            } = createCreateAndParams({
                 input,
                 node,
                 context,
@@ -97,7 +102,16 @@ export default async function translateCreate({
                 topLevelNodeVariable: varName,
                 callbackBucket,
             });
-            create.push(`${createAndParams[0]}`);
+            create.push(nestedCreate);
+
+            if (authorizationPredicates.length) {
+                create.push("WITH *");
+                if (authorizationSubqueries.length) {
+                    create.push(...authorizationSubqueries);
+                    create.push("WITH *");
+                }
+                create.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
+            }
 
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
@@ -109,7 +123,7 @@ export default async function translateCreate({
 
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
-            res.params = { ...res.params, ...createAndParams[1] };
+            res.params = { ...res.params, ...params };
             return res;
         },
         { createStrs: [], params: {}, withVars: [] }

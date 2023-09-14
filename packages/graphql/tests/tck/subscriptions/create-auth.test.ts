@@ -77,7 +77,7 @@ describe("Subscriptions metadata on create", () => {
             CREATE (this0:Actor)
             SET this0.id = $this0_id
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0
-            WITH this0, meta
+            WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, meta AS this0_meta
             }
@@ -86,7 +86,7 @@ describe("Subscriptions metadata on create", () => {
             CREATE (this1:Actor)
             SET this1.id = $this1_id
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this1
-            WITH this1, meta
+            WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1, meta AS this1_meta
             }

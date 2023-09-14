@@ -834,7 +834,7 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE (apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (single(authorization_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(authorization_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub) | 1] WHERE true) AND $authorization_param4 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
-            WITH this0
+            WITH *
             WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
@@ -913,7 +913,7 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE (apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (single(authorization_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(authorization_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub) | 1] WHERE true) AND $authorization_param4 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
-            WITH this0
+            WITH *
             WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
