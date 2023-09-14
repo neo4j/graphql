@@ -59,7 +59,7 @@
         "@types/node": "18.15.1",
         "@types/pluralize": "0.0.30",
         "@types/randomstring": "1.1.8",
-        "@types/semver": "7.5.1",
+        "@types/semver": "7.5.2",
         "@types/supertest": "2.0.12",
         "@types/ws": "8.5.5",
         "dedent": "1.5.1",
