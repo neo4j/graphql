@@ -100,20 +100,25 @@ export class ReadOperation extends Operation {
             .withDirection(relDirection)
             .to(targetNode);
 
-        const matchClause = new Cypher.Match(pattern);
+        // const matchClause = new Cypher.Match(pattern);
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const filterPredicates = this.getPredicates(nestedContext);
+
+        // NOT NNEDED?
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
+
+        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
 
         const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
         let withWhere: Cypher.With | undefined;
         if (wherePredicate) {
-            if (authFiltersPredicate) {
-                withWhere = new Cypher.With("*").where(wherePredicate);
-            } else {
-                matchClause.where(wherePredicate);
-            }
+            // if (authFiltersPredicate) {
+            //     withWhere = new Cypher.With("*").where(wherePredicate);
+            // } else {
+            //     matchClause.where(wherePredicate);
+            // }
+            matchClause.where(wherePredicate);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const sortSubqueries = this.sortFields
@@ -123,6 +128,7 @@ export class ReadOperation extends Operation {
         const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList);
 
         const clause = Cypher.concat(
+            ...preSelection,
             matchClause,
             ...authFilterSubqueries,
             withWhere,
@@ -161,6 +167,30 @@ export class ReadOperation extends Operation {
         return Cypher.and(...[...this.filters].map((f) => f.getPredicate(queryASTContext)));
     }
 
+    protected getSelectionClauses(
+        context: QueryASTContext,
+        node: Cypher.Node | Cypher.Pattern
+    ): {
+        preSelection: Array<Cypher.Match | Cypher.With>;
+        selectionClause: Cypher.Match | Cypher.With;
+    } {
+        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
+
+        let extraMatches = this.getChildren().flatMap((f) => {
+            return f.getSelection(context);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
+
+        return {
+            preSelection: extraMatches,
+            selectionClause: matchClause,
+        };
+    }
+
     public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
             return this.transpileNestedRelationship(this.relationship, {
@@ -175,6 +205,7 @@ export class ReadOperation extends Operation {
             .map((sq) => new Cypher.Call(sq).innerWith(node));
         const filterPredicates = this.getPredicates(context);
 
+        // THis may no longer be relevant?
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(context) : [];
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
@@ -187,22 +218,14 @@ export class ReadOperation extends Operation {
 
         const projection = this.getProjectionMap(context);
 
-        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
-
-        let extraMatches = this.filters.flatMap((f) => {
-            return f.getSelection(context);
-        });
-
-        if (extraMatches.length > 0) {
-            extraMatches = [matchClause, ...extraMatches];
-            matchClause = new Cypher.With("*");
-        }
+        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
 
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
-        // TODO: add auth subqueries
-        if (filterSubqueries.length > 0 || authFiltersPredicate) {
-            // Using authFiltersPredicate here just to add a WITH * for compatibility
+
+        // This weird condition is just for cypher compatibility
+        const shouldAddWithForAuth = authFiltersPredicate && preSelection.length === 0;
+        if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
             filterSubqueryWith = new Cypher.With("*");
         }
@@ -239,7 +262,7 @@ export class ReadOperation extends Operation {
         }
 
         const clause = Cypher.concat(
-            ...extraMatches,
+            ...preSelection,
             matchClause,
             filterSubqueriesClause,
             filterSubqueryWith,

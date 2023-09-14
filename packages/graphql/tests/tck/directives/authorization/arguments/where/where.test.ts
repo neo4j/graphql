@@ -375,7 +375,7 @@ describe("Cypher Auth Where", () => {
                     WITH *, count(this2) AS creatorCount
                     WITH *
                     WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
-                    WITH this1 { __resolveType: \\"Post\\", __id: id(this), .id } AS this1
+                    WITH this1 { .id, __resolveType: \\"Post\\", __id: id(this) } AS this1
                     RETURN this1 AS var3
                 }
                 WITH var3

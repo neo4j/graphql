@@ -24,7 +24,8 @@ import { Memoize } from "typescript-memoize";
 import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AuthRelationshipFilter extends RelationshipFilter {
-    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+    // TODO: move to getSelection
+    public getSelection(context: QueryASTContext): Cypher.With[] {
         const relatedNode = this.relatedNode;
         const relVar = this.relationshipVar;
 

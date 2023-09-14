@@ -67,6 +67,10 @@ export class AuthorizationFilters extends Filter {
         return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSubqueries(context));
     }
 
+    public getSelection(context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
+        return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSelection(context));
+    }
+
     public getChildren(): QueryASTNode[] {
         return [...this.validationFilters, ...this.whereFilters];
     }
