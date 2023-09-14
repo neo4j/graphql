@@ -36,7 +36,6 @@ import { createConnectionEventMeta } from "../translate/subscriptions/create-con
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 
 export default async function translateUpdate({
     node,
