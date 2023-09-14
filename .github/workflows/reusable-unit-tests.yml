@@ -41,7 +41,7 @@ jobs:
         working-directory: packages/${{ matrix.package }}
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.package == 'graphql' }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.package }}/coverage/
