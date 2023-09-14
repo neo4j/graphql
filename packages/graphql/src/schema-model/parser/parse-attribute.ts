@@ -19,32 +19,32 @@
 
 import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
+import { aliasDirective } from "../../graphql/directives";
+import { Argument } from "../argument/Argument";
+import { Attribute } from "../attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
-    ScalarType,
     EnumType,
-    UserScalarType,
-    ObjectType,
-    UnionType,
+    GraphQLBuiltInScalarType,
     InterfaceType,
     ListType,
-    GraphQLBuiltInScalarType,
-    Neo4jGraphQLSpatialType,
+    Neo4jCartesianPointType,
     Neo4jGraphQLNumberType,
+    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     Neo4jPointType,
-    Neo4jCartesianPointType,
+    ObjectType,
+    ScalarType,
+    UnionType,
+    UserScalarType,
 } from "../attribute/AttributeType";
-import { Attribute } from "../attribute/Attribute";
-import { Argument } from "../argument/Argument";
 import { Field } from "../attribute/Field";
 import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
-import { aliasDirective } from "../../graphql/directives";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
 
-function parseAttributeArguments(
+export function parseAttributeArguments(
     fieldArgs: readonly InputValueDefinitionNode[],
     definitionCollection: DefinitionCollection
 ): Argument[] {
@@ -53,7 +53,7 @@ function parseAttributeArguments(
             name: fieldArg.name.value,
             type: parseTypeNode(definitionCollection, fieldArg.type),
             defaultValue: fieldArg.defaultValue,
-            description: fieldArg.description?.value || "",
+            description: fieldArg.description?.value,
         });
     });
 }
@@ -75,7 +75,7 @@ export function parseAttribute(
         type,
         args,
         databaseName,
-        description: field.description?.value || "",
+        description: field.description?.value,
     });
 }
 
