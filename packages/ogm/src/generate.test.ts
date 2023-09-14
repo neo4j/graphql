@@ -126,6 +126,7 @@ describe("generate", () => {
               update?: InputMaybe<UserUpdateInput>;
             };
 
+            /** SortDirection */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -133,6 +134,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** CreateInfo */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -147,6 +149,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
+            /** DeleteInfo */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -170,6 +173,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
+            /** UpdateInfo */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -419,6 +423,7 @@ describe("generate", () => {
               update?: InputMaybe<UserUpdateInput>;
             };
 
+            /** SortDirection */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -426,6 +431,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** CreateInfo */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -440,6 +446,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
+            /** DeleteInfo */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -463,6 +470,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
+            /** UpdateInfo */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -740,6 +748,7 @@ describe("generate", () => {
               update?: InputMaybe<UserUpdateInput>;
             };
 
+            /** SortDirection */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -747,6 +756,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** CreateInfo */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -761,6 +771,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
+            /** DeleteInfo */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -784,6 +795,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
+            /** UpdateInfo */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1065,6 +1077,7 @@ describe("generate", () => {
               update?: InputMaybe<PersonUpdateInput>;
             };
 
+            /** SortDirection */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -1076,6 +1089,7 @@ describe("generate", () => {
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
             };
 
+            /** CreateInfo */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1096,6 +1110,7 @@ describe("generate", () => {
               people: Array<Person>;
             };
 
+            /** DeleteInfo */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1228,6 +1243,7 @@ describe("generate", () => {
               longest: Scalars[\\"String\\"][\\"output\\"];
             };
 
+            /** UpdateInfo */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1865,6 +1881,7 @@ describe("generate", () => {
               connectOrCreate?: InputMaybe<FaqEntryConnectOrCreateInput>;
             };
 
+            /** SortDirection */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -1888,6 +1905,7 @@ describe("generate", () => {
               faqs: Array<Faq>;
             };
 
+            /** CreateInfo */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1896,6 +1914,7 @@ describe("generate", () => {
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
             };
 
+            /** DeleteInfo */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -2109,6 +2128,7 @@ describe("generate", () => {
               faqs: Array<Faq>;
             };
 
+            /** UpdateInfo */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */

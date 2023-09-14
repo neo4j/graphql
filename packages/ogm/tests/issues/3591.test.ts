@@ -203,6 +203,7 @@ describe("issues/3591", () => {
               update?: InputMaybe<RestaurantUpdateInput>;
             };
 
+            /** SortDirection */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -246,6 +247,7 @@ describe("issues/3591", () => {
               companies: Array<Company>;
             };
 
+            /** CreateInfo */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -266,6 +268,7 @@ describe("issues/3591", () => {
               users: Array<User>;
             };
 
+            /** DeleteInfo */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -325,6 +328,7 @@ describe("issues/3591", () => {
               companies: Array<Company>;
             };
 
+            /** UpdateInfo */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
