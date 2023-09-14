@@ -208,6 +208,41 @@ export class AttributeAdapter {
     }
 
     /**
+    * 
+        ...node.primitiveFields,
+        ...node.enumFields,
+        ...node.scalarFields,
+        ...node.temporalFields,
+        ...node.pointFields,
+        ...node.cypherFields,
+    */
+    isEventPayloadField(): boolean {
+        return this.isEnum() || this.isSpatial() || this.isScalar();
+    }
+    /**
+    * 
+        ...node.primitiveFields,
+        ...node.enumFields,
+        ...node.scalarFields,
+        ...node.temporalFields,
+        ...node.pointFields,
+    */
+    isSubscriptionWhereField(): boolean {
+        return (this.isEnum() || this.isSpatial() || this.isScalar()) && !this.isCypher();
+    }
+    /**
+    * 
+        ...node.primitiveFields,
+        ...node.enumFields,
+        ...node.scalarFields,
+        ...node.temporalFields,
+        ...node.pointFields,
+    */
+    isSubscriptionConnectedRelationshipField(): boolean {
+        return (this.isEnum() || this.isSpatial() || this.isScalar()) && !this.isCypher();
+    }
+
+    /**
      * [
      * ...node.primitiveFields,
         ...node.scalarFields,

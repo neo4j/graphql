@@ -19,11 +19,17 @@
 
 import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
-import { objectFieldsToComposeFields } from "../to-compose";
+import { attributeAdapterToComposeFields, objectFieldsToComposeFields } from "../to-compose";
 import { upperFirst } from "../../utils/upper-first";
 import type { BaseField, RelationField } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import { filterTruthy } from "../../utils/utils";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { DirectiveNode } from "graphql";
+import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 function buildRelationshipDestinationUnionNodeType({
     unionNodes,
@@ -115,6 +121,48 @@ function buildRelationshipDestinationAbstractType({
     }
     return undefined;
 }
+function buildRelationshipDestinationAbstractType2({
+    relationshipAdapter,
+    relationNodeTypeName,
+    interfaceCommonFields,
+    schemaComposer,
+    nodeNameToEventPayloadTypes,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    relationNodeTypeName: string;
+    interfaceCommonFields: Map<string, ObjectFields>;
+    schemaComposer: SchemaComposer;
+    nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer>;
+}) {
+    const unionNodeTypes =
+        relationshipAdapter.target instanceof UnionEntityAdapter
+            ? relationshipAdapter.target.concreteEntities
+            : undefined;
+    if (unionNodeTypes) {
+        const unionNodes = filterTruthy(
+            unionNodeTypes?.map((unionEntity) => nodeNameToEventPayloadTypes[unionEntity.name])
+        );
+        return buildRelationshipDestinationUnionNodeType({ unionNodes, relationNodeTypeName, schemaComposer });
+    }
+    const interfaceNodeTypeNames =
+        relationshipAdapter.target instanceof InterfaceEntityAdapter
+            ? relationshipAdapter.target.concreteEntities
+            : undefined;
+    if (interfaceNodeTypeNames) {
+        // TODO: take interfaceCommonFields from interfaceEntity
+        const relevantInterfaceFields = interfaceCommonFields.get(relationNodeTypeName) || ({} as ObjectFields);
+        const interfaceNodes = filterTruthy(
+            interfaceNodeTypeNames.map((interfaceEntity) => nodeNameToEventPayloadTypes[interfaceEntity.name])
+        );
+        return buildRelationshipDestinationInterfaceNodeType({
+            schemaComposer,
+            relevantInterface: relevantInterfaceFields,
+            interfaceNodes,
+            relationNodeTypeName,
+        });
+    }
+    return undefined;
+}
 
 function buildRelationshipFieldDestinationTypes({
     relationField,
@@ -143,6 +191,33 @@ function buildRelationshipFieldDestinationTypes({
     });
 }
 
+function buildRelationshipFieldDestinationTypes2({
+    relationshipAdapter,
+    interfaceCommonFields,
+    schemaComposer,
+    nodeNameToEventPayloadTypes,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    interfaceCommonFields: Map<string, ObjectFields>;
+    schemaComposer: SchemaComposer;
+    nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer>;
+}) {
+    const relationNodeTypeName = relationshipAdapter.target.name;
+    const nodeTo = nodeNameToEventPayloadTypes[relationNodeTypeName];
+    if (nodeTo) {
+        // standard type
+        return hasProperties(nodeTo) && nodeTo;
+    }
+    // union/interface type
+    return buildRelationshipDestinationAbstractType2({
+        relationshipAdapter,
+        relationNodeTypeName,
+        interfaceCommonFields,
+        schemaComposer,
+        nodeNameToEventPayloadTypes,
+    });
+}
+
 function getRelationshipFields({
     relationField,
     relationshipFields,
@@ -160,6 +235,14 @@ function getRelationshipFields({
             ...relationshipProperties.pointFields,
         ];
     }
+}
+
+function getRelationshipFields2({
+    relationshipAdapter,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+}): AttributeAdapter[] {
+    return relationshipAdapter.subscriptionConnectedRelationshipFields;
 }
 
 export function hasProperties(x: ObjectTypeComposer): boolean {
@@ -196,6 +279,56 @@ export function getConnectedTypes({
 
             const nodeTo = buildRelationshipFieldDestinationTypes({
                 relationField,
+                interfaceCommonFields,
+                schemaComposer,
+                nodeNameToEventPayloadTypes,
+            });
+            if (nodeTo) {
+                relationshipFieldType.addFields({ node: nodeTo.getTypeNonNull() });
+            }
+
+            return {
+                relationshipFieldType,
+                fieldName,
+            };
+        })
+        .reduce((acc, { relationshipFieldType, fieldName }) => {
+            if (relationshipFieldType && hasProperties(relationshipFieldType)) {
+                acc[fieldName] = relationshipFieldType;
+            }
+            return acc;
+        }, {});
+}
+
+export function getConnectedTypes2({
+    entityAdapter,
+    interfaceCommonFields,
+    schemaComposer,
+    nodeNameToEventPayloadTypes,
+}: {
+    entityAdapter: ConcreteEntityAdapter;
+    interfaceCommonFields: Map<string, ObjectFields>;
+    schemaComposer: SchemaComposer;
+    nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer>;
+}) {
+    // const { name, relationFields } = node;
+
+    return Array.from(entityAdapter.relationships.values())
+        .map((relationshipAdapter) => {
+            const fieldName = relationshipAdapter.name;
+
+            const relationshipFieldType = schemaComposer.createObjectTC({
+                name: `${entityAdapter.name}${upperFirst(fieldName)}ConnectedRelationship`,
+            });
+
+            const edgeProps = getRelationshipFields2({ relationshipAdapter });
+            if (edgeProps.length) {
+                const composeFields = attributeAdapterToComposeFields(edgeProps, new Map<string, DirectiveNode[]>()); // TODO: instead of new map???
+                relationshipFieldType.addFields(composeFields);
+            }
+
+            const nodeTo = buildRelationshipFieldDestinationTypes2({
+                relationshipAdapter,
                 interfaceCommonFields,
                 schemaComposer,
                 nodeNameToEventPayloadTypes,

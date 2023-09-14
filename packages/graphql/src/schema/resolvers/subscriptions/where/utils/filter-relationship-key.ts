@@ -17,11 +17,19 @@
  * limitations under the License.
  */
 
+import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Node, RelationField, RelationshipSubscriptionsEvent } from "../../../../../types";
 import type { ObjectFields } from "../../../../get-obj-field-meta";
 import type { InterfaceType, RecordType, RelationshipType, StandardType, UnionType } from "../../types";
-import { filterByProperties } from "../filters/filter-by-properties";
-import { isInterfaceSpecificFieldType, isInterfaceType, isStandardType } from "./type-checks";
+import { filterByProperties, filterByProperties2 } from "../filters/filter-by-properties";
+import {
+    isInterfaceSpecificFieldType,
+    isInterfaceType,
+    isInterfaceType2,
+    isStandardType,
+    isStandardType2,
+} from "./type-checks";
 
 type EventProperties = {
     from: Record<string, unknown>;
@@ -87,6 +95,115 @@ export function filterRelationshipKey({
         if (
             !filterByProperties({
                 node: nodeTo,
+                whereProperties: nodeProperty,
+                receivedProperties: receivedEventProperties[key],
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (isInterfaceRelationship) {
+        const targetNodeTypename = receivedEvent[`${key}Typename`];
+
+        // apply the filter
+        if (
+            !filterRelationshipInterfaceProperty({
+                nodeProperty,
+                nodes,
+                receivedEventProperties,
+                targetNodeTypename,
+                key,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    if (isUnionRelationship) {
+        const targetNodeTypename = receivedEvent[`${key}Typename`];
+        const targetNodePropsByTypename = unionTypes[targetNodeTypename] as Record<string, UnionType>;
+        const isRelationshipOfReceivedTypeFilteredOut = !targetNodePropsByTypename;
+        if (isRelationshipOfReceivedTypeFilteredOut) {
+            return false;
+        }
+
+        // apply the filter
+        if (
+            !filterRelationshipUnionProperties({
+                targetNodePropsByTypename,
+                targetNodeTypename,
+                receivedEventProperties,
+                relationshipFields,
+                relationshipPropertiesInterfaceName,
+                key,
+                nodes,
+            })
+        ) {
+            return false;
+        }
+    }
+    return true;
+}
+export function filterRelationshipKey2({
+    receivedEventRelationship,
+    where,
+    relationshipFields,
+    receivedEvent,
+    nodes,
+}: {
+    receivedEventRelationship: RelationshipAdapter;
+    where: RecordType | Record<string, RelationshipType | RecordType> | Record<string, RecordType>[];
+    relationshipFields: Map<string, ObjectFields>;
+    receivedEvent: RelationshipSubscriptionsEvent;
+    nodes: Node[];
+}): boolean {
+    const receivedEventProperties = receivedEvent.properties;
+    const receivedEventRelationshipName = receivedEventRelationship.name;
+    const receivedEventRelationshipData = where[receivedEventRelationshipName] as Record<string, RelationshipType>;
+    const isRelationshipOfReceivedTypeFilteredOut = !receivedEventRelationshipData;
+    if (isRelationshipOfReceivedTypeFilteredOut) {
+        // case `actors: {}` filtering out relationships of other type
+        return false;
+    }
+    const isRelationshipOfReceivedTypeIncludedWithNoFilters = !Object.keys(receivedEventRelationshipData).length;
+    if (isRelationshipOfReceivedTypeIncludedWithNoFilters) {
+        // case `actors: {}` including all relationships of the type
+        return true;
+    }
+    const relationshipPropertiesInterfaceName = receivedEventRelationship.propertiesTypeName || "";
+
+    const { edge: edgeProperty, node: nodeProperty, ...unionTypes } = receivedEventRelationshipData;
+
+    // relationship properties
+    if (edgeProperty) {
+        // apply the filter
+        if (
+            !filterRelationshipEdgeProperty({
+                relationshipFields,
+                relationshipPropertiesInterfaceName,
+                edgeProperty,
+                receivedEventProperties,
+            })
+        ) {
+            return false;
+        }
+    }
+
+    const key = receivedEventRelationship.direction === "IN" ? "from" : "to";
+
+    const isSimpleRelationship = nodeProperty && isStandardType2(nodeProperty, receivedEventRelationship);
+    const isInterfaceRelationship = nodeProperty && isInterfaceType2(nodeProperty, receivedEventRelationship);
+    const isUnionRelationship = Object.keys(unionTypes).length;
+
+    if (isSimpleRelationship) {
+        // const nodeTo = nodes.find((n) => n.name === receivedEventRelationship.typeMeta.name) as Node;
+        const nodeTo = receivedEventRelationship.target as ConcreteEntityAdapter; //TODO: fix ts. Should be concreteEntity since isSimpleRelationship right??
+
+        // apply the filter
+        if (
+            !filterByProperties2({
+                entityAdapter: nodeTo,
                 whereProperties: nodeProperty,
                 receivedProperties: receivedEventProperties[key],
             })

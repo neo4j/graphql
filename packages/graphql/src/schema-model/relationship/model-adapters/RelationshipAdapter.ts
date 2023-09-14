@@ -330,6 +330,11 @@ export class RelationshipAdapter {
     public get nonGeneratedProperties(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isNonGeneratedField());
     }
+    public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) =>
+            attribute.isSubscriptionConnectedRelationshipField()
+        );
+    }
 
     public get hasNonNullNonGeneratedProperties(): boolean {
         return this.nonGeneratedProperties.some((property) => property.isRequired());

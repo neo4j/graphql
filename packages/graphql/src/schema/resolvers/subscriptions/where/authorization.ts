@@ -20,11 +20,12 @@
 import type { SubscriptionsEvent } from "../../../../types";
 import type Node from "../../../../classes/Node";
 import type { ObjectFields } from "../../../get-obj-field-meta";
-import { filterByAuthorizationRules } from "./filters/filter-by-authorization-rules";
+import { filterByAuthorizationRules, filterByAuthorizationRules2 } from "./filters/filter-by-authorization-rules";
 import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { multipleConditionsAggregationMap } from "./utils/multiple-conditions-aggregation-map";
 import { populateWhereParams } from "./utils/populate-where-params";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export function subscriptionAuthorization({
     event,
@@ -60,6 +61,48 @@ export function subscriptionAuthorization({
 
         return filterByAuthorizationRules({
             node,
+            where,
+            event,
+            nodes,
+            relationshipFields,
+            context,
+        });
+    });
+
+    return multipleConditionsAggregationMap.OR(results);
+}
+export function subscriptionAuthorization2({
+    event,
+    entity,
+    nodes,
+    relationshipFields,
+    context,
+}: {
+    event: SubscriptionsEvent;
+    entity: ConcreteEntityAdapter;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
+}): boolean {
+    const subscriptionsAuthorization = entity.annotations.subscriptionsAuthorization;
+
+    const matchedRules = (subscriptionsAuthorization?.filter || []).filter((rule) =>
+        rule.events.some((e) => e.toLowerCase() === event.event)
+    );
+
+    if (!matchedRules.length) {
+        return true;
+    }
+
+    const results = matchedRules.map((rule) => {
+        if (rule.requireAuthentication && !context.authorization.jwt) {
+            return false;
+        }
+
+        const where = populateWhereParams({ where: rule.where, context });
+
+        return filterByAuthorizationRules2({
+            entityAdapter: entity,
             where,
             event,
             nodes,

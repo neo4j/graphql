@@ -159,6 +159,13 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
     }
 
+    public get subscriptionEventPayloadFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
+    }
+    public get subscriptionWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
+    }
+
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
     public getLabels(): string[] {
         return Array.from(this.labels);
@@ -195,6 +202,11 @@ export class ConcreteEntityAdapter {
             return new ConcreteEntityOperations(this);
         }
         return this._operations;
+    }
+
+    get isSubscribable(): boolean {
+        // return !!this.annotations.subscription?.events?.length;
+        return this.annotations.subscription === undefined || this.annotations.subscription.events?.length > 0;
     }
 
     // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...

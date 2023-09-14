@@ -27,6 +27,7 @@ import type { SelectionFields } from "./selection-set-parser";
 import { parseSelectionSetForAuthenticated } from "./selection-set-parser";
 import { checkAuthentication } from "./check-authentication";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export function checkAuthenticationOnSelectionSet(
     resolveInfo: GraphQLResolveInfo,
@@ -54,6 +55,28 @@ export function checkAuthenticationOnSelectionSet(
         checkAuthenticationOnSelection({ entity, fieldSelection, context })
     );
 }
+export function checkAuthenticationOnSelectionSet2(
+    resolveInfo: GraphQLResolveInfo,
+    entityAdapter: ConcreteEntityAdapter,
+    type: SubscriptionEventType,
+    context: Neo4jGraphQLComposedSubscriptionsContext
+) {
+    const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree | undefined | null;
+    if (!resolveTree) {
+        return;
+    }
+
+    const authenticatedSelections = parseSelectionSetForAuthenticated({
+        resolveTree,
+        entity: entityAdapter,
+        entityTypeName: entityAdapter.operations.subscriptionEventTypeNames[type],
+        entityPayloadTypeName: entityAdapter.operations.subscriptionEventPayloadFieldNames[type],
+        context,
+    });
+    authenticatedSelections.forEach(({ entity, fieldSelection }) =>
+        checkAuthenticationOnSelection({ entity, fieldSelection, context })
+    );
+}
 
 function checkAuthenticationOnSelection({
     fieldSelection,
@@ -61,12 +84,12 @@ function checkAuthenticationOnSelection({
     context,
 }: {
     fieldSelection: SelectionFields;
-    entity: ConcreteEntity;
+    entity: ConcreteEntity | ConcreteEntityAdapter;
     context: Neo4jGraphQLComposedSubscriptionsContext;
 }) {
     checkAuthentication({ authenticated: entity, operation: "READ", context });
     for (const selectedField of Object.values(fieldSelection)) {
-        const field = entity.findAttribute(selectedField.name);
+        const field = entity.attributes.get(selectedField.name);
         if (field) {
             checkAuthentication({ authenticated: field, operation: "READ", context });
         }

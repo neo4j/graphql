@@ -118,7 +118,7 @@ import {
     schemaConfigurationFromObjectTypeDefinition,
     schemaConfigurationFromSchemaExtensions,
 } from "./schema-configuration";
-import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import { generateSubscriptionTypes, generateSubscriptionTypes2 } from "./subscriptions/generate-subscription-types";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -829,6 +829,11 @@ function makeAugmentedSchema(
         interfaceCommonFields.set(interfaceEntityAdapter.name, interfaceFields);
     });
 
+    const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
+    for (const definitionNode of definitionNodes.objectTypes) {
+        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
+        userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
+    }
     nodes.forEach((node) => {
         const concreteEntity = schemaModel.getEntity(node.name) as ConcreteEntity;
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
@@ -842,7 +847,10 @@ function makeAugmentedSchema(
             return;
         }
 
-        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
+        const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
+        if (!userDefinedFieldDirectives) {
+            throw new Error("fix user directives for object types.");
+        }
 
         const nodeFields = attributeAdapterToComposeFields(
             concreteEntityAdapter.objectFields,
@@ -1160,9 +1168,18 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions && nodes.length) {
-        generateSubscriptionTypes({
+        // generateSubscriptionTypes({
+        //     schemaComposer: composer,
+        //     nodes,
+        //     relationshipFields,
+        //     interfaceCommonFields,
+        //     globalSchemaConfiguration,
+        // });
+        generateSubscriptionTypes2({
             schemaComposer: composer,
+            schemaModel,
             nodes,
+            userDefinedFieldDirectivesForNode,
             relationshipFields,
             interfaceCommonFields,
             globalSchemaConfiguration,

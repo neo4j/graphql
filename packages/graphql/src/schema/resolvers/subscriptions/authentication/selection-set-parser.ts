@@ -21,6 +21,7 @@ import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEnt
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { upperFirst } from "../../../../utils/upper-first";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export type SelectionFields = { [k: string]: ResolveTree };
 export function parseSelectionSetForAuthenticated({
@@ -31,12 +32,12 @@ export function parseSelectionSetForAuthenticated({
     context,
 }: {
     resolveTree: ResolveTree;
-    entity: ConcreteEntity;
+    entity: ConcreteEntity | ConcreteEntityAdapter;
     entityTypeName: string;
     entityPayloadTypeName: string;
     context: Neo4jGraphQLComposedSubscriptionsContext;
-}): { entity: ConcreteEntity; fieldSelection: SelectionFields }[] {
-    const authenticated: { entity: ConcreteEntity; fieldSelection: SelectionFields }[] = [];
+}): { entity: ConcreteEntity | ConcreteEntityAdapter; fieldSelection: SelectionFields }[] {
+    const authenticated: { entity: ConcreteEntity | ConcreteEntityAdapter; fieldSelection: SelectionFields }[] = [];
     const selectionSet = getSelected(resolveTree, entityTypeName);
     for (const [k, selection] of Object.entries(selectionSet)) {
         if (k === entityPayloadTypeName || k === "previousState") {
@@ -98,10 +99,10 @@ function getTargetEntities({
     relationshipField,
 }: {
     context: Neo4jGraphQLComposedSubscriptionsContext;
-    entity: ConcreteEntity;
+    entity: ConcreteEntity | ConcreteEntityAdapter;
     relationshipField: ResolveTree;
 }): ConcreteEntity[] | undefined {
-    const relationship = entity.findRelationship(relationshipField.name);
+    const relationship = entity.relationships.get(relationshipField.name);
     if (!relationship) {
         return;
     }

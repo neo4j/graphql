@@ -314,6 +314,77 @@ export function objectFieldsToSubscriptionsWhereInputFields(
     }, {});
 }
 
+export function attributesToSubscriptionsWhereInputFields(
+    typeName: string,
+    attributes: AttributeAdapter[]
+): Record<string, InputField> {
+    return attributes.reduce((res, attribute) => {
+        if (!attribute.isFilterable()) {
+            return res;
+        }
+        const fieldType = attribute.getInputTypeNames().where.pretty;
+
+        const ifArrayOfAnyTypeExceptBoolean = attribute.isList() && attribute.getTypeName() !== "Boolean";
+        const ifAnyTypeExceptArrayAndBoolean = !attribute.isList() && attribute.getTypeName() !== "Boolean";
+        const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(attribute.getTypeName()) && !attribute.isList();
+        const isOneOfStringTypes = ["String", "ID"].includes(attribute.getTypeName()) && !attribute.isList();
+        const isOneOfSpatialTypes = ["Point", "CartesianPoint"].includes(attribute.getTypeName());
+
+        let inputTypeName = attribute.getTypeName();
+        if (isOneOfSpatialTypes) {
+            inputTypeName = `${inputTypeName}Input`;
+        }
+        return {
+            ...res,
+            AND: `[${typeName}SubscriptionWhere!]`,
+            OR: `[${typeName}SubscriptionWhere!]`,
+            NOT: `${typeName}SubscriptionWhere`,
+            [attribute.name]: fieldType,
+            [`${attribute.name}_NOT`]: {
+                type: fieldType,
+                directives: [DEPRECATE_NOT],
+            },
+            ...(ifArrayOfAnyTypeExceptBoolean && {
+                [`${attribute.name}_INCLUDES`]: inputTypeName,
+                [`${attribute.name}_NOT_INCLUDES`]: {
+                    type: inputTypeName,
+                    directives: [DEPRECATE_NOT],
+                },
+            }),
+            ...(ifAnyTypeExceptArrayAndBoolean && {
+                [`${attribute.name}_IN`]: `[${inputTypeName}]`,
+                [`${attribute.name}_NOT_IN`]: {
+                    type: `[${inputTypeName}]`,
+                    directives: [DEPRECATE_NOT],
+                },
+            }),
+            ...(isOneOfNumberTypes && {
+                [`${attribute.name}_LT`]: fieldType,
+                [`${attribute.name}_LTE`]: fieldType,
+                [`${attribute.name}_GT`]: fieldType,
+                [`${attribute.name}_GTE`]: fieldType,
+            }),
+            ...(isOneOfStringTypes && {
+                [`${attribute.name}_STARTS_WITH`]: fieldType,
+                [`${attribute.name}_NOT_STARTS_WITH`]: {
+                    type: fieldType,
+                    directives: [DEPRECATE_NOT],
+                },
+                [`${attribute.name}_ENDS_WITH`]: fieldType,
+                [`${attribute.name}_NOT_ENDS_WITH`]: {
+                    type: fieldType,
+                    directives: [DEPRECATE_NOT],
+                },
+                [`${attribute.name}_CONTAINS`]: fieldType,
+                [`${attribute.name}_NOT_CONTAINS`]: {
+                    type: fieldType,
+                    directives: [DEPRECATE_NOT],
+                },
+            }),
+        };
+    }, {});
+}
+
 export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields.reduce((res, f) => {
         const deprecatedDirectives = graphqlDirectivesToCompose(

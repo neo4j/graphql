@@ -20,9 +20,13 @@
 import type { SubscriptionsEvent } from "../../../../types";
 import type Node from "../../../../classes/Node";
 import type { ObjectFields } from "../../../get-obj-field-meta";
-import { filterByProperties } from "./filters/filter-by-properties";
-import { filterByRelationshipProperties } from "./filters/filter-by-relationship-properties";
+import { filterByProperties, filterByProperties2 } from "./filters/filter-by-properties";
+import {
+    filterByRelationshipProperties,
+    filterByRelationshipProperties2,
+} from "./filters/filter-by-relationship-properties";
 import type { RecordType, RelationshipType } from "../types";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export function subscriptionWhere({
     where,
@@ -55,6 +59,46 @@ export function subscriptionWhere({
         }
         return filterByRelationshipProperties({
             node,
+            whereProperties: where,
+            receivedEvent: event,
+            nodes,
+            relationshipFields,
+        });
+    }
+
+    return false;
+}
+export function subscriptionWhere2({
+    where,
+    event,
+    entityAdapter,
+    nodes,
+    relationshipFields,
+}: {
+    where: Record<string, RecordType | RelationshipType> | undefined;
+    event: SubscriptionsEvent;
+    entityAdapter: ConcreteEntityAdapter;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
+}): boolean {
+    if (!where) {
+        return true;
+    }
+
+    if (event.event === "create") {
+        return filterByProperties2({ entityAdapter, whereProperties: where, receivedProperties: event.properties.new });
+    }
+
+    if (event.event === "update" || event.event === "delete") {
+        return filterByProperties2({ entityAdapter, whereProperties: where, receivedProperties: event.properties.old });
+    }
+
+    if (event.event === "create_relationship" || event.event === "delete_relationship") {
+        if (!nodes || !relationshipFields) {
+            return false;
+        }
+        return filterByRelationshipProperties2({
+            entityAdapter,
             whereProperties: where,
             receivedEvent: event,
             nodes,

@@ -20,12 +20,14 @@
 import type { Node, RelationField, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../../../types";
 import type { ObjectFields } from "../../../../get-obj-field-meta";
 import type { RecordType, RelationshipType } from "../../types";
-import { filterByProperties } from "./filter-by-properties";
+import { filterByProperties, filterByProperties2 } from "./filter-by-properties";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
-import { filterRelationshipKey } from "../utils/filter-relationship-key";
+import { filterRelationshipKey, filterRelationshipKey2 } from "../utils/filter-relationship-key";
 import { filterByValues } from "../../../../../translate/authorization/utils/filter-by-values";
 import type { SubscriptionsAuthorizationWhere } from "../../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../../composition/wrap-subscription";
+import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 function isRelationshipSubscriptionsEvent(event: SubscriptionsEvent): event is RelationshipSubscriptionsEvent {
     return ["create_relationship", "delete_relationship"].includes(event.event);
@@ -130,6 +132,128 @@ export function filterByAuthorizationRules({
             }
 
             return filterRelationshipKey({
+                receivedEventRelationship,
+                where: wherePropertyValue,
+                relationshipFields,
+                receivedEvent: event,
+                nodes,
+            });
+        }
+
+        if (wherePropertyKey === "jwt") {
+            return filterByValues(wherePropertyValue, context.authorization.jwt as Record<string, any>);
+        }
+
+        return true;
+    });
+
+    return multipleConditionsAggregationMap.AND(results);
+}
+export function filterByAuthorizationRules2({
+    entityAdapter,
+    where,
+    event,
+    nodes,
+    relationshipFields,
+    context,
+}: {
+    entityAdapter: ConcreteEntityAdapter;
+    where:
+        | SubscriptionsAuthorizationWhere
+        | Record<
+              string,
+              RecordType | Record<string, RecordType | RelationshipType> | Array<Record<string, RecordType>>
+          >;
+    event: SubscriptionsEvent;
+    nodes?: Node[];
+    relationshipFields?: Map<string, ObjectFields>;
+    context: Neo4jGraphQLComposedSubscriptionsContext;
+}): boolean {
+    const receivedEventProperties = event.properties;
+
+    const results = Object.entries(where).map(([wherePropertyKey, wherePropertyValue]) => {
+        if (Object.keys(multipleConditionsAggregationMap).includes(wherePropertyKey)) {
+            const comparisonResultsAggregationFn = multipleConditionsAggregationMap[wherePropertyKey];
+            let comparisonResults;
+            if (wherePropertyKey === "NOT") {
+                comparisonResults = filterByAuthorizationRules2({
+                    entityAdapter,
+                    where: wherePropertyValue as Record<string, RecordType>,
+                    event,
+                    nodes,
+                    relationshipFields,
+                    context,
+                });
+            } else {
+                comparisonResults = (wherePropertyValue as Array<Record<string, RecordType>>).map((whereCl) => {
+                    return filterByAuthorizationRules2({
+                        entityAdapter,
+                        where: whereCl,
+                        event,
+                        nodes,
+                        relationshipFields,
+                        context,
+                    });
+                });
+            }
+
+            if (!comparisonResultsAggregationFn(comparisonResults)) {
+                return false;
+            }
+        }
+
+        if (wherePropertyKey === "node") {
+            switch (event.event) {
+                case "create":
+                    return filterByProperties2({
+                        entityAdapter,
+                        whereProperties: wherePropertyValue,
+                        receivedProperties: event.properties.new,
+                    });
+                case "update":
+                case "delete":
+                    return filterByProperties2({
+                        entityAdapter,
+                        whereProperties: wherePropertyValue,
+                        receivedProperties: event.properties.old,
+                    });
+                case "create_relationship":
+                case "delete_relationship": {
+                    const receivedEventRelationshipType = event.relationshipName;
+                    // TODO: this was f.type
+                    const relationships = Array.from(entityAdapter.relationships.values()).filter(
+                        (f) => f.type === receivedEventRelationshipType
+                    );
+                    if (!relationships.length) {
+                        return false;
+                    }
+                    const receivedEventRelationship = relationships[0] as RelationshipAdapter; // ONE relationship only possible
+                    const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
+                    return filterByProperties2({
+                        entityAdapter,
+                        whereProperties: wherePropertyValue,
+                        receivedProperties: receivedEventProperties[key],
+                    });
+                }
+            }
+        }
+
+        if (wherePropertyKey === "relationship") {
+            if (!nodes || !relationshipFields || !isRelationshipSubscriptionsEvent(event)) {
+                return false;
+            }
+
+            const receivedEventRelationshipType = event.relationshipName;
+            // TODO: this was f.typeUnescaped
+            const relationships = Array.from(entityAdapter.relationships.values()).filter(
+                (f) => f.type === receivedEventRelationshipType
+            );
+            const receivedEventRelationship = relationships[0]; // ONE relationship only possible
+            if (!receivedEventRelationship) {
+                return false;
+            }
+
+            return filterRelationshipKey2({
                 receivedEventRelationship,
                 where: wherePropertyValue,
                 relationshipFields,

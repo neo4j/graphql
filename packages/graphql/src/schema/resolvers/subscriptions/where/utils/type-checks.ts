@@ -18,6 +18,8 @@
  */
 
 import { int } from "neo4j-driver";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { PrimitiveField, RelationField } from "../../../../../types";
 import type { InterfaceSpecificType, InterfaceType, StandardType } from "../../types";
 
@@ -49,6 +51,19 @@ export function isStandardType(
     receivedEventRelationship: RelationField
 ): node is StandardType {
     return !receivedEventRelationship.interface?.implementations;
+}
+export function isInterfaceType2(
+    node: StandardType | InterfaceType,
+    receivedEventRelationship: RelationshipAdapter
+): node is InterfaceType {
+    return !!(receivedEventRelationship.target instanceof InterfaceEntityAdapter);
+}
+
+export function isStandardType2(
+    node: StandardType | InterfaceType,
+    receivedEventRelationship: RelationshipAdapter
+): node is StandardType {
+    return !(receivedEventRelationship.target instanceof InterfaceEntityAdapter);
 }
 
 export function isInterfaceSpecificFieldType(node: unknown): node is InterfaceSpecificType {
