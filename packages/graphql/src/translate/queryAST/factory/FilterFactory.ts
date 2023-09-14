@@ -34,12 +34,16 @@ import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter"
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { AggregationDurationFilter } from "../ast/filters/aggregation/AggregationDurationPropertyFilter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
+import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { isCompositeEntity } from "../utils/is-composite-entity";
+import { isInterfaceEntity } from "../utils/is-interface-entity";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 type AggregateWhereInput = {
     count: number;
@@ -56,25 +60,6 @@ export class FilterFactory {
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
-    }
-
-    public createRelationshipFilters(relationship: RelationshipAdapter, where: Record<string, unknown>): Array<Filter> {
-        return Object.entries(where).map(([key, value]): Filter => {
-            if (isLogicalOperator(key)) {
-                return this.createEdgeLogicalFilter(key, value as any, relationship);
-            }
-            const { fieldName, operator, isNot } = parseWhereField(key);
-            const attr = (relationship.target as ConcreteEntityAdapter).findAttribute(fieldName);
-            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
-
-            return this.createPropertyFilter({
-                attribute: attr,
-                comparisonValue: value,
-                isNot,
-                operator,
-                attachedTo: "node",
-            });
-        });
     }
 
     public createConnectionFilter(
@@ -239,7 +224,7 @@ export class FilterFactory {
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
                 let relationship: RelationshipAdapter | undefined;
-                if (entity instanceof ConcreteEntityAdapter) {
+                if (isConcreteEntity(entity)) {
                     relationship = entity.findRelationship(fieldName);
                 }
 

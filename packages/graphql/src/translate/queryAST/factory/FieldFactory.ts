@@ -34,6 +34,7 @@ import type { AttributeAdapter } from "../../../schema-model/attribute/model-ada
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { isConcreteEntity } from "../utils/is-concrete-entity";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -63,7 +64,7 @@ export class FieldFactory {
                 return this.createRelationshipAggregationField(relationship, fieldName, field);
             }
 
-            if (entity instanceof ConcreteEntityAdapter) {
+            if (isConcreteEntity(entity)) {
                 const relationship = entity.findRelationship(fieldName);
                 if (relationship) {
                     return this.createRelationshipField(entity, relationship, fieldName, field, context);
