@@ -40,6 +40,9 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceReadOperation";
 import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
+import { filterTruthy } from "../../../utils/utils";
+import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -56,6 +59,25 @@ export class OperationsFactory {
 
         const authFilterFactory = new AuthFilterFactory(queryASTFactory);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
+    }
+
+    private createAttributeAuthFilters({
+        entity,
+        rawFields,
+        context,
+    }: {
+        entity: ConcreteEntityAdapter;
+        rawFields: Record<string, ResolveTree>;
+        context: Neo4jGraphQLTranslationContext;
+    }): AuthorizationFilters[] {
+        return filterTruthy(
+            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
+                const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
+                const attribute = entity.findAttribute(fieldName);
+                if (!attribute) return undefined;
+                return this.authorizationFactory.createAttributeAuthFilters(attribute, entity, ["READ"], context);
+            })
+        );
     }
 
     public createReadOperationAST(
@@ -111,7 +133,7 @@ export class OperationsFactory {
 
     private hydrateInterfaceReadOperationWithPagination(
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
-        operation:  InterfaceReadOperation | ReadOperation,
+        operation: InterfaceReadOperation | ReadOperation,
         resolveTree: ResolveTree
     ) {
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
@@ -329,6 +351,11 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
+        const authNodeAttributeFilters = this.createAttributeAuthFilters({
+            entity: target,
+            context,
+            rawFields: nodeRawFields,
+        });
 
         if (isUnionEntity(relationship.target)) {
             // Small hack due to where arguments being one level nested for unions
@@ -340,8 +367,9 @@ export class OperationsFactory {
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
         if (authFilters) {
-            operation.setAuthFilters(authFilters);
+            operation.addAuthFilters(authFilters, ...authNodeAttributeFilters);
         }
+
         return operation;
     }
 
@@ -369,13 +397,18 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
+        const authAttributeFilters = this.createAttributeAuthFilters({
+            entity,
+            context,
+            rawFields: projectionFields,
+        });
 
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
 
         operation.setFields(fields);
         operation.setFilters(filters);
         if (authFilters) {
-            operation.setAuthFilters(authFilters);
+            operation.addAuthFilters(authFilters, ...authAttributeFilters);
         }
         this.hydrateInterfaceReadOperationWithPagination(entity, operation, resolveTree);
 
