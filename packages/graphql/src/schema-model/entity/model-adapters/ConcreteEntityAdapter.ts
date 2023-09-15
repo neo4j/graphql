@@ -31,6 +31,8 @@ import type { ConcreteEntity } from "../ConcreteEntity";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
+import { MutationOperations } from "../../../graphql/directives/mutation";
+import { SubscriptionEvent } from "../../../graphql/directives/subscription";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
@@ -204,9 +206,62 @@ export class ConcreteEntityAdapter {
         return this._operations;
     }
 
+    get isReadable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.read === true;
+    }
+    get isAggregable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+    }
+    get isCreatable(): boolean {
+        return (
+            this.annotations.mutation === undefined ||
+            this.annotations.mutation.operations.has(MutationOperations.CREATE)
+        );
+    }
+    get isUpdatable(): boolean {
+        return (
+            this.annotations.mutation === undefined ||
+            this.annotations.mutation.operations.has(MutationOperations.UPDATE)
+        );
+    }
+    get isDeletable(): boolean {
+        return (
+            this.annotations.mutation === undefined ||
+            this.annotations.mutation.operations.has(MutationOperations.DELETE)
+        );
+    }
     get isSubscribable(): boolean {
-        // return !!this.annotations.subscription?.events?.length;
-        return this.annotations.subscription === undefined || this.annotations.subscription.events?.length > 0;
+        return this.annotations.subscription === undefined || this.annotations.subscription.events?.size > 0;
+    }
+    get isSubscribableOnCreate(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.CREATED)
+        );
+    }
+    get isSubscribableOnUpdate(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.UPDATED)
+        );
+    }
+    get isSubscribableOnDelete(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.DELETED)
+        );
+    }
+    get isSubscribableOnRelationshipCreate(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_CREATED)
+        );
+    }
+    get isSubscribableOnRelationshipDelete(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_DELETED)
+        );
     }
 
     // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...

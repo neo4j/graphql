@@ -421,7 +421,12 @@ function generateConcreteEntity(
     });
 
     const inheritedDirectives = inheritsFrom?.flatMap((i) => i?.directives || []);
-    const annotations = createEntityAnnotations((definition.directives || []).concat(inheritedDirectives || []));
+    // schema directives are propagated onto concrete entities
+    // TODO: currently all directives are propagated. Filter them here if this changes.
+    const schemaDirectives = definitionCollection.schemaExtension?.directives;
+    const annotations = createEntityAnnotations(
+        (definition.directives || []).concat(inheritedDirectives || []).concat(schemaDirectives || [])
+    );
 
     return new ConcreteEntity({
         name: definition.name.value,
