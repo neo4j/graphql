@@ -66,7 +66,11 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = getNeo4jResolveTree(info, { resolveTree });
 
-        const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = translateRead({
+            context: context as Neo4jGraphQLTranslationContext,
+            node,
+            isGlobalNode: true,
+        });
         const executeResult = await execute({
             cypher,
             params,

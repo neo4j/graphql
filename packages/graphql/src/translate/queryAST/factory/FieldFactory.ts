@@ -35,6 +35,7 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { fromGlobalId } from "../../../utils/global-ids";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -132,7 +133,16 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): AttributeField {
-        const attribute = entity.findAttribute(fieldName);
+        let attribute = entity.findAttribute(fieldName);
+
+        if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {
+            attribute = entity.getRelayId();
+            if (!attribute) throw new Error(`attribute ${fieldName} not found`);
+
+            // NOTE: for some reason, the alias needs to be the same as the database name
+            return new AttributeField({ alias: attribute.databaseName, attribute });
+        }
+
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
 
         if (attribute.annotations.cypher) {
