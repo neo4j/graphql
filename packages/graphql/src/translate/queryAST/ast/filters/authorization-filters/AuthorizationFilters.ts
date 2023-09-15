@@ -25,6 +25,7 @@ import type { AuthorizationRuleFilter } from "./AuthorizationRuleFilter";
 import type { QueryASTNode } from "../../QueryASTNode";
 
 export class AuthorizationFilters extends Filter {
+    // Maybe we can merge these into a single array
     private validationFilters: AuthorizationRuleFilter[] = [];
     private whereFilters: AuthorizationRuleFilter[] = [];
 

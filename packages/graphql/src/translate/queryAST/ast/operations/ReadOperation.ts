@@ -42,7 +42,7 @@ export class ReadOperation extends Operation {
 
     public fields: Field[] = [];
     protected filters: Filter[] = [];
-    protected authFilters: AuthorizationFilters | undefined;
+    protected authFilters: AuthorizationFilters[] = [];
 
     protected pagination: Pagination | undefined;
     protected sortFields: Sort[] = [];
@@ -80,8 +80,16 @@ export class ReadOperation extends Operation {
         this.filters = filters;
     }
 
-    public setAuthFilters(filter: AuthorizationFilters) {
-        this.authFilters = filter;
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
+    }
+
+    protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    }
+
+    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
     private transpileNestedRelationship(
@@ -105,12 +113,12 @@ export class ReadOperation extends Operation {
         const filterPredicates = this.getPredicates(nestedContext);
 
         // NOT NNEDED?
-        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
-        const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
 
-        const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
+        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         let withWhere: Cypher.With | undefined;
         if (wherePredicate) {
             // if (authFiltersPredicate) {
@@ -206,7 +214,7 @@ export class ReadOperation extends Operation {
         const filterPredicates = this.getPredicates(context);
 
         // THis may no longer be relevant?
-        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(context) : [];
+        const authFilterSubqueries = this.getAuthFilterSubqueries(context);
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
         const sortSubqueries = this.sortFields
@@ -214,7 +222,7 @@ export class ReadOperation extends Operation {
             .map((sq) => new Cypher.Call(sq).innerWith(node));
         const subqueries = Cypher.concat(...fieldSubqueries, ...authFilterSubqueries);
 
-        const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(context) : undefined;
+        const authFiltersPredicate = this.getAuthFilterPredicate(context);
 
         const projection = this.getProjectionMap(context);
 
@@ -224,13 +232,13 @@ export class ReadOperation extends Operation {
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
         // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFiltersPredicate && preSelection.length === 0;
+        const shouldAddWithForAuth = authFiltersPredicate.length > 0 && preSelection.length === 0;
         if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
             filterSubqueryWith = new Cypher.With("*");
         }
 
-        const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
+        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             if (filterSubqueryWith) {
                 filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
@@ -282,7 +290,13 @@ export class ReadOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.filters, this.authFilters, ...this.fields, this.pagination, ...this.sortFields]);
+        return filterTruthy([
+            ...this.filters,
+            ...this.authFilters,
+            ...this.fields,
+            this.pagination,
+            ...this.sortFields,
+        ]);
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
