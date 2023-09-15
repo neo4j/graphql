@@ -40,7 +40,7 @@ describe("auth/bind", () => {
     });
 
     describe("create", () => {
-        test.only("should throw forbidden when creating a nested node with invalid bind", async () => {
+        test("should throw forbidden when creating a nested node with invalid bind", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
