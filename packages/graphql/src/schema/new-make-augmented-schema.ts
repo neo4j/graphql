@@ -680,8 +680,6 @@ function makeAugmentedSchema(
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
 
-    const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
-
     const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
@@ -1054,17 +1052,7 @@ function makeAugmentedSchema(
         ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
         ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
 
-        // TODO: move this somewhere in the schema generator initialisation?
-        const schemaConfiguration = schemaConfigurationFromObjectTypeDefinition(definitionNode);
-
-        const schemaConfigurationFlags = getSchemaConfigurationFlags({
-            globalSchemaConfiguration,
-            nodeSchemaConfiguration: schemaConfiguration,
-            // TODO: Check if this is deprecated now
-            // excludeDirective: node.exclude,
-        });
-
-        if (schemaConfigurationFlags.read) {
+        if (concreteEntityAdapter.isReadable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver2({
                     node,
@@ -1088,7 +1076,7 @@ function makeAugmentedSchema(
                 graphqlDirectivesToCompose(propagatedDirectives)
             );
         }
-        if (schemaConfigurationFlags.aggregate) {
+        if (concreteEntityAdapter.isAggregable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver2({
                     node,
@@ -1101,7 +1089,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (schemaConfigurationFlags.create) {
+        if (concreteEntityAdapter.isCreatable) {
             composer.Mutation.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver2({
                     node,
@@ -1114,7 +1102,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (schemaConfigurationFlags.delete) {
+        if (concreteEntityAdapter.isDeletable) {
             composer.Mutation.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.delete]: deleteResolver2({
                     node,
@@ -1128,7 +1116,7 @@ function makeAugmentedSchema(
             );
         }
 
-        if (schemaConfigurationFlags.update) {
+        if (concreteEntityAdapter.isUpdatable) {
             composer.Mutation.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver2({
                     node,
@@ -1168,9 +1156,7 @@ function makeAugmentedSchema(
         generateSubscriptionTypes2({
             schemaComposer: composer,
             schemaModel,
-            nodes,
             userDefinedFieldDirectivesForNode,
-            globalSchemaConfiguration,
         });
     }
 

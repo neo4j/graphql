@@ -352,15 +352,11 @@ export function generateSubscriptionTypes({
 export function generateSubscriptionTypes2({
     schemaComposer,
     schemaModel,
-    nodes,
     userDefinedFieldDirectivesForNode,
-    globalSchemaConfiguration,
 }: {
     schemaComposer: SchemaComposer;
     schemaModel: Neo4jGraphQLSchemaModel;
-    nodes: Node[];
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
-    globalSchemaConfiguration: SchemaConfiguration;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
@@ -389,8 +385,6 @@ export function generateSubscriptionTypes2({
     const nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>> = new Map();
     const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
     nodesWithSubscriptionOperation.forEach((entityAdapter) => {
-        // TODO: remove
-        const node = nodes.find((n) => n.name === entityAdapter.name) as Node;
         const eventPayload = nodeNameToEventPayloadTypes[entityAdapter.name] as ObjectTypeComposer;
         const where = generateSubscriptionWhereType2(entityAdapter, schemaComposer);
 
@@ -582,13 +576,7 @@ export function generateSubscriptionTypes2({
 
         const whereArgument = where && { args: { where } };
 
-        const schemaConfigurationFlags = getSchemaConfigurationFlags({
-            globalSchemaConfiguration,
-            nodeSchemaConfiguration: node.schemaConfiguration,
-            excludeDirective: node.exclude,
-        });
-
-        if (schemaConfigurationFlags.subscribeCreate) {
+        if (entityAdapter.isSubscribableOnCreate) {
             subscriptionComposer.addFields({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.created]: {
                     ...whereArgument,
@@ -598,7 +586,7 @@ export function generateSubscriptionTypes2({
                 },
             });
         }
-        if (schemaConfigurationFlags.subscribeUpdate) {
+        if (entityAdapter.isSubscribableOnUpdate) {
             subscriptionComposer.addFields({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.updated]: {
                     ...whereArgument,
@@ -609,7 +597,7 @@ export function generateSubscriptionTypes2({
             });
         }
 
-        if (schemaConfigurationFlags.subscribeDelete) {
+        if (entityAdapter.isSubscribableOnDelete) {
             subscriptionComposer.addFields({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.deleted]: {
                     ...whereArgument,
@@ -625,7 +613,7 @@ export function generateSubscriptionTypes2({
             schemaComposer,
         });
         if (entityAdapter.relationships.size > 0) {
-            if (schemaConfigurationFlags.subscribeCreateRelationship) {
+            if (entityAdapter.isSubscribableOnRelationshipCreate) {
                 subscriptionComposer.addFields({
                     [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_created]: {
                         ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
@@ -638,7 +626,7 @@ export function generateSubscriptionTypes2({
                     },
                 });
             }
-            if (schemaConfigurationFlags.subscribeDeleteRelationship) {
+            if (entityAdapter.isSubscribableOnRelationshipDelete) {
                 subscriptionComposer.addFields({
                     [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_deleted]: {
                         ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
@@ -707,6 +695,7 @@ function getRelationshipEventDataForNode2(
     destinationProperties: Record<string, any>;
     destinationTypename: string;
 } {
+    // TODO:can I refactor this?
     let condition = event.toTypename === entityAdapter.name;
     if (event.toTypename === event.fromTypename) {
         // must check relationship direction from schema
