@@ -29,7 +29,7 @@ import type { Sort } from "../ast/sort/Sort";
 import { isUnionEntity } from "../utils/is-union-entity";
 
 export class SortAndPaginationFactory {
-    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter | RelationshipAdapter): Sort[] {
+    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter): Sort[] {
         return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 

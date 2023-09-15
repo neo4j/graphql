@@ -41,6 +41,7 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceReadOperation";
 import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
+import { isInterfaceEntity } from "../utils/is-interface-entity";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -77,7 +78,6 @@ export class OperationsFactory {
             return this.hydrateReadOperation({
                 operation,
                 entity,
-                relationship,
                 resolveTree,
                 context,
                 whereArgs: resolveTreeWhere,
@@ -91,24 +91,45 @@ export class OperationsFactory {
                 });
 
                 const whereArgs = this.getConcreteWhere(resolveTreeWhere, entity, concreteEntity);
+
                 return this.hydrateReadOperation({
                     entity: concreteEntity,
-                    relationship,
                     resolveTree,
                     context,
                     operation: readPartial,
                     whereArgs: whereArgs,
                 });
             });
-            return new InterfaceReadOperation({
+
+            const interfaceReadOp = new InterfaceReadOperation({
                 interfaceEntity: entity,
                 children: concreteReadOperations,
                 relationship,
             });
+            this.hydrateInterfaceReadOperationWithPagination(entity, interfaceReadOp, resolveTree);
+            return interfaceReadOp;
         }
     }
+
+    private hydrateInterfaceReadOperationWithPagination(
+        entity: InterfaceEntityAdapter | UnionEntityAdapter,
+        operation: InterfaceReadOperation,
+        resolveTree: ResolveTree
+    ) {
+        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
+        if (options) {
+            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+            operation.addSort(...sort);
+
+            const pagination = this.sortAndPaginationFactory.createPagination(options);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+    }
+
     /** 
-     * Get given a Record<string, any> representing a where argument for a composite target fields returns its concrete where argument.
+     * Given a Record<string, any> representing a where argument for a composite target fields returns its concrete where argument.
         For instance, given:
         {
             Genre: { name: "Horror" },
@@ -125,7 +146,12 @@ export class OperationsFactory {
             if (isUnionEntity(compositeTarget)) {
                 return whereArgs[concreteTarget.name] ?? {};
             } else {
-                return whereArgs["_on"] ? whereArgs["_on"][concreteTarget.name] : {};
+                // interface may have shared filters, inject them as if they were present under _on
+                const sharedInterfaceFilters = Object.entries(whereArgs).filter(([key]) => key !== "_on");
+
+                return whereArgs["_on"]
+                    ? { ...Object.fromEntries(sharedInterfaceFilters), ...whereArgs["_on"][concreteTarget.name] }
+                    : {};
             }
         }
         return {};
@@ -321,53 +347,14 @@ export class OperationsFactory {
         return operation;
     }
 
-    /*   private createInterfaceReadOperationAST({
-        entity,
-        relationship,
-        resolveTree,
-        context,
-    }: {
-        entity: InterfaceEntityAdapter; //| UnionEntityAdapter;
-        relationship?: RelationshipAdapter;
-        resolveTree: ResolveTree;
-        context: Neo4jGraphQLTranslationContext;
-    }): InterfaceReadOperation {
-        const directed = Boolean(resolveTree.args?.directed ?? true);
-        const concreteOperations = entity.concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
-            const connectionPartial = new InterfaceReadPartial({
-                relationship,
-                directed,
-                target: concreteEntity,
-            });
-
-            return this.hydrateReadOperation({
-                relationship,
-                entity: concreteEntity,
-                resolveTree,
-                context,
-                operation: connectionPartial,
-            });
-        });
-
-        const operation = new InterfaceReadOperation({
-            relationship,
-            children: concreteOperations,
-            interfaceEntity: entity,
-        });
-
-        return operation;
-    }
- */
     private hydrateReadOperation<T extends ReadOperation>({
         entity,
-        relationship,
         operation,
         resolveTree,
         context,
         whereArgs,
     }: {
         entity: ConcreteEntityAdapter;
-        relationship?: RelationshipAdapter;
         operation: T;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
@@ -388,7 +375,7 @@ export class OperationsFactory {
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
 
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
-      /*   if (relationship) {
+        /*   if (relationship) {
             
             //filters = this.filterFactory.createRelationshipFilters(entity, whereArgs);
         } else {
@@ -416,10 +403,10 @@ export class OperationsFactory {
     }
 
     private getOptions(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         options: Record<string, any>
     ): GraphQLOptionsArg | undefined {
-        const limitDirective = entity.annotations.limit;
+        const limitDirective = isUnionEntity(entity) ? undefined : entity.annotations.limit;
 
         let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
         if (limit instanceof Integer) {
