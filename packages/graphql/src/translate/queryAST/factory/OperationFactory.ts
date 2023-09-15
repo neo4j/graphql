@@ -151,7 +151,7 @@ export class OperationsFactory {
 
                 return whereArgs["_on"]
                     ? { ...Object.fromEntries(sharedInterfaceFilters), ...whereArgs["_on"][concreteTarget.name] }
-                    : {};
+                    : Object.fromEntries(sharedInterfaceFilters);
             }
         }
         return {};

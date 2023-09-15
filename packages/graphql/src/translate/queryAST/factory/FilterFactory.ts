@@ -41,9 +41,6 @@ import { AggregationDurationFilter } from "../ast/filters/aggregation/Aggregatio
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
-import { isCompositeEntity } from "../utils/is-composite-entity";
-import { isInterfaceEntity } from "../utils/is-interface-entity";
-import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 type AggregateWhereInput = {
     count: number;
