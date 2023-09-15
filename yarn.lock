@@ -3788,7 +3788,7 @@ __metadata:
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.5.5
-    "@types/jsonwebtoken": 9.0.2
+    "@types/jsonwebtoken": 9.0.3
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.30
     "@types/randomstring": 1.1.8
@@ -7593,7 +7593,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.2, @types/jsonwebtoken@npm:^9.0.0":
+"@types/jsonwebtoken@npm:9.0.3":
+  version: 9.0.3
+  resolution: "@types/jsonwebtoken@npm:9.0.3"
+  dependencies:
+    "@types/node": "*"
+  checksum: 2debf3adb19b827a023205234ec439b7258aee6ca9273472abe360738a84f08db78c6e853172e842ec303169ec0bb2df39701ab9a13b9e7868fe284ef9136567
+  languageName: node
+  linkType: hard
+
+"@types/jsonwebtoken@npm:^9.0.0":
   version: 9.0.2
   resolution: "@types/jsonwebtoken@npm:9.0.2"
   dependencies:
