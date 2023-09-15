@@ -631,7 +631,7 @@ describe("@auth allow on specific interface implementation", () => {
             		}
             	}
             WITH this, this_connect_content0_node
-            	RETURN count(*) AS connect_this_connect_content_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment0
             }
             CALL {
             		WITH this
@@ -650,7 +650,7 @@ describe("@auth allow on specific interface implementation", () => {
             		}
             	}
             WITH this, this_connect_content1_node
-            	RETURN count(*) AS connect_this_connect_content_Post
+            	RETURN count(*) AS connect_this_connect_content_Post1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

@@ -156,7 +156,7 @@ describe("Batch Create, Interface", () => {
             SET this0_workersActor0_node.name = $this0_workersActor0_node_name
             MERGE (this0)<-[this0_workersActor0_relationship:EMPLOYED]-(this0_workersActor0_node)
             SET this0_workersActor0_relationship.year = $this0_workersActor0_relationship_year
-            WITH this0, this0_workersActor0_node
+            WITH *
             CALL {
             	WITH this0_workersActor0_node
             	MATCH (this0_workersActor0_node)-[this0_workersActor0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
@@ -183,7 +183,7 @@ describe("Batch Create, Interface", () => {
             SET this1_workersModeler0_node.name = $this1_workersModeler0_node_name
             MERGE (this1)<-[this1_workersModeler0_relationship:EMPLOYED]-(this1_workersModeler0_node)
             SET this1_workersModeler0_relationship.year = $this1_workersModeler0_relationship_year
-            WITH this1, this1_workersModeler0_node
+            WITH *
             CALL {
             	WITH this1_workersModeler0_node
             	MATCH (this1_workersModeler0_node)-[this1_workersModeler0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
@@ -303,7 +303,7 @@ describe("Batch Create, Interface", () => {
             SET this0_workersActor0_node.name = $this0_workersActor0_node_name
             MERGE (this0)<-[this0_workersActor0_relationship:EMPLOYED]-(this0_workersActor0_node)
             SET this0_workersActor0_relationship.year = $this0_workersActor0_relationship_year
-            WITH this0, this0_workersActor0_node
+            WITH *
             CALL {
             	WITH this0_workersActor0_node
             	MATCH (this0_workersActor0_node)-[this0_workersActor0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
@@ -330,7 +330,7 @@ describe("Batch Create, Interface", () => {
             SET this1_workersActor0_node.name = $this1_workersActor0_node_name
             MERGE (this1)<-[this1_workersActor0_relationship:EMPLOYED]-(this1_workersActor0_node)
             SET this1_workersActor0_relationship.year = $this1_workersActor0_relationship_year
-            WITH this1, this1_workersActor0_node
+            WITH *
             CALL {
             	WITH this1_workersActor0_node
             	MATCH (this1_workersActor0_node)-[this1_workersActor0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
@@ -384,7 +384,7 @@ describe("Batch Create, Interface", () => {
             		}
             	}
             WITH this3, this3_workers_connect0_node
-            	RETURN count(*) AS connect_this3_workers_connect_Actor
+            	RETURN count(*) AS connect_this3_workers_connect_Actor0
             }
             CALL {
             		WITH this3
@@ -401,7 +401,7 @@ describe("Batch Create, Interface", () => {
             		}
             	}
             WITH this3, this3_workers_connect1_node
-            	RETURN count(*) AS connect_this3_workers_connect_Modeler
+            	RETURN count(*) AS connect_this3_workers_connect_Modeler1
             }
             WITH *
             CALL {

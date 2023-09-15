@@ -327,7 +327,7 @@ describe("Cypher Auth isAuthenticated", () => {
             		}
             	}
             WITH this, this_connect_posts0_node
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             		}
             	}
             WITH this0, this0_author_connect0_node
-            	RETURN count(*) AS connect_this0_author_connect_User
+            	RETURN count(*) AS connect_this0_author_connect_User0
             }
             WITH *
             CALL {

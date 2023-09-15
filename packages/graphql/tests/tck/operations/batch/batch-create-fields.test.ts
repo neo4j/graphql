@@ -436,7 +436,7 @@ describe("Batch Create, Scalar types", () => {
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
             SET this0_actors0_relationship.year = $this0_actors0_relationship_year
-            WITH this0, this0_actors0_node
+            WITH *
             CALL {
             	WITH this0_actors0_node
             	MATCH (this0_actors0_node)-[this0_actors0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
@@ -465,7 +465,7 @@ describe("Batch Create, Scalar types", () => {
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[this1_actors0_relationship:ACTED_IN]-(this1_actors0_node)
             SET this1_actors0_relationship.year = $this1_actors0_relationship_year
-            WITH this1, this1_actors0_node
+            WITH *
             CALL {
             	WITH this1_actors0_node
             	MATCH (this1_actors0_node)-[this1_actors0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
@@ -521,7 +521,7 @@ describe("Batch Create, Scalar types", () => {
             		}
             	}
             WITH this3, this3_actors_connect0_node
-            	RETURN count(*) AS connect_this3_actors_connect_Actor
+            	RETURN count(*) AS connect_this3_actors_connect_Actor0
             }
             WITH *
             CALL {

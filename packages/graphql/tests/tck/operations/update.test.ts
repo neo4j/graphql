@@ -273,7 +273,7 @@ describe("Cypher Update", () => {
             		}
             	}
             WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actors_Actor0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -325,7 +325,7 @@ describe("Cypher Update", () => {
             		}
             	}
             WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actors_Actor0
             }
             WITH *
             CALL {
@@ -343,7 +343,7 @@ describe("Cypher Update", () => {
             		}
             	}
             WITH this, this_connect_actors1_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actors_Actor1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

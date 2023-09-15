@@ -964,7 +964,7 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this0, this0_director_connect0_node
-                        	RETURN count(*) AS connect_this0_director_connect_Director
+                        	RETURN count(*) AS connect_this0_director_connect_Director0
                         }
                         WITH *
                         CALL {
@@ -1037,7 +1037,7 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this0, this0_director_connect0_node
-                        	RETURN count(*) AS connect_this0_director_connect_Director
+                        	RETURN count(*) AS connect_this0_director_connect_Director0
                         }
                         WITH *
                         CALL {
@@ -1151,9 +1151,9 @@ describe("tck/rfs/003", () => {
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
                             WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
-                            	RETURN count(*) AS connect_this0_director_connect0_node_address_Address
+                            	RETURN count(*) AS connect_this0_director_connect0_node_address_Address0
                             }
-                            	RETURN count(*) AS connect_this0_director_connect_Director
+                            	RETURN count(*) AS connect_this0_director_connect_Director0
                             }
                             WITH *
                             CALL {
@@ -1335,7 +1335,7 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this, this_connect_director0_node
-                        	RETURN count(*) AS connect_this_connect_director_Director
+                        	RETURN count(*) AS connect_this_connect_director_Director0
                         }
                         WITH *
                         CALL {
@@ -1451,7 +1451,7 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this, this_connect_director0_node
-                        	RETURN count(*) AS connect_this_connect_director_Director
+                        	RETURN count(*) AS connect_this_connect_director_Director0
                         }
                         WITH *
                         CALL {

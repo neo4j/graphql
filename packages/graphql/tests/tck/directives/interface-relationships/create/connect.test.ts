@@ -109,7 +109,7 @@ describe("Interface Relationships - Create connect", () => {
             		}
             	}
             WITH this0, this0_actedIn_connect0_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Movie
+            	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
             }
             CALL {
             		WITH this0
@@ -127,7 +127,7 @@ describe("Interface Relationships - Create connect", () => {
             		}
             	}
             WITH this0, this0_actedIn_connect1_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Series
+            	RETURN count(*) AS connect_this0_actedIn_connect_Series1
             }
             RETURN this0
             }

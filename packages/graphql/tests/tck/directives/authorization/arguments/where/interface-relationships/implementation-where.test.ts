@@ -683,7 +683,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect0_node
-            	RETURN count(*) AS connect_this0_content_connect_Comment
+            	RETURN count(*) AS connect_this0_content_connect_Comment0
             }
             CALL {
             		WITH this0
@@ -702,7 +702,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect1_node
-            	RETURN count(*) AS connect_this0_content_connect_Post
+            	RETURN count(*) AS connect_this0_content_connect_Post1
             }
             RETURN this0
             }
@@ -771,7 +771,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect0_node
-            	RETURN count(*) AS connect_this0_content_connect_Comment
+            	RETURN count(*) AS connect_this0_content_connect_Comment0
             }
             CALL {
             		WITH this0
@@ -790,7 +790,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect1_node
-            	RETURN count(*) AS connect_this0_content_connect_Post
+            	RETURN count(*) AS connect_this0_content_connect_Post1
             }
             RETURN this0
             }
@@ -853,7 +853,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Comment
+            	RETURN count(*) AS connect_this_content0_connect_Comment0
             }
             RETURN count(*) AS update_this_Comment
             }
@@ -877,7 +877,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Post
+            	RETURN count(*) AS connect_this_content0_connect_Post0
             }
             RETURN count(*) AS update_this_Post
             }
@@ -935,7 +935,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Comment
+            	RETURN count(*) AS connect_this_content0_connect_Comment0
             }
             RETURN count(*) AS update_this_Comment
             }
@@ -959,7 +959,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Post
+            	RETURN count(*) AS connect_this_content0_connect_Post0
             }
             RETURN count(*) AS update_this_Post
             }
@@ -1015,7 +1015,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content0_node
-            	RETURN count(*) AS connect_this_connect_content_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment0
             }
             CALL {
             		WITH this
@@ -1034,7 +1034,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content1_node
-            	RETURN count(*) AS connect_this_connect_content_Post
+            	RETURN count(*) AS connect_this_connect_content_Post1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1088,7 +1088,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content0_node
-            	RETURN count(*) AS connect_this_connect_content_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment0
             }
             CALL {
             		WITH this
@@ -1107,7 +1107,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content1_node
-            	RETURN count(*) AS connect_this_connect_content_Post
+            	RETURN count(*) AS connect_this_connect_content_Post1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             		}
             	}
             WITH this, this_connect_targets0_node
-            	RETURN count(*) AS connect_this_connect_targets_Target
+            	RETURN count(*) AS connect_this_connect_targets_Target0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

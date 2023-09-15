@@ -360,7 +360,7 @@ describe("Label in Node directive", () => {
             		}
             	}
             WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actors_Actor0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

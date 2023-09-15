@@ -130,7 +130,7 @@ describe("Cypher Auth Allow", () => {
             SET this0_contentPost0_node_creator0_node.id = $this0_contentPost0_node_creator0_node_id
             MERGE (this0_contentPost0_node)<-[:HAS_CONTENT]-(this0_contentPost0_node_creator0_node)
             MERGE (this0)-[:HAS_CONTENT]->(this0_contentPost0_node)
-            WITH this0, this0_contentPost0_node
+            WITH *
             CALL {
             	WITH this0_contentPost0_node
             	MATCH (this0_contentPost0_node)<-[this0_contentPost0_node_creator_User_unique:HAS_CONTENT]-(:User)
@@ -214,7 +214,7 @@ describe("Cypher Auth Allow", () => {
             SET this0_contentComment0_node_creator0_node.id = $this0_contentComment0_node_creator0_node_id
             MERGE (this0_contentComment0_node)<-[:HAS_CONTENT]-(this0_contentComment0_node_creator0_node)
             MERGE (this0)-[:HAS_CONTENT]->(this0_contentComment0_node)
-            WITH this0, this0_contentComment0_node
+            WITH *
             CALL {
             	WITH this0_contentComment0_node
             	MATCH (this0_contentComment0_node)<-[this0_contentComment0_node_creator_User_unique:HAS_CONTENT]-(:User)
@@ -421,7 +421,7 @@ describe("Cypher Auth Allow", () => {
             WITH this, this_connect_content0_node
             WITH this, this_connect_content0_node
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	RETURN count(*) AS connect_this_connect_content_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment0
             }
             CALL {
             		WITH this
@@ -443,7 +443,7 @@ describe("Cypher Auth Allow", () => {
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	RETURN count(*) AS connect_this_connect_content_Post
+            	RETURN count(*) AS connect_this_connect_content_Post1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

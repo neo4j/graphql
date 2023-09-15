@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 		}
                 	}
                 WITH this, this_connect_genre0_node
-                	RETURN count(*) AS connect_this_connect_genre_Genre
+                	RETURN count(*) AS connect_this_connect_genre_Genre0
                 }
                 WITH *
                 CALL {

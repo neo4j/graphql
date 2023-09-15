@@ -341,7 +341,7 @@ describe("Cypher Create", () => {
             		}
             	}
             WITH this0, this0_actors_connect0_node
-            	RETURN count(*) AS connect_this0_actors_connect_Actor
+            	RETURN count(*) AS connect_this0_actors_connect_Actor0
             }
             RETURN this0
             }
@@ -400,7 +400,7 @@ describe("Cypher Create", () => {
             		}
             	}
             WITH this0, this0_movies_connect0_node
-            	RETURN count(*) AS connect_this0_movies_connect_Movie
+            	RETURN count(*) AS connect_this0_movies_connect_Movie0
             }
             RETURN this0
             }

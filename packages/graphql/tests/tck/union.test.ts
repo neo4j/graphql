@@ -334,7 +334,7 @@ describe("Cypher Union", () => {
             		}
             	}
             WITH this0, this0_search_Genre_connect0_node
-            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
+            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre0
             }
             RETURN this0
             }
@@ -585,7 +585,7 @@ describe("Cypher Union", () => {
             		}
             	}
             WITH this, this_connect_search_Genre0_node
-            	RETURN count(*) AS connect_this_connect_search_Genre_Genre
+            	RETURN count(*) AS connect_this_connect_search_Genre_Genre0
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

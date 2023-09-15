@@ -459,7 +459,7 @@ function createConnectAndParams({
             subquery.push(`WITH collect(meta) AS connect_meta`);
             subquery.push(`RETURN REDUCE(m=[],m1 IN connect_meta | m+m1 ) as connect_meta`);
         } else {
-            subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}`);
+            subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}${index}`);
         }
 
         return { subquery: subquery.join("\n"), params };

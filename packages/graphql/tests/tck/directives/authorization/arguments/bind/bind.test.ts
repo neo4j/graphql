@@ -421,7 +421,7 @@ describe("Cypher Auth Allow", () => {
             WITH *, count(authorization_this0) AS creatorCount
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_connect_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	RETURN count(*) AS connect_this_connect_creator_User
+            	RETURN count(*) AS connect_this_connect_creator_User0
             }
             WITH *
             WITH *

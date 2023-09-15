@@ -215,7 +215,7 @@ function createCreateAndParams({
                             varName: nodeName,
                         });
                         if (relationshipValidationStr) {
-                            res.creates.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+                            res.creates.push(`WITH *`);
                             res.creates.push(relationshipValidationStr);
                         }
                     });

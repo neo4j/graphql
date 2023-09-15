@@ -827,7 +827,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_posts_connect0_node
-            	RETURN count(*) AS connect_this0_posts_connect_Post
+            	RETURN count(*) AS connect_this0_posts_connect_Post0
             }
             RETURN this0
             }
@@ -900,7 +900,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_posts_connect0_node
-            	RETURN count(*) AS connect_this0_posts_connect_Post
+            	RETURN count(*) AS connect_this0_posts_connect_Post0
             }
             RETURN this0
             }
@@ -963,7 +963,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_posts0_connect0_node
-            	RETURN count(*) AS connect_this_posts0_connect_Post
+            	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -1020,7 +1020,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_posts0_connect0_node
-            	RETURN count(*) AS connect_this_posts0_connect_Post
+            	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -1078,7 +1078,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_posts0_node
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1136,7 +1136,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_posts0_node
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

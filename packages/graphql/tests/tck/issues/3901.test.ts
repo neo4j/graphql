@@ -130,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             SET this0_seasons0_node.id = randomUUID()
             SET this0_seasons0_node.number = $this0_seasons0_node_number
             MERGE (this0)<-[:SEASON_OF]-(this0_seasons0_node)
-            WITH this0, this0_seasons0_node
+            WITH *
             CALL {
             	WITH this0_seasons0_node
             	MATCH (this0_seasons0_node)-[this0_seasons0_node_serie_Serie_unique:SEASON_OF]->(:Serie)
@@ -154,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             		}
             	}
             WITH this0, this0_publisher_connect0_node
-            	RETURN count(*) AS connect_this0_publisher_connect_User
+            	RETURN count(*) AS connect_this0_publisher_connect_User0
             }
             WITH *
             CALL {

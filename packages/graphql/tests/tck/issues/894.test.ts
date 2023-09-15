@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             		}
             	}
             WITH this, this_connect_activeOrganization0_node
-            	RETURN count(*) AS connect_this_connect_activeOrganization_Organization
+            	RETURN count(*) AS connect_this_connect_activeOrganization_Organization0
             }
             WITH *
             WITH *

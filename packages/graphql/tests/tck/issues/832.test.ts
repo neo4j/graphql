@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -122,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
             CALL {
@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -157,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect0_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Person
+            	RETURN count(*) AS connect_this1_subjects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -198,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect1_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Place
+            	RETURN count(*) AS connect_this1_subjects_connect_Place1
             }
             WITH *
             CALL {
@@ -216,7 +216,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect0_node
-            	RETURN count(*) AS connect_this1_objects_connect_Person
+            	RETURN count(*) AS connect_this1_objects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -233,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect1_node
-            	RETURN count(*) AS connect_this1_objects_connect_Place
+            	RETURN count(*) AS connect_this1_objects_connect_Place1
             }
             RETURN this1
             }
@@ -322,7 +322,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -339,7 +339,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
             CALL {
@@ -357,7 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -374,7 +374,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -448,7 +448,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -465,7 +465,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
             CALL {
@@ -483,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -500,7 +500,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -585,7 +585,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -602,7 +602,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
             CALL {
@@ -620,7 +620,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -637,7 +637,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -661,7 +661,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect0_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Person
+            	RETURN count(*) AS connect_this1_subjects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -678,7 +678,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect1_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Place
+            	RETURN count(*) AS connect_this1_subjects_connect_Place1
             }
             WITH *
             CALL {
@@ -696,7 +696,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect0_node
-            	RETURN count(*) AS connect_this1_objects_connect_Person
+            	RETURN count(*) AS connect_this1_objects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -713,7 +713,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect1_node
-            	RETURN count(*) AS connect_this1_objects_connect_Place
+            	RETURN count(*) AS connect_this1_objects_connect_Place1
             }
             RETURN this1
             }
@@ -863,7 +863,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -880,7 +880,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             RETURN this0
             }
