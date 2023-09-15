@@ -376,15 +376,6 @@ function createCreateAndParams({
         params = { ...params, ...authParams };
     }
 
-    // if (authorizationPredicates.length) {
-    //     creates.push(`WITH ${withVars.join(", ")}`);
-    //     if (authorizationSubqueries.length) {
-    //         creates.push(...authorizationSubqueries);
-    //         creates.push(`WITH *`);
-    //     }
-    //     creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
-    // }
-
     if (includeRelationshipValidation) {
         const str = createRelationshipValidationStr({ node, context, varName });
 
