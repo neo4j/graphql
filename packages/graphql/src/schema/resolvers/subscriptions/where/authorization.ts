@@ -74,14 +74,10 @@ export function subscriptionAuthorization({
 export function subscriptionAuthorization2({
     event,
     entity,
-    nodes,
-    relationshipFields,
     context,
 }: {
     event: SubscriptionsEvent;
     entity: ConcreteEntityAdapter;
-    nodes?: Node[];
-    relationshipFields?: Map<string, ObjectFields>;
     context: Neo4jGraphQLComposedSubscriptionsContext;
 }): boolean {
     const subscriptionsAuthorization = entity.annotations.subscriptionsAuthorization;
@@ -105,8 +101,6 @@ export function subscriptionAuthorization2({
             entityAdapter: entity,
             where,
             event,
-            nodes,
-            relationshipFields,
             context,
         });
     });

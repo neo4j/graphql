@@ -111,8 +111,6 @@ export function filterByRelationshipProperties2({
     entityAdapter,
     whereProperties,
     receivedEvent,
-    nodes,
-    relationshipFields,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     whereProperties: Record<
@@ -120,8 +118,6 @@ export function filterByRelationshipProperties2({
         RecordType | Record<string, RecordType | RelationshipType> | Array<Record<string, RecordType>>
     >;
     receivedEvent: RelationshipSubscriptionsEvent;
-    nodes: Node[];
-    relationshipFields: Map<string, ObjectFields>;
 }): boolean {
     const receivedEventProperties = receivedEvent.properties;
     const receivedEventRelationshipType = receivedEvent.relationshipName;
@@ -144,8 +140,6 @@ export function filterByRelationshipProperties2({
                     entityAdapter,
                     whereProperties: wherePropertyValue as Record<string, RecordType>,
                     receivedEvent,
-                    nodes,
-                    relationshipFields,
                 });
             } else {
                 comparisonResults = (wherePropertyValue as Array<Record<string, RecordType>>).map((whereCl) => {
@@ -153,8 +147,6 @@ export function filterByRelationshipProperties2({
                         entityAdapter,
                         whereProperties: whereCl,
                         receivedEvent,
-                        nodes,
-                        relationshipFields,
                     });
                 });
             }
@@ -170,7 +162,7 @@ export function filterByRelationshipProperties2({
             const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
             if (
                 !filterByProperties2({
-                    entityAdapter,
+                    attributes: entityAdapter.attributes,
                     whereProperties: wherePropertyValue,
                     receivedProperties: receivedEventProperties[key],
                 })
@@ -183,9 +175,7 @@ export function filterByRelationshipProperties2({
             return filterRelationshipKey2({
                 receivedEventRelationship,
                 where: wherePropertyValue,
-                relationshipFields,
                 receivedEvent,
-                nodes,
             });
         }
     }

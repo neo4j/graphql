@@ -119,13 +119,9 @@ export function generateSubscribeMethod({
 export function generateSubscribeMethod2({
     entityAdapter,
     type,
-    nodes,
-    relationshipFields,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     type: SubscriptionEventType;
-    nodes?: Node[];
-    relationshipFields?: Map<string, ObjectFields>;
 }) {
     return (
         _root: any,
@@ -167,11 +163,9 @@ export function generateSubscribeMethod2({
                     subscriptionAuthorization2({
                         event: data[0],
                         entity: entityAdapter,
-                        nodes,
-                        relationshipFields,
                         context,
                     }) &&
-                    subscriptionWhere2({ where: args.where, event: data[0], entityAdapter, nodes, relationshipFields })
+                    subscriptionWhere2({ where: args.where, event: data[0], entityAdapter })
                 );
             });
         }

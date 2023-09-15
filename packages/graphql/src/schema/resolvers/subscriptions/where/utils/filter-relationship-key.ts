@@ -18,6 +18,8 @@
  */
 
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Node, RelationField, RelationshipSubscriptionsEvent } from "../../../../../types";
 import type { ObjectFields } from "../../../../get-obj-field-meta";
@@ -148,15 +150,11 @@ export function filterRelationshipKey({
 export function filterRelationshipKey2({
     receivedEventRelationship,
     where,
-    relationshipFields,
     receivedEvent,
-    nodes,
 }: {
     receivedEventRelationship: RelationshipAdapter;
     where: RecordType | Record<string, RelationshipType | RecordType> | Record<string, RecordType>[];
-    relationshipFields: Map<string, ObjectFields>;
     receivedEvent: RelationshipSubscriptionsEvent;
-    nodes: Node[];
 }): boolean {
     const receivedEventProperties = receivedEvent.properties;
     const receivedEventRelationshipName = receivedEventRelationship.name;
@@ -171,7 +169,6 @@ export function filterRelationshipKey2({
         // case `actors: {}` including all relationships of the type
         return true;
     }
-    const relationshipPropertiesInterfaceName = receivedEventRelationship.propertiesTypeName || "";
 
     const { edge: edgeProperty, node: nodeProperty, ...unionTypes } = receivedEventRelationshipData;
 
@@ -179,9 +176,8 @@ export function filterRelationshipKey2({
     if (edgeProperty) {
         // apply the filter
         if (
-            !filterRelationshipEdgeProperty({
-                relationshipFields,
-                relationshipPropertiesInterfaceName,
+            !filterRelationshipEdgeProperty2({
+                relationshipAdapter: receivedEventRelationship,
                 edgeProperty,
                 receivedEventProperties,
             })
@@ -203,7 +199,7 @@ export function filterRelationshipKey2({
         // apply the filter
         if (
             !filterByProperties2({
-                entityAdapter: nodeTo,
+                attributes: nodeTo.attributes,
                 whereProperties: nodeProperty,
                 receivedProperties: receivedEventProperties[key],
             })
@@ -217,9 +213,9 @@ export function filterRelationshipKey2({
 
         // apply the filter
         if (
-            !filterRelationshipInterfaceProperty({
+            !filterRelationshipInterfaceProperty2({
                 nodeProperty,
-                nodes,
+                relationshipAdapter: receivedEventRelationship,
                 receivedEventProperties,
                 targetNodeTypename,
                 key,
@@ -239,14 +235,12 @@ export function filterRelationshipKey2({
 
         // apply the filter
         if (
-            !filterRelationshipUnionProperties({
+            !filterRelationshipUnionProperties2({
                 targetNodePropsByTypename,
                 targetNodeTypename,
                 receivedEventProperties,
-                relationshipFields,
-                relationshipPropertiesInterfaceName,
+                relationshipAdapter: receivedEventRelationship,
                 key,
-                nodes,
             })
         ) {
             return false;
@@ -290,6 +284,52 @@ function filterRelationshipUnionProperties({
             !filterRelationshipEdgeProperty({
                 relationshipFields,
                 relationshipPropertiesInterfaceName,
+                edgeProperty: propertyValueAsUnionTypeData,
+                receivedEventProperties,
+            })
+        ) {
+            return false;
+        }
+    }
+    return true;
+}
+function filterRelationshipUnionProperties2({
+    targetNodePropsByTypename,
+    targetNodeTypename,
+    receivedEventProperties,
+    relationshipAdapter,
+    key,
+}: {
+    targetNodePropsByTypename: Record<string, UnionType>;
+    targetNodeTypename: string;
+    receivedEventProperties: EventProperties;
+    relationshipAdapter: RelationshipAdapter;
+    key: string;
+}): boolean {
+    for (const [propertyName, propertyValueAsUnionTypeData] of Object.entries(targetNodePropsByTypename)) {
+        if (propertyName === "node") {
+            const unionTarget = relationshipAdapter.target;
+            if (!(unionTarget instanceof UnionEntityAdapter)) {
+                throw new Error(`Expected ${unionTarget.name} to be union`);
+            }
+            const nodeTo = unionTarget.concreteEntities.find((e) => e.name === targetNodeTypename);
+            if (!nodeTo) {
+                throw new Error(`${targetNodeTypename} not found as part of union ${unionTarget.name}`);
+            }
+            if (
+                !filterByProperties2({
+                    attributes: nodeTo.attributes,
+                    whereProperties: propertyValueAsUnionTypeData,
+                    receivedProperties: receivedEventProperties[key],
+                })
+            ) {
+                return false;
+            }
+        }
+        if (
+            propertyName === "edge" &&
+            !filterRelationshipEdgeProperty2({
+                relationshipAdapter,
                 edgeProperty: propertyValueAsUnionTypeData,
                 receivedEventProperties,
             })
@@ -345,6 +385,59 @@ function filterRelationshipInterfaceProperty({
     }
     return true;
 }
+function filterRelationshipInterfaceProperty2({
+    nodeProperty,
+    relationshipAdapter,
+    receivedEventProperties,
+    targetNodeTypename,
+    key,
+}: {
+    nodeProperty: InterfaceType;
+    relationshipAdapter: RelationshipAdapter;
+    receivedEventProperties: EventProperties;
+    targetNodeTypename: string;
+    key: string;
+}): boolean {
+    const { _on, ...commonFields } = nodeProperty;
+    const targetNode = relationshipAdapter.target;
+    if (!(targetNode instanceof InterfaceEntityAdapter)) {
+        throw new Error(`Expected ${targetNode.name} to be interface`);
+    }
+    const nodeTo = targetNode.concreteEntities.find((e) => e.name === targetNodeTypename);
+    if (!nodeTo) {
+        throw new Error(`${targetNodeTypename} not found as part of interface ${targetNode.name}`);
+    }
+    // const targetNode = nodes.find((n) => n.name === targetNodeTypename) as Node;
+    if (commonFields && !_on) {
+        if (
+            !filterByProperties2({
+                attributes: nodeTo.attributes,
+                whereProperties: commonFields,
+                receivedProperties: receivedEventProperties[key],
+            })
+        ) {
+            return false;
+        }
+    }
+    if (isInterfaceSpecificFieldType(_on)) {
+        const isRelationshipOfReceivedTypeFilteredOut = !_on[targetNodeTypename];
+        if (isRelationshipOfReceivedTypeFilteredOut) {
+            return false;
+        }
+        const commonFieldsMergedWithSpecificFields = { ...commonFields, ..._on[targetNodeTypename] }; //override common <fields, filter> combination with specific <fields, filter>
+
+        if (
+            !filterByProperties2({
+                attributes: nodeTo.attributes,
+                whereProperties: commonFieldsMergedWithSpecificFields,
+                receivedProperties: receivedEventProperties[key],
+            })
+        ) {
+            return false;
+        }
+    }
+    return true;
+}
 
 function filterRelationshipEdgeProperty({
     relationshipFields,
@@ -364,6 +457,25 @@ function filterRelationshipEdgeProperty({
     }
     return filterByProperties({
         node: relationship as Node,
+        whereProperties: edgeProperty,
+        receivedProperties: receivedEventProperties.relationship,
+    });
+}
+function filterRelationshipEdgeProperty2({
+    relationshipAdapter,
+    edgeProperty,
+    receivedEventProperties,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    edgeProperty: StandardType;
+    receivedEventProperties: EventProperties;
+}): boolean {
+    const noRelationshipPropertiesFound = !relationshipAdapter.attributes.size;
+    if (noRelationshipPropertiesFound) {
+        return true;
+    }
+    return filterByProperties2({
+        attributes: relationshipAdapter.attributes,
         whereProperties: edgeProperty,
         receivedProperties: receivedEventProperties.relationship,
     });

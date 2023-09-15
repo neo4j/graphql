@@ -639,8 +639,6 @@ export function generateSubscriptionTypes2({
                         subscribe: generateSubscribeMethod2({
                             entityAdapter,
                             type: "create_relationship",
-                            nodes,
-                            relationshipFields,
                         }),
                         resolve: subscriptionResolve,
                     },
@@ -654,8 +652,6 @@ export function generateSubscriptionTypes2({
                         subscribe: generateSubscribeMethod2({
                             entityAdapter,
                             type: "delete_relationship",
-                            nodes,
-                            relationshipFields,
                         }),
                         resolve: subscriptionResolve,
                     },

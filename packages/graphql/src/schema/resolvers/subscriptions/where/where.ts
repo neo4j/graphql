@@ -72,37 +72,39 @@ export function subscriptionWhere2({
     where,
     event,
     entityAdapter,
-    nodes,
-    relationshipFields,
 }: {
     where: Record<string, RecordType | RelationshipType> | undefined;
     event: SubscriptionsEvent;
     entityAdapter: ConcreteEntityAdapter;
-    nodes?: Node[];
-    relationshipFields?: Map<string, ObjectFields>;
 }): boolean {
     if (!where) {
         return true;
     }
 
     if (event.event === "create") {
-        return filterByProperties2({ entityAdapter, whereProperties: where, receivedProperties: event.properties.new });
+        return filterByProperties2({
+            attributes: entityAdapter.attributes,
+            whereProperties: where,
+            receivedProperties: event.properties.new,
+        });
     }
 
     if (event.event === "update" || event.event === "delete") {
-        return filterByProperties2({ entityAdapter, whereProperties: where, receivedProperties: event.properties.old });
+        return filterByProperties2({
+            attributes: entityAdapter.attributes,
+            whereProperties: where,
+            receivedProperties: event.properties.old,
+        });
     }
 
     if (event.event === "create_relationship" || event.event === "delete_relationship") {
-        if (!nodes || !relationshipFields) {
-            return false;
-        }
+        // if (!nodes || !relationshipFields) {
+        //     return false;
+        // }
         return filterByRelationshipProperties2({
             entityAdapter,
             whereProperties: where,
             receivedEvent: event,
-            nodes,
-            relationshipFields,
         });
     }
 

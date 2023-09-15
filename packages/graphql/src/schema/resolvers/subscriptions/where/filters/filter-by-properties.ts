@@ -19,7 +19,6 @@
 
 import { int } from "neo4j-driver";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Node, PrimitiveField } from "../../../../../types";
 import { getFilteringFn, getFilteringFn2 } from "../utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
@@ -74,11 +73,11 @@ export function filterByProperties<T>({
 
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
 export function filterByProperties2<T>({
-    entityAdapter,
+    attributes,
     whereProperties,
     receivedProperties,
 }: {
-    entityAdapter: ConcreteEntityAdapter;
+    attributes: Map<string, AttributeAdapter>;
     whereProperties: Record<string, T | Array<Record<string, T>> | Record<string, T>>;
     receivedProperties: Record<string, T>;
 }): boolean {
@@ -88,13 +87,13 @@ export function filterByProperties2<T>({
             let comparisonResults;
             if (k === "NOT") {
                 comparisonResults = filterByProperties2({
-                    entityAdapter,
+                    attributes,
                     whereProperties: v as Record<string, T>,
                     receivedProperties,
                 });
             } else {
                 comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                    return filterByProperties2({ entityAdapter, whereProperties: whereCl, receivedProperties });
+                    return filterByProperties2({ attributes, whereProperties: whereCl, receivedProperties });
                 });
             }
 
@@ -107,7 +106,7 @@ export function filterByProperties2<T>({
             if (!receivedValue) {
                 return false;
             }
-            const fieldMeta = entityAdapter.attributes.get(fieldName);
+            const fieldMeta = attributes.get(fieldName);
             const checkFilterPasses = getFilteringFn2(operator, operatorMapOverrides2);
 
             if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
