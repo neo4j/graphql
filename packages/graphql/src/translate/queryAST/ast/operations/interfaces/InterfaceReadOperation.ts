@@ -26,7 +26,8 @@ import type { UnionEntityAdapter } from "../../../../../schema-model/entity/mode
 import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Pagination } from "../../pagination/Pagination";
-import type { Sort } from "../../sort/Sort";
+import type { Sort, SortField } from "../../sort/Sort";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class InterfaceReadOperation extends Operation {
     private children: InterfaceReadPartial[];
@@ -75,7 +76,10 @@ export class InterfaceReadOperation extends Operation {
             aggrExpr = Cypher.head(aggrExpr);
         }
         const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(options.returnVariable);
-        
+
+        if (this.sortFields.length > 0) {
+            nestedSubquery.orderBy(...this.getSortFields(options.context, options.returnVariable));
+        }
         if (this.pagination) {
             const paginationField = this.pagination.getPagination();
             if (paginationField) {
@@ -102,5 +106,9 @@ export class InterfaceReadOperation extends Operation {
 
     public addSort(...sortElement: Sort[]): void {
         this.sortFields.push(...sortElement);
+    }
+
+    protected getSortFields(context: QueryASTContext, target: Cypher.Variable): SortField[] {
+        return this.sortFields.flatMap((sf) => sf.getSortFields(context, target, false));
     }
 }

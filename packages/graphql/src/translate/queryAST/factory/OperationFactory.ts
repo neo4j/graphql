@@ -41,9 +41,11 @@ import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceRe
 import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
 import { getConcreteWhere } from "../utils/get-concrete-where";
-import { filterTruthy } from "../../../utils/utils";
+import { filterTruthy, isObject } from "../../../utils/utils";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import { filterConcreteEntitiesWithOnFilter } from "../utils/filter-concrete-entities-with-on-filter";
+import { isInterfaceEntity } from "../utils/is-interface-entity";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -88,7 +90,7 @@ export class OperationsFactory {
     ): ReadOperation | InterfaceReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
-        const resolveTreeWhere = (resolveTree.args.where ?? {}) as Record<string, any>;
+        const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
         if (isConcreteEntity(entity)) {
             const operation = new ReadOperation({
                 target: entity,
@@ -104,7 +106,8 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            const concreteReadOperations = entity.concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+            const concreteEntities = filterConcreteEntitiesWithOnFilter(entity, resolveTreeWhere);
+            const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 const readPartial = new InterfaceReadPartial({
                     relationship,
                     directed: Boolean(resolveTree.args?.directed ?? true),
@@ -202,8 +205,9 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext
     ): ConnectionReadOperation | InterfaceConnectionReadOperation {
         const target = relationship.target;
-
         const directed = Boolean(resolveTree.args.directed) ?? true;
+        const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+
         if (isConcreteEntity(target)) {
             const operation = new ConnectionReadOperation({ relationship, directed, target });
 
@@ -213,15 +217,22 @@ export class OperationsFactory {
                 resolveTree,
                 context,
                 operation,
+                whereArgs: resolveTreeWhere,
             });
         } else {
-            const concreteConnectionOperations = target.concreteEntities.map(
-                (concreteEntity: ConcreteEntityAdapter) => {
+            let concreteConnectionOperations: ConnectionReadOperation[] = [];
+            if (isInterfaceEntity(target)) {
+                const nodeWhere: Record<string, any> = (isObject(resolveTreeWhere) && resolveTreeWhere.node) ?? {};
+                const concreteEntities = filterConcreteEntitiesWithOnFilter(target, nodeWhere);
+                concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const connectionPartial = new InterfaceConnectionPartial({
                         relationship,
                         directed,
                         target: concreteEntity,
                     });
+                    // nodeWhere with the shared filters applied
+                    const concreteNodeWhere = getConcreteWhere(nodeWhere, target, concreteEntity);
+                    const whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
 
                     return this.hydrateConnectionOperationAST({
                         relationship,
@@ -229,9 +240,33 @@ export class OperationsFactory {
                         resolveTree,
                         context,
                         operation: connectionPartial,
+                        whereArgs: whereArgs,
                     });
-                }
-            );
+                });
+            } else {
+                //const nodeWhere: Record<string, any> = (isObject(resolveTreeWhere) && resolveTreeWhere.node) ?? {};
+                //const concreteEntities = filterConcreteEntitiesWithOnFilter(target, nodeWhere);
+                concreteConnectionOperations = target.concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                    const connectionPartial = new InterfaceConnectionPartial({
+                        relationship,
+                        directed,
+                        target: concreteEntity,
+                    });
+                    // nodeWhere with the shared filters applied
+                    //const concreteNodeWhere = getConcreteWhere(nodeWhere, target, concreteEntity);
+                    //const whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
+
+                    return this.hydrateConnectionOperationAST({
+                        relationship,
+                        target: concreteEntity,
+                        resolveTree,
+                        context,
+                        operation: connectionPartial,
+                        whereArgs: resolveTreeWhere,
+                    });
+                });
+            }
+
             const interfaceConnectionOp = new InterfaceConnectionReadOperation(concreteConnectionOperations);
 
             // These sort fields will be duplicated on nested "InterfaceConnectionPartial"
@@ -292,14 +327,16 @@ export class OperationsFactory {
         resolveTree,
         context,
         operation,
+        whereArgs,
     }: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         operation: T;
+        whereArgs: Record<string, any>;
     }): T {
-        let whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
+        //let whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
             ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
