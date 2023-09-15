@@ -182,12 +182,10 @@ function createCreateAndParams({
                         }
 
                         if (authorizationPredicates.length) {
-                            res.creates.push("WITH *");
                             if (authorizationSubqueries.length) {
-                                res.creates.push(...authorizationSubqueries);
-                                res.creates.push("WITH *");
+                                res.meta.authorizationSubqueries.push(...authorizationSubqueries);
                             }
-                            res.creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
+                            res.meta.authorizationPredicates.push(...authorizationPredicates);
                         }
 
                         if (context.subscriptionsEnabled) {
@@ -352,7 +350,7 @@ function createCreateAndParams({
     if (context.subscriptionsEnabled) {
         const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName, typename: node.name });
         const withStrs = [eventWithMetaStr];
-        creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
+        creates.push(`WITH *, ${withStrs.join(", ")}`);
     }
 
     const { authorizationPredicates, authorizationSubqueries } = meta;
@@ -380,7 +378,7 @@ function createCreateAndParams({
         const str = createRelationshipValidationStr({ node, context, varName });
 
         if (str) {
-            creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(`WITH *`);
             creates.push(str);
         }
     }

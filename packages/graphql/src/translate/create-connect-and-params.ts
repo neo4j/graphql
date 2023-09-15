@@ -467,7 +467,7 @@ function createConnectAndParams({
 
     function reducer(res: Res, connect: any, index: number): Res {
         if (isFirstLevel) {
-            res.connects.push(`WITH ${withVars.join(", ")}`);
+            res.connects.push(`WITH *`);
         }
 
         const inner: string[] = [];
