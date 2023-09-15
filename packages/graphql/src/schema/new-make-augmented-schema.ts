@@ -520,6 +520,8 @@ function getUserDefinedFieldDirectivesForDefinition(
     const userDefinedFieldDirectives = new Map<string, DirectiveNode[]>();
 
     const allFields: Array<FieldDefinitionNode> = [...(definitionNode.fields || [])];
+    // TODO: is it a good idea to inherit the field directives from implemented interfaces?
+    // makes sense for deprecated but for other user-defined directives??
     if (definitionNode.interfaces) {
         for (const inheritsFrom of definitionNode.interfaces) {
             const interfaceDefinition = definitionNodes.interfaceTypes.find(
@@ -815,15 +817,34 @@ function makeAugmentedSchema(
     });
 
     // TODO: find some solution for this
+    // TODO: should directives be inherited?? they are user-defined after all
+    // TODO: other considerations might apply to PROPAGATED_DIRECTIVES: deprecated and shareable
+    // ATM we only test deprecated propagates
+    // also, should these live in the schema model??
     const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
+    const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
+    const propagatedDirectivesForNode = new Map<string, DirectiveNode[]>();
+    const userDefinedDirectivesForInterface = new Map<string, DirectiveNode[]>();
     for (const definitionNode of definitionNodes.objectTypes) {
+        const userDefinedObjectDirectives =
+            definitionNode.directives?.filter((directive) => !isInArray(OBJECT_DIRECTIVES, directive.name.value)) || [];
+        const propagatedDirectives =
+            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
+            [];
+        userDefinedDirectivesForNode.set(definitionNode.name.value, userDefinedObjectDirectives);
+        propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
         const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
     for (const definitionNode of definitionNodes.interfaceTypes) {
+        const userDefinedInterfaceDirectives =
+            definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
+            [];
+        userDefinedDirectivesForInterface.set(definitionNode.name.value, userDefinedInterfaceDirectives);
         const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
+
     nodes.forEach((node) => {
         const concreteEntity = schemaModel.getEntity(node.name) as ConcreteEntity;
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
@@ -847,18 +868,14 @@ function makeAugmentedSchema(
             userDefinedFieldDirectives
         );
 
-        const userDefinedObjectDirectives =
-            definitionNode.directives?.filter((directive) => !isInArray(OBJECT_DIRECTIVES, directive.name.value)) || [];
-
-        const propagatedDirectives =
-            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
-            [];
-
+        const propagatedDirectives = propagatedDirectivesForNode.get(concreteEntity.name) || [];
+        const directives = (userDefinedDirectivesForNode.get(concreteEntity.name) || []).concat(propagatedDirectives);
         const composeNode = composer.createObjectTC({
             name: concreteEntity.name,
             fields: nodeFields,
             description: concreteEntityAdapter.description,
-            directives: graphqlDirectivesToCompose([...userDefinedObjectDirectives, ...propagatedDirectives]),
+            directives: graphqlDirectivesToCompose(directives),
+            // TODO: get from schema model once PR has been merged and remove definitionNode ref
             interfaces: definitionNode.interfaces?.map((x) => x.name.value), // TODO: we need to get the interfaces from somewhere else?
         });
 
@@ -1229,11 +1246,6 @@ function makeAugmentedSchema(
                 return;
             }
 
-            const userDefinedInterfaceDirectives =
-                definitionNode.directives?.filter(
-                    (directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)
-                ) || [];
-
             const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
             composer.createInterfaceTC({
                 name: interfaceEntityAdapter.name,
@@ -1248,7 +1260,9 @@ function makeAugmentedSchema(
                         getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
                     ),
                 },
-                directives: graphqlDirectivesToCompose(userDefinedInterfaceDirectives),
+                directives: graphqlDirectivesToCompose(
+                    userDefinedDirectivesForInterface.get(interfaceEntity.name) || []
+                ),
             });
         }
     });
