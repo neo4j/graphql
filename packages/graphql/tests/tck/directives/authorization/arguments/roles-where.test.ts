@@ -178,7 +178,6 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                WITH *
                 WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND $param4 IN $jwt.roles) OR ($isAuthenticated = true AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this1 { .content } AS this1
                 RETURN collect(this1) AS var3
@@ -332,11 +331,11 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND $param2 IN $jwt.roles) OR ($isAuthenticated = true AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                WHERE (this1.content = $param4 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE (this1.content = $param4 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND $param5 IN $jwt.roles) OR ($isAuthenticated = true AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this1 { .content } AS this1
                 RETURN collect(this1) AS var3
             }

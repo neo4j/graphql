@@ -97,26 +97,26 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                     WITH this
                     MATCH (this)-[this0:PUBLISHED]->(this1:Post)
                     OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                    WITH *, count(this2) AS var3
+                    WITH *, count(this2) AS creatorCount
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     CALL {
                         WITH this1
-                        MATCH (this1)<-[this4:HAS_POST]-(this5:User)
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH { node: { name: this5.name } } AS edge
+                        MATCH (this1)<-[this3:HAS_POST]-(this4:User)
+                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WITH { node: { name: this4.name } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var6
+                        RETURN { edges: edges, totalCount: totalCount } AS var5
                     }
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), content: this1.content, creatorConnection: var6 } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), content: this1.content, creatorConnection: var5 } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var7
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { contentConnection: var7 } AS this"
+            RETURN this { contentConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

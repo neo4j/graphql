@@ -48,9 +48,8 @@ export class InterfaceReadPartial extends ReadOperation {
             .withDirection(relDirection)
             .to(targetNode);
 
-        const matchClause = new Cypher.Match(pattern);
-
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
+        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
         const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
@@ -67,7 +66,14 @@ export class InterfaceReadPartial extends ReadOperation {
 
         const ret = this.getProjectionClause(nestedContext, returnVariable);
 
-        const clause = Cypher.concat(matchClause, ...authFilterSubqueries, subqueries, ...sortSubqueries, ret);
+        const clause = Cypher.concat(
+            ...preSelection,
+            matchClause,
+            ...authFilterSubqueries,
+            subqueries,
+            ...sortSubqueries,
+            ret
+        );
 
         return {
             clauses: [clause],

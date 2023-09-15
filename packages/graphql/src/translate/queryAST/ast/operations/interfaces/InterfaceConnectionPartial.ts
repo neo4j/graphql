@@ -31,11 +31,16 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
-        const clause = new Cypher.Match(
-            new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
-        );
-
-        const nestedContext = context.push({ target: node, relationship});
+        const pattern = new Cypher.Pattern(context.target)
+            .withoutLabels()
+            .related(relationship)
+            .withDirection(relDirection)
+            .to(node);
+        // const clause = new Cypher.Match(
+        //     new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
+        // );
+        const nestedContext = context.push({ target: node, relationship });
+        const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.authFilters?.getPredicate(nestedContext);
@@ -106,6 +111,7 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(returnVariable);
 
         const subClause = Cypher.concat(
+            ...preSelection,
             clause,
             ...authFilterSubqueries,
             withWhere,

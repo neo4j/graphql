@@ -20,10 +20,10 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { RelationshipWhereOperator } from "../../../where/types";
 import { Filter } from "./Filter";
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
+import { Memoize } from "typescript-memoize";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
@@ -33,6 +33,9 @@ export class RelationshipFilter extends Filter {
 
     // TODO: remove this, this is not good
     private subqueryPredicate: Cypher.Predicate | undefined;
+
+    /** Variable to be used if relationship need to get the count (i.e. 1-1 relationships) */
+    protected countVariable = new Cypher.Variable();
 
     constructor({
         relationship,
@@ -47,6 +50,9 @@ export class RelationshipFilter extends Filter {
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator;
+
+        // Note: This is just to keep naming with previous Cypher, it is safe to remove
+        this.countVariable = new Cypher.NamedVariable(`${this.relationship.name}Count`);
     }
 
     public getChildren(): QueryASTNode[] {
@@ -57,7 +63,31 @@ export class RelationshipFilter extends Filter {
         this.targetNodeFilters.push(...filter);
     }
 
+    public print(): string {
+        return `${super.print()} <${this.isNot ? "NOT " : ""}${this.operator}>`;
+    }
+
+    @Memoize()
+    private getNestedContext(context: QueryASTContext): QueryASTContext {
+        const relatedEntity = this.relationship.target as any;
+        const target = new Cypher.Node({
+            labels: relatedEntity.labels,
+        });
+        const relationship = new Cypher.Relationship({
+            type: this.relationship.type,
+        });
+        const nestedContext = context.push({
+            target,
+            relationship,
+        });
+
+        return nestedContext;
+    }
+
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        // const nestedContext = this.getNestedContext(context);
+
+        // NOTE: not using getNestedContext because this should not be memoized in ALL operations
         const relatedEntity = this.relationship.target as any;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
@@ -74,10 +104,10 @@ export class RelationshipFilter extends Filter {
         if (subqueries.length > 0) {
             const pattern = new Cypher.Pattern(context.target)
                 .withoutLabels()
-                .related(relationship)
+                .related(nestedContext.relationship)
                 .withoutVariable()
                 .withDirection(this.relationship.getCypherDirection())
-                .to(target);
+                .to(nestedContext.target);
 
             switch (this.operator) {
                 case "NONE":
@@ -88,7 +118,7 @@ export class RelationshipFilter extends Filter {
                     const returnVar = new Cypher.Variable();
                     const nestedSubqueries = this.targetNodeFilters.flatMap((f) => {
                         return f.getSubqueries(nestedContext).map((sq) => {
-                            return new Cypher.Call(sq).innerWith(target);
+                            return new Cypher.Call(sq).innerWith(nestedContext.target);
                         });
                     });
 
@@ -107,7 +137,7 @@ export class RelationshipFilter extends Filter {
                         withAfterSubqueries.where(subqueriesPredicate);
                     }
 
-                    const returnPredicate = this.getNestedSubqueryFilter(target);
+                    const returnPredicate = this.getNestedSubqueryFilter(nestedContext.target);
 
                     withAfterSubqueries.return([returnPredicate, returnVar]);
 
@@ -182,21 +212,36 @@ export class RelationshipFilter extends Filter {
         }
     }
 
+    private shouldCreateOptionalMatch(): boolean {
+        return !this.relationship.isList && !this.relationship.isNullable;
+    }
+
+    public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
+        if (this.shouldCreateOptionalMatch()) {
+            const nestedContext = this.getNestedContext(queryASTContext);
+
+            const pattern = new Cypher.Pattern(nestedContext.source!)
+                .withoutLabels()
+                .related(nestedContext.relationship)
+                .withDirection(this.relationship.getCypherDirection())
+                .withoutVariable()
+                .to(nestedContext.target);
+            return [
+                new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVariable]),
+            ];
+        }
+        return [];
+    }
+
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         if (this.subqueryPredicate) return this.subqueryPredicate;
-        //TODO: not concrete entities
-        const relatedEntity = this.relationship.target as any;
-        const relatedNode = new Cypher.Node({
-            labels: relatedEntity.labels,
-        });
-        const relVar = new Cypher.Relationship({
-            type: this.relationship.type,
-        });
+        const nestedContext = this.getNestedContext(queryASTContext);
 
-        const nestedContext = queryASTContext.push({
-            target: relatedNode,
-            relationship: relVar,
-        });
+        if (this.shouldCreateOptionalMatch()) {
+            const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
+            const innerPredicate = Cypher.and(...predicates);
+            return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+        }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
             .withoutLabels()
