@@ -51,10 +51,12 @@ export class InterfaceReadPartial extends ReadOperation {
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
         const filterPredicates = this.getPredicates(nestedContext);
-        const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
-        const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
+        // const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(nestedContext) : [];
+        // const authFiltersPredicate = this.authFilters ? this.authFilters.getPredicate(nestedContext) : undefined;
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
-        const wherePredicate = Cypher.and(filterPredicates, authFiltersPredicate);
+        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
             matchClause.where(wherePredicate);

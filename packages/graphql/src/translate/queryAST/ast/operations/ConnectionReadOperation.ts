@@ -40,9 +40,9 @@ export class ConnectionReadOperation extends Operation {
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = [];
     protected filters: Filter[] = [];
-    protected authFilters: AuthorizationFilters | undefined;
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
+    protected authFilters: AuthorizationFilters[] = [];
 
     constructor({
         relationship,
@@ -71,8 +71,20 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    public setAuthFilters(filter: AuthorizationFilters) {
-        this.authFilters = filter;
+    // public setAuthFilters(filter: AuthorizationFilters) {
+    //     this.authFilters = filter;
+    // }
+
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
+    }
+
+    protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    }
+
+    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
     public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
@@ -92,7 +104,7 @@ export class ConnectionReadOperation extends Operation {
             ...this.nodeFields,
             ...this.edgeFields,
             ...this.filters,
-            this.authFilters,
+            ...this.authFilters,
             this.pagination,
             ...sortFields,
         ]);
@@ -142,11 +154,13 @@ export class ConnectionReadOperation extends Operation {
         const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-        const authPredicate = this.authFilters?.getPredicate(nestedContext);
+        // const authPredicate = this.authFilters?.getPredicate(nestedContext);
+        const authPredicate = this.getAuthFilterPredicate(nestedContext);
 
-        const authFilterSubqueries = this.authFilters?.getSubqueries(nestedContext) || [];
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        // const authFilterSubqueries = this.authFilters?.getSubqueries(nestedContext) || [];
 
-        const filters = Cypher.and(...predicates, authPredicate);
+        const filters = Cypher.and(...predicates, ...authPredicate);
 
         const nodeProjectionSubqueries = this.nodeFields
             .flatMap((f) => f.getSubqueries(nestedContext))

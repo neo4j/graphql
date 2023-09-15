@@ -25,6 +25,8 @@ import { populateWhereParams } from "../../authorization/utils/populate-where-pa
 import type { AuthFilterFactory } from "./AuthFilterFactory";
 import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import type { AuthorizationAnnotation } from "../../../schema-model/annotation/AuthorizationAnnotation";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class AuthorizationFactory {
     private filterFactory: AuthFilterFactory;
@@ -38,11 +40,45 @@ export class AuthorizationFactory {
         operations: AuthorizationOperation[],
         context: Neo4jGraphQLTranslationContext
     ): AuthorizationFilters | undefined {
-        const entityAuth = entity.annotations.authorization;
-        if (!entityAuth) return undefined;
+        const authAnnotation = entity.annotations.authorization;
+        if (!authAnnotation) return undefined;
+        return this.createAuthFilterRule({
+            entity,
+            operations,
+            context,
+            authAnnotation,
+        });
+    }
 
-        const rulesMatchingOperations = findMatchingRules(entityAuth.validate ?? [], operations);
-        const rulesMatchingWhereOperations = findMatchingRules(entityAuth.filter ?? [], operations);
+    public createAttributeAuthFilters(
+        attribute: AttributeAdapter,
+        entity: ConcreteEntityAdapter,
+        operations: AuthorizationOperation[],
+        context: Neo4jGraphQLTranslationContext
+    ): AuthorizationFilters | undefined {
+        const authAnnotation = attribute.annotations.authorization;
+        if (!authAnnotation) return undefined;
+        return this.createAuthFilterRule({
+            entity,
+            operations,
+            context,
+            authAnnotation,
+        });
+    }
+
+    private createAuthFilterRule({
+        entity,
+        authAnnotation,
+        operations,
+        context,
+    }: {
+        entity: ConcreteEntityAdapter;
+        authAnnotation: AuthorizationAnnotation;
+        operations: AuthorizationOperation[];
+        context: Neo4jGraphQLTranslationContext;
+    }): AuthorizationFilters {
+        const rulesMatchingOperations = findMatchingRules(authAnnotation.validate ?? [], operations);
+        const rulesMatchingWhereOperations = findMatchingRules(authAnnotation.filter ?? [], operations);
 
         const validationFilers = rulesMatchingOperations.flatMap((rule) => {
             const populatedWhere = populateWhereParams({ where: rule.where, context }); // TODO: move this to the filterFactory?
