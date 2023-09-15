@@ -700,12 +700,9 @@ function makeAugmentedSchema(
         interfaceRelationshipNames
     );
 
+    // TODO: keeping this `relationshipFields` scaffold for backwards compatibility on translation layer
+    // actual functional logic is in schemaModel.concreteEntities.forEach
     const relationshipFields = new Map<string, ObjectFields>();
-
-    // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
-    const seenRelationshipPropertiesInterfaces = new Set<string>();
-
-    // TODO: keeping this for backwards compatibility on translation layer
     relationshipProperties.forEach((relationship) => {
         const relFields = getObjFieldMeta({
             enums: enumTypes,
@@ -720,39 +717,39 @@ function makeAugmentedSchema(
         relationshipFields.set(relationship.name.value, relFields);
         /*
         const baseFields: BaseField[][] = Object.values(relFields);
-
+        
         const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
-
+        
         const propertiesInterface = composer.createInterfaceTC({
             name: relationship.name.value,
             fields: objectComposeFields,
         });
-
+        
         composer.createInputTC({
             name: `${relationship.name.value}Sort`,
             fields: propertiesInterface.getFieldNames().reduce((res, f) => {
                 return { ...res, [f]: "SortDirection" };
             }, {}),
         });
-
+        
         const relationshipUpdateITC = composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
                 ...relFields.primitiveFields.filter(
                     (field) => !field.autogenerate && !field.readonly && !field.callback
-                ),
-                ...relFields.scalarFields,
-                ...relFields.enumFields,
-                ...relFields.temporalFields.filter((field) => !field.timestamps),
-                ...relFields.pointFields,
-            ]),
+                    ),
+                    ...relFields.scalarFields,
+                    ...relFields.enumFields,
+                    ...relFields.temporalFields.filter((field) => !field.timestamps),
+                    ...relFields.pointFields,
+                ]),
         });
 
         addMathOperatorsToITC(relationshipUpdateITC);
-
+        
         addArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
         addArrayMethodsToITC(relationshipUpdateITC, relFields.pointFields);
-
+        
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,
             fields: {
@@ -764,12 +761,12 @@ function makeAugmentedSchema(
             },
             features,
         });
-
+        
         composer.createInputTC({
             name: `${relationship.name.value}Where`,
             fields: relationshipWhereFields,
         });
-
+        
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
             fields: objectFieldsToCreateInputFields([
@@ -783,7 +780,9 @@ function makeAugmentedSchema(
         */
     });
 
-    // this is the new way for the above forEach
+    // this is the new "functional" way for the above forEach
+    // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
+    const seenRelationshipPropertiesInterfaces = new Set<string>();
     schemaModel.concreteEntities.forEach((concreteEntity) => {
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
