@@ -556,21 +556,17 @@ describe("ConcreteEntity Annotations & Attributes", () => {
 
         const userMutation = userEntity?.annotations[AnnotationsKey.mutation];
         expect(userMutation).toBeDefined();
-        expect(userMutation?.operations).toStrictEqual(["CREATE", "UPDATE", "DELETE"]);
+        expect(userMutation?.operations).toStrictEqual(new Set(["CREATE", "UPDATE", "DELETE"]));
 
         const userSubscription = userEntity?.annotations[AnnotationsKey.subscription];
         expect(userSubscription).toBeDefined();
-        expect(userSubscription?.events).toStrictEqual([
-            "CREATED",
-            "UPDATED",
-            "DELETED",
-            "RELATIONSHIP_CREATED",
-            "RELATIONSHIP_DELETED",
-        ]);
+        expect(userSubscription?.events).toStrictEqual(
+            new Set(["CREATED", "UPDATED", "DELETED", "RELATIONSHIP_CREATED", "RELATIONSHIP_DELETED"])
+        );
 
         const accountSubscription = accountEntity?.annotations[AnnotationsKey.subscription];
         expect(accountSubscription).toBeDefined();
-        expect(accountSubscription?.events).toStrictEqual(["CREATED"]);
+        expect(accountSubscription?.events).toStrictEqual(new Set(["CREATED"]));
     });
 
     test("attributes should be generated with the correct annotations", () => {
