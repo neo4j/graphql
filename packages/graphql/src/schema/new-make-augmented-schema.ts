@@ -113,11 +113,6 @@ import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { addMathOperatorsToITC } from "./math";
-import {
-    getSchemaConfigurationFlags,
-    schemaConfigurationFromObjectTypeDefinition,
-    schemaConfigurationFromSchemaExtensions,
-} from "./schema-configuration";
 import { generateSubscriptionTypes, generateSubscriptionTypes2 } from "./subscriptions/generate-subscription-types";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {

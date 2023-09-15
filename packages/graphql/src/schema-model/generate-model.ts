@@ -45,6 +45,7 @@ import { parseAttribute, parseAttributeArguments, parseField } from "./parser/pa
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
+import { PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT } from "../constants";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -365,7 +366,6 @@ function generateRelationshipField(
     const annotations = parseAnnotations(mergedDirectives);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
 
-    // TODO: add property interface name
     return new Relationship({
         name: fieldName,
         type: type as string,
@@ -421,9 +421,10 @@ function generateConcreteEntity(
     });
 
     const inheritedDirectives = inheritsFrom?.flatMap((i) => i?.directives || []);
-    // schema directives are propagated onto concrete entities
-    // TODO: currently all directives are propagated. Filter them here if this changes.
-    const schemaDirectives = definitionCollection.schemaExtension?.directives;
+    // schema configuration directives are propagated onto concrete entities
+    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
+        PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT.includes(x.name.value)
+    );
     const annotations = createEntityAnnotations(
         (definition.directives || []).concat(inheritedDirectives || []).concat(schemaDirectives || [])
     );
