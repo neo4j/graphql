@@ -354,16 +354,12 @@ export function generateSubscriptionTypes2({
     schemaModel,
     nodes,
     userDefinedFieldDirectivesForNode,
-    relationshipFields,
-    interfaceCommonFields,
     globalSchemaConfiguration,
 }: {
     schemaComposer: SchemaComposer;
     schemaModel: Neo4jGraphQLSchemaModel;
     nodes: Node[];
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
-    relationshipFields: Map<string, ObjectFields>;
-    interfaceCommonFields: Map<string, ObjectFields>;
     globalSchemaConfiguration: SchemaConfiguration;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
@@ -371,7 +367,6 @@ export function generateSubscriptionTypes2({
     const eventTypeEnum = schemaComposer.createEnumTC(EventType);
 
     const allNodes = schemaModel.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
-    const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
 
     const nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer> = allNodes.reduce((acc, entityAdapter) => {
         const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(entityAdapter.name);
@@ -392,6 +387,7 @@ export function generateSubscriptionTypes2({
     allNodes.forEach((entityAdapter) => generateSubscriptionWhereType2(entityAdapter, schemaComposer));
 
     const nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>> = new Map();
+    const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
     nodesWithSubscriptionOperation.forEach((entityAdapter) => {
         // TODO: remove
         const node = nodes.find((n) => n.name === entityAdapter.name) as Node;
@@ -470,9 +466,9 @@ export function generateSubscriptionTypes2({
 
         const connectedTypes = getConnectedTypes2({
             entityAdapter,
-            interfaceCommonFields,
             schemaComposer,
             nodeNameToEventPayloadTypes,
+            userDefinedFieldDirectivesForNode,
         });
 
         const relationsEventPayload = schemaComposer.createObjectTC({
@@ -627,8 +623,6 @@ export function generateSubscriptionTypes2({
         const connectionWhere = generateSubscriptionConnectionWhereType2({
             entityAdapter,
             schemaComposer,
-            relationshipFields,
-            interfaceCommonFields,
         });
         if (entityAdapter.relationships.size > 0) {
             if (schemaConfigurationFlags.subscribeCreateRelationship) {
@@ -772,6 +766,7 @@ function getRelationField2({
     nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>>;
 }): RelationshipAdapter | undefined {
     // TODO: move to schemaModel intermediate representation
+    // TODO: relationships by propertiesTypeName instead of by fieldName
     let relationshipNameToRelationField: Map<string, RelationshipAdapter | undefined>;
     if (!nodeToRelationFieldMap.has(entityAdapter)) {
         relationshipNameToRelationField = new Map<string, RelationshipAdapter | undefined>();

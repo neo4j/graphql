@@ -359,4 +359,8 @@ export class RelationshipAdapter {
     public get arrayMethodFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isArrayMethodField());
     }
+
+    public get subscriptionWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
+    }
 }

@@ -701,7 +701,6 @@ function makeAugmentedSchema(
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
-    const interfaceCommonFields = new Map<string, ObjectFields>();
 
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
     const seenRelationshipPropertiesInterfaces = new Set<string>();
@@ -816,21 +815,15 @@ function makeAugmentedSchema(
         if (updatedRelationships) {
             relationships = updatedRelationships;
         }
-        // TODO: Remove this
-        const interfaceFields = getObjFieldMeta({
-            enums: enumTypes,
-            interfaces: [...filteredInterfaceTypes, ...interfaceRelationships],
-            objects: objectTypes,
-            scalars: scalarTypes,
-            unions: unionTypes,
-            obj: interfaceRelationship,
-            callbacks,
-        });
-        interfaceCommonFields.set(interfaceEntityAdapter.name, interfaceFields);
     });
 
+    // TODO: find some solution for this
     const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
     for (const definitionNode of definitionNodes.objectTypes) {
+        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
+        userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
+    }
+    for (const definitionNode of definitionNodes.interfaceTypes) {
         const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
@@ -1032,8 +1025,6 @@ function makeAugmentedSchema(
             entityAdapter: concreteEntityAdapter,
             schemaComposer: composer,
             composeNode,
-            // sourceName: concreteEntityAdapter.name,
-            // relationshipPropertyFields: relationshipFields,
             subgraph,
             userDefinedFieldDirectives,
         });
@@ -1180,8 +1171,6 @@ function makeAugmentedSchema(
             schemaModel,
             nodes,
             userDefinedFieldDirectivesForNode,
-            relationshipFields,
-            interfaceCommonFields,
             globalSchemaConfiguration,
         });
     }
