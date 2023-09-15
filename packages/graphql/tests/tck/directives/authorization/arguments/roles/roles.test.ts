@@ -438,7 +438,7 @@ describe("Cypher Auth Roles", () => {
             "MATCH (this:User)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
@@ -505,7 +505,7 @@ describe("Cypher Auth Roles", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
-            	WITH this, this_post0
+            	WITH *
             	CALL {
             		WITH this, this_post0
             		OPTIONAL MATCH (this_post0_creator0_connect0_node:User)

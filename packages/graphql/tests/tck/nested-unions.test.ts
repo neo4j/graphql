@@ -94,7 +94,7 @@ describe("Nested Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)

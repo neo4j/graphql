@@ -615,7 +615,7 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WHERE this.id = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)

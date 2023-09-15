@@ -130,18 +130,6 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             SET this0_seasons0_node.id = randomUUID()
             SET this0_seasons0_node.number = $this0_seasons0_node_number
             MERGE (this0)<-[:SEASON_OF]-(this0_seasons0_node)
-            WITH *
-            CALL {
-                WITH this0_seasons0_node
-                MATCH (this0_seasons0_node)-[:SEASON_OF]->(authorization_this1:Serie)
-                OPTIONAL MATCH (authorization_this1)<-[:PUBLISHER]-(authorization_this2:User)
-                WITH *, count(authorization_this2) AS publisherCount
-                WITH *
-                WHERE (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this2.id = $jwt.sub))
-                RETURN count(authorization_this1) = 1 AS authorization_var0
-            }
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_var0 = true AND $authorization_param1 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this0, this0_seasons0_node
             CALL {
             	WITH this0_seasons0_node
@@ -150,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSeason.serie required exactly once', [0])
             	RETURN c AS this0_seasons0_node_serie_Serie_unique_ignored
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_publisher_connect0_node:User)
@@ -168,7 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             WITH this0, this0_publisher_connect0_node
             	RETURN count(*) AS connect_this0_publisher_connect_User
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	MATCH (this0)<-[this0_publisher_User_unique:PUBLISHER]-(:User)
@@ -177,10 +165,19 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             	RETURN c AS this0_publisher_User_unique_ignored
             }
             WITH *
+            CALL {
+                WITH this0_seasons0_node
+                MATCH (this0_seasons0_node)-[:SEASON_OF]->(authorization_this1:Serie)
+                OPTIONAL MATCH (authorization_this1)<-[:PUBLISHER]-(authorization_this2:User)
+                WITH *, count(authorization_this2) AS publisherCount
+                WITH *
+                WHERE (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this2.id = $jwt.sub))
+                RETURN count(authorization_this1) = 1 AS authorization_var0
+            }
             OPTIONAL MATCH (this0)<-[:PUBLISHER]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS publisherCount
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)) AND $authorization_param2 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_var0 = true AND $authorization_param1 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)) AND $authorization_param2 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             RETURN [this0 { .id, .title }] AS data"

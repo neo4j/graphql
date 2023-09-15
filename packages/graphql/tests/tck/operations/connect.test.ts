@@ -112,7 +112,7 @@ describe("Cypher Connect", () => {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_colors_connect0_node:Color)
@@ -180,7 +180,7 @@ describe("Cypher Connect", () => {
             }
             	RETURN count(*) AS connect_this0_colors_connect_Color
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect0_node:Photo)
@@ -223,7 +223,7 @@ describe("Cypher Connect", () => {
             }
             	RETURN count(*) AS connect_this0_photos_connect_Photo
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect1_node:Photo)

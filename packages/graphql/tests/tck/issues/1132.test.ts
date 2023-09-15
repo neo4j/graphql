@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Source)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_targets0_node:Target)

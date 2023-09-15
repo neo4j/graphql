@@ -77,7 +77,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -158,7 +158,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -289,7 +289,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -403,7 +403,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)

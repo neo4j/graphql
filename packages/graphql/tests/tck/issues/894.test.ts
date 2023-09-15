@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             }
             RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_activeOrganization0_node:Organization)

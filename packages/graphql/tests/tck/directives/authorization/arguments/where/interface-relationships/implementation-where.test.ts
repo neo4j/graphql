@@ -668,7 +668,7 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
@@ -755,7 +755,7 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
@@ -837,7 +837,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
@@ -859,7 +859,7 @@ describe("Cypher Auth Where", () => {
             }
             CALL {
             	 WITH this
-            	WITH this
+            	WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
@@ -919,7 +919,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
@@ -941,7 +941,7 @@ describe("Cypher Auth Where", () => {
             }
             CALL {
             	 WITH this
-            	WITH this
+            	WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
@@ -999,7 +999,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
@@ -1072,7 +1072,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)

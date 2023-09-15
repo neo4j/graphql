@@ -73,7 +73,7 @@ describe("Relationship Properties Connect Cypher", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
@@ -148,7 +148,7 @@ describe("Relationship Properties Connect Cypher", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
@@ -217,7 +217,7 @@ describe("Relationship Properties Connect Cypher", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
@@ -286,7 +286,7 @@ describe("Relationship Properties Connect Cypher", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)

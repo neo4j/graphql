@@ -325,7 +325,7 @@ describe("Cypher Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
@@ -384,7 +384,7 @@ describe("Cypher Create", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)

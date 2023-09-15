@@ -92,7 +92,7 @@ describe("Interface Relationships - Create connect", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)

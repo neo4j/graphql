@@ -151,7 +151,7 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos1_node.id = $this0_photos1_node_id
             SET this0_photos1_node.description = $this0_photos1_node_description
             SET this0_photos1_node.url = $this0_photos1_node_url
-            WITH this0, this0_photos1_node
+            WITH *
             CALL {
             	WITH this0, this0_photos1_node
             	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
@@ -183,7 +183,7 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos2_node.id = $this0_photos2_node_id
             SET this0_photos2_node.description = $this0_photos2_node_description
             SET this0_photos2_node.url = $this0_photos2_node_url
-            WITH this0, this0_photos2_node
+            WITH *
             CALL {
             	WITH this0, this0_photos2_node
             	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
@@ -296,7 +296,7 @@ describe("Cypher Create Pringles", () => {
             	}
             	RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             	}
-            	WITH this, this_photos0
+            	WITH *
             	CALL {
             		WITH this, this_photos0
             		OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)

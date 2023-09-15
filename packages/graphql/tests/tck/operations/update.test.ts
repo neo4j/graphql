@@ -257,7 +257,7 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.id = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
@@ -309,7 +309,7 @@ describe("Cypher Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.id = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
@@ -327,7 +327,7 @@ describe("Cypher Update", () => {
             WITH this, this_connect_actors0_node
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors1_node:Actor)

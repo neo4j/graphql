@@ -229,7 +229,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)

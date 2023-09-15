@@ -318,7 +318,7 @@ describe("Cypher Union", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
@@ -569,7 +569,7 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
