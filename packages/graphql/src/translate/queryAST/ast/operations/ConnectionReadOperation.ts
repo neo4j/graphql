@@ -98,17 +98,48 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
+    protected getSelectionClauses(
+        context: QueryASTContext,
+        node: Cypher.Node | Cypher.Pattern
+    ): {
+        preSelection: Array<Cypher.Match | Cypher.With>;
+        selectionClause: Cypher.Match | Cypher.With;
+    } {
+        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
+
+        let extraMatches = this.getChildren().flatMap((f) => {
+            return f.getSelection(context);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
+
+        return {
+            preSelection: extraMatches,
+            selectionClause: matchClause,
+        };
+    }
+
     public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
-        const clause = new Cypher.Match(
-            new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
-        );
+        const pattern = new Cypher.Pattern(context.target)
+            .withoutLabels()
+            .related(relationship)
+            .withDirection(relDirection)
+            .to(node);
+        // const clause = new Cypher.Match(
+        //     new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
+        // );
 
-        const nestedContext = context.push({target: node, relationship});
+        const nestedContext = context.push({ target: node, relationship });
+
+        const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.authFilters?.getPredicate(nestedContext);
@@ -195,6 +226,7 @@ export class ConnectionReadOperation extends Operation {
             returnVariable,
         ]);
         const subClause = Cypher.concat(
+            ...preSelection,
             clause,
             ...authFilterSubqueries,
             withWhere,

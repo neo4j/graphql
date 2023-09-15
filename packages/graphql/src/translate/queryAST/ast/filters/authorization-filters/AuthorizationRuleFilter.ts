@@ -60,6 +60,10 @@ export class AuthorizationRuleFilter extends Filter {
         return this.children.flatMap((c) => c.getSubqueries(context));
     }
 
+    public getSelection(context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
+        return this.children.flatMap((c) => c.getSelection(context));
+    }
+
     public getChildren(): QueryASTNode[] {
         return [...this.children];
     }
