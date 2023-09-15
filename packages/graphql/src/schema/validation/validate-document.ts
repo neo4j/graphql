@@ -43,7 +43,7 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
-import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { validateSDL } from "./validate-sdl";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";

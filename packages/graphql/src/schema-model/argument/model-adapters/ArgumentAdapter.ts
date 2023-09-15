@@ -41,7 +41,7 @@ import type { Argument } from "../Argument";
 export class ArgumentAdapter {
     public name: string;
     public type: AttributeType;
-    public description: string;
+    public description?: string;
     public defaultValue?: string;
     private assertionOptions: {
         includeLists: boolean;
