@@ -18,10 +18,13 @@ import { isUnionEntity } from "./is-union-entity";
     { title: "The Matrix", director: "Wachowski" }
 **/
 export function getConcreteWhere(
-    whereArgs: Record<string, any>,
     compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
-    concreteTarget: ConcreteEntityAdapter
+    concreteTarget: ConcreteEntityAdapter,
+    whereArgs?: Record<string, any>
 ): Record<string, any> {
+    if (!whereArgs) {
+        return {};
+    }
     if (isUnionEntity(compositeTarget)) {
         return whereArgs[concreteTarget.name] ?? {};
     } else {
