@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { attributesToSubscriptionsWhereInputFields, objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";
 import type { ObjectFields } from "../get-obj-field-meta";
@@ -57,16 +57,15 @@ export function generateSubscriptionWhereType2(
     entityAdapter: ConcreteEntityAdapter,
     schemaComposer: SchemaComposer
 ): InputTypeComposer | undefined {
-    const typeName = entityAdapter.name;
-    if (schemaComposer.has(`${entityAdapter.name}SubscriptionWhere`)) {
-        return schemaComposer.getITC(`${entityAdapter.name}SubscriptionWhere`);
+    if (schemaComposer.has(entityAdapter.operations.subscriptionWhereInputTypeName)) {
+        return schemaComposer.getITC(entityAdapter.operations.subscriptionWhereInputTypeName);
     }
-    const whereFields = attributesToSubscriptionsWhereInputFields(typeName, entityAdapter.subscriptionWhereFields);
+    const whereFields = attributesToSubscriptionsWhereInputFields(entityAdapter);
     if (isEmptyObject(whereFields)) {
         return;
     }
     return schemaComposer.createInputTC({
-        name: `${entityAdapter.name}SubscriptionWhere`,
+        name: entityAdapter.operations.subscriptionWhereInputTypeName,
         fields: whereFields,
     });
 }
@@ -133,42 +132,37 @@ export function generateSubscriptionConnectionWhereType2({
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
 }): { created: InputTypeComposer; deleted: InputTypeComposer } | undefined {
-    const fieldName = entityAdapter.operations.subscriptionEventPayloadFieldNames.create_relationship;
-    const typeName = entityAdapter.name;
-
     const connectedRelationship = getRelationshipConnectionWhereTypes2({
         entityAdapter,
         schemaComposer,
     });
-    const isConnectedNodeTypeNotExcluded = schemaComposer.has(`${typeName}SubscriptionWhere`);
+    const isConnectedNodeTypeNotExcluded = schemaComposer.has(entityAdapter.operations.subscriptionWhereInputTypeName);
     if (!isConnectedNodeTypeNotExcluded && !connectedRelationship) {
         return;
     }
 
-    const relationshipCreatedWhere = `${typeName}RelationshipCreatedSubscriptionWhere`;
-    const relationshipDeletedWhere = `${typeName}RelationshipDeletedSubscriptionWhere`;
-
+    const fieldName = entityAdapter.operations.subscriptionEventPayloadFieldNames.create_relationship;
     return {
         created: schemaComposer.createInputTC({
-            name: relationshipCreatedWhere,
+            name: entityAdapter.operations.relationshipCreatedSubscriptionWhereInputTypeName,
             fields: {
-                AND: `[${relationshipCreatedWhere}!]`,
-                OR: `[${relationshipCreatedWhere}!]`,
-                NOT: relationshipCreatedWhere,
+                AND: `[${entityAdapter.operations.relationshipCreatedSubscriptionWhereInputTypeName}!]`,
+                OR: `[${entityAdapter.operations.relationshipCreatedSubscriptionWhereInputTypeName}!]`,
+                NOT: entityAdapter.operations.relationshipCreatedSubscriptionWhereInputTypeName,
                 ...(isConnectedNodeTypeNotExcluded && {
-                    [fieldName]: schemaComposer.getITC(`${typeName}SubscriptionWhere`),
+                    [fieldName]: schemaComposer.getITC(entityAdapter.operations.subscriptionWhereInputTypeName),
                 }),
                 ...(connectedRelationship && { createdRelationship: connectedRelationship }),
             },
         }),
         deleted: schemaComposer.createInputTC({
-            name: relationshipDeletedWhere,
+            name: entityAdapter.operations.relationshipDeletedSubscriptionWhereInputTypeName,
             fields: {
-                AND: `[${relationshipDeletedWhere}!]`,
-                OR: `[${relationshipDeletedWhere}!]`,
-                NOT: relationshipDeletedWhere,
+                AND: `[${entityAdapter.operations.relationshipDeletedSubscriptionWhereInputTypeName}!]`,
+                OR: `[${entityAdapter.operations.relationshipDeletedSubscriptionWhereInputTypeName}!]`,
+                NOT: entityAdapter.operations.relationshipDeletedSubscriptionWhereInputTypeName,
                 ...(isConnectedNodeTypeNotExcluded && {
-                    [fieldName]: schemaComposer.getITC(`${typeName}SubscriptionWhere`),
+                    [fieldName]: schemaComposer.getITC(entityAdapter.operations.subscriptionWhereInputTypeName),
                 }),
                 ...(connectedRelationship && { deletedRelationship: connectedRelationship }),
             },
@@ -225,31 +219,30 @@ function getRelationshipConnectionWhereTypes2({
     entityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
 }): InputTypeComposer | undefined {
-    const relationsFieldInputWhereTypeFields = Array.from(entityAdapter.relationships.values()).reduce((acc, rf) => {
-        const { name } = rf;
-        // TODO: remove
-        const nodeRelationPrefix = `${entityAdapter.name}${upperFirst(name)}`;
-        const fields = makeNodeRelationFields2({
-            relationshipAdapter: rf,
-            schemaComposer,
-            nodeRelationPrefix,
-        });
-        if (!fields) {
+    const relationsFieldInputWhereTypeFields = Array.from(entityAdapter.relationships.values()).reduce(
+        (acc, relationshipAdapter) => {
+            const fields = makeNodeRelationFields2({
+                relationshipAdapter,
+                schemaComposer,
+            });
+            if (!fields) {
+                return acc;
+            }
+            const relationFieldInputWhereType = schemaComposer.createInputTC({
+                name: relationshipAdapter.subscriptionWhereInputTypeName,
+                fields,
+            });
+            acc[relationshipAdapter.name] = relationFieldInputWhereType;
             return acc;
-        }
-        const relationFieldInputWhereType = schemaComposer.createInputTC({
-            name: `${nodeRelationPrefix}RelationshipSubscriptionWhere`,
-            fields,
-        });
-        acc[name] = relationFieldInputWhereType;
-        return acc;
-    }, {});
+        },
+        {}
+    );
 
     if (isEmptyObject(relationsFieldInputWhereTypeFields)) {
         return;
     }
     const relationsFieldInputWhereType = schemaComposer.createInputTC({
-        name: `${entityAdapter.name}RelationshipsSubscriptionWhere`,
+        name: entityAdapter.operations.relationshipsSubscriptionWhereInputTypeName,
         fields: relationsFieldInputWhereTypeFields,
     });
     return relationsFieldInputWhereType;
@@ -295,10 +288,8 @@ function makeNodeRelationFields({
 function makeNodeRelationFields2({
     relationshipAdapter,
     schemaComposer,
-    nodeRelationPrefix,
 }: {
     relationshipAdapter: RelationshipAdapter;
-    nodeRelationPrefix: string;
     schemaComposer: SchemaComposer;
 }) {
     const edgeType = makeRelationshipWhereType2({
@@ -309,7 +300,7 @@ function makeNodeRelationFields2({
     const unionNode = relationshipAdapter.target instanceof UnionEntityAdapter ? relationshipAdapter.target : undefined;
     if (unionNode) {
         const unionNodeTypes = unionNode.concreteEntities;
-        return makeRelationshipToUnionTypeWhereType2({ unionNodeTypes, schemaComposer, nodeRelationPrefix, edgeType });
+        return makeRelationshipToUnionTypeWhereType2({ unionNodeTypes, schemaComposer, relationshipAdapter, edgeType });
     }
     const interfaceEntity =
         relationshipAdapter.target instanceof InterfaceEntityAdapter ? relationshipAdapter.target : undefined;
@@ -358,12 +349,9 @@ function makeRelationshipWhereType2({
     if (!relationProperties.size) {
         return undefined;
     }
-    const composeFields = attributesToSubscriptionsWhereInputFields(
-        relationshipAdapter.propertiesTypeName as string,
-        relationshipAdapter.subscriptionWhereFields
-    );
+    const composeFields = attributesToSubscriptionsWhereInputFields(relationshipAdapter);
     // TODO: POINT was missing???
-    return schemaComposer.getOrCreateITC(`${relationshipAdapter.propertiesTypeName}SubscriptionWhere`, (tc) =>
+    return schemaComposer.getOrCreateITC(relationshipAdapter.edgeSubscriptionWhereInputTypeName, (tc) =>
         tc.addFields(composeFields)
     );
 }
@@ -396,13 +384,13 @@ function makeRelationshipToConcreteTypeWhereType2({
     edgeType: InputTypeComposer | undefined;
     schemaComposer: SchemaComposer;
 }): { node?: string; edge?: InputTypeComposer } | undefined {
-    const nodeTypeName = relationshipAdapter.target.name;
-    const nodeExists = schemaComposer.has(`${nodeTypeName}SubscriptionWhere`);
+    const concreteTargetEntity = relationshipAdapter.target as ConcreteEntityAdapter;
+    const nodeExists = schemaComposer.has(concreteTargetEntity.operations.subscriptionWhereInputTypeName);
     if (!nodeExists && !edgeType) {
         return undefined;
     }
     return {
-        ...(nodeExists && { node: `${nodeTypeName}SubscriptionWhere` }),
+        ...(nodeExists && { node: concreteTargetEntity.operations.subscriptionWhereInputTypeName }),
         ...(edgeType && { edge: edgeType }),
     };
 }
@@ -443,24 +431,24 @@ function makeRelationshipToUnionTypeWhereType({
 function makeRelationshipToUnionTypeWhereType2({
     unionNodeTypes,
     schemaComposer,
-    nodeRelationPrefix,
+    relationshipAdapter,
     edgeType,
 }: {
     schemaComposer: SchemaComposer;
     unionNodeTypes: ConcreteEntityAdapter[];
-    nodeRelationPrefix: string;
+    relationshipAdapter: RelationshipAdapter;
     edgeType: InputTypeComposer | undefined;
 }): Record<string, InputTypeComposer> | undefined {
     const unionTypes = unionNodeTypes.reduce((acc, concreteEntity) => {
-        const nodeExists = schemaComposer.has(`${concreteEntity.name}SubscriptionWhere`);
+        const nodeExists = schemaComposer.has(concreteEntity.operations.subscriptionWhereInputTypeName);
         if (!nodeExists && !edgeType) {
             return acc;
         }
         acc[concreteEntity.name] = schemaComposer.getOrCreateITC(
-            `${nodeRelationPrefix}${concreteEntity.name}SubscriptionWhere`,
+            relationshipAdapter.getToUnionSubscriptionWhereInputTypeName(concreteEntity),
             (tc) =>
                 tc.addFields({
-                    ...(nodeExists && { node: `${concreteEntity.name}SubscriptionWhere` }),
+                    ...(nodeExists && { node: concreteEntity.operations.subscriptionWhereInputTypeName }),
                     ...(edgeType && { edge: edgeType }),
                 })
         );
@@ -538,40 +526,32 @@ function makeRelationshipToInterfaceTypeWhereType2({
     interfaceEntity: InterfaceEntityAdapter;
     edgeType: InputTypeComposer | undefined;
 }): { node?: InputTypeComposer; edge?: InputTypeComposer } | undefined {
-    let interfaceImplementationsType: InputTypeComposer | undefined,
-        interfaceNodeType: InputTypeComposer | undefined = undefined;
+    let interfaceImplementationsType: InputTypeComposer | undefined = undefined;
+    let interfaceNodeType: InputTypeComposer | undefined = undefined;
 
     const implementationsFields = interfaceEntity.concreteEntities.reduce((acc, entity) => {
-        if (schemaComposer.has(`${entity.name}SubscriptionWhere`)) {
-            acc[entity.name] = `${entity.name}SubscriptionWhere`;
+        if (schemaComposer.has(entity.operations.subscriptionWhereInputTypeName)) {
+            acc[entity.name] = entity.operations.subscriptionWhereInputTypeName;
         }
         return acc;
     }, {});
     if (!isEmptyObject(implementationsFields)) {
         interfaceImplementationsType = schemaComposer.getOrCreateITC(
-            `${interfaceEntity.name}ImplementationsSubscriptionWhere`,
+            interfaceEntity.operations.implementationsSubscriptionWhereInputTypeName,
             (tc) => tc.addFields(implementationsFields)
         );
     }
-    // TODO: refactor this if check does not make sense bc includes more fields than .subscriptionWhereFields
-    // TODO: refactor attributesToSubscriptionsWhereInputFields to pass in just the entity and it takes .subscriptionWhereFields from the entity??
-    const interfaceAttributes = interfaceEntity.attributes;
-    if (interfaceImplementationsType || interfaceAttributes.size) {
-        const composeFields = attributesToSubscriptionsWhereInputFields(
-            interfaceEntity.name,
-            interfaceEntity.subscriptionWhereFields
-        );
-        const interfaceFields = {
-            ...(interfaceImplementationsType && { _on: interfaceImplementationsType }),
-            ...(interfaceAttributes.size && composeFields),
-        };
-        if (!isEmptyObject(interfaceFields)) {
-            interfaceNodeType = schemaComposer.getOrCreateITC(`${interfaceEntity.name}SubscriptionWhere`, (tc) =>
-                tc.addFields(interfaceFields)
-            );
-        }
+    const interfaceFields: InputTypeComposerFieldConfigMapDefinition =
+        attributesToSubscriptionsWhereInputFields(interfaceEntity);
+    if (interfaceImplementationsType) {
+        interfaceFields["_on"] = interfaceImplementationsType;
     }
-
+    if (!isEmptyObject(interfaceFields)) {
+        interfaceNodeType = schemaComposer.getOrCreateITC(
+            interfaceEntity.operations.subscriptionWhereInputTypeName,
+            (tc) => tc.addFields(interfaceFields)
+        );
+    }
     if (!interfaceNodeType && !edgeType) {
         return;
     }

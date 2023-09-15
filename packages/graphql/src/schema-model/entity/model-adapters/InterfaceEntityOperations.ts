@@ -137,6 +137,14 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}OnCreateInput`;
     }
 
+    public get subscriptionWhereInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}SubscriptionWhere`;
+    }
+
+    public get implementationsSubscriptionWhereInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ImplementationsSubscriptionWhere`;
+    }
+
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             create: `create${this.pascalCasePlural}`,

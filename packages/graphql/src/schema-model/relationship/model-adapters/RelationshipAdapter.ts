@@ -187,6 +187,14 @@ export class RelationshipAdapter {
         return `${this.source.name}${upperFirst(this.name)}${isA}AggregationWhereInput`;
     }
 
+    public get subscriptionWhereInputTypeName(): string {
+        return `${this.source.name}${upperFirst(this.name)}RelationshipSubscriptionWhere`;
+    }
+
+    public getToUnionSubscriptionWhereInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
+        return `${this.source.name}${upperFirst(this.name)}${ifUnionRelationshipTargetEntity.name}SubscriptionWhere`;
+    }
+
     public get edgeCreateInputTypeName(): string {
         return `${this.propertiesTypeName}CreateInput${this.hasNonNullNonGeneratedProperties ? `!` : ""}`;
     }
@@ -200,6 +208,9 @@ export class RelationshipAdapter {
 
     public get edgeWhereInputTypeName(): string {
         return `${this.propertiesTypeName}Where`;
+    }
+    public get edgeSubscriptionWhereInputTypeName(): string {
+        return `${this.propertiesTypeName}SubscriptionWhere`;
     }
     public get edgeSortInputTypeName(): string {
         return `${this.propertiesTypeName}Sort`;

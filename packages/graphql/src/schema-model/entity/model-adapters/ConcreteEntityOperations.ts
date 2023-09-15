@@ -137,6 +137,26 @@ export class ConcreteEntityOperations {
         return `${this.concreteEntityAdapter.name}OnCreateInput`;
     }
 
+    public get subscriptionEventPayloadTypeName(): string {
+        return `${this.concreteEntityAdapter.name}EventPayload`;
+    }
+
+    public get subscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}SubscriptionWhere`;
+    }
+
+    public get relationshipsSubscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationshipsSubscriptionWhere`;
+    }
+
+    public get relationshipCreatedSubscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationshipCreatedSubscriptionWhere`;
+    }
+
+    public get relationshipDeletedSubscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationshipDeletedSubscriptionWhere`;
+    }
+
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             create: `create${this.pascalCasePlural}`,

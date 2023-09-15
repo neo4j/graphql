@@ -374,7 +374,7 @@ export function generateSubscriptionTypes2({
             throw new Error("fix user directives for object types in subscriptions.");
         }
         const eventPayloadType = schemaComposer.createObjectTC({
-            name: `${entityAdapter.name}EventPayload`,
+            name: entityAdapter.operations.subscriptionEventPayloadTypeName,
             fields: attributeAdapterToComposeFields(
                 entityAdapter.subscriptionEventPayloadFields,
                 userDefinedFieldDirectives
