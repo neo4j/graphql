@@ -198,10 +198,10 @@ export class FilterFactory {
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
         where: Record<string, unknown>
     ): Filter[] {
-        
         const filters = filterTruthy(
             Object.entries(where).flatMap(([key, value]): Filter | undefined => {
-                  if (key === "_on") { // TODO: maybe this is no longer necessary
+                if (key === "_on") {
+                    // TODO: maybe this is no longer necessary
                     const concreteEntities = getConcreteEntities(entity);
 
                     const nodeFilters: Filter[] = [];
@@ -214,7 +214,7 @@ export class FilterFactory {
                     }
 
                     return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
-                }  
+                }
 
                 if (isLogicalOperator(key)) {
                     return this.createNodeLogicalFilter(key, value as any, entity);

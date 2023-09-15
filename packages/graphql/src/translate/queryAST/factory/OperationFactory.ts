@@ -23,10 +23,9 @@ import { FieldFactory } from "./FieldFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
-import type { ConnectionQueryArgs, ConnectionSortArg, GraphQLOptionsArg } from "../../../types";
+import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { Integer } from "neo4j-driver";
-import type { Filter } from "../ast/filters/Filter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -41,7 +40,6 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceReadOperation";
 import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
-import { isInterfaceEntity } from "../utils/is-interface-entity";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -112,8 +110,8 @@ export class OperationsFactory {
     }
 
     private hydrateInterfaceReadOperationWithPagination(
-        entity: InterfaceEntityAdapter | UnionEntityAdapter,
-        operation: InterfaceReadOperation,
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        operation:  InterfaceReadOperation | ReadOperation,
         resolveTree: ResolveTree
     ) {
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
@@ -189,7 +187,7 @@ export class OperationsFactory {
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
-
+        // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
         if (options) {
             const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
@@ -368,36 +366,18 @@ export class OperationsFactory {
             projectionFields = { ...resolveTree.fieldsByTypeName[interfaceEntity.name], ...projectionFields };
         }
 
-        //   const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
 
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
-        /*   if (relationship) {
-            
-            //filters = this.filterFactory.createRelationshipFilters(entity, whereArgs);
-        } else {
-            filters = this.filterFactory.createNodeFilters(entity, whereArgs);
-        } */
+
         operation.setFields(fields);
         operation.setFilters(filters);
         if (authFilters) {
             operation.setAuthFilters(authFilters);
         }
-
-        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
-
-        if (options) {
-            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
-            operation.addSort(...sort);
-
-            const pagination = this.sortAndPaginationFactory.createPagination(options);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
-        }
+        this.hydrateInterfaceReadOperationWithPagination(entity, operation, resolveTree);
 
         return operation;
     }
