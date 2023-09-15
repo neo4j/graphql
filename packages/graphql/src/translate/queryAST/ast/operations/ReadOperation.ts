@@ -214,7 +214,6 @@ export class ReadOperation extends Operation {
         const filterPredicates = this.getPredicates(context);
 
         // THis may no longer be relevant?
-        // const authFilterSubqueries = this.authFilters ? this.authFilters.getSubqueries(context) : [];
         const authFilterSubqueries = this.getAuthFilterSubqueries(context);
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);

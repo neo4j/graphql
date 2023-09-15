@@ -71,10 +71,6 @@ export class ConnectionReadOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    // public setAuthFilters(filter: AuthorizationFilters) {
-    //     this.authFilters = filter;
-    // }
-
     public addAuthFilters(...filter: AuthorizationFilters[]) {
         this.authFilters.push(...filter);
     }
@@ -154,11 +150,9 @@ export class ConnectionReadOperation extends Operation {
         const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-        // const authPredicate = this.authFilters?.getPredicate(nestedContext);
         const authPredicate = this.getAuthFilterPredicate(nestedContext);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
-        // const authFilterSubqueries = this.authFilters?.getSubqueries(nestedContext) || [];
 
         const filters = Cypher.and(...predicates, ...authPredicate);
 

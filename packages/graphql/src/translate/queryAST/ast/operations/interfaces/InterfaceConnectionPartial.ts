@@ -43,9 +43,6 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
         const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-        // const authPredicate = this.authFilters?.getPredicate(nestedContext);
-
-        // const authFilterSubqueries = this.authFilters?.getSubqueries(nestedContext) || [];
 
         const authPredicate = this.getAuthFilterPredicate(nestedContext);
 
