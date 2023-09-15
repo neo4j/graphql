@@ -16,25 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("Node directive with unions", () => {
+describe("Node directive with interface", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
-            union Search = Genre | Movie
-
-            type Genre @node(labels: ["Category", "ExtraLabel1", "ExtraLabel2"]) {
+            interface Search {
                 name: String
             }
 
-            type Movie @node(labels: ["Film"]) {
+            type Genre implements Search @node(labels: ["Category", "ExtraLabel1", "ExtraLabel2"]) {
+                name: String
+            }
+
+            type Movie implements Search @node(labels: ["Film"]) {
+                name: String
                 title: String
                 search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
@@ -45,12 +47,12 @@ describe("Node directive with unions", () => {
         });
     });
 
-    test("Read Unions", async () => {
+    test("Read Interface", async () => {
         const query = gql`
             {
                 movies(where: { title: "some title" }) {
                     search(
-                        where: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } }
+                        where: { _on: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } } }
                         options: { offset: 1, limit: 10 }
                     ) {
                         ... on Movie {

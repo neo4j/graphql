@@ -26,9 +26,10 @@ import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
+import { isUnionEntity } from "../utils/is-union-entity";
 
 export class SortAndPaginationFactory {
-    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter | RelationshipAdapter): Sort[] {
+    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter): Sort[] {
         return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 
@@ -57,7 +58,7 @@ export class SortAndPaginationFactory {
         optionArg: GraphQLSortArg,
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter
     ): Sort[] {
-        if (entity instanceof UnionEntityAdapter) {
+        if (isUnionEntity(entity)) {
             return [];
         }
 

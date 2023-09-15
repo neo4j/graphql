@@ -25,12 +25,15 @@ import type { InterfaceReadPartial } from "./InterfaceReadPartial";
 import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { Pagination } from "../../pagination/Pagination";
+import type { Sort } from "../../sort/Sort";
 
 export class InterfaceReadOperation extends Operation {
     private children: InterfaceReadPartial[];
     private entity: InterfaceEntityAdapter | UnionEntityAdapter;
     private relationship: RelationshipAdapter | undefined;
-    // protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
+    protected pagination: Pagination | undefined;
+    protected sortFields: Sort[] = [];
 
     constructor({
         interfaceEntity,
@@ -53,7 +56,6 @@ export class InterfaceReadOperation extends Operation {
 
     public transpile(options: OperationTranspileOptions): OperationTranspileResult {
         const parentNode = options.context.target;
-        // if (!parentNode) throw new Error("Top level interfaces not suported");
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({
                 context: options.context,
@@ -72,14 +74,33 @@ export class InterfaceReadOperation extends Operation {
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(options.returnVariable);
+        
+        if (this.pagination) {
+            const paginationField = this.pagination.getPagination();
+            if (paginationField) {
+                if (paginationField.skip) {
+                    nestedSubquery.skip(paginationField.skip);
+                }
+                if (paginationField.limit) {
+                    nestedSubquery.limit(paginationField.limit);
+                }
+            }
+        }
 
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries))
-            .with(options.returnVariable)
-            .return([aggrExpr, options.returnVariable]);
+        nestedSubquery.return([aggrExpr, options.returnVariable]);
 
         return {
-            projectionExpr: options.returnVariable,
             clauses: [nestedSubquery],
+            projectionExpr: options.returnVariable,
         };
+    }
+
+    public addPagination(pagination: Pagination): void {
+        this.pagination = pagination;
+    }
+
+    public addSort(...sortElement: Sort[]): void {
+        this.sortFields.push(...sortElement);
     }
 }
