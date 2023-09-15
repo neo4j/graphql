@@ -849,15 +849,6 @@ function makeAugmentedSchema(
         const concreteEntity = schemaModel.getEntity(node.name) as ConcreteEntity;
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        // We wanted to get the userDefinedDirectives
-        const definitionNode = definitionNodes.objectTypes.find(
-            (type) => type.name.value === concreteEntityAdapter.name
-        );
-        if (!definitionNode) {
-            console.error(`Definition node not found for ${concreteEntityAdapter.name}`);
-            return;
-        }
-
         const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
         if (!userDefinedFieldDirectives) {
             throw new Error("fix user directives for object types.");
@@ -875,8 +866,7 @@ function makeAugmentedSchema(
             fields: nodeFields,
             description: concreteEntityAdapter.description,
             directives: graphqlDirectivesToCompose(directives),
-            // TODO: get from schema model once PR has been merged and remove definitionNode ref
-            interfaces: definitionNode.interfaces?.map((x) => x.name.value), // TODO: we need to get the interfaces from somewhere else?
+            interfaces: concreteEntity.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
         });
 
         if (concreteEntityAdapter.isGlobalNode()) {
