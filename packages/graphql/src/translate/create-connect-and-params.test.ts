@@ -118,7 +118,7 @@ describe("createConnectAndParams", () => {
         });
 
         expect(result[0]).toMatchInlineSnapshot(`
-            "WITH this
+            "WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this0_node:Movie)
