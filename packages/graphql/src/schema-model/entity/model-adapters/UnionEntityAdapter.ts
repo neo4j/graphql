@@ -20,10 +20,14 @@
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { UnionEntity } from "../UnionEntity";
 import { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
+import { UnionEntityOperations } from "./UnionEntityOperations";
 
 export class UnionEntityAdapter {
     public readonly name: string;
     public concreteEntities: ConcreteEntityAdapter[];
+
+    // specialize models
+    private _operations: UnionEntityOperations | undefined;
 
     constructor(entity: UnionEntity) {
         this.name = entity.name;
@@ -36,5 +40,12 @@ export class UnionEntityAdapter {
             const entityAdapter = new ConcreteEntityAdapter(entity);
             this.concreteEntities.push(entityAdapter);
         }
+    }
+
+    get operations(): UnionEntityOperations {
+        if (!this._operations) {
+            return new UnionEntityOperations(this);
+        }
+        return this._operations;
     }
 }
