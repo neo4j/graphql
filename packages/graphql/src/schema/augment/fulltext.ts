@@ -107,11 +107,11 @@ export function augmentFulltextSchema2(
     composer: SchemaComposer,
     concreteEntityAdapter: ConcreteEntityAdapter
 ) {
-    if (!node.fulltextDirective) {
+    if (!concreteEntityAdapter.annotations.fulltext) {
         return;
     }
 
-    const fields = node.fulltextDirective.indexes.reduce((res, index) => {
+    const fields = concreteEntityAdapter.annotations.fulltext?.indexes.reduce((res, index) => {
         const indexName = index.indexName || index.name;
         if (indexName === undefined) {
             throw new Error("The name of the fulltext index should be defined using the indexName argument.");
@@ -137,47 +137,55 @@ export function augmentFulltextSchema2(
     });
 
     composer.createInputTC({
-        name: node.fulltextTypeNames.sort,
+        name: concreteEntityAdapter.operations.fulltextTypeNames.sort,
         description: fulltextSortDescription,
         fields: {
             [SCORE_FIELD]: "SortDirection",
-            [node.singular]: concreteEntityAdapter.operations.sortInputTypeName,
+            [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.sortInputTypeName,
         },
     });
 
     composer.createInputTC({
-        name: node.fulltextTypeNames.where,
+        name: concreteEntityAdapter.operations.fulltextTypeNames.where,
         description: fulltextWhereDescription,
         fields: {
             [SCORE_FIELD]: FloatWhere.name,
-            [node.singular]: concreteEntityAdapter.operations.whereInputTypeName,
+            [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.whereInputTypeName,
         },
     });
 
     composer.createObjectTC({
-        name: node.fulltextTypeNames.result,
+        name: concreteEntityAdapter.operations.fulltextTypeNames.result,
         description: fulltextResultDescription,
         fields: {
             [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-            [node.singular]: `${node.name}!`,
+            [concreteEntityAdapter.singular]: `${concreteEntityAdapter.name}!`,
         },
     });
 
     // TODO: to move this over to the concreteEntityAdapter we need to check what the use of
     // the queryType and scoreVariable properties are in FulltextContext
     // and determine if we can remove them
-    node.fulltextDirective.indexes.forEach((index) => {
+    concreteEntityAdapter.annotations.fulltext.indexes.forEach((index) => {
         // TODO: remove indexName assignment and undefined check once the name argument has been removed.
         const indexName = index.indexName || index.name;
         if (indexName === undefined) {
             throw new Error("The name of the fulltext index should be defined using the indexName argument.");
         }
-        let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
+        let queryName = `${concreteEntityAdapter.plural}Fulltext${upperFirst(indexName)}`;
         if (index.queryName) {
             queryName = index.queryName;
         }
+        // TODO: temporary for compatibility with translation layer
+        const nodeIndex = node.fulltextDirective!.indexes.find((i) => {
+            const iName = i.indexName || i.name;
+            return iName === indexName;
+        });
+        if (!nodeIndex) {
+            throw new Error("fix index from Node ");
+        }
         composer.Query.addFields({
-            [queryName]: fulltextResolver({ node }, index),
+            [queryName]: fulltextResolver({ node }, nodeIndex),
         });
     });
 }
