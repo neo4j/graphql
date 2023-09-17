@@ -30,7 +30,10 @@ export class MathAdapter {
     }
 
     getMathOperations(): string[] {
-        return [this.getAdd(), this.getSubtract(), this.getMultiply(), this.getDivide()];
+        const operations = [this.getAdd(), this.getSubtract()];
+        this.AttributeAdapter.isFloat() && operations.push(this.getMultiply());
+        this.AttributeAdapter.isFloat() && operations.push(this.getDivide());
+        return operations;
     }
 
     getAdd(): string {

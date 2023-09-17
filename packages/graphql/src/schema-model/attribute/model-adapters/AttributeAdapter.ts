@@ -317,8 +317,11 @@ export class AttributeAdapter {
     /**
      * @throws {Error} if the attribute is not a list
      */
-    get listModel(): ListAdapter {
+    get listModel(): ListAdapter | undefined {
         if (!this._listModel) {
+            if (!this.isArrayMethodField()) {
+                return;
+            }
             this._listModel = new ListAdapter(this);
         }
         return this._listModel;
@@ -327,8 +330,11 @@ export class AttributeAdapter {
     /**
      * @throws {Error} if the attribute is not a scalar
      */
-    get mathModel(): MathAdapter {
+    get mathModel(): MathAdapter | undefined {
         if (!this._mathModel) {
+            if (!this.isNumeric() || this.isList()) {
+                return;
+            }
             this._mathModel = new MathAdapter(this);
         }
         return this._mathModel;

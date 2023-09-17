@@ -598,10 +598,10 @@ describe("Attribute", () => {
 
             expect(listElementAttribute).toBeInstanceOf(AttributeAdapter);
             expect(listElementAttribute.listModel).toBeDefined();
-            expect(listElementAttribute.listModel.getIncludes()).toMatchInlineSnapshot(`"test_INCLUDES"`);
-            expect(listElementAttribute.listModel.getNotIncludes()).toMatchInlineSnapshot(`"test_NOT_INCLUDES"`);
-            expect(listElementAttribute.listModel.getPop()).toMatchInlineSnapshot(`"test_POP"`);
-            expect(listElementAttribute.listModel.getPush()).toMatchInlineSnapshot(`"test_PUSH"`);
+            expect(listElementAttribute.listModel!.getIncludes()).toMatchInlineSnapshot(`"test_INCLUDES"`);
+            expect(listElementAttribute.listModel!.getNotIncludes()).toMatchInlineSnapshot(`"test_NOT_INCLUDES"`);
+            expect(listElementAttribute.listModel!.getPop()).toMatchInlineSnapshot(`"test_POP"`);
+            expect(listElementAttribute.listModel!.getPush()).toMatchInlineSnapshot(`"test_PUSH"`);
         });
 
         test("Aggregation Model", () => {
@@ -670,7 +670,7 @@ describe("Attribute", () => {
         });
 
         test("Math Model", () => {
-            const attribute = new AttributeAdapter(
+            const intAttribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
                     annotations: [],
@@ -678,17 +678,30 @@ describe("Attribute", () => {
                     args: [],
                 })
             );
-            // TODO: test it with float as well.
-            expect(attribute).toBeInstanceOf(AttributeAdapter);
-            expect(attribute.mathModel).toBeDefined();
-            expect(attribute.mathModel.getMathOperations()).toEqual(
-                expect.arrayContaining(["test_INCREMENT", "test_DECREMENT", "test_MULTIPLY", "test_DIVIDE"])
+            expect(intAttribute).toBeInstanceOf(AttributeAdapter);
+            expect(intAttribute.mathModel).toBeDefined();
+            expect(intAttribute.mathModel!.getMathOperations()).toEqual(
+                expect.arrayContaining(["test_INCREMENT", "test_DECREMENT"])
             );
 
-            expect(attribute.mathModel.getAdd()).toMatchInlineSnapshot(`"test_INCREMENT"`);
-            expect(attribute.mathModel.getSubtract()).toMatchInlineSnapshot(`"test_DECREMENT"`);
-            expect(attribute.mathModel.getMultiply()).toMatchInlineSnapshot(`"test_MULTIPLY"`);
-            expect(attribute.mathModel.getDivide()).toMatchInlineSnapshot(`"test_DIVIDE"`);
+            expect(intAttribute.mathModel!.getAdd()).toMatchInlineSnapshot(`"test_INCREMENT"`);
+            expect(intAttribute.mathModel!.getSubtract()).toMatchInlineSnapshot(`"test_DECREMENT"`);
+            expect(intAttribute.mathModel!.getMultiply()).toMatchInlineSnapshot(`"test_MULTIPLY"`);
+            expect(intAttribute.mathModel!.getDivide()).toMatchInlineSnapshot(`"test_DIVIDE"`);
+
+            const floatAttribute = new AttributeAdapter(
+                new Attribute({
+                    name: "test",
+                    annotations: [],
+                    type: new ScalarType(GraphQLBuiltInScalarType.Float, true),
+                    args: [],
+                })
+            );
+            expect(floatAttribute).toBeInstanceOf(AttributeAdapter);
+            expect(floatAttribute.mathModel).toBeDefined();
+            expect(floatAttribute.mathModel!.getMathOperations()).toEqual(
+                expect.arrayContaining(["test_ADD", "test_SUBTRACT", "test_MULTIPLY", "test_DIVIDE"])
+            );
         });
     });
 });
