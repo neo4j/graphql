@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { upperFirst } from "../../../utils/upper-first";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
@@ -91,6 +92,10 @@ export class InterfaceEntityAdapter {
             }
         }
         return this._plural;
+    }
+
+    public get upperFirstPlural(): string {
+        return upperFirst(this.plural);
     }
 
     get operations(): InterfaceEntityOperations {

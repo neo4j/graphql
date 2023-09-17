@@ -88,6 +88,10 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}Where`;
     }
 
+    public get whereOnImplementationsWhereInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ImplementationsWhere`;
+    }
+
     public get uniqueWhereInputTypeName(): string {
         // ConnectOrCreateWhere.node
         return `${this.InterfaceEntityAdapter.name}UniqueWhere`;
@@ -105,8 +109,16 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}UpdateInput`;
     }
 
+    public get whereOnImplementationsUpdateInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ImplementationsUpdateInput`;
+    }
+
     public get deleteInputTypeName(): string {
         return `${this.InterfaceEntityAdapter.name}DeleteInput`;
+    }
+
+    public get whereOnImplementationsDeleteInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ImplementationsDeleteInput`;
     }
 
     public get optionsInputTypeName(): string {
@@ -129,8 +141,16 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}ConnectInput`;
     }
 
+    public get whereOnImplementationsConnectInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ImplementationsConnectInput`;
+    }
+
     public get disconnectInputTypeName(): string {
         return `${this.InterfaceEntityAdapter.name}DisconnectInput`;
+    }
+
+    public get whereOnImplementationsDisconnectInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ImplementationsDisconnectInput`;
     }
 
     public get onCreateInputTypeName(): string {
@@ -139,6 +159,10 @@ export class InterfaceEntityOperations {
 
     public get subscriptionWhereInputTypeName(): string {
         return `${this.InterfaceEntityAdapter.name}SubscriptionWhere`;
+    }
+
+    public get subscriptionEventPayloadTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}EventPayload`;
     }
 
     public get implementationsSubscriptionWhereInputTypeName(): string {
