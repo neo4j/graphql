@@ -17,8 +17,15 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, InputValueDefinitionNode } from "graphql";
-import type { Directive, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import { any } from "@neo4j/cypher-builder";
+import { DirectiveNode, GraphQLInt, InputValueDefinitionNode } from "graphql";
+import type {
+    Directive,
+    DirectiveArgs,
+    InputTypeComposerFieldConfigMapDefinition,
+    ObjectTypeComposerFieldConfigAsObjectDefinition,
+} from "graphql-compose";
+import { argsToArgsConfig } from "graphql/type/definition";
 import { DEPRECATED } from "../constants";
 import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
@@ -125,8 +132,8 @@ export function relationshipAdapterToComposeFields(
                 fieldName: field.name,
             },
             {
-                typeName: `${field.connectionFieldTypename}!`, // TODO: Move Adapter so we aren't manually adding the !
-                fieldName: field.connectionFieldName,
+                typeName: `${field.operations.connectionFieldTypename}!`, // TODO: Move Adapter so we aren't manually adding the !
+                fieldName: field.operations.connectionFieldName,
             },
         ];
         for (const { typeName, fieldName } of relationshipFields) {
@@ -415,9 +422,10 @@ export function objectFieldsToUpdateInputFields(fields: BaseField[]): Record<str
 
 export function concreteEntityToUpdateInputFields(
     objectFields: AttributeAdapter[],
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    additionalFieldsCallbacks: AdditionalFieldsCallback[] = []
 ) {
-    const updateInputFields: Record<string, InputField> = {};
+    let updateInputFields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const field of objectFields) {
         const newInputField: InputField = {
             type: field.getInputTypeNames().update.pretty,
@@ -432,7 +440,39 @@ export function concreteEntityToUpdateInputFields(
         }
 
         updateInputFields[field.name] = newInputField;
+
+        for (const cb of additionalFieldsCallbacks) {
+            const additionalFields = cb(field, newInputField);
+            updateInputFields = { ...updateInputFields, ...additionalFields };
+        }
     }
 
     return updateInputFields;
 }
+
+export function withMathOperators(): AdditionalFieldsCallback {
+    return (attribute: AttributeAdapter, fieldDefinition: InputField): Record<string, InputField> => {
+        const fields: Record<string, InputField> = {};
+        if (attribute.mathModel) {
+            for (const operation of attribute.mathModel.getMathOperations()) {
+                fields[operation] = fieldDefinition;
+            }
+        }
+        return fields;
+    };
+}
+export function withArrayOperators(): AdditionalFieldsCallback {
+    return (attribute: AttributeAdapter): InputTypeComposerFieldConfigMapDefinition => {
+        const fields: InputTypeComposerFieldConfigMapDefinition = {};
+        if (attribute.listModel) {
+            fields[attribute.listModel.getPop()] = GraphQLInt;
+            fields[attribute.listModel.getPush()] = attribute.getInputTypeNames().update.pretty;
+        }
+        return fields;
+    };
+}
+
+type AdditionalFieldsCallback = (
+    attribute: AttributeAdapter,
+    fieldDefinition: InputField
+) => Record<string, InputField> | InputTypeComposerFieldConfigMapDefinition;

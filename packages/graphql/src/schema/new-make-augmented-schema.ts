@@ -18,14 +18,16 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import type {
+import {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,
     FieldDefinitionNode,
     GraphQLEnumType,
     GraphQLInputObjectType,
+    GraphQLInt,
     GraphQLInterfaceType,
+    GraphQLList,
     GraphQLObjectType,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
@@ -34,7 +36,15 @@ import type {
     SchemaExtensionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
+import type {
+    InputTypeComposer,
+    InputTypeComposerFieldConfigMapDefinition,
+    InterfaceTypeComposer,
+    ObjectTypeComposer,
+    ObjectTypeComposerFieldConfigMap,
+    ObjectTypeComposerFieldConfigMapDefinition,
+    UnionTypeComposer,
+} from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
@@ -69,6 +79,8 @@ import {
     concreteEntityToUpdateInputFields,
     graphqlDirectivesToCompose,
     relationshipAdapterToComposeFields,
+    withArrayOperators,
+    withMathOperators,
 } from "./to-compose";
 
 // GraphQL type imports
@@ -98,11 +110,11 @@ import type { Operation } from "../schema-model/Operation";
 import { OperationAdapter } from "../schema-model/OperationAdapter";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
-import type { UnionEntity } from "../schema-model/entity/UnionEntity";
+import { UnionEntity } from "../schema-model/entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { isInArray } from "../utils/is-in-array";
 import { addArrayMethodsToITC2 } from "./array-methods";
@@ -114,6 +126,7 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { addMathOperatorsToITC } from "./math";
 import { generateSubscriptionTypes, generateSubscriptionTypes2 } from "./subscriptions/generate-subscription-types";
+import { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -444,67 +457,6 @@ class ToComposer {
 
         // _composer.merge(t);
     }
-
-    // ==== to compose
-
-    private static _attributesToComposeFields(attributes: AttributeAdapter[]): {
-        [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
-    } {
-        return attributes.reduce((res, model) => {
-            if (!model.isReadable()) {
-                return res;
-            }
-
-            const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
-                type: model.type.getPretty(),
-                args: {},
-                description: model.description,
-            };
-
-            if (Object.keys(model.getPropagatedAnnotations()).length) {
-                newField.directives = this._graphqlDirectivesToCompose(model.getPropagatedAnnotations());
-            }
-
-            if (["Int", "Float"].includes(model.type.getName())) {
-                newField.resolve = numericalResolver;
-            }
-
-            if (model.type.getName() === "ID") {
-                newField.resolve = idResolver;
-            }
-
-            if (model.attributeArguments) {
-                newField.args = this._graphqlArgsToCompose(model.attributeArguments);
-            }
-
-            return { ...res, [model.name]: newField };
-        }, {});
-    }
-
-    // TODO: add arguments on annotations
-    private static _graphqlDirectivesToCompose(annotations: Partial<Annotation>): Directive[] {
-        return Object.entries(annotations).map(([, annotation]) => ({
-            args: (annotation.arguments || [])?.reduce(
-                (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
-                {}
-            ),
-            name: annotation.name,
-        }));
-    }
-
-    // TODO: check on Arguments class
-    private static _graphqlArgsToCompose(args: InputValue[]) {
-        return args.reduce((res, arg) => {
-            return {
-                ...res,
-                [arg.name]: {
-                    type: arg.type.getPretty(),
-                    description: arg.description,
-                    ...(arg.defaultValue ? { defaultValue: arg.defaultValue } : {}),
-                },
-            };
-        }, {});
-    }
 }
 */
 
@@ -540,6 +492,503 @@ function getUserDefinedFieldDirectivesForDefinition(
     }
 
     return userDefinedFieldDirectives;
+}
+
+// make types
+function withObjectType(
+    concreteEntity: ConcreteEntityAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    directives: DirectiveNode[],
+    composer: SchemaComposer
+): ObjectTypeComposer {
+    const nodeFields = attributeAdapterToComposeFields(concreteEntity.objectFields, userDefinedFieldDirectives);
+    const composeNode = composer.createObjectTC({
+        name: concreteEntity.name,
+        fields: nodeFields,
+        description: concreteEntity.description,
+        directives: graphqlDirectivesToCompose(directives),
+        interfaces: concreteEntity.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+    });
+    // TODO: maybe split this global node logic?
+    if (concreteEntity.isGlobalNode()) {
+        composeNode.setField("id", {
+            type: new GraphQLNonNull(GraphQLID),
+            resolve: (src) => {
+                const field = concreteEntity.globalIdField.name;
+                const value = src[field] as string | number;
+                return concreteEntity.toGlobalId(value.toString());
+            },
+        });
+        composeNode.addInterface("Node");
+    }
+    return composeNode;
+}
+
+function withInterfaceType(
+    entityAdapter: InterfaceEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    directives: DirectiveNode[],
+    composer: SchemaComposer,
+    config = {
+        includeRelationships: false,
+    }
+): InterfaceTypeComposer {
+    // TODO: maybe create interfaceEntity.interfaceFields() method abstraction even if it retrieves all attributes?
+    // can also take includeRelationships as argument
+    const objectComposeFields = attributeAdapterToComposeFields(
+        Array.from(entityAdapter.attributes.values()),
+        userDefinedFieldDirectives
+    );
+    let fields = objectComposeFields;
+    if (config.includeRelationships && entityAdapter instanceof InterfaceEntityAdapter) {
+        fields = {
+            ...fields,
+            ...relationshipAdapterToComposeFields(
+                Array.from(entityAdapter.relationships.values()),
+                userDefinedFieldDirectives
+            ),
+        };
+    }
+    const interfaceTypeName =
+        entityAdapter instanceof InterfaceEntityAdapter
+            ? entityAdapter.name
+            : (entityAdapter.propertiesTypeName as string); // this is checked one layer above in execution
+    const composeInterface = composer.createInterfaceTC({
+        name: interfaceTypeName,
+        fields: fields,
+        directives: graphqlDirectivesToCompose(directives),
+    });
+    return composeInterface;
+}
+
+function withOptionsInputType(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const optionsInputType = makeOptionsInput(entityAdapter, composer);
+    if (!entityAdapter.sortableFields.length) {
+        return optionsInputType;
+    }
+    const sortInput = makeSortInput(entityAdapter, userDefinedFieldDirectives, composer);
+    // TODO: Concrete vs Abstract discrepency
+    // is this intended? For ConcreteEntity is NonNull, for InterfaceEntity is nullable
+    const sortFieldType = entityAdapter instanceof ConcreteEntityAdapter ? sortInput.NonNull.List : sortInput.List;
+    optionsInputType.addFields({
+        sort: {
+            description: `Specify one or more ${entityAdapter.operations.sortInputTypeName} objects to sort ${entityAdapter.upperFirstPlural} by. The sorts will be applied in the order in which they are arranged in the array.`,
+            type: sortFieldType,
+        },
+    });
+    return optionsInputType;
+}
+
+function withSortInputType(
+    relationshipAdapter: RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    // TODO: for relationships we used to get all attributes, not just sortableFields
+    // Clarify if this is intended?
+    if (!relationshipAdapter.sortableFields.length) {
+        return;
+    }
+    return makeSortInput(relationshipAdapter, userDefinedFieldDirectives, composer);
+}
+
+function withWhereInputType(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    features: Neo4jFeaturesSettings | undefined,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const whereInputType = makeWhereInput(entityAdapter, userDefinedFieldDirectives, features, composer);
+
+    if (entityAdapter instanceof ConcreteEntityAdapter) {
+        whereInputType.addFields({
+            OR: `[${entityAdapter.operations.whereInputTypeName}!]`,
+            AND: `[${entityAdapter.operations.whereInputTypeName}!]`,
+            NOT: entityAdapter.operations.whereInputTypeName,
+        });
+        if (entityAdapter.isGlobalNode()) {
+            whereInputType.addFields({ id: GraphQLID });
+        }
+    } else if (entityAdapter instanceof RelationshipAdapter) {
+        whereInputType.addFields({
+            OR: `[${entityAdapter.operations.whereInputTypeName}!]`,
+            AND: `[${entityAdapter.operations.whereInputTypeName}!]`,
+            NOT: entityAdapter.operations.whereInputTypeName,
+        });
+    } else if (entityAdapter instanceof InterfaceEntityAdapter) {
+        const implementationsWhereInputType = makeImplementationsWhereInput(entityAdapter, composer);
+        whereInputType.addFields({ _on: implementationsWhereInputType });
+    }
+    return whereInputType;
+}
+
+function withUniqueWhereInputType(
+    entityAdapter: ConcreteEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer {
+    const uniqueWhereFields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const attribute of entityAdapter.uniqueFields) {
+        uniqueWhereFields[attribute.name] = attribute.getFieldTypeName();
+    }
+    const uniqueWhereInputType = composer.createInputTC({
+        name: entityAdapter.operations.uniqueWhereInputTypeName,
+        fields: uniqueWhereFields,
+    });
+    return uniqueWhereInputType;
+}
+
+function withAggregateSelectionType(
+    concreteEntity: ConcreteEntityAdapter, // required
+    aggregationTypesMapper: AggregationTypesMapper,
+    propagatedDirectives: DirectiveNode[],
+    composer: SchemaComposer
+): ObjectTypeComposer {
+    const aggregateSelection = composer.createObjectTC({
+        name: concreteEntity.operations.aggregateTypeNames.selection,
+        fields: {
+            count: {
+                type: new GraphQLNonNull(GraphQLInt),
+                resolve: numericalResolver,
+                args: {},
+            },
+        },
+        directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+    aggregateSelection.addFields(makeAggregableFields(concreteEntity, aggregationTypesMapper));
+    return aggregateSelection;
+}
+
+function withCreateInputType(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const createInputType = composer.createInputTC({
+        name: entityAdapter.operations.createInputTypeName,
+        fields: {},
+    });
+
+    if (entityAdapter instanceof ConcreteEntityAdapter || entityAdapter instanceof RelationshipAdapter) {
+        createInputType.addFields(
+            concreteEntityToCreateInputFields(entityAdapter.createInputFields, userDefinedFieldDirectives)
+        );
+    } else {
+        createInputType.addFields(makeCreateInputFields(entityAdapter));
+    }
+
+    // ensureNonEmptyInput(composer, createInputType); - not for relationshipAdapter
+    return createInputType;
+}
+
+function withUpdateInputType(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const inputTypeName =
+        entityAdapter instanceof RelationshipAdapter
+            ? entityAdapter.operations.edgeUpdateInputTypeName
+            : entityAdapter.operations.updateMutationArgumentNames.update;
+    const updateInputType = composer.createInputTC({
+        name: inputTypeName,
+        fields: {},
+    });
+
+    if (entityAdapter instanceof ConcreteEntityAdapter || entityAdapter instanceof RelationshipAdapter) {
+        updateInputType.addFields(
+            concreteEntityToUpdateInputFields(entityAdapter.updateInputFields, userDefinedFieldDirectives, [
+                withMathOperators(),
+                withArrayOperators(),
+            ])
+        );
+    } else {
+        updateInputType.addFields(
+            concreteEntityToUpdateInputFields(entityAdapter.updateInputFields, userDefinedFieldDirectives, [
+                withMathOperators(),
+            ])
+        );
+        const implementationsUpdateInputType = makeImplementationsUpdateInput(entityAdapter, composer);
+        updateInputType.addFields({ _on: implementationsUpdateInputType });
+    }
+
+    // ensureNonEmptyInput(composer, updateInputType); - not for relationshipAdapter
+    return updateInputType;
+}
+
+function withDeleteInputType(
+    entityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    const implementationsUpdateInputType = makeImplementationsDeleteInput(entityAdapter, composer);
+    if (implementationsUpdateInputType) {
+        const deleteInputType = composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
+        deleteInputType.setField("_on", implementationsUpdateInputType);
+        return deleteInputType;
+    }
+    return undefined;
+}
+function withConnectInputType(
+    entityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    const implementationsConnectInputType = makeImplementationsConnectInput(entityAdapter, composer);
+    if (implementationsConnectInputType) {
+        const connectInputType = composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.connect);
+        connectInputType.setField("_on", implementationsConnectInputType);
+        return connectInputType;
+    }
+    return undefined;
+}
+function withDisconnectInputType(
+    entityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    const implementationsDisconnectInputType = makeImplementationsDisconnectInput(entityAdapter, composer);
+    if (implementationsDisconnectInputType) {
+        const disconnectInputType = composer.getOrCreateITC(
+            entityAdapter.operations.updateMutationArgumentNames.disconnect
+        );
+        disconnectInputType.setField("_on", implementationsDisconnectInputType);
+        return disconnectInputType;
+    }
+    return undefined;
+}
+
+function withMutationResponseTypes(
+    concreteEntityAdapter: ConcreteEntityAdapter, // required
+    propagatedDirectives: DirectiveNode[],
+    composer: SchemaComposer
+): void {
+    composer.createObjectTC({
+        name: concreteEntityAdapter.operations.mutationResponseTypeNames.create,
+        fields: {
+            info: new GraphQLNonNull(CreateInfo),
+            [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
+        },
+        directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+
+    composer.createObjectTC({
+        name: concreteEntityAdapter.operations.mutationResponseTypeNames.update,
+        fields: {
+            info: new GraphQLNonNull(UpdateInfo),
+            [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
+        },
+        directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+}
+
+// make "helper" types
+function makeOptionsInput(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer {
+    const optionsInput = composer.createInputTC({
+        name: entityAdapter.operations.optionsInputTypeName,
+        fields: { limit: GraphQLInt, offset: GraphQLInt },
+    });
+    return optionsInput;
+}
+function makeSortFields(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>
+): InputTypeComposerFieldConfigMapDefinition {
+    const sortFields: InputTypeComposerFieldConfigMapDefinition = {};
+    const sortableAttributes = entityAdapter.sortableFields;
+    for (const attribute of sortableAttributes) {
+        const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attribute.name) || [];
+        const deprecatedDirective = userDefinedDirectivesOnField.filter(
+            (directive) => directive.name.value === DEPRECATED
+        );
+        sortFields[attribute.name] = {
+            type: SortDirection,
+            directives: graphqlDirectivesToCompose(deprecatedDirective),
+        };
+    }
+    return sortFields;
+}
+function makeSortInput(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const sortFields = makeSortFields(entityAdapter, userDefinedFieldDirectives);
+    const sortInput = composer.createInputTC({
+        name: entityAdapter.operations.sortInputTypeName,
+        fields: sortFields,
+    });
+    if (!(entityAdapter instanceof RelationshipAdapter)) {
+        sortInput.setDescription(
+            `Fields to sort ${entityAdapter.upperFirstPlural} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${entityAdapter.operations.sortInputTypeName} object.`
+        );
+    }
+    return sortInput;
+}
+function makeAggregableFields(
+    concreteEntity: ConcreteEntityAdapter, // required
+    aggregationTypesMapper: AggregationTypesMapper
+): ObjectTypeComposerFieldConfigMapDefinition<any, any> {
+    const aggregableFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};
+    const aggregableAttributes = concreteEntity.aggregableFields;
+    for (const attribute of aggregableAttributes) {
+        const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+            fieldName: attribute.getTypeName(),
+            nullable: !attribute.isRequired(),
+        });
+        if (objectTypeComposer) {
+            aggregableFields[attribute.name] = objectTypeComposer.NonNull;
+        }
+    }
+    return aggregableFields;
+}
+function makeWhereInput(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    features: Neo4jFeaturesSettings | undefined,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const whereFields = makeWhereFields(entityAdapter, userDefinedFieldDirectives, features);
+    const whereInputType = composer.createInputTC({
+        name: entityAdapter.operations.whereInputTypeName,
+        fields: whereFields,
+    });
+    return whereInputType;
+}
+function makeWhereFields(
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter, // required
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
+    features: Neo4jFeaturesSettings | undefined
+): InputTypeComposerFieldConfigMapDefinition {
+    if (entityAdapter instanceof UnionEntityAdapter) {
+        const fields: InputTypeComposerFieldConfigMapDefinition = {};
+        for (const concreteEntity of entityAdapter.concreteEntities) {
+            fields[concreteEntity.name] = concreteEntity.operations.whereInputTypeName;
+        }
+        return fields;
+    }
+    // TODO: make a a category for these including filtering logic from getWhereFieldsForAttributes
+    const filterableAttributes = Array.from(entityAdapter.attributes.values());
+    return getWhereFieldsForAttributes({
+        attributes: filterableAttributes,
+        userDefinedFieldDirectives,
+        features,
+    });
+}
+function makeCreateInputFields(
+    interfaceEntityAdapter: InterfaceEntityAdapter // required
+): InputTypeComposerFieldConfigMapDefinition {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        fields[entityAdapter.name] = {
+            type: entityAdapter.operations.createInputTypeName,
+        };
+    }
+    return fields;
+}
+// TODO: maybe combine implementationsInputTypes creation into one function?
+function makeImplementationsWhereInput(
+    interfaceEntityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        fields[entityAdapter.name] = {
+            type: entityAdapter.operations.whereInputTypeName,
+        };
+    }
+    const implementationsWhereType = composer.createInputTC({
+        name: interfaceEntityAdapter.operations.whereOnImplementationsWhereInputTypeName,
+        fields,
+    });
+    ensureNonEmptyInput(composer, implementationsWhereType);
+    return implementationsWhereType;
+}
+function makeImplementationsUpdateInput(
+    interfaceEntityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        fields[entityAdapter.name] = {
+            type: entityAdapter.operations.updateInputTypeName,
+        };
+    }
+    const implementationsUpdateType = composer.createInputTC({
+        name: interfaceEntityAdapter.operations.whereOnImplementationsUpdateInputTypeName,
+        fields,
+    });
+    ensureNonEmptyInput(composer, implementationsUpdateType);
+    return implementationsUpdateType;
+}
+function makeImplementationsDeleteInput(
+    interfaceEntityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        if (entityAdapter.relationships.size) {
+            fields[entityAdapter.name] = {
+                type: `[${entityAdapter.operations.deleteInputTypeName}!]`,
+            };
+        }
+    }
+    if (Object.keys(fields).length) {
+        const implementationsDeleteType = composer.createInputTC({
+            name: interfaceEntityAdapter.operations.whereOnImplementationsDeleteInputTypeName,
+            fields,
+        });
+        // ensureNonEmptyInput(composer, implementationsDeleteType);
+        return implementationsDeleteType;
+    }
+    return undefined;
+}
+function makeImplementationsConnectInput(
+    interfaceEntityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        if (entityAdapter.relationships.size) {
+            fields[entityAdapter.name] = {
+                type: `[${entityAdapter.operations.connectInputTypeName}!]`,
+            };
+        }
+    }
+    if (Object.keys(fields).length) {
+        const implementationsConnectType = composer.createInputTC({
+            name: interfaceEntityAdapter.operations.whereOnImplementationsConnectInputTypeName,
+            fields,
+        });
+        // ensureNonEmptyInput(composer, implementationsConnectType);
+        return implementationsConnectType;
+    }
+    return undefined;
+}
+function makeImplementationsDisconnectInput(
+    interfaceEntityAdapter: InterfaceEntityAdapter, // required
+    composer: SchemaComposer
+): InputTypeComposer | undefined {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        if (entityAdapter.relationships.size) {
+            fields[entityAdapter.name] = {
+                type: `[${entityAdapter.operations.disconnectInputTypeName}!]`,
+            };
+        }
+    }
+    if (Object.keys(fields).length) {
+        const implementationsDisconnectType = composer.createInputTC({
+            name: interfaceEntityAdapter.operations.whereOnImplementationsDisconnectInputTypeName,
+            fields,
+        });
+        ensureNonEmptyInput(composer, implementationsDisconnectType);
+        return implementationsDisconnectType;
+    }
+    return undefined;
 }
 
 function makeAugmentedSchema(
@@ -795,6 +1244,8 @@ function makeAugmentedSchema(
         }
     });
 
+    // TODO: temporary helper to keep track of which interface entities were already "visited"
+    const seenInterfaces = new Set<string>();
     interfaceRelationships.forEach((interfaceRelationship) => {
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
         const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
@@ -809,6 +1260,7 @@ function makeAugmentedSchema(
         if (updatedRelationships) {
             relationships = updatedRelationships;
         }
+        seenInterfaces.add(interfaceRelationship.name.value);
     });
 
     // TODO: find some solution for this
@@ -840,8 +1292,12 @@ function makeAugmentedSchema(
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
 
-    nodes.forEach((node) => {
-        const concreteEntity = schemaModel.getEntity(node.name) as ConcreteEntity;
+    schemaModel.concreteEntities.forEach((concreteEntity) => {
+        // TODO: temporary for backwards compatibility for translation layer
+        const node = nodes.find((n) => n.name === concreteEntity.name);
+        if (!node) {
+            throw new Error("Fix node not found.");
+        }
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
         const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
@@ -849,165 +1305,172 @@ function makeAugmentedSchema(
             throw new Error("fix user directives for object types.");
         }
 
-        const nodeFields = attributeAdapterToComposeFields(
-            concreteEntityAdapter.objectFields,
-            userDefinedFieldDirectives
-        );
-
         const propagatedDirectives = propagatedDirectivesForNode.get(concreteEntity.name) || [];
         const directives = (userDefinedDirectivesForNode.get(concreteEntity.name) || []).concat(propagatedDirectives);
-        const composeNode = composer.createObjectTC({
-            name: concreteEntity.name,
-            fields: nodeFields,
-            description: concreteEntityAdapter.description,
-            directives: graphqlDirectivesToCompose(directives),
-            interfaces: concreteEntity.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
-        });
+        // const nodeFields = attributeAdapterToComposeFields(
+        //     concreteEntityAdapter.objectFields,
+        //     userDefinedFieldDirectives
+        // );
+        // const composeNode = composer.createObjectTC({
+        //     name: concreteEntity.name,
+        //     fields: nodeFields,
+        //     description: concreteEntityAdapter.description,
+        //     directives: graphqlDirectivesToCompose(directives),
+        //     interfaces: concreteEntity.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+        // });
+        // if (concreteEntityAdapter.isGlobalNode()) {
+        //     composeNode.setField("id", {
+        //         type: new GraphQLNonNull(GraphQLID),
+        //         resolve: (src) => {
+        //             const field = concreteEntityAdapter.globalIdField.name;
+        //             const value = src[field] as string | number;
+        //             return concreteEntityAdapter.toGlobalId(value.toString());
+        //         },
+        //     });
 
-        if (concreteEntityAdapter.isGlobalNode()) {
-            composeNode.setField("id", {
-                type: new GraphQLNonNull(GraphQLID),
-                resolve: (src) => {
-                    const field = concreteEntityAdapter.globalIdField.name;
-                    const value = src[field] as string | number;
-                    return concreteEntityAdapter.toGlobalId(value.toString());
-                },
-            });
+        //     composeNode.addInterface("Node");
+        // }
+        const composeNode = withObjectType(concreteEntityAdapter, userDefinedFieldDirectives, directives, composer);
 
-            composeNode.addInterface("Node");
-        }
+        // const sortFields = concreteEntityAdapter.sortableFields.reduce(
+        //     (res: InputTypeComposerFieldConfigMapDefinition, attributeAdapter) => {
+        //         // TODO: make a nicer way of getting these user defined field directives
+        //         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attributeAdapter.name) || [];
+        //         return {
+        //             ...res,
+        //             [attributeAdapter.name]: {
+        //                 type: "SortDirection",
+        //                 directives: graphqlDirectivesToCompose(
+        //                     userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
+        //                 ),
+        //             },
+        //         };
+        //     },
+        //     {}
+        // );
+        // if (Object.keys(sortFields).length) {
+        //     const sortInput = composer.createInputTC({
+        //         name: concreteEntityAdapter.operations.sortInputTypeName,
+        //         fields: sortFields,
+        //         description: `Fields to sort ${concreteEntityAdapter.upperFirstPlural} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${concreteEntityAdapter.operations.sortInputTypeName} object.`,
+        //     });
 
-        const sortFields = concreteEntityAdapter.sortableFields.reduce(
-            (res: InputTypeComposerFieldConfigMapDefinition, attributeAdapter) => {
-                // TODO: make a nicer way of getting these user defined field directives
-                const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attributeAdapter.name) || [];
-                return {
-                    ...res,
-                    [attributeAdapter.name]: {
-                        type: "SortDirection",
-                        directives: graphqlDirectivesToCompose(
-                            userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
-                        ),
-                    },
-                };
-            },
-            {}
-        );
+        //     composer.createInputTC({
+        //         name: concreteEntityAdapter.operations.optionsInputTypeName,
+        //         fields: {
+        //             sort: {
+        //                 description: `Specify one or more ${concreteEntityAdapter.operations.sortInputTypeName} objects to sort ${concreteEntityAdapter.upperFirstPlural} by. The sorts will be applied in the order in which they are arranged in the array.`,
+        //                 type: sortInput.NonNull.List,
+        //             },
+        //             limit: "Int",
+        //             offset: "Int",
+        //         },
+        //     });
+        // } else {
+        //     composer.createInputTC({
+        //         name: concreteEntityAdapter.operations.optionsInputTypeName,
+        //         fields: { limit: "Int", offset: "Int" },
+        //     });
+        // }
 
-        if (Object.keys(sortFields).length) {
-            const sortInput = composer.createInputTC({
-                name: concreteEntityAdapter.operations.sortInputTypeName,
-                fields: sortFields,
-                description: `Fields to sort ${concreteEntityAdapter.upperFirstPlural} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${concreteEntityAdapter.operations.sortInputTypeName} object.`,
-            });
+        withOptionsInputType(concreteEntityAdapter, userDefinedFieldDirectives, composer);
 
-            composer.createInputTC({
-                name: concreteEntityAdapter.operations.optionsInputTypeName,
-                fields: {
-                    sort: {
-                        description: `Specify one or more ${concreteEntityAdapter.operations.sortInputTypeName} objects to sort ${concreteEntityAdapter.upperFirstPlural} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.NonNull.List,
-                    },
-                    limit: "Int",
-                    offset: "Int",
-                },
-            });
-        } else {
-            composer.createInputTC({
-                name: concreteEntityAdapter.operations.optionsInputTypeName,
-                fields: { limit: "Int", offset: "Int" },
-            });
-        }
+        // composer.createObjectTC({
+        //     name: concreteEntityAdapter.operations.aggregateTypeNames.selection,
+        //     fields: {
+        //         count: {
+        //             type: "Int!",
+        //             resolve: numericalResolver,
+        //             args: {},
+        //         },
+        //         ...concreteEntityAdapter.aggregableFields.reduce((res, field) => {
+        //             const objectTypeComposer = aggregationTypesMapper.getAggregationType({
+        //                 fieldName: field.getTypeName(),
+        //                 nullable: !field.isRequired(),
+        //             });
 
-        composer.createObjectTC({
-            name: concreteEntityAdapter.operations.aggregateTypeNames.selection,
-            fields: {
-                count: {
-                    type: "Int!",
-                    resolve: numericalResolver,
-                    args: {},
-                },
-                ...concreteEntityAdapter.aggregableFields.reduce((res, field) => {
-                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-                        fieldName: field.getTypeName(),
-                        nullable: !field.isRequired(),
-                    });
+        //             if (objectTypeComposer) {
+        //                 res[field.name] = objectTypeComposer.NonNull;
+        //             }
 
-                    if (objectTypeComposer) {
-                        res[field.name] = objectTypeComposer.NonNull;
-                    }
+        //             return res;
+        //         }, {}),
+        //     },
+        //     directives: graphqlDirectivesToCompose(propagatedDirectives),
+        // });
 
-                    return res;
-                }, {}),
-            },
-            directives: graphqlDirectivesToCompose(propagatedDirectives),
-        });
+        withAggregateSelectionType(concreteEntityAdapter, aggregationTypesMapper, propagatedDirectives, composer);
 
         // START WHERE FIELD -------------------
 
-        const queryFields = getWhereFieldsFromConcreteEntity({
-            concreteEntityAdapter,
-            userDefinedFieldDirectives,
-            features,
-        });
+        // const queryFields = getWhereFieldsFromConcreteEntity({
+        //     concreteEntityAdapter,
+        //     userDefinedFieldDirectives,
+        //     features,
+        // });
+        // composer.createInputTC({
+        //     name: concreteEntityAdapter.operations.whereInputTypeName,
+        //     fields: concreteEntityAdapter.isGlobalNode() ? { id: "ID", ...queryFields } : queryFields,
+        // });
 
-        composer.createInputTC({
-            name: concreteEntityAdapter.operations.whereInputTypeName,
-            fields: concreteEntityAdapter.isGlobalNode() ? { id: "ID", ...queryFields } : queryFields,
-        });
+        withWhereInputType(concreteEntityAdapter, userDefinedFieldDirectives, features, composer);
 
+        // TODO: new way
         // TODO: Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
         augmentFulltextSchema2(node, composer, concreteEntityAdapter);
 
-        composer.createInputTC({
-            name: `${concreteEntityAdapter.name}UniqueWhere`,
-            fields: concreteEntityAdapter.uniqueFields.reduce((res, field) => {
-                return {
-                    [field.name]: field.getFieldTypeName(),
-                    ...res,
-                };
-            }, {}),
-        });
+        // composer.createInputTC({
+        //     name: `${concreteEntityAdapter.name}UniqueWhere`,
+        //     fields: concreteEntityAdapter.uniqueFields.reduce((res, field) => {
+        //         return {
+        //             [field.name]: field.getFieldTypeName(),
+        //             ...res,
+        //         };
+        //     }, {}),
+        // });
+        withUniqueWhereInputType(concreteEntityAdapter, composer);
 
         // END WHERE FIELD -------------------
 
-        composer.createInputTC({
-            name: concreteEntityAdapter.operations.createInputTypeName,
-            fields: concreteEntityToCreateInputFields(
-                concreteEntityAdapter.createInputFields,
-                userDefinedFieldDirectives
-            ),
-        });
+        // composer.createInputTC({
+        //     name: concreteEntityAdapter.operations.createInputTypeName,
+        //     fields: concreteEntityToCreateInputFields(
+        //         concreteEntityAdapter.createInputFields,
+        //         userDefinedFieldDirectives
+        //     ),
+        // });
 
-        const nodeUpdateITC = composer.createInputTC({
-            name: concreteEntityAdapter.operations.updateMutationArgumentNames.update,
-            fields: concreteEntityToUpdateInputFields(
-                concreteEntityAdapter.updateInputFields,
-                userDefinedFieldDirectives
-            ),
-        });
+        withCreateInputType(concreteEntityAdapter, userDefinedFieldDirectives, composer);
 
-        addMathOperatorsToITC(nodeUpdateITC);
+        // const nodeUpdateITC = composer.createInputTC({
+        //     name: concreteEntityAdapter.operations.updateMutationArgumentNames.update,
+        //     fields: concreteEntityToUpdateInputFields(
+        //         concreteEntityAdapter.updateInputFields,
+        //         userDefinedFieldDirectives
+        //     ),
+        // });
+        // addMathOperatorsToITC(nodeUpdateITC);
+        // addArrayMethodsToITC2(nodeUpdateITC, concreteEntityAdapter.arrayMethodFields);
+        withUpdateInputType(concreteEntityAdapter, userDefinedFieldDirectives, composer);
 
-        addArrayMethodsToITC2(nodeUpdateITC, concreteEntityAdapter.arrayMethodFields);
+        // composer.createObjectTC({
+        //     name: concreteEntityAdapter.operations.mutationResponseTypeNames.create,
+        //     fields: {
+        //         info: `CreateInfo!`,
+        //         [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
+        //     },
+        //     directives: graphqlDirectivesToCompose(propagatedDirectives),
+        // });
 
-        composer.createObjectTC({
-            name: concreteEntityAdapter.operations.mutationResponseTypeNames.create,
-            fields: {
-                info: `CreateInfo!`,
-                [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
-            },
-            directives: graphqlDirectivesToCompose(propagatedDirectives),
-        });
-
-        composer.createObjectTC({
-            name: concreteEntityAdapter.operations.mutationResponseTypeNames.update,
-            fields: {
-                info: `UpdateInfo!`,
-                [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
-            },
-            directives: graphqlDirectivesToCompose(propagatedDirectives),
-        });
+        // composer.createObjectTC({
+        //     name: concreteEntityAdapter.operations.mutationResponseTypeNames.update,
+        //     fields: {
+        //         info: `UpdateInfo!`,
+        //         [concreteEntityAdapter.plural]: `[${concreteEntityAdapter.name}!]!`,
+        //     },
+        //     directives: graphqlDirectivesToCompose(propagatedDirectives),
+        // });
+        withMutationResponseTypes(concreteEntityAdapter, propagatedDirectives, composer);
 
         // createRelationshipFields({
         // relationshipFields: node.relationFields,
@@ -1133,18 +1596,49 @@ function makeAugmentedSchema(
         }
     });
 
-    unionTypes.forEach((union) => {
-        const unionEntity = schemaModel.getEntity(union.name.value);
-        if (unionEntity?.isCompositeEntity()) {
-            const fields = unionEntity.concreteEntities.reduce((f: Record<string, string>, type) => {
-                return { ...f, [type.name]: `${type.name}Where` };
-            }, {});
-
-            composer.createInputTC({
-                name: `${unionEntity.name}Where`,
-                fields,
-            });
+    schemaModel.compositeEntities.forEach((entity) => {
+        if (entity instanceof UnionEntity) {
+            withWhereInputType(new UnionEntityAdapter(entity), new Map<string, DirectiveNode[]>(), features, composer);
+            return;
         }
+        if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
+            const definitionNode = definitionNodes.interfaceTypes.find((type) => type.name.value === entity.name);
+
+            if (!definitionNode) {
+                console.error(`Definition node not found for ${entity.name}`);
+                return;
+            }
+
+            const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
+            // composer.createInterfaceTC({
+            //     name: interfaceEntityAdapter.name,
+            //     description: interfaceEntity.description,
+            //     fields: {
+            //         ...attributeAdapterToComposeFields(
+            //             Array.from(interfaceEntityAdapter.attributes.values()),
+            //             getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
+            //         ),
+            //         ...relationshipAdapterToComposeFields(
+            //             Array.from(interfaceEntityAdapter.relationships.values()),
+            //             getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
+            //         ),
+            //     },
+            //     directives: graphqlDirectivesToCompose(
+            //         userDefinedDirectivesForInterface.get(interfaceEntity.name) || []
+            //     ),
+            // });
+
+            const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(
+                definitionNode,
+                definitionNodes
+            );
+            const directives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            withInterfaceType(interfaceEntityAdapter, userDefinedFieldDirectives, directives, composer, {
+                includeRelationships: true,
+            });
+            return;
+        }
+        return;
     });
 
     if (generateSubscriptions && nodes.length) {
@@ -1216,39 +1710,6 @@ function makeAugmentedSchema(
 
                 objectComposer.addFields({ [attributeAdapter.name]: { ...composedField, ...customResolver } });
             }
-        }
-    });
-
-    filteredInterfaceTypes.forEach((inter) => {
-        const interfaceEntity = schemaModel.getEntity(inter.name.value);
-        if (interfaceEntity?.isCompositeEntity() && interfaceEntity instanceof InterfaceEntity) {
-            const definitionNode = definitionNodes.interfaceTypes.find(
-                (type) => type.name.value === interfaceEntity.name
-            );
-
-            if (!definitionNode) {
-                console.error(`Definition node not found for ${interfaceEntity.name}`);
-                return;
-            }
-
-            const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
-            composer.createInterfaceTC({
-                name: interfaceEntityAdapter.name,
-                description: interfaceEntity.description,
-                fields: {
-                    ...attributeAdapterToComposeFields(
-                        Array.from(interfaceEntityAdapter.attributes.values()),
-                        getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
-                    ),
-                    ...relationshipAdapterToComposeFields(
-                        Array.from(interfaceEntityAdapter.relationships.values()),
-                        getUserDefinedFieldDirectivesForDefinition(inter, definitionNodes)
-                    ),
-                },
-                directives: graphqlDirectivesToCompose(
-                    userDefinedDirectivesForInterface.get(interfaceEntity.name) || []
-                ),
-            });
         }
     });
 
@@ -1387,47 +1848,53 @@ function doForRelationshipPropertiesInterface(
 
     const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(obj, definitionNodes);
 
-    const composeFields = attributeAdapterToComposeFields(
-        Array.from(relationship.attributes.values()),
-        userDefinedFieldDirectives
-    );
+    // const composeFields = attributeAdapterToComposeFields(
+    //     Array.from(relationship.attributes.values()),
+    //     userDefinedFieldDirectives
+    // );
 
-    const propertiesInterface = composer.createInterfaceTC({
-        name: relationship.propertiesTypeName,
-        fields: composeFields,
-    });
+    // const propertiesInterface = composer.createInterfaceTC({
+    //     name: relationship.propertiesTypeName,
+    //     fields: composeFields,
+    // });
 
-    composer.createInputTC({
-        name: relationship.edgeSortInputTypeName,
-        fields: propertiesInterface.getFieldNames().reduce((res, f) => {
-            return { ...res, [f]: "SortDirection" };
-        }, {}),
-    });
+    withInterfaceType(relationship, userDefinedFieldDirectives, [], composer);
 
-    const relationshipUpdateITC = composer.createInputTC({
-        name: relationship.edgeUpdateInputTypeName,
-        // better name for this fn pls - we are using interface entity now.
-        fields: concreteEntityToUpdateInputFields(relationship.updateInputFields, userDefinedFieldDirectives),
-    });
-    addMathOperatorsToITC(relationshipUpdateITC);
-    addArrayMethodsToITC2(relationshipUpdateITC, relationship.arrayMethodFields);
+    // composer.createInputTC({
+    //     name: relationship.operations.sortInputTypeName,
+    //     fields: propertiesInterface.getFieldNames().reduce((res, f) => {
+    //         return { ...res, [f]: "SortDirection" };
+    //     }, {}),
+    // });
+    withSortInputType(relationship, userDefinedFieldDirectives, composer);
 
-    const relationshipWhereFields = getWhereFieldsFromRelationshipProperties({
-        relationshipAdapter: relationship,
-        userDefinedFieldDirectives,
-        features,
-    });
+    // const relationshipUpdateITC = composer.createInputTC({
+    //     name: relationship.operations.edgeUpdateInputTypeName,
+    //     // better name for this fn pls - we are using interface entity now.
+    //     fields: concreteEntityToUpdateInputFields(relationship.updateInputFields, userDefinedFieldDirectives),
+    // });
+    // addMathOperatorsToITC(relationshipUpdateITC);
+    // addArrayMethodsToITC2(relationshipUpdateITC, relationship.arrayMethodFields);
+    withUpdateInputType(relationship, userDefinedFieldDirectives, composer);
 
-    composer.createInputTC({
-        name: relationship.edgeWhereInputTypeName,
-        fields: relationshipWhereFields,
-    });
+    // const relationshipWhereFields = getWhereFieldsFromRelationshipProperties({
+    //     relationshipAdapter: relationship,
+    //     userDefinedFieldDirectives,
+    //     features,
+    // });
 
-    composer.createInputTC({
-        // name: `${relationship.propertiesTypeName}CreateInput`,
-        name: relationship.edgeCreateInputTypeName2,
-        fields: concreteEntityToCreateInputFields(relationship.createInputFields, userDefinedFieldDirectives),
-    });
+    // composer.createInputTC({
+    //     name: relationship.operations.whereInputTypeName,
+    //     fields: relationshipWhereFields,
+    // });
+    withWhereInputType(relationship, userDefinedFieldDirectives, features, composer);
+
+    // composer.createInputTC({
+    //     // name: `${relationship.propertiesTypeName}CreateInput`,
+    //     name: relationship.operations.createInputTypeName,
+    //     fields: concreteEntityToCreateInputFields(relationship.createInputFields, userDefinedFieldDirectives),
+    // });
+    withCreateInputType(relationship, userDefinedFieldDirectives, composer);
 }
 
 function doForInterfacesThatAreTargetOfARelationship({
@@ -1458,93 +1925,96 @@ function doForInterfacesThatAreTargetOfARelationship({
 
     const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
 
-    const objectComposeFields = attributeAdapterToComposeFields(
-        Array.from(interfaceEntityAdapter.attributes.values()),
-        userDefinedFieldDirectives
-    );
+    // const objectComposeFields = attributeAdapterToComposeFields(
+    //     Array.from(interfaceEntityAdapter.attributes.values()),
+    //     userDefinedFieldDirectives
+    // );
+    // const composeInterface = composer.createInterfaceTC({
+    //     name: interfaceEntityAdapter.name,
+    //     fields: objectComposeFields,
+    // });
 
-    const composeInterface = composer.createInterfaceTC({
-        name: interfaceEntityAdapter.name,
-        fields: objectComposeFields,
-    });
+    const composeInterface = withInterfaceType(interfaceEntityAdapter, userDefinedFieldDirectives, [], composer);
 
-    const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}Options`, (tc) => {
-        tc.addFields({
-            limit: "Int",
-            offset: "Int",
-        });
-    });
+    // const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}Options`, (tc) => {
+    //     tc.addFields({
+    //         limit: "Int",
+    //         offset: "Int",
+    //     });
+    // });
+    // const interfaceSortableFields = interfaceEntityAdapter.sortableFields.reduce(
+    //     (res: InputTypeComposerFieldConfigMapDefinition, attributeAdapter) => {
+    //         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attributeAdapter.name) || [];
+    //         return {
+    //             ...res,
+    //             [attributeAdapter.name]: {
+    //                 type: "SortDirection",
+    //                 directives: graphqlDirectivesToCompose(
+    //                     userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
+    //                 ),
+    //             },
+    //         };
+    //     },
+    //     {}
+    // );
+    // if (Object.keys(interfaceSortableFields).length) {
+    //     const interfaceSortInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}Sort`, (tc) => {
+    //         tc.addFields(interfaceSortableFields);
+    //         tc.setDescription(
+    //             `Fields to sort ${pluralize(
+    //                 interfaceEntityAdapter.name
+    //             )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceEntityAdapter.name}Sort`} object.`
+    //         );
+    //     });
+    //     interfaceOptionsInput.addFields({
+    //         sort: {
+    //             description: `Specify one or more ${`${interfaceEntityAdapter.name}Sort`} objects to sort ${pluralize(
+    //                 interfaceEntityAdapter.name
+    //             )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+    //             type: interfaceSortInput.List,
+    //         },
+    //     });
+    // }
 
-    const interfaceSortableFields = interfaceEntityAdapter.sortableFields.reduce(
-        (res: InputTypeComposerFieldConfigMapDefinition, attributeAdapter) => {
-            const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attributeAdapter.name) || [];
-            return {
-                ...res,
-                [attributeAdapter.name]: {
-                    type: "SortDirection",
-                    directives: graphqlDirectivesToCompose(
-                        userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
-                    ),
-                },
-            };
-        },
-        {}
-    );
+    withOptionsInputType(interfaceEntityAdapter, userDefinedFieldDirectives, composer);
 
-    if (Object.keys(interfaceSortableFields).length) {
-        const interfaceSortInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}Sort`, (tc) => {
-            tc.addFields(interfaceSortableFields);
-            tc.setDescription(
-                `Fields to sort ${pluralize(
-                    interfaceEntityAdapter.name
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceEntityAdapter.name}Sort`} object.`
-            );
-        });
+    // const [
+    // implementationsConnectInput,
+    // implementationsDeleteInput,
+    // implementationsDisconnectInput,
+    // implementationsUpdateInput,
+    // implementationsWhereInput,
+    // ] = ["ConnectInput", "DisconnectInput", "DeleteInput", "UpdateInput", "Where"].map((suffix) =>
+    //     composer.createInputTC({
+    //         name: `${interfaceEntityAdapter.name}Implementations${suffix}`,
+    //         fields: {},
+    //     })
+    // ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
 
-        interfaceOptionsInput.addFields({
-            sort: {
-                description: `Specify one or more ${`${interfaceEntityAdapter.name}Sort`} objects to sort ${pluralize(
-                    interfaceEntityAdapter.name
-                )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                type: interfaceSortInput.List,
-            },
-        });
-    }
+    // const interfaceWhereFields = getWhereFieldsForAttributes({
+    //     attributes: Array.from(interfaceEntityAdapter.attributes.values()),
+    //     userDefinedFieldDirectives,
+    //     features,
+    // });
+    // composer.createInputTC({
+    //     name: interfaceEntityAdapter.operations.whereInputTypeName,
+    //     fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
+    // });
 
-    const interfaceWhereFields = getWhereFieldsForAttributes({
-        attributes: Array.from(interfaceEntityAdapter.attributes.values()),
-        userDefinedFieldDirectives,
-        features,
-    });
+    withWhereInputType(interfaceEntityAdapter, userDefinedFieldDirectives, features, composer);
 
-    const [
-        implementationsConnectInput,
-        implementationsDeleteInput,
-        implementationsDisconnectInput,
-        implementationsUpdateInput,
-        implementationsWhereInput,
-    ] = ["ConnectInput", "DeleteInput", "DisconnectInput", "UpdateInput", "Where"].map((suffix) =>
-        composer.createInputTC({
-            name: `${interfaceEntityAdapter.name}Implementations${suffix}`,
-            fields: {},
-        })
-    ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
+    // const interfaceCreateInput = composer.createInputTC(`${interfaceEntityAdapter.name}CreateInput`);
 
-    composer.createInputTC({
-        name: `${interfaceEntityAdapter.name}Where`,
-        fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
-    });
+    withCreateInputType(interfaceEntityAdapter, userDefinedFieldDirectives, composer);
 
-    const interfaceCreateInput = composer.createInputTC(`${interfaceEntityAdapter.name}CreateInput`);
-
-    const interfaceRelationshipITC = composer.getOrCreateITC(`${interfaceEntityAdapter.name}UpdateInput`, (tc) => {
-        tc.addFields({
-            ...concreteEntityToUpdateInputFields(interfaceEntityAdapter.updateInputFields, userDefinedFieldDirectives),
-            _on: implementationsUpdateInput,
-        });
-    });
-
-    addMathOperatorsToITC(interfaceRelationshipITC);
+    // const interfaceRelationshipITC = composer.getOrCreateITC(`${interfaceEntityAdapter.name}UpdateInput`, (tc) => {
+    //     tc.addFields({
+    //         ...concreteEntityToUpdateInputFields(interfaceEntityAdapter.updateInputFields, userDefinedFieldDirectives),
+    //         _on: implementationsUpdateInput,
+    //     });
+    // });
+    // addMathOperatorsToITC(interfaceRelationshipITC);
+    withUpdateInputType(interfaceEntityAdapter, userDefinedFieldDirectives, composer);
 
     createRelationshipFieldsFromConcreteEntityAdapter({
         entityAdapter: interfaceEntityAdapter,
@@ -1565,79 +2035,83 @@ function doForInterfacesThatAreTargetOfARelationship({
         }),
     ];
 
-    interfaceEntityAdapter.concreteEntities.forEach((implementation) => {
-        implementationsWhereInput.addFields({
-            [implementation.name]: {
-                type: `${implementation.name}Where`,
-            },
-        });
+    // interfaceEntityAdapter.concreteEntities.forEach((implementation) => {
+    // implementationsWhereInput.addFields({
+    //     [implementation.name]: {
+    //         type: `${implementation.name}Where`,
+    //     },
+    // });
 
-        if (implementation.relationships.size) {
-            implementationsConnectInput.addFields({
-                [implementation.name]: {
-                    type: `[${implementation.name}ConnectInput!]`,
-                },
-            });
+    // if (implementation.relationships.size) {
+    //     implementationsConnectInput.addFields({
+    //         [implementation.name]: {
+    //             type: `[${implementation.name}ConnectInput!]`,
+    //         },
+    //     });
 
-            implementationsDeleteInput.addFields({
-                [implementation.name]: {
-                    type: `[${implementation.name}DeleteInput!]`,
-                },
-            });
+    // implementationsDeleteInput.addFields({
+    //     [implementation.name]: {
+    //         type: `[${implementation.name}DeleteInput!]`,
+    //     },
+    // });
 
-            implementationsDisconnectInput.addFields({
-                [implementation.name]: {
-                    type: `[${implementation.name}DisconnectInput!]`,
-                },
-            });
-        }
+    // implementationsDisconnectInput.addFields({
+    //     [implementation.name]: {
+    //         type: `[${implementation.name}DisconnectInput!]`,
+    //     },
+    // });
+    // }
 
-        interfaceCreateInput.addFields({
-            [implementation.name]: {
-                type: `${implementation.name}CreateInput`,
-            },
-        });
+    // interfaceCreateInput.addFields({
+    //     [implementation.name]: {
+    //         type: `${implementation.name}CreateInput`,
+    //     },
+    // });
 
-        implementationsUpdateInput.addFields({
-            [implementation.name]: {
-                type: `${implementation.name}UpdateInput`,
-            },
-        });
-    });
+    // implementationsUpdateInput.addFields({
+    //     [implementation.name]: {
+    //         type: `${implementation.name}UpdateInput`,
+    //     },
+    // });
+    // });
 
-    if (implementationsConnectInput.getFieldNames().length) {
-        const interfaceConnectInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}ConnectInput`, (tc) => {
-            tc.addFields({ _on: implementationsConnectInput });
-        });
-        interfaceConnectInput.setField("_on", implementationsConnectInput);
-    }
+    // if (implementationsConnectInput.getFieldNames().length) {
+    //     const interfaceConnectInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}ConnectInput`, (tc) => {
+    //         tc.addFields({ _on: implementationsConnectInput });
+    //     });
+    //     interfaceConnectInput.setField("_on", implementationsConnectInput);
+    // }
 
-    if (implementationsDeleteInput.getFieldNames().length) {
-        const interfaceDeleteInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}DeleteInput`, (tc) => {
-            tc.addFields({ _on: implementationsDeleteInput });
-        });
-        interfaceDeleteInput.setField("_on", implementationsDeleteInput);
-    }
+    // if (implementationsDeleteInput.getFieldNames().length) {
+    //     const interfaceDeleteInput = composer.getOrCreateITC(`${interfaceEntityAdapter.name}DeleteInput`, (tc) => {
+    //         tc.addFields({ _on: implementationsDeleteInput });
+    //     });
+    //     interfaceDeleteInput.setField("_on", implementationsDeleteInput);
+    // }
 
-    if (implementationsDisconnectInput.getFieldNames().length) {
-        const interfaceDisconnectInput = composer.getOrCreateITC(
-            `${interfaceEntityAdapter.name}DisconnectInput`,
-            (tc) => {
-                tc.addFields({ _on: implementationsDisconnectInput });
-            }
-        );
-        interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
-    }
+    // if (implementationsDisconnectInput.getFieldNames().length) {
+    //     const interfaceDisconnectInput = composer.getOrCreateITC(
+    //         `${interfaceEntityAdapter.name}DisconnectInput`,
+    //         (tc) => {
+    //             tc.addFields({ _on: implementationsDisconnectInput });
+    //         }
+    //     );
+    //     interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
+    // }
+
+    withDeleteInputType(interfaceEntityAdapter, composer);
+    withConnectInputType(interfaceEntityAdapter, composer);
+    withDisconnectInputType(interfaceEntityAdapter, composer);
 
     ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}CreateInput`);
     ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}UpdateInput`);
-    [
-        implementationsConnectInput,
-        implementationsDeleteInput,
-        implementationsDisconnectInput,
-        implementationsUpdateInput,
-        implementationsWhereInput,
-    ].forEach((c) => ensureNonEmptyInput(composer, c));
+    // [
+    // implementationsConnectInput,
+    // implementationsDeleteInput,
+    // implementationsDisconnectInput,
+    // implementationsUpdateInput,
+    // implementationsWhereInput,
+    // ].forEach((c) => ensureNonEmptyInput(composer, c));
 
     return relationships;
 }
