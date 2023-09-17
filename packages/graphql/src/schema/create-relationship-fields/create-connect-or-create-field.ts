@@ -163,7 +163,8 @@ export function createConnectOrCreateField2({
         return undefined;
     }
 
-    const connectOrCreateName = relationshipAdapter.getConnectOrCreateFieldInputTypeName(targetEntityAdapter);
+    const connectOrCreateName =
+        relationshipAdapter.operations.getConnectOrCreateFieldInputTypeName(targetEntityAdapter);
 
     createOnCreateITC2({
         schemaComposer,
@@ -177,7 +178,7 @@ export function createConnectOrCreateField2({
     });
 
     schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
-        tc.addFields(relationshipAdapter.getConnectOrCreateInputFields(targetEntityAdapter) || {});
+        tc.addFields(relationshipAdapter.operations.getConnectOrCreateInputFields(targetEntityAdapter) || {});
     });
     return relationshipAdapter.isList ? `[${connectOrCreateName}!]` : connectOrCreateName;
 }
@@ -193,7 +194,8 @@ function createOnCreateITC2({
     targetEntityAdapter: ConcreteEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposer {
-    const onCreateName = relationshipAdapter.getConnectOrCreateOnCreateFieldInputTypeName(targetEntityAdapter);
+    const onCreateName =
+        relationshipAdapter.operations.getConnectOrCreateOnCreateFieldInputTypeName(targetEntityAdapter);
 
     const onCreateFields = getOnCreateFields2({
         relationshipAdapter,
@@ -232,7 +234,7 @@ function getOnCreateFields2({
     if (relationshipAdapter.nonGeneratedProperties.length > 0) {
         return {
             node: nodeCreateInputFieldName,
-            edge: relationshipAdapter.edgeCreateInputTypeName,
+            edge: relationshipAdapter.operations.edgeCreateInputTypeName,
         };
     }
     return {

@@ -583,8 +583,6 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
         }
 
         const nestedOperations = new Set(relationshipAdapter.nestedOperations);
-        const nodeCreateInput = schemaComposer.getITC(entityAdapter.operations.createInputTypeName);
-        const nodeUpdateInput = schemaComposer.getITC(entityAdapter.operations.updateInputTypeName);
 
         // Don't generate empty input type
         let nodeFieldInput: InputTypeComposer | undefined;
@@ -595,7 +593,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
                 relationshipAdapter.target.uniqueFields.length)
         ) {
-            nodeFieldInput = schemaComposer.getOrCreateITC(relationshipAdapter.fieldInputTypeName);
+            nodeFieldInput = schemaComposer.getOrCreateITC(relationshipAdapter.operations.fieldInputTypeName);
         }
         // Don't generate an empty input type
         let nodeFieldUpdateInput: InputTypeComposer | undefined;
@@ -606,10 +604,12 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             !relationshipAdapter.target.uniqueFields.length;
 
         if (nestedOperations.size !== 0 && !onlyConnectOrCreateAndNoUniqueFields) {
-            nodeFieldUpdateInput = schemaComposer.getOrCreateITC(relationshipAdapter.updateFieldInputTypeName);
+            nodeFieldUpdateInput = schemaComposer.getOrCreateITC(
+                relationshipAdapter.operations.updateFieldInputTypeName
+            );
             // Add where fields
             nodeFieldUpdateInput.addFields({
-                where: relationshipAdapter.connectionWhereTypename,
+                where: relationshipAdapter.operations.connectionWhereTypename,
             });
         }
 
@@ -621,31 +621,35 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
         const edgeWhereAggregationInput =
             relFields && createAggregationInputFields2(relationshipAdapter, relationshipAdapter, schemaComposer);
 
-        const whereAggregateInput = schemaComposer.getOrCreateITC(relationshipAdapter.aggregateInputTypeName, (tc) => {
-            tc.addFields({
-                count: "Int",
-                count_LT: "Int",
-                count_LTE: "Int",
-                count_GT: "Int",
-                count_GTE: "Int",
-                AND: `[${relationshipAdapter.aggregateInputTypeName}!]`,
-                OR: `[${relationshipAdapter.aggregateInputTypeName}!]`,
-                NOT: relationshipAdapter.aggregateInputTypeName,
-            });
-
-            if (nodeWhereAggregationInput) {
+        const whereAggregateInput = schemaComposer.getOrCreateITC(
+            relationshipAdapter.operations.aggregateInputTypeName,
+            (tc) => {
                 tc.addFields({
-                    node: nodeWhereAggregationInput,
+                    count: "Int",
+                    count_LT: "Int",
+                    count_LTE: "Int",
+                    count_GT: "Int",
+                    count_GTE: "Int",
+                    AND: `[${relationshipAdapter.operations.aggregateInputTypeName}!]`,
+                    OR: `[${relationshipAdapter.operations.aggregateInputTypeName}!]`,
+                    NOT: relationshipAdapter.operations.aggregateInputTypeName,
                 });
-            }
 
-            if (edgeWhereAggregationInput) {
-                tc.addFields({
-                    edge: edgeWhereAggregationInput,
-                });
-            }
-        });
+                if (nodeWhereAggregationInput) {
+                    tc.addFields({
+                        node: nodeWhereAggregationInput,
+                    });
+                }
 
+                if (edgeWhereAggregationInput) {
+                    tc.addFields({
+                        edge: edgeWhereAggregationInput,
+                    });
+                }
+            }
+        );
+
+        // TODO: attempt at this first---------------------------------------------------
         const whereInput = schemaComposer.getITC(entityAdapter.operations.whereInputTypeName);
 
         if (relationshipAdapter.isFilterableByValue()) {
@@ -680,6 +684,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
                 directives: deprecatedDirectives,
             });
         }
+        // TODO: up to here------------------------------------------------------------
 
         const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
             type: relationshipAdapter.getTargetTypePrettyName(),
@@ -733,6 +738,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             }
         }
 
+        const nodeCreateInput = schemaComposer.getITC(entityAdapter.operations.createInputTypeName);
         if (relationshipAdapter.isCreatable()) {
             // Interface CreateInput does not require relationship input fields
             // These are specified on the concrete nodes.
@@ -783,13 +789,13 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             nestedOperations.has(RelationshipNestedOperationsOption.CREATE) &&
             (nodeFieldInput || nodeFieldUpdateInput)
         ) {
-            const createName = relationshipAdapter.createFieldInputTypeName;
+            const createName = relationshipAdapter.operations.createFieldInputTypeName;
             const create = relationshipAdapter.isList ? `[${createName}!]` : createName;
             schemaComposer.getOrCreateITC(createName, (tc) => {
                 tc.addFields({ node: `${relationshipAdapter.target.name}CreateInput!` });
                 if (hasNonGeneratedProperties) {
                     tc.addFields({
-                        edge: relationshipAdapter.edgeCreateInputTypeName,
+                        edge: relationshipAdapter.operations.edgeCreateInputTypeName,
                     });
                 }
             });
@@ -819,7 +825,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) &&
             (nodeFieldInput || nodeFieldUpdateInput)
         ) {
-            const connectName = relationshipAdapter.connectFieldInputTypeName;
+            const connectName = relationshipAdapter.operations.connectFieldInputTypeName;
             const connect = relationshipAdapter.isList ? `[${connectName}!]` : connectName;
             const connectWhereName = `${relationshipAdapter.target.name}ConnectWhere`;
 
@@ -845,7 +851,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
 
                 if (hasNonGeneratedProperties) {
                     tc.addFields({
-                        edge: relationshipAdapter.edgeCreateInputTypeName,
+                        edge: relationshipAdapter.operations.edgeCreateInputTypeName,
                     });
                 }
 
@@ -870,8 +876,9 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
             });
         }
 
+        const nodeUpdateInput = schemaComposer.getITC(entityAdapter.operations.updateInputTypeName);
         if (relationshipAdapter.isUpdatable() && nodeFieldUpdateInput) {
-            const connectionUpdateInputName = relationshipAdapter.updateConnectionInputTypename;
+            const connectionUpdateInputName = relationshipAdapter.operations.updateConnectionInputTypename;
 
             nodeUpdateInput.addFields({
                 [relationshipAdapter.name]: {
@@ -886,7 +893,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
                 tc.addFields({ node: `${relationshipAdapter.target.name}UpdateInput` });
 
                 if (hasNonGeneratedProperties) {
-                    tc.addFields({ edge: relationshipAdapter.edgeUpdateInputTypeName });
+                    tc.addFields({ edge: relationshipAdapter.operations.edgeUpdateInputTypeName });
                 }
             });
 
@@ -896,7 +903,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
         }
 
         if (nestedOperations.has(RelationshipNestedOperationsOption.DELETE) && nodeFieldUpdateInput) {
-            const nodeFieldDeleteInputName = relationshipAdapter.deleteFieldInputTypeName;
+            const nodeFieldDeleteInputName = relationshipAdapter.operations.deleteFieldInputTypeName;
 
             nodeFieldUpdateInput.addFields({
                 delete: relationshipAdapter.isList ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
@@ -904,7 +911,7 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
 
             if (!schemaComposer.has(nodeFieldDeleteInputName)) {
                 schemaComposer.getOrCreateITC(nodeFieldDeleteInputName, (tc) => {
-                    tc.addFields({ where: relationshipAdapter.connectionWhereTypename });
+                    tc.addFields({ where: relationshipAdapter.operations.connectionWhereTypename });
 
                     if (
                         relationshipTargetHasRelationshipWithNestedOperation(
@@ -927,11 +934,11 @@ export function createRelationshipFieldsFromConcreteEntityAdapter({
         }
 
         if (nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT) && nodeFieldUpdateInput) {
-            const nodeFieldDisconnectInputName = relationshipAdapter.disconnectFieldInputTypeName;
+            const nodeFieldDisconnectInputName = relationshipAdapter.operations.disconnectFieldInputTypeName;
 
             if (!schemaComposer.has(nodeFieldDisconnectInputName)) {
                 schemaComposer.getOrCreateITC(nodeFieldDisconnectInputName, (tc) => {
-                    tc.addFields({ where: relationshipAdapter.connectionWhereTypename });
+                    tc.addFields({ where: relationshipAdapter.operations.connectionWhereTypename });
 
                     if (
                         relationshipTargetHasRelationshipWithNestedOperation(

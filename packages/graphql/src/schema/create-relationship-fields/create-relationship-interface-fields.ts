@@ -259,50 +259,53 @@ export function createRelationshipInterfaceFields2({
         });
     });
 
-    const connectFieldInput = schemaComposer.getOrCreateITC(relationship.connectFieldInputTypeName, (tc) => {
+    const connectFieldInput = schemaComposer.getOrCreateITC(relationship.operations.connectFieldInputTypeName, (tc) => {
         if (schemaComposer.has(`${relationship.target.name}ConnectInput`)) {
             tc.addFields({ connect: `${relationship.target.name}ConnectInput` });
         }
 
         if (hasNonGeneratedProperties) {
-            tc.addFields({ edge: relationship.edgeCreateInputTypeName });
+            tc.addFields({ edge: relationship.operations.edgeCreateInputTypeName });
         }
 
         tc.addFields({ where: connectWhere });
     });
 
-    const deleteFieldInput = schemaComposer.getOrCreateITC(relationship.deleteFieldInputTypeName, (tc) => {
+    const deleteFieldInput = schemaComposer.getOrCreateITC(relationship.operations.deleteFieldInputTypeName, (tc) => {
         if (schemaComposer.has(`${relationship.target.name}DeleteInput`)) {
             tc.addFields({ delete: `${relationship.target.name}DeleteInput` });
         }
 
-        tc.addFields({ where: relationship.connectionWhereTypename });
+        tc.addFields({ where: relationship.operations.connectionWhereTypename });
     });
 
-    const disconnectFieldInput = schemaComposer.getOrCreateITC(relationship.disconnectFieldInputTypeName, (tc) => {
-        if (schemaComposer.has(`${relationship.target.name}DisconnectInput`)) {
-            tc.addFields({ disconnect: `${relationship.target.name}DisconnectInput` });
+    const disconnectFieldInput = schemaComposer.getOrCreateITC(
+        relationship.operations.disconnectFieldInputTypeName,
+        (tc) => {
+            if (schemaComposer.has(`${relationship.target.name}DisconnectInput`)) {
+                tc.addFields({ disconnect: `${relationship.target.name}DisconnectInput` });
+            }
+
+            tc.addFields({ where: relationship.operations.connectionWhereTypename });
         }
+    );
 
-        tc.addFields({ where: relationship.connectionWhereTypename });
-    });
-
-    const createFieldInput = schemaComposer.getOrCreateITC(relationship.createFieldInputTypeName, (tc) => {
+    const createFieldInput = schemaComposer.getOrCreateITC(relationship.operations.createFieldInputTypeName, (tc) => {
         tc.addFields({
             node: `${relationship.target.name}CreateInput!`,
         });
         if (hasNonGeneratedProperties) {
             tc.addFields({
-                edge: relationship.edgeCreateInputTypeName,
+                edge: relationship.operations.edgeCreateInputTypeName,
             });
         }
     });
 
     const updateConnectionFieldInput = schemaComposer.getOrCreateITC(
-        relationship.updateConnectionInputTypename,
+        relationship.operations.updateConnectionInputTypename,
         (tc) => {
             if (hasNonGeneratedProperties) {
-                tc.addFields({ edge: relationship.edgeUpdateInputTypeName });
+                tc.addFields({ edge: relationship.operations.edgeUpdateInputTypeName });
             }
             tc.addFields({ node: `${relationship.target.name}UpdateInput` });
         }
@@ -312,7 +315,7 @@ export function createRelationshipInterfaceFields2({
         nestedOperations.size !== 0 &&
         !(nestedOperations.size === 1 && nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE))
     ) {
-        const updateFieldInput = schemaComposer.getOrCreateITC(relationship.updateFieldInputTypeName);
+        const updateFieldInput = schemaComposer.getOrCreateITC(relationship.operations.updateFieldInputTypeName);
 
         if (nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
             const nodeConnectInput = schemaComposer.getOrCreateITC(`${sourceAdapter.name}ConnectInput`);
@@ -357,7 +360,7 @@ export function createRelationshipInterfaceFields2({
         }
 
         updateFieldInput.addFields({
-            where: relationship.connectionWhereTypename,
+            where: relationship.operations.connectionWhereTypename,
         });
 
         if (relationship.isUpdatable()) {
@@ -388,7 +391,7 @@ export function createRelationshipInterfaceFields2({
         nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
         nestedOperations.has(RelationshipNestedOperationsOption.CREATE)
     ) {
-        const nodeFieldInput = schemaComposer.getOrCreateITC(relationship.fieldInputTypeName, (tc) => {
+        const nodeFieldInput = schemaComposer.getOrCreateITC(relationship.operations.fieldInputTypeName, (tc) => {
             if (nestedOperations.has(RelationshipNestedOperationsOption.CREATE)) {
                 tc.addFields({
                     create: relationship.isList ? createFieldInput.NonNull.List : createFieldInput,
@@ -402,13 +405,13 @@ export function createRelationshipInterfaceFields2({
         });
 
         refNodes.forEach((n) => {
-            if (!schemaComposer.has(relationship.createFieldInputTypeName)) {
-                schemaComposer.getOrCreateITC(relationship.createFieldInputTypeName, (tc) => {
+            if (!schemaComposer.has(relationship.operations.createFieldInputTypeName)) {
+                schemaComposer.getOrCreateITC(relationship.operations.createFieldInputTypeName, (tc) => {
                     tc.addFields({ node: `${n.name}CreateInput!` });
 
                     if (hasNonGeneratedProperties) {
                         tc.addFields({
-                            edge: relationship.edgeCreateInputTypeName,
+                            edge: relationship.operations.edgeCreateInputTypeName,
                         });
                     }
                 });

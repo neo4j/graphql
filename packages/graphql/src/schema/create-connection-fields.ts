@@ -310,19 +310,22 @@ export function createConnectionFields2({
     const relationships: Relationship[] = [];
 
     entityAdapter.relationships.forEach((relationship) => {
-        const relationshipObjectType = schemaComposer.getOrCreateOTC(relationship.relationshipFieldTypename, (tc) => {
-            tc.addFields({
-                cursor: "String!",
-                node: `${relationship.target.name}!`,
-            });
-        });
+        const relationshipObjectType = schemaComposer.getOrCreateOTC(
+            relationship.operations.relationshipFieldTypename,
+            (tc) => {
+                tc.addFields({
+                    cursor: "String!",
+                    node: `${relationship.target.name}!`,
+                });
+            }
+        );
 
         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(relationship.name);
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
         );
 
-        const connectionWhereName = `${relationship.connectionFieldTypename}Where`;
+        const connectionWhereName = `${relationship.operations.connectionFieldTypename}Where`;
         const connectionWhere = schemaComposer.getOrCreateITC(connectionWhereName);
 
         // if (!connectionField.relationship.union) {
@@ -335,7 +338,7 @@ export function createConnectionFields2({
             });
         }
 
-        const connection = schemaComposer.getOrCreateOTC(relationship.connectionFieldTypename, (tc) => {
+        const connection = schemaComposer.getOrCreateOTC(relationship.operations.connectionFieldTypename, (tc) => {
             tc.addFields({
                 edges: relationshipObjectType.NonNull.List.NonNull,
                 totalCount: "Int!",
@@ -360,8 +363,8 @@ export function createConnectionFields2({
         const whereInput = schemaComposer.getITC(`${composeNode.getTypeName()}Where`);
         if (relationship.isFilterableByValue()) {
             whereInput.addFields({
-                [relationship.connectionFieldName]: connectionWhere,
-                [`${relationship.connectionFieldName}_NOT`]: {
+                [relationship.operations.connectionFieldName]: connectionWhere,
+                [`${relationship.operations.connectionFieldName}_NOT`]: {
                     type: connectionWhere,
                 },
             });
@@ -371,9 +374,9 @@ export function createConnectionFields2({
         if (relationship.isList && relationship.isFilterableByValue()) {
             addRelationshipArrayFilters({
                 whereInput,
-                fieldName: relationship.connectionFieldName,
+                fieldName: relationship.operations.connectionFieldName,
                 sourceName: entityAdapter.name,
-                relatedType: relationship.connectionFieldTypename,
+                relatedType: relationship.operations.connectionFieldTypename,
                 whereType: connectionWhere,
                 directives: deprecatedDirectives,
             });
@@ -396,8 +399,12 @@ export function createConnectionFields2({
 
         const composeNodeArgs = addDirectedArgument2(composeNodeBaseArgs, relationship);
 
-        if (relationship.propertiesTypeName) {
-            const connectionSort = schemaComposer.getOrCreateITC(`${relationship.connectionFieldTypename}Sort`);
+        // TODO: revert this back to commented version if we want relationship properties sortable fields to be all attributes
+        // if (relationship.propertiesTypeName) {
+        if (relationship.propertiesTypeName && relationship.sortableFields.length) {
+            const connectionSort = schemaComposer.getOrCreateITC(
+                `${relationship.operations.connectionFieldTypename}Sort`
+            );
             connectionSort.addFields({
                 edge: `${relationship.propertiesTypeName}Sort`,
             });
@@ -418,7 +425,9 @@ export function createConnectionFields2({
             });
 
             if (schemaComposer.has(`${relationship.target.name}Sort`)) {
-                const connectionSort = schemaComposer.getOrCreateITC(`${relationship.connectionFieldTypename}Sort`);
+                const connectionSort = schemaComposer.getOrCreateITC(
+                    `${relationship.operations.connectionFieldTypename}Sort`
+                );
                 connectionSort.addFields({
                     node: `${relationship.target.name}Sort`,
                 });
@@ -444,7 +453,7 @@ export function createConnectionFields2({
             // const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
 
             relationship.target.concreteEntities.forEach((n) => {
-                const connectionName = relationship.connectionFieldTypename;
+                const connectionName = relationship.operations.connectionFieldTypename;
 
                 // Append union member name before "ConnectionWhere"
                 const unionWhereName = `${connectionName.substring(0, connectionName.length - "Connection".length)}${
@@ -498,7 +507,9 @@ export function createConnectionFields2({
             });
 
             if (relationship.target.sortableFields.length) {
-                const connectionSort = schemaComposer.getOrCreateITC(`${relationship.connectionFieldTypename}Sort`);
+                const connectionSort = schemaComposer.getOrCreateITC(
+                    `${relationship.operations.connectionFieldTypename}Sort`
+                );
                 connectionSort.addFields({
                     node: `${relationship.target.name}Sort`,
                 });
@@ -511,13 +522,13 @@ export function createConnectionFields2({
         // if (!connectionField.relationship.writeonly && connectionField.selectableOptions.onRead) {
         if (relationship.isReadable()) {
             composeNode.addFields({
-                [relationship.connectionFieldName]: {
+                [relationship.operations.connectionFieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
                     directives: deprecatedDirectives,
                     resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver2({
-                            connectionFieldName: relationship.connectionFieldName,
+                            connectionFieldName: relationship.operations.connectionFieldName,
                             args,
                             info,
                             source,
@@ -532,7 +543,7 @@ export function createConnectionFields2({
             : ({} as ObjectFields | undefined);
 
         const r = new Relationship({
-            name: relationship.relationshipFieldTypename,
+            name: relationship.operations.relationshipFieldTypename,
             type: relationship.type,
             properties: relationship.propertiesTypeName,
             ...(relFields

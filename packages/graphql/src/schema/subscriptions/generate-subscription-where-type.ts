@@ -229,7 +229,7 @@ function getRelationshipConnectionWhereTypes2({
                 return acc;
             }
             const relationFieldInputWhereType = schemaComposer.createInputTC({
-                name: relationshipAdapter.subscriptionWhereInputTypeName,
+                name: relationshipAdapter.operations.subscriptionWhereInputTypeName,
                 fields,
             });
             acc[relationshipAdapter.name] = relationFieldInputWhereType;
@@ -351,7 +351,7 @@ function makeRelationshipWhereType2({
     }
     const composeFields = attributesToSubscriptionsWhereInputFields(relationshipAdapter);
     // TODO: POINT was missing???
-    return schemaComposer.getOrCreateITC(relationshipAdapter.edgeSubscriptionWhereInputTypeName, (tc) =>
+    return schemaComposer.getOrCreateITC(relationshipAdapter.operations.edgeSubscriptionWhereInputTypeName, (tc) =>
         tc.addFields(composeFields)
     );
 }
@@ -445,7 +445,7 @@ function makeRelationshipToUnionTypeWhereType2({
             return acc;
         }
         acc[concreteEntity.name] = schemaComposer.getOrCreateITC(
-            relationshipAdapter.getToUnionSubscriptionWhereInputTypeName(concreteEntity),
+            relationshipAdapter.operations.getToUnionSubscriptionWhereInputTypeName(concreteEntity),
             (tc) =>
                 tc.addFields({
                     ...(nodeExists && { node: concreteEntity.operations.subscriptionWhereInputTypeName }),

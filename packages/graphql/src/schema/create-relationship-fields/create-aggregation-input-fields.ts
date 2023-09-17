@@ -191,7 +191,7 @@ export function createAggregationInputFields2(
         return;
     }
 
-    const aggregationInputName = rel.getAggregationWhereInputTypeName(
+    const aggregationInputName = rel.operations.getAggregationWhereInputTypeName(
         entity instanceof ConcreteEntityAdapter ? `Node` : `Edge`
     );
     const aggregationInput = schemaComposer.createInputTC({
