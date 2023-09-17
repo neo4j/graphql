@@ -220,7 +220,8 @@ export function getWhereFieldsFromRelationshipProperties({
 
     return { ...result, ...fields };
 }
-
+// TODO: refactoring needed!
+// isWhereField, isFilterable, ... extracted out into attributes category
 export function getWhereFieldsForAttributes({
     attributes,
     userDefinedFieldDirectives,

@@ -159,3 +159,5 @@ export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 export const DEPRECATED = "deprecated";
 
 export const PROPAGATED_DIRECTIVES = ["shareable", DEPRECATED] as const;
+
+export const PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT = ["query", "mutation", "subscription"];
