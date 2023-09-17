@@ -29,4 +29,8 @@ export class UnionEntityOperations {
     public get whereInputTypeName(): string {
         return `${this.unionEntityAdapter.name}Where`;
     }
+
+    public get subscriptionEventPayloadTypeName(): string {
+        return `${this.unionEntityAdapter.name}EventPayload`;
+    }
 }
