@@ -132,12 +132,12 @@ describe("RelationshipAdapter", () => {
 
     test("should generate a valid connectionFieldTypename", () => {
         const relationshipAdapter = userAdapter.relationships.get("accounts");
-        expect(relationshipAdapter?.connectionFieldTypename).toBe("UserAccountsConnection");
+        expect(relationshipAdapter?.operations.connectionFieldTypename).toBe("UserAccountsConnection");
     });
 
     test("should generate a valid relationshipFieldTypename", () => {
         const relationshipAdapter = userAdapter.relationships.get("accounts");
-        expect(relationshipAdapter?.relationshipFieldTypename).toBe("UserAccountsRelationship");
+        expect(relationshipAdapter?.operations.relationshipFieldTypename).toBe("UserAccountsRelationship");
     });
 
     test("should parse selectable", () => {

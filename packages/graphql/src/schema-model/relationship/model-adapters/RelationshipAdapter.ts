@@ -30,6 +30,7 @@ import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntit
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
+import { RelationshipOperations } from "./RelationshipOperations";
 
 export class RelationshipAdapter {
     public readonly name: string;
@@ -49,6 +50,9 @@ export class RelationshipAdapter {
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
+
+    // specialize models
+    private _operations: RelationshipOperations | undefined;
 
     constructor(
         relationship: Relationship,
@@ -102,131 +106,11 @@ export class RelationshipAdapter {
         this.inheritedFrom = inheritedFrom;
     }
 
-    public get prefixForTypename(): string {
-        // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
-        // then return this.interface.name
-        // TODO: how to get implemented interfaces here??
-        // console.log(this.inheritedFrom, this.source.name, this.name);
-
-        return this.inheritedFrom || this.source.name;
-    }
-
-    public get fieldInputPrefixForTypename(): string {
-        const isTargetInterface = this.target instanceof InterfaceEntityAdapter;
-        if (isTargetInterface) {
-            return this.source.name;
+    get operations(): RelationshipOperations {
+        if (!this._operations) {
+            return new RelationshipOperations(this);
         }
-        return this.prefixForTypename;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get connectionFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}Connection`;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get relationshipFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}Relationship`;
-    }
-
-    public get fieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}FieldInput`;
-    }
-
-    public get updateFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateFieldInput`;
-    }
-
-    public get createFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}CreateFieldInput`;
-    }
-
-    public get deleteFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DeleteFieldInput`;
-    }
-    public get connectFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}ConnectFieldInput`;
-    }
-
-    public get disconnectFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DisconnectFieldInput`;
-    }
-
-    public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
-        if (this.target instanceof UnionEntityAdapter) {
-            if (!concreteTargetEntityAdapter) {
-                throw new Error("missing concreteTargetEntityAdapter");
-            }
-            return `${this.prefixForTypename}${upperFirst(this.name)}${
-                concreteTargetEntityAdapter.name
-            }ConnectOrCreateFieldInput`;
-        }
-        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectOrCreateFieldInput`;
-    }
-
-    public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
-        return `${this.getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter)}OnCreate`;
-    }
-
-    public get connectionFieldName(): string {
-        return `${this.name}Connection`;
-    }
-
-    public get connectionWhereTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectionWhere`;
-    }
-    public get updateConnectionInputTypename(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateConnectionInput`;
-    }
-
-    public get aggregateInputTypeName(): string {
-        return `${this.source.name}${upperFirst(this.name)}AggregateInput`;
-    }
-
-    public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
-        return `${this.source.name}${upperFirst(this.name)}${isA}AggregationWhereInput`;
-    }
-
-    public get subscriptionWhereInputTypeName(): string {
-        return `${this.source.name}${upperFirst(this.name)}RelationshipSubscriptionWhere`;
-    }
-
-    public getToUnionSubscriptionWhereInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.source.name}${upperFirst(this.name)}${ifUnionRelationshipTargetEntity.name}SubscriptionWhere`;
-    }
-
-    public get edgeCreateInputTypeName(): string {
-        return `${this.propertiesTypeName}CreateInput${this.hasNonNullNonGeneratedProperties ? `!` : ""}`;
-    }
-    public get edgeCreateInputTypeName2(): string {
-        return `${this.propertiesTypeName}CreateInput`;
-    }
-
-    public get edgeUpdateInputTypeName(): string {
-        return `${this.propertiesTypeName}UpdateInput`;
-    }
-
-    public get edgeWhereInputTypeName(): string {
-        return `${this.propertiesTypeName}Where`;
-    }
-    public get edgeSubscriptionWhereInputTypeName(): string {
-        return `${this.propertiesTypeName}SubscriptionWhere`;
-    }
-    public get edgeSortInputTypeName(): string {
-        return `${this.propertiesTypeName}Sort`;
-    }
-
-    public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {
-        // TODO: use this._target in the end; currently passed-in as argument because unions need this per refNode
-        // const target = this._target;
-        // if (!(target instanceof ConcreteEntityAdapter)) {
-        //     // something is wrong
-        //     return;=
-        // }
-        return {
-            where: `${target.operations.connectOrCreateWhereInputTypeName}!`,
-            onCreate: `${this.getConnectOrCreateOnCreateFieldInputTypeName(target)}!`,
-        };
+        return this._operations;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -365,6 +249,9 @@ export class RelationshipAdapter {
 
     public get updateInputFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
+    }
+    public get sortableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
     }
 
     public get arrayMethodFields(): AttributeAdapter[] {
