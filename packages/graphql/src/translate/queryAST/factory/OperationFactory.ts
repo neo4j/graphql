@@ -44,8 +44,8 @@ import { getConcreteWhere } from "../utils/get-concrete-where";
 import { filterTruthy, isObject } from "../../../utils/utils";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
-import {  filterConcreteEntities } from "../utils/filter-concrete-entities-with-on-filter";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
+import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -106,7 +106,7 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            const concreteEntities = filterConcreteEntities(entity, resolveTreeWhere);
+            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 const readPartial = new InterfaceReadPartial({
                     relationship,
@@ -220,40 +220,39 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-                let concreteConnectionOperations: ConnectionReadOperation[] = [];
-                let nodeWhere: Record<string, any>; 
-                if (isInterfaceEntity(target)) {
-                    nodeWhere = isObject(resolveTreeWhere) ? resolveTreeWhere.node : {};
-                } else {
-                    nodeWhere = resolveTreeWhere;
-                }
-                
-                const concreteEntities = filterConcreteEntities(target, nodeWhere);
-                concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
-                    const connectionPartial = new InterfaceConnectionPartial({
-                        relationship,
-                        directed,
-                        target: concreteEntity,
-                    });
-                    // nodeWhere with the shared filters applied
-                    const concreteNodeWhere = getConcreteWhere(target, concreteEntity, nodeWhere);
-                    let whereArgs: Record<string, any>; 
-                    if (isInterfaceEntity(target)) {
-                        whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
-                    } else {
-                        whereArgs = concreteNodeWhere;
-                    }
+            let concreteConnectionOperations: ConnectionReadOperation[] = [];
+            let nodeWhere: Record<string, any>;
+            if (isInterfaceEntity(target)) {
+                nodeWhere = isObject(resolveTreeWhere) ? resolveTreeWhere.node : {};
+            } else {
+                nodeWhere = resolveTreeWhere;
+            }
 
-                    return this.hydrateConnectionOperationAST({
-                        relationship,
-                        target: concreteEntity,
-                        resolveTree,
-                        context,
-                        operation: connectionPartial,
-                        whereArgs: whereArgs,
-                    });
+            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
+            concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                const connectionPartial = new InterfaceConnectionPartial({
+                    relationship,
+                    directed,
+                    target: concreteEntity,
                 });
-           
+                // nodeWhere with the shared filters applied
+                const concreteNodeWhere = getConcreteWhere(target, concreteEntity, nodeWhere);
+                let whereArgs: Record<string, any>;
+                if (isInterfaceEntity(target)) {
+                    whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
+                } else {
+                    whereArgs = concreteNodeWhere;
+                }
+
+                return this.hydrateConnectionOperationAST({
+                    relationship,
+                    target: concreteEntity,
+                    resolveTree,
+                    context,
+                    operation: connectionPartial,
+                    whereArgs: whereArgs,
+                });
+            });
 
             const interfaceConnectionOp = new InterfaceConnectionReadOperation(concreteConnectionOperations);
 

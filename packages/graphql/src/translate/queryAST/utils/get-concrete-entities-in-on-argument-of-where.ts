@@ -1,7 +1,6 @@
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { isObject } from "../../../utils/utils";
 import { isUnionEntity } from "./is-union-entity";
 
 /**
@@ -10,32 +9,18 @@ import { isUnionEntity } from "./is-union-entity";
  **/
 export function getConcreteEntitiesInOnArgumentOfWhere(
     compositeTarget: UnionEntityAdapter | InterfaceEntityAdapter,
-    whereArgs: Record<string, any>,
-    isConnection = false
+    whereArgs?: Record<string, any>
 ): ConcreteEntityAdapter[] {
     if (isUnionEntity(compositeTarget)) {
         return getConcreteEntitiesInOnArgumentOfWhereUnion(compositeTarget, whereArgs);
     } else {
-        const nodeWhereArgs = getInterfaceNodeWhere(whereArgs, isConnection);
-        return getConcreteEntitiesInOnArgumentOfWhereInterface(compositeTarget, nodeWhereArgs);
+        return getConcreteEntitiesInOnArgumentOfWhereInterface(compositeTarget, whereArgs);
     }
-}
-
-// Helper required as the filters interface API are different between ConnectionAPI and SimpleAPI
-function getInterfaceNodeWhere(whereArgs?: Record<string, any>, isConnection = false): Record<string, any> {
-    if (isObject(whereArgs)) {
-        if (isConnection) {
-            return whereArgs.node ?? {};
-        } else {
-            return whereArgs;
-        }
-    }
-    return {};
 }
 
 function getConcreteEntitiesInOnArgumentOfWhereInterface(
     compositeTarget: InterfaceEntityAdapter,
-    whereArgs: Record<string, any>
+    whereArgs?: Record<string, any>
 ): ConcreteEntityAdapter[] {
     if (!whereArgs || !whereArgs?._on || countSharedFilters(whereArgs) > 0) {
         return compositeTarget.concreteEntities;
@@ -46,7 +31,7 @@ function getConcreteEntitiesInOnArgumentOfWhereInterface(
 
 function getConcreteEntitiesInOnArgumentOfWhereUnion(
     compositeTarget: UnionEntityAdapter,
-    whereArgs: Record<string, any>
+    whereArgs?: Record<string, any>
 ): ConcreteEntityAdapter[] {
     if (!whereArgs || countObjectKeys(whereArgs) === 0) {
         return compositeTarget.concreteEntities;
