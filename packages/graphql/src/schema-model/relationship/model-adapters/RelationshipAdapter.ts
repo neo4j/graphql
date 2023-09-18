@@ -250,8 +250,13 @@ export class RelationshipAdapter {
     public get updateInputFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
     }
+
     public get sortableFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
+    }
+
+    public get whereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
     }
 
     public get arrayMethodFields(): AttributeAdapter[] {

@@ -204,7 +204,12 @@ export class AttributeAdapter {
         },
     */
     isWhereField(): boolean {
-        return this.isEnum() || this.isSpatial() || this.isScalar();
+        return (
+            (this.isEnum() || this.isSpatial() || this.isScalar()) &&
+            this.isFilterable() &&
+            !this.isCustomResolvable() &&
+            !this.isCypher()
+        );
     }
 
     /**

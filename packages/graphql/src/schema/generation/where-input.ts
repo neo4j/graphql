@@ -100,10 +100,9 @@ function makeWhereFields({
         }
         return fields;
     }
-    // TODO: make a a category for these including filtering logic from getWhereFieldsForAttributes
-    const filterableAttributes = Array.from(entityAdapter.attributes.values());
+
     return getWhereFieldsForAttributes({
-        attributes: filterableAttributes,
+        attributes: entityAdapter.whereFields,
         userDefinedFieldDirectives,
         features,
     });

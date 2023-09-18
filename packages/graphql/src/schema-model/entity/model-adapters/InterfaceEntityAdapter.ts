@@ -113,12 +113,18 @@ export class InterfaceEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
     }
 
+    public get whereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
     public get updateInputFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
     }
+
     public get subscriptionEventPayloadFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
     }
+
     public get subscriptionWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
     }

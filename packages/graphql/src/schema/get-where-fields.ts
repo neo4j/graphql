@@ -188,7 +188,7 @@ export function getWhereFieldsFromConcreteEntity({
     };
 
     const fields = getWhereFieldsForAttributes({
-        attributes: Array.from(concreteEntityAdapter.attributes.values()),
+        attributes: concreteEntityAdapter.whereFields,
         userDefinedFieldDirectives,
         features,
     });
@@ -213,13 +213,14 @@ export function getWhereFieldsFromRelationshipProperties({
     };
 
     const fields = getWhereFieldsForAttributes({
-        attributes: Array.from(relationshipAdapter.attributes.values()),
+        attributes: relationshipAdapter.whereFields,
         userDefinedFieldDirectives,
         features,
     });
 
     return { ...result, ...fields };
 }
+
 // TODO: refactoring needed!
 // isWhereField, isFilterable, ... extracted out into attributes category
 export function getWhereFieldsForAttributes({
@@ -247,26 +248,6 @@ export function getWhereFieldsForAttributes({
 
     // Add the where fields for each attribute
     for (const field of attributes) {
-        // If the field is not a where field, skip it
-        if (field.isWhereField() === false) {
-            continue;
-        }
-
-        // If the attribute is not filterable, skip it
-        if (field.isFilterable() === false) {
-            continue;
-        }
-
-        // If the field has a custom resolver, skip it
-        if (field.isCustomResolvable()) {
-            continue;
-        }
-
-        // If the field is a custom cypher field, skip it
-        if (field.isCypher()) {
-            continue;
-        }
-
         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
