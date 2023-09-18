@@ -21,8 +21,6 @@ import type { DirectiveNode } from "graphql";
 import type { Directive } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type {
     CustomEnumField,
     CustomScalarField,
@@ -170,56 +168,6 @@ function getWhereFields({
 }
 
 export default getWhereFields;
-
-export function getWhereFieldsFromConcreteEntity({
-    concreteEntityAdapter,
-    userDefinedFieldDirectives,
-    features,
-}: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-    features?: Neo4jFeaturesSettings;
-}): Record<string, any> {
-    // Add the default where fields
-    const result = {
-        OR: `[${concreteEntityAdapter.name}Where!]`,
-        AND: `[${concreteEntityAdapter.name}Where!]`,
-        NOT: `${concreteEntityAdapter.name}Where`,
-    };
-
-    const fields = getWhereFieldsForAttributes({
-        attributes: concreteEntityAdapter.whereFields,
-        userDefinedFieldDirectives,
-        features,
-    });
-
-    return { ...result, ...fields };
-}
-
-export function getWhereFieldsFromRelationshipProperties({
-    relationshipAdapter,
-    userDefinedFieldDirectives,
-    features,
-}: {
-    relationshipAdapter: RelationshipAdapter;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-    features?: Neo4jFeaturesSettings;
-}): Record<string, any> {
-    // Add the default where fields
-    const result = {
-        OR: `[${relationshipAdapter.propertiesTypeName}Where!]`,
-        AND: `[${relationshipAdapter.propertiesTypeName}Where!]`,
-        NOT: `${relationshipAdapter.propertiesTypeName}Where`,
-    };
-
-    const fields = getWhereFieldsForAttributes({
-        attributes: relationshipAdapter.whereFields,
-        userDefinedFieldDirectives,
-        features,
-    });
-
-    return { ...result, ...fields };
-}
 
 // TODO: refactoring needed!
 // isWhereField, isFilterable, ... extracted out into attributes category
