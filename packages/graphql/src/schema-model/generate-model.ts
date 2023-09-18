@@ -164,6 +164,7 @@ function generateInterfaceEntity(
             const interfaceName = interfaceNamedNode.name.value;
             return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
         }) || [];
+
     const fields = (definition.fields || []).map((fieldDefinition) => {
         const inheritedField = inheritedFields?.filter(
             (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
@@ -175,7 +176,7 @@ function generateInterfaceEntity(
         if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
     });
 
     const inheritedDirectives =
@@ -299,10 +300,15 @@ function generateRelationshipField(
                 return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
             }) || [];
         const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
-            const inheritedField = inheritedFields?.filter(
+            const filteredInheritedFields = inheritedFields?.filter(
                 (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
             );
-            return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+            return parseAttribute(
+                fieldDefinition,
+                filteredInheritedFields,
+                definitionCollection,
+                propertyInterface.fields
+            ); // TODO: check relationships for customResolvers
         });
 
         attributes = filterTruthy(fields) as Attribute[];
@@ -342,7 +348,7 @@ function generateConcreteEntity(
         if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
     });
 
     const annotations = createEntityAnnotations(definition.directives || []);

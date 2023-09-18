@@ -17,10 +17,40 @@
  * limitations under the License.
  */
 
+import type { DocumentNode, FieldDefinitionNode } from "graphql";
+import { parse } from "graphql";
+import { selectionSetToResolveTree } from "../../schema/get-custom-resolver-meta";
+import { getDefinitionNodes } from "../../schema/get-definition-nodes";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+
 export class CustomResolverAnnotation {
     public readonly requires: string;
+
+    public parsedRequires: Record<string, ResolveTree> = {};
+    // Record<string, ResolveTree>;
+    // getCustomResolverMeta
 
     constructor({ requires }: { requires: string }) {
         this.requires = requires;
     }
+
+    public parseRequire(document: DocumentNode, objectFields?: ReadonlyArray<FieldDefinitionNode>) {
+        const definitionNodes = getDefinitionNodes(document);
+
+        const { interfaceTypes, objectTypes, unionTypes } = definitionNodes;
+
+        const selectionSetDocument = parse(`{ ${this.requires} }`);
+
+        this.parsedRequires = selectionSetToResolveTree(
+            objectFields || [],
+            objectTypes,
+            interfaceTypes,
+            unionTypes,
+            selectionSetDocument
+        );
+    }
 }
+// objectFields: ReadonlyArray<FieldDefinitionNode>,
+// objects: ObjectTypeDefinitionNode[],
+// interfaces: InterfaceTypeDefinitionNode[],
+// unions: UnionTypeDefinitionNode[],
