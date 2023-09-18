@@ -515,7 +515,7 @@ function withObjectType(
 function withInterfaceType(
     entityAdapter: InterfaceEntityAdapter | RelationshipAdapter, // required
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
-    directives: DirectiveNode[],
+    userDefinedInterfaceDirectives: DirectiveNode[],
     composer: SchemaComposer,
     config = {
         includeRelationships: false,
@@ -544,7 +544,7 @@ function withInterfaceType(
     const composeInterface = composer.createInterfaceTC({
         name: interfaceTypeName,
         fields: fields,
-        directives: graphqlDirectivesToCompose(directives),
+        directives: graphqlDirectivesToCompose(userDefinedInterfaceDirectives),
     });
     return composeInterface;
 }
@@ -1132,6 +1132,35 @@ function makeAugmentedSchema(
         interfaceRelationshipNames
     );
 
+    // TODO: find some solution for this
+    // TODO: should directives be inherited?? they are user-defined after all
+    // TODO: other considerations might apply to PROPAGATED_DIRECTIVES: deprecated and shareable
+    // ATM we only test deprecated propagates
+    // also, should these live in the schema model??
+    const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
+    const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
+    const propagatedDirectivesForNode = new Map<string, DirectiveNode[]>();
+    const userDefinedDirectivesForInterface = new Map<string, DirectiveNode[]>();
+    for (const definitionNode of definitionNodes.objectTypes) {
+        const userDefinedObjectDirectives =
+            definitionNode.directives?.filter((directive) => !isInArray(OBJECT_DIRECTIVES, directive.name.value)) || [];
+        const propagatedDirectives =
+            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
+            [];
+        userDefinedDirectivesForNode.set(definitionNode.name.value, userDefinedObjectDirectives);
+        propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
+        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
+        userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
+    }
+    for (const definitionNode of definitionNodes.interfaceTypes) {
+        const userDefinedInterfaceDirectives =
+            definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
+            [];
+        userDefinedDirectivesForInterface.set(definitionNode.name.value, userDefinedInterfaceDirectives);
+        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
+        userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
+    }
+
     // TODO: keeping this `relationshipFields` scaffold for backwards compatibility on translation layer
     // actual functional logic is in schemaModel.concreteEntities.forEach
     const relationshipFields = new Map<string, ObjectFields>();
@@ -1226,13 +1255,20 @@ function makeAugmentedSchema(
                 ) {
                     continue;
                 }
-                doForRelationshipPropertiesInterface(composer, relationship, definitionNodes, features);
+                doForRelationshipPropertiesInterface(
+                    composer,
+                    relationship,
+                    definitionNodes,
+                    userDefinedDirectivesForInterface,
+                    features
+                );
                 seenRelationshipPropertiesInterfaces.add(relationship.propertiesTypeName);
             }
         }
     });
 
     // TODO: temporary helper to keep track of which interface entities were already "visited"
+    // say why this is happening here ALE
     const seenInterfaces = new Set<string>();
     interfaceRelationships.forEach((interfaceRelationship) => {
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
@@ -1250,35 +1286,6 @@ function makeAugmentedSchema(
         }
         seenInterfaces.add(interfaceRelationship.name.value);
     });
-
-    // TODO: find some solution for this
-    // TODO: should directives be inherited?? they are user-defined after all
-    // TODO: other considerations might apply to PROPAGATED_DIRECTIVES: deprecated and shareable
-    // ATM we only test deprecated propagates
-    // also, should these live in the schema model??
-    const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
-    const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
-    const propagatedDirectivesForNode = new Map<string, DirectiveNode[]>();
-    const userDefinedDirectivesForInterface = new Map<string, DirectiveNode[]>();
-    for (const definitionNode of definitionNodes.objectTypes) {
-        const userDefinedObjectDirectives =
-            definitionNode.directives?.filter((directive) => !isInArray(OBJECT_DIRECTIVES, directive.name.value)) || [];
-        const propagatedDirectives =
-            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
-            [];
-        userDefinedDirectivesForNode.set(definitionNode.name.value, userDefinedObjectDirectives);
-        propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
-        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
-        userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
-    }
-    for (const definitionNode of definitionNodes.interfaceTypes) {
-        const userDefinedInterfaceDirectives =
-            definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
-            [];
-        userDefinedDirectivesForInterface.set(definitionNode.name.value, userDefinedInterfaceDirectives);
-        const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
-        userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
-    }
 
     schemaModel.concreteEntities.forEach((concreteEntity) => {
         // TODO: temporary for backwards compatibility for translation layer
@@ -1620,10 +1627,16 @@ function makeAugmentedSchema(
                 definitionNode,
                 definitionNodes
             );
-            const directives = userDefinedDirectivesForInterface.get(entity.name) || [];
-            withInterfaceType(interfaceEntityAdapter, userDefinedFieldDirectives, directives, composer, {
-                includeRelationships: true,
-            });
+            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            withInterfaceType(
+                interfaceEntityAdapter,
+                userDefinedFieldDirectives,
+                userDefinedInterfaceDirectives,
+                composer,
+                {
+                    includeRelationships: true,
+                }
+            );
             return;
         }
         return;
@@ -1823,6 +1836,7 @@ function doForRelationshipPropertiesInterface(
     composer: SchemaComposer,
     relationship: RelationshipAdapter,
     definitionNodes: DefinitionNodes,
+    userDefinedDirectivesForInterface: Map<string, DirectiveNode[]>,
     features?: Neo4jFeaturesSettings
 ) {
     if (!relationship.propertiesTypeName) {
@@ -1846,7 +1860,8 @@ function doForRelationshipPropertiesInterface(
     //     fields: composeFields,
     // });
 
-    withInterfaceType(relationship, userDefinedFieldDirectives, [], composer);
+    const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(relationship.name) || [];
+    withInterfaceType(relationship, userDefinedFieldDirectives, userDefinedInterfaceDirectives, composer);
 
     // composer.createInputTC({
     //     name: relationship.operations.sortInputTypeName,
