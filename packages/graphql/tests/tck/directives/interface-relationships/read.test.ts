@@ -225,7 +225,7 @@ describe("Interface Relationships", () => {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
-                    WITH this1 { __resolveType: \\"Movie\\", __id: id(this), .runtime, .title } AS this1
+                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this) } AS this1
                     RETURN this1 AS var2
                 }
                 WITH var2
