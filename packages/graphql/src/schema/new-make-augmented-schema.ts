@@ -89,6 +89,7 @@ import { isInArray } from "../utils/is-in-array";
 import { createConnectionFields2 } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFieldsFromConcreteEntityAdapter } from "./create-relationship-fields/create-relationship-fields";
+import { deprecationMap } from "./deprecation-map";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withConnectInputType } from "./generation/connect-input";
 import { withCreateInputType } from "./generation/create-input";
@@ -107,20 +108,6 @@ import { generateSubscriptionTypes2 } from "./subscriptions/generate-subscriptio
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
-}
-
-class SchemaGeneratorModel {
-    // contains type names for now
-    static createInfoTypeName: string;
-    static updateInfoTypeName: string;
-    static deleteInfoTypeName: string;
-    static pageInfoTypeName: string;
-    static {
-        this.createInfoTypeName = "CreateInfo";
-        this.updateInfoTypeName = "UpdateInfo";
-        this.deleteInfoTypeName = "DeleteInfo";
-        this.pageInfoTypeName = "PageInfo";
-    }
 }
 
 class AugmentedSchemaGenerator {
@@ -535,51 +522,6 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: pipedDefs }));
     }
 
-    // TODO: move deprecationMap out to separate file eventually
-    const deprecationMap = new Map<
-        string,
-        {
-            field: string;
-            reason: string;
-            deprecatedFromVersion: string;
-            toBeRemovedInVersion: string;
-        }[]
-    >([
-        [
-            SchemaGeneratorModel.createInfoTypeName,
-            [
-                {
-                    field: "bookmark",
-                    reason: "This field has been deprecated because bookmarks are now handled by the driver.",
-                    deprecatedFromVersion: "",
-                    toBeRemovedInVersion: "",
-                },
-            ],
-        ],
-        [
-            SchemaGeneratorModel.updateInfoTypeName,
-            [
-                {
-                    field: "bookmark",
-                    reason: "This field has been deprecated because bookmarks are now handled by the driver.",
-                    deprecatedFromVersion: "",
-                    toBeRemovedInVersion: "",
-                },
-            ],
-        ],
-        [
-            SchemaGeneratorModel.deleteInfoTypeName,
-            [
-                {
-                    field: "bookmark",
-                    reason: "This field has been deprecated because bookmarks are now handled by the driver.",
-                    deprecatedFromVersion: "",
-                    toBeRemovedInVersion: "",
-                },
-            ],
-        ],
-    ]);
-
     // Loop over all entries in the deprecation map and add field deprecations to all types in the map.
     for (const [typeName, deprecatedFields] of deprecationMap) {
         const typeComposer = composer.getOTC(typeName);
@@ -591,12 +533,7 @@ function makeAugmentedSchema(
     // TODO: ideally move these in getSubgraphSchema()
     if (subgraph) {
         const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
-        [
-            SchemaGeneratorModel.createInfoTypeName,
-            SchemaGeneratorModel.updateInfoTypeName,
-            SchemaGeneratorModel.deleteInfoTypeName,
-            SchemaGeneratorModel.pageInfoTypeName,
-        ].forEach((typeName) => {
+        [CreateInfo.name, UpdateInfo.name, DeleteInfo.name, PageInfo.name].forEach((typeName) => {
             const typeComposer = composer.getOTC(typeName);
             typeComposer.setDirectiveByName(shareable);
         });
