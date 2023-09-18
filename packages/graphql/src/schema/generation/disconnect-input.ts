@@ -13,12 +13,14 @@ export function withDisconnectInputType({
         interfaceEntityAdapter,
         composer,
     });
-    if (implementationsDisconnectInputType) {
-        const disconnectInputType = composer.getOrCreateITC(
-            interfaceEntityAdapter.operations.updateMutationArgumentNames.disconnect
-        );
-        disconnectInputType.setField("_on", implementationsDisconnectInputType);
-        return disconnectInputType;
+
+    if (!implementationsDisconnectInputType) {
+        return undefined;
     }
-    return undefined;
+
+    const disconnectInputType = composer.getOrCreateITC(
+        interfaceEntityAdapter.operations.updateMutationArgumentNames.disconnect
+    );
+    disconnectInputType.setField("_on", implementationsDisconnectInputType);
+    return disconnectInputType;
 }

@@ -10,12 +10,14 @@ export function withDeleteInputType({
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const implementationsUpdateInputType = makeImplementationsDeleteInput({ interfaceEntityAdapter, composer });
-    if (implementationsUpdateInputType) {
-        const deleteInputType = composer.getOrCreateITC(
-            interfaceEntityAdapter.operations.updateMutationArgumentNames.delete
-        );
-        deleteInputType.setField("_on", implementationsUpdateInputType);
-        return deleteInputType;
+
+    if (!implementationsUpdateInputType) {
+        return undefined;
     }
-    return undefined;
+
+    const deleteInputType = composer.getOrCreateITC(
+        interfaceEntityAdapter.operations.updateMutationArgumentNames.delete
+    );
+    deleteInputType.setField("_on", implementationsUpdateInputType);
+    return deleteInputType;
 }

@@ -13,12 +13,14 @@ export function withConnectInputType({
         interfaceEntityAdapter,
         composer,
     });
-    if (implementationsConnectInputType) {
-        const connectInputType = composer.getOrCreateITC(
-            interfaceEntityAdapter.operations.updateMutationArgumentNames.connect
-        );
-        connectInputType.setField("_on", implementationsConnectInputType);
-        return connectInputType;
+
+    if (!implementationsConnectInputType) {
+        return undefined;
     }
-    return undefined;
+
+    const connectInputType = composer.getOrCreateITC(
+        interfaceEntityAdapter.operations.updateMutationArgumentNames.connect
+    );
+    connectInputType.setField("_on", implementationsConnectInputType);
+    return connectInputType;
 }

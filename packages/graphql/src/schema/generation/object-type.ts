@@ -26,6 +26,7 @@ export function withObjectType({
             .filter((e) => e instanceof InterfaceEntity)
             .map((e) => e.name),
     });
+
     // TODO: maybe split this global node logic?
     if (concreteEntityAdapter.isGlobalNode()) {
         composeNode.setField("id", {

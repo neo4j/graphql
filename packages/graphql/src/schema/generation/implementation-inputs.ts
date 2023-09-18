@@ -17,15 +17,16 @@ export function makeImplementationsDisconnectInput({
             };
         }
     }
-    if (Object.keys(fields).length) {
-        const implementationsDisconnectType = composer.createInputTC({
-            name: interfaceEntityAdapter.operations.whereOnImplementationsDisconnectInputTypeName,
-            fields,
-        });
-        ensureNonEmptyInput(composer, implementationsDisconnectType);
-        return implementationsDisconnectType;
+    if (!Object.keys(fields).length) {
+        return undefined;
     }
-    return undefined;
+
+    const implementationsDisconnectType = composer.createInputTC({
+        name: interfaceEntityAdapter.operations.whereOnImplementationsDisconnectInputTypeName,
+        fields,
+    });
+    ensureNonEmptyInput(composer, implementationsDisconnectType);
+    return implementationsDisconnectType;
 }
 
 export function makeImplementationsConnectInput({
@@ -43,15 +44,17 @@ export function makeImplementationsConnectInput({
             };
         }
     }
-    if (Object.keys(fields).length) {
-        const implementationsConnectType = composer.createInputTC({
-            name: interfaceEntityAdapter.operations.whereOnImplementationsConnectInputTypeName,
-            fields,
-        });
-        // ensureNonEmptyInput(composer, implementationsConnectType);
-        return implementationsConnectType;
+
+    if (!Object.keys(fields).length) {
+        return undefined;
     }
-    return undefined;
+
+    const implementationsConnectType = composer.createInputTC({
+        name: interfaceEntityAdapter.operations.whereOnImplementationsConnectInputTypeName,
+        fields,
+    });
+    // ensureNonEmptyInput(composer, implementationsConnectType);
+    return implementationsConnectType;
 }
 
 export function makeImplementationsDeleteInput({
@@ -69,15 +72,17 @@ export function makeImplementationsDeleteInput({
             };
         }
     }
-    if (Object.keys(fields).length) {
-        const implementationsDeleteType = composer.createInputTC({
-            name: interfaceEntityAdapter.operations.whereOnImplementationsDeleteInputTypeName,
-            fields,
-        });
-        // ensureNonEmptyInput(composer, implementationsDeleteType);
-        return implementationsDeleteType;
+
+    if (!Object.keys(fields).length) {
+        return undefined;
     }
-    return undefined;
+
+    const implementationsDeleteType = composer.createInputTC({
+        name: interfaceEntityAdapter.operations.whereOnImplementationsDeleteInputTypeName,
+        fields,
+    });
+    // ensureNonEmptyInput(composer, implementationsDeleteType);
+    return implementationsDeleteType;
 }
 
 export function makeImplementationsUpdateInput({

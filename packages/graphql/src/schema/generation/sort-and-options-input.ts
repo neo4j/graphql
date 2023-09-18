@@ -45,7 +45,7 @@ export function withSortInputType({
     // TODO: for relationships we used to get all attributes, not just sortableFields
     // Clarify if this is intended?
     if (!relationshipAdapter.sortableFields.length) {
-        return;
+        return undefined;
     }
     return makeSortInput({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
 }
