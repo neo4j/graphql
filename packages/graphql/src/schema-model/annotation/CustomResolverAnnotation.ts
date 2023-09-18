@@ -24,23 +24,22 @@ import { getDefinitionNodes } from "../../schema/get-definition-nodes";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 
 export class CustomResolverAnnotation {
-    public readonly requires: string;
+    public readonly requires: string | undefined;
+    public parsedRequires: Record<string, ResolveTree> | undefined;
 
-    public parsedRequires: Record<string, ResolveTree> = {};
-    // Record<string, ResolveTree>;
-    // getCustomResolverMeta
-
-    constructor({ requires }: { requires: string }) {
+    constructor({ requires }: { requires: string | undefined }) {
         this.requires = requires;
     }
 
-    public parseRequire(document: DocumentNode, objectFields?: ReadonlyArray<FieldDefinitionNode>) {
+    public parseRequire(document: DocumentNode, objectFields?: ReadonlyArray<FieldDefinitionNode>): void {
+        if (!this.requires) {
+            return;
+        }
         const definitionNodes = getDefinitionNodes(document);
 
         const { interfaceTypes, objectTypes, unionTypes } = definitionNodes;
 
         const selectionSetDocument = parse(`{ ${this.requires} }`);
-
         this.parsedRequires = selectionSetToResolveTree(
             objectFields || [],
             objectTypes,
@@ -50,7 +49,3 @@ export class CustomResolverAnnotation {
         );
     }
 }
-// objectFields: ReadonlyArray<FieldDefinitionNode>,
-// objects: ObjectTypeDefinitionNode[],
-// interfaces: InterfaceTypeDefinitionNode[],
-// unions: UnionTypeDefinitionNode[],
