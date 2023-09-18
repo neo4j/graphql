@@ -220,9 +220,14 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            let concreteConnectionOperations: ConnectionReadOperation[] = [];
-            if (isInterfaceEntity(target)) {
-                const nodeWhere: Record<string, any> = isObject(resolveTreeWhere) ? resolveTreeWhere.node : {};
+                let concreteConnectionOperations: ConnectionReadOperation[] = [];
+                let nodeWhere: Record<string, any>; 
+                if (isInterfaceEntity(target)) {
+                    nodeWhere = isObject(resolveTreeWhere) ? resolveTreeWhere.node : {};
+                } else {
+                    nodeWhere = resolveTreeWhere;
+                }
+                
                 const concreteEntities = filterConcreteEntities(target, nodeWhere);
                 concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                     const connectionPartial = new InterfaceConnectionPartial({
@@ -232,7 +237,12 @@ export class OperationsFactory {
                     });
                     // nodeWhere with the shared filters applied
                     const concreteNodeWhere = getConcreteWhere(target, concreteEntity, nodeWhere);
-                    const whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
+                    let whereArgs: Record<string, any>; 
+                    if (isInterfaceEntity(target)) {
+                        whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
+                    } else {
+                        whereArgs = concreteNodeWhere;
+                    }
 
                     return this.hydrateConnectionOperationAST({
                         relationship,
@@ -243,25 +253,7 @@ export class OperationsFactory {
                         whereArgs: whereArgs,
                     });
                 });
-            } else {
-                const concreteEntities = filterConcreteEntities(target, resolveTreeWhere);
-                concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
-                    const connectionPartial = new InterfaceConnectionPartial({
-                        relationship,
-                        directed,
-                        target: concreteEntity,
-                    });
-
-                    return this.hydrateConnectionOperationAST({
-                        relationship,
-                        target: concreteEntity,
-                        resolveTree,
-                        context,
-                        operation: connectionPartial,
-                        whereArgs: resolveTreeWhere,
-                    });
-                });
-            }
+           
 
             const interfaceConnectionOp = new InterfaceConnectionReadOperation(concreteConnectionOperations);
 
@@ -332,7 +324,6 @@ export class OperationsFactory {
         operation: T;
         whereArgs: Record<string, any>;
     }): T {
-        //let whereArgs = (resolveTree.args.where || {}) as Record<string, any>;
         const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
         const edgeRawFields = {
             ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
@@ -361,11 +352,6 @@ export class OperationsFactory {
             context,
             rawFields: nodeRawFields,
         });
-
-        if (isUnionEntity(relationship.target)) {
-            // Small hack due to where arguments being one level nested for unions
-            whereArgs = whereArgs[target.name];
-        }
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);
         operation.setNodeFields(nodeFields);
