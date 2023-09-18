@@ -18,9 +18,10 @@
  */
 
 import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
-import type { SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
+import { SortDirection } from "../../graphql/enums/SortDirection";
 import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { upperFirst } from "../../utils/upper-first";
@@ -111,21 +112,24 @@ export function augmentFulltextSchema2(
         return;
     }
 
-    const fields = concreteEntityAdapter.annotations.fulltext?.indexes.reduce((res, index) => {
-        const indexName = index.indexName || index.name;
-        if (indexName === undefined) {
-            throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-        }
-        return {
-            ...res,
-            [indexName]: composer.createInputTC({
-                name: `${concreteEntityAdapter.name}${upperFirst(indexName)}Fulltext`,
-                fields: {
-                    phrase: new GraphQLNonNull(GraphQLString),
-                },
-            }),
-        };
-    }, {});
+    const fields = concreteEntityAdapter.annotations.fulltext.indexes.reduce(
+        (res: Record<string, InputTypeComposer>, index): Record<string, InputTypeComposer> => {
+            const indexName = index.indexName || index.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            return {
+                ...res,
+                [indexName]: composer.createInputTC({
+                    name: concreteEntityAdapter.operations.getFullTextIndexInputTypeName(indexName),
+                    fields: {
+                        phrase: new GraphQLNonNull(GraphQLString),
+                    },
+                }),
+            };
+        },
+        {}
+    );
 
     const fulltextResultDescription = `The result of a fulltext search on an index of ${concreteEntityAdapter.name}`;
     const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${concreteEntityAdapter.name}`;
@@ -140,7 +144,7 @@ export function augmentFulltextSchema2(
         name: concreteEntityAdapter.operations.fulltextTypeNames.sort,
         description: fulltextSortDescription,
         fields: {
-            [SCORE_FIELD]: "SortDirection",
+            [SCORE_FIELD]: SortDirection.name,
             [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.sortInputTypeName,
         },
     });
@@ -172,7 +176,8 @@ export function augmentFulltextSchema2(
         if (indexName === undefined) {
             throw new Error("The name of the fulltext index should be defined using the indexName argument.");
         }
-        let queryName = `${concreteEntityAdapter.plural}Fulltext${upperFirst(indexName)}`;
+
+        let queryName = concreteEntityAdapter.operations.getFullTextIndexQueryFieldName(indexName);
         if (index.queryName) {
             queryName = index.queryName;
         }
@@ -182,7 +187,7 @@ export function augmentFulltextSchema2(
             return iName === indexName;
         });
         if (!nodeIndex) {
-            throw new Error("fix index from Node ");
+            throw new Error(`Could not find index ${indexName} on node ${node.name}`);
         }
         composer.Query.addFields({
             [queryName]: fulltextResolver({ node }, nodeIndex),

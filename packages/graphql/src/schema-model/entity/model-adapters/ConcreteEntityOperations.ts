@@ -117,6 +117,14 @@ export class ConcreteEntityOperations {
         return `${this.concreteEntityAdapter.name}Fulltext`;
     }
 
+    public getFullTextIndexInputTypeName(indexName: string): string {
+        return `${this.concreteEntityAdapter.name}${upperFirst(indexName)}Fulltext`;
+    }
+
+    public getFullTextIndexQueryFieldName(indexName: string): string {
+        return `${this.concreteEntityAdapter.plural}Fulltext${upperFirst(indexName)}`;
+    }
+
     public get sortInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}Sort`;
     }
