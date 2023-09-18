@@ -18,16 +18,14 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import {
+import type {
     DefinitionNode,
     DirectiveNode,
     DocumentNode,
     FieldDefinitionNode,
     GraphQLEnumType,
     GraphQLInputObjectType,
-    GraphQLInt,
     GraphQLInterfaceType,
-    GraphQLList,
     GraphQLObjectType,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
@@ -35,18 +33,15 @@ import {
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
 } from "graphql";
-import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
+import { GraphQLID, GraphQLInt, GraphQLNonNull, Kind, parse, print } from "graphql";
 import type {
     InputTypeComposer,
     InputTypeComposerFieldConfigMapDefinition,
     InterfaceTypeComposer,
     ObjectTypeComposer,
-    ObjectTypeComposerFieldConfigMap,
     ObjectTypeComposerFieldConfigMapDefinition,
-    UnionTypeComposer,
 } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
-import pluralize from "pluralize";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { augmentFulltextSchema2 } from "./augment/fulltext";
 import { cypherResolver2 } from "./resolvers/field/cypher";
@@ -68,11 +63,7 @@ import type { DefinitionNodes } from "./get-definition-nodes";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import type { ObjectFields } from "./get-obj-field-meta";
 import getObjFieldMeta from "./get-obj-field-meta";
-import {
-    getWhereFieldsForAttributes,
-    getWhereFieldsFromConcreteEntity,
-    getWhereFieldsFromRelationshipProperties,
-} from "./get-where-fields";
+import { getWhereFieldsForAttributes } from "./get-where-fields";
 import {
     attributeAdapterToComposeFields,
     concreteEntityToCreateInputFields,
@@ -117,16 +108,13 @@ import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionE
 import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { isInArray } from "../utils/is-in-array";
-import { addArrayMethodsToITC2 } from "./array-methods";
 import { createConnectionFields2 } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFieldsFromConcreteEntityAdapter } from "./create-relationship-fields/create-relationship-fields";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
-import { addMathOperatorsToITC } from "./math";
-import { generateSubscriptionTypes, generateSubscriptionTypes2 } from "./subscriptions/generate-subscription-types";
-import { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
+import { generateSubscriptionTypes2 } from "./subscriptions/generate-subscription-types";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
