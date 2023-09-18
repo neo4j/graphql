@@ -308,7 +308,7 @@ function generateRelationshipField(
                 filteredInheritedFields,
                 definitionCollection,
                 propertyInterface.fields
-            ); // TODO: check relationships for customResolvers
+            );
         });
 
         attributes = filterTruthy(fields) as Attribute[];
