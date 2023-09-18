@@ -73,6 +73,60 @@ describe("authorization warning", () => {
     });
 });
 
+describe("list of lists warning", () => {
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warn.mockReset();
+    });
+
+    test("list of lists warning only occurs once for multiple fields", () => {
+        const doc = gql`
+            type Movie {
+                id: [[ID]]
+            }
+
+            type Actor {
+                name: [[String]]
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "Encountered list field definition(s) with list elements. This is not supported by Neo4j, however, you can ignore this warning if the field is only used in the result of custom resolver/Cypher."
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+
+    test("works for non-nullable lists", () => {
+        const doc = gql`
+            type Movie {
+                id: [[ID!]!]!
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "Encountered list field definition(s) with list elements. This is not supported by Neo4j, however, you can ignore this warning if the field is only used in the result of custom resolver/Cypher."
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+});
+
 describe("validation 2.0", () => {
     describe("Directive Argument (existence)", () => {
         describe("@cypher", () => {
@@ -5297,66 +5351,6 @@ describe("validation 2.0", () => {
 
         describe("Field Type", () => {
             describe("invalid", () => {
-                test("matrix array", () => {
-                    const doc = gql`
-                        type Post {
-                            titles: [[String]]
-                        }
-                    `;
-
-                    const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions });
-                    const errors = getError(executeValidate);
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid field type: Lists of lists are not supported."
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
-                });
-
-                test("matrix array aliased", () => {
-                    const doc = gql`
-                        type Post {
-                            titles: [[String]] @alias(property: "names")
-                        }
-                    `;
-
-                    const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions });
-                    const errors = getError(executeValidate);
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid field type: Lists of lists are not supported."
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
-                });
-
-                test("matrix array aliased extension", () => {
-                    const doc = gql`
-                        type Post {
-                            year: Int
-                        }
-                        extend type Post {
-                            titles: [[String]] @alias(property: "names")
-                        }
-                    `;
-
-                    const executeValidate = () =>
-                        validateDocument({ document: doc, features: {}, additionalDefinitions });
-                    const errors = getError(executeValidate);
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        "Invalid field type: Lists of lists are not supported."
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["Post", "titles"]);
-                });
-
                 test("@relationship nullable list type", () => {
                     const doc = gql`
                         type User {
