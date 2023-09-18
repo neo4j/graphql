@@ -38,7 +38,7 @@ export class ConcreteEntityAdapter {
     public readonly relationships: Map<string, RelationshipAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
     public readonly compositeEntities: CompositeEntity[] = [];
-    
+
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
     private uniqueFieldsKeys: string[] = [];
@@ -102,6 +102,16 @@ export class ConcreteEntityAdapter {
             this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
         }
         return this._relatedEntities;
+    }
+
+    public getRelayId(): AttributeAdapter | undefined {
+        // TODO: make this O(1)
+        for (const attr of this.attributes.values()) {
+            if (attr.annotations.relayId) {
+                return attr;
+            }
+        }
+        return undefined;
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
