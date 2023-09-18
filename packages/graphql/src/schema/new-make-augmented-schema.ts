@@ -655,13 +655,13 @@ function makeAugmentedSchema(
         // TODO: temporary for backwards compatibility for translation layer
         const node = nodes.find((n) => n.name === concreteEntity.name);
         if (!node) {
-            throw new Error("Fix node not found.");
+            throw new Error(`Node not found with the name ${concreteEntity.name}`);
         }
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
         const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
         if (!userDefinedFieldDirectives) {
-            throw new Error("fix user directives for object types.");
+            throw new Error(`User defined field directives not found for ${concreteEntityAdapter.name}`);
         }
 
         const propagatedDirectives = propagatedDirectivesForNode.get(concreteEntity.name) || [];
