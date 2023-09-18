@@ -545,12 +545,6 @@ function makeAugmentedSchema(
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
-    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
-    // because it will purge the unused types but leave behind orphaned field resolvers
-    //
-    // These are flags to check whether the types are used and then create them if they are
-    // let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
-
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
     const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
@@ -568,6 +562,7 @@ function makeAugmentedSchema(
     const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
     const propagatedDirectivesForNode = new Map<string, DirectiveNode[]>();
     const userDefinedDirectivesForInterface = new Map<string, DirectiveNode[]>();
+
     for (const definitionNode of definitionNodes.objectTypes) {
         const userDefinedObjectDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(OBJECT_DIRECTIVES, directive.name.value)) || [];
@@ -579,6 +574,7 @@ function makeAugmentedSchema(
         const userDefinedFieldDirectives = getUserDefinedFieldDirectivesForDefinition(definitionNode, definitionNodes);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
+
     for (const definitionNode of definitionNodes.interfaceTypes) {
         const userDefinedInterfaceDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
