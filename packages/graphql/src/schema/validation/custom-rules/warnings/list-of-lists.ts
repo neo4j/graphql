@@ -35,15 +35,6 @@ export function WarnIfListOfListsFieldDefinition(): ASTVisitor {
                         );
                         warningAlreadyIssued = true;
                     }
-                    // const isListOfLists = listNode.type.kind === Kind.LIST_TYPE;
-                    // // TODO: figure this out - seems to have no impact having this commented-out
-                    // // && listNode.type.type.kind === Kind.LIST_TYPE;
-                    // if (isListOfLists) {
-                    //     console.warn(
-                    //         "Encountered list field definition(s) with list elements. This is not supported by Neo4j, however, you can ignore this warning if the field is only used in the result of custom resolver/Cypher."
-                    //     );
-                    //     warningAlreadyIssued = true;
-                    // }
                 }
             }
         },
