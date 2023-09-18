@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, DirectiveNode, FieldDefinitionNode } from "graphql";
-import { Kind } from "graphql";
+import type { ASTVisitor, DirectiveNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { verifyId } from "../directives/id";
 import { verifyRelationshipFieldType } from "../directives/relationship";
 import { verifyTimestamp } from "../directives/timestamp";
 import { verifyUnique } from "../directives/unique";
 import type { ValidationFunction } from "../utils/document-validation-error";
-import { createGraphQLError, assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { createGraphQLError, assertValid } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 
 function getValidationFunction(directiveName: string): ValidationFunction | undefined {
@@ -45,19 +44,6 @@ function getValidationFunction(directiveName: string): ValidationFunction | unde
 
 export function ValidFieldTypes(context: SDLValidationContext): ASTVisitor {
     return {
-        FieldDefinition(field: FieldDefinitionNode, _key, _parent, path, ancestors) {
-            const [pathToNode] = getPathToNode(path, ancestors);
-            const { isValid, errorMsg } = assertValid(() => isNotMatrixType(field));
-            if (!isValid) {
-                context.reportError(
-                    createGraphQLError({
-                        nodes: [field],
-                        path: pathToNode,
-                        errorMsg,
-                    })
-                );
-            }
-        },
         Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
             const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             const validationFn = getValidationFunction(directiveNode.name.value);
@@ -86,17 +72,4 @@ export function ValidFieldTypes(context: SDLValidationContext): ASTVisitor {
             }
         },
     };
-}
-
-function isNotMatrixType(field: FieldDefinitionNode) {
-    const isListType = field.type.kind === Kind.LIST_TYPE;
-    if (isListType) {
-        const listNode = field.type;
-        const isListOfLists = listNode.type.kind === Kind.LIST_TYPE;
-        // TODO: figure this out - seems to have no impact having this commented-out
-        // && listNode.type.type.kind === Kind.LIST_TYPE;
-        if (isListOfLists) {
-            throw new DocumentValidationError(`Invalid field type: Lists of lists are not supported.`, []);
-        }
-    }
 }
