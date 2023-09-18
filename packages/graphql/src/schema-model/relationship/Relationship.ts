@@ -39,17 +39,6 @@ export class Relationship {
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
 
-    // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get connectionFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Connection`;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get relationshipFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Relationship`;
-    }
-
     constructor({
         name,
         type,

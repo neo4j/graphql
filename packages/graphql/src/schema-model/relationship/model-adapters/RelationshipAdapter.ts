@@ -45,12 +45,28 @@ export class RelationshipAdapter {
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Connection`;
+        return `${this.getResolveTypeSourceName()}${upperFirst(this.name)}Connection`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get relationshipFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Relationship`;
+        return `${this.getResolveTypeSourceName()}${upperFirst(this.name)}Relationship`;
+    }
+
+    /**
+     *  Currently if a concrete entity implements an interface and the interface has this relationship, then the source name will be the interface name.
+     *  If not then the source name will be the concrete entity name.
+     **/
+    private getResolveTypeSourceName(): string {
+        if (this.source instanceof ConcreteEntityAdapter) {
+            const interfaceImplementation = this.source.compositeEntities.find(
+                (entity): entity is InterfaceEntity => entity instanceof InterfaceEntity
+            );
+            if (interfaceImplementation && interfaceImplementation.findAttribute(this.name)) {
+                return interfaceImplementation.name;
+            }
+        }
+        return this.source.name;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
