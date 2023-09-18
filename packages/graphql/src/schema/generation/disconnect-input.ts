@@ -6,7 +6,7 @@ export function withDisconnectInputType({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const implementationsDisconnectInputType = makeImplementationsDisconnectInput({

@@ -11,7 +11,7 @@ export function withObjectType({
     userDefinedObjectDirectives,
     composer,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter; // required
+    concreteEntityAdapter: ConcreteEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     userDefinedObjectDirectives: DirectiveNode[];
     composer: SchemaComposer;

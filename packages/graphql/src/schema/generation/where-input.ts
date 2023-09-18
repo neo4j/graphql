@@ -13,7 +13,7 @@ export function withUniqueWhereInputType({
     concreteEntityAdapter,
     composer,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter; // required
+    concreteEntityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
     const uniqueWhereFields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -33,7 +33,7 @@ export function withWhereInputType({
     features,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
@@ -71,7 +71,7 @@ function makeWhereInput({
     features,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
@@ -89,7 +89,7 @@ function makeWhereFields({
     userDefinedFieldDirectives,
     features,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {

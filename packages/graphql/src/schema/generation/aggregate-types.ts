@@ -12,7 +12,7 @@ export function withAggregateSelectionType({
     propagatedDirectives,
     composer,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter; // required
+    concreteEntityAdapter: ConcreteEntityAdapter;
     aggregationTypesMapper: AggregationTypesMapper;
     propagatedDirectives: DirectiveNode[];
     composer: SchemaComposer;
@@ -36,7 +36,7 @@ function makeAggregableFields({
     concreteEntityAdapter,
     aggregationTypesMapper,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter; // required
+    concreteEntityAdapter: ConcreteEntityAdapter;
     aggregationTypesMapper: AggregationTypesMapper;
 }): ObjectTypeComposerFieldConfigMapDefinition<any, any> {
     const aggregableFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};

@@ -12,7 +12,7 @@ export function withOptionsInputType({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -38,7 +38,7 @@ export function withSortInputType({
     userDefinedFieldDirectives,
     composer,
 }: {
-    relationshipAdapter: RelationshipAdapter; // required
+    relationshipAdapter: RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
@@ -54,7 +54,7 @@ function makeSortFields({
     entityAdapter,
     userDefinedFieldDirectives,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposerFieldConfigMapDefinition {
     const sortFields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -77,7 +77,7 @@ function makeSortInput({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -98,7 +98,7 @@ function makeOptionsInput({
     entityAdapter,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
     const optionsInput = composer.createInputTC({

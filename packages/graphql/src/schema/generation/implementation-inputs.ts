@@ -6,7 +6,7 @@ export function makeImplementationsDisconnectInput({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -32,7 +32,7 @@ export function makeImplementationsConnectInput({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -58,7 +58,7 @@ export function makeImplementationsDeleteInput({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -84,7 +84,7 @@ export function makeImplementationsUpdateInput({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -106,7 +106,7 @@ export function makeImplementationsWhereInput({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};

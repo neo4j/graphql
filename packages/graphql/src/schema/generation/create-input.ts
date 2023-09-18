@@ -10,7 +10,7 @@ export function withCreateInputType({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -32,7 +32,7 @@ export function withCreateInputType({
 }
 
 function makeCreateInputFields(
-    interfaceEntityAdapter: InterfaceEntityAdapter // required
+    interfaceEntityAdapter: InterfaceEntityAdapter
 ): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {

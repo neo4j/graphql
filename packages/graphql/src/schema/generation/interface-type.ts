@@ -17,7 +17,7 @@ export function withInterfaceType({
         includeRelationships: false,
     },
 }: {
-    entityAdapter: InterfaceEntityAdapter | RelationshipAdapter; // required
+    entityAdapter: InterfaceEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     userDefinedInterfaceDirectives: DirectiveNode[];
     composer: SchemaComposer;

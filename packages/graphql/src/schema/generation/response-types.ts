@@ -11,7 +11,7 @@ export function withMutationResponseTypes({
     propagatedDirectives,
     composer,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter; // required
+    concreteEntityAdapter: ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
     composer: SchemaComposer;
 }): void {

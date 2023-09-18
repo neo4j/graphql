@@ -6,7 +6,7 @@ export function withConnectInputType({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const implementationsConnectInputType = makeImplementationsConnectInput({

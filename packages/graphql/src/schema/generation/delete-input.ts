@@ -6,7 +6,7 @@ export function withDeleteInputType({
     interfaceEntityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter; // required
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     const implementationsUpdateInputType = makeImplementationsDeleteInput({ interfaceEntityAdapter, composer });
