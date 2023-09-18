@@ -41,6 +41,7 @@ import { AggregationDurationFilter } from "../ast/filters/aggregation/Aggregatio
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { fromGlobalId } from "../../../utils/global-ids";
 
 type AggregateWhereInput = {
     count: number;
@@ -258,6 +259,37 @@ export class FilterFactory {
                 }
 
                 const attr = entity.findAttribute(fieldName);
+
+                if (fieldName === "id" && !attr) {
+                    const relayAttribute = entity.getRelayId();
+                    if (relayAttribute) {
+                        const relayIdData = fromGlobalId(value as string);
+                        if (relayIdData) {
+                            const { typeName, field } = relayIdData;
+                            let id = relayIdData.id;
+
+                            if (typeName !== entity.name || !field || !id) {
+                                throw new Error(`Cannot query Relay Id on "${entity.name}"`);
+                            }
+                            const idAttribute = entity.findAttribute(field);
+                            if (!idAttribute) throw new Error(`Attribute ${field} not found`);
+
+                            if (idAttribute.isNumeric()) {
+                                id = Number(id);
+                                if (Number.isNaN(id)) {
+                                    throw new Error("Can't parse non-numric relay id");
+                                }
+                            }
+                            return this.createPropertyFilter({
+                                attribute: idAttribute,
+                                comparisonValue: id,
+                                isNot,
+                                operator,
+                            });
+                        }
+                    }
+                }
+
                 if (!attr) throw new Error(`Attribute ${fieldName} not found`);
                 return this.createPropertyFilter({
                     attribute: attr,

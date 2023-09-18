@@ -50,15 +50,17 @@ export function translateRead(
         node,
         context,
         isRootConnectionField,
+        isGlobalNode,
     }: {
         context: Neo4jGraphQLTranslationContext;
         node: Node;
         isRootConnectionField?: boolean;
+        isGlobalNode?: boolean;
     },
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
-    if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase) {
+    if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase && !isGlobalNode) {
         return testQueryAST({ context, node });
     }
 
