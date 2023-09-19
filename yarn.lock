@@ -3680,7 +3680,7 @@ __metadata:
     supertest: 6.3.3
     ts-jest: 29.1.1
     typescript: 5.1.6
-    ws: 8.14.1
+    ws: 8.14.2
   peerDependencies:
     "@neo4j/graphql": ^4.0.0-beta.0
   languageName: unknown
@@ -3841,7 +3841,7 @@ __metadata:
     ts-node: 10.9.1
     typescript: 5.1.6
     uuid: ^9.0.0
-    ws: 8.14.1
+    ws: 8.14.2
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^5.8.0
@@ -27216,9 +27216,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.14.1":
-  version: 8.14.1
-  resolution: "ws@npm:8.14.1"
+"ws@npm:8.14.2":
+  version: 8.14.2
+  resolution: "ws@npm:8.14.2"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -27227,7 +27227,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 9e310be2b0ff69e1f87d8c6d093ecd17a1ed4c37f281d17c35e8c30e2bd116401775b3d503249651374e6e0e1e9905db62fff096b694371c77561aee06bc3466
+  checksum: 3ca0dad26e8cc6515ff392b622a1467430814c463b3368b0258e33696b1d4bed7510bc7030f7b72838b9fdeb8dbd8839cbf808367d6aae2e1d668ce741d4308b
   languageName: node
   linkType: hard
 
