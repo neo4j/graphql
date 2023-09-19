@@ -93,7 +93,7 @@ export class FieldFactory {
             });
         });
 
-        return [...fields];
+        return fields;
     }
 
     private createRelationshipAggregationField(
