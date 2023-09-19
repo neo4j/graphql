@@ -98,7 +98,7 @@ export function getCustomResolverMeta({
     }
 }
 
-function selectionSetToResolveTree(
+export function selectionSetToResolveTree(
     objectFields: ReadonlyArray<FieldDefinitionNode>,
     objects: ObjectTypeDefinitionNode[],
     interfaces: InterfaceTypeDefinitionNode[],

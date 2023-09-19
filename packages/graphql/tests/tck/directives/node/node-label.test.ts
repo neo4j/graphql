@@ -344,7 +344,7 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Film)
             WHERE this.id = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Person)
@@ -360,7 +360,7 @@ describe("Label in Node directive", () => {
             		}
             	}
             WITH this, this_connect_actors0_node
-            	RETURN count(*) AS connect_this_connect_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actors_Actor0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

@@ -100,14 +100,14 @@ describe("createCreateAndParams", () => {
             withVars: ["this0"],
         });
 
-        expect(trimmer(result[0])).toEqual(
+        expect(trimmer(result.create)).toEqual(
             trimmer(`
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
             `)
         );
 
-        expect(result[1]).toMatchObject({
+        expect(result.params).toMatchObject({
             this0_title: "some title",
         });
     });

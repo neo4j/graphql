@@ -19,38 +19,137 @@
 
 import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
-import type {
-    AggregateTypeNames,
-    FulltextTypeNames,
-    MutationResponseTypeNames,
-    RootTypeFieldNames,
-    SubscriptionEvents,
-} from "../../../classes/Node";
+
+type RootTypeFieldNames = {
+    create: string;
+    read: string;
+    update: string;
+    delete: string;
+    aggregate: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+        relationship_created: string;
+        relationship_deleted: string;
+    };
+};
+
+type FulltextTypeNames = {
+    result: string;
+    where: string;
+    sort: string;
+};
+
+type AggregateTypeNames = {
+    selection: string;
+    input: string;
+};
+
+type MutationResponseTypeNames = {
+    create: string;
+    update: string;
+};
+
+type SubscriptionEvents = {
+    create: string;
+    update: string;
+    delete: string;
+    create_relationship: string;
+    delete_relationship: string;
+};
+
+export type UpdateMutationArgumentNames = {
+    connect: string;
+    disconnect: string;
+    create: string;
+    update: string;
+    delete: string;
+    connectOrCreate: string;
+    where: string;
+};
+
+export type CreateMutationArgumentNames = {
+    input: string;
+};
 
 export class ConcreteEntityOperations {
-    private readonly ConcreteEntityAdapter: ConcreteEntityAdapter;
+    private readonly concreteEntityAdapter: ConcreteEntityAdapter;
     private readonly pascalCasePlural: string;
     private readonly pascalCaseSingular: string;
 
-    constructor(ConcreteEntityAdapter: ConcreteEntityAdapter) {
-        this.ConcreteEntityAdapter = ConcreteEntityAdapter;
-        this.pascalCasePlural = upperFirst(this.ConcreteEntityAdapter.plural);
-        this.pascalCaseSingular = upperFirst(this.ConcreteEntityAdapter.singular);
+    constructor(concreteEntityAdapter: ConcreteEntityAdapter) {
+        this.concreteEntityAdapter = concreteEntityAdapter;
+        this.pascalCasePlural = upperFirst(this.concreteEntityAdapter.plural);
+        this.pascalCaseSingular = upperFirst(this.concreteEntityAdapter.singular);
+    }
+
+    public get whereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}Where`;
+    }
+
+    public get uniqueWhereInputTypeName(): string {
+        // ConnectOrCreateWhere.node
+        return `${this.concreteEntityAdapter.name}UniqueWhere`;
+    }
+
+    public get connectOrCreateWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}ConnectOrCreateWhere`;
+    }
+
+    public get createInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}CreateInput`;
+    }
+
+    public get updateInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}UpdateInput`;
+    }
+
+    public get deleteInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}DeleteInput`;
+    }
+
+    public get optionsInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}Options`;
+    }
+
+    public get fullTextInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}Fulltext`;
+    }
+
+    public get sortInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}Sort`;
+    }
+
+    public get relationInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationInput`;
+    }
+
+    public get connectInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}ConnectInput`;
+    }
+
+    public get disconnectInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}DisconnectInput`;
+    }
+
+    public get onCreateInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}OnCreateInput`;
     }
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             create: `create${this.pascalCasePlural}`,
-            read: this.ConcreteEntityAdapter.plural,
+            read: this.concreteEntityAdapter.plural,
             update: `update${this.pascalCasePlural}`,
             delete: `delete${this.pascalCasePlural}`,
-            aggregate: `${this.ConcreteEntityAdapter.plural}Aggregate`,
+            aggregate: `${this.concreteEntityAdapter.plural}Aggregate`,
             subscribe: {
-                created: `${this.ConcreteEntityAdapter.singular}Created`,
-                updated: `${this.ConcreteEntityAdapter.singular}Updated`,
-                deleted: `${this.ConcreteEntityAdapter.singular}Deleted`,
-                relationship_deleted: `${this.ConcreteEntityAdapter.singular}RelationshipDeleted`,
-                relationship_created: `${this.ConcreteEntityAdapter.singular}RelationshipCreated`,
+                created: `${this.concreteEntityAdapter.singular}Created`,
+                updated: `${this.concreteEntityAdapter.singular}Updated`,
+                deleted: `${this.concreteEntityAdapter.singular}Deleted`,
+                relationship_deleted: `${this.concreteEntityAdapter.singular}RelationshipDeleted`,
+                relationship_created: `${this.concreteEntityAdapter.singular}RelationshipCreated`,
             },
         };
     }
@@ -65,8 +164,8 @@ export class ConcreteEntityOperations {
 
     public get aggregateTypeNames(): AggregateTypeNames {
         return {
-            selection: `${this.ConcreteEntityAdapter.name}AggregateSelection`,
-            input: `${this.ConcreteEntityAdapter.name}AggregateSelectionInput`,
+            selection: `${this.concreteEntityAdapter.name}AggregateSelection`,
+            input: `${this.concreteEntityAdapter.name}AggregateSelectionInput`,
         };
     }
 
@@ -92,8 +191,32 @@ export class ConcreteEntityOperations {
             create: `created${this.pascalCaseSingular}`,
             update: `updated${this.pascalCaseSingular}`,
             delete: `deleted${this.pascalCaseSingular}`,
-            create_relationship: `${this.ConcreteEntityAdapter.singular}`,
-            delete_relationship: `${this.ConcreteEntityAdapter.singular}`,
+            create_relationship: `${this.concreteEntityAdapter.singular}`,
+            delete_relationship: `${this.concreteEntityAdapter.singular}`,
+        };
+    }
+
+    public get updateMutationArgumentNames(): UpdateMutationArgumentNames {
+        return {
+            connect: `${this.concreteEntityAdapter.name}ConnectInput`,
+            disconnect: `${this.concreteEntityAdapter.name}DisconnectInput`,
+            create: this.relationInputTypeName,
+            update: this.updateInputTypeName,
+            delete: this.deleteInputTypeName,
+            connectOrCreate: `${this.concreteEntityAdapter.name}ConnectOrCreateInput`,
+            where: this.whereInputTypeName,
+        };
+    }
+
+    public get createMutationArgumentNames(): CreateMutationArgumentNames {
+        return {
+            input: `[${this.createInputTypeName}!]!`,
+        };
+    }
+
+    public get connectOrCreateWhereInputFieldNames() {
+        return {
+            node: `${this.uniqueWhereInputTypeName}!`,
         };
     }
 }
