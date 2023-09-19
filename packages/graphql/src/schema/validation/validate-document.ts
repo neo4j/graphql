@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind } from "graphql";
+import { GraphQLSchema, extendSchema, validateSchema, specifiedDirectives, Kind, print, printSchema } from "graphql";
 import type {
     DefinitionNode,
     DocumentNode,
@@ -62,6 +62,7 @@ import { ValidRelationshipProperties } from "./custom-rules/features/valid-relat
 import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
+import { coalesceDefaultValueOfCorrectTypeRule } from "./custom-rules/coalesce-default-value-of-correct-type";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -188,6 +189,11 @@ function runValidationRulesOnFilteredDocument({
     };
     features: Neo4jFeaturesSettings | undefined;
 }) {
+    const validationSchema = extendSchema(schema, document, {
+        assumeValid: true,
+        assumeValidSDL: true,
+    });
+
     const errors = validateSDL(
         document,
         [
@@ -205,6 +211,7 @@ function runValidationRulesOnFilteredDocument({
             ValidDirectiveInheritance,
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
+            coalesceDefaultValueOfCorrectTypeRule(validationSchema),
         ],
         schema
     );
@@ -260,7 +267,6 @@ function validateDocument({
     });
 
     const schema = extendSchema(schemaToExtend, filteredDocument);
-
     const errors = validateSchema(schema);
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {

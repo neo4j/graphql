@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 
+import type { GraphQLNamedType, GraphQLType } from "graphql";
+import { isWrappingType } from "graphql";
+
 const DEBUG_PREFIX = "@neo4j/graphql";
 
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
@@ -56,6 +59,14 @@ export const GRAPHQL_BUILTIN_SCALAR_TYPES = ["Boolean", "ID", "String", "Int", "
 export const TEMPORAL_SCALAR_TYPES = ["DateTime", "LocalDateTime", "Time", "LocalTime", "Date"];
 export const SCALAR_TYPES = [...GRAPHQL_BUILTIN_SCALAR_TYPES, ...TEMPORAL_SCALAR_TYPES, "BigInt", "Duration"];
 export const SPATIAL_TYPES = ["Point", "CartesianPoint"];
+
+export function isTemporalType(type: GraphQLType) {
+    if (isWrappingType(type)) {
+        return isTemporalType(type.ofType);
+    }
+
+    return TEMPORAL_SCALAR_TYPES.includes(type.name);
+}
 
 export function isTemporal(typeName: string) {
     return TEMPORAL_SCALAR_TYPES.includes(typeName);

@@ -20,6 +20,7 @@
 import type { GraphQLSchema } from "graphql";
 import { getErrorAsync, NoErrorThrownError } from "../../tests/utils/get-error";
 import Neo4jGraphQL from "./Neo4jGraphQL";
+import gql from "graphql-tag";
 
 describe("Neo4jGraphQL", () => {
     test("should construct", () => {

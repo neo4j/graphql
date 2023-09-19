@@ -50,7 +50,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-            new GraphQLError("@coalesce is not supported by Spatial types."),
+            new GraphQLError('Directive "@coalesce" is not supported on fields of type "Point!".'),
         ]);
     });
 
@@ -67,7 +67,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-            new GraphQLError("@coalesce is not supported by Temporal types."),
+            new GraphQLError('Directive "@coalesce" is not supported on fields of type "DateTime!".'),
         ]);
     });
 
@@ -83,7 +83,7 @@ describe("@coalesce directive", () => {
         });
 
         await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-            new GraphQLError("@coalesce.value on String fields must be of type String"),
+            new GraphQLError('Expected argument "value" on directive "@coalesce" to have type "String!", found 2.'),
         ]);
     });
 

@@ -792,7 +792,10 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "DateTime", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -817,7 +820,10 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "DateTime", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -865,7 +871,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "Status", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@default", "value"]);
             });
 
@@ -902,7 +911,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "Status", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["Person", "status", "@default", "value"]);
             });
 
@@ -943,7 +955,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "Status", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["Person", "status", "@default", "value"]);
             });
 
@@ -1003,7 +1018,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on Status list fields must be a list of Status values"
+                    'Expected argument "value" on directive "@default" to have type "[Status]", found "dummy".'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
             });
@@ -1037,7 +1052,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on Status list fields must be a list of Status values"
+                    'Expected argument "value" on directive "@default" to have type "[Status]", found ["dummy"].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
             });
@@ -1085,7 +1100,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Int fields must be of type Int");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "Int", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "age", "@default", "value"]);
             });
 
@@ -1125,7 +1143,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on Int list fields must be a list of Int values"
+                    'Expected argument "value" on directive "@default" to have type "[Int]", found ["dummy"].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ages", "@default", "value"]);
             });
@@ -1150,7 +1168,7 @@ describe("validation 2.0", () => {
             test("@default on float must be float", () => {
                 const doc = gql`
                     type User {
-                        avg: Float @default(value: 2)
+                        avg: Float @default(value: "not a float")
                     }
                 `;
 
@@ -1164,7 +1182,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Float fields must be of type Float");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "Float", found "not a float".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "avg", "@default", "value"]);
             });
 
@@ -1188,7 +1209,7 @@ describe("validation 2.0", () => {
             test("@default on float list must be list of float values", () => {
                 const doc = gql`
                     type User {
-                        avgs: [Float] @default(value: [1])
+                        avgs: [Float] @default(value: ["not a float"])
                     }
                 `;
 
@@ -1204,7 +1225,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on Float list fields must be a list of Float values"
+                    'Expected argument "value" on directive "@default" to have type "[Float]", found ["not a float"].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "avgs", "@default", "value"]);
             });
@@ -1243,7 +1264,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Boolean fields must be of type Boolean");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "Boolean", found 2.'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "registered", "@default", "value"]);
             });
 
@@ -1283,7 +1307,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on Boolean list fields must be a list of Boolean values"
+                    'Expected argument "value" on directive "@default" to have type "[Boolean]", found [2].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@default", "value"]);
             });
@@ -1322,7 +1346,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on String fields must be of type String");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "String", found 2.'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@default", "value"]);
             });
 
@@ -1362,7 +1389,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on String list fields must be a list of String values"
+                    'Expected argument "value" on directive "@default" to have type "[String]", found [2].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "names", "@default", "value"]);
             });
@@ -1387,28 +1414,7 @@ describe("validation 2.0", () => {
             test("@default on ID must be ID", () => {
                 const doc = gql`
                     type User {
-                        uid: ID @default(value: 2)
-                    }
-                `;
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on ID fields must be of type ID");
-                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@default", "value"]);
-            });
-
-            test("@default on ID list must be list of ID values", () => {
-                const doc = gql`
-                    type User {
-                        ids: [ID] @default(value: [2])
+                        uid: ID @default(value: true)
                     }
                 `;
 
@@ -1424,7 +1430,31 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default.value on ID list fields must be a list of ID values"
+                    'Expected argument "value" on directive "@default" to have type "ID", found true.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@default", "value"]);
+            });
+
+            test("@default on ID list must be list of ID values", () => {
+                const doc = gql`
+                    type User {
+                        ids: [ID] @default(value: [true])
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@default" to have type "[ID]", found [true].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ids", "@default", "value"]);
             });
@@ -1480,8 +1510,11 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default is not supported by Spatial types.");
-                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Directive "@default" is not supported on fields of type "Point".'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default"]);
             });
 
             test("@default only supported on scalar types", () => {
@@ -1506,7 +1539,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@default directive can only be used on Temporal types and types: Int | Float | String | Boolean | ID | Enum"
+                    'Directive "@default" is not supported on fields of type "Post".'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "post", "@default"]);
             });
@@ -1540,7 +1573,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@coalesce" to have type "Status", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@coalesce", "value"]);
             });
 
@@ -1574,7 +1610,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Status fields must be of type Status");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@coalesce" to have type "Status", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@coalesce", "value"]);
             });
 
@@ -1634,7 +1673,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Status list fields must be a list of Status values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Status]", found "dummy".'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
             });
@@ -1674,7 +1713,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Status list fields must be a list of Status values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Status]", found "dummy".'
                 );
                 expect(errors[0]).toHaveProperty("path", ["Person", "statuses", "@coalesce", "value"]);
             });
@@ -1718,7 +1757,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Status list fields must be a list of Status values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Status]", found "dummy".'
                 );
                 expect(errors[0]).toHaveProperty("path", ["Person", "statuses", "@coalesce", "value"]);
             });
@@ -1752,7 +1791,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Status list fields must be a list of Status values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Status]", found ["dummy"].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
             });
@@ -1801,7 +1840,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Int fields must be of type Int");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@coalesce" to have type "Int", found "dummy".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "age", "@coalesce", "value"]);
             });
 
@@ -1841,7 +1883,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Int list fields must be a list of Int values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Int]", found ["dummy"].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ages", "@coalesce", "value"]);
             });
@@ -1866,7 +1908,7 @@ describe("validation 2.0", () => {
             test("@coalesce on float must be float", () => {
                 const doc = gql`
                     type User {
-                        avg: Float @coalesce(value: 2)
+                        avg: Float @coalesce(value: "not a float")
                     }
                 `;
 
@@ -1880,7 +1922,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce.value on Float fields must be of type Float");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@coalesce" to have type "Float", found "not a float".'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "avg", "@coalesce", "value"]);
             });
 
@@ -1904,7 +1949,7 @@ describe("validation 2.0", () => {
             test("@coalesce on float list must be list of float values", () => {
                 const doc = gql`
                     type User {
-                        avgs: [Float] @coalesce(value: [1])
+                        avgs: [Float] @coalesce(value: ["not a float"])
                     }
                 `;
 
@@ -1920,7 +1965,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Float list fields must be a list of Float values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Float]", found ["not a float"].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "avgs", "@coalesce", "value"]);
             });
@@ -1961,7 +2006,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Boolean fields must be of type Boolean"
+                    'Expected argument "value" on directive "@coalesce" to have type "Boolean", found 2.'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "registered", "@coalesce", "value"]);
             });
@@ -2002,7 +2047,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on Boolean list fields must be a list of Boolean values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[Boolean]", found [2].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
             });
@@ -2041,7 +2086,10 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce.value on String fields must be of type String");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@coalesce" to have type "String", found 2.'
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@coalesce", "value"]);
             });
 
@@ -2081,7 +2129,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on String list fields must be a list of String values"
+                    'Expected argument "value" on directive "@coalesce" to have type "[String]", found [2].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "names", "@coalesce", "value"]);
             });
@@ -2106,28 +2154,7 @@ describe("validation 2.0", () => {
             test("@coalesce on ID must be ID", () => {
                 const doc = gql`
                     type User {
-                        uid: ID @coalesce(value: 2)
-                    }
-                `;
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions,
-                        features: {},
-                    });
-
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce.value on ID fields must be of type ID");
-                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@coalesce", "value"]);
-            });
-
-            test("@coalesce on ID list must be list of ID values", () => {
-                const doc = gql`
-                    type User {
-                        ids: [ID] @coalesce(value: [2])
+                        uid: ID @coalesce(value: true)
                     }
                 `;
 
@@ -2143,7 +2170,31 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce.value on ID list fields must be a list of ID values"
+                    'Expected argument "value" on directive "@coalesce" to have type "ID", found true.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "uid", "@coalesce", "value"]);
+            });
+
+            test("@coalesce on ID list must be list of ID values", () => {
+                const doc = gql`
+                    type User {
+                        ids: [ID] @coalesce(value: [true])
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                    });
+
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Expected argument "value" on directive "@coalesce" to have type "[ID]", found [true].'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "ids", "@coalesce", "value"]);
             });
@@ -2199,8 +2250,11 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce is not supported by Spatial types.");
-                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Directive "@coalesce" is not supported on fields of type "Point".'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce"]);
             });
 
             test("@coalesce not supported on Temporal types", () => {
@@ -2220,8 +2274,11 @@ describe("validation 2.0", () => {
                 const errors = getError(executeValidate);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@coalesce is not supported by Temporal types.");
-                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Directive "@coalesce" is not supported on fields of type "DateTime".'
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce"]);
             });
 
             test("@coalesce only supported on scalar types", () => {
@@ -2246,7 +2303,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | Enum"
+                    'Directive "@coalesce" is not supported on fields of type "Post".'
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "post", "@coalesce"]);
             });
@@ -5849,7 +5906,7 @@ describe("validation 2.0", () => {
             `;
 
             expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                'Unknown type "Unknown".'
+                'Unknown type: "Unknown".'
             );
         });
 

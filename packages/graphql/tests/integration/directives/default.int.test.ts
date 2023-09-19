@@ -49,7 +49,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-                new GraphQLError("@default is not supported by Spatial types."),
+                new GraphQLError('Directive "@default" is not supported on fields of type "Point!".'),
             ]);
         });
 
@@ -65,7 +65,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-                new GraphQLError("@default.value on String fields must be of type String"),
+                new GraphQLError('Expected argument "value" on directive "@default" to have type "String!", found 2.'),
             ]);
         });
 
@@ -81,7 +81,9 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-                new GraphQLError("@default.value is not a valid DateTime"),
+                new GraphQLError(
+                    'Expected argument "value" on directive "@default" to have type "DateTime!", found "Not a date".'
+                ),
             ]);
         });
 
@@ -121,7 +123,9 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-                new GraphQLError("@default.value on Location fields must be of type Location"),
+                new GraphQLError(
+                    'Expected argument "value" on directive "@default" to have type "Location!", found DIFFERENT.'
+                ),
             ]);
         });
 
@@ -144,7 +148,7 @@ describe("@default directive", () => {
             });
 
             await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
-                new GraphQLError("@default.value on Location fields must be of type Location"),
+                new GraphQLError('Expected argument "value" on directive "@default" to have type "Location!", found 2.'),
             ]);
         });
 
