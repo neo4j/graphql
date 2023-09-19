@@ -27,7 +27,7 @@ export class Attribute {
     public readonly annotations: Partial<Annotations> = {};
     public readonly type: AttributeType;
     public readonly databaseName: string;
-    public readonly description: string;
+    public readonly description?: string;
     public readonly args: Argument[];
 
     constructor({
@@ -49,7 +49,7 @@ export class Attribute {
         this.type = type;
         this.args = args;
         this.databaseName = databaseName ?? name;
-        this.description = description || "";
+        this.description = description;
 
         for (const annotation of annotations) {
             this.addAnnotation(annotation);

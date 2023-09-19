@@ -35,7 +35,7 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
-import { fromGlobalId } from "../../../utils/global-ids";
+import { mergeDeep } from "@graphql-tools/utils";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -48,7 +48,20 @@ export class FieldFactory {
         rawFields: Record<string, ResolveTree>,
         context: Neo4jGraphQLTranslationContext
     ): Field[] {
-        return Object.values(rawFields).map((field: ResolveTree) => {
+        const fieldsToMerge = filterTruthy(
+            Object.values(rawFields).map((field) => {
+                const { fieldName } = parseSelectionSetField(field.name);
+
+                return this.getRequiredResolveTree({
+                    entity,
+                    fieldName,
+                });
+            })
+        );
+
+        const mergedFields: Record<string, ResolveTree> = mergeDeep([rawFields, ...fieldsToMerge]);
+
+        const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field => {
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConnection) {
                 if (entity instanceof RelationshipAdapter)
@@ -79,6 +92,8 @@ export class FieldFactory {
                 context,
             });
         });
+
+        return fields;
     }
 
     private createRelationshipAggregationField(
@@ -86,12 +101,6 @@ export class FieldFactory {
         fieldName: string,
         resolveTree: ResolveTree
     ): OperationField {
-        // const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field);
-        // console.log(fieldName, resolveTree, relationship.aggregationFieldTypename);
-
-        // const args = resolveTree.args;
-        // const fields = resolveTree.fieldsByTypeName[relationship.aggregationFieldTypename];
-
         const operation = this.queryASTFactory.operationsFactory.createAggregationOperation(relationship, resolveTree);
         return new OperationField({
             alias: resolveTree.alias,
@@ -120,6 +129,24 @@ export class FieldFactory {
                 }
             })
         );
+    }
+
+    private getRequiredResolveTree({
+        entity,
+        fieldName,
+    }: {
+        entity: ConcreteEntityAdapter | RelationshipAdapter;
+        fieldName: string;
+    }): Record<string, ResolveTree> | undefined {
+        const attribute = entity.findAttribute(fieldName);
+        if (!attribute) return undefined;
+
+        const customResolver = attribute.annotations.customResolver;
+        if (!customResolver) {
+            return undefined;
+        }
+
+        return customResolver.parsedRequires;
     }
 
     private createAttributeField({

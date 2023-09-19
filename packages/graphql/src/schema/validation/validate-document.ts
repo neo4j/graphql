@@ -43,7 +43,7 @@ import { PointDistance } from "../../graphql/input-objects/PointDistance";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { isRootType } from "../../utils/is-root-type";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
-import type { Neo4jFeaturesSettings, Neo4jGraphQLCallbacks } from "../../types";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { validateSDL } from "./validate-sdl";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
@@ -62,6 +62,7 @@ import { ValidRelationshipProperties } from "./custom-rules/features/valid-relat
 import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
+import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -205,6 +206,7 @@ function runValidationRulesOnFilteredDocument({
             ValidDirectiveInheritance,
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
+            WarnIfListOfListsFieldDefinition,
         ],
         schema
     );

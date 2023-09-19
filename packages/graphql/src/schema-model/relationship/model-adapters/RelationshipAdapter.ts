@@ -18,16 +18,18 @@
  */
 
 import { upperFirst } from "graphql-compose";
-import type { Entity } from "../../entity/Entity";
-import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
-import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
+import type { Annotations } from "../../annotation/Annotation";
+import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
+import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
+import type { Entity } from "../../entity/Entity";
 import { InterfaceEntity } from "../../entity/InterfaceEntity";
 import { UnionEntity } from "../../entity/UnionEntity";
-import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
+import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
+import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 
 export class RelationshipAdapter {
     public readonly name: string;
@@ -40,8 +42,66 @@ export class RelationshipAdapter {
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: NestedOperation[];
     public readonly aggregate: boolean;
-    public readonly isList: boolean;
     public readonly isNullable: boolean;
+    public readonly description?: string;
+    public readonly propertiesTypeName: string | undefined;
+    public readonly inheritedFrom: string | undefined;
+    public readonly isList: boolean;
+    public readonly annotations: Partial<Annotations>;
+    public readonly args: Argument[];
+
+    constructor(
+        relationship: Relationship,
+        sourceAdapter?: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
+    ) {
+        const {
+            name,
+            type,
+            args,
+            attributes = new Map<string, Attribute>(),
+            source,
+            target,
+            direction,
+            isList,
+            queryDirection,
+            nestedOperations,
+            aggregate,
+            isNullable,
+            description,
+            annotations,
+            propertiesTypeName,
+            inheritedFrom,
+        } = relationship;
+        this.name = name;
+        this.type = type;
+        this.args = args;
+        if (sourceAdapter) {
+            this.source = sourceAdapter;
+        } else {
+            if (source instanceof ConcreteEntity) {
+                this.source = new ConcreteEntityAdapter(source);
+            } else if (source instanceof InterfaceEntity) {
+                this.source = new InterfaceEntityAdapter(source);
+            } else if (source instanceof UnionEntity) {
+                this.source = new UnionEntityAdapter(source);
+            } else {
+                throw new Error("relationship source must be an Entity");
+            }
+        }
+        this.direction = direction;
+        this.isList = isList;
+        this.queryDirection = queryDirection;
+        this.nestedOperations = nestedOperations;
+        this.aggregate = aggregate;
+        this.isNullable = isNullable;
+        this.rawEntity = target;
+        this.isNullable = relationship.isNullable;
+        this.initAttributes(attributes);
+        this.description = description;
+        this.annotations = annotations;
+        this.propertiesTypeName = propertiesTypeName;
+        this.inheritedFrom = inheritedFrom;
+    }
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
@@ -69,6 +129,102 @@ export class RelationshipAdapter {
         return this.source.name;
     }
 
+    public get prefixForTypename(): string {
+        // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
+        // then return this.interface.name
+        // TODO: how to get implemented interfaces here??
+        // console.log(this.inheritedFrom, this.source.name, this.name);
+
+        return this.inheritedFrom || this.source.name;
+    }
+
+    public get fieldInputPrefixForTypename(): string {
+        const isTargetInterface = this.target instanceof InterfaceEntityAdapter;
+        if (isTargetInterface) {
+            return this.source.name;
+        }
+        return this.prefixForTypename;
+    }
+
+    public get fieldInputTypeName(): string {
+        return `${this.prefixForTypename}${upperFirst(this.name)}FieldInput`;
+    }
+
+    public get updateFieldInputTypeName(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateFieldInput`;
+    }
+
+    public get createFieldInputTypeName(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}CreateFieldInput`;
+    }
+
+    public get deleteFieldInputTypeName(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DeleteFieldInput`;
+    }
+    public get connectFieldInputTypeName(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}ConnectFieldInput`;
+    }
+
+    public get disconnectFieldInputTypeName(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DisconnectFieldInput`;
+    }
+
+    public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
+        if (this.target instanceof UnionEntityAdapter) {
+            if (!concreteTargetEntityAdapter) {
+                throw new Error("missing concreteTargetEntityAdapter");
+            }
+            return `${this.prefixForTypename}${upperFirst(this.name)}${
+                concreteTargetEntityAdapter.name
+            }ConnectOrCreateFieldInput`;
+        }
+        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectOrCreateFieldInput`;
+    }
+
+    public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
+        return `${this.getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter)}OnCreate`;
+    }
+
+    public get connectionFieldName(): string {
+        return `${this.name}Connection`;
+    }
+
+    public get connectionWhereTypename(): string {
+        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectionWhere`;
+    }
+    public get updateConnectionInputTypename(): string {
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateConnectionInput`;
+    }
+
+    public get aggregateInputTypeName(): string {
+        return `${this.source.name}${upperFirst(this.name)}AggregateInput`;
+    }
+
+    public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
+        return `${this.source.name}${upperFirst(this.name)}${isA}AggregationWhereInput`;
+    }
+
+    public get edgeCreateInputTypeName(): string {
+        return `${this.propertiesTypeName}CreateInput${this.hasNonNullNonGeneratedProperties ? `!` : ""}`;
+    }
+
+    public get edgeUpdateInputTypeName(): string {
+        return `${this.propertiesTypeName}UpdateInput`;
+    }
+
+    public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {
+        // TODO: use this._target in the end; currently passed-in as argument because unions need this per refNode
+        // const target = this._target;
+        // if (!(target instanceof ConcreteEntityAdapter)) {
+        //     // something is wrong
+        //     return;=
+        // }
+        return {
+            where: `${target.operations.connectOrCreateWhereInputTypeName}!`,
+            onCreate: `${this.getConnectOrCreateOnCreateFieldInputTypeName(target)}!`,
+        };
+    }
+
     /**Note: Required for now to infer the types without ResolveTree */
     public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
         const nestedFieldStr = upperFirst(nestedField || "");
@@ -76,47 +232,6 @@ export class RelationshipAdapter {
         return `${this.source.name}${upperFirst(this.target.name)}${upperFirst(
             this.name
         )}${nestedFieldStr}${aggregationStr}Selection`;
-    }
-
-    constructor(
-        relationship: Relationship,
-        sourceAdapter?: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
-    ) {
-        const {
-            name,
-            type,
-            attributes = new Map<string, Attribute>(),
-            source,
-            target,
-            direction,
-            isList,
-            queryDirection,
-            nestedOperations,
-            aggregate,
-        } = relationship;
-        this.name = name;
-        this.type = type;
-        if (sourceAdapter) {
-            this.source = sourceAdapter;
-        } else {
-            if (source instanceof ConcreteEntity) {
-                this.source = new ConcreteEntityAdapter(source);
-            } else if (source instanceof InterfaceEntity) {
-                this.source = new InterfaceEntityAdapter(source);
-            } else if (source instanceof UnionEntity) {
-                this.source = new UnionEntityAdapter(source);
-            } else {
-                throw new Error("relationship source must be an Entity");
-            }
-        }
-        this.direction = direction;
-        this.isList = isList;
-        this.queryDirection = queryDirection;
-        this.nestedOperations = nestedOperations;
-        this.aggregate = aggregate;
-        this.rawEntity = target;
-        this.isNullable = relationship.isNullable;
-        this.initAttributes(attributes);
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {
@@ -176,5 +291,62 @@ export class RelationshipAdapter {
             }
         }
         return this._target;
+    }
+
+    getTargetTypePrettyName(): string {
+        if (this.isList) {
+            return `[${this.target.name}!]${this.isNullable === false ? "!" : ""}`;
+        }
+        return `${this.target.name}${this.isNullable === false ? "!" : ""}`;
+    }
+
+    isReadable(): boolean {
+        return this.annotations.selectable?.onRead !== false;
+    }
+
+    isFilterableByValue(): boolean {
+        return this.annotations.filterable?.byValue !== false;
+    }
+
+    isFilterableByAggregate(): boolean {
+        return this.annotations.filterable?.byAggregate !== false;
+    }
+
+    isAggregable(): boolean {
+        return this.annotations.selectable?.onAggregate !== false;
+    }
+
+    isCreatable(): boolean {
+        return this.annotations.settable?.onCreate !== false;
+    }
+
+    isUpdatable(): boolean {
+        return this.annotations.settable?.onUpdate !== false;
+    }
+
+    /*
+        const nonGeneratedProperties = [
+            ...objectFields.primitiveFields.filter((field) => !field.autogenerate),
+            ...objectFields.scalarFields,
+            ...objectFields.enumFields,
+            ...objectFields.temporalFields.filter((field) => !field.timestamps),
+            ...objectFields.pointFields,
+        ];
+        result.hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
+    */
+    public get nonGeneratedProperties(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isNonGeneratedField());
+    }
+
+    public get hasNonNullNonGeneratedProperties(): boolean {
+        return this.nonGeneratedProperties.some((property) => property.isRequired());
+    }
+
+    public get aggregableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
+    }
+
+    public get aggregationWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
     }
 }
