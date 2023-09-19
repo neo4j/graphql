@@ -182,7 +182,7 @@ function generateInterfaceEntity(
         if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
     });
 
     const inheritedDirectives =
@@ -356,7 +356,7 @@ function generateRelationshipField(
             if (isPrivateAttribute || isInheritedPrivateAttribute) {
                 return;
             }
-            return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+            return parseAttribute(fieldDefinition, inheritedField, definitionCollection, propertyInterface.fields);
         });
 
         attributes = filterTruthy(fields) as Attribute[];
@@ -417,7 +417,7 @@ function generateConcreteEntity(
         if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, inheritedField, definitionCollection);
+        return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
     });
 
     const inheritedDirectives = inheritsFrom?.flatMap((i) => i?.directives || []);
