@@ -51,7 +51,17 @@ export class CypherUnionAttributePartial extends QueryASTNode {
     }
 
     public getFilterPredicate(variable: Cypher.Variable): Cypher.Predicate {
-        return (variable as Cypher.Node).hasLabels(...this.target.getLabels());
+        const labels = this.target.getLabels();
+
+        // TODO: Refactor when `.hasLabel` on variables is supported in CypherBuilder
+        const predicates = labels.map((label) => {
+            return new Cypher.RawCypher((env) => {
+                const varName = env.compile(variable);
+                const labelStr = Cypher.utils.escapeLabel(label);
+                return `${varName}:${labelStr}`;
+            });
+        });
+        return Cypher.and(...predicates);
     }
 
     private setSubqueriesProjection(projection: Cypher.MapProjection, fields: Field[], fromVariable: Cypher.Variable) {
