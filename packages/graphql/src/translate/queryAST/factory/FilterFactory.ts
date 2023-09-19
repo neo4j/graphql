@@ -261,7 +261,8 @@ export class FilterFactory {
                 const attr = entity.findAttribute(fieldName);
 
                 if (fieldName === "id" && !attr) {
-                    const relayAttribute = entity.getRelayId();
+                    const relayAttribute = entity.globalIdField;
+                    //
                     if (relayAttribute) {
                         const relayIdData = fromGlobalId(value as string);
                         if (relayIdData) {

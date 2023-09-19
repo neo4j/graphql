@@ -46,7 +46,7 @@ export class InterfaceEntityAdapter {
         return this.attributes.get(name);
     }
 
-    public getRelayId(): AttributeAdapter | undefined {
+    get globalIdField(): AttributeAdapter | undefined {
         return undefined;
     }
 
