@@ -46,6 +46,10 @@ export class LogicalFilter extends Filter {
         return this.children.flatMap((c) => c.getSubqueries(context));
     }
 
+    public getSelection(context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
+        return this.getChildren().flatMap((c) => c.getSelection(context));
+    }
+
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const predicates = filterTruthy(this.children.map((f) => f.getPredicate(queryASTContext)));
 

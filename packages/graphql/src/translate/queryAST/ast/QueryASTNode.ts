@@ -32,7 +32,7 @@ export abstract class QueryASTNode {
         return [];
     }
 
-    public getSelection(_queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
+    public getSelection(_context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
         return [];
     }
 }
