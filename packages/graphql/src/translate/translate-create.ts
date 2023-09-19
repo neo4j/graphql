@@ -29,6 +29,7 @@ import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -104,14 +105,7 @@ export default async function translateCreate({
             });
             create.push(nestedCreate);
 
-            if (authorizationPredicates.length) {
-                create.push("WITH *");
-                if (authorizationSubqueries.length) {
-                    create.push(...authorizationSubqueries);
-                    create.push("WITH *");
-                }
-                create.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
-            }
+            create.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
 
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;

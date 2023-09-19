@@ -36,6 +36,7 @@ import { createConnectionEventMeta } from "../translate/subscriptions/create-con
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 export default async function translateUpdate({
     node,
@@ -412,14 +413,7 @@ export default async function translateUpdate({
                         cypherParams = { ...cypherParams, ...setA[1] };
                     }
 
-                    if (authorizationPredicates.length) {
-                        creates.push("WITH *");
-                        if (authorizationSubqueries.length) {
-                            creates.push(...authorizationSubqueries);
-                            creates.push("WITH *");
-                        }
-                        creates.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
-                    }
+                    creates.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
 
                     if (context.subscriptionsEnabled) {
                         const [fromVariable, toVariable] =

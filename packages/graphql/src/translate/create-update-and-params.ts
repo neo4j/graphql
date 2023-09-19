@@ -46,6 +46,7 @@ import { createAuthorizationBeforeAndParams } from "./authorization/compatibilit
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 interface Res {
     strs: string[];
@@ -456,14 +457,9 @@ export default function createUpdateAndParams({
                                 subquery.push(setA);
                             }
 
-                            if (authorizationPredicates.length) {
-                                subquery.push("WITH *");
-                                if (authorizationSubqueries.length) {
-                                    subquery.push(...authorizationSubqueries);
-                                    subquery.push("WITH *");
-                                }
-                                subquery.push(`WHERE ${authorizationPredicates.join(" AND ")}`);
-                            }
+                            subquery.push(
+                                ...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries)
+                            );
 
                             if (context.subscriptionsEnabled) {
                                 const [fromVariable, toVariable] =
