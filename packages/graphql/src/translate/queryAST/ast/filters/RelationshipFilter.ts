@@ -104,6 +104,7 @@ export class RelationshipFilter extends Filter {
                 const relationshipMatch = new Cypher.Match(pattern);
 
                 const countVar = new Cypher.Variable();
+
                 returnVars.push(countVar);
 
                 const predicate = f.getPredicate(context);
@@ -111,13 +112,21 @@ export class RelationshipFilter extends Filter {
 
                 if (predicate) withClause.where(predicate);
 
-                withClause.return([Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0)), countVar]);
+                let returnCondition: Cypher.Predicate;
+                if (!this.relationship.isList) {
+                    returnCondition = Cypher.eq(Cypher.count(context.target), new Cypher.Literal(1));
+                } else {
+                    returnCondition = Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0));
+                }
+
+                withClause.return([returnCondition, countVar]);
                 return Cypher.concat(relationshipMatch, ...selection, withClause);
             })
         );
 
         const predicates = returnVars.map((v) => Cypher.eq(v, Cypher.true));
-        this.subqueryPredicate = Cypher.and(this.subqueryPredicate, ...predicates);
+        // this.subqueryPredicate = Cypher.and(this.subqueryPredicate, ...predicates);
+        this.subqueryPredicate = Cypher.and(...predicates);
 
         return nestedSelection;
     }
@@ -256,7 +265,11 @@ export class RelationshipFilter extends Filter {
         switch (this.operator) {
             case "NONE":
             case "SOME":
-                return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
+                if (this.relationship.isList) {
+                    return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
+                } else {
+                    return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
+                }
             case "SINGLE":
                 return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
             case "ALL":
@@ -269,7 +282,9 @@ export class RelationshipFilter extends Filter {
     }
 
     public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-        if (this.shouldCreateOptionalMatch()) {
+        // const nestedSelectionSubqueries = this.getNestedSelectionSubqueries(queryASTContext);
+
+        if (this.shouldCreateOptionalMatch() && !this.subqueryPredicate) {
             const nestedContext = this.getNestedContext(queryASTContext);
 
             const pattern = new Cypher.Pattern(nestedContext.source!)
