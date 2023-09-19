@@ -103,6 +103,32 @@ export class RelationshipAdapter {
         this.inheritedFrom = inheritedFrom;
     }
 
+    /**Note: Required for now to infer the types without ResolveTree */
+    public get connectionFieldTypename(): string {
+        return `${this.getResolveTypeSourceName()}${upperFirst(this.name)}Connection`;
+    }
+
+    /**Note: Required for now to infer the types without ResolveTree */
+    public get relationshipFieldTypename(): string {
+        return `${this.getResolveTypeSourceName()}${upperFirst(this.name)}Relationship`;
+    }
+
+    /**
+     *  Currently if a concrete entity implements an interface and the interface has this relationship, then the source name will be the interface name.
+     *  If not then the source name will be the concrete entity name.
+     **/
+    private getResolveTypeSourceName(): string {
+        if (this.source instanceof ConcreteEntityAdapter) {
+            const interfaceImplementation = this.source.compositeEntities.find(
+                (entity): entity is InterfaceEntity => entity instanceof InterfaceEntity
+            );
+            if (interfaceImplementation && interfaceImplementation.findAttribute(this.name)) {
+                return interfaceImplementation.name;
+            }
+        }
+        return this.source.name;
+    }
+
     public get prefixForTypename(): string {
         // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
         // then return this.interface.name
@@ -118,16 +144,6 @@ export class RelationshipAdapter {
             return this.source.name;
         }
         return this.prefixForTypename;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get connectionFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}Connection`;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get relationshipFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}Relationship`;
     }
 
     public get fieldInputTypeName(): string {

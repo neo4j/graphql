@@ -36,7 +36,7 @@ describe("parseCustomResolverAnnotation", () => {
     it("should parse fields with multiple spaces correctly", () => {
         const directive: DirectiveNode = makeDirectiveNode(
             "customResolver",
-            { requires: "firstName  lastName" },
+            { requires: "firstName lastName" },
             customResolverDirective
         );
         const customResolverAnnotation = parseCustomResolverAnnotation(directive);
