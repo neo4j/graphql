@@ -112,7 +112,7 @@ describe("Cypher Connect", () => {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_colors_connect0_node:Color)
@@ -174,13 +174,13 @@ describe("Cypher Connect", () => {
             	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
             }
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
-            	RETURN count(*) AS connect_this0_colors_connect0_node_photos0_node_color_Color
+            	RETURN count(*) AS connect_this0_colors_connect0_node_photos0_node_color_Color0
             }
-            	RETURN count(*) AS connect_this0_colors_connect0_node_photos_Photo
+            	RETURN count(*) AS connect_this0_colors_connect0_node_photos_Photo0
             }
-            	RETURN count(*) AS connect_this0_colors_connect_Color
+            	RETURN count(*) AS connect_this0_colors_connect_Color0
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect0_node:Photo)
@@ -219,11 +219,11 @@ describe("Cypher Connect", () => {
             	RETURN c AS this0_photos_connect0_node_color_Color_unique_ignored
             }
             WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
-            	RETURN count(*) AS connect_this0_photos_connect0_node_color_Color
+            	RETURN count(*) AS connect_this0_photos_connect0_node_color_Color0
             }
-            	RETURN count(*) AS connect_this0_photos_connect_Photo
+            	RETURN count(*) AS connect_this0_photos_connect_Photo0
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_photos_connect1_node:Photo)
@@ -262,9 +262,9 @@ describe("Cypher Connect", () => {
             	RETURN c AS this0_photos_connect1_node_color_Color_unique_ignored
             }
             WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node
-            	RETURN count(*) AS connect_this0_photos_connect1_node_color_Color
+            	RETURN count(*) AS connect_this0_photos_connect1_node_color_Color0
             }
-            	RETURN count(*) AS connect_this0_photos_connect_Photo
+            	RETURN count(*) AS connect_this0_photos_connect_Photo1
             }
             RETURN this0
             }

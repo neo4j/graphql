@@ -94,7 +94,7 @@ describe("Nested Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
@@ -125,9 +125,9 @@ describe("Nested Unions", () => {
             		}
             	}
             WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node
-            	RETURN count(*) AS connect_this_connect_actors_LeadActor0_node_actedIn_Series_Series
+            	RETURN count(*) AS connect_this_connect_actors_LeadActor0_node_actedIn_Series_Series0
             }
-            	RETURN count(*) AS connect_this_connect_actors_LeadActor_LeadActor
+            	RETURN count(*) AS connect_this_connect_actors_LeadActor_LeadActor0
             }
             WITH *
             CALL {

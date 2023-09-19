@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             CREATE (this0:Post)
             SET this0.title = $this0_title
             SET this0.content = $this0_content
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_author_connect0_node:User)
@@ -92,9 +92,9 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             		}
             	}
             WITH this0, this0_author_connect0_node
-            	RETURN count(*) AS connect_this0_author_connect_User
+            	RETURN count(*) AS connect_this0_author_connect_User0
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	MATCH (this0)<-[this0_author_User_unique:AUTHORED]-(:User)

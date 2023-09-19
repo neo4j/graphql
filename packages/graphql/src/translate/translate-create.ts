@@ -29,6 +29,7 @@ import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 type ProjectionAndParamsResult = {
     projection: Cypher.Expr;
@@ -87,7 +88,12 @@ export default async function translateCreate({
                 withVars.push(META_CYPHER_VARIABLE);
             }
 
-            const createAndParams = createCreateAndParams({
+            const {
+                create: nestedCreate,
+                params,
+                authorizationPredicates,
+                authorizationSubqueries,
+            } = createCreateAndParams({
                 input,
                 node,
                 context,
@@ -97,7 +103,9 @@ export default async function translateCreate({
                 topLevelNodeVariable: varName,
                 callbackBucket,
             });
-            create.push(`${createAndParams[0]}`);
+            create.push(nestedCreate);
+
+            create.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
 
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
@@ -109,7 +117,7 @@ export default async function translateCreate({
 
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
-            res.params = { ...res.params, ...createAndParams[1] };
+            res.params = { ...res.params, ...params };
             return res;
         },
         { createStrs: [], params: {}, withVars: [] }
