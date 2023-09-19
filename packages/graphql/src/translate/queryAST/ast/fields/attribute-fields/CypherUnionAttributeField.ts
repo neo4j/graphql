@@ -17,46 +17,37 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import { AttributeField } from "./AttributeField";
+import type Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { Field } from "../Field";
-import type { QueryASTContext } from "../../QueryASTContext";
 import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { CypherAttributeField } from "./CypherAttributeField";
+import type { CypherUnionAttributePartial } from "./CypherUnionAttributePartial";
 
 // Should Cypher be an operation?
-export class CypherAttributeField extends AttributeField {
-    protected customCypherVar = new Cypher.Node(); // TODO: should be from context scope
-    protected projection: Record<string, string> | undefined;
-    protected nestedFields: Field[] | undefined;
-    protected rawArguments: Record<string, any>;
+export class CypherUnionAttributeField extends CypherAttributeField {
+    protected unionPartials: CypherUnionAttributePartial[];
 
     constructor({
         alias,
         attribute,
         projection,
-        nestedFields,
+        unionPartials,
         rawArguments = {},
     }: {
         alias: string;
         attribute: AttributeAdapter;
         projection?: Record<string, string>;
-        nestedFields?: Field[];
+        unionPartials: CypherUnionAttributePartial[];
         rawArguments: Record<string, any>;
     }) {
-        super({ alias, attribute });
-        this.projection = projection;
-        this.nestedFields = nestedFields;
-        this.rawArguments = rawArguments;
+        super({ alias, attribute, projection, nestedFields: [], rawArguments });
+        this.unionPartials = unionPartials;
     }
 
     public getChildren(): QueryASTNode[] {
         return [...super.getChildren(), ...(this.nestedFields || [])];
-    }
-
-    public getProjectionField(_variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
-        return { [this.alias]: this.customCypherVar };
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
@@ -70,8 +61,8 @@ export class CypherAttributeField extends AttributeField {
             context,
             attribute: this.attribute,
             projectionFields: this.projection,
-            nestedFields: this.nestedFields,
             rawArguments: this.rawArguments,
+            unionPartials: this.unionPartials,
         });
 
         return [subquery];
