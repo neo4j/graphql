@@ -75,7 +75,11 @@ export class FilterFactory {
                 operator: filterOps.operator,
             });
 
-            const filters = this.createConnectionPredicates(relationship, concreteEntity, where);
+            let entityWhere = where;
+            if (where[concreteEntity.name]) {
+                entityWhere = where[concreteEntity.name];
+            }
+            const filters = this.createConnectionPredicates(relationship, concreteEntity, entityWhere);
             connectionFilter.addFilters(filters);
             connectionFilters.push(connectionFilter);
         }

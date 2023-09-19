@@ -44,7 +44,7 @@ export class ConnectionFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} <${this.operator}>`;
+        return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
