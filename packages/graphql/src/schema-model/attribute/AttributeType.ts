@@ -111,8 +111,8 @@ export class ListType {
 }
 
 export class EnumType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add enum values
 
     constructor(name: string, isRequired: boolean) {
@@ -122,8 +122,8 @@ export class EnumType {
 }
 
 export class UnionType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add implementing types
 
     constructor(name: string, isRequired: boolean) {
@@ -133,8 +133,8 @@ export class UnionType {
 }
 
 export class InterfaceType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add shared fields
 
     constructor(name: string, isRequired: boolean) {

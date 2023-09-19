@@ -159,6 +159,24 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
     }
 
+    public getRelayId(): AttributeAdapter | undefined {
+        // TODO: make this O(1) or memoize
+        for (const attr of this.attributes.values()) {
+            if (attr.annotations.relayId) {
+                return attr;
+            }
+        }
+        return undefined;
+    }
+
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+
+    public findRelationship(name: string): RelationshipAdapter | undefined {
+        return this.relationships.get(name);
+    }
+
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
     public getLabels(): string[] {
         return Array.from(this.labels);

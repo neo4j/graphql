@@ -42,6 +42,15 @@ export class InterfaceEntityAdapter {
         this.initConcreteEntities(entity.concreteEntities);
     }
 
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+
+    // RelayId not supported on interfaces
+    public getRelayId(): AttributeAdapter | undefined {
+        return undefined;
+    }
+
     private initConcreteEntities(entities: ConcreteEntity[]) {
         for (const entity of entities) {
             const entityAdapter = new ConcreteEntityAdapter(entity);

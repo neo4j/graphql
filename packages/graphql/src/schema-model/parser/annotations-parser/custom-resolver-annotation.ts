@@ -22,7 +22,7 @@ import { CustomResolverAnnotation } from "../../annotation/CustomResolverAnnotat
 import { parseArguments } from "../parse-arguments";
 
 export function parseCustomResolverAnnotation(directive: DirectiveNode): CustomResolverAnnotation {
-    const { requires } = parseArguments<{ requires: string }>(customResolverDirective, directive);
+    const { requires } = parseArguments<{ requires: string | undefined }>(customResolverDirective, directive);
 
     return new CustomResolverAnnotation({
         requires,
