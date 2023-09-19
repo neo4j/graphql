@@ -24,6 +24,7 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
 import { Memoize } from "typescript-memoize";
+import { filterTruthy } from "../../../../utils/utils";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
@@ -84,8 +85,40 @@ export class RelationshipFilter extends Filter {
         return nestedContext;
     }
 
+    @Memoize()
     private getNestedSelectionSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const nestedSelection = this.targetNodeFilters.flatMap((f) => f.getSelection(context));
+        const returnVars: Cypher.Variable[] = [];
+
+        const nestedSelection = filterTruthy(
+            this.targetNodeFilters.map((f) => {
+                const selection = f.getSelection(context);
+                if (selection.length === 0) return undefined;
+
+                const pattern = new Cypher.Pattern(context.source!)
+                    .withoutLabels()
+                    .related(context.relationship)
+                    .withoutVariable()
+                    .withDirection(this.relationship.getCypherDirection())
+                    .to(context.target);
+
+                const relationshipMatch = new Cypher.Match(pattern);
+
+                const countVar = new Cypher.Variable();
+                returnVars.push(countVar);
+
+                const predicate = f.getPredicate(context);
+                const withClause = new Cypher.With("*");
+
+                if (predicate) withClause.where(predicate);
+
+                withClause.return([Cypher.gt(Cypher.count(context.target), new Cypher.Literal(0)), countVar]);
+                return Cypher.concat(relationshipMatch, ...selection, withClause);
+            })
+        );
+
+        const predicates = returnVars.map((v) => Cypher.eq(v, Cypher.true));
+        this.subqueryPredicate = Cypher.and(this.subqueryPredicate, ...predicates);
+
         return nestedSelection;
     }
 
@@ -108,16 +141,16 @@ export class RelationshipFilter extends Filter {
         const subqueries: Cypher.Clause[] = [];
 
         const nestedSubqueries = this.targetNodeFilters.flatMap((f) => f.getSubqueries(nestedContext));
-        // const nestedSelection = this.getNestedSelectionSubqueries(nestedContext);
+        const nestedSelection = this.getNestedSelectionSubqueries(nestedContext);
 
         // const subqueries = [...nestedSubqueries];
         if (nestedSubqueries.length > 0) {
             subqueries.push(...this.getNestedSubqueries(nestedContext));
         }
 
-        // if (nestedSelection.length > 0) {
-        //     subqueries.push(...nestedSelection);
-        // }
+        if (nestedSelection.length > 0) {
+            subqueries.push(...nestedSelection);
+        }
 
         return subqueries;
     }
