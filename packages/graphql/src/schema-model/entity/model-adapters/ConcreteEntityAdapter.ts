@@ -159,16 +159,6 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
     }
 
-    public getRelayId(): AttributeAdapter | undefined {
-        // TODO: make this O(1) or memoize
-        for (const attr of this.attributes.values()) {
-            if (attr.annotations.relayId) {
-                return attr;
-            }
-        }
-        return undefined;
-    }
-
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
     }
