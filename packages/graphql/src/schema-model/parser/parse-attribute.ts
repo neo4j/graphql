@@ -43,6 +43,7 @@ import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
+import { CustomResolverAnnotation } from "../annotation/CustomResolverAnnotation";
 
 export function parseAttributeArguments(
     fieldArgs: readonly InputValueDefinitionNode[],
@@ -61,13 +62,22 @@ export function parseAttributeArguments(
 export function parseAttribute(
     field: FieldDefinitionNode,
     inheritedField: FieldDefinitionNode[] | undefined,
-    definitionCollection: DefinitionCollection
+    definitionCollection: DefinitionCollection,
+    definitionFields?: ReadonlyArray<FieldDefinitionNode>
 ): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
     const inheritedDirectives = inheritedField?.flatMap((f) => f.directives || []) || [];
+
     const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
+
+    for (const annotation of annotations) {
+        if (annotation instanceof CustomResolverAnnotation) {
+            annotation.parseRequire(definitionCollection.document, definitionFields);
+        }
+    }
+
     const databaseName = getDatabaseName(field, inheritedField);
     return new Attribute({
         name,
