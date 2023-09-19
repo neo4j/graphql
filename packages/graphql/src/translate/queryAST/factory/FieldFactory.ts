@@ -163,7 +163,7 @@ export class FieldFactory {
         let attribute = entity.findAttribute(fieldName);
 
         if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {
-            attribute = entity.getRelayId();
+            attribute = entity.globalIdField;
             if (!attribute) throw new Error(`attribute ${fieldName} not found`);
 
             // NOTE: for some reason, the alias needs to be the same as the database name

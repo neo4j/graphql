@@ -112,16 +112,6 @@ export class ConcreteEntityAdapter {
         return this._relatedEntities;
     }
 
-    public getRelayId(): AttributeAdapter | undefined {
-        // TODO: make this O(1)
-        for (const attr of this.attributes.values()) {
-            if (attr.annotations.relayId) {
-                return attr;
-            }
-        }
-        return undefined;
-    }
-
     public get objectFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isObjectField());
     }
