@@ -36,6 +36,8 @@ import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapte
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { mergeDeep } from "@graphql-tools/utils";
+import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
+import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -234,6 +236,31 @@ export class FieldFactory {
                 if (targetEntity.isConcreteEntity()) {
                     const concreteEntityAdapter = new ConcreteEntityAdapter(targetEntity);
                     nestedFields = this.createFields(concreteEntityAdapter, rawFields, context);
+                } else if (targetEntity.isCompositeEntity()) {
+                    const concreteEntities = targetEntity.concreteEntities.map((e) => new ConcreteEntityAdapter(e));
+                    const nestedUnionFields = concreteEntities.flatMap((concreteEntity) => {
+                        const concreteEntityFields = field.fieldsByTypeName[concreteEntity.name];
+                        const unionNestedFields = this.createFields(
+                            concreteEntity,
+                            { ...rawFields, ...concreteEntityFields },
+                            context
+                        );
+
+                        return [
+                            new CypherUnionAttributePartial({
+                                fields: unionNestedFields,
+                                target: concreteEntity,
+                            }),
+                        ];
+                    });
+
+                    return new CypherUnionAttributeField({
+                        attribute,
+                        alias: field.alias,
+                        projection: cypherProjection,
+                        rawArguments: field.args,
+                        unionPartials: nestedUnionFields,
+                    });
                 }
                 // TODO: implement composite entities
             }

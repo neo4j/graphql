@@ -22,6 +22,7 @@ import { QueryASTContext } from "../ast/QueryASTContext";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
 import type { Field } from "../ast/fields/Field";
+import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 
 export function createCypherAnnotationSubquery({
     context,
@@ -29,12 +30,14 @@ export function createCypherAnnotationSubquery({
     projectionFields,
     nestedFields,
     rawArguments = {},
+    unionPartials,
 }: {
     context: QueryASTContext;
     attribute: AttributeAdapter;
     projectionFields?: Record<string, string>;
     nestedFields?: Field[];
     rawArguments?: Record<string, any>;
+    unionPartials?: CypherUnionAttributePartial[];
 }): Cypher.Clause {
     const cypherAnnotation = attribute.annotations.cypher;
     if (!cypherAnnotation) throw new Error("Missing Cypher Annotation on Cypher field");
@@ -43,6 +46,7 @@ export function createCypherAnnotationSubquery({
     const returnVariable = context.getScopeVariable(attribute.name);
 
     const statementSubquery = getStatementSubquery(context, cypherAnnotation, attribute, rawArguments);
+    // TODO: pass unionPartials here
     const nestedFieldsSubqueries = getNestedFieldsSubqueries(returnVariable, context, nestedFields);
 
     if (attribute.isScalar() || attribute.isEnum()) {
@@ -56,11 +60,19 @@ export function createCypherAnnotationSubquery({
         fields: projectionFields,
         attribute,
         nestedFields,
+        unionPartials,
     });
+
+    let extraWith: Cypher.Clause | undefined;
+    if (unionPartials) {
+        const unionPredicates = unionPartials.map((partial) => partial.getFilterPredicate(returnVariable));
+        extraWith = new Cypher.With("*").where(Cypher.or(...unionPredicates));
+    }
 
     return Cypher.concat(
         statementSubquery,
         nestedFieldsSubqueries,
+        extraWith,
         new Cypher.Return([returnProjection, returnVariable])
     );
 }
@@ -80,7 +92,9 @@ function getNestedFieldsSubqueries(
     isCypherNode(target);
     const nodeProjectionSubqueries = nestedFields.flatMap((f) =>
         f
-            .getSubqueries(new QueryASTContext({ target, env: context.env, neo4jGraphQLContext: context.neo4jGraphQLContext }))
+            .getSubqueries(
+                new QueryASTContext({ target, env: context.env, neo4jGraphQLContext: context.neo4jGraphQLContext })
+            )
             .map((sq) => new Cypher.Call(sq).innerWith(target))
     );
     return Cypher.concat(...nodeProjectionSubqueries);
@@ -101,7 +115,7 @@ function getStatementSubquery(
             if (value) {
                 const paramName = new Cypher.Param(value).getCypher(env);
                 statement = statement.replaceAll(`$${arg.name}`, paramName);
-            }  else {
+            } else {
                 statement = statement.replaceAll(`$${arg.name}`, "NULL");
             }
         });
@@ -116,16 +130,32 @@ function getProjectionExpr({
     fields,
     attribute,
     nestedFields,
+    unionPartials,
 }: {
     fromVariable: Cypher.Variable;
     fields: Record<string, string> | undefined;
     attribute: AttributeAdapter;
     nestedFields?: Field[];
+    unionPartials?: CypherUnionAttributePartial[];
 }): Cypher.Expr {
     let projection: Cypher.Expr = fromVariable;
+
+    if (unionPartials) {
+        const caseClause = new Cypher.Case();
+
+        for (const partial of unionPartials) {
+            const projection = partial.getProjectionExpression(fromVariable);
+            const predicate = partial.getFilterPredicate(fromVariable);
+            caseClause.when(predicate).then(projection);
+        }
+
+        return Cypher.collect(caseClause);
+    }
+
     if (fields) {
         projection = new Cypher.MapProjection(fromVariable);
         // nested fields are presents only if the attribute is an object or an abstract type, and they produce a different projection
+
         if (nestedFields) {
             setSubqueriesProjection(projection, nestedFields, fromVariable);
         } else {

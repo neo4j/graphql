@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
         });
     });
 
-    test("expectMultipleValues should be set to true in apoc.cypher.runFirstColumn", async () => {
+    test("collect unions returned by cypher directive", async () => {
         const query = gql`
             query {
                 communities(where: { id: 4656564 }) {
@@ -95,8 +95,8 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                 WITH *
                 WHERE (this0:Content OR this0:Project)
                 RETURN collect(CASE
-                    WHEN this0:Content THEN this0 { __resolveType: \\"Content\\",  .name }
-                    WHEN this0:Project THEN this0 { __resolveType: \\"Project\\",  .name }
+                    WHEN this0:Content THEN this0 { .name, __resolveType: \\"Content\\" }
+                    WHEN this0:Project THEN this0 { .name, __resolveType: \\"Project\\" }
                 END) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"
