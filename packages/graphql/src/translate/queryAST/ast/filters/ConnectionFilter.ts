@@ -12,7 +12,7 @@ import { isInterfaceEntity } from "../../utils/is-interface-entity";
 export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
     private relationship: RelationshipAdapter;
-    private target: ConcreteEntityAdapter | InterfaceEntityAdapter; // target can be an interface entity, only we resolve the connection filter with the label predicate optimization
+    private target: ConcreteEntityAdapter | InterfaceEntityAdapter; // target can be an interface entity, only with the label predicate optimization
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
