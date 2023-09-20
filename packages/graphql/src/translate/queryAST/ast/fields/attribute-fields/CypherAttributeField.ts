@@ -72,6 +72,7 @@ export class CypherAttributeField extends AttributeField {
             projectionFields: this.projection,
             nestedFields: this.nestedFields,
             rawArguments: this.rawArguments,
+            subqueries: [],
         });
 
         return [subquery];
