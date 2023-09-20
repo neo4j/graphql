@@ -34,6 +34,7 @@ import { parseWhereField } from "./parsers/parse-where-field";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { createParameterWhere } from "../../where/create-parameter-where";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -57,7 +58,7 @@ export class AuthFilterFactory extends FilterFactory {
                 return this.createNodeFilters(entity, value);
                 // nestedFilters.push(...this.createNodeFilters(entity, populatedWhere.node));
             } else if (key === "jwt") {
-                return this.createJWTFilters(context.authorization.jwtParam, value);
+                return this.createJWTFilters(context.authorization.jwtParam, value, context);
             }
 
             return [];
@@ -68,7 +69,11 @@ export class AuthFilterFactory extends FilterFactory {
         return nestedFilters;
     }
 
-    private createJWTFilters(jwtPayload: Cypher.Param, where: Record<string, unknown>): Filter[] {
+    private createJWTFilters(
+        jwtPayload: Cypher.Param,
+        where: Record<string, unknown>,
+        context: Neo4jGraphQLTranslationContext
+    ): Filter[] {
         return Object.entries(where).map(([key, value]) => {
             const { fieldName, operator } = parseWhereField(key);
             if (!fieldName) {
@@ -78,37 +83,25 @@ export class AuthFilterFactory extends FilterFactory {
             if (!operator) {
                 throw new Error(`Failed to find operator in filter: ${key}`);
             }
+
+            const mappedJwtClaim = context.authorization.claims?.get(fieldName);
+
+            let target: Cypher.Property = jwtPayload.property(fieldName);
+
+            if (mappedJwtClaim) {
+                // TODO: validate browser compatibility for Toolbox (https://caniuse.com/?search=Lookbehind)
+                let paths = mappedJwtClaim.split(/(?<!\\)\./);
+
+                paths = paths.map((p) => p.replaceAll(/\\\./g, "."));
+
+                target = jwtPayload.property(...paths);
+            }
             return new JWTFilter({
                 operator: operator || "EQ",
-                JWTClaim: jwtPayload.property(fieldName),
+                JWTClaim: target,
                 comparisonValue: value,
             });
-
-            // const match = whereRegEx.exec(key);
-            // if (!match) {
-            //     throw new Error(`Failed to match key in filter: ${key}`);
-            // }
-
-            // const { fieldName, operator } = match?.groups as WhereRegexGroups;
         });
-
-        // JWT ROLES CLAIM
-        // // TODO: this is specific to authorization,
-        // // but this function has arguments which would indicate it should be generic
-        // const mappedJwtClaim = context.authorization.claims?.get(fieldName);
-
-        // let target: Cypher.Property | undefined;
-
-        // if (mappedJwtClaim) {
-        //     // TODO: validate browser compatibility for Toolbox (https://caniuse.com/?search=Lookbehind)
-        //     let paths = mappedJwtClaim.split(/(?<!\\)\./);
-
-        //     paths = paths.map((p) => p.replaceAll(/\\\./g, "."));
-
-        //     target = context.authorization.jwtParam.property(...paths);
-        // } else {
-        //     target = context.authorization.jwtParam.property(fieldName);
-        // }
     }
 
     protected createPropertyFilter({

@@ -37,6 +37,32 @@ export function checkAuthentication({
     targetOperations: AuthenticationOperation[];
     field?: string;
 }) {
+    const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
+
+    if (concreteEntities.length !== 1) {
+        throw new Error("Couldn't match entity");
+    }
+    const entity = concreteEntities[0] as ConcreteEntity;
+
+    return checkEntityAuthentication({
+        context,
+        entity,
+        targetOperations,
+        field,
+    });
+}
+
+export function checkEntityAuthentication({
+    context,
+    entity,
+    targetOperations,
+    field,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entity: ConcreteEntity;
+    targetOperations: AuthenticationOperation[];
+    field?: string;
+}) {
     const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
     if (schemaLevelAnnotation) {
         const requiresAuthentication = targetOperations.some(
@@ -46,14 +72,6 @@ export function checkAuthentication({
             applyAuthentication({ context, annotation: schemaLevelAnnotation });
         }
     }
-
-    const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
-
-    if (concreteEntities.length !== 1) {
-        throw new Error("Couldn't match entity");
-    }
-
-    const entity = concreteEntities[0] as ConcreteEntity;
 
     const annotation: AuthenticationAnnotation | undefined = field
         ? entity.findAttribute(field)?.annotations.authentication

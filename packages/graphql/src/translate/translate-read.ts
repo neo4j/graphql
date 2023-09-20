@@ -31,6 +31,7 @@ import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
+import { checkAuthentication } from "./authorization/check-authentication";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -39,6 +40,7 @@ function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationConte
     const factory = new QueryASTFactory(context.schemaModel);
     const entity = context.schemaModel.getEntity(node.name);
     if (!entity) throw new Error("Entity not found");
+    checkAuthentication({ context, node, targetOperations: ["READ"] }); // Should this be done at every level?
     const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity, context);
     debug(queryAST.print());
     const clause = queryAST.transpile(context);
