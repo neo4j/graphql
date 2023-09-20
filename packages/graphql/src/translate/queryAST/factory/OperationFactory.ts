@@ -79,7 +79,14 @@ export class OperationsFactory {
                 const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
                 const attribute = entity.findAttribute(fieldName);
                 if (!attribute) return undefined;
-                return this.authorizationFactory.createAttributeAuthFilters(attribute, entity, ["READ"], context);
+                const result = this.authorizationFactory.createAttributeAuthFilters(
+                    attribute,
+                    entity,
+                    ["READ"],
+                    context
+                );
+
+                return result;
             })
         );
     }
@@ -369,7 +376,11 @@ export class OperationsFactory {
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
         if (authFilters) {
-            operation.addAuthFilters(authFilters, ...authNodeAttributeFilters);
+            operation.addAuthFilters(authFilters);
+        }
+
+        if (authNodeAttributeFilters) {
+            operation.addAuthFilters(...authNodeAttributeFilters);
         }
 
         return operation;
@@ -411,6 +422,9 @@ export class OperationsFactory {
         operation.setFilters(filters);
         if (authFilters) {
             operation.addAuthFilters(authFilters, ...authAttributeFilters);
+        }
+        if (authAttributeFilters) {
+            operation.addAuthFilters(...authAttributeFilters);
         }
         this.hydrateInterfaceReadOperationWithPagination(entity, operation, resolveTree);
 
