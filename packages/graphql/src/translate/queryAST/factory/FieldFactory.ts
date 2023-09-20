@@ -39,7 +39,6 @@ import { mergeDeep } from "@graphql-tools/utils";
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
-import Cypher from "@neo4j/cypher-builder";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -88,7 +87,7 @@ export class FieldFactory {
 
                 const relationship = entity.findRelationship(fieldName);
                 if (!relationship) throw new Error("Relationship for aggregation not found");
-                return this.createRelationshipAggregationField(relationship, fieldName, field);
+                return this.createRelationshipAggregationField(relationship, fieldName, field, context);
             }
 
             if (isConcreteEntity(entity)) {
@@ -112,9 +111,14 @@ export class FieldFactory {
     private createRelationshipAggregationField(
         relationship: RelationshipAdapter,
         fieldName: string,
-        resolveTree: ResolveTree
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
     ): OperationField {
-        const operation = this.queryASTFactory.operationsFactory.createAggregationOperation(relationship, resolveTree);
+        const operation = this.queryASTFactory.operationsFactory.createAggregationOperation(
+            relationship,
+            resolveTree,
+            context
+        );
         return new OperationField({
             alias: resolveTree.alias,
             operation,
@@ -124,9 +128,29 @@ export class FieldFactory {
     public createAggregationFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter,
         rawFields: Record<string, ResolveTree>
+        // context: Neo4jGraphQLTranslationContext
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
+                // if (isConcreteEntity(entity)) {
+                //     // TODO: Move this to the tree
+                //     checkEntityAuthentication({
+                //         entity: entity.entity,
+                //         targetOperations: ["AGGREGATE"],
+                //         context,
+                //         field: field.name,
+                //     });
+                // }
+                // if (entity instanceof RelationshipAdapter && isConcreteEntity(entity.target)) {
+                //     // TODO: Move this to the tree
+                //     checkEntityAuthentication({
+                //         entity: entity.target.entity,
+                //         targetOperations: ["AGGREGATE"],
+                //         context,
+                //         field: field.name,
+                //     });
+                // }
+
                 if (field.name === "count") {
                     return new CountField({
                         alias: field.alias,

@@ -168,9 +168,17 @@ export class OperationsFactory {
     // TODO: dupe from read operation
     public createAggregationOperation(
         relationship: RelationshipAdapter,
-        resolveTree: ResolveTree
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
     ): AggregationOperation {
         const entity = relationship.target as ConcreteEntityAdapter;
+        if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["AGGREGATE"],
+                context,
+            });
+        }
 
         const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
         const edgeRawFields = {
@@ -187,6 +195,7 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
 
         const filters = this.filterFactory.createNodeFilters(
             relationship.target as ConcreteEntityAdapter | InterfaceEntityAdapter,
@@ -197,6 +206,11 @@ export class OperationsFactory {
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
+
+        if (authFilters) {
+            operation.addAuthFilters(authFilters);
+        }
+
         // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
         if (options) {

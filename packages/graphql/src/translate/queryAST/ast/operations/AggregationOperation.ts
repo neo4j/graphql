@@ -30,6 +30,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Sort } from "../sort/Sort";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -39,6 +40,8 @@ export class AggregationOperation extends Operation {
     public fields: AggregationField[] = []; // Aggregation fields
     public nodeFields: AggregationField[] = []; // Aggregation node fields
     public edgeFields: AggregationField[] = []; // Aggregation node fields
+
+    protected authFilters: AuthorizationFilters[] = [];
 
     public aggregationProjectionMap = new Cypher.Map();
 
@@ -70,6 +73,10 @@ export class AggregationOperation extends Operation {
         this.filters = filters;
     }
 
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
+    }
+
     public getChildren(): QueryASTNode[] {
         return filterTruthy([
             ...this.fields,
@@ -77,6 +84,7 @@ export class AggregationOperation extends Operation {
             ...this.edgeFields,
             ...this.filters,
             ...this.sortFields,
+            ...this.authFilters,
             this.pagination,
         ]);
     }
@@ -164,7 +172,12 @@ export class AggregationOperation extends Operation {
     }
 
     private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
+        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
+    }
+
+    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
