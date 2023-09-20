@@ -37,4 +37,5 @@ export class UnionEntityAdapter {
             this.concreteEntities.push(entityAdapter);
         }
     }
+
 }
