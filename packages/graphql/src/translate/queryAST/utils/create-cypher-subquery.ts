@@ -30,6 +30,7 @@ export function createCypherAnnotationSubquery({
     projectionFields,
     nestedFields,
     rawArguments = {},
+    extraParams = {},
     unionPartials,
     subqueries,
 }: {
@@ -38,6 +39,7 @@ export function createCypherAnnotationSubquery({
     projectionFields?: Record<string, string>;
     nestedFields?: Field[];
     rawArguments?: Record<string, any>;
+    extraParams?: Record<string, any>;
     subqueries: Cypher.Clause[];
     unionPartials?: CypherUnionAttributePartial[];
 }): Cypher.Clause {
@@ -47,7 +49,7 @@ export function createCypherAnnotationSubquery({
     const columnName = new Cypher.NamedVariable(cypherAnnotation.columnName);
     const returnVariable = context.getScopeVariable(attribute.name);
 
-    const statementSubquery = getStatementSubquery(context, cypherAnnotation, attribute, rawArguments);
+    const statementSubquery = getStatementSubquery(context, cypherAnnotation, attribute, rawArguments, extraParams);
     // TODO: pass unionPartials here
     const nestedFieldsSubqueries = getNestedFieldsSubqueries(returnVariable, context, nestedFields);
 
@@ -107,7 +109,8 @@ function getStatementSubquery(
     context: QueryASTContext,
     cypherAnnotation: CypherAnnotation,
     attribute: AttributeAdapter,
-    rawArguments: Record<string, any>
+    rawArguments: Record<string, any>,
+    extraParams: Record<string, any>
 ): Cypher.Call {
     const innerAlias = new Cypher.With([context.target, "this"]);
 
@@ -122,7 +125,8 @@ function getStatementSubquery(
                 statement = statement.replaceAll(`$${arg.name}`, "NULL");
             }
         });
-        return statement;
+
+        return [statement, extraParams];
     });
 
     return new Cypher.Call(Cypher.concat(innerAlias, statementSubquery)).innerWith(context.target);

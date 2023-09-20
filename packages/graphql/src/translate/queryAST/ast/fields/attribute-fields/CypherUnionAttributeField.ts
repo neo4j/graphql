@@ -36,14 +36,16 @@ export class CypherUnionAttributeField extends CypherAttributeField {
         projection,
         unionPartials,
         rawArguments = {},
+        extraParams = {},
     }: {
         alias: string;
         attribute: AttributeAdapter;
         projection?: Record<string, string>;
         unionPartials: CypherUnionAttributePartial[];
         rawArguments: Record<string, any>;
+        extraParams: Record<string, any>;
     }) {
-        super({ alias, attribute, projection, nestedFields: [], rawArguments });
+        super({ alias, attribute, projection, nestedFields: [], rawArguments, extraParams });
         this.unionPartials = unionPartials;
     }
 
@@ -83,6 +85,7 @@ export class CypherUnionAttributeField extends CypherAttributeField {
             rawArguments: this.rawArguments,
             unionPartials: this.unionPartials,
             subqueries: filterTruthy(nestedSubqueries),
+            extraParams: this.extraParams,
         });
 
         return [subquery];

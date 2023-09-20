@@ -39,6 +39,7 @@ import { mergeDeep } from "@graphql-tools/utils";
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import Cypher from "@neo4j/cypher-builder";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -227,10 +228,17 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): CypherAttributeField {
+        const cypherAnnotation = attribute.annotations.cypher;
+        if (!cypherAnnotation) throw new Error("@Cypher directive missing");
         const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
         const rawFields = field.fieldsByTypeName[typeName];
         let cypherProjection: Record<string, string> | undefined;
         let nestedFields: Field[] | undefined;
+        const extraParams: Record<string, any> = {};
+
+        if (cypherAnnotation.statement.includes("$jwt") && context.authorization.jwtParam) {
+            extraParams.jwt = context.authorization.jwtParam.value;
+        }
 
         if (rawFields) {
             cypherProjection = Object.values(rawFields).reduce((acc, f) => {
@@ -270,9 +278,9 @@ export class FieldFactory {
                         projection: cypherProjection,
                         rawArguments: field.args,
                         unionPartials: nestedUnionFields,
+                        extraParams,
                     });
                 }
-                // TODO: implement composite entities
             }
         }
 
@@ -282,6 +290,7 @@ export class FieldFactory {
             projection: cypherProjection,
             nestedFields,
             rawArguments: field.args,
+            extraParams,
         });
     }
 
