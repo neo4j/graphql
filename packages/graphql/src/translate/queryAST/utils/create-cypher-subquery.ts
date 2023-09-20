@@ -31,12 +31,14 @@ export function createCypherAnnotationSubquery({
     nestedFields,
     rawArguments = {},
     unionPartials,
+    subqueries,
 }: {
     context: QueryASTContext;
     attribute: AttributeAdapter;
     projectionFields?: Record<string, string>;
     nestedFields?: Field[];
     rawArguments?: Record<string, any>;
+    subqueries: Cypher.Clause[];
     unionPartials?: CypherUnionAttributePartial[];
 }): Cypher.Clause {
     const cypherAnnotation = attribute.annotations.cypher;
@@ -73,6 +75,7 @@ export function createCypherAnnotationSubquery({
         statementSubquery,
         nestedFieldsSubqueries,
         extraWith,
+        ...subqueries,
         new Cypher.Return([returnProjection, returnVariable])
     );
 }

@@ -77,6 +77,7 @@ export class CypherPropertySort extends Sort {
         const subquery = createCypherAnnotationSubquery({
             context,
             attribute: this.attribute,
+            subqueries: [],
         });
         return [subquery];
     }

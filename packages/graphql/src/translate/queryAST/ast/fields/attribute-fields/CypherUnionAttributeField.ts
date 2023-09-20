@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { CypherAttributeField } from "./CypherAttributeField";
 import type { CypherUnionAttributePartial } from "./CypherUnionAttributePartial";
+import { filterTruthy } from "../../../../../utils/utils";
 
 // Should Cypher be an operation?
 export class CypherUnionAttributeField extends CypherAttributeField {
@@ -47,7 +48,7 @@ export class CypherUnionAttributeField extends CypherAttributeField {
     }
 
     public getChildren(): QueryASTNode[] {
-        return [...super.getChildren(), ...(this.nestedFields || [])];
+        return [...super.getChildren(), ...this.unionPartials];
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
@@ -57,12 +58,31 @@ export class CypherUnionAttributeField extends CypherAttributeField {
         }
 
         scope.set(this.attribute.name, this.customCypherVar);
+
+        // TODO: this logic may be needed in normal Cypher Fields
+        // This handles nested subqueries for union cypher
+        const nestedSubqueries = this.unionPartials.flatMap((p) => {
+            const innerNode = new Cypher.Node();
+            const nestedContext = context.push({
+                target: innerNode,
+                relationship: new Cypher.Relationship(),
+            });
+
+            const callSubqueries = p.getSubqueries(nestedContext).map((sq) => {
+                return new Cypher.Call(sq).innerWith(innerNode);
+            });
+            if (callSubqueries.length === 0) return undefined;
+            const withClause = new Cypher.With("*", [this.customCypherVar, innerNode]);
+            return Cypher.concat(withClause, ...callSubqueries);
+        });
+
         const subquery = createCypherAnnotationSubquery({
             context,
             attribute: this.attribute,
             projectionFields: this.projection,
             rawArguments: this.rawArguments,
             unionPartials: this.unionPartials,
+            subqueries: filterTruthy(nestedSubqueries),
         });
 
         return [subquery];
