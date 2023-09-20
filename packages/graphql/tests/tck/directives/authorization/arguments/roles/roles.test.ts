@@ -152,7 +152,7 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WITH *
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN this { .id, .name, .password } AS this"
         `);
 
@@ -166,7 +166,8 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"param3\\": \\"super-admin\\"
+                \\"param3\\": \\"super-admin\\",
+                \\"param4\\": \\"super-admin\\"
             }"
         `);
     });
@@ -190,7 +191,7 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WITH *
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 CALL {
@@ -214,7 +215,8 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"param3\\": \\"super-admin\\"
+                \\"param3\\": \\"super-admin\\",
+                \\"param4\\": \\"super-admin\\"
             }"
         `);
     });
