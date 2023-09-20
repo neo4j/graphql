@@ -282,7 +282,6 @@ export class RelationshipFilter extends Filter {
     }
 
     public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-        // const nestedSelectionSubqueries = this.getNestedSelectionSubqueries(queryASTContext);
 
         if (this.shouldCreateOptionalMatch() && !this.subqueryPredicate) {
             const nestedContext = this.getNestedContext(queryASTContext);
