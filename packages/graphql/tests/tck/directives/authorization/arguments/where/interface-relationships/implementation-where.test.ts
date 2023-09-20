@@ -614,12 +614,12 @@ describe("Cypher Auth Where", () => {
             	DETACH DELETE x
             }
             }
-            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:User)
-            WITH *, count(authorization_this0) AS creatorCount
             WITH *
             CALL {
             WITH *
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
+            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:User)
+            WITH *, count(authorization_this0) AS creatorCount
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)))
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {

@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                 creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
             }
 
-            type ${Person} @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" } } } }]) {
+            type ${Person} @authorization(validate: [{ where: { node: { creator: { id: "$jwt.uid" }}}}]) {
                 id: ID! @id @unique
                 name: String!
                 creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN)
@@ -96,7 +96,17 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         await driver.close();
     });
 
-    test("should not raise cardinality error when connecting on create", async () => {
+    test("should not raise cardinality error when deleting on update", async () => {
+        const createUsers = /* GraphQL */ `
+            mutation {
+                ${User.operations.create}(input: [{ id: "user1_id", email: "user1_id@email.com" }]) {
+                    ${User.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
         const createGroups = /* GraphQL */ `
             mutation CreateGroups($input: [${Group}CreateInput!]!) {
                 ${Group.operations.create}(input: $input) {
@@ -124,6 +134,14 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         `;
 
         const token = createBearerToken(secret, { uid: "user1_id" });
+
+        const createUsersResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: createUsers,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(createUsersResult.errors).toBeFalsy();
 
         const createGroupsResult = await graphql({
             schema: await neoSchema.getSchema(),
@@ -174,14 +192,14 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
             contextValue: neo4j.getContextValues({ token }),
             variableValues: {
                 where: {
-                    id: "group1_id",
+                    name: "Group 1",
                 },
                 delete: {
                     members: [
                         {
                             where: {
                                 node: {
-                                    id: "member1_id",
+                                    name: "Member 1",
                                 },
                             },
                         },
@@ -191,11 +209,12 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         });
 
         expect(updateGroupsResult.errors).toBeFalsy();
+        // Before the fix, the Mutation was actually deleting two nodes incorrectly
         expect(updateGroupsResult.data).toEqual({
             [Group.operations.update]: {
                 info: {
                     nodesDeleted: 1,
-                    relationshipsDeleted: 1,
+                    relationshipsDeleted: 2,
                 },
             },
         });
