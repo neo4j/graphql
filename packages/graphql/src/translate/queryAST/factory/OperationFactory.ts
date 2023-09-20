@@ -46,6 +46,7 @@ import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
+import { checkEntityAuthentication } from "../../authorization/check-authentication";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -92,6 +93,11 @@ export class OperationsFactory {
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
         if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["READ"],
+                context,
+            });
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
@@ -209,6 +215,12 @@ export class OperationsFactory {
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
 
         if (isConcreteEntity(target)) {
+            checkEntityAuthentication({
+                entity: target.entity,
+                targetOperations: ["READ"],
+                context,
+            });
+
             const operation = new ConnectionReadOperation({ relationship, directed, target });
 
             return this.hydrateConnectionOperationAST({

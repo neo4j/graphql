@@ -55,6 +55,8 @@ export class ConcreteEntityAdapter {
     // specialize models
     private _operations: ConcreteEntityOperations | undefined;
 
+    public readonly entity: ConcreteEntity;
+
     constructor(entity: ConcreteEntity) {
         this.name = entity.name;
         this.description = entity.description;
@@ -64,6 +66,7 @@ export class ConcreteEntityAdapter {
         this.initRelationships(entity.relationships);
         this.description = entity.description;
         this.compositeEntities = entity.compositeEntities;
+        this.entity = entity;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {

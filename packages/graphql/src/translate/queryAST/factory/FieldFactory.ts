@@ -38,6 +38,7 @@ import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { mergeDeep } from "@graphql-tools/utils";
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
+import { checkEntityAuthentication } from "../../authorization/check-authentication";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -64,6 +65,15 @@ export class FieldFactory {
         const mergedFields: Record<string, ResolveTree> = mergeDeep([rawFields, ...fieldsToMerge]);
 
         const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field => {
+            if (isConcreteEntity(entity)) {
+                // TODO: Move this to the tree
+                checkEntityAuthentication({
+                    entity: entity.entity,
+                    targetOperations: ["READ"],
+                    context,
+                    field: field.name,
+                });
+            }
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
             if (isConnection) {
                 if (entity instanceof RelationshipAdapter)
