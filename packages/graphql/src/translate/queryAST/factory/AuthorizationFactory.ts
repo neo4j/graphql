@@ -82,6 +82,7 @@ export class AuthorizationFactory {
 
         const validationFilers = rulesMatchingOperations.flatMap((rule) => {
             const populatedWhere = populateWhereParams({ where: rule.where, context }); // TODO: move this to the filterFactory?
+
             const nestedFilters = this.filterFactory.createAuthFilters({
                 entity,
                 operations,

@@ -31,6 +31,7 @@ export class CypherAttributeField extends AttributeField {
     protected projection: Record<string, string> | undefined;
     protected nestedFields: Field[] | undefined;
     protected rawArguments: Record<string, any>;
+    protected extraParams: Record<string, any>;
 
     constructor({
         alias,
@@ -38,17 +39,20 @@ export class CypherAttributeField extends AttributeField {
         projection,
         nestedFields,
         rawArguments = {},
+        extraParams = {},
     }: {
         alias: string;
         attribute: AttributeAdapter;
         projection?: Record<string, string>;
         nestedFields?: Field[];
         rawArguments: Record<string, any>;
+        extraParams: Record<string, any>;
     }) {
         super({ alias, attribute });
         this.projection = projection;
         this.nestedFields = nestedFields;
         this.rawArguments = rawArguments;
+        this.extraParams = extraParams;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -73,6 +77,7 @@ export class CypherAttributeField extends AttributeField {
             nestedFields: this.nestedFields,
             rawArguments: this.rawArguments,
             subqueries: [],
+            extraParams: this.extraParams,
         });
 
         return [subquery];

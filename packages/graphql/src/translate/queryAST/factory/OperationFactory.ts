@@ -46,6 +46,7 @@ import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
+import { checkEntityAuthentication } from "../../authorization/check-authentication";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -78,7 +79,14 @@ export class OperationsFactory {
                 const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
                 const attribute = entity.findAttribute(fieldName);
                 if (!attribute) return undefined;
-                return this.authorizationFactory.createAttributeAuthFilters(attribute, entity, ["READ"], context);
+                const result = this.authorizationFactory.createAttributeAuthFilters(
+                    attribute,
+                    entity,
+                    ["READ"],
+                    context
+                );
+
+                return result;
             })
         );
     }
@@ -92,6 +100,11 @@ export class OperationsFactory {
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
         if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["READ"],
+                context,
+            });
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
@@ -155,9 +168,17 @@ export class OperationsFactory {
     // TODO: dupe from read operation
     public createAggregationOperation(
         relationship: RelationshipAdapter,
-        resolveTree: ResolveTree
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
     ): AggregationOperation {
         const entity = relationship.target as ConcreteEntityAdapter;
+        if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["AGGREGATE"],
+                context,
+            });
+        }
 
         const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
         const edgeRawFields = {
@@ -174,6 +195,7 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
 
         const filters = this.filterFactory.createNodeFilters(
             relationship.target as ConcreteEntityAdapter | InterfaceEntityAdapter,
@@ -184,6 +206,11 @@ export class OperationsFactory {
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
+
+        if (authFilters) {
+            operation.addAuthFilters(authFilters);
+        }
+
         // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
         if (options) {
@@ -209,6 +236,12 @@ export class OperationsFactory {
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
 
         if (isConcreteEntity(target)) {
+            checkEntityAuthentication({
+                entity: target.entity,
+                targetOperations: ["READ"],
+                context,
+            });
+
             const operation = new ConnectionReadOperation({ relationship, directed, target });
 
             return this.hydrateConnectionOperationAST({
@@ -357,7 +390,11 @@ export class OperationsFactory {
         operation.setEdgeFields(edgeFields);
         operation.setFilters(filters);
         if (authFilters) {
-            operation.addAuthFilters(authFilters, ...authNodeAttributeFilters);
+            operation.addAuthFilters(authFilters);
+        }
+
+        if (authNodeAttributeFilters) {
+            operation.addAuthFilters(...authNodeAttributeFilters);
         }
 
         return operation;
@@ -399,6 +436,9 @@ export class OperationsFactory {
         operation.setFilters(filters);
         if (authFilters) {
             operation.addAuthFilters(authFilters, ...authAttributeFilters);
+        }
+        if (authAttributeFilters) {
+            operation.addAuthFilters(...authAttributeFilters);
         }
         this.hydrateInterfaceReadOperationWithPagination(entity, operation, resolveTree);
 
