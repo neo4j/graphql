@@ -1135,8 +1135,8 @@ function doForInterfacesThatAreTargetOfARelationship({
     withConnectInputType({ interfaceEntityAdapter, composer });
     withDisconnectInputType({ interfaceEntityAdapter, composer });
 
-    ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}CreateInput`);
-    ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}UpdateInput`);
+    ensureNonEmptyInput(composer, interfaceEntityAdapter.operations.createInputTypeName);
+    ensureNonEmptyInput(composer, interfaceEntityAdapter.operations.updateInputTypeName);
 
     return relationships;
 }
