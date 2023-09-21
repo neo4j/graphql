@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 4.1.3
+
+### Patch Changes
+
+-   [#3992](https://github.com/neo4j/graphql/pull/3992) [`34715e332`](https://github.com/neo4j/graphql/commit/34715e332c737138c5c2f735a34de081afa1fc7a) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix issue where incorrect translation of authorization could cause deletion of more nodes than intended.
+
+-   [#4003](https://github.com/neo4j/graphql/pull/4003) [`f6cf36456`](https://github.com/neo4j/graphql/commit/f6cf3645687918d2cbfad3088e6a87870fba7f01) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix issue 4001, in case of user defined input parse to UnknownType rather than raise an Error.
+
+-   [#4002](https://github.com/neo4j/graphql/pull/4002) [`caa7de29f`](https://github.com/neo4j/graphql/commit/caa7de29fd3d115d04735de97087141d2a185035) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove list of lists validation in schema model which was causing errors in addition to warnings.
+
+-   [#3983](https://github.com/neo4j/graphql/pull/3983) [`529881e51`](https://github.com/neo4j/graphql/commit/529881e519b1cdc2d5767a959a7c22c336192e6d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix a validation error which was wrongly being thrown if two enum types contained the same value.
+
 ## 4.1.2
 
 ### Patch Changes
