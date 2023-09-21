@@ -36,6 +36,7 @@ import {
     ObjectType,
     ScalarType,
     UnionType,
+    UnknownType,
     UserScalarType,
 } from "../attribute/AttributeType";
 import { Field } from "../attribute/Field";
@@ -122,6 +123,7 @@ export function parseField(field: FieldDefinitionNode): Field {
     });
 }
 
+
 function parseTypeNode(
     definitionCollection: DefinitionCollection,
     typeNode: TypeNode,
@@ -146,7 +148,7 @@ function parseTypeNode(
             } else if (isInterface(definitionCollection, typeNode.name.value)) {
                 return new InterfaceType(typeNode.name.value, isRequired);
             } else {
-                throw new Error(`Error while parsing Attribute with name: ${typeNode.name.value}`);
+                return new UnknownType(typeNode.name.value, isRequired);
             }
         }
 
