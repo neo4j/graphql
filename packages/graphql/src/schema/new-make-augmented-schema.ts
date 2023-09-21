@@ -33,7 +33,7 @@ import type {
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
 } from "graphql";
-import { Kind, parse, print } from "graphql";
+import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
@@ -1010,7 +1010,15 @@ function makeAugmentedSchema(
             ...parsedDoc.definitions.filter((definition) => {
                 // Filter out default scalars, they are not needed and can cause issues
                 if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
-                    if (["Boolean", "Float", "ID", "Int", "String"].includes(definition.name.value)) {
+                    if (
+                        [
+                            GraphQLBoolean.toString(),
+                            GraphQLFloat.toString(),
+                            GraphQLID.toString(),
+                            GraphQLInt.toString(),
+                            GraphQLString.toString(),
+                        ].includes(definition.name.value)
+                    ) {
                         return false;
                     }
                 }
