@@ -1,6 +1,7 @@
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
+import { withWhereInputType } from "./where-input";
 
 export function makeImplementationsDisconnectInput({
     interfaceEntityAdapter,
@@ -38,6 +39,7 @@ export function makeImplementationsConnectInput({
 }): InputTypeComposer | undefined {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const entityAdapter of interfaceEntityAdapter.concreteEntities) {
+        // if (entityAdapter.relationships.size && composer.has(entityAdapter.operations.connectInputTypeName)) {
         if (entityAdapter.relationships.size) {
             fields[entityAdapter.name] = {
                 type: `[${entityAdapter.operations.connectInputTypeName}!]`,

@@ -31,6 +31,8 @@ import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEnt
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { RelationshipOperations } from "./RelationshipOperations";
+import { plural, singular } from "../../utils/string-manipulation";
+import { RelationshipNestedOperationsOption } from "../../../constants";
 
 export class RelationshipAdapter {
     public readonly name: string;
@@ -41,7 +43,7 @@ export class RelationshipAdapter {
     private _target: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
-    public readonly nestedOperations: NestedOperation[];
+    public readonly nestedOperations: Set<NestedOperation>;
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
     public readonly description?: string;
@@ -50,6 +52,9 @@ export class RelationshipAdapter {
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
+
+    private _singular: string | undefined;
+    private _plural: string | undefined;
 
     // specialize models
     private _operations: RelationshipOperations | undefined;
@@ -95,7 +100,7 @@ export class RelationshipAdapter {
         this.direction = direction;
         this.isList = isList;
         this.queryDirection = queryDirection;
-        this.nestedOperations = nestedOperations;
+        this.nestedOperations = new Set(nestedOperations);
         this.aggregate = aggregate;
         this.isNullable = isNullable;
         this.rawEntity = target;
@@ -111,6 +116,19 @@ export class RelationshipAdapter {
             return new RelationshipOperations(this);
         }
         return this._operations;
+    }
+    public get singular(): string {
+        if (!this._singular) {
+            this._singular = singular(this.name);
+        }
+        return this._singular;
+    }
+
+    public get plural(): string {
+        if (!this._plural) {
+            this._plural = plural(this.name);
+        }
+        return this._plural;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -210,6 +228,37 @@ export class RelationshipAdapter {
 
     isUpdatable(): boolean {
         return this.annotations.settable?.onUpdate !== false;
+    }
+
+    shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+        let relationshipTarget = this.target;
+        if (ifUnionRelationshipTargetEntity) {
+            relationshipTarget = ifUnionRelationshipTargetEntity;
+        }
+        return (
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
+            // The connectOrCreate field is not generated if the related type does not have a unique field
+            (this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
+                relationshipTarget instanceof ConcreteEntityAdapter &&
+                relationshipTarget.uniqueFields.length > 0)
+        );
+    }
+
+    shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+        let relationshipTarget = this.target;
+        if (ifUnionRelationshipTargetEntity) {
+            relationshipTarget = ifUnionRelationshipTargetEntity;
+        }
+        if (!(relationshipTarget instanceof ConcreteEntityAdapter)) {
+            throw new Error("Expected target to be concrete.");
+        }
+        // If the only nestedOperation is connectOrCreate, it won't be generated if there are no unique fields on the related type
+        const onlyConnectOrCreateAndNoUniqueFields =
+            this.nestedOperations.size === 1 &&
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
+            !relationshipTarget.uniqueFields.length;
+        return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
     }
 
     /*

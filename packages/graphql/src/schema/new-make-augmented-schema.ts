@@ -1131,12 +1131,12 @@ function doForInterfacesThatAreTargetOfARelationship({
         }),
     ];
 
-    withDeleteInputType({ interfaceEntityAdapter, composer });
-    withConnectInputType({ interfaceEntityAdapter, composer });
-    withDisconnectInputType({ interfaceEntityAdapter, composer });
+    // withDeleteInputType({ interfaceEntityAdapter, composer });
+    // withConnectInputType({ interfaceEntityAdapter, composer });
+    // withDisconnectInputType({ interfaceEntityAdapter, composer });
 
-    ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}CreateInput`);
-    ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}UpdateInput`);
+    // ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}CreateInput`);
+    // ensureNonEmptyInput(composer, `${interfaceEntityAdapter.name}UpdateInput`);
 
     return relationships;
 }

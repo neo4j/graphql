@@ -96,6 +96,9 @@ export class ConcreteEntityOperations {
     public get connectOrCreateWhereInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}ConnectOrCreateWhere`;
     }
+    public get connectWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}ConnectWhere`;
+    }
 
     public get createInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}CreateInput`;
@@ -135,6 +138,10 @@ export class ConcreteEntityOperations {
 
     public get connectInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}ConnectInput`;
+    }
+
+    public get connectOrCreateInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}ConnectOrCreateInput`;
     }
 
     public get disconnectInputTypeName(): string {
@@ -226,12 +233,12 @@ export class ConcreteEntityOperations {
 
     public get updateMutationArgumentNames(): UpdateMutationArgumentNames {
         return {
-            connect: `${this.concreteEntityAdapter.name}ConnectInput`,
-            disconnect: `${this.concreteEntityAdapter.name}DisconnectInput`,
+            connect: this.connectInputTypeName,
+            disconnect: this.disconnectInputTypeName,
             create: this.relationInputTypeName,
             update: this.updateInputTypeName,
             delete: this.deleteInputTypeName,
-            connectOrCreate: `${this.concreteEntityAdapter.name}ConnectOrCreateInput`,
+            connectOrCreate: this.connectOrCreateInputTypeName,
             where: this.whereInputTypeName,
         };
     }

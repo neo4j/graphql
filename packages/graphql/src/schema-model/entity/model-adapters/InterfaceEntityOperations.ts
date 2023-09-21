@@ -101,6 +101,10 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}ConnectOrCreateWhere`;
     }
 
+    public get connectWhereInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ConnectWhere`;
+    }
+
     public get createInputTypeName(): string {
         return `${this.InterfaceEntityAdapter.name}CreateInput`;
     }
@@ -139,6 +143,10 @@ export class InterfaceEntityOperations {
 
     public get connectInputTypeName(): string {
         return `${this.InterfaceEntityAdapter.name}ConnectInput`;
+    }
+
+    public get connectOrCreateInputTypeName(): string {
+        return `${this.InterfaceEntityAdapter.name}ConnectOrCreateInput`;
     }
 
     public get whereOnImplementationsConnectInputTypeName(): string {
@@ -235,7 +243,7 @@ export class InterfaceEntityOperations {
             create: this.relationInputTypeName,
             update: this.updateInputTypeName,
             delete: this.deleteInputTypeName,
-            connectOrCreate: `${this.InterfaceEntityAdapter.name}ConnectOrCreateInput`,
+            connectOrCreate: this.connectOrCreateInputTypeName,
             where: this.whereInputTypeName,
         };
     }

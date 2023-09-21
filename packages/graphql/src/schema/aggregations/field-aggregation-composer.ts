@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLInt, GraphQLNonNull } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { Subgraph } from "../../classes/Subgraph";
@@ -141,7 +142,7 @@ export class FieldAggregationComposer {
             name: relationshipAdapter.getAggregationFieldTypename(),
             fields: {
                 count: {
-                    type: "Int!",
+                    type: new GraphQLNonNull(GraphQLInt),
                     resolve: numericalResolver,
                     args: {},
                 },
