@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
@@ -25,7 +25,7 @@ import { SortDirection } from "../../graphql/enums/SortDirection";
 import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { upperFirst } from "../../utils/upper-first";
-import { fulltextResolver } from "../resolvers/query/fulltext";
+import { fulltextResolver, fulltextResolver2 } from "../resolvers/query/fulltext";
 
 export function augmentFulltextSchema(
     node: Node,
@@ -140,7 +140,7 @@ export function augmentFulltextSchema2(
         fields,
     });
 
-    composer.createInputTC({
+    const fulltextSortITC = composer.createInputTC({
         name: concreteEntityAdapter.operations.fulltextTypeNames.sort,
         description: fulltextSortDescription,
         fields: {
@@ -158,7 +158,7 @@ export function augmentFulltextSchema2(
         },
     });
 
-    composer.createObjectTC({
+    const fulltextResultITC = composer.createObjectTC({
         name: concreteEntityAdapter.operations.fulltextTypeNames.result,
         description: fulltextResultDescription,
         fields: {
@@ -190,7 +190,19 @@ export function augmentFulltextSchema2(
             throw new Error(`Could not find index ${indexName} on node ${node.name}`);
         }
         composer.Query.addFields({
-            [queryName]: fulltextResolver({ node }, nodeIndex),
+            [queryName]: {
+                type: fulltextResultITC.NonNull.List.NonNull,
+                description:
+                    "Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the `fulltext` argument under other queries for this functionality.",
+                resolve: fulltextResolver2({ node, index: nodeIndex }),
+                args: {
+                    phrase: new GraphQLNonNull(GraphQLString),
+                    where: concreteEntityAdapter.operations.fulltextTypeNames.where,
+                    sort: fulltextSortITC.NonNull.List,
+                    limit: GraphQLInt,
+                    offset: GraphQLInt,
+                },
+            },
         });
     });
 }

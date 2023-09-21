@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeComposerFieldConfigDefinition } from "graphql-compose";
-import type { GraphQLResolveInfo } from "graphql";
-import { execute } from "../../../utils";
-import { translateRead } from "../../../translate";
-import type { Node } from "../../../classes";
-import type { FulltextContext } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
+import type { ObjectTypeComposerFieldConfigDefinition } from "graphql-compose";
+import type { Node } from "../../../classes";
+import { translateRead } from "../../../translate";
+import type { FulltextContext } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function fulltextResolver(
     { node }: { node: Node },
@@ -71,5 +71,45 @@ export function fulltextResolver(
             limit: "Int",
             offset: "Int",
         },
+    };
+}
+
+export function fulltextResolver2({
+    node,
+    index,
+}: {
+    node: Node;
+    index: FulltextContext;
+}): GraphQLFieldResolver<any, any, any> {
+    return async function resolve(
+        _root: any,
+        args: any,
+        context: Neo4jGraphQLComposedContext,
+        info: GraphQLResolveInfo
+    ) {
+        context.fulltext = index;
+        context.fulltext.scoreVariable = new Cypher.Variable();
+
+        const resolveTree = getNeo4jResolveTree(info, { args });
+        resolveTree.args.options = {
+            sort: resolveTree.args.sort,
+            limit: resolveTree.args.limit,
+            offset: resolveTree.args.offset,
+        };
+
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
+
+        const { cypher, params } = translateRead(
+            { context: context as Neo4jGraphQLTranslationContext, node },
+            node.singular
+        );
+        const executeResult = await execute({
+            cypher,
+            params,
+            defaultAccessMode: "READ",
+            context,
+            info,
+        });
+        return executeResult.records;
     };
 }
