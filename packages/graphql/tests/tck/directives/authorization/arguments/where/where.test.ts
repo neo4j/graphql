@@ -753,12 +753,12 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization_this0:User)
-            WITH *, count(authorization_this0) AS creatorCount
             WITH *
             CALL {
             WITH *
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization_this0:User)
+            WITH *, count(authorization_this0) AS creatorCount
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)))
             WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {

@@ -169,7 +169,7 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...params };
 
                         if (subqueries) {
-                            res.strs.push(subqueries);
+                            innerStrs.push(subqueries);
                         }
                     }
 
