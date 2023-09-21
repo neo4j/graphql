@@ -55,9 +55,6 @@ export class CypherUnionAttributeField extends CypherAttributeField {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const scope = context.getTargetScope();
-        if (scope.has(this.attribute.name)) {
-            throw new Error("Compile error, should execute attribute field before CypherPropertySort");
-        }
 
         scope.set(this.attribute.name, this.customCypherVar);
 
