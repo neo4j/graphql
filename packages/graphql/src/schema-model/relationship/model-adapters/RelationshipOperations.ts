@@ -66,6 +66,20 @@ export class RelationshipOperations {
         return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}Connection`;
     }
 
+    public getConnectionUnionWhereInputTypename(concreteEntityAdapter: ConcreteEntityAdapter): string {
+        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+            concreteEntityAdapter.name
+        }ConnectionWhere`;
+    }
+
+    public get connectionSortInputTypename(): string {
+        return `${this.connectionFieldTypename}Sort`;
+    }
+
+    public get connectionWhereInputTypename(): string {
+        return `${this.connectionFieldTypename}Where`;
+    }
+
     /**Note: Required for now to infer the types without ResolveTree */
     public get relationshipFieldTypename(): string {
         return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}Relationship`;
@@ -114,6 +128,10 @@ export class RelationshipOperations {
 
     public get connectionFieldName(): string {
         return `${this.relationshipEntityAdapter.name}Connection`;
+    }
+
+    public get connectionNotFieldName(): string {
+        return `${this.connectionFieldName}_NOT`;
     }
 
     public get connectionWhereTypename(): string {

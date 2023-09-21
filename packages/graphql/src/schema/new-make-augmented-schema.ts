@@ -86,7 +86,7 @@ import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionE
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { isInArray } from "../utils/is-in-array";
-import { createConnectionFields2 } from "./create-connection-fields";
+import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFieldsFromConcreteEntityAdapter } from "./create-relationship-fields/create-relationship-fields";
 import { deprecationMap } from "./deprecation-map";
@@ -665,13 +665,6 @@ function makeAugmentedSchema(
             propagatedDirectives
         );
 
-        const composeNode = withObjectType({
-            concreteEntityAdapter,
-            userDefinedFieldDirectives,
-            userDefinedObjectDirectives,
-            composer,
-        });
-
         withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
 
         withAggregateSelectionType({ concreteEntityAdapter, aggregationTypesMapper, propagatedDirectives, composer });
@@ -701,6 +694,13 @@ function makeAugmentedSchema(
         // subgraph,
         // });
 
+        const composeNode = withObjectType({
+            concreteEntityAdapter,
+            userDefinedFieldDirectives,
+            userDefinedObjectDirectives,
+            composer,
+        });
+
         createRelationshipFieldsFromConcreteEntityAdapter({
             entityAdapter: concreteEntityAdapter,
             schemaComposer: composer,
@@ -723,7 +723,7 @@ function makeAugmentedSchema(
 
         relationships = [
             ...relationships,
-            ...createConnectionFields2({
+            ...createConnectionFields({
                 entityAdapter: concreteEntityAdapter,
                 schemaComposer: composer,
                 composeNode,
@@ -1122,7 +1122,7 @@ function doForInterfacesThatAreTargetOfARelationship({
 
     relationships = [
         ...relationships,
-        ...createConnectionFields2({
+        ...createConnectionFields({
             entityAdapter: interfaceEntityAdapter,
             schemaComposer: composer,
             composeNode: composeInterface,

@@ -36,7 +36,7 @@ import * as Scalars from "../graphql/scalars";
 import { upperFirst } from "../utils/upper-first";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { augmentFulltextSchema } from "./augment/fulltext";
-import createConnectionFields from "./create-connection-fields";
+import createConnectionFields from "./create-connection-fields-old";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import { getDefinitionNodes } from "./get-definition-nodes";
