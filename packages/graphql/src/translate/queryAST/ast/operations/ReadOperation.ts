@@ -128,7 +128,9 @@ export class ReadOperation extends Operation {
             // }
             matchClause.where(wherePredicate);
         }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
