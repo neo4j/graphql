@@ -33,7 +33,6 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     const workspaceType = new UniqueType("Workspace");
     const pageType = new UniqueType("User");
 
-    // Update to use _INCLUDES once https://github.com/neo4j/graphql/pull/500 is merged
     const typeDefs = gql`
         type ${userType} {
             id: ID!
