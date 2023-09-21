@@ -143,4 +143,23 @@ export class InterfaceType {
     }
 }
 
-export type AttributeType = ScalarType | UserScalarType | ObjectType | ListType | EnumType | UnionType | InterfaceType;
+export class UnknownType {
+    public readonly name: string;
+    public readonly isRequired: boolean;
+    // TODO: add shared fields
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export type AttributeType =
+    | ScalarType
+    | UserScalarType
+    | ObjectType
+    | ListType
+    | EnumType
+    | UnionType
+    | InterfaceType
+    | UnknownType;
