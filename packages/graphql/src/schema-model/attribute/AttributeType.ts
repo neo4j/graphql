@@ -146,7 +146,6 @@ export class InterfaceType {
 export class UnknownType {
     public readonly name: string;
     public readonly isRequired: boolean;
-    // TODO: add shared fields
 
     constructor(name: string, isRequired: boolean) {
         this.name = name;
