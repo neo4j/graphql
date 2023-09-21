@@ -42,18 +42,18 @@ export function withWhereInputType({
 
     if (entityAdapter instanceof ConcreteEntityAdapter) {
         whereInputType.addFields({
-            OR: `[${entityAdapter.operations.whereInputTypeName}!]`,
-            AND: `[${entityAdapter.operations.whereInputTypeName}!]`,
-            NOT: entityAdapter.operations.whereInputTypeName,
+            OR: whereInputType.NonNull.List,
+            AND: whereInputType.NonNull.List,
+            NOT: whereInputType,
         });
         if (entityAdapter.isGlobalNode()) {
             whereInputType.addFields({ id: GraphQLID });
         }
     } else if (entityAdapter instanceof RelationshipAdapter) {
         whereInputType.addFields({
-            OR: `[${entityAdapter.operations.whereInputTypeName}!]`,
-            AND: `[${entityAdapter.operations.whereInputTypeName}!]`,
-            NOT: entityAdapter.operations.whereInputTypeName,
+            OR: whereInputType.NonNull.List,
+            AND: whereInputType.NonNull.List,
+            NOT: whereInputType,
         });
     } else if (entityAdapter instanceof InterfaceEntityAdapter) {
         const implementationsWhereInputType = makeImplementationsWhereInput({
