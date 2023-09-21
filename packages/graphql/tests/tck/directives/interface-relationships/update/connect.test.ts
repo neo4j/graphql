@@ -77,7 +77,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -94,7 +94,7 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn0_node
-            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie0
             }
             CALL {
             		WITH this
@@ -112,7 +112,7 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn1_node
-            	RETURN count(*) AS connect_this_connect_actedIn_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series1
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -158,7 +158,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -191,9 +191,9 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie0
             }
             CALL {
             		WITH this
@@ -227,9 +227,9 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series1
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -289,7 +289,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -322,9 +322,9 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_on_Movie0_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie0
             }
             CALL {
             		WITH this
@@ -342,7 +342,7 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn1_node
-            	RETURN count(*) AS connect_this_connect_actedIn_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series1
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -403,7 +403,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
@@ -436,9 +436,9 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn0_node, this_connect_actedIn0_node_on_Movie0_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie0
             }
             CALL {
             		WITH this
@@ -472,9 +472,9 @@ describe("Interface Relationships - Update connect", () => {
             		}
             	}
             WITH this, this_connect_actedIn1_node, this_connect_actedIn1_node_actors0_node
-            	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn1_node_actors_Actor0
             }
-            	RETURN count(*) AS connect_this_connect_actedIn_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series1
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"

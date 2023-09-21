@@ -61,7 +61,16 @@ module.exports = {
                         prefer: "type-imports",
                     },
                 ],
-                "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+                "no-unused-vars": "off",
+                "@typescript-eslint/no-unused-vars": [
+                    "error",
+                    {
+                        argsIgnorePattern: "^_",
+                        varsIgnorePattern: "^_",
+                        caughtErrorsIgnorePattern: "^_",
+                        ignoreRestSiblings: true,
+                    },
+                ],
             },
             settings: {
                 "import/resolver": {

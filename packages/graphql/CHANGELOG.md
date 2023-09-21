@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 4.1.2
+
+### Patch Changes
+
+-   [#3949](https://github.com/neo4j/graphql/pull/3949) [`295bb71f3`](https://github.com/neo4j/graphql/commit/295bb71f3ea6ea8598ac37c39b7f978cecdd438d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix issue where authorization rules depend on create operations that haven't happened yet.
+
+-   [#3917](https://github.com/neo4j/graphql/pull/3917) [`adf10c4c0`](https://github.com/neo4j/graphql/commit/adf10c4c08dfde5689bc86fafad488e7e5b0c8e1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Warning about missing `features.authorization` is now only given once for all type definitions.
+
+-   [#3937](https://github.com/neo4j/graphql/pull/3937) [`15ff75521`](https://github.com/neo4j/graphql/commit/15ff755217fe83d3e66db25871c33e0585c9c457) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Switches to a warning for lists of lists to allow them to be used as the result of custom resolvers/Cypher.
+
 ## 4.1.1
 
 ### Patch Changes

@@ -16,15 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { customResolverDirective } from "../../../graphql/directives";
-import { CustomResolverAnnotation } from "../../annotation/CustomResolverAnnotation";
-import { parseArguments } from "../parse-arguments";
 
-export function parseCustomResolverAnnotation(directive: DirectiveNode): CustomResolverAnnotation {
-    const { requires } = parseArguments<{ requires: string | undefined }>(customResolverDirective, directive);
+export function getAuthorizationStatements(predicates: string[], subqueries: string[]) {
+    const statements: string[] = [];
 
-    return new CustomResolverAnnotation({
-        requires,
-    });
+    if (predicates.length) {
+        statements.push("WITH *");
+        if (subqueries.length) {
+            statements.push(...subqueries);
+            statements.push("WITH *");
+        }
+        statements.push(`WHERE ${predicates.join(" AND ")}`);
+    }
+
+    return statements;
 }

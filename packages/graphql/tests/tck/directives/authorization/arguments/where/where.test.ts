@@ -809,7 +809,7 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
@@ -827,7 +827,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_posts_connect0_node
-            	RETURN count(*) AS connect_this0_posts_connect_Post
+            	RETURN count(*) AS connect_this0_posts_connect_Post0
             }
             RETURN this0
             }
@@ -882,7 +882,7 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
@@ -900,7 +900,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_posts_connect0_node
-            	RETURN count(*) AS connect_this0_posts_connect_Post
+            	RETURN count(*) AS connect_this0_posts_connect_Post0
             }
             RETURN this0
             }
@@ -945,7 +945,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
@@ -963,7 +963,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_posts0_connect0_node
-            	RETURN count(*) AS connect_this_posts0_connect_Post
+            	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -1002,7 +1002,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
@@ -1020,7 +1020,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_posts0_connect0_node
-            	RETURN count(*) AS connect_this_posts0_connect_Post
+            	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -1060,7 +1060,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
@@ -1078,7 +1078,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_posts0_node
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1118,7 +1118,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
@@ -1136,7 +1136,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_posts0_node
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
