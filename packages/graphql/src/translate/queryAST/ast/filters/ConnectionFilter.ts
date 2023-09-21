@@ -5,11 +5,14 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
+import { isInterfaceEntity } from "../../utils/is-interface-entity";
 
 export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
     private relationship: RelationshipAdapter;
-    private target: ConcreteEntityAdapter;
+    private target: ConcreteEntityAdapter | InterfaceEntityAdapter; // target can be an interface entity, only with the label predicate optimization
     private operator: RelationshipWhereOperator;
     private isNot: boolean;
 
@@ -24,7 +27,7 @@ export class ConnectionFilter extends Filter {
         isNot,
     }: {
         relationship: RelationshipAdapter;
-        target: ConcreteEntityAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operator: RelationshipWhereOperator | undefined;
         isNot: boolean;
     }) {
@@ -47,11 +50,18 @@ export class ConnectionFilter extends Filter {
         return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
-    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const relatedEntity = this.target;
-        const target = new Cypher.Node({
-            labels: relatedEntity.labels,
+    private getTargetNode(): Cypher.Node {
+        // if the target is an interface entity, we need to use the label predicate optimization
+        if (isInterfaceEntity(this.target)) {
+            return new Cypher.Node();
+        }
+        return new Cypher.Node({
+            labels: this.target.labels,
         });
+    }
+
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const targetNode = this.getTargetNode();
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
         });
@@ -60,11 +70,11 @@ export class ConnectionFilter extends Filter {
             .withoutLabels()
             .related(relationship)
             .withDirection(this.relationship.getCypherDirection())
-            .to(target);
+            .to(targetNode);
 
         const nestedContext = context.push({
             relationship,
-            target,
+            target: targetNode,
         });
 
         switch (this.operator) {
@@ -78,11 +88,7 @@ export class ConnectionFilter extends Filter {
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         if (this.subqueryPredicate) return this.subqueryPredicate;
         else {
-            //TODO: not concrete entities
-            const relatedEntity = this.target;
-            const target = new Cypher.Node({
-                labels: relatedEntity.labels,
-            });
+            const target = this.getTargetNode();
             const relationship = new Cypher.Relationship({
                 type: this.relationship.type,
             });
@@ -100,13 +106,33 @@ export class ConnectionFilter extends Filter {
             return this.wrapInNotIfNeeded(predicate);
         }
     }
+    /**
+     * Create a label predicate that filters concrete entities for interface target,
+     * so that the same pattern matching can be used for all the concrete entities implemented by the interface entity.
+     * Example:
+     * MATCH (this:Actor)
+     * WHERE EXISTS {
+     *    MATCH (this)<-[this0:ACTED_IN]-(this1)
+     *    WHERE (this1.title = $param0 AND (this1:Movie OR this1:Show)
+     * }
+     * RETURN this { .name } AS this
+     **/
+    private getLabelPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
+        if (isConcreteEntity(this.target)) return undefined;
+        const labelPredicate = this.target.concreteEntities.map((e) => {
+            return context.target.hasLabels(...e.labels);
+        });
+        return Cypher.or(...labelPredicate);
+    }
 
     private createRelationshipOperation(
         pattern: Cypher.Pattern,
         nestedContext: QueryASTContext
     ): Cypher.Predicate | undefined {
         const connectionFilter = this.innerFilters.map((c) => c.getPredicate(nestedContext));
-        const innerPredicate = Cypher.and(...connectionFilter);
+        const labelPredicate = this.getLabelPredicate(nestedContext);
+        const innerPredicate = Cypher.and(...connectionFilter, labelPredicate);
+
         if (!innerPredicate) return undefined;
 
         switch (this.operator) {

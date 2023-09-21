@@ -200,3 +200,149 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         `);
     });
 });
+
+describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
+    let typeDefs: string;
+    let neoSchema: Neo4jGraphQL;
+
+    beforeAll(() => {
+        typeDefs = `
+            union Production = Movie | Series
+
+
+            type Movie @node(labels: ["Film"]) {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                runtime: Int!
+                distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
+            }
+
+            type Series {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: Int!
+                distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
+            }
+
+            interface ActedIn @relationshipProperties {
+                role: String!
+            }
+
+            interface Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type MaleActor implements Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                rating: Int!
+            }
+            type FemaleActor implements Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                age: Int!
+            }
+
+            union DistributionHouse = Dishney | Prime | Netflix
+
+            type Dishney {
+                name: String!
+                review: String!
+            }
+
+            type Prime {
+                name: String!
+                review: String!
+            }
+
+            type Netflix {
+                name: String!
+                review: String!
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+    });
+
+    test("should use the correct node label for connection rel when defined in node _on - Netflix label", async () => {
+        const query = gql`
+            query {
+                movies(where: { OR: [{ distributionConnection_SOME: { Netflix: { node: { name: "test" } } } }] }) {
+                    title
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Film)
+            WHERE EXISTS {
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Netflix)
+                WHERE this1.name = $param0
+            }
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test\\"
+            }"
+        `);
+    });
+
+    test("should use the correct node label for connection rel when defined in node _on - Dishney label", async () => {
+        const query = gql`
+            query {
+                movies(where: { OR: [{ distributionConnection_SOME: { Dishney: { node: { name: "test2" } } } }] }) {
+                    title
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Film)
+            WHERE EXISTS {
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Dishney)
+                WHERE this1.name = $param0
+            }
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test2\\"
+            }"
+        `);
+    });
+
+    test("should use the correct node label for connection rel when defined in node _on - without OR operator", async () => {
+        const query = gql`
+            query {
+                movies(where: { distributionConnection_SOME: { Dishney: { node: { name: "test3" } } } }) {
+                    title
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Film)
+            WHERE EXISTS {
+                MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Dishney)
+                WHERE this1.name = $param0
+            }
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test3\\"
+            }"
+        `);
+    });
+
+});
