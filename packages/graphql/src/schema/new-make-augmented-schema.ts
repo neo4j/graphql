@@ -59,6 +59,7 @@ import getObjFieldMeta from "./get-obj-field-meta";
 import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./to-compose";
 
 // GraphQL type imports
+import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
 import { FIELD_DIRECTIVES, INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES, PROPAGATED_DIRECTIVES } from "../constants";
 import { SortDirection } from "../graphql/enums/SortDirection";
@@ -955,7 +956,7 @@ function makeAugmentedSchema(
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
-    const generatedResolveMethods: Record<string, any> = {};
+    const generatedResolveMethods: GraphQLToolsResolveMethods<any> = {};
 
     for (const [key, value] of Object.entries(resolveMethods)) {
         if (documentNames.has(key)) {
