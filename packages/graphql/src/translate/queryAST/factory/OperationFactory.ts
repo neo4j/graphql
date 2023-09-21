@@ -180,15 +180,16 @@ export class OperationsFactory {
             });
         }
 
-        const projectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
+        const rawProjectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
+        const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
+        const projectionFields = parsedProjectionFields.fields;
+
         const edgeRawFields = {
-            ...projectionFields.edge?.fieldsByTypeName[relationship.getAggregationFieldTypename("edge")],
+            ...parsedProjectionFields.edge?.fieldsByTypeName[relationship.getAggregationFieldTypename("edge")],
         };
         const nodeRawFields = {
-            ...projectionFields.node?.fieldsByTypeName[relationship.getAggregationFieldTypename("node")],
+            ...parsedProjectionFields.node?.fieldsByTypeName[relationship.getAggregationFieldTypename("node")],
         };
-        delete projectionFields.node;
-        delete projectionFields.edge;
 
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
         const operation = new AggregationOperation(relationship, Boolean(resolveTree.args?.directed ?? true));
@@ -366,7 +367,7 @@ export class OperationsFactory {
             ...edgeRawFields.node?.fieldsByTypeName[target.name],
             ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name],
         };
-
+        // TODO: Use splitConnectionFields
         delete edgeRawFields.node;
         delete edgeRawFields.edge;
 
@@ -398,6 +399,33 @@ export class OperationsFactory {
         }
 
         return operation;
+    }
+
+    private splitConnectionFields(rawFields: Record<string, ResolveTree>): {
+        node: ResolveTree | undefined;
+        edge: ResolveTree | undefined;
+        fields: Record<string, ResolveTree>;
+    } {
+        let nodeField: ResolveTree | undefined;
+        let edgeField: ResolveTree | undefined;
+
+        const fields: Record<string, ResolveTree> = {};
+
+        Object.entries(rawFields).forEach(([key, field]) => {
+            if (field.name === "node") {
+                nodeField = field;
+            } else if (field.name === "edge") {
+                edgeField = field;
+            } else {
+                fields[key] = field;
+            }
+        });
+
+        return {
+            node: nodeField,
+            edge: edgeField,
+            fields,
+        };
     }
 
     private hydrateReadOperation<T extends ReadOperation>({
