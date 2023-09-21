@@ -17,11 +17,19 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
+import {
+    GraphQLInt,
+    GraphQLNonNull,
+    GraphQLString,
+    type DirectiveNode,
+    type GraphQLResolveInfo,
+    type SelectionSetNode,
+} from "graphql";
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { upperFirst } from "graphql-compose";
-import type { PageInfo } from "graphql-relay";
+import type { PageInfo as PageInfoRelay } from "graphql-relay";
 import type { Node } from "../../../classes";
+import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -60,7 +68,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
 
         let totalCount = 0;
         let edges: any[] = [];
-        let pageInfo: PageInfo = {
+        let pageInfo: PageInfoRelay = {
             hasNextPage: false,
             hasPreviousPage: false,
             startCursor: null,
@@ -80,7 +88,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
             });
 
             edges = connection.edges as any[];
-            pageInfo = connection.pageInfo as PageInfo;
+            pageInfo = connection.pageInfo as PageInfoRelay;
         }
 
         return {
@@ -174,7 +182,7 @@ export function rootConnectionResolver2({
 
         let totalCount = 0;
         let edges: any[] = [];
-        let pageInfo: PageInfo = {
+        let pageInfo: PageInfoRelay = {
             hasNextPage: false,
             hasPreviousPage: false,
             startCursor: null,
@@ -195,7 +203,7 @@ export function rootConnectionResolver2({
 
             // TODO: Question why are these not taking into account the potential aliases?
             edges = connection.edges as any[];
-            pageInfo = connection.pageInfo as PageInfo;
+            pageInfo = connection.pageInfo as PageInfoRelay;
         }
 
         return {
@@ -208,7 +216,7 @@ export function rootConnectionResolver2({
     const rootEdge = composer.createObjectTC({
         name: `${concreteEntityAdapter.name}Edge`,
         fields: {
-            cursor: "String!",
+            cursor: new GraphQLNonNull(GraphQLString),
             node: `${concreteEntityAdapter.name}!`,
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
@@ -217,31 +225,31 @@ export function rootConnectionResolver2({
     const rootConnection = composer.createObjectTC({
         name: `${concreteEntityAdapter.upperFirstPlural}Connection`,
         fields: {
-            totalCount: "Int!",
-            pageInfo: "PageInfo!",
+            totalCount: new GraphQLNonNull(GraphQLInt),
+            pageInfo: new GraphQLNonNull(PageInfo),
             edges: rootEdge.NonNull.List.NonNull,
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
     // since sort is not created when there is nothing to sort, we check for its existence
-    let sortArg: InputTypeComposer<any> | undefined;
-    if (composer.has(`${concreteEntityAdapter.name}Sort`)) {
-        sortArg = composer.getITC(`${concreteEntityAdapter.name}Sort`);
+    let sortArg: InputTypeComposer | undefined;
+    if (composer.has(concreteEntityAdapter.operations.sortInputTypeName)) {
+        sortArg = composer.getITC(concreteEntityAdapter.operations.sortInputTypeName);
     }
 
     return {
         type: rootConnection.NonNull,
         resolve,
         args: {
-            first: "Int",
-            after: "String",
-            where: `${concreteEntityAdapter.name}Where`,
+            first: GraphQLInt,
+            after: GraphQLString,
+            where: concreteEntityAdapter.operations.whereInputTypeName,
             ...(sortArg ? { sort: sortArg.List } : {}),
             ...(concreteEntityAdapter.annotations.fulltext
                 ? {
                       fulltext: {
-                          type: `${concreteEntityAdapter.name}Fulltext`,
+                          type: concreteEntityAdapter.operations.fullTextInputTypeName,
                           description:
                               "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
                       },
