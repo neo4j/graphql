@@ -102,9 +102,6 @@ export class ListType {
     public readonly isRequired: boolean;
     constructor(ofType: AttributeType, isRequired: boolean) {
         this.name = `List<${ofType.name}>`;
-        if (ofType instanceof ListType) {
-            throw new Neo4jGraphQLSchemaValidationError("two-dimensional lists are not supported");
-        }
         this.ofType = ofType;
         this.isRequired = isRequired;
     }
