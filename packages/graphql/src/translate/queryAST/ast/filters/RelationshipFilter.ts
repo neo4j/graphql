@@ -33,7 +33,7 @@ export class RelationshipFilter extends Filter {
     protected isNot: boolean;
 
     // TODO: remove this, this is not good
-    private subqueryPredicate: Cypher.Predicate | undefined;
+    protected subqueryPredicate: Cypher.Predicate | undefined;
 
     /** Variable to be used if relationship need to get the count (i.e. 1-1 relationships) */
     protected countVariable = new Cypher.Variable();
@@ -69,7 +69,7 @@ export class RelationshipFilter extends Filter {
     }
 
     @Memoize()
-    private getNestedContext(context: QueryASTContext): QueryASTContext {
+    protected getNestedContext(context: QueryASTContext): QueryASTContext {
         const relatedEntity = this.relationship.target as any;
         const target = new Cypher.Node({
             labels: relatedEntity.labels,
@@ -86,7 +86,7 @@ export class RelationshipFilter extends Filter {
     }
 
     @Memoize()
-    private getNestedSelectionSubqueries(context: QueryASTContext): Cypher.Clause[] {
+    protected getNestedSelectionSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const returnVars: Cypher.Variable[] = [];
 
         const nestedSelection = filterTruthy(
@@ -160,11 +160,10 @@ export class RelationshipFilter extends Filter {
         if (nestedSelection.length > 0) {
             subqueries.push(...nestedSelection);
         }
-
         return subqueries;
     }
 
-    private getNestedSubqueries(context: QueryASTContext): Cypher.Clause[] {
+    protected getNestedSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const pattern = new Cypher.Pattern(context.source!)
             .withoutLabels()
             .related(context.relationship)
@@ -277,12 +276,11 @@ export class RelationshipFilter extends Filter {
         }
     }
 
-    private shouldCreateOptionalMatch(): boolean {
+    protected shouldCreateOptionalMatch(): boolean {
         return !this.relationship.isList && !this.relationship.isNullable;
     }
 
     public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-
         if (this.shouldCreateOptionalMatch() && !this.subqueryPredicate) {
             const nestedContext = this.getNestedContext(queryASTContext);
 
@@ -321,7 +319,7 @@ export class RelationshipFilter extends Filter {
         return this.wrapInNotIfNeeded(predicate);
     }
 
-    private getSingleRelationshipOperation({
+    protected getSingleRelationshipOperation({
         pattern,
         queryASTContext,
         innerPredicate,
@@ -336,7 +334,7 @@ export class RelationshipFilter extends Filter {
         return Cypher.single(queryASTContext.target, patternComprehension, new Cypher.Literal(true));
     }
 
-    private createRelationshipOperation(
+    protected createRelationshipOperation(
         pattern: Cypher.Pattern,
         queryASTContext: QueryASTContext
     ): Cypher.Predicate | undefined {

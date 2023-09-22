@@ -112,7 +112,6 @@ export class ReadOperation extends Operation {
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const filterPredicates = this.getPredicates(nestedContext);
 
-        // NOT NNEDED?
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
@@ -121,11 +120,6 @@ export class ReadOperation extends Operation {
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         let withWhere: Cypher.With | undefined;
         if (wherePredicate) {
-            // if (authFiltersPredicate) {
-            //     withWhere = new Cypher.With("*").where(wherePredicate);
-            // } else {
-            //     matchClause.where(wherePredicate);
-            // }
             matchClause.where(wherePredicate);
         }
 
@@ -222,10 +216,9 @@ export class ReadOperation extends Operation {
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(context))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
-        const subqueries = Cypher.concat(...fieldSubqueries, ...authFilterSubqueries);
+        const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
-
         const projection = this.getProjectionMap(context);
 
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
@@ -273,6 +266,7 @@ export class ReadOperation extends Operation {
 
         const clause = Cypher.concat(
             ...preSelection,
+            ...authFilterSubqueries,
             matchClause,
             filterSubqueriesClause,
             filterSubqueryWith,
