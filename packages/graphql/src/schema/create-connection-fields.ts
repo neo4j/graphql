@@ -20,6 +20,7 @@
 import { GraphQLInt, GraphQLNonNull, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
 import type {
     InputTypeComposer,
+    InputTypeComposerFieldConfigMapDefinition,
     InterfaceTypeComposer,
     ObjectTypeComposer,
     ObjectTypeComposerArgumentConfigMapDefinition,
@@ -40,63 +41,45 @@ import type { ObjectFields } from "./get-obj-field-meta";
 import { connectionFieldResolver2 } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
-function addConnectionRelationshipPropertyWhereFields({
-    inputTypeComposer,
-    relationshipAdapter,
-}: {
-    inputTypeComposer: InputTypeComposer;
-    relationshipAdapter: RelationshipAdapter;
-}): void {
-    if (relationshipAdapter.propertiesTypeName) {
-        inputTypeComposer.addFields({
-            edge: relationshipAdapter.operations.whereInputTypeName,
-            edge_NOT: {
-                type: relationshipAdapter.operations.whereInputTypeName,
-                directives: [DEPRECATE_NOT],
-            },
-        });
-    }
-}
-
 function addConnectionSortField({
     schemaComposer,
     relationshipAdapter,
-    targetEntityAdapter,
     composeNodeArgs,
 }: {
     schemaComposer: SchemaComposer;
     relationshipAdapter: RelationshipAdapter;
-    targetEntityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition;
-}): void {
+}): InputTypeComposer | undefined {
+    // TODO: This probably just needs to be
+    // if (relationship.target.sortableFields.length) {}
+    // And not care about the type of entity
+    const targetIsInterfaceWithSortableFields =
+        relationshipAdapter.target instanceof InterfaceEntityAdapter &&
+        schemaComposer.has(relationshipAdapter.target.operations.sortInputTypeName);
+
+    const targetIsConcreteWithSortableFields =
+        relationshipAdapter.target instanceof ConcreteEntityAdapter && relationshipAdapter.target.sortableFields.length;
+
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    if (targetIsInterfaceWithSortableFields || targetIsConcreteWithSortableFields) {
+        fields["node"] = relationshipAdapter.target.operations.sortInputTypeName;
+    }
+
+    // TODO: revert this back to commented version if we want relationship properties sortable fields to be all attributes
+    // if (relationship.propertiesTypeName) {
+    if (relationshipAdapter.sortableFields.length) {
+        fields["edge"] = relationshipAdapter.operations.sortInputTypeName;
+    }
+
+    if (Object.keys(fields).length === 0) {
+        return undefined;
+    }
+
     const connectionSortITC = schemaComposer.getOrCreateITC(relationshipAdapter.operations.connectionSortInputTypename);
-
-    connectionSortITC.addFields({
-        node: targetEntityAdapter.operations.sortInputTypeName,
-    });
-    // TODO: check why this was in an if statement
-    // if (composeNodeArgs.sort) {
+    connectionSortITC.addFields(fields);
     composeNodeArgs.sort = connectionSortITC.NonNull.List;
-    // }
-}
 
-function addConnectionWhereFilterFields({
-    inputTypeComposer,
-    whereInputTypeName,
-}: {
-    inputTypeComposer: InputTypeComposer;
-    whereInputTypeName: string;
-}): void {
-    inputTypeComposer.addFields({
-        OR: inputTypeComposer.NonNull.List,
-        AND: inputTypeComposer.NonNull.List,
-        NOT: inputTypeComposer,
-        node: whereInputTypeName,
-        node_NOT: {
-            type: whereInputTypeName,
-            directives: [DEPRECATE_NOT],
-        },
-    });
+    return connectionSortITC;
 }
 
 function addConnectionWhereFields({
@@ -108,15 +91,26 @@ function addConnectionWhereFields({
     relationshipAdapter: RelationshipAdapter;
     targetEntity: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }): void {
-    addConnectionWhereFilterFields({
-        inputTypeComposer,
-        whereInputTypeName: targetEntity.operations.whereInputTypeName,
+    inputTypeComposer.addFields({
+        OR: inputTypeComposer.NonNull.List,
+        AND: inputTypeComposer.NonNull.List,
+        NOT: inputTypeComposer,
+        node: targetEntity.operations.whereInputTypeName,
+        node_NOT: {
+            type: targetEntity.operations.whereInputTypeName,
+            directives: [DEPRECATE_NOT],
+        },
     });
 
-    addConnectionRelationshipPropertyWhereFields({
-        inputTypeComposer,
-        relationshipAdapter,
-    });
+    if (relationshipAdapter.propertiesTypeName) {
+        inputTypeComposer.addFields({
+            edge: relationshipAdapter.operations.whereInputTypeName,
+            edge_NOT: {
+                type: relationshipAdapter.operations.whereInputTypeName,
+                directives: [DEPRECATE_NOT],
+            },
+        });
+    }
 }
 
 export function createConnectionFields({
@@ -223,35 +217,13 @@ export function createConnectionFields({
                 relationshipAdapter: relationship,
                 targetEntity: relationship.target,
             });
-
-            // TODO: Check if we can combine these checks into one property
-            const targetIsInterfaceWithSortableFields =
-                relationship.target instanceof InterfaceEntityAdapter &&
-                schemaComposer.has(relationship.target.operations.sortInputTypeName);
-
-            const targetIsConcreteWithSortableFields =
-                relationship.target instanceof ConcreteEntityAdapter && relationship.target.sortableFields.length;
-
-            if (targetIsInterfaceWithSortableFields || targetIsConcreteWithSortableFields) {
-                addConnectionSortField({
-                    schemaComposer,
-                    relationshipAdapter: relationship,
-                    composeNodeArgs,
-                    targetEntityAdapter: relationship.target,
-                });
-            }
         }
 
-        // TODO: revert this back to commented version if we want relationship properties sortable fields to be all attributes
-        // if (relationship.propertiesTypeName) {
-        // TODO: Feels like this could be done in addConnectionSortField too
-        if (relationship.propertiesTypeName && relationship.sortableFields.length) {
-            const connectionSort = schemaComposer.getOrCreateITC(relationship.operations.connectionSortInputTypename);
-            connectionSort.addFields({
-                edge: relationship.operations.sortInputTypeName,
-            });
-            composeNodeArgs.sort = connectionSort.NonNull.List;
-        }
+        addConnectionSortField({
+            schemaComposer,
+            relationshipAdapter: relationship,
+            composeNodeArgs,
+        });
 
         // This needs to be done after the composeNodeArgs.sort is set (through addConnectionSortField for example)
         if (relationship.isReadable()) {
