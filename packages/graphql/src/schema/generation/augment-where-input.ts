@@ -1,4 +1,4 @@
-import type { Directive, InputTypeComposer, InputTypeComposerFieldConfigMapDefinition } from "graphql-compose";
+import type { Directive, InputTypeComposerFieldConfigMapDefinition } from "graphql-compose";
 import pluralize from "pluralize";
 import { DEPRECATED } from "../../constants";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -54,18 +54,3 @@ export function augmentWhereInputTypeWithRelationshipFields(
     }
     return fields;
 }
-// export function augmentWhereInputTypeWithRelationshipAggregateFields(
-//     relationshipAdapter: RelationshipAdapter,
-//     whereAggregateInput: InputTypeComposer,
-//     deprecatedDirectives: Directive[]
-// ): InputTypeComposerFieldConfigMapDefinition {
-//     if (relationshipAdapter.isFilterableByAggregate()) {
-//         return {
-//             [`${relationshipAdapter.name}Aggregate`]: {
-//                 type: whereAggregateInput,
-//                 directives: deprecatedDirectives,
-//             },
-//         };
-//     }
-//     return {};
-// }

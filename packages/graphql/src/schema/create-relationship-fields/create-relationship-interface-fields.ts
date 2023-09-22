@@ -27,13 +27,10 @@ import type { RelationField } from "../../types";
 import { addDirectedArgument } from "../directed-argument";
 import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
 import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
-import {
-    augmentCreateInputTypeWithRelationshipsInput,
-    withFieldInputType,
-    withRelationInputType,
-} from "../generation/create-input";
+import { augmentCreateInputTypeWithRelationshipsInput, withFieldInputType } from "../generation/create-input";
 import { augmentDeleteInputTypeWithDeleteFieldInput } from "../generation/delete-input";
 import { augmentDisconnectInputTypeWithDisconnectFieldInput } from "../generation/disconnect-input";
+import { withRelationInputType } from "../generation/relation-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput } from "../generation/update-input";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
@@ -255,12 +252,17 @@ export function createRelationshipInterfaceFields2({
     // this has to happen for InterfaceRelationships (Interfaces that are target of relationships) before it happens for ConcreteEntity targets
     // it has sth to do with fieldInputPrefixForTypename vs prefixForTypename
     // requires investigation
-    withFieldInputType(relationship, schemaComposer, userDefinedFieldDirectives);
+    withFieldInputType({ relationshipAdapter: relationship, composer: schemaComposer, userDefinedFieldDirectives });
 
     // ======== all relationships:
     composeNode.addFields(augmentObjectOrInterfaceTypeWithRelationshipField(relationship, userDefinedFieldDirectives));
 
-    withRelationInputType(relationship, schemaComposer, [], userDefinedFieldDirectives);
+    withRelationInputType({
+        relationshipAdapter: relationship,
+        composer: schemaComposer,
+        deprecatedDirectives: [],
+        userDefinedFieldDirectives,
+    });
 
     augmentCreateInputTypeWithRelationshipsInput({
         relationshipAdapter: relationship,

@@ -1,6 +1,11 @@
 import type { DirectiveNode } from "graphql";
 import { GraphQLID } from "graphql";
-import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
+import type {
+    Directive,
+    InputTypeComposer,
+    InputTypeComposerFieldConfigMapDefinition,
+    SchemaComposer,
+} from "graphql-compose";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -8,6 +13,8 @@ import { RelationshipAdapter } from "../../schema-model/relationship/model-adapt
 import type { Neo4jFeaturesSettings } from "../../types";
 import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
+import { withAggregateInputType } from "./aggregate-types";
+import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
 import { makeImplementationsWhereInput } from "./implementation-inputs";
 
 export function withUniqueWhereInputType({
@@ -42,7 +49,11 @@ export function withWhereInputType({
     if (composer.has(entityAdapter.operations.whereInputTypeName)) {
         return composer.getITC(entityAdapter.operations.whereInputTypeName);
     }
-    const whereInputType = makeWhereInput({ entityAdapter, userDefinedFieldDirectives, features, composer });
+    const whereFields = makeWhereFields({ entityAdapter, userDefinedFieldDirectives, features });
+    const whereInputType = composer.createInputTC({
+        name: entityAdapter.operations.whereInputTypeName,
+        fields: whereFields,
+    });
 
     if (entityAdapter instanceof ConcreteEntityAdapter) {
         whereInputType.addFields({
@@ -66,25 +77,6 @@ export function withWhereInputType({
         });
         whereInputType.addFields({ _on: implementationsWhereInputType });
     }
-    return whereInputType;
-}
-
-function makeWhereInput({
-    entityAdapter,
-    userDefinedFieldDirectives,
-    features,
-    composer,
-}: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-    features: Neo4jFeaturesSettings | undefined;
-    composer: SchemaComposer;
-}): InputTypeComposer {
-    const whereFields = makeWhereFields({ entityAdapter, userDefinedFieldDirectives, features });
-    const whereInputType = composer.createInputTC({
-        name: entityAdapter.operations.whereInputTypeName,
-        fields: whereFields,
-    });
     return whereInputType;
 }
 
@@ -112,6 +104,49 @@ function makeWhereFields({
     });
 }
 
+export function withSourceWhereInputType({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposer | undefined {
+    const relationshipTarget = relationshipAdapter.target;
+    if (!(relationshipTarget instanceof ConcreteEntityAdapter)) {
+        throw new Error("Expected concrete target");
+    }
+    const relationshipSource = relationshipAdapter.source;
+    if (relationshipSource instanceof UnionEntityAdapter) {
+        throw new Error("Unexpected union source");
+    }
+    const typeName = relationshipSource.operations.whereInputTypeName;
+    const whereInput = composer.getITC(typeName);
+    const fields = augmentWhereInputTypeWithRelationshipFields(
+        relationshipSource,
+        relationshipAdapter,
+        deprecatedDirectives
+    );
+    whereInput.addFields(fields);
+
+    const whereAggregateInput = withAggregateInputType({
+        relationshipAdapter,
+        entityAdapter: relationshipTarget,
+        composer: composer,
+    });
+    if (relationshipAdapter.isFilterableByAggregate()) {
+        whereInput.addFields({
+            [relationshipAdapter.operations.aggregateTypeName]: {
+                type: whereAggregateInput,
+                directives: deprecatedDirectives,
+            },
+        });
+    }
+
+    return whereInput;
+}
+
 // TODO: make another one of these for non-union ConnectionWhereInputType
 export function makeConnectionWhereInputType({
     relationshipAdapter,
@@ -122,11 +157,12 @@ export function makeConnectionWhereInputType({
     memberEntity: ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
-    if (composer.has(relationshipAdapter.operations.getConnectionWhereTypename(memberEntity))) {
-        return composer.getITC(relationshipAdapter.operations.getConnectionWhereTypename(memberEntity));
+    const typeName = relationshipAdapter.operations.getConnectionWhereTypename(memberEntity);
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
     }
     const connectionWhereInputType = composer.createInputTC({
-        name: relationshipAdapter.operations.getConnectionWhereTypename(memberEntity),
+        name: typeName,
         fields: {
             node: memberEntity.operations.whereInputTypeName,
             node_NOT: {
@@ -150,4 +186,18 @@ export function makeConnectionWhereInputType({
         });
     }
     return connectionWhereInputType;
+}
+
+export function withConnectWhereFieldInputType(
+    relationshipTarget: ConcreteEntityAdapter | InterfaceEntityAdapter,
+    composer: SchemaComposer
+): InputTypeComposer {
+    const connectWhereName = relationshipTarget.operations.connectWhereInputTypeName;
+    if (composer.has(connectWhereName)) {
+        return composer.getITC(connectWhereName);
+    }
+    const connectWhereType = composer.getOrCreateITC(connectWhereName, (tc) => {
+        tc.addFields({ node: `${relationshipTarget.operations.whereInputTypeName}!` });
+    });
+    return connectWhereType;
 }

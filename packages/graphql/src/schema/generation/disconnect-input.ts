@@ -1,15 +1,18 @@
-import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type {
+    Directive,
+    InputTypeComposer,
+    InputTypeComposerFieldConfigMap,
+    InputTypeComposerFieldConfigMapDefinition,
+    SchemaComposer,
+} from "graphql-compose";
 import { RelationshipNestedOperationsOption } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import {
-    withDisconnectFieldInputType,
-    withDisconnectFieldInputTypeI,
-    withDisconnectFieldInputTypeU,
-} from "./create-input";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { makeImplementationsDisconnectInput } from "./implementation-inputs";
+import { makeConnectionWhereInputType } from "./where-input";
 
 export function withDisconnectInputType({
     entityAdapter,
@@ -36,7 +39,6 @@ export function withDisconnectInputType({
     disconnectInputType.setField("_on", implementationsDisconnectInputType);
     return disconnectInputType;
 }
-
 export function augmentDisconnectInputTypeWithDisconnectFieldInput({
     relationshipAdapter,
     composer,
@@ -46,66 +48,33 @@ export function augmentDisconnectInputTypeWithDisconnectFieldInput({
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }) {
-    let disconnectFieldInput: InputTypeComposer | undefined;
-    if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
-        disconnectFieldInput = withDisconnectFieldInputType(relationshipAdapter, composer);
-    } else {
-        disconnectFieldInput = withDisconnectFieldInputTypeI(relationshipAdapter, composer);
+    if (relationshipAdapter.source instanceof UnionEntityAdapter) {
+        throw new Error("Unexpected union source");
     }
+    const disconnectFieldInput = makeDisconnectInputType({
+        relationshipAdapter,
+        composer,
+        deprecatedDirectives,
+    });
     if (!disconnectFieldInput) {
         return;
     }
-
     const disconnectInput = withDisconnectInputType({
-        entityAdapter: relationshipAdapter.source as ConcreteEntityAdapter | InterfaceEntityAdapter,
+        entityAdapter: relationshipAdapter.source,
         composer,
     });
     if (!disconnectInput) {
         return;
     }
-
-    disconnectInput.addFields({
-        [relationshipAdapter.name]: {
-            type: relationshipAdapter.isList ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
-            directives: deprecatedDirectives,
-        },
+    const relationshipField = makeDisconnectInputTypeRelationshipField({
+        relationshipAdapter,
+        disconnectFieldInput,
+        deprecatedDirectives,
     });
+    disconnectInput.addFields(relationshipField);
 }
 
-export function augmentDisconnectInputTypeWithUnionConnectFieldInput({
-    relationshipAdapter,
-    composer,
-    deprecatedDirectives,
-}: {
-    relationshipAdapter: RelationshipAdapter;
-    composer: SchemaComposer;
-    deprecatedDirectives: Directive[];
-}) {
-    let disconnectFieldInput: InputTypeComposer | undefined;
-    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
-        disconnectFieldInput = withUnionDisonnectInputType({ relationshipAdapter, composer, deprecatedDirectives });
-    }
-    if (!disconnectFieldInput) {
-        return;
-    }
-
-    const disconnectInput = withDisconnectInputType({
-        entityAdapter: relationshipAdapter.source as ConcreteEntityAdapter | InterfaceEntityAdapter,
-        composer,
-    });
-    if (!disconnectInput) {
-        return;
-    }
-
-    disconnectInput.addFields({
-        [relationshipAdapter.name]: {
-            type: disconnectFieldInput,
-            directives: deprecatedDirectives,
-        },
-    });
-}
-
-export function withUnionDisonnectInputType({
+function makeDisconnectInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
@@ -114,25 +83,160 @@ export function withUnionDisonnectInputType({
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
+    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+        return withUnionDisconnectInputType({ relationshipAdapter, composer, deprecatedDirectives });
+    }
+    return withDisconnectFieldInputType({ relationshipAdapter, composer });
+}
+function makeDisconnectInputTypeRelationshipField({
+    relationshipAdapter,
+    disconnectFieldInput,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    disconnectFieldInput: InputTypeComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposerFieldConfigMap {
+    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+        return {
+            [relationshipAdapter.name]: {
+                type: disconnectFieldInput,
+                directives: deprecatedDirectives,
+            },
+        };
+    }
+    return {
+        [relationshipAdapter.name]: {
+            type: relationshipAdapter.isList ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
+            directives: deprecatedDirectives,
+        },
+    };
+}
+
+function withUnionDisconnectInputType({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposer | undefined {
+    const typeName = relationshipAdapter.operations.unionDisconnectInputTypeName;
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
         return;
     }
-    const disconnectInput = composer.getOrCreateITC(relationshipAdapter.operations.unionDisconnectInputTypeName);
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
+    }
+    const fields = makeUnionDisconnectInputTypeFields({ relationshipAdapter, composer, deprecatedDirectives });
+    if (!Object.keys(fields).length) {
+        return;
+    }
+    const disconnectInput = composer.createInputTC({
+        name: typeName,
+        fields,
+    });
 
+    return disconnectInput;
+}
+function makeUnionDisconnectInputTypeFields({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
         throw new Error("Expected union target");
     }
     for (const memberEntity of relationshipAdapter.target.concreteEntities) {
-        const fieldInput = withDisconnectFieldInputTypeU(relationshipAdapter, memberEntity, composer);
+        const fieldInput = withDisconnectFieldInputType({
+            relationshipAdapter,
+            ifUnionMemberEntity: memberEntity,
+            composer,
+        });
         if (fieldInput) {
-            disconnectInput.addFields({
-                [memberEntity.name]: {
-                    type: relationshipAdapter.isList ? fieldInput.NonNull.List : fieldInput,
-                    directives: deprecatedDirectives,
-                },
-            });
+            fields[memberEntity.name] = {
+                type: relationshipAdapter.isList ? fieldInput.NonNull.List : fieldInput,
+                directives: deprecatedDirectives,
+            };
+        }
+    }
+    return fields;
+}
+
+export function withDisconnectFieldInputType({
+    relationshipAdapter,
+    composer,
+    ifUnionMemberEntity,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    ifUnionMemberEntity?: ConcreteEntityAdapter;
+}): InputTypeComposer | undefined {
+    const typeName = relationshipAdapter.operations.getDisconnectFieldInputTypeName(ifUnionMemberEntity);
+    if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DISCONNECT)) {
+        return;
+    }
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
+    }
+    const disconnectFieldInput = composer.createInputTC({
+        name: typeName,
+        fields: makeDisconnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity }),
+    });
+    return disconnectFieldInput;
+}
+function makeDisconnectFieldInputTypeFields({
+    relationshipAdapter,
+    composer,
+    ifUnionMemberEntity,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    ifUnionMemberEntity?: ConcreteEntityAdapter;
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fields = {};
+    if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
+        if (
+            relationshipTargetHasRelationshipWithNestedOperation(
+                relationshipAdapter.target,
+                RelationshipNestedOperationsOption.DISCONNECT
+            )
+        ) {
+            const disconnectInput = withDisconnectInputType({ entityAdapter: relationshipAdapter.target, composer });
+            if (disconnectInput) {
+                fields["disconnect"] = disconnectInput;
+            }
+        }
+    } else if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
+        const disconnectInput = withDisconnectInputType({ entityAdapter: relationshipAdapter.target, composer });
+        if (disconnectInput) {
+            fields["disconnect"] = disconnectInput;
+        }
+    } else {
+        if (!ifUnionMemberEntity) {
+            throw new Error("Member Entity required.");
+        }
+        fields["where"] = makeConnectionWhereInputType({
+            relationshipAdapter,
+            memberEntity: ifUnionMemberEntity,
+            composer,
+        });
+
+        if (ifUnionMemberEntity.relationships.size) {
+            const disconnectInput = withDisconnectInputType({ entityAdapter: ifUnionMemberEntity, composer });
+            if (disconnectInput) {
+                fields["disconnect"] = disconnectInput;
+            }
         }
     }
 
-    return disconnectInput;
+    return fields;
 }

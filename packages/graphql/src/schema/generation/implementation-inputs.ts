@@ -1,7 +1,6 @@
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
-import { withWhereInputType } from "./where-input";
 
 export function makeImplementationsDisconnectInput({
     interfaceEntityAdapter,

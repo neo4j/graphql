@@ -246,18 +246,22 @@ export class RelationshipAdapter {
     }
 
     shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
-        let relationshipTarget = this.target;
-        if (ifUnionRelationshipTargetEntity) {
-            relationshipTarget = ifUnionRelationshipTargetEntity;
-        }
-        if (!(relationshipTarget instanceof ConcreteEntityAdapter)) {
-            throw new Error("Expected target to be concrete.");
-        }
-        // If the only nestedOperation is connectOrCreate, it won't be generated if there are no unique fields on the related type
-        const onlyConnectOrCreateAndNoUniqueFields =
+        const onlyConnectOrCreate =
             this.nestedOperations.size === 1 &&
-            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
-            !relationshipTarget.uniqueFields.length;
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE);
+
+        if (this.target instanceof InterfaceEntityAdapter) {
+            return this.nestedOperations.size > 0 && !onlyConnectOrCreate;
+        }
+        if (this.target instanceof UnionEntityAdapter) {
+            if (!ifUnionRelationshipTargetEntity) {
+                throw new Error("Expected member entity");
+            }
+            const onlyConnectOrCreateAndNoUniqueFields =
+                onlyConnectOrCreate && !ifUnionRelationshipTargetEntity.uniqueFields.length;
+            return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
+        }
+        const onlyConnectOrCreateAndNoUniqueFields = onlyConnectOrCreate && !this.target.uniqueFields.length;
         return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
     }
 

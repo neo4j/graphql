@@ -1,11 +1,18 @@
-import type { Directive, InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type {
+    Directive,
+    InputTypeComposer,
+    InputTypeComposerFieldConfigMap,
+    InputTypeComposerFieldConfigMapDefinition,
+    SchemaComposer,
+} from "graphql-compose";
 import { RelationshipNestedOperationsOption } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { withDeleteFieldInputType, withDeleteFieldInputTypeI, withDeleteFieldInputTypeU } from "./create-input";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { makeImplementationsDeleteInput } from "./implementation-inputs";
+import { makeConnectionWhereInputType } from "./where-input";
 
 export function withDeleteInputType({
     entityAdapter,
@@ -40,33 +47,32 @@ export function augmentDeleteInputTypeWithDeleteFieldInput({
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }) {
-    let deleteFieldInput: InputTypeComposer | undefined;
-    if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
-        deleteFieldInput = withDeleteFieldInputType(relationshipAdapter, composer);
-    } else {
-        deleteFieldInput = withDeleteFieldInputTypeI(relationshipAdapter, composer);
+    if (relationshipAdapter.source instanceof UnionEntityAdapter) {
+        throw new Error("Unexpected union source");
     }
+    const deleteFieldInput = makeDeleteInputType({
+        relationshipAdapter,
+        composer,
+        deprecatedDirectives,
+    });
     if (!deleteFieldInput) {
         return;
     }
-
     const deleteInput = withDeleteInputType({
-        entityAdapter: relationshipAdapter.source as ConcreteEntityAdapter | InterfaceEntityAdapter,
+        entityAdapter: relationshipAdapter.source,
         composer,
     });
     if (!deleteInput) {
         return;
     }
-
-    deleteInput.addFields({
-        [relationshipAdapter.name]: {
-            type: relationshipAdapter.isList ? deleteFieldInput.NonNull.List : deleteFieldInput,
-            directives: deprecatedDirectives,
-        },
+    const relationshipField = makeDeleteInputTypeRelationshipField({
+        relationshipAdapter,
+        deleteFieldInput,
+        deprecatedDirectives,
     });
+    deleteInput.addFields(relationshipField);
 }
-
-export function augmentDeleteInputTypeWithUnionDeleteFieldInput({
+function makeDeleteInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
@@ -74,29 +80,35 @@ export function augmentDeleteInputTypeWithUnionDeleteFieldInput({
     relationshipAdapter: RelationshipAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
-}) {
-    let deleteFieldInput: InputTypeComposer | undefined;
+}): InputTypeComposer | undefined {
     if (relationshipAdapter.target instanceof UnionEntityAdapter) {
-        deleteFieldInput = withUnionDeleteInputType({ relationshipAdapter, composer, deprecatedDirectives });
+        return withUnionDeleteInputType({ relationshipAdapter, composer, deprecatedDirectives });
     }
-    if (!deleteFieldInput) {
-        return;
+    return withDeleteFieldInputType({ relationshipAdapter, composer });
+}
+function makeDeleteInputTypeRelationshipField({
+    relationshipAdapter,
+    deleteFieldInput,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    deleteFieldInput: InputTypeComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposerFieldConfigMap {
+    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+        return {
+            [relationshipAdapter.name]: {
+                type: deleteFieldInput,
+                directives: deprecatedDirectives,
+            },
+        };
     }
-
-    const deleteInput = withDeleteInputType({
-        entityAdapter: relationshipAdapter.source as ConcreteEntityAdapter | InterfaceEntityAdapter,
-        composer,
-    });
-    if (!deleteInput) {
-        return;
-    }
-
-    deleteInput.addFields({
+    return {
         [relationshipAdapter.name]: {
-            type: deleteFieldInput,
+            type: relationshipAdapter.isList ? deleteFieldInput.NonNull.List : deleteFieldInput,
             directives: deprecatedDirectives,
         },
-    });
+    };
 }
 
 export function withUnionDeleteInputType({
@@ -108,25 +120,120 @@ export function withUnionDeleteInputType({
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
+    const typeName = relationshipAdapter.operations.unionDeleteInputTypeName;
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
         return;
     }
-    const deleteInput = composer.getOrCreateITC(relationshipAdapter.operations.unionDeleteInputTypeName);
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
+    }
+    const fields = makeUnionDeleteInputTypeFields({ relationshipAdapter, composer, deprecatedDirectives });
+    if (!Object.keys(fields).length) {
+        return;
+    }
+    const deleteInput = composer.createInputTC({
+        name: typeName,
+        fields,
+    });
 
+    return deleteInput;
+}
+function makeUnionDeleteInputTypeFields({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
         throw new Error("Expected union target");
     }
     for (const memberEntity of relationshipAdapter.target.concreteEntities) {
-        const fieldInput = withDeleteFieldInputTypeU(relationshipAdapter, memberEntity, composer);
+        const fieldInput = withDeleteFieldInputType({
+            relationshipAdapter,
+            ifUnionMemberEntity: memberEntity,
+            composer,
+        });
         if (fieldInput) {
-            deleteInput.addFields({
-                [memberEntity.name]: {
-                    type: relationshipAdapter.isList ? fieldInput.NonNull.List : fieldInput,
-                    directives: deprecatedDirectives,
-                },
-            });
+            fields[memberEntity.name] = {
+                type: relationshipAdapter.isList ? fieldInput.NonNull.List : fieldInput,
+                directives: deprecatedDirectives,
+            };
+        }
+    }
+    return fields;
+}
+
+export function withDeleteFieldInputType({
+    relationshipAdapter,
+    composer,
+    ifUnionMemberEntity,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    ifUnionMemberEntity?: ConcreteEntityAdapter;
+}): InputTypeComposer | undefined {
+    const typeName = relationshipAdapter.operations.getDeleteFieldInputTypeName(ifUnionMemberEntity);
+    if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
+        return;
+    }
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
+    }
+    const disconnectFieldInput = composer.createInputTC({
+        name: typeName,
+        fields: makeDeleteFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity }),
+    });
+    return disconnectFieldInput;
+}
+function makeDeleteFieldInputTypeFields({
+    relationshipAdapter,
+    composer,
+    ifUnionMemberEntity,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    ifUnionMemberEntity?: ConcreteEntityAdapter;
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fields = {};
+    if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
+        if (
+            relationshipTargetHasRelationshipWithNestedOperation(
+                relationshipAdapter.target,
+                RelationshipNestedOperationsOption.DELETE
+            )
+        ) {
+            const deleteInput = withDeleteInputType({ entityAdapter: relationshipAdapter.target, composer });
+            if (deleteInput) {
+                fields["delete"] = deleteInput;
+            }
+        }
+    } else if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
+        const deleteInput = withDeleteInputType({ entityAdapter: relationshipAdapter.target, composer });
+        if (deleteInput) {
+            fields["delete"] = deleteInput;
+        }
+    } else {
+        if (!ifUnionMemberEntity) {
+            throw new Error("Member Entity required.");
+        }
+        fields["where"] = makeConnectionWhereInputType({
+            relationshipAdapter,
+            memberEntity: ifUnionMemberEntity,
+            composer,
+        });
+        if (ifUnionMemberEntity.relationships.size) {
+            const deleteInput = withDeleteInputType({ entityAdapter: ifUnionMemberEntity, composer });
+            if (deleteInput) {
+                fields["delete"] = deleteInput;
+            }
         }
     }
 
-    return deleteInput;
+    return fields;
 }
