@@ -155,8 +155,12 @@ function getProjectionExpr({
             const predicate = partial.getFilterPredicate(fromVariable);
             caseClause.when(predicate).then(projection);
         }
+        const collectedProjection = Cypher.collect(caseClause);
 
-        return Cypher.collect(caseClause);
+        if (!attribute.isList()) {
+            return Cypher.head(collectedProjection);
+        }
+        return collectedProjection;
     }
 
     if (fields) {
