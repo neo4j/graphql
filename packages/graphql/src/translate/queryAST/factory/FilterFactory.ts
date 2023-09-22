@@ -166,7 +166,7 @@ export class FilterFactory {
                 attachedTo,
             });
         }
-        if (attribute.isPoint()) {
+        if (attribute.isPoint() || attribute.isCartesianPoint()) {
             return new PointFilter({
                 attribute,
                 comparisonValue,

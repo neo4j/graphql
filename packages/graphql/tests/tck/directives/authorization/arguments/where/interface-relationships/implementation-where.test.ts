@@ -614,12 +614,12 @@ describe("Cypher Auth Where", () => {
             	DETACH DELETE x
             }
             }
-            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:User)
-            WITH *, count(authorization_this0) AS creatorCount
             WITH *
             CALL {
             WITH *
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
+            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization_this0:User)
+            WITH *, count(authorization_this0) AS creatorCount
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)))
             WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
             CALL {
@@ -668,7 +668,7 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
@@ -683,7 +683,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect0_node
-            	RETURN count(*) AS connect_this0_content_connect_Comment
+            	RETURN count(*) AS connect_this0_content_connect_Comment0
             }
             CALL {
             		WITH this0
@@ -702,7 +702,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect1_node
-            	RETURN count(*) AS connect_this0_content_connect_Post
+            	RETURN count(*) AS connect_this0_content_connect_Post1
             }
             RETURN this0
             }
@@ -755,7 +755,7 @@ describe("Cypher Auth Where", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             SET this0.password = $this0_password
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
@@ -771,7 +771,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect0_node
-            	RETURN count(*) AS connect_this0_content_connect_Comment
+            	RETURN count(*) AS connect_this0_content_connect_Comment0
             }
             CALL {
             		WITH this0
@@ -790,7 +790,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this0, this0_content_connect1_node
-            	RETURN count(*) AS connect_this0_content_connect_Post
+            	RETURN count(*) AS connect_this0_content_connect_Post1
             }
             RETURN this0
             }
@@ -837,7 +837,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
@@ -853,13 +853,13 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Comment
+            	RETURN count(*) AS connect_this_content0_connect_Comment0
             }
             RETURN count(*) AS update_this_Comment
             }
             CALL {
             	 WITH this
-            	WITH this
+            	WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
@@ -877,7 +877,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Post
+            	RETURN count(*) AS connect_this_content0_connect_Post0
             }
             RETURN count(*) AS update_this_Post
             }
@@ -919,7 +919,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
             	 WITH this
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
@@ -935,13 +935,13 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Comment
+            	RETURN count(*) AS connect_this_content0_connect_Comment0
             }
             RETURN count(*) AS update_this_Comment
             }
             CALL {
             	 WITH this
-            	WITH this
+            	WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
@@ -959,7 +959,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Post
+            	RETURN count(*) AS connect_this_content0_connect_Post0
             }
             RETURN count(*) AS update_this_Post
             }
@@ -999,7 +999,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
@@ -1015,7 +1015,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content0_node
-            	RETURN count(*) AS connect_this_connect_content_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment0
             }
             CALL {
             		WITH this
@@ -1034,7 +1034,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content1_node
-            	RETURN count(*) AS connect_this_connect_content_Post
+            	RETURN count(*) AS connect_this_connect_content_Post1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1072,7 +1072,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
@@ -1088,7 +1088,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content0_node
-            	RETURN count(*) AS connect_this_connect_content_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment0
             }
             CALL {
             		WITH this
@@ -1107,7 +1107,7 @@ describe("Cypher Auth Where", () => {
             		}
             	}
             WITH this, this_connect_content1_node
-            	RETURN count(*) AS connect_this_connect_content_Post
+            	RETURN count(*) AS connect_this_connect_content_Post1
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

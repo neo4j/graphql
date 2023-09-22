@@ -38,6 +38,7 @@ const debug = Debug(DEBUG_TRANSLATE);
 function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationContext; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;
     const factory = new QueryASTFactory(context.schemaModel);
+
     const entity = context.schemaModel.getEntity(node.name);
     if (!entity) throw new Error("Entity not found");
     checkAuthentication({ context, node, targetOperations: ["READ"] }); // Should this be done at every level?
@@ -62,6 +63,7 @@ export function translateRead(
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
+
     if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase && !isGlobalNode) {
         return testQueryAST({ context, node });
     }

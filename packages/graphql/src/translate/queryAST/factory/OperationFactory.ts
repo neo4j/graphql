@@ -460,9 +460,10 @@ export class OperationsFactory {
 
         // Get the abstract types of the interface
         const entityInterfaces = entity.compositeEntities;
-        for (const interfaceEntity of entityInterfaces) {
-            projectionFields = { ...resolveTree.fieldsByTypeName[interfaceEntity.name], ...projectionFields };
-        }
+
+        const interfacesFields = filterTruthy(entityInterfaces.map((i) => resolveTree.fieldsByTypeName[i.name]));
+
+        projectionFields = mergeDeep<Record<string, ResolveTree>[]>([...interfacesFields, projectionFields]);
 
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 

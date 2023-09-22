@@ -12,8 +12,7 @@ jobs:
       - name: "CLA Assistant"
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
         # Beta Release
-        # uses: contributor-assistant/github-action@5bfe123a0731f017d9c29550976bf724fe0870f5 # v2.3.0
-        uses: darrellwarde/cla-assistant-github-action@fix/check-all-repo-workflows-pages
+        uses: contributor-assistant/github-action@a895a435fcce79ecf28fbce61a4ef0f0dabc9853 # v2.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # the below token should have repo scope and must be manually added by you in the repository's secret

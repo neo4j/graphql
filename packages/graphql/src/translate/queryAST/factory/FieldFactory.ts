@@ -75,6 +75,7 @@ export class FieldFactory {
                 });
             }
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
+
             if (isConnection) {
                 if (entity instanceof RelationshipAdapter)
                     throw new Error("Cannot create connection field of relationship");
@@ -223,7 +224,7 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isPoint()) {
+        if (attribute.isPoint() || attribute.isCartesianPoint()) {
             const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
             const { crs } = field.fieldsByTypeName[typeName] as any;
             return new PointAttributeField({

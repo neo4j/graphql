@@ -1718,7 +1718,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:6.9.0, @codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.6.0":
+"@codemirror/language@npm:6.9.1":
+  version: 6.9.1
+  resolution: "@codemirror/language@npm:6.9.1"
+  dependencies:
+    "@codemirror/state": ^6.0.0
+    "@codemirror/view": ^6.0.0
+    "@lezer/common": ^1.1.0
+    "@lezer/highlight": ^1.0.0
+    "@lezer/lr": ^1.0.0
+    style-mod: ^4.0.0
+  checksum: 62265f1042d2edfd3a091c408d9d0071f23889099b2f6ce8275fa910118bd2c45b8c4b29228c7be6e6d5f0e0812a522de902bc75ba8d8b2e62e42ade1692a49a
+  languageName: node
+  linkType: hard
+
+"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.6.0":
   version: 6.9.0
   resolution: "@codemirror/language@npm:6.9.0"
   dependencies:
@@ -2065,10 +2079,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:8.0.2":
-  version: 8.0.2
-  resolution: "@faker-js/faker@npm:8.0.2"
-  checksum: cf73daf9a50397eb0b3f04a7ef3fbb6f54acc026b167707136a7e58a517fd805a46c9e8c5f017f3022f104a4ff984765daaeee2cb98b3c34646db05c2acad441
+"@faker-js/faker@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@faker-js/faker@npm:8.1.0"
+  checksum: 76036cbad2f0735fe2a2834bb3e16233e7c1aa4998cf90dbd097631465f3fcd4e7022c901f80b6de1c25b47154880f06916609a81dacb039a25f9cb000a3ab4e
   languageName: node
   linkType: hard
 
@@ -3303,6 +3317,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lezer/common@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@lezer/common@npm:1.1.0"
+  checksum: 93c208a44d1c0bdf7407853ba7c4ddcedf1c52d1b82170813d83b9bd6301aa23587405ac54332fe39ce8bc37f706936ab237ceb4d3d535d1dead650153b6474c
+  languageName: node
+  linkType: hard
+
 "@lezer/highlight@npm:^1.0.0, @lezer/highlight@npm:^1.1.3":
   version: 1.1.6
   resolution: "@lezer/highlight@npm:1.1.6"
@@ -3620,9 +3641,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.10.7":
-  version: 1.10.7
-  resolution: "@neo4j-ndl/react@npm:1.10.7"
+"@neo4j-ndl/react@npm:1.10.8":
+  version: 1.10.8
+  resolution: "@neo4j-ndl/react@npm:1.10.8"
   dependencies:
     "@floating-ui/react": ^0.24.2
     "@heroicons/react": 2.0.13
@@ -3645,7 +3666,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 400e60f5729c4817cfe7e09c85671baac420fa62b41b4abb6dd0236ceecd660c5c9a00a98d95e9201c87d9df055b0d7012c2eda37b2081906e0c9cba9c7d6a80
+  checksum: 69941f61a0e89a628b698c3c7c5a2c2dabbdafba89aa67e89bee1db56ddbe65ec8d2deeeaa0b008475062f7a742760a0a63f1d7c2541ad7b0943a7b32e0202f1
   languageName: node
   linkType: hard
 
@@ -3680,7 +3701,7 @@ __metadata:
     supertest: 6.3.3
     ts-jest: 29.1.1
     typescript: 5.1.6
-    ws: 8.14.1
+    ws: 8.14.2
   peerDependencies:
     "@neo4j/graphql": ^4.0.0-beta.0
   languageName: unknown
@@ -3694,7 +3715,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^5.0.0
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
-    "@neo4j/graphql": ^4.1.1
+    "@neo4j/graphql": ^4.1.3
     "@types/jest": 29.5.5
     "@types/node": 18.15.1
     camelcase: 6.3.0
@@ -3722,16 +3743,16 @@ __metadata:
     "@codemirror/autocomplete": 6.9.1
     "@codemirror/commands": 6.2.5
     "@codemirror/lang-javascript": 6.2.1
-    "@codemirror/language": 6.9.0
+    "@codemirror/language": 6.9.1
     "@dnd-kit/core": 6.0.8
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.19.4
     "@neo4j-ndl/base": 1.10.3
-    "@neo4j-ndl/react": 1.10.7
-    "@neo4j/graphql": 4.1.1
+    "@neo4j-ndl/react": 1.10.8
+    "@neo4j/graphql": 4.1.3
     "@neo4j/introspector": 2.0.0
-    "@playwright/test": 1.38.0
+    "@playwright/test": 1.38.1
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.10
     "@types/lodash.debounce": 4.0.7
@@ -3739,7 +3760,7 @@ __metadata:
     "@types/prettier": 2.7.3
     "@types/react-dom": 18.2.7
     "@types/webpack": 5.28.2
-    autoprefixer: 10.4.15
+    autoprefixer: 10.4.16
     classnames: 2.3.2
     cm6-graphql: 0.0.10
     codemirror: 6.0.1
@@ -3751,7 +3772,7 @@ __metadata:
     dotenv-webpack: 8.0.1
     fork-ts-checker-webpack-plugin: 8.0.0
     graphiql-explorer: 0.9.0
-    graphql: 16.8.0
+    graphql: 16.8.1
     graphql-query-complexity: 0.12.0
     html-inline-script-webpack-plugin: 3.2.1
     html-webpack-inline-source-plugin: 0.0.10
@@ -3786,14 +3807,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@4.1.1, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.1.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@4.1.3, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.1.3, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": 2.5.5
     "@apollo/server": 4.9.3
     "@apollo/subgraph": ^2.2.3
-    "@faker-js/faker": 8.0.2
+    "@faker-js/faker": 8.1.0
     "@graphql-tools/merge": ^9.0.0
     "@graphql-tools/resolvers-composition": ^7.0.0
     "@graphql-tools/schema": 10.0.0
@@ -3842,7 +3863,7 @@ __metadata:
     typescript: 5.1.6
     typescript-memoize: ^1.1.1
     uuid: ^9.0.0
-    ws: 8.14.1
+    ws: 8.14.2
   peerDependencies:
     graphql: ^16.0.0
     neo4j-driver: ^5.8.0
@@ -4842,14 +4863,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.38.0":
-  version: 1.38.0
-  resolution: "@playwright/test@npm:1.38.0"
+"@playwright/test@npm:1.38.1":
+  version: 1.38.1
+  resolution: "@playwright/test@npm:1.38.1"
   dependencies:
-    playwright: 1.38.0
+    playwright: 1.38.1
   bin:
     playwright: cli.js
-  checksum: 0768b6b98f0993d9d8017e4bcca3a5c3fe1bf0270acaa89b141479c4319c16350d60e6d2511cbd655283942059fa409ce23fce30435f0936f5e2577834f356ba
+  checksum: c5ec0b23261fe1ef163b6234f69263bc10e7e5a3fb676c7773ffc70b87459a7ab225f57c03b9de649475771638a04c2e00d9b2739304a4dcf5d3edf20a7a4a82
   languageName: node
   linkType: hard
 
@@ -8915,9 +8936,9 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 2.0.0
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^10.0.0
-    "@neo4j/graphql": ^4.1.1
+    "@neo4j/graphql": ^4.1.3
     fork-ts-checker-webpack-plugin: 8.0.0
-    graphql: 16.8.0
+    graphql: 16.8.1
     graphql-tag: ^2.12.6
     neo4j-driver: ^5.8.0
     ts-loader: 9.4.4
@@ -9346,13 +9367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:10.4.15":
-  version: 10.4.15
-  resolution: "autoprefixer@npm:10.4.15"
+"autoprefixer@npm:10.4.16":
+  version: 10.4.16
+  resolution: "autoprefixer@npm:10.4.16"
   dependencies:
     browserslist: ^4.21.10
-    caniuse-lite: ^1.0.30001520
-    fraction.js: ^4.2.0
+    caniuse-lite: ^1.0.30001538
+    fraction.js: ^4.3.6
     normalize-range: ^0.1.2
     picocolors: ^1.0.0
     postcss-value-parser: ^4.2.0
@@ -9360,7 +9381,7 @@ __metadata:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: d490b14fb098c043e109fc13cd23628f146af99a493d35b9df3a26f8ec0b4dd8937c5601cdbaeb465b98ea31d3ea05aa7184711d4d93dfb52358d073dcb67032
+  checksum: 45fad7086495048dacb14bb7b00313e70e135b5d8e8751dcc60548889400763705ab16fc2d99ea628b44c3472698fb0e39598f595ba28409c965ab159035afde
   languageName: node
   linkType: hard
 
@@ -10327,10 +10348,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001517, caniuse-lite@npm:^1.0.30001520":
+"caniuse-lite@npm:^1.0.30001517":
   version: 1.0.30001525
   resolution: "caniuse-lite@npm:1.0.30001525"
   checksum: a0d190c185b8e1220dbc72e42f310633059aa175ca3396eb781b249ac3da6c62b30cb8efc5fa24d632cb938f58d90b0c7772d1c9942b6643cf418c27c2cb8632
+  languageName: node
+  linkType: hard
+
+"caniuse-lite@npm:^1.0.30001538":
+  version: 1.0.30001538
+  resolution: "caniuse-lite@npm:1.0.30001538"
+  checksum: 94c5d55757a339c7cc175f08a024671e2b4e7c04f130b1015793303d637061347efb6ad84447c3b8137333e742d150b8ad9672716bbf2482646c2e63a56f6c55
   languageName: node
   linkType: hard
 
@@ -14336,10 +14364,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fraction.js@npm:^4.2.0":
-  version: 4.3.5
-  resolution: "fraction.js@npm:4.3.5"
-  checksum: 4c4b98ce56500a78a0f886d31c7a0d60822153cc851f1f7f9ec968af1c4f7750077534f5a3ea1f8d09b0715e566fe22507a2abf7e3122bbbf21e2f7ae4127420
+"fraction.js@npm:^4.3.6":
+  version: 4.3.6
+  resolution: "fraction.js@npm:4.3.6"
+  checksum: e96ae77e64ebfd442d3a5a01a3f0637b0663fc2440bcf2841b3ad9341ba24c81fb2e3e7142e43ef7d088558c6b3f8609df135b201adc7a1c674aea6a71384162
   languageName: node
   linkType: hard
 
@@ -15088,10 +15116,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.8.0, graphql@npm:^16.6.0, graphql@npm:^16.8.0":
-  version: 16.8.0
-  resolution: "graphql@npm:16.8.0"
-  checksum: d853d4085b0c911a7e2a926c3b0d379934ec61cd4329e70cdf281763102f024fd80a97db7a505b8b04fed9050cb4875f8f518150ea854557a500a0b41dcd7f4e
+"graphql@npm:16.8.1, graphql@npm:^16.6.0, graphql@npm:^16.8.0":
+  version: 16.8.1
+  resolution: "graphql@npm:16.8.1"
+  checksum: 8d304b7b6f708c8c5cc164b06e92467dfe36aff6d4f2cf31dd19c4c2905a0e7b89edac4b7e225871131fd24e21460836b369de0c06532644d15b461d55b1ccc0
   languageName: node
   linkType: hard
 
@@ -19455,8 +19483,8 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.1.1
-    graphql: 16.8.0
+    "@neo4j/graphql": ^4.1.3
+    graphql: 16.8.1
     neo4j-driver: 5.12.0
   languageName: unknown
   linkType: soft
@@ -20293,7 +20321,7 @@ __metadata:
     eslint-plugin-jsx-a11y: 6.7.1
     eslint-plugin-react: 7.33.2
     eslint-plugin-simple-import-sort: 10.0.0
-    graphql: 16.8.0
+    graphql: 16.8.1
     husky: 8.0.3
     jest: 29.7.0
     lint-staged: 14.0.1
@@ -21803,27 +21831,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.38.0":
-  version: 1.38.0
-  resolution: "playwright-core@npm:1.38.0"
+"playwright-core@npm:1.38.1":
+  version: 1.38.1
+  resolution: "playwright-core@npm:1.38.1"
   bin:
     playwright-core: cli.js
-  checksum: 9eb43fc6c3cb392d5f35b0fd0b7291b38a8cbdc3cbb944a8261f744f30d09196dfa3b5d84aa02ffc09af87d08d31b385b007b6af20d0b6cd50a29344f3b0db8d
+  checksum: 66e83fe040f309b13ad94ba39dea40ac207bfcbbc22de13141af88dbdedd64e1c4e3ce1d0cb070d4efd8050d7e579953ec3681dd8a0acf2c1cc738d9c50e545e
   languageName: node
   linkType: hard
 
-"playwright@npm:1.38.0":
-  version: 1.38.0
-  resolution: "playwright@npm:1.38.0"
+"playwright@npm:1.38.1":
+  version: 1.38.1
+  resolution: "playwright@npm:1.38.1"
   dependencies:
     fsevents: 2.3.2
-    playwright-core: 1.38.0
+    playwright-core: 1.38.1
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: c5356690a391d5dd41f814d4e2694b93ba9e79381ce63de752da1c6c59b1f9c69bc6be853d973d0542d73a44a6b15f7c0081a164a64cd27b6b31207710c0ab34
+  checksum: 4e01d4ee52d9ccf75a80d8492829106802590721d56bff7c5957ff1f21eb3c328ee5bc3c1784a59c4b515df1b98d08ef92e4a35a807f454cd00dc481d30fadc2
   languageName: node
   linkType: hard
 
@@ -27224,9 +27252,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.14.1":
-  version: 8.14.1
-  resolution: "ws@npm:8.14.1"
+"ws@npm:8.14.2":
+  version: 8.14.2
+  resolution: "ws@npm:8.14.2"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -27235,7 +27263,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 9e310be2b0ff69e1f87d8c6d093ecd17a1ed4c37f281d17c35e8c30e2bd116401775b3d503249651374e6e0e1e9905db62fff096b694371c77561aee06bc3466
+  checksum: 3ca0dad26e8cc6515ff392b622a1467430814c463b3368b0258e33696b1d4bed7510bc7030f7b72838b9fdeb8dbd8839cbf808367d6aae2e1d668ce741d4308b
   languageName: node
   linkType: hard
 

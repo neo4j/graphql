@@ -118,7 +118,7 @@ describe("createConnectAndParams", () => {
         });
 
         expect(result[0]).toMatchInlineSnapshot(`
-            "WITH this
+            "WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this0_node:Movie)
@@ -149,9 +149,9 @@ describe("createConnectAndParams", () => {
             		}
             	}
             WITH this, this0_node, this0_node_similarMovies0_node
-            	RETURN count(*) AS connect_this0_node_similarMovies_Movie
+            	RETURN count(*) AS connect_this0_node_similarMovies_Movie0
             }
-            	RETURN count(*) AS connect_this_Movie
+            	RETURN count(*) AS connect_this_Movie0
             }"
         `);
 

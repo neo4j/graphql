@@ -579,12 +579,12 @@ describe("Cypher Auth Allow", () => {
             "MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization_this0:User)
-            WITH *, count(authorization_this0) AS creatorCount
             WITH *
             CALL {
             WITH *
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization_this0:User)
+            WITH *, count(authorization_this0) AS creatorCount
             WHERE this_posts0.id = $this_deleteUsers_args_delete_posts0_where_this_posts0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
             CALL {
@@ -827,7 +827,7 @@ describe("Cypher Auth Allow", () => {
             "MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
@@ -845,7 +845,7 @@ describe("Cypher Auth Allow", () => {
             		}
             	}
             WITH this, this_connect_posts0_node
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

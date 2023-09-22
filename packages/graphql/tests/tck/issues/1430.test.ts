@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             WHERE this.id = $param0
             WITH *
             WHERE apoc.util.validatePredicate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)) OR EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
@@ -158,7 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             		}
             	}
             WITH this, this_connect_interface0_node
-            	RETURN count(*) AS connect_this_connect_interface_ChildOne
+            	RETURN count(*) AS connect_this_connect_interface_ChildOne0
             }
             CALL {
             		WITH this
@@ -175,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             		}
             	}
             WITH this, this_connect_interface1_node
-            	RETURN count(*) AS connect_this_connect_interface_ChildTwo
+            	RETURN count(*) AS connect_this_connect_interface_ChildTwo1
             }
             WITH *
             CALL {

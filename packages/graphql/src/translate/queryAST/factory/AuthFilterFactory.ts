@@ -34,7 +34,7 @@ import { parseWhereField } from "./parsers/parse-where-field";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { createParameterWhere } from "../../where/create-parameter-where";
+import { LogicalFilter } from "../ast/filters/LogicalFilter";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -51,20 +51,31 @@ export class AuthFilterFactory extends FilterFactory {
     }): Filter[] {
         const nestedFilters: Filter[] = Object.entries(populatedWhere).flatMap(([key, value]): Filter[] => {
             if (isLogicalOperator(key)) {
-                // return this.createEdgeLogicalFilter(key, value as any, relationship);
+                const nestedFilters = value.flatMap((v) => {
+                    return this.createAuthFilters({
+                        entity,
+                        operations,
+                        context,
+                        populatedWhere: v,
+                    });
+                });
+
+                return [
+                    new LogicalFilter({
+                        operation: key,
+                        filters: nestedFilters,
+                    }),
+                ];
             }
 
             if (key === "node") {
                 return this.createNodeFilters(entity, value);
-                // nestedFilters.push(...this.createNodeFilters(entity, populatedWhere.node));
             } else if (key === "jwt") {
                 return this.createJWTFilters(context.authorization.jwtParam, value, context);
             }
 
             return [];
         });
-
-        // LogicalFilters
 
         return nestedFilters;
     }
@@ -118,24 +129,17 @@ export class AuthFilterFactory extends FilterFactory {
         attachedTo?: "node" | "relationship";
     }): PropertyFilter {
         const filterOperator = operator || "EQ";
-        // if (attribute.isDuration() || attribute.isListOf(Neo4jGraphQLTemporalType.Duration)) {
-        //     return new DurationFilter({
-        //         attribute,
-        //         comparisonValue,
-        //         isNot,
-        //         operator: filterOperator,
-        //         attachedTo,
-        //     });
-        // }
-        // if (attribute.isPoint() || attribute.isListOf(Neo4jGraphQLSpatialType.Point)) {
-        //     return new PointFilter({
-        //         attribute,
-        //         comparisonValue,
-        //         isNot,
-        //         operator: filterOperator,
-        //         attachedTo,
-        //     });
-        // }
+
+        // This is probably not needed, but avoid changing the cypher
+        if (typeof comparisonValue === "boolean") {
+            return new ParamPropertyFilter({
+                attribute,
+                comparisonValue: new Cypher.Param(comparisonValue),
+                isNot,
+                operator: filterOperator,
+                attachedTo,
+            });
+        }
 
         const isCypherVariable =
             comparisonValue instanceof Cypher.Variable ||

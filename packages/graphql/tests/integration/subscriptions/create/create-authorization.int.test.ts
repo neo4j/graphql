@@ -69,9 +69,6 @@ describe("auth/bind", () => {
                             create: [{
                                 node: {
                                     id: "post-id-1",
-                                    creator: {
-                                        create: { node: {id: "not valid"} }
-                                    }
                                 }
                             }]
                         }

@@ -71,7 +71,7 @@ function doTypesMatch(expectedType: string, argumentValueType: ValueNode, enums:
         return true;
     }
     if (expectedType.toLowerCase() === "id") {
-        return !!(fromValueKind(argumentValueType, enums)?.toLowerCase() === "string");
+        return !!(fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === "string");
     }
-    return fromValueKind(argumentValueType, enums)?.toLowerCase() === expectedType.toLowerCase();
+    return fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === expectedType.toLowerCase();
 }
