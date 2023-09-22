@@ -263,8 +263,13 @@ export class ConnectionReadOperation extends Operation {
             const sortFields = this.getSortFields(context, edgeVar.property("node"), edgeVar);
             subquery.orderBy(...sortFields);
         }
+
+        if (paginationField && paginationField.skip) {
+            subquery.skip(paginationField.skip);
+        }
+
         if (paginationField && paginationField.limit) {
-            subquery.limit(paginationField.limit as any);
+            subquery.limit(paginationField.limit);
         }
 
         const returnVar = new Cypher.Variable();

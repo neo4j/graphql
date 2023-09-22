@@ -19,7 +19,7 @@
 
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
@@ -29,7 +29,10 @@ import type { Sort } from "../ast/sort/Sort";
 import { isUnionEntity } from "../utils/is-union-entity";
 
 export class SortAndPaginationFactory {
-    public createSortFields(options: GraphQLOptionsArg, entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter): Sort[] {
+    public createSortFields(
+        options: GraphQLOptionsArg,
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter
+    ): Sort[] {
         return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
     }
 
