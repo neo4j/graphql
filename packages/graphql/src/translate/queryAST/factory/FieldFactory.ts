@@ -75,6 +75,7 @@ export class FieldFactory {
                 });
             }
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
+
             if (isConnection) {
                 if (entity instanceof RelationshipAdapter)
                     throw new Error("Cannot create connection field of relationship");

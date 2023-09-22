@@ -47,6 +47,7 @@ import type { AuthorizationFilters } from "../ast/filters/authorization-filters/
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import { mergeDeep } from "@graphql-tools/utils";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -445,9 +446,10 @@ export class OperationsFactory {
 
         // Get the abstract types of the interface
         const entityInterfaces = entity.compositeEntities;
-        for (const interfaceEntity of entityInterfaces) {
-            projectionFields = { ...resolveTree.fieldsByTypeName[interfaceEntity.name], ...projectionFields };
-        }
+
+        const interfacesFields = filterTruthy(entityInterfaces.map((i) => resolveTree.fieldsByTypeName[i.name]));
+
+        projectionFields = mergeDeep<Record<string, ResolveTree>[]>([...interfacesFields, projectionFields]);
 
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
