@@ -64,7 +64,7 @@ export class FieldFactory {
 
         const mergedFields: Record<string, ResolveTree> = mergeDeep([rawFields, ...fieldsToMerge]);
 
-        const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field => {
+        const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field | undefined => {
             if (isConcreteEntity(entity)) {
                 // TODO: Move this to the tree
                 checkEntityAuthentication({
@@ -106,7 +106,7 @@ export class FieldFactory {
             });
         });
 
-        return fields;
+        return filterTruthy(fields);
     }
 
     private createRelationshipAggregationField(
@@ -197,7 +197,8 @@ export class FieldFactory {
         fieldName: string;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-    }): AttributeField {
+    }): AttributeField | undefined {
+        if (["cursor", "node"].includes(fieldName)) return;
         let attribute = entity.findAttribute(fieldName);
 
         if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {

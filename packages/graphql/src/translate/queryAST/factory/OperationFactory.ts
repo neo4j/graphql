@@ -347,6 +347,13 @@ export class OperationsFactory {
         return operation;
     }
 
+    private findFieldsByNameInResolveTree(
+        resolveTreeObject: Record<string, ResolveTree>,
+        fieldName: string
+    ): ResolveTree[] {
+        return Object.values(resolveTreeObject).filter((resolveTreeField) => resolveTreeField.name === fieldName);
+    }
+
     private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
         relationship,
         target,
@@ -362,19 +369,27 @@ export class OperationsFactory {
         operation: T;
         whereArgs: Record<string, any>;
     }): T {
-        const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
-        const edgeRawFields = {
-            ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
-        };
+        const resolveTreeConnectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
 
-        // Getting fields for relationship and target to get both, interface and concrete entity types
-        const nodeRawFields = {
-            ...edgeRawFields.node?.fieldsByTypeName[target.name],
-            ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name],
-        };
-        // TODO: Use splitConnectionFields
-        delete edgeRawFields.node;
-        delete edgeRawFields.edge;
+        const edgeFieldsRaw = this.findFieldsByNameInResolveTree(resolveTreeConnectionFields, "edges");
+        const resolveTreeEdgeFields: Record<string, ResolveTree> =
+            mergeDeep(
+                filterTruthy(
+                    edgeFieldsRaw.map(
+                        (edgeField) => edgeField?.fieldsByTypeName[relationship.relationshipFieldTypename]
+                    )
+                )
+            ) ?? {};
+        const nodeFieldsRaw = this.findFieldsByNameInResolveTree(resolveTreeEdgeFields, "node");
+        const resolveTreeNodeFields: Record<string, ResolveTree> =
+            mergeDeep(
+                filterTruthy(
+                    nodeFieldsRaw.map((nodeField) => ({
+                        ...nodeField?.fieldsByTypeName[target.name],
+                        ...nodeField?.fieldsByTypeName[relationship.target.name],
+                    }))
+                )
+            ) ?? {};
 
         this.hydrateConnectionOperationsASTWithSort({
             relationship,
@@ -382,13 +397,13 @@ export class OperationsFactory {
             operation,
         });
 
-        const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
-        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
+        const nodeFields = this.fieldFactory.createFields(target, resolveTreeNodeFields, context);
+        const edgeFields = this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
         const authNodeAttributeFilters = this.createAttributeAuthFilters({
             entity: target,
             context,
-            rawFields: nodeRawFields,
+            rawFields: resolveTreeNodeFields,
         });
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);

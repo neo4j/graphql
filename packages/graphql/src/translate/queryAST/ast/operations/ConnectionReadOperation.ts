@@ -44,6 +44,7 @@ export class ConnectionReadOperation extends Operation {
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
 
+
     constructor({
         relationship,
         directed,
@@ -66,6 +67,7 @@ export class ConnectionReadOperation extends Operation {
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
+
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
