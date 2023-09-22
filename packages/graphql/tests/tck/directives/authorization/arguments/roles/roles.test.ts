@@ -436,7 +436,7 @@ describe("Cypher Auth Roles", () => {
             "MATCH (this:User)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
@@ -454,7 +454,7 @@ describe("Cypher Auth Roles", () => {
             WITH this, this_connect_posts0_node
             WITH this, this_connect_posts0_node
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	RETURN count(*) AS connect_this_connect_posts_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -503,7 +503,7 @@ describe("Cypher Auth Roles", () => {
             CALL {
             	WITH this
             	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
-            	WITH this, this_post0
+            	WITH *
             	CALL {
             		WITH this, this_post0
             		OPTIONAL MATCH (this_post0_creator0_connect0_node:User)
@@ -521,7 +521,7 @@ describe("Cypher Auth Roles", () => {
             	WITH this, this_post0, this_post0_creator0_connect0_node
             	WITH this, this_post0, this_post0_creator0_connect0_node
             	WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            		RETURN count(*) AS connect_this_post0_creator0_connect_User
+            		RETURN count(*) AS connect_this_post0_creator0_connect_User0
             	}
             	WITH this, this_post0
             	CALL {

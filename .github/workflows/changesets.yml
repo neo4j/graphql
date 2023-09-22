@@ -100,6 +100,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
 
+      - name: Configure git
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+
       - name: Merge into master if publish happens
         if: needs.release.outputs.published == 'true'
         run: |

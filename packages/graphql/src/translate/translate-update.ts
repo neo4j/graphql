@@ -36,6 +36,7 @@ import { createConnectionEventMeta } from "../translate/subscriptions/create-con
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 export default async function translateUpdate({
     node,
@@ -378,7 +379,12 @@ export default async function translateUpdate({
                         }
                     }
 
-                    const createAndParams = createCreateAndParams({
+                    const {
+                        create: nestedCreate,
+                        params,
+                        authorizationPredicates,
+                        authorizationSubqueries,
+                    } = createCreateAndParams({
                         context,
                         callbackBucket,
                         node: refNode,
@@ -387,8 +393,8 @@ export default async function translateUpdate({
                         withVars: [...withVars, nodeName],
                         includeRelationshipValidation: false,
                     });
-                    createStrs.push(createAndParams[0]);
-                    cypherParams = { ...cypherParams, ...createAndParams[1] };
+                    createStrs.push(nestedCreate);
+                    cypherParams = { ...cypherParams, ...params };
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                     if (relationField.properties) {
@@ -406,6 +412,8 @@ export default async function translateUpdate({
                         createStrs.push(setA[0]);
                         cypherParams = { ...cypherParams, ...setA[1] };
                     }
+
+                    creates.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
 
                     if (context.subscriptionsEnabled) {
                         const [fromVariable, toVariable] =

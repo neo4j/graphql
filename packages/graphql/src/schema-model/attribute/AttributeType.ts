@@ -102,9 +102,6 @@ export class ListType {
     public readonly isRequired: boolean;
     constructor(ofType: AttributeType, isRequired: boolean) {
         this.name = `List<${ofType.name}>`;
-        if (ofType instanceof ListType) {
-            throw new Neo4jGraphQLSchemaValidationError("two-dimensional lists are not supported");
-        }
         this.ofType = ofType;
         this.isRequired = isRequired;
     }
@@ -142,4 +139,22 @@ export class InterfaceType {
     }
 }
 
-export type AttributeType = ScalarType | UserScalarType | ObjectType | ListType | EnumType | UnionType | InterfaceType;
+export class UnknownType {
+    public readonly name: string;
+    public readonly isRequired: boolean;
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export type AttributeType =
+    | ScalarType
+    | UserScalarType
+    | ObjectType
+    | ListType
+    | EnumType
+    | UnionType
+    | InterfaceType
+    | UnknownType;

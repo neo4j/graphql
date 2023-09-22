@@ -32,7 +32,11 @@ export function getInnerTypeName(typeNode: TypeNode): string {
     return typeNode.name.value;
 }
 
-export function fromValueKind(valueNode: ValueNode, enums: EnumTypeDefinitionNode[]): string | undefined {
+export function fromValueKind(
+    valueNode: ValueNode,
+    enums: EnumTypeDefinitionNode[],
+    expectedType: string
+): string | undefined {
     switch (valueNode.kind) {
         case Kind.STRING:
             return "string";
@@ -43,8 +47,10 @@ export function fromValueKind(valueNode: ValueNode, enums: EnumTypeDefinitionNod
         case Kind.BOOLEAN:
             return "boolean";
         case Kind.ENUM: {
-            const enumType = enums?.find((x) => x.values?.find((v) => v.name.value === valueNode.value));
-            if (enumType) {
+            const enumType = enums?.find((x) => x.name.value === expectedType);
+            const enumValue = enumType?.values?.find((value) => value.name.value === valueNode.value);
+
+            if (enumType && enumValue) {
                 return enumType.name.value;
             }
             break;
