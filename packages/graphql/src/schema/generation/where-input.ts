@@ -121,13 +121,8 @@ export function withSourceWhereInputType({
     if (relationshipSource instanceof UnionEntityAdapter) {
         throw new Error("Unexpected union source");
     }
-    const typeName = relationshipSource.operations.whereInputTypeName;
-    const whereInput = composer.getITC(typeName);
-    const fields = augmentWhereInputTypeWithRelationshipFields(
-        relationshipSource,
-        relationshipAdapter,
-        deprecatedDirectives
-    );
+    const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
+    const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
     whereInput.addFields(fields);
 
     const whereAggregateInput = withAggregateInputType({
@@ -196,8 +191,10 @@ export function withConnectWhereFieldInputType(
     if (composer.has(connectWhereName)) {
         return composer.getITC(connectWhereName);
     }
-    const connectWhereType = composer.getOrCreateITC(connectWhereName, (tc) => {
-        tc.addFields({ node: `${relationshipTarget.operations.whereInputTypeName}!` });
+    const connectWhereType = composer.createInputTC({
+        name: connectWhereName,
+        fields: { node: `${relationshipTarget.operations.whereInputTypeName}!` },
     });
+
     return connectWhereType;
 }

@@ -33,8 +33,10 @@ import type { NestedOperation, QueryDirection, Relationship, RelationshipDirecti
 import { RelationshipOperations } from "./RelationshipOperations";
 import { plural, singular } from "../../utils/string-manipulation";
 import { RelationshipNestedOperationsOption } from "../../../constants";
+import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 
 export class RelationshipAdapter {
+    private _listFiltersModel: ListFiltersAdapter | undefined;
     public readonly name: string;
     public readonly type: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
@@ -117,6 +119,16 @@ export class RelationshipAdapter {
         }
         return this._operations;
     }
+    get listFiltersModel(): ListFiltersAdapter | undefined {
+        if (!this._listFiltersModel) {
+            if (!this.isList) {
+                return;
+            }
+            this._listFiltersModel = new ListFiltersAdapter(this);
+        }
+        return this._listFiltersModel;
+    }
+
     public get singular(): string {
         if (!this._singular) {
             this._singular = singular(this.name);

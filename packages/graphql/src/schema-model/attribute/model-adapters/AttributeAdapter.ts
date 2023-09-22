@@ -319,9 +319,6 @@ export class AttributeAdapter {
         return this.isList() && !this.isUserScalar() && (this.isScalar() || this.isSpatial());
     }
 
-    /**
-     * @throws {Error} if the attribute is not a list
-     */
     get listModel(): ListAdapter | undefined {
         if (!this._listModel) {
             if (!this.isArrayMethodField()) {
@@ -332,9 +329,6 @@ export class AttributeAdapter {
         return this._listModel;
     }
 
-    /**
-     * @throws {Error} if the attribute is not a scalar
-     */
     get mathModel(): MathAdapter | undefined {
         if (!this._mathModel) {
             if (!this.isNumeric() || this.isList()) {
