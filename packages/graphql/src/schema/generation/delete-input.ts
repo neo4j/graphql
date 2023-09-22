@@ -1,23 +1,239 @@
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
-import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type {
+    Directive,
+    InputTypeComposer,
+    InputTypeComposerFieldConfigMap,
+    InputTypeComposerFieldConfigMapDefinition,
+    SchemaComposer,
+} from "graphql-compose";
+import { RelationshipNestedOperationsOption } from "../../constants";
+import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { makeImplementationsDeleteInput } from "./implementation-inputs";
+import { makeConnectionWhereInputType } from "./where-input";
 
 export function withDeleteInputType({
-    interfaceEntityAdapter,
+    entityAdapter,
     composer,
 }: {
-    interfaceEntityAdapter: InterfaceEntityAdapter;
+    entityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
-    const implementationsUpdateInputType = makeImplementationsDeleteInput({ interfaceEntityAdapter, composer });
+    if (entityAdapter instanceof ConcreteEntityAdapter) {
+        return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
+    }
+    const implementationsUpdateInputType = makeImplementationsDeleteInput({
+        interfaceEntityAdapter: entityAdapter,
+        composer,
+    });
 
     if (!implementationsUpdateInputType) {
         return undefined;
     }
 
-    const deleteInputType = composer.getOrCreateITC(
-        interfaceEntityAdapter.operations.updateMutationArgumentNames.delete
-    );
+    const deleteInputType = composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
     deleteInputType.setField("_on", implementationsUpdateInputType);
     return deleteInputType;
+}
+
+export function augmentDeleteInputTypeWithDeleteFieldInput({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}) {
+    if (relationshipAdapter.source instanceof UnionEntityAdapter) {
+        throw new Error("Unexpected union source");
+    }
+    const deleteFieldInput = makeDeleteInputType({
+        relationshipAdapter,
+        composer,
+        deprecatedDirectives,
+    });
+    if (!deleteFieldInput) {
+        return;
+    }
+    const deleteInput = withDeleteInputType({
+        entityAdapter: relationshipAdapter.source,
+        composer,
+    });
+    if (!deleteInput) {
+        return;
+    }
+    const relationshipField = makeDeleteInputTypeRelationshipField({
+        relationshipAdapter,
+        deleteFieldInput,
+        deprecatedDirectives,
+    });
+    deleteInput.addFields(relationshipField);
+}
+function makeDeleteInputType({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposer | undefined {
+    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+        return withUnionDeleteInputType({ relationshipAdapter, composer, deprecatedDirectives });
+    }
+    return withDeleteFieldInputType({ relationshipAdapter, composer });
+}
+function makeDeleteInputTypeRelationshipField({
+    relationshipAdapter,
+    deleteFieldInput,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    deleteFieldInput: InputTypeComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposerFieldConfigMap {
+    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+        return {
+            [relationshipAdapter.name]: {
+                type: deleteFieldInput,
+                directives: deprecatedDirectives,
+            },
+        };
+    }
+    return {
+        [relationshipAdapter.name]: {
+            type: relationshipAdapter.isList ? deleteFieldInput.NonNull.List : deleteFieldInput,
+            directives: deprecatedDirectives,
+        },
+    };
+}
+
+export function withUnionDeleteInputType({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposer | undefined {
+    const typeName = relationshipAdapter.operations.unionDeleteInputTypeName;
+    if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
+        return;
+    }
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
+    }
+    const fields = makeUnionDeleteInputTypeFields({ relationshipAdapter, composer, deprecatedDirectives });
+    if (!Object.keys(fields).length) {
+        return;
+    }
+    const deleteInput = composer.createInputTC({
+        name: typeName,
+        fields,
+    });
+
+    return deleteInput;
+}
+function makeUnionDeleteInputTypeFields({
+    relationshipAdapter,
+    composer,
+    deprecatedDirectives,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    deprecatedDirectives: Directive[];
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fields: InputTypeComposerFieldConfigMapDefinition = {};
+    if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
+        throw new Error("Expected union target");
+    }
+    for (const memberEntity of relationshipAdapter.target.concreteEntities) {
+        const fieldInput = withDeleteFieldInputType({
+            relationshipAdapter,
+            ifUnionMemberEntity: memberEntity,
+            composer,
+        });
+        if (fieldInput) {
+            fields[memberEntity.name] = {
+                type: relationshipAdapter.isList ? fieldInput.NonNull.List : fieldInput,
+                directives: deprecatedDirectives,
+            };
+        }
+    }
+    return fields;
+}
+
+export function withDeleteFieldInputType({
+    relationshipAdapter,
+    composer,
+    ifUnionMemberEntity,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    ifUnionMemberEntity?: ConcreteEntityAdapter;
+}): InputTypeComposer | undefined {
+    const typeName = relationshipAdapter.operations.getDeleteFieldInputTypeName(ifUnionMemberEntity);
+    if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.DELETE)) {
+        return;
+    }
+    if (composer.has(typeName)) {
+        return composer.getITC(typeName);
+    }
+    const disconnectFieldInput = composer.createInputTC({
+        name: typeName,
+        fields: makeDeleteFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity }),
+    });
+    return disconnectFieldInput;
+}
+function makeDeleteFieldInputTypeFields({
+    relationshipAdapter,
+    composer,
+    ifUnionMemberEntity,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+    ifUnionMemberEntity?: ConcreteEntityAdapter;
+}): InputTypeComposerFieldConfigMapDefinition {
+    const fields = {};
+    if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
+        if (
+            relationshipTargetHasRelationshipWithNestedOperation(
+                relationshipAdapter.target,
+                RelationshipNestedOperationsOption.DELETE
+            )
+        ) {
+            const deleteInput = withDeleteInputType({ entityAdapter: relationshipAdapter.target, composer });
+            if (deleteInput) {
+                fields["delete"] = deleteInput;
+            }
+        }
+    } else if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
+        const deleteInput = withDeleteInputType({ entityAdapter: relationshipAdapter.target, composer });
+        if (deleteInput) {
+            fields["delete"] = deleteInput;
+        }
+    } else {
+        if (!ifUnionMemberEntity) {
+            throw new Error("Member Entity required.");
+        }
+        fields["where"] = makeConnectionWhereInputType({
+            relationshipAdapter,
+            memberEntity: ifUnionMemberEntity,
+            composer,
+        });
+        if (ifUnionMemberEntity.relationships.size) {
+            const deleteInput = withDeleteInputType({ entityAdapter: ifUnionMemberEntity, composer });
+            if (deleteInput) {
+                fields["delete"] = deleteInput;
+            }
+        }
+    }
+
+    return fields;
 }

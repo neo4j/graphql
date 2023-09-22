@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLBoolean } from "graphql";
+import { GraphQLBoolean, GraphQLNonNull } from "graphql";
+import type { InputTypeComposerFieldConfigDefinition } from "graphql-compose";
 
-export const overwrite = {
-    type: GraphQLBoolean,
+export const overwrite: InputTypeComposerFieldConfigDefinition = {
+    type: new GraphQLNonNull(GraphQLBoolean),
     description: "Whether or not to overwrite any matching relationship with the new properties.",
     defaultValue: true,
 };

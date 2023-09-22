@@ -18,13 +18,14 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationField } from "../../types";
 import { upperFirst } from "../../utils/upper-first";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
+import { withCreateInputType } from "../generation/create-input";
 import { concreteEntityToCreateInputFields, objectFieldsToCreateInputFields } from "../to-compose";
 
 export function createConnectOrCreateField({
@@ -183,7 +184,7 @@ export function createConnectOrCreateField2({
     return relationshipAdapter.isList ? `[${connectOrCreateName}!]` : connectOrCreateName;
 }
 
-function createOnCreateITC2({
+export function createOnCreateITC2({
     schemaComposer,
     relationshipAdapter,
     targetEntityAdapter,
@@ -194,33 +195,7 @@ function createOnCreateITC2({
     targetEntityAdapter: ConcreteEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposer {
-    const onCreateName =
-        relationshipAdapter.operations.getConnectOrCreateOnCreateFieldInputTypeName(targetEntityAdapter);
-
-    const onCreateFields = getOnCreateFields2({
-        relationshipAdapter,
-        targetEntityAdapter,
-        schemaComposer,
-        userDefinedFieldDirectives,
-    });
-
-    return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
-        tc.addFields(onCreateFields);
-    });
-}
-
-function getOnCreateFields2({
-    relationshipAdapter,
-    targetEntityAdapter,
-    schemaComposer,
-    userDefinedFieldDirectives,
-}: {
-    relationshipAdapter: RelationshipAdapter;
-    targetEntityAdapter: ConcreteEntityAdapter;
-    schemaComposer: SchemaComposer;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-}): { node: string } | { node: string; edge: string } {
-    schemaComposer.getOrCreateITC(targetEntityAdapter.operations.onCreateInputTypeName, (tc) => {
+    const onCreateInput = schemaComposer.getOrCreateITC(targetEntityAdapter.operations.onCreateInputTypeName, (tc) => {
         const nodeFields = concreteEntityToCreateInputFields(
             targetEntityAdapter.onCreateInputFields,
             userDefinedFieldDirectives
@@ -229,15 +204,22 @@ function getOnCreateFields2({
         ensureNonEmptyInput(schemaComposer, tc);
     });
 
-    const nodeCreateInputFieldName = `${targetEntityAdapter.operations.onCreateInputTypeName}!`;
-    // TODO: add relationshipAdapter.operations and return fields {edge, node} vs {node} from a method from operations
-    if (relationshipAdapter.nonGeneratedProperties.length > 0) {
-        return {
-            node: nodeCreateInputFieldName,
-            edge: relationshipAdapter.operations.edgeCreateInputTypeName,
+    const onCreateName =
+        relationshipAdapter.operations.getConnectOrCreateOnCreateFieldInputTypeName(targetEntityAdapter);
+    return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
+        const onCreateFields: InputTypeComposerFieldConfigMapDefinition = {
+            node: onCreateInput.NonNull,
         };
-    }
-    return {
-        node: nodeCreateInputFieldName,
-    };
+        if (relationshipAdapter.nonGeneratedProperties.length > 0) {
+            const edgeFieldType = withCreateInputType({
+                entityAdapter: relationshipAdapter,
+                userDefinedFieldDirectives,
+                composer: schemaComposer,
+            });
+            onCreateFields["edge"] = relationshipAdapter.hasNonNullNonGeneratedProperties
+                ? edgeFieldType.NonNull
+                : edgeFieldType;
+        }
+        tc.addFields(onCreateFields);
+    });
 }

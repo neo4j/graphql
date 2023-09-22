@@ -92,10 +92,7 @@ import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFieldsFromConcreteEntityAdapter } from "./create-relationship-fields/create-relationship-fields";
 import { deprecationMap } from "./deprecation-map";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
-import { withConnectInputType } from "./generation/connect-input";
 import { withCreateInputType } from "./generation/create-input";
-import { withDeleteInputType } from "./generation/delete-input";
-import { withDisconnectInputType } from "./generation/disconnect-input";
 import { withInterfaceType } from "./generation/interface-type";
 import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
@@ -1139,13 +1136,6 @@ function doForInterfacesThatAreTargetOfARelationship({
             relationshipFields,
         }),
     ];
-
-    withDeleteInputType({ interfaceEntityAdapter, composer });
-    withConnectInputType({ interfaceEntityAdapter, composer });
-    withDisconnectInputType({ interfaceEntityAdapter, composer });
-
-    ensureNonEmptyInput(composer, interfaceEntityAdapter.operations.createInputTypeName);
-    ensureNonEmptyInput(composer, interfaceEntityAdapter.operations.updateInputTypeName);
 
     return relationships;
 }

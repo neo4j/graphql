@@ -164,7 +164,7 @@ export function createConnectionFields({
             const whereInputITC = schemaComposer.getITC(entityAdapter.operations.whereInputTypeName);
             whereInputITC.addFields({
                 [relationship.operations.connectionFieldName]: connectionWhereITC,
-                [relationship.operations.connectionNotFieldName]: {
+                [`${relationship.operations.connectionFieldName}_NOT`]: {
                     type: connectionWhereITC,
                 },
             });
