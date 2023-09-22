@@ -198,10 +198,7 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): AttributeField | undefined {
-        // TODO: SIMONE remove this
-        if (["cursor", "node"].includes(fieldName)) {
-            return;
-        }
+        if (["cursor", "node"].includes(fieldName)) return;
         let attribute = entity.findAttribute(fieldName);
 
         if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {
