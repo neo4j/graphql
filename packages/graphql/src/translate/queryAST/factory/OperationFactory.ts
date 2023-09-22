@@ -379,6 +379,7 @@ export class OperationsFactory {
         });
 
         const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
+
         const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
         const authNodeAttributeFilters = this.createAttributeAuthFilters({

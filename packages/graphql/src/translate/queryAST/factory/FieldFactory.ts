@@ -64,7 +64,7 @@ export class FieldFactory {
 
         const mergedFields: Record<string, ResolveTree> = mergeDeep([rawFields, ...fieldsToMerge]);
 
-        const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field => {
+        const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field | undefined => {
             if (isConcreteEntity(entity)) {
                 // TODO: Move this to the tree
                 checkEntityAuthentication({
@@ -75,7 +75,7 @@ export class FieldFactory {
                 });
             }
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
-
+            if (entity instanceof RelationshipAdapter && fieldName === "cursor") return undefined;
             if (isConnection) {
                 if (entity instanceof RelationshipAdapter)
                     throw new Error("Cannot create connection field of relationship");
@@ -106,7 +106,7 @@ export class FieldFactory {
             });
         });
 
-        return fields;
+        return filterTruthy(fields);
     }
 
     private createRelationshipAggregationField(
