@@ -1010,11 +1010,11 @@ function makeAugmentedSchema(
                 if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
                     if (
                         [
-                            GraphQLBoolean.toString(),
-                            GraphQLFloat.toString(),
-                            GraphQLID.toString(),
-                            GraphQLInt.toString(),
-                            GraphQLString.toString(),
+                            GraphQLBoolean.name,
+                            GraphQLFloat.name,
+                            GraphQLID.name,
+                            GraphQLInt.name,
+                            GraphQLString.name,
                         ].includes(definition.name.value)
                     ) {
                         return false;
