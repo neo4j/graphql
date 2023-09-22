@@ -32,7 +32,7 @@ export function findResolver({ node }: { node: Node }) {
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
-
+        console.log(cypher);
         const executeResult = await execute({
             cypher,
             params,

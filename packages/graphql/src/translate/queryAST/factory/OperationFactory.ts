@@ -41,7 +41,7 @@ import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceRe
 import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
 import { getConcreteWhere } from "../utils/get-concrete-where";
-import { filterTruthy, isObject } from "../../../utils/utils";
+import { asArray, filterTruthy, isObject } from "../../../utils/utils";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
@@ -341,6 +341,9 @@ export class OperationsFactory {
 
         return operation;
     }
+    private findConnectionEdgeField(resolveTree: ResolveTree): ResolveTree | undefined {
+        return Object.values(resolveTree).find((field) => field.name === "edge");
+    }
 
     private hydrateConnectionOperationAST<T extends ConnectionReadOperation>({
         relationship,
@@ -357,19 +360,37 @@ export class OperationsFactory {
         operation: T;
         whereArgs: Record<string, any>;
     }): T {
-        const connectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
-        const edgeRawFields = {
-            ...connectionFields.edges?.fieldsByTypeName[relationship.relationshipFieldTypename],
-        };
+        const connectionFieldsTypesNameObj = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
 
+        // TODO: SIMONE, let's start with a single edge case first and then implement the multiple edge case
+        const edgesField = Object.values(connectionFieldsTypesNameObj).find(
+            (connectionField) => connectionField.name === "edges"
+        );
+        const edgeFieldsTypesNameObj = edgesField?.fieldsByTypeName[relationship.relationshipFieldTypename];
+
+        const nodeField =
+            edgeFieldsTypesNameObj &&
+            Object.values(edgeFieldsTypesNameObj).find((edgeRawField) => edgeRawField.name === "node");
+        /*      const edgeRawFields = filterTruthy(
+            asArray(edgesFields).map((field) => field.fieldsByTypeName[relationship.relationshipFieldTypename])
+        ); */
+        if (nodeField?.alias) {
+            operation.setNodeAlias(nodeField.alias);
+        }
+        const nodeFieldTypesNameObj = {
+            ...nodeField?.fieldsByTypeName[target.name],
+            ...nodeField?.fieldsByTypeName[relationship.target.name],
+        };
         // Getting fields for relationship and target to get both, interface and concrete entity types
-        const nodeRawFields = {
+        /*  const nodeRawFields = {
             ...edgeRawFields.node?.fieldsByTypeName[target.name],
             ...edgeRawFields.node?.fieldsByTypeName[relationship.target.name],
-        };
-        // TODO: Use splitConnectionFields
-        delete edgeRawFields.node;
-        delete edgeRawFields.edge;
+        }; */
+        // TODO: Use splitConnectionFields, and SIMONE UNDERSTAND WHY!!
+     /*    if (edgeFieldsTypesNameObj) {
+            delete edgeFieldsTypesNameObj.node;
+            delete edgeFieldsTypesNameObj.edge;
+        } */
 
         this.hydrateConnectionOperationsASTWithSort({
             relationship,
@@ -377,13 +398,13 @@ export class OperationsFactory {
             operation,
         });
 
-        const nodeFields = this.fieldFactory.createFields(target, nodeRawFields, context);
-        const edgeFields = this.fieldFactory.createFields(relationship, edgeRawFields, context);
+        const nodeFields = this.fieldFactory.createFields(target, nodeFieldTypesNameObj, context);
+        const edgeFields = this.fieldFactory.createFields(relationship, edgeFieldsTypesNameObj ?? {}, context);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
         const authNodeAttributeFilters = this.createAttributeAuthFilters({
             entity: target,
             context,
-            rawFields: nodeRawFields,
+            rawFields: nodeFieldTypesNameObj,
         });
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);

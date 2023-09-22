@@ -197,6 +197,7 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): AttributeField | undefined {
+        // TODO: SIMONE remove this
         if (["cursor", "node"].includes(fieldName)) {
             return;
         }

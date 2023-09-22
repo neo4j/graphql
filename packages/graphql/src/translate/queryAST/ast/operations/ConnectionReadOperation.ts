@@ -43,6 +43,8 @@ export class ConnectionReadOperation extends Operation {
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
+    private nodeAlias: string = "node";
+    private edgeAlias: string = "";
 
     constructor({
         relationship,
@@ -66,6 +68,12 @@ export class ConnectionReadOperation extends Operation {
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
+
+    public setNodeAlias(alias: string) {
+        this.nodeAlias = alias;
+    }
+
+    public setEdgeAlias(alias: string) {}
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
@@ -195,7 +203,7 @@ export class ConnectionReadOperation extends Operation {
                 }
             });
 
-        edgeProjectionMap.set("node", nodeProjectionMap);
+        edgeProjectionMap.set(this.nodeAlias, nodeProjectionMap);
 
         let withWhere: Cypher.Clause | undefined;
         if (filters) {
