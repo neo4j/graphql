@@ -41,13 +41,14 @@ import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceRe
 import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
 import { getConcreteWhere } from "../utils/get-concrete-where";
-import { filterTruthy, isObject } from "../../../utils/utils";
+import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import { mergeDeep } from "@graphql-tools/utils";
+import { cursorToOffset } from "graphql-relay";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -322,11 +323,14 @@ export class OperationsFactory {
         }
         const first = options?.first;
         const sort = options?.sort;
-        // const after = options?.after;
 
-        if (first) {
+        const afterArg = options?.after;
+        const offset = isString(afterArg) ? cursorToOffset(afterArg) + 1 : undefined;
+
+        if (first || offset) {
             const pagination = this.sortAndPaginationFactory.createPagination({
                 limit: first,
+                offset,
             });
             if (pagination) {
                 operation.addPagination(pagination);

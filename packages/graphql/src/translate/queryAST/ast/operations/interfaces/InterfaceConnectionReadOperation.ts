@@ -26,10 +26,12 @@ import type { InterfaceConnectionPartial } from "./InterfaceConnectionPartial";
 import type { Sort, SortField } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 import { QueryASTContext } from "../../QueryASTContext";
+import { filterTruthy } from "../../../../../utils/utils";
 
 export class InterfaceConnectionReadOperation extends Operation {
     private children: InterfaceConnectionPartial[];
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
+    private pagination: Pagination | undefined;
 
     constructor(children: InterfaceConnectionPartial[]) {
         super();
@@ -55,8 +57,11 @@ export class InterfaceConnectionReadOperation extends Operation {
 
         const nestedSubquery = new Cypher.Call(union);
 
-        let extraWithOrder: Cypher.Clause | undefined;
-        if (this.sortFields.length > 0) {
+        let extraWithOrder: Cypher.With | undefined;
+
+        if (this.pagination || this.sortFields.length > 0) {
+            const paginationField = this.pagination && this.pagination.getPagination();
+
             const nestedContext = new QueryASTContext({
                 // NOOP context
                 target: new Cypher.Node(),
@@ -65,10 +70,17 @@ export class InterfaceConnectionReadOperation extends Operation {
             });
 
             const sortFields = this.getSortFields(nestedContext, edgeVar.property("node"), edgeVar);
-            extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar])
-                .with(edgeVar, totalCount)
-                .orderBy(...sortFields)
-                .with([Cypher.collect(edgeVar), edgesVar], totalCount);
+            extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar, totalCount).orderBy(...sortFields);
+
+            if (paginationField && paginationField.skip) {
+                extraWithOrder.skip(paginationField.skip);
+            }
+            // Missing skip
+            if (paginationField && paginationField.limit) {
+                extraWithOrder.limit(paginationField.limit);
+            }
+
+            extraWithOrder.with([Cypher.collect(edgeVar), edgesVar], totalCount);
         }
 
         nestedSubquery.with([Cypher.collect(edgeVar), edgesVar]).with(edgesVar, [Cypher.size(edgesVar), totalCount]);
@@ -91,9 +103,8 @@ export class InterfaceConnectionReadOperation extends Operation {
         this.sortFields.push(sortElement);
     }
 
-    public addPagination(_pagination: Pagination): void {
-        return undefined;
-        // this.pagination = pagination;
+    public addPagination(pagination: Pagination): void {
+        this.pagination = pagination;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -101,7 +112,7 @@ export class InterfaceConnectionReadOperation extends Operation {
             return [...s.edge, ...s.node];
         });
 
-        return [...this.children, ...sortFields];
+        return filterTruthy([...this.children, ...sortFields, this.pagination]);
     }
 
     protected getSortFields(
