@@ -3825,7 +3825,7 @@ __metadata:
     "@types/jest": 29.5.5
     "@types/jsonwebtoken": 9.0.3
     "@types/node": 18.15.1
-    "@types/pluralize": 0.0.30
+    "@types/pluralize": 0.0.31
     "@types/randomstring": 1.1.8
     "@types/semver": 7.5.2
     "@types/supertest": 2.0.12
@@ -3882,7 +3882,7 @@ __metadata:
     "@neo4j/graphql": ^4.0.0
     "@types/jest": 29.5.5
     "@types/node": 18.15.1
-    "@types/pluralize": 0.0.30
+    "@types/pluralize": 0.0.31
     camelcase: ^6.3.0
     debug: ^4.3.4
     jest: 29.7.0
@@ -7791,10 +7791,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pluralize@npm:0.0.30":
-  version: 0.0.30
-  resolution: "@types/pluralize@npm:0.0.30"
-  checksum: 7a9a4a24aac1f74bd63e592a824ebec114486e0635a94496e92aa37fa388fac585be108d3ccfc7b2c490963679ec4900fbf394d22fa6cbf419f22cc499ab5a29
+"@types/pluralize@npm:0.0.31":
+  version: 0.0.31
+  resolution: "@types/pluralize@npm:0.0.31"
+  checksum: 950d52d8f6709cdb7001336942fba0a63bf54b45695391fc2244d03db69b0eb6f187f80519d74941f5ce1dfa900d3975f2ed52e98b1f63a79045f5c085832beb
   languageName: node
   linkType: hard
 
