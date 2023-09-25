@@ -242,10 +242,6 @@ export class ReadOperation extends Operation {
             }
         }
 
-        // let authWith: Cypher.Clause | undefined;
-        // if (authFiltersPredicate) {
-        //     authWith = new Cypher.With("*").where(authFiltersPredicate);
-        // }
         const ret = new Cypher.Return([projection, returnVariable]);
 
         let sortClause: Cypher.With | undefined;

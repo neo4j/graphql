@@ -94,7 +94,7 @@ export class FieldFactory {
             if (isConcreteEntity(entity)) {
                 const relationship = entity.findRelationship(fieldName);
                 if (relationship) {
-                    return this.createRelationshipField(entity, relationship, fieldName, field, context);
+                    return this.createRelationshipField({ relationship, field, context });
                 }
             }
 
@@ -129,29 +129,9 @@ export class FieldFactory {
     public createAggregationFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter,
         rawFields: Record<string, ResolveTree>
-        // context: Neo4jGraphQLTranslationContext
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
-                // if (isConcreteEntity(entity)) {
-                //     // TODO: Move this to the tree
-                //     checkEntityAuthentication({
-                //         entity: entity.entity,
-                //         targetOperations: ["AGGREGATE"],
-                //         context,
-                //         field: field.name,
-                //     });
-                // }
-                // if (entity instanceof RelationshipAdapter && isConcreteEntity(entity.target)) {
-                //     // TODO: Move this to the tree
-                //     checkEntityAuthentication({
-                //         entity: entity.target.entity,
-                //         targetOperations: ["AGGREGATE"],
-                //         context,
-                //         field: field.name,
-                //     });
-                // }
-
                 if (field.name === "count") {
                     return new CountField({
                         alias: field.alias,
@@ -213,8 +193,6 @@ export class FieldFactory {
 
         if (attribute.annotations.cypher) {
             return this.createCypherAttributeField({
-                entity,
-                fieldName,
                 field,
                 attribute,
                 context,
@@ -242,15 +220,11 @@ export class FieldFactory {
     }
 
     private createCypherAttributeField({
-        entity,
-        fieldName,
         field,
         attribute,
         context,
     }: {
-        entity: ConcreteEntityAdapter | RelationshipAdapter;
         attribute: AttributeAdapter;
-        fieldName: string;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): CypherAttributeField {
@@ -340,13 +314,15 @@ export class FieldFactory {
         });
     }
 
-    private createRelationshipField(
-        entity: ConcreteEntityAdapter,
-        relationship: RelationshipAdapter,
-        fieldName: string,
-        field: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
-    ): OperationField {
+    private createRelationshipField({
+        relationship,
+        field,
+        context,
+    }: {
+        relationship: RelationshipAdapter;
+        field: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+    }): OperationField {
         const operation = this.queryASTFactory.operationsFactory.createReadOperationAST(relationship, field, context);
 
         return new OperationField({

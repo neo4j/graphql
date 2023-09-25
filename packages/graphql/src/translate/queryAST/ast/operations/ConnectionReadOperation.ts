@@ -44,7 +44,6 @@ export class ConnectionReadOperation extends Operation {
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
 
-
     constructor({
         relationship,
         directed,
@@ -67,7 +66,6 @@ export class ConnectionReadOperation extends Operation {
     public setFilters(filters: Filter[]) {
         this.filters = filters;
     }
-
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
@@ -143,9 +141,6 @@ export class ConnectionReadOperation extends Operation {
             .related(relationship)
             .withDirection(relDirection)
             .to(node);
-        // const clause = new Cypher.Match(
-        //     new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
-        // );
 
         const nestedContext = context.push({ target: node, relationship });
 
