@@ -63,7 +63,6 @@ function makeAggregableFields({
     return aggregableFields;
 }
 
-// TODO: fix args
 export function withAggregateInputType({
     relationshipAdapter,
     entityAdapter, // TODO: this is relationshipAdapter.target but from the context above it is known to be ConcreteEntity and we don't know this yet!!!
@@ -73,18 +72,26 @@ export function withAggregateInputType({
     entityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
-    const aggregateSelection = composer.getOrCreateITC(relationshipAdapter.operations.aggregateInputTypeName, (tc) => {
-        tc.addFields({
+    const aggregateInputTypeName = relationshipAdapter.operations.aggregateInputTypeName;
+    if (composer.has(aggregateInputTypeName)) {
+        return composer.getITC(aggregateInputTypeName);
+    }
+    const aggregateSelection = composer.createInputTC({
+        name: aggregateInputTypeName,
+        fields: {
             count: GraphQLInt,
             count_LT: GraphQLInt,
             count_LTE: GraphQLInt,
             count_GT: GraphQLInt,
             count_GTE: GraphQLInt,
-            AND: `[${relationshipAdapter.operations.aggregateInputTypeName}!]`,
-            OR: `[${relationshipAdapter.operations.aggregateInputTypeName}!]`,
-            NOT: relationshipAdapter.operations.aggregateInputTypeName,
-        });
+        },
     });
+    aggregateSelection.addFields({
+        AND: aggregateSelection.NonNull.List,
+        OR: aggregateSelection.NonNull.List,
+        NOT: aggregateSelection,
+    });
+
     const nodeWhereInputType = withAggregationWhereInputType({
         relationshipAdapter,
         entityAdapter,
@@ -120,13 +127,17 @@ function withAggregationWhereInputType({
     const aggregationInputName = relationshipAdapter.operations.getAggregationWhereInputTypeName(
         entityAdapter instanceof ConcreteEntityAdapter ? `Node` : `Edge`
     );
+    if (composer.has(aggregationInputName)) {
+        return composer.getITC(aggregationInputName);
+    }
     const aggregationInput = composer.createInputTC({
         name: aggregationInputName,
-        fields: {
-            AND: `[${aggregationInputName}!]`,
-            OR: `[${aggregationInputName}!]`,
-            NOT: aggregationInputName,
-        },
+        fields: {},
+    });
+    aggregationInput.addFields({
+        AND: aggregationInput.NonNull.List,
+        OR: aggregationInput.NonNull.List,
+        NOT: aggregationInput,
     });
     aggregationInput.addFields(makeAggregationFields(aggregationFields));
     return aggregationInput;
