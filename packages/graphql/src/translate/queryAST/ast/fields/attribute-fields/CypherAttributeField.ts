@@ -22,7 +22,7 @@ import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { Field } from "../Field";
 import type { QueryASTContext } from "../../QueryASTContext";
-import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
+import { CypherAnnotationSubqueryGenerator } from "../../../cypher-generators/CypherAnnotationSubqueryGenerator";
 import type { QueryASTNode } from "../../QueryASTNode";
 
 // Should Cypher be an operation?
@@ -67,13 +67,16 @@ export class CypherAttributeField extends AttributeField {
         const scope = context.getTargetScope();
 
         scope.set(this.attribute.name, this.customCypherVar);
-        const subquery = createCypherAnnotationSubquery({
+
+        const cypherGenerator = new CypherAnnotationSubqueryGenerator({
             context,
             attribute: this.attribute,
+        });
+
+        const subquery = cypherGenerator.createSubqueryForCypherAnnotation({
             projectionFields: this.projection,
             nestedFields: this.nestedFields,
             rawArguments: this.rawArguments,
-            subqueries: [],
             extraParams: this.extraParams,
         });
 

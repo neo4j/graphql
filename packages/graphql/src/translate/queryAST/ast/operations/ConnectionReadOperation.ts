@@ -38,7 +38,7 @@ export class ConnectionReadOperation extends Operation {
 
     protected directed: boolean;
     public nodeFields: Field[] = [];
-    public edgeFields: Field[] = [];
+    public edgeFields: Field[] = []; // TODO: merge with attachedTo?
     protected filters: Filter[] = [];
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];

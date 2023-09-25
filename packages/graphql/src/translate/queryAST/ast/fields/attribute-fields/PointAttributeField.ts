@@ -66,9 +66,6 @@ export class PointAttributeField extends AttributeField {
         const projectionMap = new Cypher.Map();
         projectionMap.set({ point: variable });
 
-        // if (point) {
-        //     projectionMap.set({ point: variableOrProperty });
-        // }
         if (this.crs) {
             projectionMap.set({ crs: variable.property("crs") });
         }

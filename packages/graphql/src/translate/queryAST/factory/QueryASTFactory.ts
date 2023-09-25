@@ -36,7 +36,11 @@ export class QueryASTFactory {
         this.operationsFactory = new OperationsFactory(this);
     }
 
-    public createQueryAST(resolveTree: ResolveTree, entity: ConcreteEntity, context: Neo4jGraphQLTranslationContext) {
+    public createQueryAST(
+        resolveTree: ResolveTree,
+        entity: ConcreteEntity,
+        context: Neo4jGraphQLTranslationContext
+    ): QueryAST {
         const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name);
         if (!entityAdapter) throw new Error(`Entity ${entity.name} not found`);
 

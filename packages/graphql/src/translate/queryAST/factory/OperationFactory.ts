@@ -73,12 +73,14 @@ export class OperationsFactory {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+
         if (isConcreteEntity(entity)) {
             checkEntityAuthentication({
                 entity: entity.entity,
                 targetOperations: ["READ"],
                 context,
             });
+
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
