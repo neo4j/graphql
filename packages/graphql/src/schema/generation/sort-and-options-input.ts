@@ -42,12 +42,29 @@ export function withSortInputType({
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
-    // TODO: for relationships we used to get all attributes, not just sortableFields
-    // Clarify if this is intended?
-    if (!relationshipAdapter.sortableFields.length) {
-        return undefined;
+    // TODO: Use the commented code when we want to unify the sort input type for relationships and entities
+    // if (!relationshipAdapter.sortableFields.length) {
+    //     return undefined;
+    // }
+    // return makeSortInput({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
+
+    const sortFields: InputTypeComposerFieldConfigMapDefinition = {};
+    for (const attribute of relationshipAdapter.attributes.values()) {
+        const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(attribute.name) || [];
+        const deprecatedDirective = userDefinedDirectivesOnField.filter(
+            (directive) => directive.name.value === DEPRECATED
+        );
+        sortFields[attribute.name] = {
+            type: SortDirection,
+            directives: graphqlDirectivesToCompose(deprecatedDirective),
+        };
     }
-    return makeSortInput({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
+    const sortInput = composer.createInputTC({
+        name: relationshipAdapter.operations.sortInputTypeName,
+        fields: sortFields,
+    });
+
+    return sortInput;
 }
 
 function makeSortFields({

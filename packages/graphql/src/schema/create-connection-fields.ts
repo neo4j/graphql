@@ -65,9 +65,12 @@ function addConnectionSortField({
         fields["node"] = relationshipAdapter.target.operations.sortInputTypeName;
     }
 
-    // TODO: revert this back to commented version if we want relationship properties sortable fields to be all attributes
-    // if (relationship.propertiesTypeName) {
-    if (relationshipAdapter.sortableFields.length) {
+    /*
+        We include all properties here to maintain existing behaviour.
+        In future sorting by arrays should become an aggregation sort because it sorts by the length of the array.
+    */
+    if (relationshipAdapter.propertiesTypeName) {
+        // if (relationshipAdapter.sortableFields.length) {
         fields["edge"] = relationshipAdapter.operations.sortInputTypeName;
     }
 
