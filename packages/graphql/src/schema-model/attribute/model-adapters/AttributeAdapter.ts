@@ -348,9 +348,17 @@ export class AttributeAdapter {
     /**
      * Just an helper to get the wrapped type in case of a list, useful for the assertions
      */
+
     private getTypeForAssertion(includeLists: boolean) {
         if (includeLists) {
-            return this.isList() ? this.type.ofType : this.type;
+            if (!this.isList()) {
+                return this.type;
+            }
+            if (this.type.ofType instanceof ListType) {
+                return this.type.ofType.ofType;
+            }
+            return this.type.ofType;
+            // return this.isList() ? this.type.ofType : this.type;
         }
         return this.type;
     }
@@ -525,18 +533,37 @@ export class AttributeAdapter {
      */
 
     getTypePrettyName(): string {
-        if (this.isList()) {
-            return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
+        if (!this.isList()) {
+            return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
         }
-        return `${this.getTypeName()}${this.isRequired() ? "!" : ""}`;
+        if (this.type.ofType instanceof ListType) {
+            // matrix case
+            return `[[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]]${this.isRequired() ? "!" : ""}`;
+        }
+        return `[${this.getTypeName()}${this.isListElementRequired() ? "!" : ""}]${this.isRequired() ? "!" : ""}`;
     }
 
     getTypeName(): string {
-        return this.isList() ? this.type.ofType.name : this.type.name;
+        if (!this.isList()) {
+            return this.type.name;
+        }
+        if (this.type.ofType instanceof ListType) {
+            // matrix case
+            return this.type.ofType.ofType.name;
+        }
+        return this.type.ofType.name;
+        // return this.isList() ? this.type.ofType.name : this.type.name;
     }
 
     getFieldTypeName(): string {
-        return this.isList() ? `[${this.getTypeName()}]` : this.getTypeName();
+        if (!this.isList()) {
+            return this.getTypeName();
+        }
+        if (this.type.ofType instanceof ListType) {
+            // matrix case
+            return `[[${this.getTypeName()}]]`;
+        }
+        return `[${this.getTypeName()}]`;
     }
 
     getInputTypeName(): string {
