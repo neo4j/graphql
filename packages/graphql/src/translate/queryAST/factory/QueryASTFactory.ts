@@ -22,7 +22,6 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import type { ReadOperation } from "../ast/operations/ReadOperation";
 
@@ -38,8 +37,10 @@ export class QueryASTFactory {
     }
 
     public createQueryAST(resolveTree: ResolveTree, entity: ConcreteEntity, context: Neo4jGraphQLTranslationContext) {
-        const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name) as ConcreteEntityAdapter;
-        const operation = this.operationsFactory.createReadOperationAST(
+        const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name);
+        if (!entityAdapter) throw new Error(`Entity ${entity.name} not found`);
+
+        const operation = this.operationsFactory.createReadOperation(
             entityAdapter,
             resolveTree,
             context
