@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
 import { gql } from "graphql-tag";
-import Neo4j from "./neo4j";
+import type { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
+import Neo4j from "./neo4j";
 
 describe("update", () => {
     let driver: Driver;
@@ -228,6 +228,14 @@ describe("update", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
+
+            const cypherResult = await session.run(
+                `
+                    MATCH (p:Person {id: "4"})-[:DIRECTED]->(m:Movie {id: "5"}) RETURN p, m
+                `
+            );
+
+            expect(cypherResult.records).toHaveLength(1);
 
             expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: "1", title: "Movie1" }] });
         } finally {
