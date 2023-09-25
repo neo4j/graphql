@@ -288,6 +288,7 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsConnectFieldInput {
+              connect: PersonConnectInput
               edge: FriendsWithCreateInput
               where: PersonConnectWhere
             }
@@ -319,10 +320,12 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsDeleteFieldInput {
+              delete: PersonDeleteInput
               where: PersonFriendsConnectionWhere
             }
 
             input PersonFriendsDisconnectFieldInput {
+              disconnect: PersonDisconnectInput
               where: PersonFriendsConnectionWhere
             }
 
