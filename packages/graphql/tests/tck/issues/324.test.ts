@@ -100,7 +100,7 @@ describe("#324", () => {
             		WITH this, this_car0
             		MATCH (this_car0)-[this_car0_manufacturer0_relationship:MANUFACTURER]->(this_car0_manufacturer0:Manufacturer)
             		SET this_car0_manufacturer0.name = $this_update_car0_manufacturer0_name
-            		WITH this, this_car0, this_car0_manufacturer0
+            		WITH *
             		CALL {
             			WITH this, this_car0, this_car0_manufacturer0
             			OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
@@ -116,7 +116,7 @@ describe("#324", () => {
             				}
             			}
             		WITH this, this_car0, this_car0_manufacturer0, this_car0_manufacturer0_logo0_connect0_node
-            			RETURN count(*) AS connect_this_car0_manufacturer0_logo0_connect_Logo
+            			RETURN count(*) AS connect_this_car0_manufacturer0_logo0_connect_Logo0
             		}
             		WITH this, this_car0, this_car0_manufacturer0
             		CALL {

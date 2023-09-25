@@ -1,5 +1,27 @@
 # @neo4j/graphql
 
+## 4.1.3
+
+### Patch Changes
+
+-   [#3992](https://github.com/neo4j/graphql/pull/3992) [`34715e332`](https://github.com/neo4j/graphql/commit/34715e332c737138c5c2f735a34de081afa1fc7a) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix issue where incorrect translation of authorization could cause deletion of more nodes than intended.
+
+-   [#4003](https://github.com/neo4j/graphql/pull/4003) [`f6cf36456`](https://github.com/neo4j/graphql/commit/f6cf3645687918d2cbfad3088e6a87870fba7f01) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix issue 4001, in case of user defined input parse to UnknownType rather than raise an Error.
+
+-   [#4002](https://github.com/neo4j/graphql/pull/4002) [`caa7de29f`](https://github.com/neo4j/graphql/commit/caa7de29fd3d115d04735de97087141d2a185035) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove list of lists validation in schema model which was causing errors in addition to warnings.
+
+-   [#3983](https://github.com/neo4j/graphql/pull/3983) [`529881e51`](https://github.com/neo4j/graphql/commit/529881e519b1cdc2d5767a959a7c22c336192e6d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix a validation error which was wrongly being thrown if two enum types contained the same value.
+
+## 4.1.2
+
+### Patch Changes
+
+-   [#3949](https://github.com/neo4j/graphql/pull/3949) [`295bb71f3`](https://github.com/neo4j/graphql/commit/295bb71f3ea6ea8598ac37c39b7f978cecdd438d) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix issue where authorization rules depend on create operations that haven't happened yet.
+
+-   [#3917](https://github.com/neo4j/graphql/pull/3917) [`adf10c4c0`](https://github.com/neo4j/graphql/commit/adf10c4c08dfde5689bc86fafad488e7e5b0c8e1) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Warning about missing `features.authorization` is now only given once for all type definitions.
+
+-   [#3937](https://github.com/neo4j/graphql/pull/3937) [`15ff75521`](https://github.com/neo4j/graphql/commit/15ff755217fe83d3e66db25871c33e0585c9c457) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Switches to a warning for lists of lists to allow them to be used as the result of custom resolvers/Cypher.
+
 ## 4.1.1
 
 ### Patch Changes

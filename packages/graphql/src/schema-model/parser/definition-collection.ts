@@ -48,6 +48,7 @@ export type DefinitionCollection = {
     interfaceToImplementingTypeNamesMap: Map<string, string[]>; // TODO: change this logic, this was the logic contained in initInterfacesToTypeNamesMap but potentially can be simplified now.
     operations: ObjectTypeDefinitionNode[];
     schemaDirectives: DirectiveNode[];
+    document: DocumentNode; // Raw Document from which the collection is made. NOTE: This is added here so we can generate customResolve fields following the old code.
 };
 
 export function getDefinitionCollection(document: DocumentNode): DefinitionCollection {
@@ -111,6 +112,7 @@ export function getDefinitionCollection(document: DocumentNode): DefinitionColle
             interfaceToImplementingTypeNamesMap: new Map(),
             operations: [],
             schemaDirectives: [],
+            document,
         }
     );
 }

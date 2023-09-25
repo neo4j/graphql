@@ -318,7 +318,7 @@ describe("Cypher Union", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
@@ -334,7 +334,7 @@ describe("Cypher Union", () => {
             		}
             	}
             WITH this0, this0_search_Genre_connect0_node
-            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
+            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre0
             }
             RETURN this0
             }
@@ -569,7 +569,7 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $param0
-            WITH this
+            WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
@@ -585,7 +585,7 @@ describe("Cypher Union", () => {
             		}
             	}
             WITH this, this_connect_search_Genre0_node
-            	RETURN count(*) AS connect_this_connect_search_Genre_Genre
+            	RETURN count(*) AS connect_this_connect_search_Genre_Genre0
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

@@ -18,6 +18,8 @@
  */
 
 import { upperFirst } from "graphql-compose";
+import { MutationOperations } from "../../../graphql/directives/mutation";
+import { SubscriptionEvent } from "../../../graphql/directives/subscription";
 import { toGlobalId } from "../../../utils/global-ids";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
@@ -31,8 +33,6 @@ import type { ConcreteEntity } from "../ConcreteEntity";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
 import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "./UnionEntityAdapter";
-import { MutationOperations } from "../../../graphql/directives/mutation";
-import { SubscriptionEvent } from "../../../graphql/directives/subscription";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
@@ -164,8 +164,17 @@ export class ConcreteEntityAdapter {
     public get subscriptionEventPayloadFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
     }
+
     public get subscriptionWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
+    }
+
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+
+    public findRelationship(name: string): RelationshipAdapter | undefined {
+        return this.relationships.get(name);
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed

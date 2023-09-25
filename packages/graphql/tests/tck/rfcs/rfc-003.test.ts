@@ -948,7 +948,7 @@ describe("tck/rfs/003", () => {
                         "CALL {
                         CREATE (this0:Movie)
                         SET this0.id = $this0_id
-                        WITH this0
+                        WITH *
                         CALL {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
@@ -964,9 +964,9 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this0, this0_director_connect0_node
-                        	RETURN count(*) AS connect_this0_director_connect_Director
+                        	RETURN count(*) AS connect_this0_director_connect_Director0
                         }
-                        WITH this0
+                        WITH *
                         CALL {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
@@ -1021,7 +1021,7 @@ describe("tck/rfs/003", () => {
                         "CALL {
                         CREATE (this0:Movie)
                         SET this0.id = $this0_id
-                        WITH this0
+                        WITH *
                         CALL {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
@@ -1037,9 +1037,9 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this0, this0_director_connect0_node
-                        	RETURN count(*) AS connect_this0_director_connect_Director
+                        	RETURN count(*) AS connect_this0_director_connect_Director0
                         }
-                        WITH this0
+                        WITH *
                         CALL {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
@@ -1112,7 +1112,7 @@ describe("tck/rfs/003", () => {
                             "CALL {
                             CREATE (this0:Movie)
                             SET this0.id = $this0_id
-                            WITH this0
+                            WITH *
                             CALL {
                             	WITH this0
                             	OPTIONAL MATCH (this0_director_connect0_node:Director)
@@ -1151,11 +1151,11 @@ describe("tck/rfs/003", () => {
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
                             WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
-                            	RETURN count(*) AS connect_this0_director_connect0_node_address_Address
+                            	RETURN count(*) AS connect_this0_director_connect0_node_address_Address0
                             }
-                            	RETURN count(*) AS connect_this0_director_connect_Director
+                            	RETURN count(*) AS connect_this0_director_connect_Director0
                             }
-                            WITH this0
+                            WITH *
                             CALL {
                             	WITH this0
                             	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
@@ -1319,7 +1319,7 @@ describe("tck/rfs/003", () => {
                         }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
-                        WITH this
+                        WITH *
                         CALL {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
@@ -1335,7 +1335,7 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this, this_connect_director0_node
-                        	RETURN count(*) AS connect_this_connect_director_Director
+                        	RETURN count(*) AS connect_this_connect_director_Director0
                         }
                         WITH *
                         CALL {
@@ -1435,7 +1435,7 @@ describe("tck/rfs/003", () => {
                         }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
-                        WITH this
+                        WITH *
                         CALL {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
@@ -1451,7 +1451,7 @@ describe("tck/rfs/003", () => {
                         		}
                         	}
                         WITH this, this_connect_director0_node
-                        	RETURN count(*) AS connect_this_connect_director_Director
+                        	RETURN count(*) AS connect_this_connect_director_Director0
                         }
                         WITH *
                         CALL {

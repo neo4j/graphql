@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
-
 export enum GraphQLBuiltInScalarType {
     Int = "Int",
     Float = "Float",
@@ -102,17 +100,14 @@ export class ListType {
     public readonly isRequired: boolean;
     constructor(ofType: AttributeType, isRequired: boolean) {
         this.name = `List<${ofType.name}>`;
-        if (ofType instanceof ListType) {
-            throw new Neo4jGraphQLSchemaValidationError("two-dimensional lists are not supported");
-        }
         this.ofType = ofType;
         this.isRequired = isRequired;
     }
 }
 
 export class EnumType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add enum values
 
     constructor(name: string, isRequired: boolean) {
@@ -122,8 +117,8 @@ export class EnumType {
 }
 
 export class UnionType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add implementing types
 
     constructor(name: string, isRequired: boolean) {
@@ -133,8 +128,8 @@ export class UnionType {
 }
 
 export class InterfaceType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
     // TODO: add shared fields
 
     constructor(name: string, isRequired: boolean) {
@@ -144,8 +139,18 @@ export class InterfaceType {
 }
 
 export class InputType {
-    public name: string;
-    public isRequired: boolean;
+    public readonly name: string;
+    public readonly isRequired: boolean;
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
+export class UnknownType {
+    public readonly name: string;
+    public readonly isRequired: boolean;
 
     constructor(name: string, isRequired: boolean) {
         this.name = name;
@@ -161,4 +166,5 @@ export type AttributeType =
     | EnumType
     | UnionType
     | InterfaceType
-    | InputType;
+    | InputType
+    | UnknownType;

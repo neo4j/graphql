@@ -20,6 +20,7 @@
 import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import { aliasDirective } from "../../graphql/directives";
+import { CustomResolverAnnotation } from "../annotation/CustomResolverAnnotation";
 import { Argument } from "../argument/Argument";
 import { Attribute } from "../attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
@@ -37,6 +38,7 @@ import {
     ObjectType,
     ScalarType,
     UnionType,
+    UnknownType,
     UserScalarType,
 } from "../attribute/AttributeType";
 import { Field } from "../attribute/Field";
@@ -62,13 +64,22 @@ export function parseAttributeArguments(
 export function parseAttribute(
     field: FieldDefinitionNode,
     inheritedField: FieldDefinitionNode[] | undefined,
-    definitionCollection: DefinitionCollection
+    definitionCollection: DefinitionCollection,
+    definitionFields?: ReadonlyArray<FieldDefinitionNode>
 ): Attribute | Field {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
     const inheritedDirectives = inheritedField?.flatMap((f) => f.directives || []) || [];
+
     const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
+
+    for (const annotation of annotations) {
+        if (annotation instanceof CustomResolverAnnotation) {
+            annotation.parseRequire(definitionCollection.document, definitionFields);
+        }
+    }
+
     const databaseName = getDatabaseName(field, inheritedField);
     return new Attribute({
         name,
@@ -139,7 +150,7 @@ function parseTypeNode(
             } else if (isInput(definitionCollection, typeNode.name.value)) {
                 return new InputType(typeNode.name.value, isRequired);
             } else {
-                throw new Error(`Error while parsing Attribute with name: ${typeNode.name.value}`);
+                return new UnknownType(typeNode.name.value, isRequired);
             }
         }
 

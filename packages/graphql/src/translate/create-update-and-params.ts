@@ -46,6 +46,7 @@ import { createAuthorizationBeforeAndParams } from "./authorization/compatibilit
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 interface Res {
     strs: string[];
@@ -420,18 +421,22 @@ export default function createUpdateAndParams({
                                 };
                             }
 
-                            const createAndParams = createCreateAndParams({
+                            const {
+                                create: nestedCreate,
+                                params,
+                                authorizationPredicates,
+                                authorizationSubqueries,
+                            } = createCreateAndParams({
                                 context,
                                 node: refNode,
-
                                 callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
                                 ...createNodeInput,
                             });
-                            subquery.push(createAndParams[0]);
-                            res.params = { ...res.params, ...createAndParams[1] };
+                            subquery.push(nestedCreate);
+                            res.params = { ...res.params, ...params };
                             const relationVarName = create.edge || context.subscriptionsEnabled ? propertiesName : "";
                             subquery.push(
                                 `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
@@ -451,6 +456,10 @@ export default function createUpdateAndParams({
                                 });
                                 subquery.push(setA);
                             }
+
+                            subquery.push(
+                                ...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries)
+                            );
 
                             if (context.subscriptionsEnabled) {
                                 const [fromVariable, toVariable] =

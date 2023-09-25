@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -122,9 +122,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -157,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -165,7 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this1:Interaction)
             SET this1.id = randomUUID()
             SET this1.kind = $this1_kind
-            WITH this1
+            WITH *
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect0_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Person
+            	RETURN count(*) AS connect_this1_subjects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -198,9 +198,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect1_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Place
+            	RETURN count(*) AS connect_this1_subjects_connect_Place1
             }
-            WITH this1
+            WITH *
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
@@ -216,7 +216,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect0_node
-            	RETURN count(*) AS connect_this1_objects_connect_Person
+            	RETURN count(*) AS connect_this1_objects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -233,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect1_node
-            	RETURN count(*) AS connect_this1_objects_connect_Place
+            	RETURN count(*) AS connect_this1_objects_connect_Place1
             }
             RETURN this1
             }
@@ -306,7 +306,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
@@ -322,7 +322,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -339,9 +339,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
@@ -357,7 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -374,7 +374,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -432,7 +432,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
@@ -448,7 +448,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -465,9 +465,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
@@ -483,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -500,7 +500,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -569,7 +569,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
@@ -585,7 +585,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -602,9 +602,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
@@ -620,7 +620,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -637,7 +637,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place1
             }
             RETURN this0
             }
@@ -645,7 +645,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this1:Interaction)
             SET this1.id = randomUUID()
             SET this1.kind = $this1_kind
-            WITH this1
+            WITH *
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
@@ -661,7 +661,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect0_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Person
+            	RETURN count(*) AS connect_this1_subjects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -678,9 +678,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_subjects_connect1_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Place
+            	RETURN count(*) AS connect_this1_subjects_connect_Place1
             }
-            WITH this1
+            WITH *
             CALL {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
@@ -696,7 +696,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect0_node
-            	RETURN count(*) AS connect_this1_objects_connect_Person
+            	RETURN count(*) AS connect_this1_objects_connect_Person0
             }
             CALL {
             		WITH this1
@@ -713,7 +713,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this1, this1_objects_connect1_node
-            	RETURN count(*) AS connect_this1_objects_connect_Place
+            	RETURN count(*) AS connect_this1_objects_connect_Place1
             }
             RETURN this1
             }
@@ -847,7 +847,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
-            WITH this0
+            WITH *
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
@@ -863,7 +863,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
             CALL {
             		WITH this0
@@ -880,7 +880,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             		}
             	}
             WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             RETURN this0
             }
