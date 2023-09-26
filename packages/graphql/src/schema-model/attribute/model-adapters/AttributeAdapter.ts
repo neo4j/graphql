@@ -18,7 +18,6 @@
  */
 
 import type { Annotations } from "../../annotation/Annotation";
-import type { FullTextField } from "../../annotation/FullTextAnnotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../Attribute";
 import type { AttributeType } from "../AttributeType";
@@ -67,20 +66,6 @@ export class AttributeAdapter {
         };
     }
 
-    /**
-     * Previously defined as:
-     * [
-            ...this.temporalFields,
-            ...this.enumFields,
-            ...this.objectFields,
-            ...this.scalarFields, 
-            ...this.primitiveFields, 
-            ...this.interfaceFields,
-            ...this.objectFields,
-            ...this.unionFields,
-            ...this.pointFields,
-        ];
-     */
     isMutable(): boolean {
         return (
             (this.isEnum() || this.isAbstract() || this.isSpatial() || this.isScalar() || this.isObject()) &&
@@ -96,14 +81,6 @@ export class AttributeAdapter {
         return !!this.annotations.cypher;
     }
 
-    /**
-     *  Previously defined as:
-     * [...this.primitiveFields,
-       ...this.scalarFields,
-       ...this.enumFields,
-       ...this.temporalFields,
-       ...this.pointFields,]
-     */
     isConstrainable(): boolean {
         return (
             this.isGraphQLBuiltInScalar() ||
@@ -114,39 +91,10 @@ export class AttributeAdapter {
         );
     }
 
-    /**
-    * Previously defined as:
-    * const nodeFields = objectFieldsToComposeFields([
-        ...node.primitiveFields,
-        ...node.cypherFields,
-        ...node.enumFields,
-        ...node.scalarFields,
-        ...node.interfaceFields,
-        ...node.objectFields,
-        ...node.unionFields,
-        ...node.temporalFields,
-        ...node.pointFields,
-        ...node.customResolverFields,
-    ]);
-    */
     isObjectField(): boolean {
-        return (
-            this.isScalar() || this.isEnum() || this.isAbstract() || this.isObject() || this.isSpatial()
-            // this.isCustomResolver()
-        );
+        return this.isScalar() || this.isEnum() || this.isAbstract() || this.isObject() || this.isSpatial();
     }
 
-    /**
-    * Previously defined as:
-    *  ...objectFields.enumFields,
-       ...objectFields.interfaceFields,
-       ...objectFields.primitiveFields,
-       ...objectFields.relationFields,
-       ...objectFields.scalarFields,
-       ...objectFields.unionFields,
-       ...objectFields.objectFields,
-       ...objectFields.temporalFields,
-    */
     isRootTypeObjectField(): boolean {
         return (
             this.isGraphQLBuiltInScalar() ||
@@ -160,31 +108,6 @@ export class AttributeAdapter {
         );
     }
 
-    /*
-    return [
-        ...obj.primitiveFields,
-        ...obj.scalarFields,
-        ...obj.enumFields,
-        ...obj.temporalFields,
-        ...obj.pointFields,
-        ...obj.cypherFields.filter((field) =>
-            [
-                "Boolean",
-                "ID",
-                "Int",
-                "BigInt",
-                "Float",
-                "String",
-                "DateTime",
-                "LocalDateTime",
-                "Time",
-                "LocalTime",
-                "Date",
-                "Duration",
-            ].includes(field.typeMeta.name)
-        ),
-    ].filter((field) => !field.typeMeta.array);
-    */
     isSortableField(): boolean {
         return (
             !this.isList() &&
@@ -193,16 +116,6 @@ export class AttributeAdapter {
         );
     }
 
-    /**
-    * 
-        fields: {
-            temporalFields: node.temporalFields,
-            enumFields: node.enumFields,
-            pointFields: node.pointFields,
-            primitiveFields: node.primitiveFields,
-            scalarFields: node.scalarFields,
-        },
-    */
     isWhereField(): boolean {
         return (
             (this.isEnum() || this.isSpatial() || this.isScalar()) &&
@@ -212,72 +125,24 @@ export class AttributeAdapter {
         );
     }
 
-    /**
-    * 
-        ...node.primitiveFields,
-        ...node.enumFields,
-        ...node.scalarFields,
-        ...node.temporalFields,
-        ...node.pointFields,
-        ...node.cypherFields,
-    */
     isEventPayloadField(): boolean {
         return this.isEnum() || this.isSpatial() || this.isScalar();
     }
-    /**
-    * 
-        ...node.primitiveFields,
-        ...node.enumFields,
-        ...node.scalarFields,
-        ...node.temporalFields,
-        ...node.pointFields,
-    */
+
     isSubscriptionWhereField(): boolean {
         return (this.isEnum() || this.isSpatial() || this.isScalar()) && !this.isCypher();
     }
-    /**
-    * 
-        ...node.primitiveFields,
-        ...node.enumFields,
-        ...node.scalarFields,
-        ...node.temporalFields,
-        ...node.pointFields,
-    */
+
     isSubscriptionConnectedRelationshipField(): boolean {
         return (this.isEnum() || this.isSpatial() || this.isScalar()) && !this.isCypher();
     }
 
-    /**
-     * [
-     * ...node.primitiveFields,
-        ...node.scalarFields,
-        ...node.enumFields,
-        ...node.pointFields,
-        ...node.temporalFields
-     ]
-     */
     isOnCreateField(): boolean {
         return (
             this.isNonGeneratedField() && (this.isScalar() || this.isSpatial() || this.isEnum() || this.isAbstract())
         );
     }
 
-    /**
-     * 
-        if (
-            [
-                "Float",
-                "Int",
-                "BigInt",
-                "DateTime",
-                "Date",
-                "LocalDateTime",
-                "Time",
-                "LocalTime",
-                "Duration",
-            ].includes(f.typeMeta.name)
-        ),
-    */
     isNumericalOrTemporal(): boolean {
         return this.isFloat() || this.isInt() || this.isBigInt() || this.isTemporal();
     }
@@ -629,16 +494,6 @@ export class AttributeAdapter {
 
     isCustomResolvable(): boolean {
         return !!this.annotations.customResolver;
-    }
-
-    // TODO: Check if this is the right place for this
-    isFulltext(): boolean {
-        return !!this.annotations.fulltext;
-    }
-
-    // TODO: Check if this is the right place for this
-    getFulltextIndexes(): FullTextField[] | undefined {
-        return this.annotations.fulltext?.indexes;
     }
 
     isPartOfUpdateInputType(): boolean {

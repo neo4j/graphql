@@ -22,7 +22,6 @@ import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { Annotation, Annotations } from "./annotation/Annotation";
 import { annotationToKey } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
-// import type { Field } from "./attribute/Field";
 
 export class Operation {
     public readonly name: string;

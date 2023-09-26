@@ -378,6 +378,7 @@ function getRelationField({
 }): RelationshipAdapter | undefined {
     // TODO: move to schemaModel intermediate representation
     // TODO: relationships by propertiesTypeName instead of by fieldName
+    // TODO: need to identify exact the relationship given an entity and an event (has relationshipName/type, toTypename, fromTypename)
     let relationshipNameToRelationField: Map<string, RelationshipAdapter | undefined>;
     if (!nodeToRelationFieldMap.has(entityAdapter)) {
         relationshipNameToRelationField = new Map<string, RelationshipAdapter | undefined>();

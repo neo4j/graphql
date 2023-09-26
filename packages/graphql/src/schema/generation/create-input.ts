@@ -42,7 +42,6 @@ export function withCreateInputType({
     // ensureNonEmptyInput(composer, createInputType); - not for relationshipAdapter
     return createInputType;
 }
-
 function makeCreateInputFields(
     interfaceEntityAdapter: InterfaceEntityAdapter
 ): InputTypeComposerFieldConfigMapDefinition {
@@ -55,7 +54,6 @@ function makeCreateInputFields(
     return fields;
 }
 
-// -------------------- FIELD INPUT ------------------------
 export function augmentCreateInputTypeWithRelationshipsInput({
     relationshipAdapter,
     composer,

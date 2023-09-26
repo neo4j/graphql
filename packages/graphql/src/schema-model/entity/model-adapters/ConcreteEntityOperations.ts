@@ -26,6 +26,7 @@ type RootTypeFieldNames = {
     update: string;
     delete: string;
     aggregate: string;
+    connection: string;
     subscribe: {
         created: string;
         updated: string;
@@ -179,6 +180,7 @@ export class ConcreteEntityOperations {
             update: `update${this.pascalCasePlural}`,
             delete: `delete${this.pascalCasePlural}`,
             aggregate: `${this.concreteEntityAdapter.plural}Aggregate`,
+            connection: `${this.concreteEntityAdapter.plural}Connection`,
             subscribe: {
                 created: `${this.concreteEntityAdapter.singular}Created`,
                 updated: `${this.concreteEntityAdapter.singular}Updated`,
