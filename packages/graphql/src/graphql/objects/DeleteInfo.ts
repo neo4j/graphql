@@ -21,7 +21,7 @@ import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "gr
 
 export const DeleteInfo = new GraphQLObjectType({
     name: "DeleteInfo",
-    description: "DeleteInfo",
+    description: "Information about the deletion of a node or relationship.",
     fields: {
         bookmark: {
             type: GraphQLString,

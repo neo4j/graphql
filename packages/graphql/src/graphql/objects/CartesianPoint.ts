@@ -21,7 +21,8 @@ import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLStr
 
 export const CartesianPoint = new GraphQLObjectType({
     name: "CartesianPoint",
-    description: "CartesianPoint type",
+    description:
+        "A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point",
     fields: {
         x: {
             type: new GraphQLNonNull(GraphQLFloat),
