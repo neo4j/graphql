@@ -35,10 +35,10 @@ import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionE
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs } from "../types";
 import { DEPRECATE_NOT } from "./constants";
-import { addDirectedArgument2 } from "./directed-argument";
+import { addDirectedArgument } from "./directed-argument";
 import { augmentWhereInputTypeWithConnectionFields } from "./generation/augment-where-input";
 import type { ObjectFields } from "./get-obj-field-meta";
-import { connectionFieldResolver2 } from "./pagination";
+import { connectionFieldResolver } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 function addConnectionSortField({
@@ -167,7 +167,7 @@ export function createConnectionFields({
         const whereInputITC = schemaComposer.getITC(entityAdapter.operations.whereInputTypeName);
         whereInputITC.addFields(fields);
 
-        const composeNodeArgs = addDirectedArgument2<ObjectTypeComposerArgumentConfigMapDefinition>(
+        const composeNodeArgs = addDirectedArgument<ObjectTypeComposerArgumentConfigMapDefinition>(
             {
                 where: connectionWhereITC,
                 first: {
@@ -218,7 +218,7 @@ export function createConnectionFields({
                     args: composeNodeArgs,
                     directives: deprecatedDirectives,
                     resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
-                        return connectionFieldResolver2({
+                        return connectionFieldResolver({
                             connectionFieldName: relationship.operations.connectionFieldName,
                             args,
                             info,

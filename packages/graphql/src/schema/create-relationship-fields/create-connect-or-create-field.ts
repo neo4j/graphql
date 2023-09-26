@@ -19,136 +19,13 @@
 
 import type { DirectiveNode } from "graphql";
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
-import type { Node } from "../../classes";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationField } from "../../types";
-import { upperFirst } from "../../utils/upper-first";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { withCreateInputType } from "../generation/create-input";
-import { concreteEntityToCreateInputFields, objectFieldsToCreateInputFields } from "../to-compose";
+import { concreteEntityToCreateInputFields } from "../to-compose";
 
 export function createConnectOrCreateField({
-    node,
-    relationField,
-    schemaComposer,
-    hasNonGeneratedProperties,
-    hasNonNullNonGeneratedProperties,
-}: {
-    node: Node;
-    relationField: RelationField;
-    schemaComposer: SchemaComposer;
-    hasNonGeneratedProperties: boolean;
-    hasNonNullNonGeneratedProperties: boolean;
-}): string | undefined {
-    if (!node.uniqueFields.length) {
-        return undefined;
-    }
-
-    const parentPrefix = `${relationField.connectionPrefix}${upperFirst(relationField.fieldName)}`;
-
-    const connectOrCreateName = relationField.union
-        ? `${parentPrefix}${node.name}ConnectOrCreateFieldInput`
-        : `${parentPrefix}ConnectOrCreateFieldInput`;
-
-    const onCreateITC = createOnCreateITC({
-        schemaComposer,
-        prefix: connectOrCreateName,
-        node,
-        hasNonGeneratedProperties,
-        hasNonNullNonGeneratedProperties,
-        relationField,
-    });
-    const whereITC = createWhereITC({ schemaComposer, node });
-
-    schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
-        tc.addFields({
-            where: `${whereITC.getTypeName()}!`,
-            onCreate: `${onCreateITC.getTypeName()}!`,
-        });
-    });
-    return relationField.typeMeta.array ? `[${connectOrCreateName}!]` : connectOrCreateName;
-}
-
-function createOnCreateITC({
-    schemaComposer,
-    prefix,
-    node,
-    hasNonGeneratedProperties,
-    hasNonNullNonGeneratedProperties,
-    relationField,
-}: {
-    schemaComposer: SchemaComposer;
-    prefix: string;
-    node: Node;
-    hasNonGeneratedProperties: boolean;
-    hasNonNullNonGeneratedProperties: boolean;
-    relationField: RelationField;
-}): InputTypeComposer {
-    const onCreateName = `${prefix}OnCreate`;
-
-    const onCreateFields = getOnCreateFields({
-        node,
-        hasNonGeneratedProperties,
-        relationField,
-        hasNonNullNonGeneratedProperties,
-        schemaComposer,
-    });
-
-    return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
-        tc.addFields(onCreateFields);
-    });
-}
-
-function getOnCreateFields({
-    node,
-    hasNonGeneratedProperties,
-    relationField,
-    hasNonNullNonGeneratedProperties,
-    schemaComposer,
-}: {
-    node: Node;
-    hasNonGeneratedProperties: boolean;
-    relationField: RelationField;
-    hasNonNullNonGeneratedProperties: boolean;
-    schemaComposer: SchemaComposer;
-}): { node: string } | { node: string; edge: string } {
-    const nodeCreateInput = schemaComposer.getOrCreateITC(`${node.name}OnCreateInput`, (tc) => {
-        const nodeFields = objectFieldsToCreateInputFields([
-            ...node.primitiveFields,
-            ...node.scalarFields,
-            ...node.enumFields,
-            ...node.pointFields,
-            ...node.temporalFields,
-        ]);
-        tc.addFields(nodeFields);
-        ensureNonEmptyInput(schemaComposer, tc);
-    });
-    const nodeCreateInputFieldName = `${nodeCreateInput.getTypeName()}!`;
-
-    if (hasNonGeneratedProperties) {
-        const edgeField = `${relationField.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`;
-        return {
-            node: nodeCreateInputFieldName,
-            edge: edgeField,
-        };
-    }
-    return {
-        node: nodeCreateInputFieldName,
-    };
-}
-
-function createWhereITC({ schemaComposer, node }: { schemaComposer: SchemaComposer; node: Node }): InputTypeComposer {
-    const connectOrCreateWhereName = `${node.name}ConnectOrCreateWhere`;
-
-    return schemaComposer.getOrCreateITC(connectOrCreateWhereName, (tc) => {
-        tc.addFields({
-            node: `${node.name}UniqueWhere!`,
-        });
-    });
-}
-
-export function createConnectOrCreateField2({
     relationshipAdapter,
     targetEntityAdapter, // TODO: take this from relationshipAdapter.target in the end, currently here bc unions call this function for reach refNode
     schemaComposer,
@@ -167,7 +44,7 @@ export function createConnectOrCreateField2({
     const connectOrCreateName =
         relationshipAdapter.operations.getConnectOrCreateFieldInputTypeName(targetEntityAdapter);
 
-    createOnCreateITC2({
+    createOnCreateITC({
         schemaComposer,
         relationshipAdapter,
         targetEntityAdapter,
@@ -184,7 +61,7 @@ export function createConnectOrCreateField2({
     return relationshipAdapter.isList ? `[${connectOrCreateName}!]` : connectOrCreateName;
 }
 
-export function createOnCreateITC2({
+export function createOnCreateITC({
     schemaComposer,
     relationshipAdapter,
     targetEntityAdapter,

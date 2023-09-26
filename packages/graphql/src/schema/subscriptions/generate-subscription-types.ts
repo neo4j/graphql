@@ -20,336 +20,20 @@
 import type { DirectiveNode } from "graphql";
 import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import type { Node } from "../../classes";
 import { EventType } from "../../graphql/enums/EventType";
-import {
-    generateSubscriptionWhereType,
-    generateSubscriptionConnectionWhereType,
-    generateSubscriptionWhereType2,
-    generateSubscriptionConnectionWhereType2,
-} from "./generate-subscription-where-type";
-import { generateEventPayloadType } from "./generate-event-payload-type";
-import {
-    generateSubscribeMethod,
-    generateSubscribeMethod2,
-    subscriptionResolve,
-} from "../resolvers/subscriptions/subscribe";
-import type {
-    NodeSubscriptionsEvent,
-    RelationField,
-    RelationshipSubscriptionsEvent,
-    SubscriptionsEvent,
-} from "../../types";
-import type { ObjectFields } from "../get-obj-field-meta";
-import { getConnectedTypes, getConnectedTypes2, hasProperties } from "./generate-subscription-connection-types";
-import type { SchemaConfiguration } from "../schema-configuration";
-import { getSchemaConfigurationFlags } from "../schema-configuration";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { attributeAdapterToComposeFields } from "../to-compose";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../types";
+import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
+import { attributeAdapterToComposeFields } from "../to-compose";
+import { getConnectedTypes, hasProperties } from "./generate-subscription-connection-types";
+import {
+    generateSubscriptionConnectionWhereType,
+    generateSubscriptionWhereType,
+} from "./generate-subscription-where-type";
 
 export function generateSubscriptionTypes({
-    schemaComposer,
-    nodes,
-    relationshipFields,
-    interfaceCommonFields,
-    globalSchemaConfiguration,
-}: {
-    schemaComposer: SchemaComposer;
-    nodes: Node[];
-    relationshipFields: Map<string, ObjectFields>;
-    interfaceCommonFields: Map<string, ObjectFields>;
-    globalSchemaConfiguration: SchemaConfiguration;
-}): void {
-    const subscriptionComposer = schemaComposer.Subscription;
-
-    const eventTypeEnum = schemaComposer.createEnumTC(EventType);
-
-    const shouldIncludeSubscriptionOperation = (node: Node) => !node.exclude?.operations.includes("subscribe");
-    const nodesWithSubscriptionOperation = nodes.filter(shouldIncludeSubscriptionOperation);
-    const nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer> = nodesWithSubscriptionOperation.reduce(
-        (acc, node) => {
-            acc[node.name] = generateEventPayloadType(node, schemaComposer);
-            return acc;
-        },
-        {}
-    );
-    hydrateSchemaWithSubscriptionWhereTypes(nodesWithSubscriptionOperation, schemaComposer);
-
-    const nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>> = new Map();
-    nodesWithSubscriptionOperation.forEach((node) => {
-        const eventPayload = nodeNameToEventPayloadTypes[node.name] as ObjectTypeComposer;
-        const where = generateSubscriptionWhereType(node, schemaComposer);
-        const { subscriptionEventTypeNames, subscriptionEventPayloadFieldNames, rootTypeFieldNames } = node;
-        const { subscribe: subscribeOperation } = rootTypeFieldNames;
-
-        const nodeCreatedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.create,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("CREATE")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const nodeUpdatedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.update,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("UPDATE")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const nodeDeletedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.delete,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("DELETE")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: SubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const relationshipCreatedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.create_relationship,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("CREATE_RELATIONSHIP")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const relationshipDeletedEvent = schemaComposer.createObjectTC({
-            name: subscriptionEventTypeNames.delete_relationship,
-            fields: {
-                event: {
-                    type: eventTypeEnum.NonNull,
-                    resolve: () => EventType.getValue("DELETE_RELATIONSHIP")?.value,
-                },
-                timestamp: {
-                    type: new GraphQLNonNull(GraphQLFloat),
-                    resolve: (source: RelationshipSubscriptionsEvent) => source.timestamp,
-                },
-            },
-        });
-
-        const connectedTypes = getConnectedTypes({
-            node,
-            relationshipFields,
-            interfaceCommonFields,
-            schemaComposer,
-            nodeNameToEventPayloadTypes,
-        });
-        const relationsEventPayload = schemaComposer.createObjectTC({
-            name: `${node.name}ConnectedRelationships`,
-            fields: connectedTypes,
-        });
-
-        if (hasProperties(eventPayload)) {
-            nodeCreatedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.create]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.new,
-                },
-            });
-
-            nodeUpdatedEvent.addFields({
-                previousState: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.old,
-                },
-                [subscriptionEventPayloadFieldNames.update]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.new,
-                },
-            });
-
-            nodeDeletedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.delete]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: SubscriptionsEvent) => (source as NodeSubscriptionsEvent).properties.old,
-                },
-            });
-
-            relationshipCreatedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.create_relationship]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node, nodeToRelationFieldMap).properties;
-                    },
-                },
-                relationshipFieldName: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField({
-                            node,
-                            relationshipName: source.relationshipName,
-                            nodeToRelationFieldMap,
-                        })?.fieldName;
-                    },
-                },
-            });
-
-            relationshipDeletedEvent.addFields({
-                [subscriptionEventPayloadFieldNames.delete_relationship]: {
-                    type: eventPayload.NonNull,
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode(source, node, nodeToRelationFieldMap).properties;
-                    },
-                },
-                relationshipFieldName: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField({
-                            node,
-                            relationshipName: source.relationshipName,
-                            nodeToRelationFieldMap,
-                        })?.fieldName;
-                    },
-                },
-            });
-        }
-
-        if (hasProperties(relationsEventPayload)) {
-            const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
-                const thisRel = getRelationField({
-                    node,
-                    relationshipName: source.relationshipName,
-                    nodeToRelationFieldMap,
-                }) as RelationField;
-                const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
-                    source,
-                    node,
-                    nodeToRelationFieldMap
-                );
-
-                return {
-                    [thisRel.fieldName]: {
-                        ...source.properties.relationship,
-                        node: {
-                            ...props,
-                            __typename: `${typename}EventPayload`,
-                        },
-                    },
-                };
-            };
-            relationshipCreatedEvent.addFields({
-                createdRelationship: {
-                    type: relationsEventPayload.NonNull,
-                    resolve: resolveRelationship,
-                },
-            });
-            relationshipDeletedEvent.addFields({
-                deletedRelationship: {
-                    type: relationsEventPayload.NonNull,
-                    resolve: resolveRelationship,
-                },
-            });
-        }
-
-        const whereArgument = where && { args: { where } };
-
-        const schemaConfigurationFlags = getSchemaConfigurationFlags({
-            globalSchemaConfiguration,
-            nodeSchemaConfiguration: node.schemaConfiguration,
-            excludeDirective: node.exclude,
-        });
-
-        if (schemaConfigurationFlags.subscribeCreate) {
-            subscriptionComposer.addFields({
-                [subscribeOperation.created]: {
-                    ...whereArgument,
-                    type: nodeCreatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({ node, type: "create" }),
-                    resolve: subscriptionResolve,
-                },
-            });
-        }
-        if (schemaConfigurationFlags.subscribeUpdate) {
-            subscriptionComposer.addFields({
-                [subscribeOperation.updated]: {
-                    ...whereArgument,
-                    type: nodeUpdatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({ node, type: "update" }),
-                    resolve: subscriptionResolve,
-                },
-            });
-        }
-
-        if (schemaConfigurationFlags.subscribeDelete) {
-            subscriptionComposer.addFields({
-                [subscribeOperation.deleted]: {
-                    ...whereArgument,
-                    type: nodeDeletedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({ node, type: "delete" }),
-                    resolve: subscriptionResolve,
-                },
-            });
-        }
-
-        const connectionWhere = generateSubscriptionConnectionWhereType({
-            node,
-            schemaComposer,
-            relationshipFields,
-            interfaceCommonFields,
-        });
-        if (node.relationFields.length > 0) {
-            if (schemaConfigurationFlags.subscribeCreateRelationship) {
-                subscriptionComposer.addFields({
-                    [subscribeOperation.relationship_created]: {
-                        ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
-                        type: relationshipCreatedEvent.NonNull,
-                        subscribe: generateSubscribeMethod({
-                            node,
-                            type: "create_relationship",
-                            nodes,
-                            relationshipFields,
-                        }),
-                        resolve: subscriptionResolve,
-                    },
-                });
-            }
-            if (schemaConfigurationFlags.subscribeDeleteRelationship) {
-                subscriptionComposer.addFields({
-                    [subscribeOperation.relationship_deleted]: {
-                        ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
-                        type: relationshipDeletedEvent.NonNull,
-                        subscribe: generateSubscribeMethod({
-                            node,
-                            type: "delete_relationship",
-                            nodes,
-                            relationshipFields,
-                        }),
-                        resolve: subscriptionResolve,
-                    },
-                });
-            }
-        }
-    });
-}
-
-export function generateSubscriptionTypes2({
     schemaComposer,
     schemaModel,
     userDefinedFieldDirectivesForNode,
@@ -380,13 +64,13 @@ export function generateSubscriptionTypes2({
         return acc;
     }, {});
 
-    allNodes.forEach((entityAdapter) => generateSubscriptionWhereType2(entityAdapter, schemaComposer));
+    allNodes.forEach((entityAdapter) => generateSubscriptionWhereType(entityAdapter, schemaComposer));
 
     const nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>> = new Map();
     const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
     nodesWithSubscriptionOperation.forEach((entityAdapter) => {
         const eventPayload = nodeNameToEventPayloadTypes[entityAdapter.name] as ObjectTypeComposer;
-        const where = generateSubscriptionWhereType2(entityAdapter, schemaComposer);
+        const where = generateSubscriptionWhereType(entityAdapter, schemaComposer);
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: entityAdapter.operations.subscriptionEventTypeNames.create,
@@ -458,7 +142,7 @@ export function generateSubscriptionTypes2({
             },
         });
 
-        const connectedTypes = getConnectedTypes2({
+        const connectedTypes = getConnectedTypes({
             entityAdapter,
             schemaComposer,
             nodeNameToEventPayloadTypes,
@@ -500,14 +184,14 @@ export function generateSubscriptionTypes2({
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.create_relationship]: {
                     type: eventPayload.NonNull,
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode2(source, entityAdapter, nodeToRelationFieldMap)
+                        return getRelationshipEventDataForNode(source, entityAdapter, nodeToRelationFieldMap)
                             .properties;
                     },
                 },
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField2({
+                        return getRelationField({
                             entityAdapter,
                             relationshipName: source.relationshipName,
                             nodeToRelationFieldMap,
@@ -520,14 +204,14 @@ export function generateSubscriptionTypes2({
                 [entityAdapter.operations.subscriptionEventPayloadFieldNames.delete_relationship]: {
                     type: eventPayload.NonNull,
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationshipEventDataForNode2(source, entityAdapter, nodeToRelationFieldMap)
+                        return getRelationshipEventDataForNode(source, entityAdapter, nodeToRelationFieldMap)
                             .properties;
                     },
                 },
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField2({
+                        return getRelationField({
                             entityAdapter,
                             relationshipName: source.relationshipName,
                             nodeToRelationFieldMap,
@@ -539,7 +223,7 @@ export function generateSubscriptionTypes2({
 
         if (hasProperties(relationsEventPayload)) {
             const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
-                const thisRel = getRelationField2({
+                const thisRel = getRelationField({
                     entityAdapter,
                     relationshipName: source.relationshipName,
                     nodeToRelationFieldMap,
@@ -547,8 +231,11 @@ export function generateSubscriptionTypes2({
                 if (!thisRel) {
                     return;
                 }
-                const { destinationProperties: props, destinationTypename: typename } =
-                    getRelationshipEventDataForNode2(source, entityAdapter, nodeToRelationFieldMap);
+                const { destinationProperties: props, destinationTypename: typename } = getRelationshipEventDataForNode(
+                    source,
+                    entityAdapter,
+                    nodeToRelationFieldMap
+                );
 
                 return {
                     [thisRel.name]: {
@@ -581,7 +268,7 @@ export function generateSubscriptionTypes2({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.created]: {
                     ...whereArgument,
                     type: nodeCreatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod2({ entityAdapter, type: "create" }),
+                    subscribe: generateSubscribeMethod({ entityAdapter, type: "create" }),
                     resolve: subscriptionResolve,
                 },
             });
@@ -591,7 +278,7 @@ export function generateSubscriptionTypes2({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.updated]: {
                     ...whereArgument,
                     type: nodeUpdatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod2({ entityAdapter, type: "update" }),
+                    subscribe: generateSubscribeMethod({ entityAdapter, type: "update" }),
                     resolve: subscriptionResolve,
                 },
             });
@@ -602,13 +289,13 @@ export function generateSubscriptionTypes2({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.deleted]: {
                     ...whereArgument,
                     type: nodeDeletedEvent.NonNull,
-                    subscribe: generateSubscribeMethod2({ entityAdapter, type: "delete" }),
+                    subscribe: generateSubscribeMethod({ entityAdapter, type: "delete" }),
                     resolve: subscriptionResolve,
                 },
             });
         }
 
-        const connectionWhere = generateSubscriptionConnectionWhereType2({
+        const connectionWhere = generateSubscriptionConnectionWhereType({
             entityAdapter,
             schemaComposer,
         });
@@ -618,7 +305,7 @@ export function generateSubscriptionTypes2({
                     [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_created]: {
                         ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
                         type: relationshipCreatedEvent.NonNull,
-                        subscribe: generateSubscribeMethod2({
+                        subscribe: generateSubscribeMethod({
                             entityAdapter,
                             type: "create_relationship",
                         }),
@@ -631,7 +318,7 @@ export function generateSubscriptionTypes2({
                     [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_deleted]: {
                         ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
                         type: relationshipDeletedEvent.NonNull,
-                        subscribe: generateSubscribeMethod2({
+                        subscribe: generateSubscribeMethod({
                             entityAdapter,
                             type: "delete_relationship",
                         }),
@@ -643,49 +330,7 @@ export function generateSubscriptionTypes2({
     });
 }
 
-function hydrateSchemaWithSubscriptionWhereTypes(
-    nodesWithSubscriptionOperation: Node[],
-    schemaComposer: SchemaComposer
-): void {
-    nodesWithSubscriptionOperation.forEach((node) => generateSubscriptionWhereType(node, schemaComposer));
-}
-
 function getRelationshipEventDataForNode(
-    event: RelationshipSubscriptionsEvent,
-    node: Node,
-    nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>
-): {
-    direction: string;
-    properties: Record<string, any>;
-    destinationProperties: Record<string, any>;
-    destinationTypename: string;
-} {
-    let condition = event.toTypename === node.name;
-    if (event.toTypename === event.fromTypename) {
-        // must check relationship direction from schema
-        const { direction } = getRelationField({
-            node,
-            relationshipName: event.relationshipName,
-            nodeToRelationFieldMap,
-        }) as RelationField;
-        condition = direction === "IN";
-    }
-    if (condition) {
-        return {
-            direction: "IN",
-            properties: event.properties.to,
-            destinationProperties: event.properties.from,
-            destinationTypename: event.fromTypename,
-        };
-    }
-    return {
-        direction: "OUT",
-        properties: event.properties.from,
-        destinationProperties: event.properties.to,
-        destinationTypename: event.toTypename,
-    };
-}
-function getRelationshipEventDataForNode2(
     event: RelationshipSubscriptionsEvent,
     entityAdapter: ConcreteEntityAdapter,
     nodeToRelationFieldMap: Map<ConcreteEntityAdapter, Map<string, RelationshipAdapter | undefined>>
@@ -699,7 +344,7 @@ function getRelationshipEventDataForNode2(
     let condition = event.toTypename === entityAdapter.name;
     if (event.toTypename === event.fromTypename) {
         // must check relationship direction from schema
-        const relationship = getRelationField2({
+        const relationship = getRelationField({
             entityAdapter,
             relationshipName: event.relationshipName,
             nodeToRelationFieldMap,
@@ -723,29 +368,6 @@ function getRelationshipEventDataForNode2(
 }
 
 function getRelationField({
-    node,
-    relationshipName,
-    nodeToRelationFieldMap,
-}: {
-    node: Node;
-    relationshipName: string;
-    nodeToRelationFieldMap: Map<Node, Map<string, RelationField | undefined>>;
-}): RelationField | undefined {
-    // TODO: move to schemaModel intermediate representation
-    let relationshipNameToRelationField: Map<string, RelationField | undefined>;
-    if (!nodeToRelationFieldMap.has(node)) {
-        relationshipNameToRelationField = new Map<string, RelationField | undefined>();
-        nodeToRelationFieldMap.set(node, relationshipNameToRelationField);
-    } else {
-        relationshipNameToRelationField = nodeToRelationFieldMap.get(node) as Map<string, RelationField | undefined>;
-    }
-    if (!relationshipNameToRelationField.has(relationshipName)) {
-        const relationField = node.relationFields.find((f) => f.typeUnescaped === relationshipName);
-        relationshipNameToRelationField.set(relationshipName, relationField);
-    }
-    return relationshipNameToRelationField.get(relationshipName);
-}
-function getRelationField2({
     entityAdapter,
     relationshipName,
     nodeToRelationFieldMap,

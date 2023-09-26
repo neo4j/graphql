@@ -17,8 +17,11 @@
  * limitations under the License.
  */
 
-import { cypherResolver } from "./cypher";
+import { Attribute } from "../../../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType, ScalarType } from "../../../schema-model/attribute/AttributeType";
+import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { CypherField } from "../../../types";
+import { cypherResolver } from "./cypher";
 
 describe("Cypher resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -30,9 +33,15 @@ describe("Cypher resolver", () => {
             isEnum: false,
             isScalar: true,
         };
-
-        const result = cypherResolver({ field, statement: "", type: "Query" });
-        expect(result.type).toEqual(field.typeMeta.pretty);
+        const attribute = new Attribute({
+            name: "test",
+            annotations: [],
+            type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+            args: [],
+        });
+        const attributeAdapter = new AttributeAdapter(attribute);
+        const result = cypherResolver({ field, attributeAdapter, type: "Query" });
+        expect(result.type).toBe("String!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({});
     });

@@ -4,7 +4,7 @@ import type { Subgraph } from "../../classes/Subgraph";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { getDirectedArgument2 } from "../directed-argument";
+import { getDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
 export function augmentObjectOrInterfaceTypeWithRelationshipField(
@@ -39,7 +39,7 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
             where: whereTypeName,
             options: optionsTypeName,
         };
-        const directedArg = getDirectedArgument2(relationshipAdapter);
+        const directedArg = getDirectedArgument(relationshipAdapter);
         if (directedArg) {
             nodeFieldsArgs["directed"] = directedArg;
         }

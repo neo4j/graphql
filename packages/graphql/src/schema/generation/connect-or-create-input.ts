@@ -10,7 +10,7 @@ import { RelationshipNestedOperationsOption } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { createOnCreateITC2 } from "../create-relationship-fields/create-connect-or-create-field";
+import { createOnCreateITC } from "../create-relationship-fields/create-connect-or-create-field";
 
 // TODO: refactor this
 export function withConnectOrCreateFieldInputType({
@@ -52,7 +52,7 @@ export function withConnectOrCreateFieldInputType({
         return;
     }
 
-    createOnCreateITC2({
+    createOnCreateITC({
         schemaComposer: composer,
         relationshipAdapter,
         targetEntityAdapter: targetEntity,

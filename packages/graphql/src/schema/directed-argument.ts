@@ -19,46 +19,13 @@
 
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationField } from "../types";
 
 export type DirectedArgument = {
     type: "Boolean";
     defaultValue: boolean;
 };
 
-export function getDirectedArgument(relationField: RelationField): DirectedArgument | undefined {
-    let defaultValue: boolean;
-    switch (relationField.queryDirection) {
-        case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
-            defaultValue = true;
-            break;
-        case RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED:
-            defaultValue = false;
-            break;
-        case RelationshipQueryDirectionOption.DIRECTED_ONLY:
-        case RelationshipQueryDirectionOption.UNDIRECTED_ONLY:
-        default:
-            return undefined;
-    }
-
-    return {
-        type: "Boolean",
-        defaultValue,
-    };
-}
-
-export function addDirectedArgument<T extends Record<string, any>>(
-    args: T,
-    relationField: RelationField
-): T & { directed?: DirectedArgument } {
-    const directedArg = getDirectedArgument(relationField);
-    if (directedArg) {
-        return { ...args, directed: directedArg };
-    }
-    return { ...args };
-}
-
-export function getDirectedArgument2(relationshipAdapter: RelationshipAdapter): DirectedArgument | undefined {
+export function getDirectedArgument(relationshipAdapter: RelationshipAdapter): DirectedArgument | undefined {
     let defaultValue: boolean;
     switch (relationshipAdapter.queryDirection) {
         case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
@@ -79,11 +46,11 @@ export function getDirectedArgument2(relationshipAdapter: RelationshipAdapter): 
     };
 }
 
-export function addDirectedArgument2<T extends Record<string, any>>(
+export function addDirectedArgument<T extends Record<string, any>>(
     args: T,
     relationshipAdapter: RelationshipAdapter
 ): T & { directed?: DirectedArgument } {
-    const directedArg = getDirectedArgument2(relationshipAdapter);
+    const directedArg = getDirectedArgument(relationshipAdapter);
     if (directedArg) {
         return { ...args, directed: directedArg };
     }

@@ -19,7 +19,6 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
-import type { ObjectTypeComposerFieldConfigDefinition } from "graphql-compose";
 import type { Node } from "../../../classes";
 import { translateRead } from "../../../translate";
 import type { FulltextContext } from "../../../types";
@@ -28,53 +27,7 @@ import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function fulltextResolver(
-    { node }: { node: Node },
-    index: FulltextContext
-): ObjectTypeComposerFieldConfigDefinition<any, any, any> {
-    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
-        context.fulltext = index;
-        context.fulltext.scoreVariable = new Cypher.Variable();
-
-        const resolveTree = getNeo4jResolveTree(info, { args });
-        resolveTree.args.options = {
-            sort: resolveTree.args.sort,
-            limit: resolveTree.args.limit,
-            offset: resolveTree.args.offset,
-        };
-
-        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
-
-        const { cypher, params } = translateRead(
-            { context: context as Neo4jGraphQLTranslationContext, node },
-            node.singular
-        );
-        const executeResult = await execute({
-            cypher,
-            params,
-            defaultAccessMode: "READ",
-            context,
-            info,
-        });
-        return executeResult.records;
-    }
-
-    return {
-        type: `[${node.fulltextTypeNames.result}!]!`,
-        description:
-            "Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the `fulltext` argument under other queries for this functionality.",
-        resolve,
-        args: {
-            phrase: "String!",
-            where: node.fulltextTypeNames.where,
-            sort: `[${node.fulltextTypeNames.sort}!]`,
-            limit: "Int",
-            offset: "Int",
-        },
-    };
-}
-
-export function fulltextResolver2({
+export function fulltextResolver({
     node,
     index,
 }: {

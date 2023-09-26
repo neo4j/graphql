@@ -17,45 +17,18 @@
  * limitations under the License.
  */
 
-import type Node from "../../../../classes/Node";
-import type { SubscriptionEventType } from "../types";
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { GraphQLResolveInfo } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
+import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { SubscriptionEventType } from "../types";
+import { checkAuthentication } from "./check-authentication";
 import type { SelectionFields } from "./selection-set-parser";
 import { parseSelectionSetForAuthenticated } from "./selection-set-parser";
-import { checkAuthentication } from "./check-authentication";
-import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 export function checkAuthenticationOnSelectionSet(
-    resolveInfo: GraphQLResolveInfo,
-    node: Node,
-    type: SubscriptionEventType,
-    context: Neo4jGraphQLComposedSubscriptionsContext
-) {
-    const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree | undefined | null;
-    if (!resolveTree) {
-        return;
-    }
-    const entities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
-    if (!entities.length) {
-        return;
-    }
-    const concreteEntity = entities[0] as ConcreteEntity;
-    const authenticatedSelections = parseSelectionSetForAuthenticated({
-        resolveTree,
-        entity: concreteEntity,
-        entityTypeName: node.subscriptionEventTypeNames[type],
-        entityPayloadTypeName: node.subscriptionEventPayloadFieldNames[type],
-        context,
-    });
-    authenticatedSelections.forEach(({ entity, fieldSelection }) =>
-        checkAuthenticationOnSelection({ entity, fieldSelection, context })
-    );
-}
-export function checkAuthenticationOnSelectionSet2(
     resolveInfo: GraphQLResolveInfo,
     entityAdapter: ConcreteEntityAdapter,
     type: SubscriptionEventType,

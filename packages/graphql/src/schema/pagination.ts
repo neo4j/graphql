@@ -19,7 +19,7 @@
 
 import { Kind, type FieldNode, type GraphQLResolveInfo, type SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
-import type { ConnectionField, ConnectionQueryArgs } from "../types";
+import type { ConnectionQueryArgs } from "../types";
 import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
@@ -33,34 +33,6 @@ function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | u
 }
 
 export function connectionFieldResolver({
-    connectionField,
-    source,
-    args,
-    info,
-}: {
-    connectionField: ConnectionField;
-    source: any;
-    args: ConnectionQueryArgs;
-    info: GraphQLResolveInfo;
-}) {
-    const firstField = info.fieldNodes[0] as FieldNode;
-    const { selectionSet } = firstField;
-
-    let value = source[connectionField.fieldName];
-    if (firstField.alias) {
-        value = source[firstField.alias.value];
-    }
-
-    const totalCountKey = getAliasKey({ selectionSet, key: "totalCount" });
-    const { totalCount } = value;
-
-    return {
-        [totalCountKey]: isNeoInt(totalCount) ? totalCount.toNumber() : totalCount,
-        ...createConnectionWithEdgeProperties({ source: value, selectionSet, args, totalCount }),
-    };
-}
-
-export function connectionFieldResolver2({
     connectionFieldName,
     source,
     args,

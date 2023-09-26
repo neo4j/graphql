@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { mergeTypeDefs } from "@graphql-tools/merge";
 import camelCase from "camelcase";
 import {
     Kind,
@@ -28,11 +29,9 @@ import {
 } from "graphql";
 import { pluralize } from "graphql-compose";
 import { gql } from "graphql-tag";
-// import makeAugmentedSchema from "./make-augmented-schema";
-import { mergeTypeDefs } from "@graphql-tools/merge";
 import { Node } from "../classes";
 import { generateModel } from "../schema-model/generate-model";
-import makeAugmentedSchema from "./new-make-augmented-schema";
+import makeAugmentedSchema from "./make-augmented-schema";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {

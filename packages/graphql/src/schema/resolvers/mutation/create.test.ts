@@ -17,16 +17,28 @@
  * limitations under the License.
  */
 
-import { createResolver } from "./create";
 import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { createResolver } from "./create";
 
 describe("Create resolver", () => {
     test("should return the correct; type, args and resolve", () => {
         const node = new NodeBuilder({
             name: "Movie",
         }).instance();
+        const concreteEntity = new ConcreteEntity({
+            name: "Movie",
+            labels: ["Movie"],
+            annotations: [],
+            attributes: [],
+            compositeEntities: [],
+            description: undefined,
+            relationships: [],
+        });
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = createResolver({ node });
+        const result = createResolver({ node, concreteEntityAdapter });
         expect(result.type).toBe("CreateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

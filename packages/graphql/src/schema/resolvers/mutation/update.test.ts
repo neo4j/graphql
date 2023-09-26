@@ -19,6 +19,8 @@
 
 import { SchemaComposer } from "graphql-compose";
 import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { updateResolver } from "./update";
 
 describe("Update resolver", () => {
@@ -28,6 +30,16 @@ describe("Update resolver", () => {
             // @ts-ignore
             relationFields: [{}, {}],
         }).instance();
+        const concreteEntity = new ConcreteEntity({
+            name: "Movie",
+            labels: ["Movie"],
+            annotations: [],
+            attributes: [],
+            compositeEntities: [],
+            description: undefined,
+            relationships: [],
+        });
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
         const composer = new SchemaComposer();
         composer.createInputTC("MovieRelationInput");
@@ -36,7 +48,7 @@ describe("Update resolver", () => {
         composer.createInputTC("MovieDisconnectInput");
         composer.createInputTC("MovieConnectOrCreateInput");
 
-        const result = updateResolver({ node, composer });
+        const result = updateResolver({ node, composer, concreteEntityAdapter });
         expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
@@ -55,12 +67,22 @@ describe("Update resolver", () => {
             // @ts-ignore
             relationFields: [{}, {}],
         }).instance();
+        const concreteEntity = new ConcreteEntity({
+            name: "Movie",
+            labels: ["Movie"],
+            annotations: [],
+            attributes: [],
+            compositeEntities: [],
+            description: undefined,
+            relationships: [],
+        });
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
         const composer = new SchemaComposer();
         composer.createInputTC("MovieConnectInput");
         composer.createInputTC("MovieDisconnectInput");
 
-        const result = updateResolver({ node, composer });
+        const result = updateResolver({ node, composer, concreteEntityAdapter });
         expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
 

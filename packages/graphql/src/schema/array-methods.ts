@@ -19,25 +19,9 @@
 
 import { GraphQLInt } from "graphql";
 import type { InputTypeComposer } from "graphql-compose";
-import { SCALAR_TYPES } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { BaseField } from "../types";
 
-export function addArrayMethodsToITC(itc: InputTypeComposer, fields: BaseField[]): void {
-    // Add array methods for array fields
-    const allowedArrayFieldTypes = [...SCALAR_TYPES, "Point", "CartesianPoint"];
-    const arrayFields = fields.filter(
-        (field) => field.typeMeta.array && allowedArrayFieldTypes.includes(field.typeMeta.name)
-    );
-    arrayFields.forEach((arrayField) => {
-        itc.addFields({
-            [`${arrayField.fieldName}_POP`]: GraphQLInt,
-            [`${arrayField.fieldName}_PUSH`]: arrayField.typeMeta.input.update.pretty,
-        });
-    });
-}
-
-export function addArrayMethodsToITC2(itc: InputTypeComposer, arrayMethodFields: AttributeAdapter[]): void {
+export function addArrayMethodsToITC(itc: InputTypeComposer, arrayMethodFields: AttributeAdapter[]): void {
     // TODO: Did we need to consider the deprecated directives here?
     // It wasn't done before
 

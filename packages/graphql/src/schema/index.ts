@@ -18,4 +18,4 @@
  */
 
 // export { default as makeAugmentedSchema } from "./make-augmented-schema";
-export { default as makeAugmentedSchema } from "./new-make-augmented-schema";
+export { default as makeAugmentedSchema } from "./make-augmented-schema";

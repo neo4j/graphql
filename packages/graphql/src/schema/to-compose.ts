@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import { any } from "@neo4j/cypher-builder";
-import { DirectiveNode, GraphQLInt, InputValueDefinitionNode } from "graphql";
+import type { DirectiveNode, InputValueDefinitionNode } from "graphql";
+import { GraphQLInt } from "graphql";
 import type {
     Directive,
     DirectiveArgs,
     InputTypeComposerFieldConfigMapDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import { argsToArgsConfig } from "graphql/type/definition";
 import { DEPRECATED } from "../constants";
 import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
@@ -40,7 +39,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 
-export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
+export function graphqlInputValueToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {
         const meta = getFieldTypeMeta(arg.type);
 
@@ -55,7 +54,7 @@ export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     }, {});
 }
 
-export function graphqlArgsToCompose2(args: Argument[]) {
+export function graphqlArgsToCompose(args: Argument[]) {
     return args.reduce((res, arg) => {
         const inputValueAdapter = new ArgumentAdapter(arg);
 
@@ -109,7 +108,7 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
         }
 
         if (field.arguments) {
-            newField.args = graphqlArgsToCompose(field.arguments);
+            newField.args = graphqlInputValueToCompose(field.arguments);
         }
 
         return { ...res, [field.fieldName]: newField };
@@ -139,7 +138,7 @@ export function relationshipAdapterToComposeFields(
         for (const { typeName, fieldName } of relationshipFields) {
             const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
                 type: typeName,
-                args: graphqlArgsToCompose2(field.args),
+                args: graphqlArgsToCompose(field.args),
                 description: field.description,
             };
 
@@ -185,7 +184,7 @@ export function attributeAdapterToComposeFields(
         }
 
         if (field.args) {
-            newField.args = graphqlArgsToCompose2(field.args);
+            newField.args = graphqlArgsToCompose(field.args);
         }
 
         composeFields[field.name] = newField;

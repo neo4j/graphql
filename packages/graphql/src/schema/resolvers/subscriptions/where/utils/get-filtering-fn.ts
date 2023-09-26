@@ -18,11 +18,8 @@
  */
 
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { PrimitiveField } from "../../../../../types";
 
-type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: PrimitiveField | undefined) => boolean;
-
-type ComparatorFn2<T> = (received: T, filtered: T, fieldMeta?: AttributeAdapter | undefined) => boolean;
+type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: AttributeAdapter | undefined) => boolean;
 
 const operatorCheckMap = {
     NOT: (received: string, filtered: string) => received !== filtered,
@@ -70,18 +67,6 @@ export function getFilteringFn<T>(
     operator: string | undefined,
     overrides?: Record<string, (received: any, filtered: any, fieldMeta?: any) => boolean>
 ): ComparatorFn<T> {
-    if (!operator) {
-        return (received: T, filtered: T) => received === filtered;
-    }
-
-    const operators = { ...operatorCheckMap, ...overrides };
-
-    return operators[operator];
-}
-export function getFilteringFn2<T>(
-    operator: string | undefined,
-    overrides?: Record<string, (received: any, filtered: any, fieldMeta?: any) => boolean>
-): ComparatorFn2<T> {
     if (!operator) {
         return (received: T, filtered: T) => received === filtered;
     }
