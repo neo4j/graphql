@@ -3829,7 +3829,7 @@ __metadata:
     "@types/randomstring": 1.1.8
     "@types/semver": 7.5.3
     "@types/supertest": 2.0.13
-    "@types/ws": 8.5.5
+    "@types/ws": 8.5.6
     camelcase: ^6.3.0
     debug: ^4.3.4
     dedent: 1.5.1
@@ -8019,7 +8019,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.5, @types/ws@npm:^8.5.5":
+"@types/ws@npm:8.5.6":
+  version: 8.5.6
+  resolution: "@types/ws@npm:8.5.6"
+  dependencies:
+    "@types/node": "*"
+  checksum: 7addb0c5fa4e7713d5209afb8a90f1852b12c02cb537395adf7a05fbaf21205dc5f7c110fd5ad6f3dbf147112cbff33fb11d8633059cb344f0c14f595b1ea1fb
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.5.5":
   version: 8.5.5
   resolution: "@types/ws@npm:8.5.5"
   dependencies:
