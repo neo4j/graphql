@@ -24,7 +24,7 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "../ope
 import type { Sort } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 
-export class InterfaceConnectionPartial extends ConnectionReadOperation {
+export class CompositeConnectionPartial extends ConnectionReadOperation {
     public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
@@ -127,12 +127,12 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
         };
     }
 
-    // Sort is handled by InterfaceConnectionReadOperation
+    // Sort is handled by CompositeConnectionReadOperation
     public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
         this.sortFields.push(sortElement);
     }
 
-    // Pagination is handled by InterfaceConnectionReadOperation
+    // Pagination is handled by CompositeConnectionReadOperation
     public addPagination(_pagination: Pagination): void {
         return undefined;
     }

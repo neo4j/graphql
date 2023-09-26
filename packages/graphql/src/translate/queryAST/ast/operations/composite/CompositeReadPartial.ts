@@ -24,16 +24,16 @@ import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-export class InterfaceReadPartial extends ReadOperation {
+export class CompositeReadPartial extends ReadOperation {
     public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
-            return this.transpileNestedInterfaceRelationship(this.relationship, { returnVariable, context });
+            return this.transpileNestedCompositeRelationship(this.relationship, { returnVariable, context });
         } else {
             throw new Error("Top level interfaces are not supported");
         }
     }
 
-    private transpileNestedInterfaceRelationship(
+    private transpileNestedCompositeRelationship(
         entity: RelationshipAdapter,
         { returnVariable, context }: OperationTranspileOptions
     ): OperationTranspileResult {
