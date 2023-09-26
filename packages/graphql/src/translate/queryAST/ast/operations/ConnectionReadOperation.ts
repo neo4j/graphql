@@ -37,8 +37,8 @@ export class ConnectionReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
 
     protected directed: boolean;
-    public nodeFields: Field[] = [];
-    public edgeFields: Field[] = []; // TODO: merge with attachedTo?
+    public fields: Field[] = [];
+    // public edgeFields: Field[] = []; // TODO: merge with attachedTo?
     protected filters: Filter[] = [];
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
@@ -59,16 +59,12 @@ export class ConnectionReadOperation extends Operation {
         this.target = target;
     }
 
-    public setNodeFields(fields: Field[]) {
-        this.nodeFields = fields;
+    public setFields(fields: Field[]) {
+        this.fields = fields;
     }
 
     public setFilters(filters: Filter[]) {
         this.filters = filters;
-    }
-
-    public setEdgeFields(fields: Field[]) {
-        this.edgeFields = fields;
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
@@ -95,15 +91,9 @@ export class ConnectionReadOperation extends Operation {
         const sortFields = this.sortFields.flatMap((s) => {
             return [...s.edge, ...s.node];
         });
-
-        return filterTruthy([
-            ...this.nodeFields,
-            ...this.edgeFields,
-            ...this.filters,
-            ...this.authFilters,
-            this.pagination,
-            ...sortFields,
-        ]);
+        /* ...this.nodeFields,
+            ...this.edgeFields, */
+        return filterTruthy([...this.fields, ...this.filters, ...this.authFilters, this.pagination, ...sortFields]);
     }
 
     protected getSelectionClauses(
@@ -153,21 +143,30 @@ export class ConnectionReadOperation extends Operation {
 
         const filters = Cypher.and(...predicates, ...authPredicate);
 
-        const nodeProjectionSubqueries = this.nodeFields
+        const nodeProjectionSubqueries = this.fields
             .flatMap((f) => f.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
 
+        const edgeVar = new Cypher.NamedVariable("edge");
+        const edgesVar = new Cypher.NamedVariable("edges");
+        const totalCount = new Cypher.NamedVariable("totalCount");
+
+        const edgeProjectionMap = new Cypher.Map();
         const nodeProjectionMap = new Cypher.Map();
-        this.nodeFields
-            .map((f) => f.getProjectionField(node))
-            .forEach((p) => {
+
+        this.fields
+            .map<[string | Record<string, Cypher.Expr>, Field]>((f) => [f.getProjectionField(nestedContext), f])
+            .forEach(([p, f]) => {
+                // TODO: this block is widely duplicate
+                const proj = f.attachedTo === "node" ? nodeProjectionMap : edgeProjectionMap;
+                const entity = f.attachedTo === "node" ? node : relationship;
                 if (typeof p === "string") {
-                    nodeProjectionMap.set(p, node.property(p));
+                    proj.set(p, entity.property(p));
                 } else {
-                    nodeProjectionMap.set(p);
+                    proj.set(p);
                 }
             });
-
+        edgeProjectionMap.set("node", nodeProjectionMap);
         if (nodeProjectionMap.size === 0) {
             const targetNodeName = this.target.name;
             nodeProjectionMap.set({
@@ -175,24 +174,6 @@ export class ConnectionReadOperation extends Operation {
                 __id: Cypher.id(node),
             });
         }
-
-        const edgeVar = new Cypher.NamedVariable("edge");
-        const edgesVar = new Cypher.NamedVariable("edges");
-        const totalCount = new Cypher.NamedVariable("totalCount");
-
-        const edgeProjectionMap = new Cypher.Map();
-
-        this.edgeFields
-            .map((f) => f.getProjectionField(relationship))
-            .forEach((p) => {
-                if (typeof p === "string") {
-                    edgeProjectionMap.set(p, relationship.property(p));
-                } else {
-                    edgeProjectionMap.set(p);
-                }
-            });
-
-        edgeProjectionMap.set("node", nodeProjectionMap);
 
         let withWhere: Cypher.Clause | undefined;
         if (filters) {

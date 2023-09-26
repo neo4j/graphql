@@ -41,9 +41,9 @@ export class CypherUnionAttributePartial extends QueryASTNode {
         return this.fields.flatMap((f) => f.getSubqueries(context));
     }
 
-    public getProjectionExpression(variable: Cypher.Variable): Cypher.Expr {
+    public getProjectionExpression(variable: Cypher.Variable, queryASTContext: QueryASTContext): Cypher.Expr {
         const projection = new Cypher.MapProjection(variable);
-        this.setSubqueriesProjection(projection, this.fields, variable);
+        this.setSubqueriesProjection(projection, this.fields, queryASTContext);
         projection.set({
             __resolveType: new Cypher.Literal(this.target.name),
         });
@@ -64,8 +64,12 @@ export class CypherUnionAttributePartial extends QueryASTNode {
         return Cypher.and(...predicates);
     }
 
-    private setSubqueriesProjection(projection: Cypher.MapProjection, fields: Field[], fromVariable: Cypher.Variable) {
-        const subqueriesProjection = fields?.map((f) => f.getProjectionField(fromVariable));
+    private setSubqueriesProjection(
+        projection: Cypher.MapProjection,
+        fields: Field[],
+        queryASTContext: QueryASTContext
+    ) {
+        const subqueriesProjection = fields?.map((f) => f.getProjectionField(queryASTContext));
         for (const subqueryProjection of subqueriesProjection) {
             projection.set(subqueryProjection);
         }

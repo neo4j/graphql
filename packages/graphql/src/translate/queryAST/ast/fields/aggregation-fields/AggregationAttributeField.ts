@@ -21,12 +21,13 @@ import Cypher from "@neo4j/cypher-builder";
 import { AggregationField } from "./AggregationField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class AggregationAttributeField extends AggregationField {
     private attribute: AttributeAdapter;
 
     constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
-        super(alias);
+        super({ alias });
         this.attribute = attribute;
     }
 
@@ -34,7 +35,10 @@ export class AggregationAttributeField extends AggregationField {
         return [];
     }
 
-    public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
+    public getProjectionField(
+        _queryASTContext: QueryASTContext,
+        variable: Cypher.Variable
+    ): Record<string, Cypher.Expr> {
         return { [this.alias]: variable };
     }
 

@@ -21,12 +21,13 @@ import Cypher from "@neo4j/cypher-builder";
 import { AggregationField } from "./AggregationField";
 import type { Entity } from "../../../../../schema-model/entity/Entity";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class CountField extends AggregationField {
     private entity: Entity;
 
     constructor({ alias, entity }: { alias: string; entity: Entity }) {
-        super(alias);
+        super({ alias });
         this.entity = entity;
     }
 
@@ -34,7 +35,13 @@ export class CountField extends AggregationField {
         return [];
     }
 
-    public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
+    public getProjectionField(
+        _queryASTContext: QueryASTContext,
+        variable: Cypher.Variable
+    ): Record<string, Cypher.Expr> {
+        if (!variable) {
+            throw new Error("Transpile error: aggregation variable not defined.");
+        }
         return { [this.alias]: variable };
     }
 

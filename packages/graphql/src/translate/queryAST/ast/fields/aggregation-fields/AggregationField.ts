@@ -17,11 +17,15 @@
  * limitations under the License.
  */
 
+import type { QueryASTContext } from "../../QueryASTContext";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
 
 export abstract class AggregationField extends Field {
-    public getProjectionField(_variable: Cypher.Variable): Record<string, Cypher.Expr> {
+    public getProjectionField(
+        _queryASTContext: QueryASTContext,
+        _variable?: Cypher.Variable
+    ): Record<string, Cypher.Expr> {
         return {};
     }
 

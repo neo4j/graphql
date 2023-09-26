@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class DateTimeField extends AttributeField {
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
@@ -27,8 +28,8 @@ export class DateTimeField extends AttributeField {
         return this.createDateTimeProjection(targetProperty);
     }
 
-    public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
-        const targetProperty = variable.property(this.attribute.databaseName);
+    public getProjectionField(queryASTContext: QueryASTContext): Record<string, Cypher.Expr> {
+        const targetProperty = this.getPropertyRef(queryASTContext);
         const fieldExpr = this.createDateTimeProjection(targetProperty);
         return { [this.alias]: fieldExpr };
     }

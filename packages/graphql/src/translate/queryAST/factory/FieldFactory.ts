@@ -178,6 +178,7 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): AttributeField | undefined {
+        const attachedTo = isConcreteEntity(entity) ? "node" : "relationship";
         if (["cursor", "node"].includes(fieldName)) return;
         let attribute = entity.findAttribute(fieldName);
 
@@ -186,7 +187,7 @@ export class FieldFactory {
             if (!attribute) throw new Error(`attribute ${fieldName} not found`);
 
             // NOTE: for some reason, the alias needs to be the same as the database name
-            return new AttributeField({ alias: attribute.databaseName, attribute });
+            return new AttributeField({ alias: attribute.databaseName, attribute, attachedTo });
         }
 
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
@@ -196,6 +197,7 @@ export class FieldFactory {
                 field,
                 attribute,
                 context,
+                attachedTo,
             });
         }
 
@@ -206,6 +208,7 @@ export class FieldFactory {
                 attribute,
                 alias: field.alias,
                 crs: Boolean(crs),
+                attachedTo,
             });
         }
 
@@ -213,20 +216,23 @@ export class FieldFactory {
             return new DateTimeField({
                 attribute,
                 alias: field.alias,
+                attachedTo,
             });
         }
 
-        return new AttributeField({ alias: field.alias, attribute });
+        return new AttributeField({ alias: field.alias, attribute, attachedTo });
     }
 
     private createCypherAttributeField({
         field,
         attribute,
         context,
+        attachedTo,
     }: {
         attribute: AttributeAdapter;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
+        attachedTo: "node" | "relationship";
     }): CypherAttributeField {
         const cypherAnnotation = attribute.annotations.cypher;
         if (!cypherAnnotation) throw new Error("@Cypher directive missing");
@@ -279,6 +285,7 @@ export class FieldFactory {
                         rawArguments: field.args,
                         unionPartials: nestedUnionFields,
                         extraParams,
+                        attachedTo,
                     });
                 }
             }
@@ -291,6 +298,7 @@ export class FieldFactory {
             nestedFields,
             rawArguments: field.args,
             extraParams,
+            attachedTo,
         });
     }
 

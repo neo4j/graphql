@@ -29,7 +29,7 @@ export class OperationField extends Field {
     private projectionExpr: Cypher.Expr | undefined;
 
     constructor({ operation, alias }: { operation: Operation; alias: string }) {
-        super(alias);
+        super({ alias });
         this.operation = operation;
     }
 

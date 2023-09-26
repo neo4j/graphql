@@ -321,7 +321,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
-        const projectionFields = this.fields.map((f) => f.getProjectionField(context.target));
+        const projectionFields = this.fields.map((f) => f.getProjectionField(context));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField(context));
 
         const uniqueProjectionFields = Array.from(new Set([...projectionFields, ...sortProjectionFields])); // TODO remove duplicates with alias

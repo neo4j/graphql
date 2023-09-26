@@ -49,8 +49,9 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
 
         const filters = Cypher.and(...predicates, ...authPredicate);
-
-        const nodeProjectionSubqueries = this.nodeFields
+    
+        const nodeProjectionSubqueries = this.fields
+            .filter((f) => f.attachedTo === "node")
             .flatMap((f) => f.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(node));
 
@@ -62,14 +63,24 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
             __resolveType: new Cypher.Literal(targetNodeName),
             __id: Cypher.id(node),
         });
-
-        const nodeProjectionFields = this.nodeFields.map((f) => f.getProjectionField(node));
+        const nodeProjectionFields = this.fields.filter(f => f.attachedTo === "node").map((f) => f.getProjectionField(nestedContext));
         const nodeSortProjectionFields = this.sortFields.flatMap((f) =>
             f.node.map((ef) => ef.getProjectionField(nestedContext))
         );
+        
+   
+        const edgeVar = new Cypher.NamedVariable("edge");
 
+        const edgeProjectionMap = new Cypher.Map();
+        
+        const edgeProjectionFields = this.fields.filter(f => f.attachedTo === "relationship").map((f) => f.getProjectionField(nestedContext));
+        const edgeSortProjectionFields = this.sortFields.flatMap((f) =>
+            f.edge.map((ef) => ef.getProjectionField(nestedContext))
+        );
+
+        const uniqueEdgeProjectionFields = Array.from(new Set([...edgeProjectionFields, ...edgeSortProjectionFields]));
         const uniqueNodeProjectionFields = Array.from(new Set([...nodeProjectionFields, ...nodeSortProjectionFields]));
-
+        // TODO this is a duplicate logic present in ConnectionReadOperation/ReadOperation
         uniqueNodeProjectionFields.forEach((p) => {
             if (typeof p === "string") {
                 nodeProjectionMap.set(p, node.property(p));
@@ -77,17 +88,6 @@ export class InterfaceConnectionPartial extends ConnectionReadOperation {
                 nodeProjectionMap.set(p);
             }
         });
-
-        const edgeVar = new Cypher.NamedVariable("edge");
-
-        const edgeProjectionMap = new Cypher.Map();
-
-        const edgeProjectionFields = this.edgeFields.map((f) => f.getProjectionField(relationship));
-        const edgeSortProjectionFields = this.sortFields.flatMap((f) =>
-            f.edge.map((ef) => ef.getProjectionField(nestedContext))
-        );
-
-        const uniqueEdgeProjectionFields = Array.from(new Set([...edgeProjectionFields, ...edgeSortProjectionFields]));
 
         uniqueEdgeProjectionFields.forEach((p) => {
             if (typeof p === "string") {

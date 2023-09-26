@@ -18,6 +18,7 @@
  */
 
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
@@ -25,8 +26,16 @@ import type Cypher from "@neo4j/cypher-builder";
 export class AttributeField extends Field {
     protected attribute: AttributeAdapter;
 
-    constructor({ alias, attribute }: { alias: string; attribute: AttributeAdapter }) {
-        super(alias);
+    constructor({
+        alias,
+        attribute,
+        attachedTo,
+    }: {
+        alias: string;
+        attribute: AttributeAdapter;
+        attachedTo?: "node" | "relationship";
+    }) {
+        super({ alias, attachedTo });
         this.attribute = attribute;
     }
 
@@ -37,9 +46,12 @@ export class AttributeField extends Field {
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
         return target.property(this.attribute.databaseName);
     }
+    protected getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
+        return this.getVariableRef(queryASTContext).property(this.attribute.databaseName);
+    }
 
-    public getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr> {
-        const variableProperty = variable.property(this.attribute.databaseName);
+    public getProjectionField(queryASTContext: QueryASTContext): string | Record<string, Cypher.Expr> {
+        const variableProperty = this.getPropertyRef(queryASTContext);
         return this.createAttributeProperty(variableProperty);
     }
 

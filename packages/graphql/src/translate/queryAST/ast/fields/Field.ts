@@ -19,16 +19,35 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
+import type { QueryASTContext } from "../QueryASTContext";
 
 export abstract class Field extends QueryASTNode {
     public alias: string;
+    public attachedTo: "node" | "relationship";
 
-    constructor(alias: string) {
+    constructor({ alias, attachedTo = "node" }: { alias: string; attachedTo?: "node" | "relationship" }) {
         super();
         this.alias = alias;
+        this.attachedTo = attachedTo;
     }
 
-    public abstract getProjectionField(variable: Cypher.Variable): string | Record<string, Cypher.Expr>;
+    // TODO: this is a duplicate logic from property filters
+    protected getVariableRef(queryASTContext: QueryASTContext): Cypher.Variable {
+        if (this.attachedTo === "node") {
+            return queryASTContext.target;
+        } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
+            return queryASTContext.relationship;
+        } else {
+            throw new Error("Transpilation error");
+        }
+    }
+
+
+    // the optional variable is a temporary hack used for the projection field of the aggregation field.
+    public abstract getProjectionField(
+        queryASTContext: QueryASTContext,
+        variable?: Cypher.Variable
+    ): string | Record<string, Cypher.Expr>;
 
     public print(): string {
         return `${super.print()} <${this.alias}>`;

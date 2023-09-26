@@ -209,7 +209,7 @@ export class CypherAnnotationSubqueryGenerator {
         const caseClause = new Cypher.Case();
 
         for (const partial of unionPartials) {
-            const projection = partial.getProjectionExpression(this.returnVariable);
+            const projection = partial.getProjectionExpression(this.returnVariable, this.context);
             const predicate = partial.getFilterPredicate(this.returnVariable);
             caseClause.when(predicate).then(projection);
         }
@@ -223,9 +223,13 @@ export class CypherAnnotationSubqueryGenerator {
 
     private getNestedFieldsProjectionMap(fields: Field[], fromVariable: Cypher.Variable): Cypher.MapProjection {
         const projection = new Cypher.MapProjection(fromVariable);
-
+        const nestedContext = new QueryASTContext({
+            target: fromVariable as Cypher.Node,
+            env: this.context.env,
+            neo4jGraphQLContext: this.context.neo4jGraphQLContext,
+        });
         for (const field of fields) {
-            const fieldProjection = field.getProjectionField(fromVariable);
+            const fieldProjection = field.getProjectionField(nestedContext);
             projection.set(fieldProjection);
         }
 

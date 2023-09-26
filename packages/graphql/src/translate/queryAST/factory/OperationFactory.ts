@@ -364,8 +364,9 @@ export class OperationsFactory {
         });
 
         const filters = this.filterFactory.createConnectionPredicates(relationship, target, whereArgs);
-        operation.setNodeFields(nodeFields);
-        operation.setEdgeFields(edgeFields);
+        /*   operation.setNodeFields(nodeFields);
+        operation.setEdgeFields(edgeFields); */
+        operation.setFields([...nodeFields, ...edgeFields]);
         operation.setFilters(filters);
         if (authFilters) {
             operation.addAuthFilters(authFilters);

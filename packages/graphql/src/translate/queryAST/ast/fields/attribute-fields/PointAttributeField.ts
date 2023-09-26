@@ -20,17 +20,28 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class PointAttributeField extends AttributeField {
     private crs: boolean;
 
-    constructor({ attribute, alias, crs }: { attribute: AttributeAdapter; alias: string; crs: boolean }) {
-        super({ alias, attribute });
+    constructor({
+        attribute,
+        alias,
+        crs,
+        attachedTo,
+    }: {
+        attribute: AttributeAdapter;
+        alias: string;
+        crs: boolean;
+        attachedTo?: "node" | "relationship";
+    }) {
+        super({ alias, attribute, attachedTo });
         this.crs = crs;
     }
 
-    public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
-        const pointProjection = this.createPointProjection(variable);
+    public getProjectionField(queryASTContext: QueryASTContext): Record<string, Cypher.Expr> {
+        const pointProjection = this.createPointProjection(this.getVariableRef(queryASTContext));
         return { [this.alias]: pointProjection };
     }
 

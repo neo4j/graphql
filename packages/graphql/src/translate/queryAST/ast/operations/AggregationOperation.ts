@@ -136,7 +136,7 @@ export class AggregationOperation extends Operation {
         const nestedContext = context.push({ relationship: relVar, target: targetNode });
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
-            this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
+            this.aggregationProjectionMap.set(f.getProjectionField(nestedContext, returnVariable));
             return this.createSubquery(entity, f, pattern, targetNode, returnVariable, nestedContext);
         });
 
@@ -144,12 +144,12 @@ export class AggregationOperation extends Operation {
         const edgeMap = new Cypher.Map();
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
-            nodeMap.set(f.getProjectionField(returnVariable));
+            nodeMap.set(f.getProjectionField(nestedContext, returnVariable));
             return this.createSubquery(entity, f, pattern, targetNode, returnVariable, nestedContext);
         });
         const edgeFieldSubqueries = this.edgeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
-            edgeMap.set(f.getProjectionField(returnVariable));
+            edgeMap.set(f.getProjectionField(nestedContext, returnVariable));
             return this.createSubquery(entity, f, pattern, relVar, returnVariable, nestedContext);
         });
 
