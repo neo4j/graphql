@@ -21,7 +21,7 @@ import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "gr
 
 export const UpdateInfo = new GraphQLObjectType({
     name: "UpdateInfo",
-    description: "UpdateInfo",
+    description: "Information about the update of a node or relationship.",
     fields: {
         bookmark: {
             type: GraphQLString,
