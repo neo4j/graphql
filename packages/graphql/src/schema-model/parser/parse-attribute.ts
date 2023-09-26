@@ -41,7 +41,6 @@ import {
     UnknownType,
     UserScalarType,
 } from "../attribute/AttributeType";
-import { Field } from "../attribute/Field";
 import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
 import { parseArguments } from "./parse-arguments";
@@ -66,7 +65,7 @@ export function parseAttribute(
     inheritedField: FieldDefinitionNode[] | undefined,
     definitionCollection: DefinitionCollection,
     definitionFields?: ReadonlyArray<FieldDefinitionNode>
-): Attribute | Field {
+): Attribute {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
@@ -112,16 +111,6 @@ function getDatabaseName(
         const { property } = parseArguments<{ property: string }>(aliasDirective, inheritedAliasUsage);
         return property;
     }
-}
-
-// we may want to remove Fields from the schema model
-export function parseField(field: FieldDefinitionNode): Field {
-    const name = field.name.value;
-    const annotations = parseAnnotations(field.directives || []);
-    return new Field({
-        name,
-        annotations,
-    });
 }
 
 function parseTypeNode(

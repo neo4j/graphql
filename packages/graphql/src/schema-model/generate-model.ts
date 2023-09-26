@@ -41,7 +41,7 @@ import type { DefinitionCollection } from "./parser/definition-collection";
 import { getDefinitionCollection } from "./parser/definition-collection";
 import { parseAnnotations } from "./parser/parse-annotation";
 import { parseArguments } from "./parser/parse-arguments";
-import { parseAttribute, parseAttributeArguments, parseField } from "./parser/parse-attribute";
+import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribute";
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
@@ -197,7 +197,7 @@ function generateInterfaceEntity(
     return new InterfaceEntity({
         ...interfaceEntity,
         description: definition.description?.value,
-        attributes: filterTruthy(fields) as Attribute[],
+        attributes: filterTruthy(fields),
         annotations,
     });
 }
@@ -360,7 +360,7 @@ function generateRelationshipField(
             return parseAttribute(fieldDefinition, inheritedField, definitionCollection, propertyInterface.fields);
         });
 
-        attributes = filterTruthy(fields) as Attribute[];
+        attributes = filterTruthy(fields);
     }
 
     const annotations = parseAnnotations(mergedDirectives);
@@ -433,7 +433,7 @@ function generateConcreteEntity(
         name: definition.name.value,
         description: definition.description?.value,
         labels: getLabels(definition),
-        attributes: filterTruthy(fields) as Attribute[],
+        attributes: filterTruthy(fields),
         annotations,
     });
 }
@@ -476,15 +476,13 @@ function generateOperation(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
 ): Operation {
-    const fields = (definition.fields || []).map((fieldDefinition) => parseField(fieldDefinition));
-    const attributes = (definition.fields || []).map((fieldDefinition) =>
-        parseAttribute(fieldDefinition, undefined, definitionCollection)
-    );
+    const attributes = (definition.fields || [])
+        .map((fieldDefinition) => parseAttribute(fieldDefinition, undefined, definitionCollection))
+        .filter((attribute) => attribute.annotations.cypher);
 
     return new Operation({
         name: definition.name.value,
-        fields: filterTruthy(fields),
-        attributes: filterTruthy(attributes) as Attribute[],
+        attributes,
         annotations: createEntityAnnotations(definition.directives || []),
     });
 }

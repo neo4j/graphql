@@ -900,26 +900,20 @@ function makeAugmentedSchema(
             callbacks,
         });
 
-        // TODO: extend this loop to do the non-cypher field logic as well
         for (const attributeAdapter of operationAdapter.attributes.values()) {
-            const cypherAnnotation = attributeAdapter.annotations.cypher;
-            if (cypherAnnotation) {
-                // needed for compatibility with translation layer
-                const field = objectFields.cypherFields.find(
-                    (f) => f.fieldName === attributeAdapter.name
-                ) as CypherField;
-                const customResolver = cypherResolver2({
-                    field,
-                    attributeAdapter,
-                    type: type as "Query" | "Mutation",
-                });
+            // needed for compatibility with translation layer
+            const field = objectFields.cypherFields.find((f) => f.fieldName === attributeAdapter.name) as CypherField;
+            const customResolver = cypherResolver2({
+                field,
+                attributeAdapter,
+                type: type as "Query" | "Mutation",
+            });
 
-                const composedField = attributeAdapterToComposeFields([attributeAdapter], userDefinedDirectives)[
-                    attributeAdapter.name
-                ];
+            const composedField = attributeAdapterToComposeFields([attributeAdapter], userDefinedDirectives)[
+                attributeAdapter.name
+            ];
 
-                objectComposer.addFields({ [attributeAdapter.name]: { ...composedField, ...customResolver } });
-            }
+            objectComposer.addFields({ [attributeAdapter.name]: { ...composedField, ...customResolver } });
         }
     });
 

@@ -44,7 +44,7 @@ export function translateTopLevelCypher({
     if (!operation) {
         throw new Error(`Failed to find operation ${type} in Schema Model.`);
     }
-    const operationField = operation.findFields(field.fieldName);
+    const operationField = operation.findAttribute(field.fieldName);
     if (!operationField) {
         throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
     }
