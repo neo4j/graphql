@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { createCypherAnnotationSubquery } from "../../../utils/create-cypher-subquery";
+import { CypherAnnotationSubqueryGenerator } from "../../../cypher-generators/CypherAnnotationSubqueryGenerator";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { CypherAttributeField } from "./CypherAttributeField";
@@ -75,14 +75,19 @@ export class CypherUnionAttributeField extends CypherAttributeField {
             return Cypher.concat(withClause, ...callSubqueries);
         });
 
-        const subquery = createCypherAnnotationSubquery({
+        const cypherGenerator = new CypherAnnotationSubqueryGenerator({
             context,
             attribute: this.attribute,
-            projectionFields: this.projection,
+        });
+
+        // TODO: use different method
+        const subquery = cypherGenerator.createSubqueryForCypherAnnotationUnion({
+            // projectionFields: this.projection,
+            nestedFields: this.nestedFields,
             rawArguments: this.rawArguments,
-            unionPartials: this.unionPartials,
             subqueries: filterTruthy(nestedSubqueries),
             extraParams: this.extraParams,
+            unionPartials: this.unionPartials,
         });
 
         return [subquery];

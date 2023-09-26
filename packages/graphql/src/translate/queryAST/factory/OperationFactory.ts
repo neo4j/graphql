@@ -54,11 +54,9 @@ export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
-    private queryASTFactory: QueryASTFactory;
     private authorizationFactory: AuthorizationFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
-        this.queryASTFactory = queryASTFactory;
         this.filterFactory = new FilterFactory(queryASTFactory);
         this.fieldFactory = new FieldFactory(queryASTFactory);
         this.sortAndPaginationFactory = new SortAndPaginationFactory();
@@ -67,33 +65,7 @@ export class OperationsFactory {
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
     }
 
-    private createAttributeAuthFilters({
-        entity,
-        rawFields,
-        context,
-    }: {
-        entity: ConcreteEntityAdapter;
-        rawFields: Record<string, ResolveTree>;
-        context: Neo4jGraphQLTranslationContext;
-    }): AuthorizationFilters[] {
-        return filterTruthy(
-            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
-                const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);
-                const attribute = entity.findAttribute(fieldName);
-                if (!attribute) return undefined;
-                const result = this.authorizationFactory.createAttributeAuthFilters(
-                    attribute,
-                    entity,
-                    ["READ"],
-                    context
-                );
-
-                return result;
-            })
-        );
-    }
-
-    public createReadOperationAST(
+    public createReadOperation(
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
@@ -101,12 +73,14 @@ export class OperationsFactory {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+
         if (isConcreteEntity(entity)) {
             checkEntityAuthentication({
                 entity: entity.entity,
                 targetOperations: ["READ"],
                 context,
             });
+
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
@@ -147,23 +121,6 @@ export class OperationsFactory {
             });
             this.hydrateInterfaceReadOperationWithPagination(entity, interfaceReadOp, resolveTree);
             return interfaceReadOp;
-        }
-    }
-
-    private hydrateInterfaceReadOperationWithPagination(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
-        operation: InterfaceReadOperation | ReadOperation,
-        resolveTree: ResolveTree
-    ) {
-        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
-        if (options) {
-            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
-            operation.addSort(...sort);
-
-            const pagination = this.sortAndPaginationFactory.createPagination(options);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
         }
     }
 
@@ -540,5 +497,48 @@ export class OperationsFactory {
             after: options.after,
             sort: options.sort,
         };
+    }
+
+    private createAttributeAuthFilters({
+        entity,
+        rawFields,
+        context,
+    }: {
+        entity: ConcreteEntityAdapter;
+        rawFields: Record<string, ResolveTree>;
+        context: Neo4jGraphQLTranslationContext;
+    }): AuthorizationFilters[] {
+        return filterTruthy(
+            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
+                const { fieldName } = parseSelectionSetField(field.name);
+                const attribute = entity.findAttribute(fieldName);
+                if (!attribute) return undefined;
+                const result = this.authorizationFactory.createAttributeAuthFilters(
+                    attribute,
+                    entity,
+                    ["READ"],
+                    context
+                );
+
+                return result;
+            })
+        );
+    }
+
+    private hydrateInterfaceReadOperationWithPagination(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        operation: InterfaceReadOperation | ReadOperation,
+        resolveTree: ResolveTree
+    ) {
+        const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
+        if (options) {
+            const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+            operation.addSort(...sort);
+
+            const pagination = this.sortAndPaginationFactory.createPagination(options);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
     }
 }

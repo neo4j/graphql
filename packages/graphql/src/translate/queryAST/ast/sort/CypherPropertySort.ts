@@ -23,7 +23,7 @@ import { Sort } from "./Sort";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTContext } from "../QueryASTContext";
-import { createCypherAnnotationSubquery } from "../../utils/create-cypher-subquery";
+import { CypherAnnotationSubqueryGenerator } from "../../cypher-generators/CypherAnnotationSubqueryGenerator";
 
 export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
@@ -74,11 +74,13 @@ export class CypherPropertySort extends Sort {
             return [];
         }
 
-        const subquery = createCypherAnnotationSubquery({
+        const cypherGenerator = new CypherAnnotationSubqueryGenerator({
             context,
             attribute: this.attribute,
-            subqueries: [],
         });
+
+        const subquery = cypherGenerator.createSubqueryForCypherAnnotation({});
+
         return [subquery];
     }
 }

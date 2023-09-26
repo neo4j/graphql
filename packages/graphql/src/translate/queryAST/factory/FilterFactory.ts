@@ -406,7 +406,7 @@ export class FilterFactory {
                     });
                     return [logicalFilter];
                 }
-                const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
+                const { fieldName, operator, isNot } = parseWhereField(key);
 
                 const filterOperator = operator || "EQ";
                 if (fieldName === "count") {
