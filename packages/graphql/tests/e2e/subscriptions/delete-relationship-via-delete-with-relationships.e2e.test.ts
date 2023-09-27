@@ -83,7 +83,8 @@ describe("Delete Subscriptions when relationships are targeted- with interfaces,
                 url: String!
             }
             
-            union Director = ${typePerson} | ${typeActor}
+            #union Director = ${typePerson} | ${typeActor}
+            union Director =  ${typeActor} | ${typePerson}
             
             interface Reviewer {
                 reputation: Int!

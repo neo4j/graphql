@@ -106,9 +106,6 @@ export function withConnectOrCreateInputType({
         throw new Error("Unexpected union source");
     }
     const typeName = relationshipAdapter.source.operations.connectOrCreateInputTypeName;
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
 
     const fieldInput = makeConnectOrCreateInputType({
         relationshipAdapter,
@@ -125,7 +122,10 @@ export function withConnectOrCreateInputType({
         fieldInput,
         deprecatedDirectives,
     });
-    const connectOrCreateInput = composer.createInputTC({ name: typeName, fields });
+    const connectOrCreateInput = composer.getOrCreateITC(typeName);
+
+    connectOrCreateInput.addFields(fields);
+
     return connectOrCreateInput;
 }
 function makeConnectOrCreateInputType({
