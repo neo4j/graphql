@@ -36,9 +36,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             .related(relationship)
             .withDirection(relDirection)
             .to(node);
-        // const clause = new Cypher.Match(
-        //     new Cypher.Pattern(context.target).withoutLabels().related(relationship).withDirection(relDirection).to(node)
-        // );
+
         const nestedContext = context.push({ target: node, relationship });
         const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
@@ -116,7 +114,6 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             clause,
             ...authFilterSubqueries,
             withWhere,
-            // extraWithOrder,
             ...nodeProjectionSubqueries,
             projectionClauses
         );

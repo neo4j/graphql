@@ -62,7 +62,6 @@ export class CompositeReadOperation extends Operation {
                 context: options.context,
                 returnVariable: options.returnVariable,
             });
-            // const callSubqueries = result.clauses.map((sq) => new Cypher.Call(sq));
 
             let clauses = result.clauses;
             if (parentNode) {

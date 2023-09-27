@@ -84,10 +84,6 @@ export class PointFilter extends PropertyFilter {
 
     private createPointDistanceExpression(property: Cypher.Expr, param: Cypher.Param): Cypher.Function {
         const nestedPointRef = param.property("point");
-
-        // if (neo4jDatabaseInfo.gte("4.4")) {
-        return Cypher.pointDistance(property, Cypher.point(nestedPointRef));
-        // }
-        // return Cypher.distance(property, Cypher.point(nestedPointRef));
+        return Cypher.point.distance(property, Cypher.point(nestedPointRef));
     }
 }

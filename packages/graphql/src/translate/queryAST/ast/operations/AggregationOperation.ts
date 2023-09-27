@@ -103,16 +103,13 @@ export class AggregationOperation extends Operation {
         if (filterPredicates) {
             matchClause.where(filterPredicates);
         }
-        // const subqueries = Cypher.concat(...this.getFieldsSubqueries(targetNode));
         const ret = this.getFieldProjectionClause(target, returnVariable, field);
-        // const ret = new Cypher.With([projection, targetNode]).return([Cypher.collect(targetNode), returnVariable]);
 
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
             this.addSortToClause(context, target, sortClause);
         }
-        // return Cypher.concat(matchClause, subqueries, sortClause, ret);
         return Cypher.concat(matchClause, sortClause, ret);
     }
 

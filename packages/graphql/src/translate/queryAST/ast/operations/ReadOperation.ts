@@ -108,7 +108,6 @@ export class ReadOperation extends Operation {
             .withDirection(relDirection)
             .to(targetNode);
 
-        // const matchClause = new Cypher.Match(pattern);
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const filterPredicates = this.getPredicates(nestedContext);
 

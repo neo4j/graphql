@@ -125,15 +125,12 @@ export class RelationshipFilter extends Filter {
         );
 
         const predicates = returnVars.map((v) => Cypher.eq(v, Cypher.true));
-        // this.subqueryPredicate = Cypher.and(this.subqueryPredicate, ...predicates);
         this.subqueryPredicate = Cypher.and(...predicates);
 
         return nestedSelection;
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        // const nestedContext = this.getNestedContext(context);
-
         // NOTE: not using getNestedContext because this should not be memoized in ALL operations
         const relatedEntity = this.relationship.target as any;
         const target = new Cypher.Node({
@@ -152,7 +149,6 @@ export class RelationshipFilter extends Filter {
         const nestedSubqueries = this.targetNodeFilters.flatMap((f) => f.getSubqueries(nestedContext));
         const nestedSelection = this.getNestedSelectionSubqueries(nestedContext);
 
-        // const subqueries = [...nestedSubqueries];
         if (nestedSubqueries.length > 0) {
             subqueries.push(...this.getNestedSubqueries(nestedContext));
         }
