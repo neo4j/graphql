@@ -95,7 +95,6 @@ export class RelationshipAdapter {
         this.aggregate = aggregate;
         this.isNullable = isNullable;
         this.rawEntity = target;
-        this.isNullable = relationship.isNullable;
         this.initAttributes(attributes);
         this.description = description;
         this.annotations = annotations;
