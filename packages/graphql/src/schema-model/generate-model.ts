@@ -351,7 +351,7 @@ function generateRelationshipField(
                 (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
             );
             const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-            const isInheritedPrivateAttribute = inheritedFields?.some((inheritedField) =>
+            const isInheritedPrivateAttribute = filteredInheritedFields?.some((inheritedField) =>
                 findDirective(inheritedField.directives, privateDirective.name)
             );
             if (isPrivateAttribute || isInheritedPrivateAttribute) {
