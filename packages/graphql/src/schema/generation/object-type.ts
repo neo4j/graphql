@@ -18,7 +18,7 @@
  */
 import type { DirectiveNode } from "graphql";
 import { GraphQLID, GraphQLNonNull } from "graphql";
-import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { InterfaceEntity } from "../../schema-model/entity/InterfaceEntity";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "../to-compose";
