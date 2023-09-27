@@ -184,15 +184,15 @@ describe("Cypher WHERE", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE ((this.title = $param0 OR this.isFavorite = $param1) AND this.id = $param2)
+            WHERE (this.id = $param0 AND (this.title = $param1 OR this.isFavorite = $param2))
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some title\\",
-                \\"param1\\": true,
-                \\"param2\\": \\"2\\"
+                \\"param0\\": \\"2\\",
+                \\"param1\\": \\"some title\\",
+                \\"param2\\": true
             }"
         `);
     });

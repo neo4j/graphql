@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Series)
-            WHERE (single(this1 IN [(this)-[this0:HAS_MANUFACTURER]->(this1:Series) WHERE (this0.current = $param0 AND this1.name = $param1) | 1] WHERE true) OR single(this3 IN [(this)-[this2:HAS_BRAND]->(this3:Series) WHERE (this2.current = $param2 AND this3.name = $param3) | 1] WHERE true))
+            WHERE (single(this0 IN [(this)-[this1:HAS_MANUFACTURER]->(this0:Series) WHERE (this0.name = $param0 AND this1.current = $param1) | 1] WHERE true) OR single(this2 IN [(this)-[this3:HAS_BRAND]->(this2:Series) WHERE (this2.name = $param2 AND this3.current = $param3) | 1] WHERE true))
             CALL {
                 WITH this
                 MATCH (this)-[this4:HAS_BRAND]->(this5:Series)
@@ -109,10 +109,10 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": true,
-                \\"param1\\": \\"abc\\",
-                \\"param2\\": true,
-                \\"param3\\": \\"smart\\"
+                \\"param0\\": \\"abc\\",
+                \\"param1\\": true,
+                \\"param2\\": \\"smart\\",
+                \\"param3\\": true
             }"
         `);
     });

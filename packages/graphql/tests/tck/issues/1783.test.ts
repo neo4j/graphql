@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Series)
-            WHERE (this.current = $param0 AND single(this3 IN [(this)-[this0:ARCHITECTURE]->(this3:MasterData) WHERE (this0.current = $param1 AND single(this2 IN [(this3)-[this1:HAS_NAME]->(this2:NameDetails) WHERE (this1.current = $param2 AND this2.fullName = $param3) | 1] WHERE true)) | 1] WHERE true) AND single(this5 IN [(this)-[this4:HAS_NAME]->(this5:NameDetails) WHERE (this4.current = $param4 AND this5.fullName CONTAINS $param5) | 1] WHERE true))
+            WHERE (this.current = $param0 AND single(this2 IN [(this)-[this3:ARCHITECTURE]->(this2:MasterData) WHERE (single(this0 IN [(this2)-[this1:HAS_NAME]->(this0:NameDetails) WHERE (this0.fullName = $param1 AND this1.current = $param2) | 1] WHERE true) AND this3.current = $param3) | 1] WHERE true) AND single(this4 IN [(this)-[this5:HAS_NAME]->(this4:NameDetails) WHERE (this4.fullName CONTAINS $param4 AND this5.current = $param5) | 1] WHERE true))
             CALL {
                 WITH this
                 MATCH (this)-[this6:HAS_NAME]->(this7:NameDetails)
@@ -155,11 +155,11 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"param1\\": true,
+                \\"param1\\": \\"MHA\\",
                 \\"param2\\": true,
-                \\"param3\\": \\"MHA\\",
-                \\"param4\\": true,
-                \\"param5\\": \\"1\\",
+                \\"param3\\": true,
+                \\"param4\\": \\"1\\",
+                \\"param5\\": true,
                 \\"param6\\": true,
                 \\"param7\\": true,
                 \\"param8\\": true
