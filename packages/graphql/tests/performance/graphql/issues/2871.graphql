@@ -1,4 +1,4 @@
-query NestedRelationshipFilter_only {
+query NestedRelationshipFilter {
     movies(where: { actors: { movies_SOME: { title: "The Matrix" } } }) {
         title
     }
