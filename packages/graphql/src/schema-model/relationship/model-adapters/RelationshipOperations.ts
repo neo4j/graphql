@@ -38,10 +38,10 @@ export type CreateMutationArgumentNames = {
 };
 
 export class RelationshipOperations {
-    private readonly relationshipEntityAdapter: RelationshipAdapter;
+    private readonly relationship: RelationshipAdapter;
 
-    constructor(relationshipEntityAdapter: RelationshipAdapter) {
-        this.relationshipEntityAdapter = relationshipEntityAdapter;
+    constructor(relationship: RelationshipAdapter) {
+        this.relationship = relationship;
     }
 
     public get prefixForTypename(): string {
@@ -49,24 +49,40 @@ export class RelationshipOperations {
         // (part of a implemented Interface, not necessarily annotated as rel)
         // then return this.interface.name
 
-        return this.relationshipEntityAdapter.inheritedFrom || this.relationshipEntityAdapter.source.name;
+        return this.relationship.inheritedFrom || this.relationship.source.name;
     }
 
     public get fieldInputPrefixForTypename(): string {
-        const isTargetInterface = this.relationshipEntityAdapter.target instanceof InterfaceEntityAdapter;
+        const isTargetInterface = this.relationship.target instanceof InterfaceEntityAdapter;
         if (isTargetInterface) {
-            return this.relationshipEntityAdapter.source.name;
+            return this.relationship.source.name;
         }
         return this.prefixForTypename;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}Connection`;
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}Connection`;
+    }
+
+    /**Note: Required for now to infer the types without ResolveTree */
+    public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
+        const nestedFieldStr = upperFirst(nestedField || "");
+        const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
+        return `${this.relationship.source.name}${this.relationship.target.name}${upperFirst(
+            this.relationship.name
+        )}${nestedFieldStr}${aggregationStr}Selection`;
+    }
+
+    getTargetTypePrettyName(): string {
+        if (this.relationship.isList) {
+            return `[${this.relationship.target.name}!]${this.relationship.isNullable === false ? "!" : ""}`;
+        }
+        return `${this.relationship.target.name}${this.relationship.isNullable === false ? "!" : ""}`;
     }
 
     public getConnectionUnionWhereInputTypename(concreteEntityAdapter: ConcreteEntityAdapter): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
             concreteEntityAdapter.name
         }ConnectionWhere`;
     }
@@ -81,65 +97,65 @@ export class RelationshipOperations {
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get relationshipFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}Relationship`;
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}Relationship`;
     }
 
     public getFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }FieldInput`;
     }
 
     public getToUnionFieldInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity.name
         }FieldInput`;
     }
 
     public getUpdateFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }UpdateFieldInput`;
     }
 
     public getCreateFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }CreateFieldInput`;
     }
 
     public getDeleteFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }DeleteFieldInput`;
     }
 
     public getConnectFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectFieldInput`;
     }
 
     public getDisconnectFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }DisconnectFieldInput`;
     }
 
     public getConnectOrCreateInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}ConnectOrCreateInput`;
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}ConnectOrCreateInput`;
     }
 
     public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
-        if (this.relationshipEntityAdapter.target instanceof UnionEntityAdapter) {
+        if (this.relationship.target instanceof UnionEntityAdapter) {
             if (!concreteTargetEntityAdapter) {
                 throw new Error("missing concreteTargetEntityAdapter");
             }
-            return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+            return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
                 concreteTargetEntityAdapter.name
             }ConnectOrCreateFieldInput`;
         }
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}ConnectOrCreateFieldInput`;
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}ConnectOrCreateFieldInput`;
     }
 
     public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
@@ -147,118 +163,98 @@ export class RelationshipOperations {
     }
 
     public get connectionFieldName(): string {
-        return `${this.relationshipEntityAdapter.name}Connection`;
+        return `${this.relationship.name}Connection`;
     }
 
     public getConnectionWhereTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.prefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectionWhere`;
     }
 
     public getUpdateConnectionInputTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }UpdateConnectionInput`;
     }
 
     public get aggregateInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}AggregateInput`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}AggregateInput`;
     }
 
     public get aggregateTypeName(): string {
-        return `${this.relationshipEntityAdapter.name}Aggregate`;
+        return `${this.relationship.name}Aggregate`;
     }
 
     public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}${isA}AggregationWhereInput`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${isA}AggregationWhereInput`;
     }
 
     public get subscriptionWhereInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}RelationshipSubscriptionWhere`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}RelationshipSubscriptionWhere`;
     }
 
     public getToUnionSubscriptionWhereInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity.name
         }SubscriptionWhere`;
     }
 
     public get unionConnectInputTypeName(): string {
-        return `${upperFirst(this.relationshipEntityAdapter.source.name)}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}ConnectInput`;
+        return `${upperFirst(this.relationship.source.name)}${upperFirst(this.relationship.name)}ConnectInput`;
     }
 
     public get unionDeleteInputTypeName(): string {
-        return `${upperFirst(this.relationshipEntityAdapter.source.name)}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}DeleteInput`;
+        return `${upperFirst(this.relationship.source.name)}${upperFirst(this.relationship.name)}DeleteInput`;
     }
 
     public get unionDisconnectInputTypeName(): string {
-        return `${upperFirst(this.relationshipEntityAdapter.source.name)}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}DisconnectInput`;
+        return `${upperFirst(this.relationship.source.name)}${upperFirst(this.relationship.name)}DisconnectInput`;
     }
 
     public get unionCreateInputTypeName(): string {
-        return `${upperFirst(this.relationshipEntityAdapter.source.name)}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}CreateInput`;
+        return `${upperFirst(this.relationship.source.name)}${upperFirst(this.relationship.name)}CreateInput`;
     }
 
     public get unionCreateFieldInputTypeName(): string {
-        return `${upperFirst(this.relationshipEntityAdapter.source.name)}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}CreateFieldInput`;
+        return `${upperFirst(this.relationship.source.name)}${upperFirst(this.relationship.name)}CreateFieldInput`;
     }
 
     public get unionUpdateInputTypeName(): string {
-        return `${upperFirst(this.relationshipEntityAdapter.source.name)}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}UpdateInput`;
+        return `${upperFirst(this.relationship.source.name)}${upperFirst(this.relationship.name)}UpdateInput`;
     }
 
     public getToUnionUpdateInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(this.relationshipEntityAdapter.name)}${
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity.name
         }UpdateInput`;
     }
 
     public get subscriptionConnectedRelationshipTypeName(): string {
-        return `${this.relationshipEntityAdapter.source.name}${upperFirst(
-            this.relationshipEntityAdapter.name
-        )}ConnectedRelationship`;
+        return `${this.relationship.source.name}${upperFirst(this.relationship.name)}ConnectedRelationship`;
     }
 
     public get edgeCreateInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.propertiesTypeName}CreateInput${
-            this.relationshipEntityAdapter.hasNonNullNonGeneratedProperties ? `!` : ""
+        return `${this.relationship.propertiesTypeName}CreateInput${
+            this.relationship.hasNonNullNonGeneratedProperties ? `!` : ""
         }`;
     }
     public get createInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.propertiesTypeName}CreateInput`;
+        return `${this.relationship.propertiesTypeName}CreateInput`;
     }
 
     public get edgeUpdateInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.propertiesTypeName}UpdateInput`;
+        return `${this.relationship.propertiesTypeName}UpdateInput`;
     }
 
     public get whereInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.propertiesTypeName}Where`;
+        return `${this.relationship.propertiesTypeName}Where`;
     }
     public get edgeSubscriptionWhereInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.propertiesTypeName}SubscriptionWhere`;
+        return `${this.relationship.propertiesTypeName}SubscriptionWhere`;
     }
     public get sortInputTypeName(): string {
-        return `${this.relationshipEntityAdapter.propertiesTypeName}Sort`;
+        return `${this.relationship.propertiesTypeName}Sort`;
     }
 
     public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {

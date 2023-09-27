@@ -79,6 +79,12 @@ export class InterfaceEntityAdapter {
             this.relationships.set(relationshipName, new RelationshipAdapter(relationship, this));
         }
     }
+    get operations(): InterfaceEntityOperations {
+        if (!this._operations) {
+            return new InterfaceEntityOperations(this);
+        }
+        return this._operations;
+    }
 
     public get singular(): string {
         if (!this._singular) {
@@ -102,12 +108,11 @@ export class InterfaceEntityAdapter {
         return upperFirst(this.plural);
     }
 
-    get operations(): InterfaceEntityOperations {
-        if (!this._operations) {
-            return new InterfaceEntityOperations(this);
-        }
-        return this._operations;
-    }
+    /**
+     * Categories
+     * = a grouping of attributes
+     * used to generate different types for the Entity that contains these Attributes
+     */
 
     public get uniqueFields(): AttributeAdapter[] {
         return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));

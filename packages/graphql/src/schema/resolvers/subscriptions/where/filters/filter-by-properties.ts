@@ -70,9 +70,9 @@ export function filterByProperties<T>({
 }
 
 const isFloatOrStringOrIDAsString = (attributeAdapter: AttributeAdapter | undefined, value: string | number) =>
-    attributeAdapter?.isFloat() ||
-    attributeAdapter?.isString() ||
-    (attributeAdapter?.isID() && int(value).toString() !== value);
+    attributeAdapter?.typeHelper.isFloat() ||
+    attributeAdapter?.typeHelper.isString() ||
+    (attributeAdapter?.typeHelper.isID() && int(value).toString() !== value);
 
 const operatorMapOverrides = {
     INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: AttributeAdapter | undefined) => {

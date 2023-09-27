@@ -95,73 +95,6 @@ export class ConcreteEntityAdapter {
         }
     }
 
-    public get mutableFields(): AttributeAdapter[] {
-        return this.mutableFieldsKeys.map((key) => getFromMap(this.attributes, key));
-    }
-
-    public get uniqueFields(): AttributeAdapter[] {
-        return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
-    }
-
-    public get constrainableFields(): AttributeAdapter[] {
-        return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
-    }
-
-    public get relatedEntities(): (ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter)[] {
-        if (!this._relatedEntities) {
-            this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
-        }
-        return this._relatedEntities;
-    }
-
-    public get objectFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isObjectField());
-    }
-
-    public get sortableFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
-    }
-
-    public get whereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
-    }
-
-    public get aggregableFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
-    }
-
-    public get aggregationWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
-    }
-
-    public get createInputFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isCreateInputField());
-    }
-
-    public get updateInputFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
-    }
-
-    public get arrayMethodFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isArrayMethodField());
-    }
-
-    public get onCreateInputFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isOnCreateField());
-    }
-
-    public get temporalFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
-    }
-
-    public get subscriptionEventPayloadFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
-    }
-
-    public get subscriptionWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
-    }
-
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
     }
@@ -170,13 +103,11 @@ export class ConcreteEntityAdapter {
         return this.relationships.get(name);
     }
 
-    // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
-    public getLabels(): string[] {
-        return Array.from(this.labels);
-    }
-
-    public getMainLabel(): string {
-        return this.getLabels()[0] as string;
+    get operations(): ConcreteEntityOperations {
+        if (!this._operations) {
+            return new ConcreteEntityOperations(this);
+        }
+        return this._operations;
     }
 
     public get singular(): string {
@@ -201,11 +132,13 @@ export class ConcreteEntityAdapter {
         return upperFirst(this.plural);
     }
 
-    get operations(): ConcreteEntityOperations {
-        if (!this._operations) {
-            return new ConcreteEntityOperations(this);
-        }
-        return this._operations;
+    // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
+    public getLabels(): string[] {
+        return Array.from(this.labels);
+    }
+
+    public getMainLabel(): string {
+        return this.getLabels()[0] as string;
     }
 
     get isReadable(): boolean {
@@ -285,5 +218,78 @@ export class ConcreteEntityAdapter {
             field: this.globalIdField.name,
             id,
         });
+    }
+
+    /**
+     * Categories
+     * = a grouping of attributes
+     * used to generate different types for the Entity that contains these Attributes
+     */
+
+    public get mutableFields(): AttributeAdapter[] {
+        return this.mutableFieldsKeys.map((key) => getFromMap(this.attributes, key));
+    }
+
+    public get uniqueFields(): AttributeAdapter[] {
+        return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
+    }
+
+    public get constrainableFields(): AttributeAdapter[] {
+        return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
+    }
+
+    public get relatedEntities(): (ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter)[] {
+        if (!this._relatedEntities) {
+            this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
+        }
+        return this._relatedEntities;
+    }
+
+    public get objectFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isObjectField());
+    }
+
+    public get sortableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
+    }
+
+    public get whereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
+    public get aggregableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
+    }
+
+    public get aggregationWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
+    }
+
+    public get createInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isCreateInputField());
+    }
+
+    public get updateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
+    }
+
+    public get arrayMethodFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isArrayMethodField());
+    }
+
+    public get onCreateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isOnCreateField());
+    }
+
+    public get temporalFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.typeHelper.isTemporal());
+    }
+
+    public get subscriptionEventPayloadFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
+    }
+
+    public get subscriptionWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
     }
 }

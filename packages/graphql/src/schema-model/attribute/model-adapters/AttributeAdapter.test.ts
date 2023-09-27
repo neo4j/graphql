@@ -96,7 +96,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isID()).toBe(true);
+            expect(attribute.typeHelper.isID()).toBe(true);
         });
 
         test("isBoolean", () => {
@@ -109,7 +109,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isBoolean()).toBe(true);
+            expect(attribute.typeHelper.isBoolean()).toBe(true);
         });
 
         test("isInt", () => {
@@ -122,7 +122,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isInt()).toBe(true);
+            expect(attribute.typeHelper.isInt()).toBe(true);
         });
 
         test("isFloat", () => {
@@ -134,7 +134,7 @@ describe("Attribute", () => {
                     args: [],
                 })
             );
-            expect(attribute.isFloat()).toBe(true);
+            expect(attribute.typeHelper.isFloat()).toBe(true);
         });
 
         test("isString", () => {
@@ -146,7 +146,7 @@ describe("Attribute", () => {
                     args: [],
                 })
             );
-            expect(attribute.isString()).toBe(true);
+            expect(attribute.typeHelper.isString()).toBe(true);
         });
 
         test("isCartesianPoint", () => {
@@ -159,7 +159,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isCartesianPoint()).toBe(true);
+            expect(attribute.typeHelper.isCartesianPoint()).toBe(true);
         });
 
         test("isPoint", () => {
@@ -172,7 +172,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isPoint()).toBe(true);
+            expect(attribute.typeHelper.isPoint()).toBe(true);
         });
 
         test("isBigInt", () => {
@@ -185,7 +185,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isBigInt()).toBe(true);
+            expect(attribute.typeHelper.isBigInt()).toBe(true);
         });
 
         test("isDate", () => {
@@ -198,7 +198,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isDate()).toBe(true);
+            expect(attribute.typeHelper.isDate()).toBe(true);
         });
 
         test("isDateTime", () => {
@@ -211,7 +211,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isDateTime()).toBe(true);
+            expect(attribute.typeHelper.isDateTime()).toBe(true);
         });
 
         test("isLocalDateTime", () => {
@@ -224,7 +224,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isLocalDateTime()).toBe(true);
+            expect(attribute.typeHelper.isLocalDateTime()).toBe(true);
         });
 
         test("isTime", () => {
@@ -237,7 +237,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isTime()).toBe(true);
+            expect(attribute.typeHelper.isTime()).toBe(true);
         });
 
         test("isLocalTime", () => {
@@ -250,7 +250,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isLocalTime()).toBe(true);
+            expect(attribute.typeHelper.isLocalTime()).toBe(true);
         });
 
         test("isDuration", () => {
@@ -263,7 +263,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isDuration()).toBe(true);
+            expect(attribute.typeHelper.isDuration()).toBe(true);
         });
 
         test("isObject", () => {
@@ -276,7 +276,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isObject()).toBe(true);
+            expect(attribute.typeHelper.isObject()).toBe(true);
         });
 
         test("isEnum", () => {
@@ -289,7 +289,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isEnum()).toBe(true);
+            expect(attribute.typeHelper.isEnum()).toBe(true);
         });
 
         test("isUserScalar", () => {
@@ -302,7 +302,7 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isUserScalar()).toBe(true);
+            expect(attribute.typeHelper.isUserScalar()).toBe(true);
         });
 
         test("isInterface", () => {
@@ -314,7 +314,7 @@ describe("Attribute", () => {
                     args: [],
                 })
             );
-            expect(attribute.isInterface()).toBe(true);
+            expect(attribute.typeHelper.isInterface()).toBe(true);
         });
 
         test("isUnion", () => {
@@ -326,7 +326,7 @@ describe("Attribute", () => {
                     args: [],
                 })
             );
-            expect(attribute.isUnion()).toBe(true);
+            expect(attribute.typeHelper.isUnion()).toBe(true);
         });
 
         describe("List", () => {
@@ -342,7 +342,7 @@ describe("Attribute", () => {
                     })
                 );
 
-                expect(attribute.isList()).toBe(true);
+                expect(attribute.typeHelper.isList()).toBe(true);
             });
 
             test("isList should return false if attribute is not a list", () => {
@@ -357,7 +357,7 @@ describe("Attribute", () => {
                     })
                 );
 
-                expect(attribute.isList()).toBe(false);
+                expect(attribute.typeHelper.isList()).toBe(false);
             });
 
             test("type assertion, should return true if it's a list of a the same type.", () => {
@@ -371,8 +371,8 @@ describe("Attribute", () => {
                         args: [],
                     })
                 );
-                expect(attribute.isString({ includeLists: true })).toBe(true);
-                expect(attribute.isString({ includeLists: false })).toBe(false);
+                expect(attribute.typeHelper.isString({ includeLists: true })).toBe(true);
+                expect(attribute.typeHelper.isString({ includeLists: false })).toBe(false);
             });
 
             test("type assertion, should return false if it's a list of a different type", () => {
@@ -386,8 +386,8 @@ describe("Attribute", () => {
                         args: [],
                     })
                 );
-                expect(attribute.isInt({ includeLists: true })).toBe(false);
-                expect(attribute.isInt({ includeLists: false })).toBe(false);
+                expect(attribute.typeHelper.isInt({ includeLists: true })).toBe(false);
+                expect(attribute.typeHelper.isInt({ includeLists: false })).toBe(false);
             });
         });
     });
@@ -412,8 +412,8 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isGraphQLBuiltInScalar()).toBe(true);
-            expect(nonBuiltInScalar.isGraphQLBuiltInScalar()).toBe(false);
+            expect(attribute.typeHelper.isGraphQLBuiltInScalar()).toBe(true);
+            expect(nonBuiltInScalar.typeHelper.isGraphQLBuiltInScalar()).toBe(false);
         });
 
         test("isSpatial", () => {
@@ -434,8 +434,8 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isSpatial()).toBe(true);
-            expect(nonSpatial.isSpatial()).toBe(false);
+            expect(attribute.typeHelper.isSpatial()).toBe(true);
+            expect(nonSpatial.typeHelper.isSpatial()).toBe(false);
         });
 
         test("isTemporal", () => {
@@ -457,8 +457,8 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isTemporal()).toBe(true);
-            expect(nonTemporal.isTemporal()).toBe(false);
+            expect(attribute.typeHelper.isTemporal()).toBe(true);
+            expect(nonTemporal.typeHelper.isTemporal()).toBe(false);
         });
 
         test("isAbstract", () => {
@@ -480,8 +480,8 @@ describe("Attribute", () => {
                 })
             );
 
-            expect(attribute.isAbstract()).toBe(true);
-            expect(nonAbstract.isAbstract()).toBe(false);
+            expect(attribute.typeHelper.isAbstract()).toBe(true);
+            expect(nonAbstract.typeHelper.isAbstract()).toBe(false);
         });
     });
 
@@ -504,8 +504,8 @@ describe("Attribute", () => {
             })
         );
 
-        expect(attributeRequired.isRequired()).toBe(true);
-        expect(attributeNotRequired.isRequired()).toBe(false);
+        expect(attributeRequired.typeHelper.isRequired()).toBe(true);
+        expect(attributeNotRequired.typeHelper.isRequired()).toBe(false);
     });
 
     test("isRequired - List", () => {
@@ -527,8 +527,8 @@ describe("Attribute", () => {
             })
         );
 
-        expect(attributeRequired.isRequired()).toBe(true);
-        expect(attributeNotRequired.isRequired()).toBe(false);
+        expect(attributeRequired.typeHelper.isRequired()).toBe(true);
+        expect(attributeNotRequired.typeHelper.isRequired()).toBe(false);
     });
 
     test("isListElementRequired", () => {
@@ -550,8 +550,8 @@ describe("Attribute", () => {
             })
         );
 
-        expect(listElementRequired.isListElementRequired()).toBe(true);
-        expect(listElementNotRequired.isListElementRequired()).toBe(false);
+        expect(listElementRequired.typeHelper.isListElementRequired()).toBe(true);
+        expect(listElementNotRequired.typeHelper.isListElementRequired()).toBe(false);
     });
 
     describe("annotation assertions", () => {

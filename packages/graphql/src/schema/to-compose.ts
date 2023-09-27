@@ -127,7 +127,7 @@ export function relationshipAdapterToComposeFields(
 
         const relationshipFields = [
             {
-                typeName: field.getTargetTypePrettyName(),
+                typeName: field.operations.getTargetTypePrettyName(),
                 fieldName: field.name,
             },
             {
@@ -175,11 +175,11 @@ export function attributeAdapterToComposeFields(
             newField.directives = graphqlDirectivesToCompose(userDefinedDirectivesOnField);
         }
 
-        if (field.isInt() || field.isFloat()) {
+        if (field.typeHelper.isInt() || field.typeHelper.isFloat()) {
             newField.resolve = numericalResolver;
         }
 
-        if (field.isID()) {
+        if (field.typeHelper.isID()) {
             newField.resolve = idResolver;
         }
 
@@ -335,10 +335,11 @@ export function attributesToSubscriptionsWhereInputFields(
                 : entityWithAttributes.name;
         const fieldType = attribute.getInputTypeNames().where.pretty;
 
-        const ifArrayOfAnyTypeExceptBoolean = attribute.isList() && attribute.getTypeName() !== "Boolean";
-        const ifAnyTypeExceptArrayAndBoolean = !attribute.isList() && attribute.getTypeName() !== "Boolean";
-        const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(attribute.getTypeName()) && !attribute.isList();
-        const isOneOfStringTypes = ["String", "ID"].includes(attribute.getTypeName()) && !attribute.isList();
+        const ifArrayOfAnyTypeExceptBoolean = attribute.typeHelper.isList() && attribute.getTypeName() !== "Boolean";
+        const ifAnyTypeExceptArrayAndBoolean = !attribute.typeHelper.isList() && attribute.getTypeName() !== "Boolean";
+        const isOneOfNumberTypes =
+            ["Int", "Float", "BigInt"].includes(attribute.getTypeName()) && !attribute.typeHelper.isList();
+        const isOneOfStringTypes = ["String", "ID"].includes(attribute.getTypeName()) && !attribute.typeHelper.isList();
         const isOneOfSpatialTypes = ["Point", "CartesianPoint"].includes(attribute.getTypeName());
 
         let inputTypeName = attribute.getTypeName();

@@ -32,7 +32,7 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
 ): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
     const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
-        type: relationshipAdapter.getTargetTypePrettyName(),
+        type: relationshipAdapter.operations.getTargetTypePrettyName(),
         description: relationshipAdapter.description,
         directives: graphqlDirectivesToCompose(userDefinedFieldDirectives.get(relationshipAdapter.name) || []),
     };

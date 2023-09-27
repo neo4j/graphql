@@ -23,7 +23,7 @@ export class MathAdapter {
     readonly AttributeAdapter: AttributeAdapter;
 
     constructor(AttributeAdapter: AttributeAdapter) {
-        if (!AttributeAdapter.isNumeric()) {
+        if (!AttributeAdapter.typeHelper.isNumeric()) {
             throw new Error("Math model available only for numeric attributes");
         }
         this.AttributeAdapter = AttributeAdapter;
@@ -31,19 +31,19 @@ export class MathAdapter {
 
     getMathOperations(): string[] {
         const operations = [this.getAdd(), this.getSubtract()];
-        this.AttributeAdapter.isFloat() && operations.push(this.getMultiply());
-        this.AttributeAdapter.isFloat() && operations.push(this.getDivide());
+        this.AttributeAdapter.typeHelper.isFloat() && operations.push(this.getMultiply());
+        this.AttributeAdapter.typeHelper.isFloat() && operations.push(this.getDivide());
         return operations;
     }
 
     getAdd(): string {
-        return this.AttributeAdapter.isInt() || this.AttributeAdapter.isBigInt()
+        return this.AttributeAdapter.typeHelper.isInt() || this.AttributeAdapter.typeHelper.isBigInt()
             ? `${this.AttributeAdapter.name}_INCREMENT`
             : `${this.AttributeAdapter.name}_ADD`;
     }
 
     getSubtract(): string {
-        return this.AttributeAdapter.isInt() || this.AttributeAdapter.isBigInt()
+        return this.AttributeAdapter.typeHelper.isInt() || this.AttributeAdapter.typeHelper.isBigInt()
             ? `${this.AttributeAdapter.name}_DECREMENT`
             : `${this.AttributeAdapter.name}_SUBTRACT`;
     }

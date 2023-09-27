@@ -130,10 +130,10 @@ class AugmentedSchemaGenerator {
             // TODO: check if these can be created ad-hoc
             if (model instanceof ConcreteEntityAdapter || model instanceof InterfaceEntityAdapter) {
                 for (const attribute of model.attributes.values()) {
-                    if (attribute.isPoint()) {
+                    if (attribute.typeHelper.isPoint()) {
                         pointInTypeDefs = true;
                     }
-                    if (attribute.isCartesianPoint()) {
+                    if (attribute.typeHelper.isCartesianPoint()) {
                         cartesianPointInTypeDefs = true;
                     }
                 }
@@ -143,10 +143,10 @@ class AugmentedSchemaGenerator {
                 if (model instanceof ConcreteEntityAdapter) {
                     for (const relationship of model.relationships.values()) {
                         for (const attribute of relationship.attributes.values()) {
-                            if (attribute.isPoint()) {
+                            if (attribute.typeHelper.isPoint()) {
                                 pointInTypeDefs = true;
                             }
-                            if (attribute.isCartesianPoint()) {
+                            if (attribute.typeHelper.isCartesianPoint()) {
                                 cartesianPointInTypeDefs = true;
                             }
                         }

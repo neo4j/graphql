@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "graphql-compose";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
@@ -143,15 +142,6 @@ export class RelationshipAdapter {
         return this._plural;
     }
 
-    /**Note: Required for now to infer the types without ResolveTree */
-    public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
-        const nestedFieldStr = upperFirst(nestedField || "");
-        const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
-        return `${this.source.name}${this.target.name}${upperFirst(
-            this.name
-        )}${nestedFieldStr}${aggregationStr}Selection`;
-    }
-
     private initAttributes(attributes: Map<string, Attribute>) {
         for (const [attributeName, attribute] of attributes.entries()) {
             const attributeAdapter = new AttributeAdapter(attribute);
@@ -209,13 +199,6 @@ export class RelationshipAdapter {
             }
         }
         return this._target;
-    }
-
-    getTargetTypePrettyName(): string {
-        if (this.isList) {
-            return `[${this.target.name}!]${this.isNullable === false ? "!" : ""}`;
-        }
-        return `${this.target.name}${this.isNullable === false ? "!" : ""}`;
     }
 
     isReadable(): boolean {
@@ -277,28 +260,18 @@ export class RelationshipAdapter {
         return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
     }
 
-    /*
-        const nonGeneratedProperties = [
-            ...objectFields.primitiveFields.filter((field) => !field.autogenerate),
-            ...objectFields.scalarFields,
-            ...objectFields.enumFields,
-            ...objectFields.temporalFields.filter((field) => !field.timestamps),
-            ...objectFields.pointFields,
-        ];
-        result.hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
-    */
     public get nonGeneratedProperties(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isNonGeneratedField());
     }
-    public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) =>
-            attribute.isSubscriptionConnectedRelationshipField()
-        );
+    public get hasNonNullNonGeneratedProperties(): boolean {
+        return this.nonGeneratedProperties.some((property) => property.typeHelper.isRequired());
     }
 
-    public get hasNonNullNonGeneratedProperties(): boolean {
-        return this.nonGeneratedProperties.some((property) => property.isRequired());
-    }
+    /**
+     * Categories
+     * = a grouping of attributes
+     * used to generate different types for the Entity that contains these Attributes
+     */
 
     public get aggregableFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
@@ -324,11 +297,13 @@ export class RelationshipAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
     }
 
-    public get arrayMethodFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isArrayMethodField());
-    }
-
     public get subscriptionWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
+    }
+
+    public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) =>
+            attribute.isSubscriptionConnectedRelationshipField()
+        );
     }
 }

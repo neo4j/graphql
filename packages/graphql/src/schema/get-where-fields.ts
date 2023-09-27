@@ -213,13 +213,13 @@ export function getWhereFieldsForAttributes({
 
         // If the field is a boolean, skip it
         // This is done here because the previous additions are still added for boolean fields
-        if (field.isBoolean()) {
+        if (field.typeHelper.isBoolean()) {
             continue;
         }
 
         // If the field is an array, add the includes and not includes fields
         // if (field.isArray()) {
-        if (field.isList()) {
+        if (field.typeHelper.isList()) {
             result[`${field.name}_INCLUDES`] = {
                 type: field.getInputTypeNames().where.type,
                 directives: deprecatedDirectives,
@@ -254,7 +254,7 @@ export function getWhereFieldsForAttributes({
         }
 
         // If the field is spatial, add the point comparison operators
-        if (field.isSpatial()) {
+        if (field.typeHelper.isSpatial()) {
             ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                 result[`${field.name}${comparator}`] = {
                     type: `${field.getTypeName()}Distance`,
@@ -265,7 +265,7 @@ export function getWhereFieldsForAttributes({
         }
 
         // If the field is a string, add the string comparison operators
-        if (field.isString() || field.isID()) {
+        if (field.typeHelper.isString() || field.typeHelper.isID()) {
             const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
                 { comparator: "_CONTAINS", typeName: field.getInputTypeNames().where.type },
                 { comparator: "_STARTS_WITH", typeName: field.getInputTypeNames().where.type },

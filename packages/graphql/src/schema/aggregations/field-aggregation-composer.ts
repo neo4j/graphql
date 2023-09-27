@@ -61,7 +61,7 @@ export class FieldAggregationComposer {
         const aggregateSelectionNodeFields = this.getAggregationFields(
             relationshipAdapter.target as ConcreteEntityAdapter
         ); // TODO: fix ts
-        const aggregateSelectionNodeName = relationshipAdapter.getAggregationFieldTypename("node");
+        const aggregateSelectionNodeName = relationshipAdapter.operations.getAggregationFieldTypename("node");
 
         const aggregateSelectionNode = this.createAggregationField(
             aggregateSelectionNodeName,
@@ -70,7 +70,7 @@ export class FieldAggregationComposer {
 
         if (relationshipAdapter.attributes.size > 0) {
             const aggregateSelectionEdgeFields = this.getAggregationFields(relationshipAdapter);
-            const aggregateSelectionEdgeName = relationshipAdapter.getAggregationFieldTypename("edge");
+            const aggregateSelectionEdgeName = relationshipAdapter.operations.getAggregationFieldTypename("edge");
 
             aggregateSelectionEdge = this.createAggregationField(
                 aggregateSelectionEdgeName,
@@ -79,7 +79,7 @@ export class FieldAggregationComposer {
         }
 
         return this.composer.createObjectTC({
-            name: relationshipAdapter.getAggregationFieldTypename(),
+            name: relationshipAdapter.operations.getAggregationFieldTypename(),
             fields: {
                 count: {
                     type: new GraphQLNonNull(GraphQLInt),
@@ -98,7 +98,7 @@ export class FieldAggregationComposer {
         return entity.aggregableFields.reduce((res, field) => {
             const objectTypeComposer = this.aggregationTypesMapper.getAggregationType({
                 fieldName: field.getTypeName(),
-                nullable: !field.isRequired(),
+                nullable: !field.typeHelper.isRequired(),
             });
 
             if (!objectTypeComposer) return res;

@@ -72,7 +72,7 @@ function makeAggregableFields({
     for (const attribute of aggregableAttributes) {
         const objectTypeComposer = aggregationTypesMapper.getAggregationType({
             fieldName: attribute.getTypeName(),
-            nullable: !attribute.isRequired(),
+            nullable: !attribute.typeHelper.isRequired(),
         });
         if (objectTypeComposer) {
             aggregableFields[attribute.name] = objectTypeComposer.NonNull;
@@ -171,14 +171,14 @@ function makeAggregationFields(attributes: AttributeAdapter[]): InputTypeCompose
 // TODO: refactor this by introducing specialized Adapters
 function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
-    if (attribute.isID()) {
+    if (attribute.typeHelper.isID()) {
         fields[`${attribute.name}_EQUAL`] = {
             type: GraphQLID,
             directives: [DEPRECATE_INVALID_AGGREGATION_FILTERS],
         };
         return fields;
     }
-    if (attribute.isString()) {
+    if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {
             fields[`${attribute.name}_${operator}`] = {
                 type: `${operator === "EQUAL" ? GraphQLString : GraphQLInt}`,
@@ -202,7 +202,7 @@ function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeCompo
         }
         return fields;
     }
-    if (attribute.isNumeric() || attribute.isDuration()) {
+    if (attribute.typeHelper.isNumeric() || attribute.typeHelper.isDuration()) {
         // Types that you can average
         // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
         // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
@@ -217,7 +217,11 @@ function getAggregationFieldsByType(attribute: AttributeAdapter): InputTypeCompo
             if (attribute.getTypeName() !== "Duration") {
                 fields[`${attribute.name}_SUM_${operator}`] = attribute.getTypeName();
             }
-            const averageType = attribute.isBigInt() ? "BigInt" : attribute.isDuration() ? "Duration" : GraphQLFloat;
+            const averageType = attribute.typeHelper.isBigInt()
+                ? "BigInt"
+                : attribute.typeHelper.isDuration()
+                ? "Duration"
+                : GraphQLFloat;
             fields[`${attribute.name}_AVERAGE_${operator}`] = averageType;
         }
         return fields;

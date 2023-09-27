@@ -81,7 +81,7 @@ export function cypherResolver({
             return value;
         });
 
-        if (!attributeAdapter.isList()) {
+        if (!attributeAdapter.typeHelper.isList()) {
             return values[0];
         }
 

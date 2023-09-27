@@ -28,13 +28,13 @@ import { generateModel } from "./generate-model";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
 import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
-import type { AttributeAdapter } from "./attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
 import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
+import type { AttributeTypeHelper } from "./attribute/AttributeTypeHelper";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -809,24 +809,24 @@ describe("GraphQL adapters", () => {
     let userAccounts: RelationshipAdapter;
 
     // user attributes
-    let id: AttributeAdapter;
-    let name: AttributeAdapter;
-    let createdAt: AttributeAdapter;
-    let releaseDate: AttributeAdapter;
-    let runningTime: AttributeAdapter;
-    let accountSize: AttributeAdapter;
-    let favoriteColors: AttributeAdapter;
-    let password: AttributeAdapter;
+    let id: AttributeTypeHelper;
+    let name: AttributeTypeHelper;
+    let createdAt: AttributeTypeHelper;
+    let releaseDate: AttributeTypeHelper;
+    let runningTime: AttributeTypeHelper;
+    let accountSize: AttributeTypeHelper;
+    let favoriteColors: AttributeTypeHelper;
+    let password: AttributeTypeHelper;
 
     // hasAccount relationship attributes
-    let creationTime: AttributeAdapter;
+    let creationTime: AttributeTypeHelper;
 
     // account attributes
-    let status: AttributeAdapter;
-    let aOrB: AttributeAdapter;
-    let point: AttributeAdapter;
-    let points: AttributeAdapter;
-    let cartesianPoint: AttributeAdapter;
+    let status: AttributeTypeHelper;
+    let aOrB: AttributeTypeHelper;
+    let point: AttributeTypeHelper;
+    let points: AttributeTypeHelper;
+    let cartesianPoint: AttributeTypeHelper;
 
     beforeAll(() => {
         const typeDefs = gql`
@@ -882,26 +882,26 @@ describe("GraphQL adapters", () => {
         accountEntity = userAccounts.target as ConcreteEntityAdapter; // it's possible to obtain accountEntity using schemaModel.getConcreteEntityAdapter("Account") as well
 
         // user attributes
-        id = userEntity?.attributes.get("id") as AttributeAdapter;
-        name = userEntity?.attributes.get("name") as AttributeAdapter;
-        createdAt = userEntity?.attributes.get("createdAt") as AttributeAdapter;
-        releaseDate = userEntity?.attributes.get("releaseDate") as AttributeAdapter;
-        runningTime = userEntity?.attributes.get("runningTime") as AttributeAdapter;
-        accountSize = userEntity?.attributes.get("accountSize") as AttributeAdapter;
-        favoriteColors = userEntity?.attributes.get("favoriteColors") as AttributeAdapter;
+        id = userEntity?.attributes.get("id")?.typeHelper as AttributeTypeHelper;
+        name = userEntity?.attributes.get("name")?.typeHelper as AttributeTypeHelper;
+        createdAt = userEntity?.attributes.get("createdAt")?.typeHelper as AttributeTypeHelper;
+        releaseDate = userEntity?.attributes.get("releaseDate")?.typeHelper as AttributeTypeHelper;
+        runningTime = userEntity?.attributes.get("runningTime")?.typeHelper as AttributeTypeHelper;
+        accountSize = userEntity?.attributes.get("accountSize")?.typeHelper as AttributeTypeHelper;
+        favoriteColors = userEntity?.attributes.get("favoriteColors")?.typeHelper as AttributeTypeHelper;
 
         // extended attributes
-        password = userEntity?.attributes.get("password") as AttributeAdapter;
+        password = userEntity?.attributes.get("password")?.typeHelper as AttributeTypeHelper;
 
         // hasAccount relationship attributes
-        creationTime = userAccounts?.attributes.get("creationTime") as AttributeAdapter;
+        creationTime = userAccounts?.attributes.get("creationTime")?.typeHelper as AttributeTypeHelper;
 
         // account attributes
-        status = accountEntity?.attributes.get("status") as AttributeAdapter;
-        aOrB = accountEntity?.attributes.get("aOrB") as AttributeAdapter;
-        point = accountEntity?.attributes.get("point") as AttributeAdapter;
-        points = accountEntity?.attributes.get("points") as AttributeAdapter;
-        cartesianPoint = accountEntity?.attributes.get("cartesianPoint") as AttributeAdapter;
+        status = accountEntity?.attributes.get("status")?.typeHelper as AttributeTypeHelper;
+        aOrB = accountEntity?.attributes.get("aOrB")?.typeHelper as AttributeTypeHelper;
+        point = accountEntity?.attributes.get("point")?.typeHelper as AttributeTypeHelper;
+        points = accountEntity?.attributes.get("points")?.typeHelper as AttributeTypeHelper;
+        cartesianPoint = accountEntity?.attributes.get("cartesianPoint")?.typeHelper as AttributeTypeHelper;
     });
 
     describe("attribute types", () => {
