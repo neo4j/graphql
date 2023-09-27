@@ -360,18 +360,14 @@ export class RelationshipFilter extends Filter {
             }
             case "NONE":
             case "SOME": {
-                if (!this.relationship.isList) {
-                    if (this.relationship.isNullable) {
-                        if (!innerPredicate) return undefined;
+                if (!this.relationship.isList && this.relationship.isNullable) {
+                    if (!innerPredicate) return undefined;
 
-                        return this.getSingleRelationshipOperation({
-                            pattern,
-                            queryASTContext,
-                            innerPredicate,
-                        });
-                    } else {
-                        // Optional Match + Count
-                    }
+                    return this.getSingleRelationshipOperation({
+                        pattern,
+                        queryASTContext,
+                        innerPredicate,
+                    });
                 }
 
                 const match = new Cypher.Match(pattern);

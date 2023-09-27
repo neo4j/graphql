@@ -209,7 +209,7 @@ export class FilterFactory {
         });
 
         if (!isNull) {
-            const targetNode = relationship.target as ConcreteEntityAdapter; // TODO: accept entities
+            const targetNode = relationship.target;
             const targetNodeFilters = this.createNodeFilters(targetNode, where);
             relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
         }
