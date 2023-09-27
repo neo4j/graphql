@@ -305,48 +305,4 @@ describe("makeAugmentedSchema", () => {
             );
         });
     });
-
-    describe("@unique", () => {
-        test.skip("should throw error if @unique is used on relationship property", () => {
-            const typeDefs = gql`
-                type Movie {
-                    actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                }
-
-                type Actor {
-                    name: String
-                }
-
-                interface ActedIn @relationshipProperties {
-                    id: ID @unique
-                    roles: [String]
-                }
-            `;
-
-            const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            expect(() => makeAugmentedSchema(typeDefs, {}, schemaModel)).toThrow(
-                "@unique directive cannot be used on interface type fields: ActedIn.id"
-            );
-        });
-
-        // TODO: validation PR
-        test.skip("should throw error if @unique is used on interface field", () => {
-            const typeDefs = gql`
-                interface Production {
-                    id: ID! @unique
-                    title: String!
-                }
-
-                type Movie implements Production {
-                    id: ID!
-                    title: String!
-                }
-            `;
-
-            const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            expect(() => makeAugmentedSchema(typeDefs, {}, schemaModel)).toThrow(
-                "@unique directive cannot be used on interface type fields: Production.id"
-            );
-        });
-    });
 });

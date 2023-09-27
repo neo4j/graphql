@@ -149,13 +149,6 @@ export class ConcreteEntityAdapter {
     public get onCreateInputFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isOnCreateField());
     }
-    // public get scalarFields(): AttributeAdapter[] {
-    //     return Array.from(this.attributes.values()).filter((attribute) => attribute.isScalarField());
-    // }
-
-    // public get enumFields(): AttributeAdapter[] {
-    //     return Array.from(this.attributes.values()).filter((attribute) => attribute.isEnumField());
-    // }
 
     public get temporalFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());

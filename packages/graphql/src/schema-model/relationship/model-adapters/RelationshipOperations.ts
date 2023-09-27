@@ -45,10 +45,9 @@ export class RelationshipOperations {
     }
 
     public get prefixForTypename(): string {
-        // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
+        // if relationship field is inherited  by source
+        // (part of a implemented Interface, not necessarily annotated as rel)
         // then return this.interface.name
-        // TODO: how to get implemented interfaces here??
-        // console.log(this.inheritedFrom, this.source.name, this.name);
 
         return this.relationshipEntityAdapter.inheritedFrom || this.relationshipEntityAdapter.source.name;
     }
