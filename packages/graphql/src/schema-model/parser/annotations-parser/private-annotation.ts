@@ -19,7 +19,6 @@
 import type { DirectiveNode } from "graphql";
 import { PrivateAnnotation } from "../../annotation/PrivateAnnotation";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function parsePrivateAnnotation(_directive: DirectiveNode): PrivateAnnotation {
     return new PrivateAnnotation();
 }

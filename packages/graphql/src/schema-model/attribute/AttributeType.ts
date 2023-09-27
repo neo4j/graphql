@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
-
 export enum GraphQLBuiltInScalarType {
     Int = "Int",
     Float = "Float",
