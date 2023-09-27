@@ -43,7 +43,7 @@ describe("Pluralize consistency", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -60,7 +60,7 @@ describe("Pluralize consistency", () => {
               superUsers: [super_user!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -93,7 +93,7 @@ describe("Pluralize consistency", () => {
               superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -118,7 +118,7 @@ describe("Pluralize consistency", () => {
               totalCount: Int!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

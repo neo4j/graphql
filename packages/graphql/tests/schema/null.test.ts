@@ -45,320 +45,322 @@ describe("Null", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateMoviesMutationResponse {
-  info: CreateInfo!
-  movies: [Movie!]!
-}
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
 
-\\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
-scalar DateTime
+            \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
+            scalar DateTime
 
-type DateTimeAggregateSelectionNonNullable {
-  max: DateTime!
-  min: DateTime!
-}
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type FloatAggregateSelectionNonNullable {
-  average: Float!
-  max: Float!
-  min: Float!
-  sum: Float!
-}
+            type FloatAggregateSelectionNonNullable {
+              average: Float!
+              max: Float!
+              min: Float!
+              sum: Float!
+            }
 
-type IDAggregateSelectionNonNullable {
-  longest: ID!
-  shortest: ID!
-}
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
 
-type IntAggregateSelectionNonNullable {
-  average: Float!
-  max: Int!
-  min: Int!
-  sum: Int!
-}
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
+            }
 
-type Movie {
-  actorCount: Int!
-  actorCounts: [Int!]!
-  averageRating: Float!
-  averageRatings: [Float!]!
-  createdAt: DateTime!
-  createdAts: [DateTime!]!
-  filmedAt: Point!
-  filmedAts: [Point!]!
-  id: ID!
-  ids: [ID!]!
-  isActives: [Boolean!]!
-  name: String!
-  names: [String!]!
-}
+            type Movie {
+              actorCount: Int!
+              actorCounts: [Int!]!
+              averageRating: Float!
+              averageRatings: [Float!]!
+              createdAt: DateTime!
+              createdAts: [DateTime!]!
+              filmedAt: Point!
+              filmedAts: [Point!]!
+              id: ID!
+              ids: [ID!]!
+              isActives: [Boolean!]!
+              name: String!
+              names: [String!]!
+            }
 
-type MovieAggregateSelection {
-  actorCount: IntAggregateSelectionNonNullable!
-  averageRating: FloatAggregateSelectionNonNullable!
-  count: Int!
-  createdAt: DateTimeAggregateSelectionNonNullable!
-  id: IDAggregateSelectionNonNullable!
-  name: StringAggregateSelectionNonNullable!
-}
+            type MovieAggregateSelection {
+              actorCount: IntAggregateSelectionNonNullable!
+              averageRating: FloatAggregateSelectionNonNullable!
+              count: Int!
+              createdAt: DateTimeAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+            }
 
-input MovieCreateInput {
-  actorCount: Int!
-  actorCounts: [Int!]!
-  averageRating: Float!
-  averageRatings: [Float!]!
-  createdAt: DateTime!
-  createdAts: [DateTime!]!
-  filmedAt: PointInput!
-  filmedAts: [PointInput!]!
-  id: ID!
-  ids: [ID!]!
-  isActives: [Boolean!]!
-  name: String!
-  names: [String!]!
-}
+            input MovieCreateInput {
+              actorCount: Int!
+              actorCounts: [Int!]!
+              averageRating: Float!
+              averageRatings: [Float!]!
+              createdAt: DateTime!
+              createdAts: [DateTime!]!
+              filmedAt: PointInput!
+              filmedAts: [PointInput!]!
+              id: ID!
+              ids: [ID!]!
+              isActives: [Boolean!]!
+              name: String!
+              names: [String!]!
+            }
 
-type MovieEdge {
-  cursor: String!
-  node: Movie!
-}
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
 
-input MovieOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [MovieSort!]
-}
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-\\"\\"\\"
-input MovieSort {
-  actorCount: SortDirection
-  averageRating: SortDirection
-  createdAt: SortDirection
-  filmedAt: SortDirection
-  id: SortDirection
-  name: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              actorCount: SortDirection
+              averageRating: SortDirection
+              createdAt: SortDirection
+              filmedAt: SortDirection
+              id: SortDirection
+              name: SortDirection
+            }
 
-input MovieUpdateInput {
-  actorCount: Int
-  actorCount_DECREMENT: Int
-  actorCount_INCREMENT: Int
-  actorCounts: [Int!]
-  actorCounts_POP: Int
-  actorCounts_PUSH: [Int!]
-  averageRating: Float
-  averageRating_ADD: Float
-  averageRating_DIVIDE: Float
-  averageRating_MULTIPLY: Float
-  averageRating_SUBTRACT: Float
-  averageRatings: [Float!]
-  averageRatings_POP: Int
-  averageRatings_PUSH: [Float!]
-  createdAt: DateTime
-  createdAts: [DateTime!]
-  createdAts_POP: Int
-  createdAts_PUSH: [DateTime!]
-  filmedAt: PointInput
-  filmedAts: [PointInput!]
-  filmedAts_POP: Int
-  filmedAts_PUSH: [PointInput!]
-  id: ID
-  ids: [ID!]
-  ids_POP: Int
-  ids_PUSH: [ID!]
-  isActives: [Boolean!]
-  isActives_POP: Int
-  isActives_PUSH: [Boolean!]
-  name: String
-  names: [String!]
-  names_POP: Int
-  names_PUSH: [String!]
-}
+            input MovieUpdateInput {
+              actorCount: Int
+              actorCount_DECREMENT: Int
+              actorCount_INCREMENT: Int
+              actorCounts: [Int!]
+              actorCounts_POP: Int
+              actorCounts_PUSH: [Int!]
+              averageRating: Float
+              averageRating_ADD: Float
+              averageRating_DIVIDE: Float
+              averageRating_MULTIPLY: Float
+              averageRating_SUBTRACT: Float
+              averageRatings: [Float!]
+              averageRatings_POP: Int
+              averageRatings_PUSH: [Float!]
+              createdAt: DateTime
+              createdAts: [DateTime!]
+              createdAts_POP: Int
+              createdAts_PUSH: [DateTime!]
+              filmedAt: PointInput
+              filmedAts: [PointInput!]
+              filmedAts_POP: Int
+              filmedAts_PUSH: [PointInput!]
+              id: ID
+              ids: [ID!]
+              ids_POP: Int
+              ids_PUSH: [ID!]
+              isActives: [Boolean!]
+              isActives_POP: Int
+              isActives_PUSH: [Boolean!]
+              name: String
+              names: [String!]
+              names_POP: Int
+              names_PUSH: [String!]
+            }
 
-input MovieWhere {
-  AND: [MovieWhere!]
-  NOT: MovieWhere
-  OR: [MovieWhere!]
-  actorCount: Int
-  actorCount_GT: Int
-  actorCount_GTE: Int
-  actorCount_IN: [Int!]
-  actorCount_LT: Int
-  actorCount_LTE: Int
-  actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  actorCount_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  actorCounts: [Int!]
-  actorCounts_INCLUDES: Int
-  actorCounts_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  actorCounts_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  averageRating: Float
-  averageRating_GT: Float
-  averageRating_GTE: Float
-  averageRating_IN: [Float!]
-  averageRating_LT: Float
-  averageRating_LTE: Float
-  averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  averageRating_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  averageRatings: [Float!]
-  averageRatings_INCLUDES: Float
-  averageRatings_NOT: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  averageRatings_NOT_INCLUDES: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  createdAt: DateTime
-  createdAt_GT: DateTime
-  createdAt_GTE: DateTime
-  createdAt_IN: [DateTime!]
-  createdAt_LT: DateTime
-  createdAt_LTE: DateTime
-  createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  createdAts: [DateTime!]
-  createdAts_INCLUDES: DateTime
-  createdAts_NOT: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  createdAts_NOT_INCLUDES: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  filmedAt: PointInput
-  filmedAt_DISTANCE: PointDistance
-  filmedAt_GT: PointDistance
-  filmedAt_GTE: PointDistance
-  filmedAt_IN: [PointInput!]
-  filmedAt_LT: PointDistance
-  filmedAt_LTE: PointDistance
-  filmedAt_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  filmedAt_NOT_IN: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  filmedAts: [PointInput!]
-  filmedAts_INCLUDES: PointInput
-  filmedAts_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  filmedAts_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id: ID
-  id_CONTAINS: ID
-  id_ENDS_WITH: ID
-  id_IN: [ID!]
-  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_STARTS_WITH: ID
-  ids: [ID!]
-  ids_INCLUDES: ID
-  ids_NOT: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  ids_NOT_INCLUDES: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  isActives: [Boolean!]
-  isActives_NOT: [Boolean!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String!]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  names: [String!]
-  names_INCLUDES: String
-  names_NOT: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  names_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actorCount: Int
+              actorCount_GT: Int
+              actorCount_GTE: Int
+              actorCount_IN: [Int!]
+              actorCount_LT: Int
+              actorCount_LTE: Int
+              actorCount_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCount_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCounts: [Int!]
+              actorCounts_INCLUDES: Int
+              actorCounts_NOT: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              actorCounts_NOT_INCLUDES: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_IN: [Float!]
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              averageRating_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRating_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRatings: [Float!]
+              averageRatings_INCLUDES: Float
+              averageRatings_NOT: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              averageRatings_NOT_INCLUDES: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              createdAt: DateTime
+              createdAt_GT: DateTime
+              createdAt_GTE: DateTime
+              createdAt_IN: [DateTime!]
+              createdAt_LT: DateTime
+              createdAt_LTE: DateTime
+              createdAt_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              createdAt_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              createdAts: [DateTime!]
+              createdAts_INCLUDES: DateTime
+              createdAts_NOT: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              createdAts_NOT_INCLUDES: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              filmedAt: PointInput
+              filmedAt_DISTANCE: PointDistance
+              filmedAt_GT: PointDistance
+              filmedAt_GTE: PointDistance
+              filmedAt_IN: [PointInput!]
+              filmedAt_LT: PointDistance
+              filmedAt_LTE: PointDistance
+              filmedAt_NOT: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              filmedAt_NOT_IN: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              filmedAts: [PointInput!]
+              filmedAts_INCLUDES: PointInput
+              filmedAts_NOT: [PointInput!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              filmedAts_NOT_INCLUDES: PointInput @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              ids: [ID!]
+              ids_INCLUDES: ID
+              ids_NOT: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              ids_NOT_INCLUDES: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              isActives: [Boolean!]
+              isActives_NOT: [Boolean!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              names: [String!]
+              names_INCLUDES: String
+              names_NOT: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              names_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
 
-type MoviesConnection {
-  edges: [MovieEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-type Mutation {
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-}
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-\\"\\"\\"Point type\\"\\"\\"
-type Point {
-  crs: String!
-  height: Float
-  latitude: Float!
-  longitude: Float!
-  srid: Int!
-}
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
+            type Point {
+              crs: String!
+              height: Float
+              latitude: Float!
+              longitude: Float!
+              srid: Int!
+            }
 
-\\"\\"\\"\\"\\"\\"
-input PointDistance {
-  \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
-  distance: Float!
-  point: PointInput!
-}
+            \\"\\"\\"\\"\\"\\"
+            input PointDistance {
+              \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
+              distance: Float!
+              point: PointInput!
+            }
 
-\\"\\"\\"\\"\\"\\"
-input PointInput {
-  height: Float
-  latitude: Float!
-  longitude: Float!
-}
+            \\"\\"\\"\\"\\"\\"
+            input PointInput {
+              height: Float
+              latitude: Float!
+              longitude: Float!
+            }
 
-type Query {
-  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-}
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateMoviesMutationResponse {
-  info: UpdateInfo!
-  movies: [Movie!]!
-}"
-`);
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }"
+        `);
     });
 });

@@ -61,7 +61,7 @@ describe("lower case type names", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -81,7 +81,7 @@ describe("lower case type names", () => {
               min: DateTime
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -127,7 +127,7 @@ describe("lower case type names", () => {
               moviesConnection(after: String, first: Int, sort: [movieSort], where: movieWhere): MoviesConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -145,7 +145,7 @@ describe("lower case type names", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

@@ -34,163 +34,163 @@ describe("Bigint", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"
-A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
-\\"\\"\\"
-scalar BigInt
+            \\"\\"\\"
+            A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+            \\"\\"\\"
+            scalar BigInt
 
-type BigIntAggregateSelectionNonNullable {
-  average: BigInt!
-  max: BigInt!
-  min: BigInt!
-  sum: BigInt!
-}
+            type BigIntAggregateSelectionNonNullable {
+              average: BigInt!
+              max: BigInt!
+              min: BigInt!
+              sum: BigInt!
+            }
 
-type CreateFilesMutationResponse {
-  files: [File!]!
-  info: CreateInfo!
-}
+            type CreateFilesMutationResponse {
+              files: [File!]!
+              info: CreateInfo!
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type File {
-  name: String!
-  size: BigInt!
-}
+            type File {
+              name: String!
+              size: BigInt!
+            }
 
-type FileAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-  size: BigIntAggregateSelectionNonNullable!
-}
+            type FileAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+              size: BigIntAggregateSelectionNonNullable!
+            }
 
-input FileCreateInput {
-  name: String!
-  size: BigInt!
-}
+            input FileCreateInput {
+              name: String!
+              size: BigInt!
+            }
 
-type FileEdge {
-  cursor: String!
-  node: File!
-}
+            type FileEdge {
+              cursor: String!
+              node: File!
+            }
 
-input FileOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [FileSort!]
-}
+            input FileOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [FileSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.
-\\"\\"\\"
-input FileSort {
-  name: SortDirection
-  size: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object.
+            \\"\\"\\"
+            input FileSort {
+              name: SortDirection
+              size: SortDirection
+            }
 
-input FileUpdateInput {
-  name: String
-  size: BigInt
-  size_DECREMENT: BigInt
-  size_INCREMENT: BigInt
-}
+            input FileUpdateInput {
+              name: String
+              size: BigInt
+              size_DECREMENT: BigInt
+              size_INCREMENT: BigInt
+            }
 
-input FileWhere {
-  AND: [FileWhere!]
-  NOT: FileWhere
-  OR: [FileWhere!]
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String!]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  size: BigInt
-  size_GT: BigInt
-  size_GTE: BigInt
-  size_IN: [BigInt!]
-  size_LT: BigInt
-  size_LTE: BigInt
-  size_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  size_NOT_IN: [BigInt!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
+            input FileWhere {
+              AND: [FileWhere!]
+              NOT: FileWhere
+              OR: [FileWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              size: BigInt
+              size_GT: BigInt
+              size_GTE: BigInt
+              size_IN: [BigInt!]
+              size_LT: BigInt
+              size_LTE: BigInt
+              size_NOT: BigInt @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              size_NOT_IN: [BigInt!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
 
-type FilesConnection {
-  edges: [FileEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type FilesConnection {
+              edges: [FileEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-type Mutation {
-  createFiles(input: [FileCreateInput!]!): CreateFilesMutationResponse!
-  deleteFiles(where: FileWhere): DeleteInfo!
-  updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
-}
+            type Mutation {
+              createFiles(input: [FileCreateInput!]!): CreateFilesMutationResponse!
+              deleteFiles(where: FileWhere): DeleteInfo!
+              updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  files(options: FileOptions, where: FileWhere): [File!]!
-  filesAggregate(where: FileWhere): FileAggregateSelection!
-  filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FilesConnection!
-}
+            type Query {
+              files(options: FileOptions, where: FileWhere): [File!]!
+              filesAggregate(where: FileWhere): FileAggregateSelection!
+              filesConnection(after: String, first: Int, sort: [FileSort], where: FileWhere): FilesConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-type UpdateFilesMutationResponse {
-  files: [File!]!
-  info: UpdateInfo!
-}
+            type UpdateFilesMutationResponse {
+              files: [File!]!
+              info: UpdateInfo!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}"
-`);
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }"
+        `);
     });
 });

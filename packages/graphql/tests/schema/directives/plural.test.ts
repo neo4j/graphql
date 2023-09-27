@@ -37,152 +37,152 @@ describe("Plural option", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateTechsMutationResponse {
-  info: CreateInfo!
-  techs: [Tech!]!
-}
+            type CreateTechsMutationResponse {
+              info: CreateInfo!
+              techs: [Tech!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
-  deleteTechs(where: TechWhere): DeleteInfo!
-  updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
-}
+            type Mutation {
+              createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
+              deleteTechs(where: TechWhere): DeleteInfo!
+              updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  techs(options: TechOptions, where: TechWhere): [Tech!]!
-  techsAggregate(where: TechWhere): TechAggregateSelection!
-  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
-}
+            type Query {
+              techs(options: TechOptions, where: TechWhere): [Tech!]!
+              techsAggregate(where: TechWhere): TechAggregateSelection!
+              techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-type Tech {
-  name: String
-  value: String
-}
+            type Tech {
+              name: String
+              value: String
+            }
 
-type TechAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNullable!
-  value: StringAggregateSelectionNullable!
-}
+            type TechAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+              value: StringAggregateSelectionNullable!
+            }
 
-input TechCreateInput {
-  name: String
-  value: String
-}
+            input TechCreateInput {
+              name: String
+              value: String
+            }
 
-type TechEdge {
-  cursor: String!
-  node: Tech!
-}
+            type TechEdge {
+              cursor: String!
+              node: Tech!
+            }
 
-input TechOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [TechSort!]
-}
+            input TechOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TechSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
-\\"\\"\\"
-input TechSort {
-  name: SortDirection
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+            \\"\\"\\"
+            input TechSort {
+              name: SortDirection
+              value: SortDirection
+            }
 
-input TechUpdateInput {
-  name: String
-  value: String
-}
+            input TechUpdateInput {
+              name: String
+              value: String
+            }
 
-input TechWhere {
-  AND: [TechWhere!]
-  NOT: TechWhere
-  OR: [TechWhere!]
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}
+            input TechWhere {
+              AND: [TechWhere!]
+              NOT: TechWhere
+              OR: [TechWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }
 
-type TechsConnection {
-  edges: [TechEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type TechsConnection {
+              edges: [TechEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateTechsMutationResponse {
-  info: UpdateInfo!
-  techs: [Tech!]!
-}"
-`);
+            type UpdateTechsMutationResponse {
+              info: UpdateInfo!
+              techs: [Tech!]!
+            }"
+        `);
     });
 
     test("Partial types with same plural in both", async () => {
@@ -199,152 +199,152 @@ type UpdateTechsMutationResponse {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateTechsMutationResponse {
-  info: CreateInfo!
-  techs: [Tech!]!
-}
+            type CreateTechsMutationResponse {
+              info: CreateInfo!
+              techs: [Tech!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
-  deleteTechs(where: TechWhere): DeleteInfo!
-  updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
-}
+            type Mutation {
+              createTechs(input: [TechCreateInput!]!): CreateTechsMutationResponse!
+              deleteTechs(where: TechWhere): DeleteInfo!
+              updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  techs(options: TechOptions, where: TechWhere): [Tech!]!
-  techsAggregate(where: TechWhere): TechAggregateSelection!
-  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
-}
+            type Query {
+              techs(options: TechOptions, where: TechWhere): [Tech!]!
+              techsAggregate(where: TechWhere): TechAggregateSelection!
+              techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-type Tech {
-  name: String
-  value: String
-}
+            type Tech {
+              name: String
+              value: String
+            }
 
-type TechAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNullable!
-  value: StringAggregateSelectionNullable!
-}
+            type TechAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+              value: StringAggregateSelectionNullable!
+            }
 
-input TechCreateInput {
-  name: String
-  value: String
-}
+            input TechCreateInput {
+              name: String
+              value: String
+            }
 
-type TechEdge {
-  cursor: String!
-  node: Tech!
-}
+            type TechEdge {
+              cursor: String!
+              node: Tech!
+            }
 
-input TechOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [TechSort!]
-}
+            input TechOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TechSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
-\\"\\"\\"
-input TechSort {
-  name: SortDirection
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+            \\"\\"\\"
+            input TechSort {
+              name: SortDirection
+              value: SortDirection
+            }
 
-input TechUpdateInput {
-  name: String
-  value: String
-}
+            input TechUpdateInput {
+              name: String
+              value: String
+            }
 
-input TechWhere {
-  AND: [TechWhere!]
-  NOT: TechWhere
-  OR: [TechWhere!]
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}
+            input TechWhere {
+              AND: [TechWhere!]
+              NOT: TechWhere
+              OR: [TechWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }
 
-type TechsConnection {
-  edges: [TechEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type TechsConnection {
+              edges: [TechEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateTechsMutationResponse {
-  info: UpdateInfo!
-  techs: [Tech!]!
-}"
-`);
+            type UpdateTechsMutationResponse {
+              info: UpdateInfo!
+              techs: [Tech!]!
+            }"
+        `);
     });
 
     test("Partial types with different plural", async () => {
@@ -361,152 +361,152 @@ type UpdateTechsMutationResponse {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateTechnologiesMutationResponse {
-  info: CreateInfo!
-  technologies: [Tech!]!
-}
+            type CreateTechnologiesMutationResponse {
+              info: CreateInfo!
+              technologies: [Tech!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createTechnologies(input: [TechCreateInput!]!): CreateTechnologiesMutationResponse!
-  deleteTechnologies(where: TechWhere): DeleteInfo!
-  updateTechnologies(update: TechUpdateInput, where: TechWhere): UpdateTechnologiesMutationResponse!
-}
+            type Mutation {
+              createTechnologies(input: [TechCreateInput!]!): CreateTechnologiesMutationResponse!
+              deleteTechnologies(where: TechWhere): DeleteInfo!
+              updateTechnologies(update: TechUpdateInput, where: TechWhere): UpdateTechnologiesMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  technologies(options: TechOptions, where: TechWhere): [Tech!]!
-  technologiesAggregate(where: TechWhere): TechAggregateSelection!
-  technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
-}
+            type Query {
+              technologies(options: TechOptions, where: TechWhere): [Tech!]!
+              technologiesAggregate(where: TechWhere): TechAggregateSelection!
+              technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-type Tech {
-  name: String
-  value: String
-}
+            type Tech {
+              name: String
+              value: String
+            }
 
-type TechAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNullable!
-  value: StringAggregateSelectionNullable!
-}
+            type TechAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+              value: StringAggregateSelectionNullable!
+            }
 
-input TechCreateInput {
-  name: String
-  value: String
-}
+            input TechCreateInput {
+              name: String
+              value: String
+            }
 
-type TechEdge {
-  cursor: String!
-  node: Tech!
-}
+            type TechEdge {
+              cursor: String!
+              node: Tech!
+            }
 
-input TechOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [TechSort!]
-}
+            input TechOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TechSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
-\\"\\"\\"
-input TechSort {
-  name: SortDirection
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+            \\"\\"\\"
+            input TechSort {
+              name: SortDirection
+              value: SortDirection
+            }
 
-input TechUpdateInput {
-  name: String
-  value: String
-}
+            input TechUpdateInput {
+              name: String
+              value: String
+            }
 
-input TechWhere {
-  AND: [TechWhere!]
-  NOT: TechWhere
-  OR: [TechWhere!]
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}
+            input TechWhere {
+              AND: [TechWhere!]
+              NOT: TechWhere
+              OR: [TechWhere!]
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }
 
-type TechnologiesConnection {
-  edges: [TechEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type TechnologiesConnection {
+              edges: [TechEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateTechnologiesMutationResponse {
-  info: UpdateInfo!
-  technologies: [Tech!]!
-}"
-`);
+            type UpdateTechnologiesMutationResponse {
+              info: UpdateInfo!
+              technologies: [Tech!]!
+            }"
+        `);
     });
 
     test("Collision between Type and plural", async () => {
@@ -523,137 +523,137 @@ type UpdateTechnologiesMutationResponse {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateTechsMutationResponse {
-  info: CreateInfo!
-  techs: [Techs!]!
-}
+            type CreateTechsMutationResponse {
+              info: CreateInfo!
+              techs: [Techs!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createTechs(input: [TechsCreateInput!]!): CreateTechsMutationResponse!
-  deleteTechs(where: TechsWhere): DeleteInfo!
-  updateTechs(update: TechsUpdateInput, where: TechsWhere): UpdateTechsMutationResponse!
-}
+            type Mutation {
+              createTechs(input: [TechsCreateInput!]!): CreateTechsMutationResponse!
+              deleteTechs(where: TechsWhere): DeleteInfo!
+              updateTechs(update: TechsUpdateInput, where: TechsWhere): UpdateTechsMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  techs(options: TechsOptions, where: TechsWhere): [Techs!]!
-  techsAggregate(where: TechsWhere): TechsAggregateSelection!
-  techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
-}
+            type Query {
+              techs(options: TechsOptions, where: TechsWhere): [Techs!]!
+              techsAggregate(where: TechsWhere): TechsAggregateSelection!
+              techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-type Techs {
-  value: String
-}
+            type Techs {
+              value: String
+            }
 
-type TechsAggregateSelection {
-  count: Int!
-  value: StringAggregateSelectionNullable!
-}
+            type TechsAggregateSelection {
+              count: Int!
+              value: StringAggregateSelectionNullable!
+            }
 
-type TechsConnection {
-  edges: [TechsEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type TechsConnection {
+              edges: [TechsEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-input TechsCreateInput {
-  value: String
-}
+            input TechsCreateInput {
+              value: String
+            }
 
-type TechsEdge {
-  cursor: String!
-  node: Techs!
-}
+            type TechsEdge {
+              cursor: String!
+              node: Techs!
+            }
 
-input TechsOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [TechsSort!]
-}
+            input TechsOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [TechsSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.
-\\"\\"\\"
-input TechsSort {
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.
+            \\"\\"\\"
+            input TechsSort {
+              value: SortDirection
+            }
 
-input TechsUpdateInput {
-  value: String
-}
+            input TechsUpdateInput {
+              value: String
+            }
 
-input TechsWhere {
-  AND: [TechsWhere!]
-  NOT: TechsWhere
-  OR: [TechsWhere!]
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}
+            input TechsWhere {
+              AND: [TechsWhere!]
+              NOT: TechsWhere
+              OR: [TechsWhere!]
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateTechsMutationResponse {
-  info: UpdateInfo!
-  techs: [Techs!]!
-}"
-`);
+            type UpdateTechsMutationResponse {
+              info: UpdateInfo!
+              techs: [Techs!]!
+            }"
+        `);
     });
 
     test("Same plural on multiple nodes", async () => {
@@ -670,137 +670,137 @@ type UpdateTechsMutationResponse {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateTechsMutationResponse {
-  info: CreateInfo!
-  techs: [User!]!
-}
+            type CreateTechsMutationResponse {
+              info: CreateInfo!
+              techs: [User!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createTechs(input: [UserCreateInput!]!): CreateTechsMutationResponse!
-  deleteTechs(where: UserWhere): DeleteInfo!
-  updateTechs(update: UserUpdateInput, where: UserWhere): UpdateTechsMutationResponse!
-}
+            type Mutation {
+              createTechs(input: [UserCreateInput!]!): CreateTechsMutationResponse!
+              deleteTechs(where: UserWhere): DeleteInfo!
+              updateTechs(update: UserUpdateInput, where: UserWhere): UpdateTechsMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  techs(options: UserOptions, where: UserWhere): [User!]!
-  techsAggregate(where: UserWhere): UserAggregateSelection!
-  techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
-}
+            type Query {
+              techs(options: UserOptions, where: UserWhere): [User!]!
+              techsAggregate(where: UserWhere): UserAggregateSelection!
+              techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-type TechsConnection {
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type TechsConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateTechsMutationResponse {
-  info: UpdateInfo!
-  techs: [User!]!
-}
+            type UpdateTechsMutationResponse {
+              info: UpdateInfo!
+              techs: [User!]!
+            }
 
-type User {
-  value: String
-}
+            type User {
+              value: String
+            }
 
-type UserAggregateSelection {
-  count: Int!
-  value: StringAggregateSelectionNullable!
-}
+            type UserAggregateSelection {
+              count: Int!
+              value: StringAggregateSelectionNullable!
+            }
 
-input UserCreateInput {
-  value: String
-}
+            input UserCreateInput {
+              value: String
+            }
 
-type UserEdge {
-  cursor: String!
-  node: User!
-}
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
 
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UserSort!]
-}
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-\\"\\"\\"
-input UserSort {
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              value: SortDirection
+            }
 
-input UserUpdateInput {
-  value: String
-}
+            input UserUpdateInput {
+              value: String
+            }
 
-input UserWhere {
-  AND: [UserWhere!]
-  NOT: UserWhere
-  OR: [UserWhere!]
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}"
-`);
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }"
+        `);
     });
 
     test("Collision with pluralize", async () => {
@@ -817,137 +817,137 @@ input UserWhere {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [User!]!
-}
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(where: UserWhere): DeleteInfo!
-  updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-}
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  users(options: UserOptions, where: UserWhere): [User!]!
-  usersAggregate(where: UserWhere): UserAggregateSelection!
-  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
-}
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [User!]!
-}
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-type User {
-  value: String
-}
+            type User {
+              value: String
+            }
 
-type UserAggregateSelection {
-  count: Int!
-  value: StringAggregateSelectionNullable!
-}
+            type UserAggregateSelection {
+              count: Int!
+              value: StringAggregateSelectionNullable!
+            }
 
-input UserCreateInput {
-  value: String
-}
+            input UserCreateInput {
+              value: String
+            }
 
-type UserEdge {
-  cursor: String!
-  node: User!
-}
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
 
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UserSort!]
-}
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-\\"\\"\\"
-input UserSort {
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              value: SortDirection
+            }
 
-input UserUpdateInput {
-  value: String
-}
+            input UserUpdateInput {
+              value: String
+            }
 
-input UserWhere {
-  AND: [UserWhere!]
-  NOT: UserWhere
-  OR: [UserWhere!]
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }
 
-type UsersConnection {
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}"
-`);
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
     });
 
     test("Type collision with pluralize", async () => {
@@ -964,136 +964,136 @@ type UsersConnection {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [Users!]!
-}
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [Users!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type Mutation {
-  createUsers(input: [UsersCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(where: UsersWhere): DeleteInfo!
-  updateUsers(update: UsersUpdateInput, where: UsersWhere): UpdateUsersMutationResponse!
-}
+            type Mutation {
+              createUsers(input: [UsersCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UsersWhere): DeleteInfo!
+              updateUsers(update: UsersUpdateInput, where: UsersWhere): UpdateUsersMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  users(options: UsersOptions, where: UsersWhere): [Users!]!
-  usersAggregate(where: UsersWhere): UsersAggregateSelection!
-  usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
-}
+            type Query {
+              users(options: UsersOptions, where: UsersWhere): [Users!]!
+              usersAggregate(where: UsersWhere): UsersAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNullable {
-  longest: String
-  shortest: String
-}
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [Users!]!
-}
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [Users!]!
+            }
 
-type Users {
-  value: String
-}
+            type Users {
+              value: String
+            }
 
-type UsersAggregateSelection {
-  count: Int!
-  value: StringAggregateSelectionNullable!
-}
+            type UsersAggregateSelection {
+              count: Int!
+              value: StringAggregateSelectionNullable!
+            }
 
-type UsersConnection {
-  edges: [UsersEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
+            type UsersConnection {
+              edges: [UsersEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-input UsersCreateInput {
-  value: String
-}
+            input UsersCreateInput {
+              value: String
+            }
 
-type UsersEdge {
-  cursor: String!
-  node: Users!
-}
+            type UsersEdge {
+              cursor: String!
+              node: Users!
+            }
 
-input UsersOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UsersSort!]
-}
+            input UsersOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UsersSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.
-\\"\\"\\"
-input UsersSort {
-  value: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.
+            \\"\\"\\"
+            input UsersSort {
+              value: SortDirection
+            }
 
-input UsersUpdateInput {
-  value: String
-}
+            input UsersUpdateInput {
+              value: String
+            }
 
-input UsersWhere {
-  AND: [UsersWhere!]
-  NOT: UsersWhere
-  OR: [UsersWhere!]
-  value: String
-  value_CONTAINS: String
-  value_ENDS_WITH: String
-  value_IN: [String]
-  value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  value_STARTS_WITH: String
-}"
-`);
+            input UsersWhere {
+              AND: [UsersWhere!]
+              NOT: UsersWhere
+              OR: [UsersWhere!]
+              value: String
+              value_CONTAINS: String
+              value_ENDS_WITH: String
+              value_IN: [String]
+              value_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              value_STARTS_WITH: String
+            }"
+        `);
     });
 });

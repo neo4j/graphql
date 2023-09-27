@@ -198,14 +198,14 @@ describe("inheritance", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -434,7 +434,7 @@ describe("inheritance", () => {
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -452,7 +452,7 @@ describe("inheritance", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

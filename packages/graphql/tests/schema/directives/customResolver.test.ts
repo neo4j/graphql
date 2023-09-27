@@ -49,177 +49,177 @@ describe("@customResolver directive", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-"schema {
-  query: Query
-  mutation: Mutation
-}
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-\\"\\"\\"CreateInfo\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-type CreateUsersMutationResponse {
-  info: CreateInfo!
-  users: [User!]!
-}
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-\\"\\"\\"DeleteInfo\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-type IDAggregateSelectionNonNullable {
-  longest: ID!
-  shortest: ID!
-}
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
 
-type Mutation {
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(where: UserWhere): DeleteInfo!
-  updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-}
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-type Query {
-  users(options: UserOptions, where: UserWhere): [User!]!
-  usersAggregate(where: UserWhere): UserAggregateSelection!
-  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
-}
+            type Query {
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+            }
 
-\\"\\"\\"SortDirection\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-\\"\\"\\"UpdateInfo\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-type UpdateUsersMutationResponse {
-  info: UpdateInfo!
-  users: [User!]!
-}
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-type User implements UserInterface {
-  customResolver: String
-  id: ID!
-  nickname: String!
-  password: String!
-  username: String!
-}
+            type User implements UserInterface {
+              customResolver: String
+              id: ID!
+              nickname: String!
+              password: String!
+              username: String!
+            }
 
-type UserAggregateSelection {
-  count: Int!
-  id: IDAggregateSelectionNonNullable!
-  password: StringAggregateSelectionNonNullable!
-  username: StringAggregateSelectionNonNullable!
-}
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              password: StringAggregateSelectionNonNullable!
+              username: StringAggregateSelectionNonNullable!
+            }
 
-input UserCreateInput {
-  id: ID!
-  password: String!
-  username: String!
-}
+            input UserCreateInput {
+              id: ID!
+              password: String!
+              username: String!
+            }
 
-type UserEdge {
-  cursor: String!
-  node: User!
-}
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
 
-interface UserInterface {
-  customResolver: String
-}
+            interface UserInterface {
+              customResolver: String
+            }
 
-input UserOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [UserSort!]
-}
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-\\"\\"\\"
-Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-\\"\\"\\"
-input UserSort {
-  id: SortDirection
-  password: SortDirection
-  username: SortDirection
-}
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              id: SortDirection
+              password: SortDirection
+              username: SortDirection
+            }
 
-input UserUpdateInput {
-  id: ID
-  password: String
-  username: String
-}
+            input UserUpdateInput {
+              id: ID
+              password: String
+              username: String
+            }
 
-input UserWhere {
-  AND: [UserWhere!]
-  NOT: UserWhere
-  OR: [UserWhere!]
-  id: ID
-  id_CONTAINS: ID
-  id_ENDS_WITH: ID
-  id_IN: [ID!]
-  id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  id_STARTS_WITH: ID
-  password: String
-  password_CONTAINS: String
-  password_ENDS_WITH: String
-  password_IN: [String!]
-  password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  password_STARTS_WITH: String
-  username: String
-  username_CONTAINS: String
-  username_ENDS_WITH: String
-  username_IN: [String!]
-  username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  username_STARTS_WITH: String
-}
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              password: String
+              password_CONTAINS: String
+              password_ENDS_WITH: String
+              password_IN: [String!]
+              password_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              password_STARTS_WITH: String
+              username: String
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_IN: [String!]
+              username_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              username_STARTS_WITH: String
+            }
 
-type UsersConnection {
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}"
-`);
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
     });
 });

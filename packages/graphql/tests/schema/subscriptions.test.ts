@@ -167,7 +167,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -179,7 +179,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -618,7 +618,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -647,7 +647,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -989,7 +989,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1001,7 +1001,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1376,7 +1376,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -1402,7 +1402,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1461,7 +1461,7 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1483,7 +1483,7 @@ describe("Subscriptions", () => {
               stars: [Star!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -2209,7 +2209,7 @@ describe("Subscriptions", () => {
               offset: Int
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -2525,7 +2525,7 @@ describe("Subscriptions", () => {
               starUpdated: StarUpdatedEvent!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2927,7 +2927,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2939,7 +2939,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -3388,7 +3388,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3414,7 +3414,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3567,7 +3567,7 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -3579,7 +3579,7 @@ describe("Subscriptions", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -3910,7 +3910,7 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -3934,7 +3934,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -4338,14 +4338,14 @@ describe("Subscriptions", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
               relationshipsCreated: Int!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -4390,7 +4390,7 @@ describe("Subscriptions", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -4421,7 +4421,7 @@ describe("Subscriptions", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -4585,7 +4585,7 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -4607,7 +4607,7 @@ describe("Subscriptions", () => {
               stars: [Star!]!
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -5333,7 +5333,7 @@ describe("Subscriptions", () => {
               offset: Int
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -5587,7 +5587,7 @@ describe("Subscriptions", () => {
               personUpdated: PersonUpdatedEvent!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -5658,7 +5658,7 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
-            \\"\\"\\"CreateInfo\\"\\"\\"
+            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -5804,7 +5804,7 @@ describe("Subscriptions", () => {
               moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
 
-            \\"\\"\\"DeleteInfo\\"\\"\\"
+            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -6572,7 +6572,7 @@ describe("Subscriptions", () => {
               title_STARTS_WITH: String
             }
 
-            \\"\\"\\"SortDirection\\"\\"\\"
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -6598,7 +6598,7 @@ describe("Subscriptions", () => {
               seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 
-            \\"\\"\\"UpdateInfo\\"\\"\\"
+            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
