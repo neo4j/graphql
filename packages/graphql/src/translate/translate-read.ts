@@ -220,7 +220,6 @@ export function translateRead(
         projectionClause
     );
 
-    // const result = readQuery.build(undefined, context.cypherParams ? { ...context.cypherParams } : {});
     const result = readQuery.build();
 
     return result;

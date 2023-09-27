@@ -276,9 +276,7 @@ export class FilterFactory {
                 }
                 if (isAggregate) {
                     if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
-                    // if (operator && !isRelationshipOperator(operator)) {
-                    //     throw new Error(`Invalid operator ${operator} for relationship`);
-                    // }
+
                     return this.createAggregationFilter(value as AggregateWhereInput, relationship);
                 }
 
@@ -358,7 +356,6 @@ export class FilterFactory {
         });
 
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
-        // return filterTruthy(filterASTs);
     }
 
     private createNodeLogicalFilter(
@@ -458,7 +455,6 @@ export class FilterFactory {
             const attr = entity.findAttribute(fieldName);
             if (!attr) throw new Error(`Attribute ${fieldName} not found`);
 
-            // const filterOperator = operator || "EQ";
             const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
 
             if (attr.isDuration()) {
