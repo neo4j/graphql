@@ -6,5 +6,5 @@
 Schema generation logic improved
 
 -   allow operations on Interface relationships to Interfaces
--   added descriptions to generated graphql types
--   improved schema generation logic
+-   add descriptions to generated graphql types
+-   improve schema generation logic
