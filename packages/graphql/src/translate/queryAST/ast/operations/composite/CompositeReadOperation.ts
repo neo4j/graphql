@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
-import type { InterfaceReadPartial } from "./InterfaceReadPartial";
+import type { CompositeReadPartial } from "./CompositeReadPartial";
 import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -29,24 +29,24 @@ import type { Pagination } from "../../pagination/Pagination";
 import type { Sort, SortField } from "../../sort/Sort";
 import type { QueryASTContext } from "../../QueryASTContext";
 
-export class InterfaceReadOperation extends Operation {
-    private children: InterfaceReadPartial[];
+export class CompositeReadOperation extends Operation {
+    private children: CompositeReadPartial[];
     private entity: InterfaceEntityAdapter | UnionEntityAdapter;
     private relationship: RelationshipAdapter | undefined;
     protected pagination: Pagination | undefined;
     protected sortFields: Sort[] = [];
 
     constructor({
-        interfaceEntity,
+        compositeEntity,
         children,
         relationship,
     }: {
-        interfaceEntity: InterfaceEntityAdapter | UnionEntityAdapter;
-        children: InterfaceReadPartial[];
+        compositeEntity: InterfaceEntityAdapter | UnionEntityAdapter;
+        children: CompositeReadPartial[];
         relationship: RelationshipAdapter | undefined;
     }) {
         super();
-        this.entity = interfaceEntity;
+        this.entity = compositeEntity;
         this.children = children;
         this.relationship = relationship;
     }

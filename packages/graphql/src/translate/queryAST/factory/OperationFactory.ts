@@ -32,13 +32,13 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { AuthorizationFactory } from "./AuthorizationFactory";
 import { AuthFilterFactory } from "./AuthFilterFactory";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { InterfaceConnectionReadOperation } from "../ast/operations/interfaces/InterfaceConnectionReadOperation";
+import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
-import { InterfaceConnectionPartial } from "../ast/operations/interfaces/InterfaceConnectionPartial";
+import { CompositeConnectionPartial } from "../ast/operations/composite/CompositeConnectionPartial";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { InterfaceReadOperation } from "../ast/operations/interfaces/InterfaceReadOperation";
-import { InterfaceReadPartial } from "../ast/operations/interfaces/InterfaceReadPartial";
+import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
+import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import { isUnionEntity } from "../utils/is-union-entity";
 import { getConcreteWhere } from "../utils/get-concrete-where";
 import { filterTruthy, isObject, isString } from "../../../utils/utils";
@@ -69,7 +69,7 @@ export class OperationsFactory {
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
-    ): ReadOperation | InterfaceReadOperation {
+    ): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
@@ -97,7 +97,7 @@ export class OperationsFactory {
         } else {
             const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
-                const readPartial = new InterfaceReadPartial({
+                const readPartial = new CompositeReadPartial({
                     relationship,
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     target: concreteEntity,
@@ -114,13 +114,13 @@ export class OperationsFactory {
                 });
             });
 
-            const interfaceReadOp = new InterfaceReadOperation({
-                interfaceEntity: entity,
+            const compositeReadOp = new CompositeReadOperation({
+                compositeEntity: entity,
                 children: concreteReadOperations,
                 relationship,
             });
-            this.hydrateInterfaceReadOperationWithPagination(entity, interfaceReadOp, resolveTree);
-            return interfaceReadOp;
+            this.hydrateCompositeReadOperationWithPagination(entity, compositeReadOp, resolveTree);
+            return compositeReadOp;
         }
     }
 
@@ -190,7 +190,7 @@ export class OperationsFactory {
         relationship: RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
-    ): ConnectionReadOperation | InterfaceConnectionReadOperation {
+    ): ConnectionReadOperation | CompositeConnectionReadOperation {
         const target = relationship.target;
         const directed = Boolean(resolveTree.args.directed) ?? true;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
@@ -223,7 +223,7 @@ export class OperationsFactory {
 
             const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
             concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
-                const connectionPartial = new InterfaceConnectionPartial({
+                const connectionPartial = new CompositeConnectionPartial({
                     relationship,
                     directed,
                     target: concreteEntity,
@@ -247,21 +247,21 @@ export class OperationsFactory {
                 });
             });
 
-            const interfaceConnectionOp = new InterfaceConnectionReadOperation(concreteConnectionOperations);
+            const compositeConnectionOp = new CompositeConnectionReadOperation(concreteConnectionOperations);
 
-            // These sort fields will be duplicated on nested "InterfaceConnectionPartial"
+            // These sort fields will be duplicated on nested "CompositeConnectionPartial"
             this.hydrateConnectionOperationsASTWithSort({
                 relationship,
                 resolveTree,
-                operation: interfaceConnectionOp,
+                operation: compositeConnectionOp,
             });
-            return interfaceConnectionOp;
+            return compositeConnectionOp;
         }
     }
 
     // eslint-disable-next-line @typescript-eslint/comma-dangle
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | InterfaceConnectionReadOperation
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation
     >({
         relationship,
         resolveTree,
@@ -446,7 +446,7 @@ export class OperationsFactory {
         if (authAttributeFilters) {
             operation.addAuthFilters(...authAttributeFilters);
         }
-        this.hydrateInterfaceReadOperationWithPagination(entity, operation, resolveTree);
+        this.hydrateCompositeReadOperationWithPagination(entity, operation, resolveTree);
 
         return operation;
     }
@@ -525,9 +525,9 @@ export class OperationsFactory {
         );
     }
 
-    private hydrateInterfaceReadOperationWithPagination(
+    private hydrateCompositeReadOperationWithPagination(
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
-        operation: InterfaceReadOperation | ReadOperation,
+        operation: CompositeReadOperation | ReadOperation,
         resolveTree: ResolveTree
     ) {
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);

@@ -22,18 +22,18 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "../ope
 import { Operation } from "../operations";
 
 import type { QueryASTNode } from "../../QueryASTNode";
-import type { InterfaceConnectionPartial } from "./InterfaceConnectionPartial";
+import type { CompositeConnectionPartial } from "./CompositeConnectionPartial";
 import type { Sort, SortField } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 import { QueryASTContext } from "../../QueryASTContext";
 import { filterTruthy } from "../../../../../utils/utils";
 
-export class InterfaceConnectionReadOperation extends Operation {
-    private children: InterfaceConnectionPartial[];
+export class CompositeConnectionReadOperation extends Operation {
+    private children: CompositeConnectionPartial[];
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     private pagination: Pagination | undefined;
 
-    constructor(children: InterfaceConnectionPartial[]) {
+    constructor(children: CompositeConnectionPartial[]) {
         super();
 
         this.children = children;
