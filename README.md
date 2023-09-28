@@ -2,8 +2,6 @@
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
-![Neo4j + GraphQL](./docs/modules/ROOT/images/banner.png)
-
 <p align="center">
   <a href="https://discord.gg/neo4j">
     <img alt="Discord" src="https://img.shields.io/discord/787399249741479977?logo=discord&logoColor=white">
