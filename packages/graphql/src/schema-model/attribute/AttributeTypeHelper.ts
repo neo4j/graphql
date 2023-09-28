@@ -35,174 +35,173 @@ import {
 } from "./AttributeType";
 
 export class AttributeTypeHelper {
-    _type: AttributeType;
+    public type: AttributeType;
     private assertionOptions: {
         includeLists: boolean;
     } = { includeLists: true };
 
     constructor(type: AttributeType) {
-        this._type = type;
+        this.type = type;
     }
+
     /**
      * Just an helper to get the wrapped type in case of a list, useful for the assertions
      */
-
     private getTypeForAssertion(includeLists: boolean) {
         if (includeLists) {
             if (!this.isList()) {
-                return this._type;
+                return this.type;
             }
-            if (this._type.ofType instanceof ListType) {
-                return this._type.ofType.ofType;
+            if (this.type.ofType instanceof ListType) {
+                return this.type.ofType.ofType;
             }
-            return this._type.ofType;
-            // return this.isList() ? this.type.ofType : this.type;
+            return this.type.ofType;
         }
-        return this._type;
+        return this.type;
     }
 
-    isBoolean(options = this.assertionOptions): boolean {
+    public isBoolean(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Boolean;
     }
 
-    isID(options = this.assertionOptions): boolean {
+    public isID(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.ID;
     }
 
-    isInt(options = this.assertionOptions): boolean {
+    public isInt(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Int;
     }
 
-    isFloat(options = this.assertionOptions): boolean {
+    public isFloat(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.Float;
     }
 
-    isString(options = this.assertionOptions): boolean {
+    public isString(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === GraphQLBuiltInScalarType.String;
     }
 
-    isCartesianPoint(options = this.assertionOptions): boolean {
+    public isCartesianPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof Neo4jCartesianPointType;
     }
 
-    isPoint(options = this.assertionOptions): boolean {
+    public isPoint(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof Neo4jPointType;
     }
 
-    isBigInt(options = this.assertionOptions): boolean {
+    public isBigInt(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLNumberType.BigInt;
     }
 
-    isDate(options = this.assertionOptions): boolean {
+    public isDate(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Date;
     }
 
-    isDateTime(options = this.assertionOptions): boolean {
+    public isDateTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.DateTime;
     }
 
-    isLocalDateTime(options = this.assertionOptions): boolean {
+    public isLocalDateTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.LocalDateTime;
     }
 
-    isTime(options = this.assertionOptions): boolean {
+    public isTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ScalarType && type.name === Neo4jGraphQLTemporalType.Time;
     }
 
-    isLocalTime(options = this.assertionOptions): boolean {
+    public isLocalTime(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.LocalTime;
     }
 
-    isDuration(options = this.assertionOptions): boolean {
+    public isDuration(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return (type.name as Neo4jGraphQLTemporalType) === Neo4jGraphQLTemporalType.Duration;
     }
 
-    isObject(options = this.assertionOptions): boolean {
+    public isObject(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof ObjectType;
     }
 
-    isEnum(options = this.assertionOptions): boolean {
+    public isEnum(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof EnumType;
     }
 
-    isInterface(options = this.assertionOptions): boolean {
+    public isInterface(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof InterfaceType;
     }
 
-    isUnion(options = this.assertionOptions): boolean {
+    public isUnion(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof UnionType;
     }
 
-    isList(): this is this & { _type: ListType } {
-        return this._type instanceof ListType;
+    public isList(): this is this & { type: ListType } {
+        return this.type instanceof ListType;
     }
 
-    isInput(options = this.assertionOptions): boolean {
+    public isInput(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof InputType;
     }
 
-    isUserScalar(options = this.assertionOptions): boolean {
+    public isUserScalar(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type instanceof UserScalarType;
     }
 
-    isTemporal(options = this.assertionOptions): boolean {
+    public isTemporal(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type.name in Neo4jGraphQLTemporalType;
     }
 
-    isListElementRequired(): boolean {
-        if (!(this._type instanceof ListType)) {
+    public isListElementRequired(): boolean {
+        if (!(this.type instanceof ListType)) {
             return false;
         }
-        return this._type.ofType.isRequired;
+        return this.type.ofType.isRequired;
     }
 
-    isRequired(): boolean {
-        return this._type.isRequired;
+    public isRequired(): boolean {
+        return this.type.isRequired;
     }
 
-    isGraphQLBuiltInScalar(options = this.assertionOptions): boolean {
+    public isGraphQLBuiltInScalar(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type.name in GraphQLBuiltInScalarType;
     }
 
-    isSpatial(options = this.assertionOptions): boolean {
+    public isSpatial(options = this.assertionOptions): boolean {
         const type = this.getTypeForAssertion(options.includeLists);
         return type.name in Neo4jGraphQLSpatialType;
     }
 
-    isAbstract(options = this.assertionOptions): boolean {
+    public isAbstract(options = this.assertionOptions): boolean {
         return this.isInterface(options) || this.isUnion(options);
     }
 
-    isNumeric(options = this.assertionOptions): boolean {
+    public isNumeric(options = this.assertionOptions): boolean {
         return this.isBigInt(options) || this.isFloat(options) || this.isInt(options);
     }
 
     /**
      * Returns true for both built-in and user-defined scalars
      **/
-    isScalar(options = this.assertionOptions): boolean {
+    public isScalar(options = this.assertionOptions): boolean {
         return (
             this.isGraphQLBuiltInScalar(options) ||
             this.isTemporal(options) ||
