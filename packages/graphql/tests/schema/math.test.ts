@@ -38,7 +38,9 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -50,7 +52,9 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -172,7 +176,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -215,7 +221,9 @@ describe("Algebraic", () => {
               sum: BigInt!
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -227,7 +235,9 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -342,7 +352,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -374,7 +386,9 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -386,7 +400,9 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -510,7 +526,9 @@ describe("Algebraic", () => {
               DESC
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -552,7 +570,9 @@ describe("Algebraic", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -564,7 +584,9 @@ describe("Algebraic", () => {
               movies: [Movie!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1090,7 +1112,9 @@ describe("Algebraic", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1131,7 +1155,9 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1148,7 +1174,9 @@ describe("Algebraic", () => {
               people: [Person!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1698,7 +1726,9 @@ describe("Algebraic", () => {
               shortest: String!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1789,7 +1819,9 @@ describe("Algebraic", () => {
               roles_NOT_INCLUDES: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1806,7 +1838,9 @@ describe("Algebraic", () => {
               people: [Person!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -2429,7 +2463,9 @@ describe("Algebraic", () => {
               shortest: String!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

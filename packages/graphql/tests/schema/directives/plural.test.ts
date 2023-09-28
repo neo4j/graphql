@@ -42,7 +42,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -54,7 +56,9 @@ describe("Plural option", () => {
               techs: [Tech!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -169,7 +173,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -204,7 +210,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -216,7 +224,9 @@ describe("Plural option", () => {
               techs: [Tech!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -331,7 +341,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -366,7 +378,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -378,7 +392,9 @@ describe("Plural option", () => {
               technologies: [Tech!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -493,7 +509,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -528,7 +546,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -540,7 +560,9 @@ describe("Plural option", () => {
               techs: [Techs!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -640,7 +662,9 @@ describe("Plural option", () => {
               value_STARTS_WITH: String
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -675,7 +699,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -687,7 +713,9 @@ describe("Plural option", () => {
               techs: [User!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -733,7 +761,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -822,7 +852,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -834,7 +866,9 @@ describe("Plural option", () => {
               users: [User!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -874,7 +908,9 @@ describe("Plural option", () => {
               shortest: String
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -969,7 +1005,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -981,7 +1019,9 @@ describe("Plural option", () => {
               users: [Users!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1021,7 +1061,9 @@ describe("Plural option", () => {
               shortest: String
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

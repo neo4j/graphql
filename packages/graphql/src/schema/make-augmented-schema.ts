@@ -96,8 +96,8 @@ import { withUniqueWhereInputType, withWhereInputType } from "./generation/where
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
-import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
+import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;

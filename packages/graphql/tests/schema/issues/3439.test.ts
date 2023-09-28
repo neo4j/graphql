@@ -79,7 +79,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -96,7 +98,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               series: [Series!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -1260,7 +1264,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1331,7 +1337,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -1348,7 +1356,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               series: [Series!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -2433,7 +2443,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2504,7 +2516,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: CreateInfo!
             }
 
-            \\"\\"\\"Information about the creation of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -2521,7 +2535,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               series: [Series!]!
             }
 
-            \\"\\"\\"Information about the deletion of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -3203,7 +3219,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               info: UpdateInfo!
             }
 
-            \\"\\"\\"Information about the update of a node or relationship.\\"\\"\\"
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
