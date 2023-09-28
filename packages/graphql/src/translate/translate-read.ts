@@ -31,18 +31,22 @@ import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
-import { checkAuthentication } from "./authorization/check-authentication";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
-function testQueryAST({ context, node }: { context: Neo4jGraphQLTranslationContext; node: Node }): Cypher.CypherResult {
+function translateQuery({
+    context,
+    entity,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entity: ConcreteEntity;
+}): Cypher.CypherResult {
     const { resolveTree } = context;
-    const factory = new QueryASTFactory(context.schemaModel);
+    // TODO: Rename QueryAST to OperationsTree
+    const queryASTFactory = new QueryASTFactory(context.schemaModel);
 
-    const entity = context.schemaModel.getEntity(node.name);
     if (!entity) throw new Error("Entity not found");
-    checkAuthentication({ context, node, targetOperations: ["READ"] }); // Should this be done at every level?
-    const queryAST = factory.createQueryAST(resolveTree, entity as ConcreteEntity, context);
+    const queryAST = queryASTFactory.createQueryAST(resolveTree, entity, context);
     debug(queryAST.print());
     const clause = queryAST.transpile(context);
     return clause.build();
@@ -65,7 +69,8 @@ export function translateRead(
     const { resolveTree } = context;
 
     if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase && !isGlobalNode) {
-        return testQueryAST({ context, node });
+        const entity = context.schemaModel.getEntity(node.name) as ConcreteEntity;
+        return translateQuery({ context, entity });
     }
 
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
