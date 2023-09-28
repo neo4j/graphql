@@ -91,7 +91,7 @@
         "@graphql-tools/resolvers-composition": "^7.0.0",
         "@graphql-tools/schema": "10.0.0",
         "@graphql-tools/utils": "^10.0.0",
-        "@neo4j/cypher-builder": "^1.0.0",
+        "@neo4j/cypher-builder": "^1.4.0",
         "camelcase": "^6.3.0",
         "debug": "^4.3.4",
         "deep-equal": "^2.0.5",
@@ -102,6 +102,7 @@
         "jose": "^4.13.1",
         "pluralize": "^8.0.0",
         "semver": "^7.5.4",
+        "typescript-memoize": "^1.1.1",
         "uuid": "^9.0.0"
     },
     "peerDependencies": {

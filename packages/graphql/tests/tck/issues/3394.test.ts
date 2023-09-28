@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             "MATCH (this:Product)
             WITH *
             ORDER BY this.fg_item DESC
-            RETURN this { id: this.fg_item_id, partNumber: this.fg_item, .description } AS this"
+            RETURN this { .description, id: this.fg_item_id, partNumber: this.fg_item } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
-                WITH this1 { id: this1.fg_item_id, partNumber: this1.fg_item, .description } AS this1
+                WITH this1 { .description, id: this1.fg_item_id, partNumber: this1.fg_item } AS this1
                 ORDER BY this1.partNumber DESC
                 RETURN collect(this1) AS var2
             }

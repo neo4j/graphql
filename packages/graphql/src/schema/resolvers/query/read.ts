@@ -39,7 +39,6 @@ export function findResolver({
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
-
         const executeResult = await execute({
             cypher,
             params,

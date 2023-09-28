@@ -118,7 +118,6 @@ export function createMatchClause({
             context,
             element: node,
         });
-
         preComputedWhereFieldSubqueries = preComputedSubqueries;
 
         if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {

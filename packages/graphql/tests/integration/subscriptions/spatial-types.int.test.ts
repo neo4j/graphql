@@ -593,6 +593,7 @@ describe("Subscriptions to spatial types", () => {
             ])
         );
     });
+
     test("query type with CartesianPoint field and filters", async () => {
         const x = faker.number.float();
         const y = faker.number.float();

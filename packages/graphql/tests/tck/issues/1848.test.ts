@@ -100,8 +100,8 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                 WITH *
                 WHERE ((this0:ContentPiece AND this0:UNIVERSAL) OR (this0:Project AND this0:UNIVERSAL))
                 RETURN collect(CASE
-                    WHEN (this0:ContentPiece AND this0:UNIVERSAL) THEN this0 { __resolveType: \\"ContentPiece\\",  .id }
-                    WHEN (this0:Project AND this0:UNIVERSAL) THEN this0 { __resolveType: \\"Project\\",  .id }
+                    WHEN (this0:ContentPiece AND this0:UNIVERSAL) THEN this0 { .id, __resolveType: \\"ContentPiece\\" }
+                    WHEN (this0:Project AND this0:UNIVERSAL) THEN this0 { .id, __resolveType: \\"Project\\" }
                 END) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"

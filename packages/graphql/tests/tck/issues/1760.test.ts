@@ -164,7 +164,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this5
-                    MATCH (this5:Market)-[this6:HAS_NAME]->(this7:NameDetails)
+                    MATCH (this5)-[this6:HAS_NAME]->(this7:NameDetails)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param8 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges

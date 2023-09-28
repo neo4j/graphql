@@ -39,25 +39,32 @@ export function populateWhereParams({
         } else if (typeof v === "object") {
             parsed[k] = populateWhereParams({ where: v, context });
         } else if (typeof v === "string") {
-            if (v.startsWith("$jwt")) {
-                const path = v.substring(5);
-
-                const mappedPath = context.authorization.claims?.get(path);
-
-                const jwtProperty = context.authorization.jwtParam.property(...(mappedPath || path).split("."));
-
-                parsed[k] = jwtProperty;
-            } else if (v.startsWith("$context")) {
-                const path = v.substring(9);
-                const contextValueParameter = new Cypher.Param(dotProp.get(context, path));
-                parsed[k] = contextValueParameter || "";
-            } else {
-                parsed[k] = v;
-            }
+            parsed[k] = parseContextParamProperty(v, context);
         } else {
             parsed[k] = v;
         }
     });
 
     return parsed;
+}
+
+export function parseContextParamProperty(
+    value: string,
+    context: Neo4jGraphQLTranslationContext
+): string | Cypher.Property | Cypher.Param {
+    if (value.startsWith("$jwt")) {
+        const path = value.substring(5);
+
+        const mappedPath = context.authorization.claims?.get(path) || path;
+
+        const jwtProperty = context.authorization.jwtParam.property(...mappedPath.split("."));
+
+        return jwtProperty;
+    } else if (value.startsWith("$context")) {
+        const path = value.substring(9);
+        const contextValueParameter = new Cypher.Param(dotProp.get(context, path));
+        return contextValueParameter;
+    }
+
+    return value;
 }

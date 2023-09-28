@@ -57,6 +57,8 @@ export class ConcreteEntityAdapter {
     // specialize models
     private _operations: ConcreteEntityOperations | undefined;
 
+    public readonly entity: ConcreteEntity;
+
     constructor(entity: ConcreteEntity) {
         this.name = entity.name;
         this.description = entity.description;
@@ -66,6 +68,7 @@ export class ConcreteEntityAdapter {
         this.initRelationships(entity.relationships);
         this.description = entity.description;
         this.compositeEntities = entity.compositeEntities;
+        this.entity = entity;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {
@@ -97,48 +100,6 @@ export class ConcreteEntityAdapter {
 
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
-    }
-
-    public findRelationship(name: string): RelationshipAdapter | undefined {
-        return this.relationships.get(name);
-    }
-
-    get operations(): ConcreteEntityOperations {
-        if (!this._operations) {
-            return new ConcreteEntityOperations(this);
-        }
-        return this._operations;
-    }
-
-    public get singular(): string {
-        if (!this._singular) {
-            this._singular = singular(this.name);
-        }
-        return this._singular;
-    }
-
-    public get plural(): string {
-        if (!this._plural) {
-            if (this.annotations.plural) {
-                this._plural = plural(this.annotations.plural.value);
-            } else {
-                this._plural = plural(this.name);
-            }
-        }
-        return this._plural;
-    }
-
-    public get upperFirstPlural(): string {
-        return upperFirst(this.plural);
-    }
-
-    // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
-    public getLabels(): string[] {
-        return Array.from(this.labels);
-    }
-
-    public getMainLabel(): string {
-        return this.getLabels()[0] as string;
     }
 
     get isReadable(): boolean {
@@ -197,27 +158,6 @@ export class ConcreteEntityAdapter {
             this.annotations.subscription === undefined ||
             this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_DELETED)
         );
-    }
-
-    // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
-    get globalIdField() {
-        return this._globalIdField;
-    }
-
-    public isGlobalNode(): this is this & { globalIdField: AttributeAdapter } {
-        return !!this._globalIdField;
-    }
-
-    public toGlobalId(id: string | number): string {
-        if (!this.isGlobalNode()) {
-            throw new Error(`Entity ${this.name} is not a global node`);
-        }
-
-        return toGlobalId({
-            typeName: this.name,
-            field: this.globalIdField.name,
-            id,
-        });
     }
 
     /**
@@ -291,5 +231,68 @@ export class ConcreteEntityAdapter {
 
     public get subscriptionWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
+    }
+
+    public findRelationship(name: string): RelationshipAdapter | undefined {
+        return this.relationships.get(name);
+    }
+
+    // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
+    public getLabels(): string[] {
+        return Array.from(this.labels);
+    }
+
+    public getMainLabel(): string {
+        return this.getLabels()[0] as string;
+    }
+
+    public get singular(): string {
+        if (!this._singular) {
+            this._singular = singular(this.name);
+        }
+        return this._singular;
+    }
+
+    public get plural(): string {
+        if (!this._plural) {
+            if (this.annotations.plural) {
+                this._plural = plural(this.annotations.plural.value);
+            } else {
+                this._plural = plural(this.name);
+            }
+        }
+        return this._plural;
+    }
+
+    public get upperFirstPlural(): string {
+        return upperFirst(this.plural);
+    }
+
+    get operations(): ConcreteEntityOperations {
+        if (!this._operations) {
+            return new ConcreteEntityOperations(this);
+        }
+        return this._operations;
+    }
+
+    // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
+    get globalIdField(): AttributeAdapter | undefined {
+        return this._globalIdField;
+    }
+
+    public isGlobalNode(): this is this & { globalIdField: AttributeAdapter } {
+        return !!this._globalIdField;
+    }
+
+    public toGlobalId(id: string | number): string {
+        if (!this.isGlobalNode()) {
+            throw new Error(`Entity ${this.name} is not a global node`);
+        }
+
+        return toGlobalId({
+            typeName: this.name,
+            field: this.globalIdField.name,
+            id,
+        });
     }
 }

@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("#387", () => {
+describe("https://github.com/neo4j/graphql/issues/387", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 

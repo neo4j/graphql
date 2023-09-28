@@ -19,7 +19,6 @@
 import type { DirectiveNode } from "graphql";
 import { JWTPayloadAnnotation } from "../../annotation/JWTPayloadAnnotation";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function parseJWTPayloadAnnotation(_directive: DirectiveNode): JWTPayloadAnnotation {
     return new JWTPayloadAnnotation();
 }

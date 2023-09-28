@@ -24,7 +24,21 @@ import { customResolverDirective } from "../../../graphql/directives";
 
 describe("parseCustomResolverAnnotation", () => {
     it("should parse correctly", () => {
-        const directive: DirectiveNode = makeDirectiveNode("customResolver", { requires: "firstName lastName" }, customResolverDirective);
+        const directive: DirectiveNode = makeDirectiveNode(
+            "customResolver",
+            { requires: "firstName lastName" },
+            customResolverDirective
+        );
+        const customResolverAnnotation = parseCustomResolverAnnotation(directive);
+        expect(customResolverAnnotation.requires).toBe("firstName lastName");
+    });
+
+    it("should parse fields with multiple spaces correctly", () => {
+        const directive: DirectiveNode = makeDirectiveNode(
+            "customResolver",
+            { requires: "firstName lastName" },
+            customResolverDirective
+        );
         const customResolverAnnotation = parseCustomResolverAnnotation(directive);
         expect(customResolverAnnotation.requires).toBe("firstName lastName");
     });

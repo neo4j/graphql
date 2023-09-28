@@ -65,6 +65,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
     afterAll(() => {
         unsetTestEnvVars(undefined);
     });
+
     test("CONTAINS", async () => {
         const query = gql`
             query {

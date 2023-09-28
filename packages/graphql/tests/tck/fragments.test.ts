@@ -109,12 +109,12 @@ describe("Cypher Fragment", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:OWNS]->(this1:Tile)
-                    WITH this1 { __resolveType: \\"Tile\\", __id: id(this), .id } AS this1
+                    WITH this1 { .id, __resolveType: \\"Tile\\", __id: id(this) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:OWNS]->(this4:Character)
-                    WITH this4 { __resolveType: \\"Character\\", __id: id(this), .id } AS this4
+                    WITH this4 { .id, __resolveType: \\"Character\\", __id: id(this) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -144,9 +144,98 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            RETURN this { .id, .username } AS this"
+            RETURN this { .username, .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("should be able to project nested fragments", async () => {
+        const testTypeDefs = gql`
+            interface Production {
+                title: String!
+                runtime: Int!
+            }
+
+            type Movie implements Production {
+                title: String!
+                runtime: Int!
+            }
+
+            type Series implements Production {
+                title: String!
+                runtime: Int!
+                episodes: Int!
+            }
+
+            interface ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+
+            interface InterfaceA {
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor implements InterfaceA {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        const testNeoSchema = new Neo4jGraphQL({
+            typeDefs: testTypeDefs,
+        });
+
+        const query = gql`
+            query {
+                actors(where: { name: "Keanu" }) {
+                    name
+                    actedIn {
+                        ...FragmentA
+                    }
+                    ...FragmentB
+                }
+            }
+
+            fragment FragmentA on Production {
+                title
+            }
+
+            fragment FragmentB on InterfaceA {
+                actedIn {
+                    runtime
+                }
+            }
+        `;
+
+        const result = await translateQuery(testNeoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE this.name = $param0
+            CALL {
+                WITH this
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WITH this1 { .runtime, .title, __resolveType: \\"Movie\\", __id: id(this) } AS this1
+                    RETURN this1 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                    WITH this4 { .runtime, .title, __resolveType: \\"Series\\", __id: id(this) } AS this4
+                    RETURN this4 AS var2
+                }
+                WITH var2
+                RETURN collect(var2) AS var2
+            }
+            RETURN this { .name, actedIn: var2 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Keanu\\"
+            }"
+        `);
     });
 });

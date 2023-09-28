@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("#488", () => {
+describe("https://github.com/neo4j/graphql/issues/488", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -84,7 +84,7 @@ describe("#488", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
-                    WITH this3 { __resolveType: \\"Emoji\\", __id: id(this), .id, .type } AS this3
+                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this) } AS this3
                     RETURN this3 AS var4
                     UNION
                     WITH *
@@ -138,7 +138,7 @@ describe("#488", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
-                    WITH this3 { __resolveType: \\"Emoji\\", __id: id(this), .id, .type } AS this3
+                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this) } AS this3
                     RETURN this3 AS var4
                     UNION
                     WITH *

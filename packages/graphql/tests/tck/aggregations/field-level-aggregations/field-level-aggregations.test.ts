@@ -137,8 +137,8 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this0:Actor)
-                RETURN { min: min(this0.age), max: max(this0.age), average: avg(this0.age), sum: sum(this0.age) }  AS var2
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
             }
             RETURN this { actorsAggregate: { node: { age: var2 } } } AS this"
         `);
@@ -169,10 +169,10 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this0:Actor)
-                WITH this0
-                ORDER BY size(this0.name) DESC
-                WITH collect(this0.name) AS list
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH this1
+                ORDER BY size(this1.name) DESC
+                WITH collect(this1.name) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var2
             }
             RETURN this { .title, actorsAggregate: { node: { name: var2 } } } AS this"
@@ -202,10 +202,55 @@ describe("Field Level Aggregations", () => {
             "MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this1:ACTED_IN]->(this0:Movie)
-                RETURN { min: apoc.date.convertFormat(toString(min(this0.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this0.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
             RETURN this { moviesAggregate: { node: { released: var2 } } } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Node Aggregations - Multiple node fields", async () => {
+        const query = gql`
+            query {
+                movies {
+                    actorsAggregate {
+                        node {
+                            name {
+                                longest
+                                shortest
+                            }
+                            age {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH this1
+                ORDER BY size(this1.name) DESC
+                WITH collect(this1.name) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var3
+            }
+            RETURN this { actorsAggregate: { node: { name: var2, age: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
