@@ -81,6 +81,7 @@ import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/In
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
+import { filterTruthy } from "../utils/utils";
 import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
@@ -137,7 +138,7 @@ class AugmentedSchemaGenerator {
                         cartesianPointInTypeDefs = true;
                     }
                 }
-                if ("annotations" in model && model.annotations.fulltext) {
+                if (model.annotations.fulltext) {
                     floatWhereInTypeDefs = true;
                 }
                 if (model instanceof ConcreteEntityAdapter) {
@@ -289,10 +290,12 @@ function makeAugmentedSchema(
         ...definitionNodes.inputObjectTypes,
         ...definitionNodes.unionTypes,
         ...definitionNodes.directives,
-        ...[customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription].filter(
-            (x): x is ObjectTypeDefinitionNode => Boolean(x)
-        ),
-    ].filter(Boolean);
+        ...filterTruthy([
+            customResolvers.customQuery,
+            customResolvers.customMutation,
+            customResolvers.customSubscription,
+        ]),
+    ];
     if (pipedDefs.length) {
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: pipedDefs }));
     }
