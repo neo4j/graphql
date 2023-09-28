@@ -18,7 +18,6 @@
  */
 import type { AttributeType } from "./AttributeType";
 import {
-    Neo4jGraphQLSpatialType,
     EnumType,
     GraphQLBuiltInScalarType,
     InputType,
@@ -26,6 +25,7 @@ import {
     ListType,
     Neo4jCartesianPointType,
     Neo4jGraphQLNumberType,
+    Neo4jGraphQLSpatialType,
     Neo4jGraphQLTemporalType,
     Neo4jPointType,
     ObjectType,
@@ -35,17 +35,14 @@ import {
 } from "./AttributeType";
 
 export class AttributeTypeHelper {
-    public type: AttributeType;
     private assertionOptions: {
         includeLists: boolean;
     } = { includeLists: true };
 
-    constructor(type: AttributeType) {
-        this.type = type;
-    }
+    constructor(protected readonly type: AttributeType) {}
 
     /**
-     * Just an helper to get the wrapped type in case of a list, useful for the assertions
+     * Just an helper to get the wrapped type in readonlyase of a list, useful for the assertions
      */
     private getTypeForAssertion(includeLists: boolean) {
         if (includeLists) {
