@@ -95,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
-                RETURN { min: min(this3.allocation), max: max(this3.allocation), average: avg(this3.allocation), sum: sum(this3.allocation) }  AS var6
+                RETURN { min: min(this3.allocation), max: max(this3.allocation), average: avg(this3.allocation), sum: sum(this3.allocation) } AS var6
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var6 } } } AS this"
         `);
@@ -148,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this4:PARTICIPATES]->(this5:Project)
-                RETURN { min: min(this4.allocation), max: max(this4.allocation), average: avg(this4.allocation), sum: sum(this4.allocation) }  AS var7
+                RETURN { min: min(this4.allocation), max: max(this4.allocation), average: avg(this4.allocation), sum: sum(this4.allocation) } AS var7
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var6, edge: { allocation: var7 } } } AS this"
         `);

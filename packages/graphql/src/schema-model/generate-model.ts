@@ -164,6 +164,7 @@ function generateInterfaceEntity(
             const interfaceName = interfaceNamedNode.name.value;
             return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
         }) || [];
+
     const fields = (definition.fields || []).map((fieldDefinition) => {
         const inheritedField = inheritedFields?.filter(
             (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
@@ -346,17 +347,22 @@ function generateRelationshipField(
                 return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
             }) || [];
         const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
-            const inheritedField = inheritedFields?.filter(
+            const filteredInheritedFields = inheritedFields?.filter(
                 (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
             );
             const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-            const isInheritedPrivateAttribute = inheritedField?.some((inheritedField) =>
+            const isInheritedPrivateAttribute = filteredInheritedFields?.some((inheritedField) =>
                 findDirective(inheritedField.directives, privateDirective.name)
             );
             if (isPrivateAttribute || isInheritedPrivateAttribute) {
                 return;
             }
-            return parseAttribute(fieldDefinition, inheritedField, definitionCollection, propertyInterface.fields);
+            return parseAttribute(
+                fieldDefinition,
+                filteredInheritedFields,
+                definitionCollection,
+                propertyInterface.fields
+            );
         });
 
         attributes = filterTruthy(fields) as Attribute[];

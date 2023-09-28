@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        const typeDefsStr = `
             type PostalCode @mutation(operations: [CREATE, UPDATE]) {
                 archivedAt: DateTime
                 number: String! @unique
@@ -116,10 +116,139 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             extend type Estate @authorization(filter: [{ where: { node: { archivedAt: null } } }])
         `;
 
+        typeDefs = gql(typeDefsStr);
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: "secret" } },
         });
+    });
+
+    test("nested relationship filter", async () => {
+        const query = gql`
+            query Mandates($where: MandateWhere, $options: MandateOptions) {
+                mandates(options: $options, where: $where) {
+                    valuation {
+                        estate {
+                            uuid
+                        }
+                    }
+                }
+            }
+        `;
+
+        const variableValues = {
+            options: {},
+            where: {
+                valuation: {
+                    estate: {
+                        floor_GTE: 0,
+                    },
+                },
+            },
+        };
+
+        const result = await translateQuery(neoSchema, query, {
+            variableValues,
+            contextValues: { token: createBearerToken("secret") },
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Mandate)
+            OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
+            WITH *, count(this0) AS valuationCount
+            WITH *
+            WHERE ((valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param0 | 1] WHERE true)) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            CALL {
+                WITH this
+                MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
+                WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
+                CALL {
+                    WITH this3
+                    MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
+                    WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
+                    WITH this5 { .uuid } AS this5
+                    RETURN head(collect(this5)) AS var6
+                }
+                WITH this3 { estate: var6 } AS this3
+                RETURN head(collect(this3)) AS var7
+            }
+            RETURN this { valuation: var7 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 0,
+                    \\"high\\": 0
+                },
+                \\"isAuthenticated\\": true
+            }"
+        `);
+    });
+
+    test("nested relationship filter with AND", async () => {
+        const query = gql`
+            query Mandates($where: MandateWhere, $options: MandateOptions) {
+                mandates(options: $options, where: $where) {
+                    valuation {
+                        estate {
+                            uuid
+                        }
+                    }
+                }
+            }
+        `;
+
+        const variableValues = {
+            options: {},
+            where: {
+                price_GTE: 0,
+                valuation: {
+                    estate: {
+                        floor_GTE: 0,
+                    },
+                },
+            },
+        };
+
+        const result = await translateQuery(neoSchema, query, {
+            variableValues,
+            contextValues: { token: createBearerToken("secret") },
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Mandate)
+            OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
+            WITH *, count(this0) AS valuationCount
+            WITH *
+            WHERE ((this.price >= $param0 AND (valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param1 | 1] WHERE true))) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            CALL {
+                WITH this
+                MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
+                WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
+                CALL {
+                    WITH this3
+                    MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
+                    WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
+                    WITH this5 { .uuid } AS this5
+                    RETURN head(collect(this5)) AS var6
+                }
+                WITH this3 { estate: var6 } AS this3
+                RETURN head(collect(this3)) AS var7
+            }
+            RETURN this { valuation: var7 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 0,
+                \\"param1\\": {
+                    \\"low\\": 0,
+                    \\"high\\": 0
+                },
+                \\"isAuthenticated\\": true
+            }"
+        `);
     });
 
     test("query should not contain skip or limit", async () => {

@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
         await driver.close();
     });
 
-    test("should not find genresConnection_ALL where NONE true", async () => {
+    test("should return nested Cypher fields", async () => {
         const query = `
             {
                 ${Actor.plural} {

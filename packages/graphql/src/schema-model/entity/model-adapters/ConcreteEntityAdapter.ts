@@ -55,6 +55,8 @@ export class ConcreteEntityAdapter {
     // specialize models
     private _operations: ConcreteEntityOperations | undefined;
 
+    public readonly entity: ConcreteEntity;
+
     constructor(entity: ConcreteEntity) {
         this.name = entity.name;
         this.description = entity.description;
@@ -64,6 +66,7 @@ export class ConcreteEntityAdapter {
         this.initRelationships(entity.relationships);
         this.description = entity.description;
         this.compositeEntities = entity.compositeEntities;
+        this.entity = entity;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {
@@ -168,6 +171,7 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
+
     public getLabels(): string[] {
         return Array.from(this.labels);
     }
@@ -206,7 +210,7 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: Implement the Globals methods toGlobalId and fromGlobalId, getGlobalId etc...
-    get globalIdField() {
+    get globalIdField(): AttributeAdapter | undefined {
         return this._globalIdField;
     }
 

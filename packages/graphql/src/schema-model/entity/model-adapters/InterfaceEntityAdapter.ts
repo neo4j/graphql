@@ -46,6 +46,10 @@ export class InterfaceEntityAdapter {
         return this.attributes.get(name);
     }
 
+    get globalIdField(): AttributeAdapter | undefined {
+        return undefined;
+    }
+
     private initConcreteEntities(entities: ConcreteEntity[]) {
         for (const entity of entities) {
             const entityAdapter = new ConcreteEntityAdapter(entity);

@@ -102,7 +102,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     CALL {
                         WITH this1
-                        MATCH (this1:Post)<-[this3:HAS_POST]-(this4:User)
+                        MATCH (this1)<-[this3:HAS_POST]-(this4:User)
                         WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH { node: { name: this4.name } } AS edge
                         WITH collect(edge) AS edges

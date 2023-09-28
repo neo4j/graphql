@@ -139,7 +139,7 @@ describe("Mixed nesting", () => {
                 WHERE this1.name = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1:Actor)-[this2:ACTED_IN]->(this3:Movie)
+                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                     WHERE NOT (this3.title = $param2)
                     CALL {
                         WITH this3
@@ -202,7 +202,7 @@ describe("Mixed nesting", () => {
                 WHERE this1.name = $param1
                 CALL {
                     WITH this1
-                    MATCH (this1:Actor)-[this2:ACTED_IN]->(this3:Movie)
+                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                     WHERE NOT (this3.title = $param2)
                     WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
                     WITH collect(edge) AS edges

@@ -94,7 +94,7 @@ describe("RelationshipAdapter", () => {
             aggregate: false,
             description: "",
             annotations: [selectable],
-            isNullable: true,
+            isNullable: false,
         });
         userEntity.addRelationship(relationship);
 

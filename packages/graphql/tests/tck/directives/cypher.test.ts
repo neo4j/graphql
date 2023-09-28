@@ -520,8 +520,8 @@ describe("Cypher directive", () => {
                     RETURN head(collect(this5 { .name })) AS this5
                 }
                 RETURN collect(CASE
-                    WHEN this0:Movie THEN this0 { __resolveType: \\"Movie\\",  .id, .title, topActor: this2, actors: this3 }
-                    WHEN this0:TVShow THEN this0 { __resolveType: \\"TVShow\\",  .id, .title, topActor: this5 }
+                    WHEN this0:Movie THEN this0 { .id, .title, topActor: this2, actors: this3, __resolveType: \\"Movie\\" }
+                    WHEN this0:TVShow THEN this0 { .id, .title, topActor: this5, __resolveType: \\"TVShow\\" }
                 END) AS this0
             }
             RETURN this { movieOrTVShow: this0 } AS this"

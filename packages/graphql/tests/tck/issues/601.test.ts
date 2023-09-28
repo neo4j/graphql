@@ -102,9 +102,9 @@ describe("#601", () => {
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
-                    MATCH (this1:Document)<-[this2:UPLOADED]-(this3:CustomerContact)
+                    MATCH (this1)<-[this2:UPLOADED]-(this3:CustomerContact)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS edge
+                    WITH { fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { __resolveType: \\"CustomerContact\\", __id: id(this3) } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4

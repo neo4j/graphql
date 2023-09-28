@@ -137,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 WHERE this9.current = $param7
                 CALL {
                     WITH this10
-                    MATCH (this10:MasterData)-[this11:HAS_NAME]->(this12:NameDetails)
+                    MATCH (this10)-[this11:HAS_NAME]->(this12:NameDetails)
                     WHERE this11.current = $param8
                     WITH { node: { fullName: this12.fullName } } AS edge
                     WITH collect(edge) AS edges
