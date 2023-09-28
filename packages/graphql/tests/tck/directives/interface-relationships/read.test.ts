@@ -371,13 +371,13 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
+                    WHERE (this0.screenTime > $param0 AND this1.title STARTS WITH $param1)
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE (this3.title STARTS WITH $param2 AND this2.screenTime > $param3)
+                    WHERE (this2.screenTime > $param2 AND this3.title STARTS WITH $param3)
                     WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
@@ -390,16 +390,16 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The \\",
-                \\"param1\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"param2\\": \\"The \\",
-                \\"param3\\": {
+                \\"param1\\": \\"The \\",
+                \\"param2\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"param3\\": \\"The \\"
             }"
         `);
     });
@@ -434,7 +434,7 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
+                    WHERE (this0.screenTime > $param0 AND this1.title STARTS WITH $param1)
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                 }
@@ -447,11 +447,11 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The \\",
-                \\"param1\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"param1\\": \\"The \\"
             }"
         `);
     });
@@ -492,13 +492,13 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
+                    WHERE (this0.screenTime > $param0 AND this1.title STARTS WITH $param1)
                     WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE (this3.title STARTS WITH $param2 AND this2.screenTime > $param3)
+                    WHERE (this2.screenTime > $param2 AND this3.title STARTS WITH $param3)
                     WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
@@ -511,16 +511,16 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"A \\",
-                \\"param1\\": {
+                \\"param0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"param2\\": \\"The \\",
-                \\"param3\\": {
+                \\"param1\\": \\"A \\",
+                \\"param2\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"param3\\": \\"The \\"
             }"
         `);
     });
