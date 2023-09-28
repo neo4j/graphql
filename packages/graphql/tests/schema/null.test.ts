@@ -319,14 +319,14 @@ describe("Null", () => {
               srid: Int!
             }
 
-            \\"\\"\\"\\"\\"\\"
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
             input PointDistance {
               \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
               distance: Float!
               point: PointInput!
             }
 
-            \\"\\"\\"\\"\\"\\"
+            \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!

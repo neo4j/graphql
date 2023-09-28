@@ -10352,7 +10352,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
-                    \\"\\"\\"\\"\\"\\"
+                    \\"\\"\\"Input type for query options\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
@@ -11583,7 +11583,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
-                    \\"\\"\\"\\"\\"\\"
+                    \\"\\"\\"Input type for query options\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int
@@ -12814,7 +12814,7 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                     }
 
-                    \\"\\"\\"\\"\\"\\"
+                    \\"\\"\\"Input type for query options\\"\\"\\"
                     input QueryOptions {
                       limit: Int
                       offset: Int

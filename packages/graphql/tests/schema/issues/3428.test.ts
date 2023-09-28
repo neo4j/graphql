@@ -731,7 +731,7 @@ describe("Relationship nested operations", () => {
               personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
             }
 
-            \\"\\"\\"\\"\\"\\"
+            \\"\\"\\"Input type for query options\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int

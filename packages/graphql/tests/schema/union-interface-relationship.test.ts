@@ -1726,7 +1726,7 @@ describe("Union Interface Relationships", () => {
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
             }
 
-            \\"\\"\\"\\"\\"\\"
+            \\"\\"\\"Input type for query options\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
