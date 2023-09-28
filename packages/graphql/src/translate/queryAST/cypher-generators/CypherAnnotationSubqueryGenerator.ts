@@ -18,9 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { QueryASTContext } from "../ast/QueryASTContext";
-import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { QueryASTContext } from "../ast/QueryASTContext";
 import type { Field } from "../ast/fields/Field";
 import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { assertIsCypherNode } from "../utils/is-cypher-node";
@@ -134,7 +134,7 @@ export class CypherAnnotationSubqueryGenerator {
 
         const callStatement = new Cypher.Call(statementSubquery).innerWith(target);
 
-        if (this.attribute.isScalar() || this.attribute.isEnum()) {
+        if (this.attribute.typeHelper.isScalar() || this.attribute.typeHelper.isEnum()) {
             callStatement.unwind([this.columnName, this.returnVariable]);
         } else {
             callStatement.with([this.columnName, this.returnVariable]);
@@ -199,7 +199,7 @@ export class CypherAnnotationSubqueryGenerator {
 
         const collectedProjection = Cypher.collect(projection);
 
-        if (!this.attribute.isList()) {
+        if (!this.attribute.typeHelper.isList()) {
             return Cypher.head(collectedProjection);
         }
         return collectedProjection;
@@ -215,7 +215,7 @@ export class CypherAnnotationSubqueryGenerator {
         }
         const collectedProjection = Cypher.collect(caseClause);
 
-        if (!this.attribute.isList()) {
+        if (!this.attribute.typeHelper.isList()) {
             return Cypher.head(collectedProjection);
         }
         return collectedProjection;
