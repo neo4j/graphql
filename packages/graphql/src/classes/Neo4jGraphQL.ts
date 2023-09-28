@@ -339,8 +339,6 @@ class Neo4jGraphQL {
     }
 
     private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
-        // This can be run several times but it will always be the same result,
-        // so we memoize the schemaModel.
         if (!this.schemaModel) {
             return generateModel(document);
         }
