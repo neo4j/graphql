@@ -112,7 +112,6 @@ export const FIELD_DIRECTIVES = [
     "alias",
     "authentication",
     "authorization",
-    "callback",
     "coalesce",
     "customResolver",
     "cypher",
@@ -121,7 +120,6 @@ export const FIELD_DIRECTIVES = [
     "id",
     "jwtClaim",
     "populatedBy",
-    "readonly",
     "relationship",
     "relayId",
     "selectable",
@@ -129,7 +127,6 @@ export const FIELD_DIRECTIVES = [
     "subscriptionsAuthorization",
     "timestamp",
     "unique",
-    "writeonly",
 ] as const;
 
 export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
@@ -144,7 +141,6 @@ export const OBJECT_DIRECTIVES = [
     "node",
     "plural",
     "query",
-    "queryOptions",
     "limit",
     "shareable",
     "subscription",
