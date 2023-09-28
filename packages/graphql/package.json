@@ -58,7 +58,7 @@
         "@types/jsonwebtoken": "9.0.3",
         "@types/node": "18.15.1",
         "@types/pluralize": "0.0.31",
-        "@types/randomstring": "1.1.8",
+        "@types/randomstring": "1.1.9",
         "@types/semver": "7.5.3",
         "@types/supertest": "2.0.13",
         "@types/ws": "8.5.6",
