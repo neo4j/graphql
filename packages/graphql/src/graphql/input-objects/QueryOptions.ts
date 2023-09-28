@@ -21,6 +21,7 @@ import { GraphQLInputObjectType, GraphQLInt } from "graphql";
 
 export const QueryOptions = new GraphQLInputObjectType({
     name: "QueryOptions",
+    description: "Input type for query options",
     fields: {
         offset: {
             type: GraphQLInt,
