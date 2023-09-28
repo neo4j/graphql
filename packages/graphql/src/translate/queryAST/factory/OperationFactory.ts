@@ -441,7 +441,7 @@ export class OperationsFactory {
         operation.setFields(fields);
         operation.setFilters(filters);
         if (authFilters) {
-            operation.addAuthFilters(authFilters, ...authAttributeFilters);
+            operation.addAuthFilters(authFilters);
         }
         if (authAttributeFilters) {
             operation.addAuthFilters(...authAttributeFilters);

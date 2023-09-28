@@ -56,4 +56,8 @@ export class JWTFilter extends Filter {
             param: new Cypher.Param(this.comparisonValue),
         });
     }
+
+    public print(): string {
+        return `${super.print()} <${this.operator} ${this.comparisonValue}>`;
+    }
 }
