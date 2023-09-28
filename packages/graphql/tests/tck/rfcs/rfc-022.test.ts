@@ -200,7 +200,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WHERE (this1.name = $param1 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.test IS NOT NULL AND this1.name = $jwt.test) AND $param4 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND ($isAuthenticated = true AND this1.name = $param5)))
+                    WHERE (this1.name = $param1 AND (($isAuthenticated = true AND this1.name = $param3) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.test IS NOT NULL AND this1.name = $jwt.test) AND $param5 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -215,12 +215,12 @@ describe("tck/rfs/022 subquery projection", () => {
                     },
                     \\"param1\\": \\"Keanu Reeves\\",
                     \\"isAuthenticated\\": true,
+                    \\"param3\\": \\"The Matrix\\",
                     \\"jwt\\": {
                         \\"roles\\": [],
                         \\"test\\": \\"my-test\\"
                     },
-                    \\"param4\\": \\"admin\\",
-                    \\"param5\\": \\"The Matrix\\"
+                    \\"param5\\": \\"admin\\"
                 }"
             `);
         });

@@ -61,7 +61,7 @@ export class AuthorizationFilters extends Filter {
             );
         }
 
-        return Cypher.and(validatePredicate, wherePredicate);
+        return Cypher.and(wherePredicate, validatePredicate);
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
