@@ -134,7 +134,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
-            /** Information about the creation of a node or relationship. */
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -149,7 +149,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
-            /** Information about the deletion of a node or relationship. */
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -173,7 +173,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            /** Information about the update of a node or relationship. */
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -431,7 +431,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
-            /** Information about the creation of a node or relationship. */
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -446,7 +446,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
-            /** Information about the deletion of a node or relationship. */
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -470,7 +470,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            /** Information about the update of a node or relationship. */
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -756,7 +756,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
-            /** Information about the creation of a node or relationship. */
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -771,7 +771,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
-            /** Information about the deletion of a node or relationship. */
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -795,7 +795,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
-            /** Information about the update of a node or relationship. */
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1089,7 +1089,7 @@ describe("generate", () => {
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
             };
 
-            /** Information about the creation of a node or relationship. */
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1110,7 +1110,7 @@ describe("generate", () => {
               people: Array<Person>;
             };
 
-            /** Information about the deletion of a node or relationship. */
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1243,7 +1243,7 @@ describe("generate", () => {
               longest: Scalars[\\"String\\"][\\"output\\"];
             };
 
-            /** Information about the update of a node or relationship. */
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1905,7 +1905,7 @@ describe("generate", () => {
               faqs: Array<Faq>;
             };
 
-            /** Information about the creation of a node or relationship. */
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1914,7 +1914,7 @@ describe("generate", () => {
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
             };
 
-            /** Information about the deletion of a node or relationship. */
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -2128,7 +2128,7 @@ describe("generate", () => {
               faqs: Array<Faq>;
             };
 
-            /** Information about the update of a node or relationship. */
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
