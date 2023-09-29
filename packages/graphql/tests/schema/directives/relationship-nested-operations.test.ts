@@ -4375,7 +4375,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -4804,7 +4804,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -5241,7 +5241,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -5647,7 +5647,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -6062,7 +6062,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -6477,7 +6477,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -6860,7 +6860,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -7357,7 +7357,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -7946,7 +7946,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -8461,7 +8461,7 @@ describe("Relationship nested operations", () => {
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int

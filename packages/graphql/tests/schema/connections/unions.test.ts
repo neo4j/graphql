@@ -955,7 +955,7 @@ describe("Unions", () => {
               journalsConnection(after: String, first: Int, sort: [JournalSort], where: JournalWhere): JournalsConnection!
             }
 
-            \\"\\"\\"Input type for query options\\"\\"\\"
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int

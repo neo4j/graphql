@@ -2219,7 +2219,7 @@ describe("Subscriptions", () => {
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
             }
 
-            \\"\\"\\"Input type for query options\\"\\"\\"
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
@@ -5367,7 +5367,7 @@ describe("Subscriptions", () => {
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
             }
 
-            \\"\\"\\"Input type for query options\\"\\"\\"
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int

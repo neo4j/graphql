@@ -865,7 +865,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
             }
 
-            \\"\\"\\"Input type for query options\\"\\"\\"
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int

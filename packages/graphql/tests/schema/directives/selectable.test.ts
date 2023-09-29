@@ -2590,7 +2590,7 @@ describe("@selectable", () => {
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
-                \\"\\"\\"Input type for query options\\"\\"\\"
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int

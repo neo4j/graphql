@@ -3226,7 +3226,7 @@ describe("Directive-preserve", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
-            \\"\\"\\"Input type for query options\\"\\"\\"
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
             input QueryOptions {
               limit: Int
               offset: Int
