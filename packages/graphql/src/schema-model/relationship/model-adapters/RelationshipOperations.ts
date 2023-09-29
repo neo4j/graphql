@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
+import { isInterfaceEntity } from "../../../translate/queryAST/utils/is-interface-entity";
+import { isUnionEntity } from "../../../translate/queryAST/utils/is-union-entity";
 import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
-import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "./RelationshipAdapter";
 
 export type UpdateMutationArgumentNames = {
@@ -53,7 +53,7 @@ export class RelationshipOperations {
     }
 
     public get fieldInputPrefixForTypename(): string {
-        const isTargetInterface = this.relationship.target instanceof InterfaceEntityAdapter;
+        const isTargetInterface = isInterfaceEntity(this.relationship.target);
         if (isTargetInterface) {
             return this.relationship.source.name;
         }
@@ -147,7 +147,7 @@ export class RelationshipOperations {
     }
 
     public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
-        if (this.relationship.target instanceof UnionEntityAdapter) {
+        if (isUnionEntity(this.relationship.target)) {
             if (!concreteTargetEntityAdapter) {
                 throw new Error("missing concreteTargetEntityAdapter");
             }
