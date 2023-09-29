@@ -206,6 +206,12 @@ describe("Batch Create", () => {
                         \\"actors\\": {
                             \\"create\\": [
                                 {
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    },
                                     \\"node\\": {
                                         \\"name\\": \\"actor 1\\",
                                         \\"website\\": {
@@ -214,12 +220,6 @@ describe("Batch Create", () => {
                                                     \\"address\\": \\"Actor1.com\\"
                                                 }
                                             }
-                                        }
-                                    },
-                                    \\"edge\\": {
-                                        \\"year\\": {
-                                            \\"low\\": 2022,
-                                            \\"high\\": 0
                                         }
                                     }
                                 }
@@ -319,14 +319,14 @@ describe("Batch Create", () => {
                         \\"actors\\": {
                             \\"create\\": [
                                 {
-                                    \\"node\\": {
-                                        \\"name\\": \\"actor 1\\"
-                                    },
                                     \\"edge\\": {
                                         \\"year\\": {
                                             \\"low\\": 2022,
                                             \\"high\\": 0
                                         }
+                                    },
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
                                     }
                                 }
                             ]
@@ -337,14 +337,14 @@ describe("Batch Create", () => {
                         \\"actors\\": {
                             \\"create\\": [
                                 {
-                                    \\"node\\": {
-                                        \\"name\\": \\"actor 1\\"
-                                    },
                                     \\"edge\\": {
                                         \\"year\\": {
                                             \\"low\\": 2022,
                                             \\"high\\": 0
                                         }
+                                    },
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
                                     }
                                 }
                             ]

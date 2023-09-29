@@ -203,6 +203,11 @@ describe("Interface Relationships - Delete delete", () => {
                         \\"delete\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title_STARTS_WITH\\": \\"The \\"
+                                        }
+                                    },
                                     \\"delete\\": {
                                         \\"actors\\": [
                                             {
@@ -213,11 +218,6 @@ describe("Interface Relationships - Delete delete", () => {
                                                 }
                                             }
                                         ]
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
                                     }
                                 }
                             ]
@@ -299,6 +299,11 @@ describe("Interface Relationships - Delete delete", () => {
                         \\"delete\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title_STARTS_WITH\\": \\"The \\"
+                                        }
+                                    },
                                     \\"delete\\": {
                                         \\"_on\\": {
                                             \\"Movie\\": [
@@ -314,11 +319,6 @@ describe("Interface Relationships - Delete delete", () => {
                                                     ]
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
                                         }
                                     }
                                 }
@@ -415,16 +415,12 @@ describe("Interface Relationships - Delete delete", () => {
                         \\"delete\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title_STARTS_WITH\\": \\"The \\"
+                                        }
+                                    },
                                     \\"delete\\": {
-                                        \\"actors\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
-                                                    }
-                                                }
-                                            }
-                                        ],
                                         \\"_on\\": {
                                             \\"Movie\\": [
                                                 {
@@ -439,12 +435,16 @@ describe("Interface Relationships - Delete delete", () => {
                                                     ]
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
+                                        },
+                                        \\"actors\\": [
+                                            {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"name\\": \\"Actor\\"
+                                                    }
+                                                }
+                                            }
+                                        ]
                                     }
                                 }
                             ]

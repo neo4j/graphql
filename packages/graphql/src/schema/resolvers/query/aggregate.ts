@@ -18,14 +18,21 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import { execute } from "../../../utils";
 import type { Node } from "../../../classes";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { translateAggregate } from "../../../translate";
-import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function aggregateResolver({ node }: { node: Node }) {
+export function aggregateResolver({
+    node,
+    concreteEntityAdapter,
+}: {
+    node: Node;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}) {
     async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info);
 
@@ -51,14 +58,14 @@ export function aggregateResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `${node.aggregateTypeNames.selection}!`,
+        type: `${concreteEntityAdapter.operations.aggregateTypeNames.selection}!`,
         resolve,
         args: {
-            where: `${node.name}Where`,
-            ...(node.fulltextDirective
+            where: concreteEntityAdapter.operations.whereInputTypeName,
+            ...(concreteEntityAdapter.annotations.fulltext
                 ? {
                       fulltext: {
-                          type: `${node.name}Fulltext`,
+                          type: concreteEntityAdapter.operations.fullTextInputTypeName,
                           description:
                               "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
                       },

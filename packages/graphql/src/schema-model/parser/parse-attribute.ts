@@ -20,12 +20,14 @@
 import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import { aliasDirective } from "../../graphql/directives";
+import { CustomResolverAnnotation } from "../annotation/CustomResolverAnnotation";
 import { Argument } from "../argument/Argument";
 import { Attribute } from "../attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
 import {
     EnumType,
     GraphQLBuiltInScalarType,
+    InputType,
     InterfaceType,
     ListType,
     Neo4jCartesianPointType,
@@ -39,12 +41,10 @@ import {
     UnknownType,
     UserScalarType,
 } from "../attribute/AttributeType";
-import { Field } from "../attribute/Field";
 import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
-import { CustomResolverAnnotation } from "../annotation/CustomResolverAnnotation";
 
 export function parseAttributeArguments(
     fieldArgs: readonly InputValueDefinitionNode[],
@@ -65,7 +65,7 @@ export function parseAttribute(
     inheritedField: FieldDefinitionNode[] | undefined,
     definitionCollection: DefinitionCollection,
     definitionFields?: ReadonlyArray<FieldDefinitionNode>
-): Attribute | Field {
+): Attribute {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
@@ -113,17 +113,6 @@ function getDatabaseName(
     }
 }
 
-// we may want to remove Fields from the schema model
-export function parseField(field: FieldDefinitionNode): Field {
-    const name = field.name.value;
-    const annotations = parseAnnotations(field.directives || []);
-    return new Field({
-        name,
-        annotations,
-    });
-}
-
-
 function parseTypeNode(
     definitionCollection: DefinitionCollection,
     typeNode: TypeNode,
@@ -147,6 +136,8 @@ function parseTypeNode(
                 return new UnionType(typeNode.name.value, isRequired);
             } else if (isInterface(definitionCollection, typeNode.name.value)) {
                 return new InterfaceType(typeNode.name.value, isRequired);
+            } else if (isInput(definitionCollection, typeNode.name.value)) {
+                return new InputType(typeNode.name.value, isRequired);
             } else {
                 return new UnknownType(typeNode.name.value, isRequired);
             }
@@ -179,6 +170,9 @@ function isUserScalar(definitionCollection: DefinitionCollection, name: string) 
 
 function isObject(definitionCollection, name: string) {
     return definitionCollection.nodes.has(name);
+}
+function isInput(definitionCollection: DefinitionCollection, name: string) {
+    return definitionCollection.inputTypes.has(name);
 }
 
 function isPoint(value: string): boolean {

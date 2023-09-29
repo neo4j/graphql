@@ -22,6 +22,7 @@ import { PointInput } from "./PointInput";
 
 export const PointDistance = new GraphQLInputObjectType({
     name: "PointDistance",
+    description: "Input type for a point with a distance",
     fields: {
         point: {
             type: new GraphQLNonNull(PointInput),

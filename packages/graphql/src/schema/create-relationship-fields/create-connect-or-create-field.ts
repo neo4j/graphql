@@ -17,129 +17,86 @@
  * limitations under the License.
  */
 
-import type { SchemaComposer, InputTypeComposer } from "graphql-compose";
-import type { Node } from "../../classes";
-import type { RelationField } from "../../types";
-import { upperFirst } from "../../utils/upper-first";
+import type { DirectiveNode } from "graphql";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
-import { objectFieldsToCreateInputFields } from "../to-compose";
+import { withCreateInputType } from "../generation/create-input";
+import { concreteEntityToCreateInputFields } from "../to-compose";
 
 export function createConnectOrCreateField({
-    node,
-    relationField,
+    relationshipAdapter,
+    targetEntityAdapter, // TODO: take this from relationshipAdapter.target in the end, currently here bc unions call this function for reach refNode
     schemaComposer,
-    hasNonGeneratedProperties,
-    hasNonNullNonGeneratedProperties,
+    userDefinedFieldDirectives,
 }: {
-    node: Node;
-    relationField: RelationField;
+    relationshipAdapter: RelationshipAdapter;
+    targetEntityAdapter: ConcreteEntityAdapter;
     schemaComposer: SchemaComposer;
-    hasNonGeneratedProperties: boolean;
-    hasNonNullNonGeneratedProperties: boolean;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): string | undefined {
-    if (!node.uniqueFields.length) {
+    const hasUniqueFields = targetEntityAdapter.uniqueFields.length > 0;
+    if (hasUniqueFields !== true) {
         return undefined;
     }
 
-    const parentPrefix = `${relationField.connectionPrefix}${upperFirst(relationField.fieldName)}`;
+    const connectOrCreateName =
+        relationshipAdapter.operations.getConnectOrCreateFieldInputTypeName(targetEntityAdapter);
 
-    const connectOrCreateName = relationField.union
-        ? `${parentPrefix}${node.name}ConnectOrCreateFieldInput`
-        : `${parentPrefix}ConnectOrCreateFieldInput`;
-
-    const onCreateITC = createOnCreateITC({
+    createOnCreateITC({
         schemaComposer,
-        prefix: connectOrCreateName,
-        node,
-        hasNonGeneratedProperties,
-        hasNonNullNonGeneratedProperties,
-        relationField,
+        relationshipAdapter,
+        targetEntityAdapter,
+        userDefinedFieldDirectives,
     });
-    const whereITC = createWhereITC({ schemaComposer, node });
+
+    schemaComposer.getOrCreateITC(targetEntityAdapter.operations.connectOrCreateWhereInputTypeName, (tc) => {
+        tc.addFields(targetEntityAdapter.operations.connectOrCreateWhereInputFieldNames);
+    });
 
     schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
-        tc.addFields({
-            where: `${whereITC.getTypeName()}!`,
-            onCreate: `${onCreateITC.getTypeName()}!`,
-        });
+        tc.addFields(relationshipAdapter.operations.getConnectOrCreateInputFields(targetEntityAdapter) || {});
     });
-    return relationField.typeMeta.array ? `[${connectOrCreateName}!]` : connectOrCreateName;
+    return relationshipAdapter.isList ? `[${connectOrCreateName}!]` : connectOrCreateName;
 }
 
-function createOnCreateITC({
+export function createOnCreateITC({
     schemaComposer,
-    prefix,
-    node,
-    hasNonGeneratedProperties,
-    hasNonNullNonGeneratedProperties,
-    relationField,
+    relationshipAdapter,
+    targetEntityAdapter,
+    userDefinedFieldDirectives,
 }: {
     schemaComposer: SchemaComposer;
-    prefix: string;
-    node: Node;
-    hasNonGeneratedProperties: boolean;
-    hasNonNullNonGeneratedProperties: boolean;
-    relationField: RelationField;
+    relationshipAdapter: RelationshipAdapter;
+    targetEntityAdapter: ConcreteEntityAdapter;
+    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposer {
-    const onCreateName = `${prefix}OnCreate`;
-
-    const onCreateFields = getOnCreateFields({
-        node,
-        hasNonGeneratedProperties,
-        relationField,
-        hasNonNullNonGeneratedProperties,
-        schemaComposer,
-    });
-
-    return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
-        tc.addFields(onCreateFields);
-    });
-}
-
-function createWhereITC({ schemaComposer, node }: { schemaComposer: SchemaComposer; node: Node }): InputTypeComposer {
-    const connectOrCreateWhereName = `${node.name}ConnectOrCreateWhere`;
-
-    return schemaComposer.getOrCreateITC(connectOrCreateWhereName, (tc) => {
-        tc.addFields({
-            node: `${node.name}UniqueWhere!`,
-        });
-    });
-}
-
-function getOnCreateFields({
-    node,
-    hasNonGeneratedProperties,
-    relationField,
-    hasNonNullNonGeneratedProperties,
-    schemaComposer,
-}: {
-    node: Node;
-    hasNonGeneratedProperties: boolean;
-    relationField: RelationField;
-    hasNonNullNonGeneratedProperties: boolean;
-    schemaComposer: SchemaComposer;
-}): { node: string } | { node: string; edge: string } {
-    const nodeCreateInput = schemaComposer.getOrCreateITC(`${node.name}OnCreateInput`, (tc) => {
-        const nodeFields = objectFieldsToCreateInputFields([
-            ...node.primitiveFields,
-            ...node.scalarFields,
-            ...node.enumFields,
-            ...node.pointFields,
-            ...node.temporalFields,
-        ]);
+    const onCreateInput = schemaComposer.getOrCreateITC(targetEntityAdapter.operations.onCreateInputTypeName, (tc) => {
+        const nodeFields = concreteEntityToCreateInputFields(
+            targetEntityAdapter.onCreateInputFields,
+            userDefinedFieldDirectives
+        );
         tc.addFields(nodeFields);
         ensureNonEmptyInput(schemaComposer, tc);
     });
-    const nodeCreateInputFieldName = `${nodeCreateInput.getTypeName()}!`;
 
-    if (hasNonGeneratedProperties) {
-        const edgeField = `${relationField.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}`;
-        return {
-            node: nodeCreateInputFieldName,
-            edge: edgeField,
+    const onCreateName =
+        relationshipAdapter.operations.getConnectOrCreateOnCreateFieldInputTypeName(targetEntityAdapter);
+    return schemaComposer.getOrCreateITC(onCreateName, (tc) => {
+        const onCreateFields: InputTypeComposerFieldConfigMapDefinition = {
+            node: onCreateInput.NonNull,
         };
-    }
-    return {
-        node: nodeCreateInputFieldName,
-    };
+        if (relationshipAdapter.nonGeneratedProperties.length > 0) {
+            const edgeFieldType = withCreateInputType({
+                entityAdapter: relationshipAdapter,
+                userDefinedFieldDirectives,
+                composer: schemaComposer,
+            });
+            onCreateFields["edge"] = relationshipAdapter.hasNonNullNonGeneratedProperties
+                ? edgeFieldType.NonNull
+                : edgeFieldType;
+        }
+        tc.addFields(onCreateFields);
+    });
 }

@@ -23,7 +23,7 @@ export class ListAdapter {
     readonly AttributeAdapter: AttributeAdapter;
 
     constructor(AttributeAdapter: AttributeAdapter) {
-        if (!AttributeAdapter.isList()) {
+        if (!AttributeAdapter.typeHelper.isList()) {
             throw new Error("Attribute is not a list");
         }
         this.AttributeAdapter = AttributeAdapter;

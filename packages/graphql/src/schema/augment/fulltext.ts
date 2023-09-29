@@ -17,86 +17,76 @@
  * limitations under the License.
  */
 
-import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
-import { SCORE_FIELD } from "../../graphql/directives/fulltext";
-import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
-import { upperFirst } from "../../utils/upper-first";
+
+import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import {
+    withFullTextInputType,
+    withFullTextResultType,
+    withFullTextSortInputType,
+    withFullTextWhereInputType,
+} from "../generation/fulltext-input";
 import { fulltextResolver } from "../resolvers/query/fulltext";
 
 export function augmentFulltextSchema(
     node: Node,
     composer: SchemaComposer,
-    nodeWhereTypeName: string,
-    nodeSortTypeName: string
+    concreteEntityAdapter: ConcreteEntityAdapter
 ) {
-    if (node.fulltextDirective) {
-        const fields = node.fulltextDirective.indexes.reduce((res, index) => {
-            const indexName = index.indexName || index.name;
-            if (indexName === undefined) {
-                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-            }
-            return {
-                ...res,
-                [indexName]: composer.createInputTC({
-                    name: `${node.name}${upperFirst(indexName)}Fulltext`,
-                    fields: {
-                        phrase: new GraphQLNonNull(GraphQLString),
-                    },
-                }),
-            };
-        }, {});
-
-        const fulltextResultDescription = `The result of a fulltext search on an index of ${node.name}`;
-        const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
-        const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
-
-        composer.createInputTC({
-            name: `${node.name}Fulltext`,
-            fields,
-        });
-
-        composer.createInputTC({
-            name: node.fulltextTypeNames.sort,
-            description: fulltextSortDescription,
-            fields: {
-                [SCORE_FIELD]: "SortDirection",
-                [node.singular]: nodeSortTypeName,
-            },
-        });
-
-        composer.createInputTC({
-            name: node.fulltextTypeNames.where,
-            description: fulltextWhereDescription,
-            fields: {
-                [SCORE_FIELD]: FloatWhere.name,
-                [node.singular]: nodeWhereTypeName,
-            },
-        });
-
-        composer.createObjectTC({
-            name: node.fulltextTypeNames.result,
-            description: fulltextResultDescription,
-            fields: {
-                [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-                [node.singular]: `${node.name}!`,
-            },
-        });
-
-        node.fulltextDirective.indexes.forEach((index) => {
-            // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-            const indexName = index.indexName || index.name;
-            if (indexName === undefined) {
-                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-            }
-            let queryName = `${node.plural}Fulltext${upperFirst(indexName)}`;
-            if (index.queryName) {
-                queryName = index.queryName;
-            }
-            composer.Query.addFields({
-                [queryName]: fulltextResolver({ node }, index),
-            });
-        });
+    if (!concreteEntityAdapter.annotations.fulltext) {
+        return;
     }
+
+    withFullTextInputType({ concreteEntityAdapter, composer });
+    withFullTextWhereInputType({ composer, concreteEntityAdapter });
+
+    /**
+     * TODO [fulltext-deprecations]
+     * to move this over to the concreteEntityAdapter we need to check what the use of
+     * the queryType and scoreVariable properties are in FulltextContext
+     *  and determine if we can remove them
+     */
+    concreteEntityAdapter.annotations.fulltext.indexes.forEach((index) => {
+        /**
+         * TODO [fulltext-deprecations]
+         * remove indexName assignment and undefined check once the name argument has been removed.
+         */
+        const indexName = index.indexName || index.name;
+        if (indexName === undefined) {
+            throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+        }
+
+        let queryName = concreteEntityAdapter.operations.getFullTextIndexQueryFieldName(indexName);
+        if (index.queryName) {
+            queryName = index.queryName;
+        }
+        /**
+         * TODO [translation-layer-compatibility]
+         *  temporary for compatibility with translation layer
+         */
+        const nodeIndex = node.fulltextDirective!.indexes.find((i) => {
+            const iName = i.indexName || i.name;
+            return iName === indexName;
+        });
+        if (!nodeIndex) {
+            throw new Error(`Could not find index ${indexName} on node ${node.name}`);
+        }
+        composer.Query.addFields({
+            [queryName]: {
+                type: withFullTextResultType({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
+                description:
+                    "Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the `fulltext` argument under other queries for this functionality.",
+                resolve: fulltextResolver({ node, index: nodeIndex }),
+                args: {
+                    phrase: new GraphQLNonNull(GraphQLString),
+                    where: concreteEntityAdapter.operations.fulltextTypeNames.where,
+                    sort: withFullTextSortInputType({ concreteEntityAdapter, composer }).NonNull.List,
+                    limit: GraphQLInt,
+                    offset: GraphQLInt,
+                },
+            },
+        });
+    });
 }

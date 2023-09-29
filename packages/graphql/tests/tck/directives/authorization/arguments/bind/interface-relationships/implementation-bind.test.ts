@@ -358,6 +358,11 @@ describe("Cypher Auth Allow", () => {
                         \\"update\\": {
                             \\"content\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"id\\": \\"post-id\\"
+                                        }
+                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"creator\\": {
@@ -367,11 +372,6 @@ describe("Cypher Auth Allow", () => {
                                                     }
                                                 }
                                             }
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
                                         }
                                     }
                                 }

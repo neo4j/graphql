@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import type { PrimitiveField } from "../../../../../types";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
-type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: PrimitiveField | undefined) => boolean;
+type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: AttributeAdapter | undefined) => boolean;
 
 const operatorCheckMap = {
     NOT: (received: string, filtered: string) => received !== filtered,

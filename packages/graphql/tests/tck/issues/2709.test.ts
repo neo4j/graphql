@@ -344,5 +344,4 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
             }"
         `);
     });
-
 });

@@ -137,6 +137,16 @@ export class InterfaceType {
     }
 }
 
+export class InputType {
+    public readonly name: string;
+    public readonly isRequired: boolean;
+
+    constructor(name: string, isRequired: boolean) {
+        this.name = name;
+        this.isRequired = isRequired;
+    }
+}
+
 export class UnknownType {
     public readonly name: string;
     public readonly isRequired: boolean;
@@ -155,4 +165,5 @@ export type AttributeType =
     | EnumType
     | UnionType
     | InterfaceType
+    | InputType
     | UnknownType;

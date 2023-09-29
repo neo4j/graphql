@@ -28,6 +28,7 @@ import type { ConcreteEntity } from "./ConcreteEntity";
 export class InterfaceEntity implements CompositeEntity {
     public readonly name: string;
     public readonly description?: string;
+    // TODO: this is really (ConcreteEntity|InterfaceEntity)...
     public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();

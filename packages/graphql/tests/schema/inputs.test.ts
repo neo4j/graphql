@@ -46,6 +46,9 @@ describe("Inputs", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -57,6 +60,9 @@ describe("Inputs", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -153,6 +159,7 @@ describe("Inputs", () => {
               name(input: NodeInput): String
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -160,6 +167,9 @@ describe("Inputs", () => {
               DESC
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

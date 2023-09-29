@@ -21,27 +21,27 @@ import { Neo4jGraphQLSchemaValidationError } from "../classes";
 
 import type { Annotation, Annotations } from "./annotation/Annotation";
 import { annotationToKey } from "./annotation/Annotation";
-import type { Field } from "./attribute/Field";
+import type { Attribute } from "./attribute/Attribute";
 
 export class Operation {
     public readonly name: string;
-    // Currently only includes custom Cypher fields
-    public readonly fields: Map<string, Field> = new Map();
+    //  only includes custom Cypher fields
+    public readonly attributes: Map<string, Attribute> = new Map();
     public readonly annotations: Partial<Annotations> = {};
 
     constructor({
         name,
-        fields = [],
+        attributes = [],
         annotations = [],
     }: {
         name: string;
-        fields?: Field[];
+        attributes?: Attribute[];
         annotations?: Annotation[];
     }) {
         this.name = name;
 
-        for (const field of fields) {
-            this.addFields(field);
+        for (const attribute of attributes) {
+            this.addAttribute(attribute);
         }
 
         for (const annotation of annotations) {
@@ -49,15 +49,15 @@ export class Operation {
         }
     }
 
-    public findFields(name: string): Field | undefined {
-        return this.fields.get(name);
+    public findAttribute(name: string): Attribute | undefined {
+        return this.attributes.get(name);
     }
 
-    private addFields(field: Field): void {
-        if (this.fields.has(field.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(`Field ${field.name} already exists in ${this.name}`);
+    private addAttribute(attribute: Attribute): void {
+        if (this.attributes.has(attribute.name)) {
+            throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
-        this.fields.set(field.name, field);
+        this.attributes.set(attribute.name, attribute);
     }
 
     private addAnnotation(annotation: Annotation): void {

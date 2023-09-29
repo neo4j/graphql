@@ -18,6 +18,7 @@
  */
 
 import type { InputTypeComposer } from "graphql-compose";
+import { DEPRECATED } from "../constants";
 
 export function addMathOperatorsToITC(itc: InputTypeComposer): void {
     // Add mathematical operators for Int/BigInt/Float fields
@@ -25,7 +26,7 @@ export function addMathOperatorsToITC(itc: InputTypeComposer): void {
         const fieldType = itc.getFieldTypeName(fieldName);
         const deprecatedDirectives = itc
             .getFieldDirectives(fieldName)
-            .filter((directive) => directive.name === "deprecated");
+            .filter((directive) => directive.name === DEPRECATED);
         const fieldDefinition = {
             type: fieldType,
             directives: deprecatedDirectives,

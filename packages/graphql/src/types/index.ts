@@ -25,6 +25,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
+import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
 
@@ -282,7 +283,7 @@ export interface CypherQueryOptions {
 }
 
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
+export type InputField = { type: string; defaultValue?: DefaultAnnotationValue; directives?: Directive[] } | string;
 
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {

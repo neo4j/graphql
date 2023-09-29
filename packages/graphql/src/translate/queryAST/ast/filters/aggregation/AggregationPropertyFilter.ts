@@ -18,11 +18,11 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
-import { Filter } from "../Filter";
-import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { Filter } from "../Filter";
 
 export class AggregationPropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -64,7 +64,7 @@ export class AggregationPropertyFilter extends Filter {
         if (this.aggregationOperator) {
             let propertyExpr: Cypher.Expr = property;
 
-            if (this.attribute.isString()) {
+            if (this.attribute.typeHelper.isString()) {
                 propertyExpr = Cypher.size(property);
             }
 
@@ -73,7 +73,7 @@ export class AggregationPropertyFilter extends Filter {
         } else {
             let listExpr: Cypher.Expr;
 
-            if (this.logicalOperator !== "EQUAL" && this.attribute.isString()) {
+            if (this.logicalOperator !== "EQUAL" && this.attribute.typeHelper.isString()) {
                 listExpr = Cypher.collect(Cypher.size(property));
             } else {
                 listExpr = Cypher.collect(property);

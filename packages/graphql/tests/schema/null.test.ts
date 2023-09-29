@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Null", () => {
@@ -50,6 +50,9 @@ describe("Null", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -69,6 +72,9 @@ describe("Null", () => {
               min: DateTime!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -302,6 +308,9 @@ describe("Null", () => {
               startCursor: String
             }
 
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
             type Point {
               crs: String!
               height: Float
@@ -310,12 +319,14 @@ describe("Null", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
             input PointDistance {
               \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
               distance: Float!
               point: PointInput!
             }
 
+            \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
@@ -328,6 +339,7 @@ describe("Null", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -340,6 +352,9 @@ describe("Null", () => {
               shortest: String!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

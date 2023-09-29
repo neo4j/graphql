@@ -112,7 +112,6 @@ export const FIELD_DIRECTIVES = [
     "alias",
     "authentication",
     "authorization",
-    "callback",
     "coalesce",
     "customResolver",
     "cypher",
@@ -121,7 +120,6 @@ export const FIELD_DIRECTIVES = [
     "id",
     "jwtClaim",
     "populatedBy",
-    "readonly",
     "relationship",
     "relayId",
     "selectable",
@@ -129,7 +127,6 @@ export const FIELD_DIRECTIVES = [
     "subscriptionsAuthorization",
     "timestamp",
     "unique",
-    "writeonly",
 ] as const;
 
 export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
@@ -144,7 +141,7 @@ export const OBJECT_DIRECTIVES = [
     "node",
     "plural",
     "query",
-    "queryOptions",
+    "limit",
     "shareable",
     "subscription",
     "subscriptionsAuthorization",
@@ -159,3 +156,5 @@ export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 export const DEPRECATED = "deprecated";
 
 export const PROPAGATED_DIRECTIVES = ["shareable", DEPRECATED] as const;
+
+export const PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT = ["query", "mutation", "subscription"];

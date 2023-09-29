@@ -18,16 +18,32 @@
  */
 
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
-import { execute } from "../../../utils";
-import { translateCreate } from "../../../translate";
 import type { Node } from "../../../classes";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { translateCreate } from "../../../translate";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-export function createResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+export function createResolver({
+    node,
+    concreteEntityAdapter,
+}: {
+    node: Node;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}) {
+    async function resolve(
+        _root: any,
+        args: any,
+        context: Neo4jGraphQLComposedContext,
+        info: GraphQLResolveInfo
+    ): Promise<{
+        info: {
+            bookmark: string | null;
+        };
+    }> {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
@@ -42,25 +58,31 @@ export function createResolver({ node }: { node: Node }) {
             info,
         });
 
-        const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
-            (selection) => selection.kind === Kind.FIELD && selection.name.value === node.plural
-        ) as FieldNode;
-        const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
-
         publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
-        return {
+        const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
+            (selection): selection is FieldNode =>
+                selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural
+        );
+
+        const resolveResult = {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
+
+        if (nodeProjection) {
+            const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
+            resolveResult[nodeKey] = executeResult.records[0]?.data || [];
+        }
+
+        return resolveResult;
     }
 
     return {
-        type: `${node.mutationResponseTypeNames.create}!`,
+        type: `${concreteEntityAdapter.operations.mutationResponseTypeNames.create}!`,
         resolve,
-        args: { input: `[${node.name}CreateInput!]!` },
+        args: concreteEntityAdapter.operations.createMutationArgumentNames,
     };
 }

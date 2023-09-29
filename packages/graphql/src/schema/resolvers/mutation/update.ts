@@ -20,15 +20,34 @@
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../../classes";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { UpdateMutationArgumentNames } from "../../../schema-model/entity/model-adapters/ConcreteEntityOperations";
 import { translateUpdate } from "../../../translate";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-export function updateResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
-    async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
+export function updateResolver({
+    node,
+    composer,
+    concreteEntityAdapter,
+}: {
+    node: Node;
+    composer: SchemaComposer;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}) {
+    async function resolve(
+        _root: any,
+        args: any,
+        context: Neo4jGraphQLComposedContext,
+        info: GraphQLResolveInfo
+    ): Promise<{
+        info: {
+            bookmark: string | null;
+        };
+    }> {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
@@ -45,50 +64,50 @@ export function updateResolver({ node, composer }: { node: Node; composer: Schem
         publishEventsToSubscriptionMechanism(executeResult, context.features?.subscriptions, context.schemaModel);
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
-            (selection) => selection.kind === Kind.FIELD && selection.name.value === node.plural
-        ) as FieldNode;
+            (selection): selection is FieldNode =>
+                selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural
+        );
 
-        const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
-
-        return {
+        // TODO: Ask why we are returning bookmark still
+        const resolveResult = {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
+
+        if (nodeProjection) {
+            const nodeKey = nodeProjection.alias ? nodeProjection.alias.value : nodeProjection.name.value;
+            resolveResult[nodeKey] = executeResult.records[0]?.data || [];
+        }
+
+        return resolveResult;
     }
 
-    const relationFields: Record<string, string> = {};
+    const relationFields: Partial<UpdateMutationArgumentNames> = {};
 
-    const connectInput = `${node.name}ConnectInput`;
-    const disconnectInput = `${node.name}DisconnectInput`;
-    const createInput = `${node.name}RelationInput`;
-    const deleteInput = `${node.name}DeleteInput`;
-    const connectOrCreateInput = `${node.name}ConnectOrCreateInput`;
-
-    if (composer.has(connectInput)) {
-        relationFields.connect = connectInput;
+    if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.connect)) {
+        relationFields.connect = concreteEntityAdapter.operations.updateMutationArgumentNames.connect;
     }
-    if (composer.has(disconnectInput)) {
-        relationFields.disconnect = disconnectInput;
+    if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect)) {
+        relationFields.disconnect = concreteEntityAdapter.operations.updateMutationArgumentNames.disconnect;
     }
-    if (composer.has(createInput)) {
-        relationFields.create = createInput;
+    if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.create)) {
+        relationFields.create = concreteEntityAdapter.operations.updateMutationArgumentNames.create;
     }
-    if (composer.has(deleteInput)) {
-        relationFields.delete = deleteInput;
+    if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.delete)) {
+        relationFields.delete = concreteEntityAdapter.operations.updateMutationArgumentNames.delete;
     }
-    if (composer.has(connectOrCreateInput)) {
-        relationFields.connectOrCreate = connectOrCreateInput;
+    if (composer.has(concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate)) {
+        relationFields.connectOrCreate = concreteEntityAdapter.operations.updateMutationArgumentNames.connectOrCreate;
     }
 
     return {
-        type: `${node.mutationResponseTypeNames.update}!`,
+        type: `${concreteEntityAdapter.operations.mutationResponseTypeNames.update}!`,
         resolve,
         args: {
-            where: `${node.name}Where`,
-            update: `${node.name}UpdateInput`,
+            where: concreteEntityAdapter.operations.updateMutationArgumentNames.where,
+            update: concreteEntityAdapter.operations.updateMutationArgumentNames.update,
             ...relationFields,
         },
     };

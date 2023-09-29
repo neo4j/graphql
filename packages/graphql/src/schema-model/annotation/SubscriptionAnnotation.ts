@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-export class SubscriptionAnnotation {
-    public readonly events: string[];
+import type { SubscriptionEvent } from "../../graphql/directives/subscription";
 
-    constructor({ events }: { events: string[] }) {
+export class SubscriptionAnnotation {
+    public readonly events: Set<SubscriptionEvent>;
+
+    constructor({ events }: { events: Set<SubscriptionEvent> }) {
         this.events = events;
     }
 }

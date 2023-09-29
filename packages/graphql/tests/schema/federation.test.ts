@@ -69,6 +69,9 @@ describe("Apollo Federation", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -85,6 +88,9 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -334,6 +340,7 @@ describe("Apollo Federation", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection! @shareable
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -346,6 +353,9 @@ describe("Apollo Federation", () => {
               shortest: String!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo @shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -672,6 +682,9 @@ describe("Apollo Federation", () => {
 
             directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -688,6 +701,9 @@ describe("Apollo Federation", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -931,6 +947,7 @@ describe("Apollo Federation", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -943,6 +960,9 @@ describe("Apollo Federation", () => {
               shortest: String!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo @federation__shareable {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

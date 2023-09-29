@@ -17,28 +17,20 @@
  * limitations under the License.
  */
 
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { SubscriptionsEvent } from "../../../../types";
-import type Node from "../../../../classes/Node";
-import type { ObjectFields } from "../../../get-obj-field-meta";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 import { filterByAuthorizationRules } from "./filters/filter-by-authorization-rules";
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import { multipleConditionsAggregationMap } from "./utils/multiple-conditions-aggregation-map";
 import { populateWhereParams } from "./utils/populate-where-params";
-import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 
 export function subscriptionAuthorization({
     event,
-    node,
     entity,
-    nodes,
-    relationshipFields,
     context,
 }: {
     event: SubscriptionsEvent;
-    node: Node;
-    entity: ConcreteEntity;
-    nodes?: Node[];
-    relationshipFields?: Map<string, ObjectFields>;
+    entity: ConcreteEntityAdapter;
     context: Neo4jGraphQLComposedSubscriptionsContext;
 }): boolean {
     const subscriptionsAuthorization = entity.annotations.subscriptionsAuthorization;
@@ -59,11 +51,9 @@ export function subscriptionAuthorization({
         const where = populateWhereParams({ where: rule.where, context });
 
         return filterByAuthorizationRules({
-            node,
+            entityAdapter: entity,
             where,
             event,
-            nodes,
-            relationshipFields,
             context,
         });
     });

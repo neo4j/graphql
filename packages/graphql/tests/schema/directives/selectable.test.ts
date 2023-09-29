@@ -45,6 +45,9 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -56,6 +59,9 @@ describe("@selectable", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -156,6 +162,7 @@ describe("@selectable", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -173,6 +180,9 @@ describe("@selectable", () => {
               shortest: String
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -203,6 +213,9 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -214,6 +227,9 @@ describe("@selectable", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -314,6 +330,7 @@ describe("@selectable", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -326,6 +343,9 @@ describe("@selectable", () => {
               shortest: String!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -356,6 +376,9 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -367,6 +390,9 @@ describe("@selectable", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -466,6 +492,7 @@ describe("@selectable", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -478,6 +505,9 @@ describe("@selectable", () => {
               shortest: String!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -509,6 +539,9 @@ describe("@selectable", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -520,6 +553,9 @@ describe("@selectable", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -677,6 +713,7 @@ describe("@selectable", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -700,6 +737,9 @@ describe("@selectable", () => {
               movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -995,6 +1035,9 @@ describe("@selectable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1006,6 +1049,9 @@ describe("@selectable", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -1117,6 +1163,7 @@ describe("@selectable", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1139,6 +1186,9 @@ describe("@selectable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1449,6 +1499,9 @@ describe("@selectable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1460,6 +1513,9 @@ describe("@selectable", () => {
                   movies: [Movie!]!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -1571,6 +1627,7 @@ describe("@selectable", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -1593,6 +1650,9 @@ describe("@selectable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1859,6 +1919,9 @@ describe("@selectable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -1875,6 +1938,9 @@ describe("@selectable", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -2071,6 +2137,7 @@ describe("@selectable", () => {
                   name_STARTS_WITH: String
                 }
 
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -2093,6 +2160,9 @@ describe("@selectable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2374,6 +2444,9 @@ describe("@selectable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2390,6 +2463,9 @@ describe("@selectable", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -2514,6 +2590,7 @@ describe("@selectable", () => {
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
                 }
 
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
                 input QueryOptions {
                   limit: Int
                   offset: Int
@@ -2598,6 +2675,7 @@ describe("@selectable", () => {
                   name_STARTS_WITH: String
                 }
 
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -2620,6 +2698,9 @@ describe("@selectable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2817,6 +2898,9 @@ describe("@selectable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -2833,6 +2917,9 @@ describe("@selectable", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -3075,6 +3162,7 @@ describe("@selectable", () => {
                   title_STARTS_WITH: String
                 }
 
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -3097,6 +3185,9 @@ describe("@selectable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -3308,6 +3399,9 @@ describe("@selectable", () => {
                   info: CreateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created during a create mutation
+                \\"\\"\\"
                 type CreateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!
@@ -3324,6 +3418,9 @@ describe("@selectable", () => {
                   series: [Series!]!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships deleted during a delete mutation
+                \\"\\"\\"
                 type DeleteInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesDeleted: Int!
@@ -3583,6 +3680,7 @@ describe("@selectable", () => {
                   title_STARTS_WITH: String
                 }
 
+                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
                 enum SortDirection {
                   \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
                   ASC
@@ -3605,6 +3703,9 @@ describe("@selectable", () => {
                   info: UpdateInfo!
                 }
 
+                \\"\\"\\"
+                Information about the number of nodes and relationships created and deleted during an update mutation
+                \\"\\"\\"
                 type UpdateInfo {
                   bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
                   nodesCreated: Int!

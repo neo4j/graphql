@@ -17,28 +17,29 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { ListType } from "../../../schema-model/attribute/AttributeType";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { filterTruthy } from "../../../utils/utils";
+import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import type { Field } from "../ast/fields/Field";
-import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import type { QueryASTFactory } from "./QueryASTFactory";
-import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
-import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
-import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
+import { OperationField } from "../ast/fields/OperationField";
+import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
-import { filterTruthy } from "../../../utils/utils";
-import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
-import { OperationField } from "../ast/fields/OperationField";
+import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { CypherAttributeField } from "../ast/fields/attribute-fields/CypherAttributeField";
-import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { isConcreteEntity } from "../utils/is-concrete-entity";
-import { mergeDeep } from "@graphql-tools/utils";
-import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/CypherUnionAttributeField";
-import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
+import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
+import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
+import { isConcreteEntity } from "../utils/is-concrete-entity";
+import type { QueryASTFactory } from "./QueryASTFactory";
+import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -199,8 +200,10 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isPoint() || attribute.isCartesianPoint()) {
-            const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
+        if (attribute.typeHelper.isPoint() || attribute.typeHelper.isCartesianPoint()) {
+            const typeName = attribute.typeHelper.isList()
+                ? (attribute.type as ListType).ofType.name
+                : attribute.type.name;
             const { crs } = field.fieldsByTypeName[typeName] as any;
             return new PointAttributeField({
                 attribute,
@@ -209,7 +212,7 @@ export class FieldFactory {
             });
         }
 
-        if (attribute.isDateTime()) {
+        if (attribute.typeHelper.isDateTime()) {
             return new DateTimeField({
                 attribute,
                 alias: field.alias,
@@ -230,7 +233,7 @@ export class FieldFactory {
     }): CypherAttributeField {
         const cypherAnnotation = attribute.annotations.cypher;
         if (!cypherAnnotation) throw new Error("@Cypher directive missing");
-        const typeName = attribute.isList() ? attribute.type.ofType.name : attribute.type.name;
+        const typeName = attribute.typeHelper.isList() ? (attribute.type as ListType).ofType.name : attribute.type.name;
         const rawFields = field.fieldsByTypeName[typeName];
         let cypherProjection: Record<string, string> | undefined;
         let nestedFields: Field[] | undefined;
@@ -246,7 +249,7 @@ export class FieldFactory {
                 return acc;
             }, {});
             // if the attribute is an object or an abstract type we may have nested fields
-            if (attribute.isAbstract() || attribute.isObject()) {
+            if (attribute.typeHelper.isAbstract() || attribute.typeHelper.isObject()) {
                 // TODO: this code block could be handled directly in the schema model or in some schema model helper
                 const targetEntity = this.queryASTFactory.schemaModel.getEntity(typeName);
                 // Raise an error as we expect that any complex attributes type are always entities

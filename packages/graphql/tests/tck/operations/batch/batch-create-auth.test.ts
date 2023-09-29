@@ -209,14 +209,14 @@ describe("Batch Create, Auth", () => {
                         \\"actors\\": {
                             \\"create\\": [
                                 {
-                                    \\"node\\": {
-                                        \\"name\\": \\"actor 1\\"
-                                    },
                                     \\"edge\\": {
                                         \\"year\\": {
                                             \\"low\\": 2022,
                                             \\"high\\": 0
                                         }
+                                    },
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
                                     }
                                 }
                             ]
@@ -227,14 +227,14 @@ describe("Batch Create, Auth", () => {
                         \\"actors\\": {
                             \\"create\\": [
                                 {
-                                    \\"node\\": {
-                                        \\"name\\": \\"actor 2\\"
-                                    },
                                     \\"edge\\": {
                                         \\"year\\": {
                                             \\"low\\": 2022,
                                             \\"high\\": 0
                                         }
+                                    },
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 2\\"
                                     }
                                 }
                             ]

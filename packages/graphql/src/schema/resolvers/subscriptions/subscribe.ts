@@ -18,19 +18,18 @@
  */
 
 import { on } from "events";
-import type { ObjectFields } from "../../../schema/get-obj-field-meta";
+import type { GraphQLResolveInfo } from "graphql";
 import { Neo4jGraphQLError } from "../../../classes";
-import type Node from "../../../classes/Node";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { NodeSubscriptionsEvent, RelationshipSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../composition/wrap-subscription";
+import { checkAuthentication } from "./authentication/check-authentication";
+import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import type { SubscriptionEventType } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
-import { subscriptionWhere } from "./where/where";
 import { subscriptionAuthorization } from "./where/authorization";
-import type { GraphQLResolveInfo } from "graphql";
-import { checkAuthentication } from "./authentication/check-authentication";
-import { checkAuthenticationOnSelectionSet } from "./authentication/check-authentication-selection-set";
-import type { Neo4jGraphQLComposedSubscriptionsContext } from "../composition/wrap-subscription";
+import { subscriptionWhere } from "./where/where";
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -44,15 +43,11 @@ type SubscriptionArgs = {
 };
 
 export function generateSubscribeMethod({
-    node,
+    entityAdapter,
     type,
-    nodes,
-    relationshipFields,
 }: {
-    node: Node;
+    entityAdapter: ConcreteEntityAdapter;
     type: SubscriptionEventType;
-    nodes?: Node[];
-    relationshipFields?: Map<string, ObjectFields>;
 }) {
     return (
         _root: any,
@@ -60,23 +55,17 @@ export function generateSubscribeMethod({
         context: Neo4jGraphQLComposedSubscriptionsContext,
         resolveInfo: GraphQLResolveInfo
     ): AsyncIterator<[SubscriptionsEvent]> => {
-        checkAuthenticationOnSelectionSet(resolveInfo, node, type, context);
-        const entities = context.schemaModel.getEntitiesByLabels(node.getAllLabels());
-        const concreteEntity = entities[0];
+        checkAuthenticationOnSelectionSet(resolveInfo, entityAdapter, type, context);
 
-        if (!concreteEntity) {
-            throw new Error("Could not find entity");
-        }
-
-        checkAuthentication({ authenticated: concreteEntity, operation: "SUBSCRIBE", context });
+        checkAuthentication({ authenticated: entityAdapter, operation: "SUBSCRIBE", context });
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.subscriptionsEngine.events, type);
         if (["create", "update", "delete"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 return (
-                    (data[0] as NodeSubscriptionsEvent).typename === node.name &&
-                    subscriptionAuthorization({ event: data[0], node, entity: concreteEntity, context }) &&
-                    subscriptionWhere({ where: args.where, event: data[0], node }) &&
+                    (data[0] as NodeSubscriptionsEvent).typename === entityAdapter.name &&
+                    subscriptionAuthorization({ event: data[0], entity: entityAdapter, context }) &&
+                    subscriptionWhere({ where: args.where, event: data[0], entityAdapter }) &&
                     updateDiffFilter(data[0])
                 );
             });
@@ -86,25 +75,23 @@ export function generateSubscribeMethod({
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
                 const relationEventPayload = data[0] as RelationshipSubscriptionsEvent;
                 const isOfRelevantType =
-                    relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
+                    relationEventPayload.toTypename === entityAdapter.name ||
+                    relationEventPayload.fromTypename === entityAdapter.name;
                 if (!isOfRelevantType) {
                     return false;
                 }
-                const relationFieldName = node.relationFields.find(
-                    (r) => r.typeUnescaped === relationEventPayload.relationshipName
-                )?.fieldName;
+                const relationFieldName = Array.from(entityAdapter.relationships.values()).find(
+                    (r) => r.type === relationEventPayload.relationshipName
+                )?.name;
 
                 return (
                     !!relationFieldName &&
                     subscriptionAuthorization({
                         event: data[0],
-                        node,
-                        entity: concreteEntity,
-                        nodes,
-                        relationshipFields,
+                        entity: entityAdapter,
                         context,
                     }) &&
-                    subscriptionWhere({ where: args.where, event: data[0], node, nodes, relationshipFields })
+                    subscriptionWhere({ where: args.where, event: data[0], entityAdapter })
                 );
             });
         }

@@ -132,16 +132,16 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Series)
-            WHERE (((EXISTS {
+            WHERE (this.current = $param0 AND ((EXISTS {
                 MATCH (this)-[this0:MANUFACTURER]->(this1:Manufacturer)
-                WHERE (this0.current = $param0 AND this1.name = $param1)
+                WHERE (this1.name = $param1 AND this0.current = $param2)
             } OR EXISTS {
                 MATCH (this)-[this2:MANUFACTURER]->(this3:Manufacturer)
-                WHERE (this2.current = $param2 AND this3.name = $param3)
+                WHERE (this3.name = $param3 AND this2.current = $param4)
             }) AND EXISTS {
                 MATCH (this)-[this4:BRAND]->(this5:Brand)
-                WHERE (this4.current = $param4 AND this5.name = $param5)
-            }) AND this.current = $param6)
+                WHERE (this5.name = $param5 AND this4.current = $param6)
+            }))
             CALL {
                 WITH this
                 MATCH (this)-[this6:MANUFACTURER]->(this7:Manufacturer)
@@ -164,9 +164,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"C\\",
-                \\"param2\\": false,
+                \\"param2\\": true,
                 \\"param3\\": \\"AM\\",
-                \\"param4\\": true,
+                \\"param4\\": false,
                 \\"param5\\": \\"smart\\",
                 \\"param6\\": true
             }"

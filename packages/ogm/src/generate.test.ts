@@ -126,6 +126,7 @@ describe("generate", () => {
               update?: InputMaybe<UserUpdateInput>;
             };
 
+            /** An enum for sorting in either ascending or descending order. */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -133,6 +134,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -147,6 +149,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -170,6 +173,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -215,10 +219,10 @@ describe("generate", () => {
             };
 
             export type UserOptions = {
-              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -231,9 +235,6 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
-              OR?: InputMaybe<Array<UserWhere>>;
-              AND?: InputMaybe<Array<UserWhere>>;
-              NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -249,6 +250,9 @@ describe("generate", () => {
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
             };
 
             export interface StringAggregateInputNullable {
@@ -419,6 +423,7 @@ describe("generate", () => {
               update?: InputMaybe<UserUpdateInput>;
             };
 
+            /** An enum for sorting in either ascending or descending order. */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -426,6 +431,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -440,6 +446,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -463,6 +470,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -537,10 +545,10 @@ describe("generate", () => {
             };
 
             export type UserOptions = {
-              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -557,9 +565,6 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
-              OR?: InputMaybe<Array<UserWhere>>;
-              AND?: InputMaybe<Array<UserWhere>>;
-              NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -575,6 +580,9 @@ describe("generate", () => {
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
             };
 
             export interface StringAggregateInputNullable {
@@ -740,6 +748,7 @@ describe("generate", () => {
               update?: InputMaybe<UserUpdateInput>;
             };
 
+            /** An enum for sorting in either ascending or descending order. */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -747,6 +756,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -761,6 +771,7 @@ describe("generate", () => {
               users: Array<User>;
             };
 
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -784,6 +795,7 @@ describe("generate", () => {
               longest?: Maybe<Scalars[\\"String\\"][\\"output\\"]>;
             };
 
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -829,10 +841,10 @@ describe("generate", () => {
             };
 
             export type UserOptions = {
-              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             /** Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object. */
@@ -845,9 +857,6 @@ describe("generate", () => {
             };
 
             export type UserWhere = {
-              OR?: InputMaybe<Array<UserWhere>>;
-              AND?: InputMaybe<Array<UserWhere>>;
-              NOT?: InputMaybe<UserWhere>;
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -863,6 +872,9 @@ describe("generate", () => {
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
             };
 
             export interface StringAggregateInputNullable {
@@ -1065,6 +1077,7 @@ describe("generate", () => {
               update?: InputMaybe<PersonUpdateInput>;
             };
 
+            /** An enum for sorting in either ascending or descending order. */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -1076,6 +1089,7 @@ describe("generate", () => {
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
             };
 
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1096,6 +1110,7 @@ describe("generate", () => {
               people: Array<Person>;
             };
 
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1115,19 +1130,19 @@ describe("generate", () => {
             export type Movie = {
               __typename?: \\"Movie\\";
               title: Scalars[\\"String\\"][\\"output\\"];
-              actors: Array<Person>;
               actorsAggregate?: Maybe<MoviePersonActorsAggregationSelection>;
+              actors: Array<Person>;
               actorsConnection: MovieActorsConnection;
+            };
+
+            export type MovieActorsAggregateArgs = {
+              where?: InputMaybe<PersonWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type MovieActorsArgs = {
               where?: InputMaybe<PersonWhere>;
               options?: InputMaybe<PersonOptions>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-            };
-
-            export type MovieActorsAggregateArgs = {
-              where?: InputMaybe<PersonWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
@@ -1228,6 +1243,7 @@ describe("generate", () => {
               longest: Scalars[\\"String\\"][\\"output\\"];
             };
 
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1265,9 +1281,6 @@ describe("generate", () => {
             };
 
             export type ActedInWhere = {
-              OR?: InputMaybe<Array<ActedInWhere>>;
-              AND?: InputMaybe<Array<ActedInWhere>>;
-              NOT?: InputMaybe<ActedInWhere>;
               screenTime?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               screenTime_NOT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
@@ -1278,6 +1291,9 @@ describe("generate", () => {
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<ActedInWhere>>;
+              AND?: InputMaybe<Array<ActedInWhere>>;
+              NOT?: InputMaybe<ActedInWhere>;
             };
 
             export type MovieActorsAggregateInput = {
@@ -1294,32 +1310,32 @@ describe("generate", () => {
             };
 
             export type MovieActorsConnectFieldInput = {
-              where?: InputMaybe<PersonConnectWhere>;
               edge: ActedInCreateInput;
+              where?: InputMaybe<PersonConnectWhere>;
               /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
             };
 
             export type MovieActorsConnectionSort = {
-              edge?: InputMaybe<ActedInSort>;
               node?: InputMaybe<PersonSort>;
+              edge?: InputMaybe<ActedInSort>;
             };
 
             export type MovieActorsConnectionWhere = {
-              AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               OR?: InputMaybe<Array<MovieActorsConnectionWhere>>;
+              AND?: InputMaybe<Array<MovieActorsConnectionWhere>>;
               NOT?: InputMaybe<MovieActorsConnectionWhere>;
-              edge?: InputMaybe<ActedInWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              edge_NOT?: InputMaybe<ActedInWhere>;
               node?: InputMaybe<PersonWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               node_NOT?: InputMaybe<PersonWhere>;
+              edge?: InputMaybe<ActedInWhere>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              edge_NOT?: InputMaybe<ActedInWhere>;
             };
 
             export type MovieActorsCreateFieldInput = {
-              node: PersonCreateInput;
               edge: ActedInCreateInput;
+              node: PersonCreateInput;
             };
 
             export type MovieActorsDeleteFieldInput = {
@@ -1336,39 +1352,39 @@ describe("generate", () => {
               NOT?: InputMaybe<MovieActorsEdgeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               screenTime_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               screenTime_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               screenTime_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               screenTime_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               screenTime_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               screenTime_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               screenTime_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              screenTime_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type MovieActorsFieldInput = {
-              create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
               connect?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
+              create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
             };
 
             export type MovieActorsNodeAggregationWhereInput = {
@@ -1439,11 +1455,11 @@ describe("generate", () => {
 
             export type MovieActorsUpdateFieldInput = {
               where?: InputMaybe<MovieActorsConnectionWhere>;
-              create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
               connect?: InputMaybe<Array<MovieActorsConnectFieldInput>>;
+              disconnect?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
+              create?: InputMaybe<Array<MovieActorsCreateFieldInput>>;
               update?: InputMaybe<MovieActorsUpdateConnectionInput>;
               delete?: InputMaybe<Array<MovieActorsDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<MovieActorsDisconnectFieldInput>>;
             };
 
             export type MovieConnectInput = {
@@ -1464,10 +1480,10 @@ describe("generate", () => {
             };
 
             export type MovieOptions = {
-              /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<MovieSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<MovieSort>>;
             };
 
             export type MovieRelationInput = {
@@ -1485,9 +1501,6 @@ describe("generate", () => {
             };
 
             export type MovieWhere = {
-              OR?: InputMaybe<Array<MovieWhere>>;
-              AND?: InputMaybe<Array<MovieWhere>>;
-              NOT?: InputMaybe<MovieWhere>;
               title?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -1503,11 +1516,13 @@ describe("generate", () => {
               title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<MovieWhere>>;
+              AND?: InputMaybe<Array<MovieWhere>>;
+              NOT?: InputMaybe<MovieWhere>;
               /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
               /** @deprecated Use \`actors_NONE\` instead. */
               actors_NOT?: InputMaybe<PersonWhere>;
-              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** Return Movies where all of the related People match this filter */
               actors_ALL?: InputMaybe<PersonWhere>;
               /** Return Movies where none of the related People match this filter */
@@ -1516,6 +1531,7 @@ describe("generate", () => {
               actors_SINGLE?: InputMaybe<PersonWhere>;
               /** Return Movies where some of the related People match this filter */
               actors_SOME?: InputMaybe<PersonWhere>;
+              actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
               /** @deprecated Use \`actorsConnection_NONE\` instead. */
@@ -1539,10 +1555,10 @@ describe("generate", () => {
             };
 
             export type PersonOptions = {
-              /** Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<PersonSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<PersonSort>>;
             };
 
             /** Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object. */
@@ -1555,9 +1571,6 @@ describe("generate", () => {
             };
 
             export type PersonWhere = {
-              OR?: InputMaybe<Array<PersonWhere>>;
-              AND?: InputMaybe<Array<PersonWhere>>;
-              NOT?: InputMaybe<PersonWhere>;
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -1573,6 +1586,9 @@ describe("generate", () => {
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<PersonWhere>>;
+              AND?: InputMaybe<Array<PersonWhere>>;
+              NOT?: InputMaybe<PersonWhere>;
             };
 
             export interface StringAggregateInputNonNullable {
@@ -1865,6 +1881,7 @@ describe("generate", () => {
               connectOrCreate?: InputMaybe<FaqEntryConnectOrCreateInput>;
             };
 
+            /** An enum for sorting in either ascending or descending order. */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -1888,6 +1905,7 @@ describe("generate", () => {
               faqs: Array<Faq>;
             };
 
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1896,6 +1914,7 @@ describe("generate", () => {
               relationshipsCreated: Scalars[\\"Int\\"][\\"output\\"];
             };
 
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -1909,19 +1928,19 @@ describe("generate", () => {
               id: Scalars[\\"ID\\"][\\"output\\"];
               activated: Scalars[\\"Boolean\\"][\\"output\\"];
               name: Scalars[\\"String\\"][\\"output\\"];
-              entries: Array<FaqEntry>;
               entriesAggregate?: Maybe<FaqfaqEntryEntriesAggregationSelection>;
+              entries: Array<FaqEntry>;
               entriesConnection: FaqEntriesConnection;
+            };
+
+            export type FaqEntriesAggregateArgs = {
+              where?: InputMaybe<FaqEntryWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type FaqEntriesArgs = {
               where?: InputMaybe<FaqEntryWhere>;
               options?: InputMaybe<FaqEntryOptions>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-            };
-
-            export type FaqEntriesAggregateArgs = {
-              where?: InputMaybe<FaqEntryWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
@@ -1972,19 +1991,19 @@ describe("generate", () => {
               id: Scalars[\\"ID\\"][\\"output\\"];
               title: Scalars[\\"String\\"][\\"output\\"];
               body: Scalars[\\"String\\"][\\"output\\"];
-              inFAQs: Array<Faq>;
               inFAQsAggregate?: Maybe<FaqEntryFaqInFaQsAggregationSelection>;
+              inFAQs: Array<Faq>;
               inFAQsConnection: FaqEntryInFaQsConnection;
+            };
+
+            export type FaqEntryInFaQsAggregateArgs = {
+              where?: InputMaybe<FaqWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type FaqEntryInFaQsArgs = {
               where?: InputMaybe<FaqWhere>;
               options?: InputMaybe<FaqOptions>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-            };
-
-            export type FaqEntryInFaQsAggregateArgs = {
-              where?: InputMaybe<FaqWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
@@ -2109,6 +2128,7 @@ describe("generate", () => {
               faqs: Array<Faq>;
             };
 
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -2163,28 +2183,28 @@ describe("generate", () => {
             };
 
             export type FaqEntriesConnectFieldInput = {
-              where?: InputMaybe<FaqEntryConnectWhere>;
-              connect?: InputMaybe<Array<FaqEntryConnectInput>>;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
+              where?: InputMaybe<FaqEntryConnectWhere>;
               /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
+              connect?: InputMaybe<Array<FaqEntryConnectInput>>;
             };
 
             export type FaqEntriesConnectionSort = {
-              edge?: InputMaybe<FaqEntryInFaqSort>;
               node?: InputMaybe<FaqEntrySort>;
+              edge?: InputMaybe<FaqEntryInFaqSort>;
             };
 
             export type FaqEntriesConnectionWhere = {
-              AND?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               OR?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
+              AND?: InputMaybe<Array<FaqEntriesConnectionWhere>>;
               NOT?: InputMaybe<FaqEntriesConnectionWhere>;
-              edge?: InputMaybe<FaqEntryInFaqWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
               node?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               node_NOT?: InputMaybe<FaqEntryWhere>;
+              edge?: InputMaybe<FaqEntryInFaqWhere>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
             };
 
             export type FaqEntriesConnectOrCreateFieldInput = {
@@ -2198,8 +2218,8 @@ describe("generate", () => {
             };
 
             export type FaqEntriesCreateFieldInput = {
-              node: FaqEntryCreateInput;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
+              node: FaqEntryCreateInput;
             };
 
             export type FaqEntriesDeleteFieldInput = {
@@ -2218,40 +2238,40 @@ describe("generate", () => {
               NOT?: InputMaybe<FaqEntriesEdgeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type FaqEntriesFieldInput = {
               connectOrCreate?: InputMaybe<Array<FaqEntriesConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
               connect?: InputMaybe<Array<FaqEntriesConnectFieldInput>>;
+              create?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
             };
 
             export type FaqEntriesNodeAggregationWhereInput = {
@@ -2380,11 +2400,11 @@ describe("generate", () => {
             export type FaqEntriesUpdateFieldInput = {
               where?: InputMaybe<FaqEntriesConnectionWhere>;
               connectOrCreate?: InputMaybe<Array<FaqEntriesConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
               connect?: InputMaybe<Array<FaqEntriesConnectFieldInput>>;
+              disconnect?: InputMaybe<Array<FaqEntriesDisconnectFieldInput>>;
+              create?: InputMaybe<Array<FaqEntriesCreateFieldInput>>;
               update?: InputMaybe<FaqEntriesUpdateConnectionInput>;
               delete?: InputMaybe<Array<FaqEntriesDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<FaqEntriesDisconnectFieldInput>>;
             };
 
             export type FaqEntryConnectInput = {
@@ -2435,28 +2455,28 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaQsConnectFieldInput = {
-              where?: InputMaybe<FaqConnectWhere>;
-              connect?: InputMaybe<Array<FaqConnectInput>>;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
+              where?: InputMaybe<FaqConnectWhere>;
               /** Whether or not to overwrite any matching relationship with the new properties. */
               overwrite?: Scalars[\\"Boolean\\"][\\"input\\"];
+              connect?: InputMaybe<Array<FaqConnectInput>>;
             };
 
             export type FaqEntryInFaQsConnectionSort = {
-              edge?: InputMaybe<FaqEntryInFaqSort>;
               node?: InputMaybe<FaqSort>;
+              edge?: InputMaybe<FaqEntryInFaqSort>;
             };
 
             export type FaqEntryInFaQsConnectionWhere = {
-              AND?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               OR?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
+              AND?: InputMaybe<Array<FaqEntryInFaQsConnectionWhere>>;
               NOT?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
-              edge?: InputMaybe<FaqEntryInFaqWhere>;
-              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
-              edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
               node?: InputMaybe<FaqWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               node_NOT?: InputMaybe<FaqWhere>;
+              edge?: InputMaybe<FaqEntryInFaqWhere>;
+              /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
+              edge_NOT?: InputMaybe<FaqEntryInFaqWhere>;
             };
 
             export type FaqEntryInFaQsConnectOrCreateFieldInput = {
@@ -2470,8 +2490,8 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaQsCreateFieldInput = {
-              node: FaqCreateInput;
               edge?: InputMaybe<FaqEntryInFaqCreateInput>;
+              node: FaqCreateInput;
             };
 
             export type FaqEntryInFaQsDeleteFieldInput = {
@@ -2490,40 +2510,40 @@ describe("generate", () => {
               NOT?: InputMaybe<FaqEntryInFaQsEdgeAggregationWhereInput>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_EQUAL?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_EQUAL?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_GTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_LT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LT?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               /** @deprecated Aggregation filters that are not relying on an aggregating function will be deprecated. */
               position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
-              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
               position_MIN_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_MAX_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_SUM_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              position_AVERAGE_LTE?: InputMaybe<Scalars[\\"Float\\"][\\"input\\"]>;
             };
 
             export type FaqEntryInFaQsFieldInput = {
               connectOrCreate?: InputMaybe<Array<FaqEntryInFaQsConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
               connect?: InputMaybe<Array<FaqEntryInFaQsConnectFieldInput>>;
+              create?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
             };
 
             export type FaqEntryInFaQsNodeAggregationWhereInput = {
@@ -2601,11 +2621,11 @@ describe("generate", () => {
             export type FaqEntryInFaQsUpdateFieldInput = {
               where?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               connectOrCreate?: InputMaybe<Array<FaqEntryInFaQsConnectOrCreateFieldInput>>;
-              create?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
               connect?: InputMaybe<Array<FaqEntryInFaQsConnectFieldInput>>;
+              disconnect?: InputMaybe<Array<FaqEntryInFaQsDisconnectFieldInput>>;
+              create?: InputMaybe<Array<FaqEntryInFaQsCreateFieldInput>>;
               update?: InputMaybe<FaqEntryInFaQsUpdateConnectionInput>;
               delete?: InputMaybe<Array<FaqEntryInFaQsDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<FaqEntryInFaQsDisconnectFieldInput>>;
             };
 
             export type FaqEntryInFaqUpdateInput = {
@@ -2615,9 +2635,6 @@ describe("generate", () => {
             };
 
             export type FaqEntryInFaqWhere = {
-              OR?: InputMaybe<Array<FaqEntryInFaqWhere>>;
-              AND?: InputMaybe<Array<FaqEntryInFaqWhere>>;
-              NOT?: InputMaybe<FaqEntryInFaqWhere>;
               position?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               position_NOT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
@@ -2628,6 +2645,9 @@ describe("generate", () => {
               position_LTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_GT?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               position_GTE?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<FaqEntryInFaqWhere>>;
+              AND?: InputMaybe<Array<FaqEntryInFaqWhere>>;
+              NOT?: InputMaybe<FaqEntryInFaqWhere>;
             };
 
             export type FaqEntryOnCreateInput = {
@@ -2636,10 +2656,10 @@ describe("generate", () => {
             };
 
             export type FaqEntryOptions = {
-              /** Specify one or more FAQEntrySort objects to sort FaqEntries by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<FaqEntrySort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more FAQEntrySort objects to sort FaqEntries by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<FaqEntrySort>>;
             };
 
             export type FaqEntryRelationInput = {
@@ -2664,9 +2684,6 @@ describe("generate", () => {
             };
 
             export type FaqEntryWhere = {
-              OR?: InputMaybe<Array<FaqEntryWhere>>;
-              AND?: InputMaybe<Array<FaqEntryWhere>>;
-              NOT?: InputMaybe<FaqEntryWhere>;
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
@@ -2712,11 +2729,13 @@ describe("generate", () => {
               body_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               body_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<FaqEntryWhere>>;
+              AND?: InputMaybe<Array<FaqEntryWhere>>;
+              NOT?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Use \`inFAQs_SOME\` instead. */
               inFAQs?: InputMaybe<FaqWhere>;
               /** @deprecated Use \`inFAQs_NONE\` instead. */
               inFAQs_NOT?: InputMaybe<FaqWhere>;
-              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               /** Return FAQEntries where all of the related FAQS match this filter */
               inFAQs_ALL?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where none of the related FAQS match this filter */
@@ -2725,6 +2744,7 @@ describe("generate", () => {
               inFAQs_SINGLE?: InputMaybe<FaqWhere>;
               /** Return FAQEntries where some of the related FAQS match this filter */
               inFAQs_SOME?: InputMaybe<FaqWhere>;
+              inFAQsAggregate?: InputMaybe<FaqEntryInFaQsAggregateInput>;
               /** @deprecated Use \`inFAQsConnection_SOME\` instead. */
               inFAQsConnection?: InputMaybe<FaqEntryInFaQsConnectionWhere>;
               /** @deprecated Use \`inFAQsConnection_NONE\` instead. */
@@ -2745,10 +2765,10 @@ describe("generate", () => {
             };
 
             export type FaqOptions = {
-              /** Specify one or more FAQSort objects to sort Faqs by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<FaqSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more FAQSort objects to sort Faqs by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<FaqSort>>;
             };
 
             export type FaqRelationInput = {
@@ -2773,9 +2793,6 @@ describe("generate", () => {
             };
 
             export type FaqWhere = {
-              OR?: InputMaybe<Array<FaqWhere>>;
-              AND?: InputMaybe<Array<FaqWhere>>;
-              NOT?: InputMaybe<FaqWhere>;
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
@@ -2809,11 +2826,13 @@ describe("generate", () => {
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<FaqWhere>>;
+              AND?: InputMaybe<Array<FaqWhere>>;
+              NOT?: InputMaybe<FaqWhere>;
               /** @deprecated Use \`entries_SOME\` instead. */
               entries?: InputMaybe<FaqEntryWhere>;
               /** @deprecated Use \`entries_NONE\` instead. */
               entries_NOT?: InputMaybe<FaqEntryWhere>;
-              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
               /** Return FAQS where all of the related FAQEntries match this filter */
               entries_ALL?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where none of the related FAQEntries match this filter */
@@ -2822,6 +2841,7 @@ describe("generate", () => {
               entries_SINGLE?: InputMaybe<FaqEntryWhere>;
               /** Return FAQS where some of the related FAQEntries match this filter */
               entries_SOME?: InputMaybe<FaqEntryWhere>;
+              entriesAggregate?: InputMaybe<FaqEntriesAggregateInput>;
               /** @deprecated Use \`entriesConnection_SOME\` instead. */
               entriesConnection?: InputMaybe<FaqEntriesConnectionWhere>;
               /** @deprecated Use \`entriesConnection_NONE\` instead. */

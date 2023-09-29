@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { SubscriptionsEvent } from "../../../../types";
-import { NodeBuilder } from "../../../../../tests/utils/builders/node-builder";
 import { subscriptionWhere } from "./where";
 
 describe("subscriptionWhere", () => {
@@ -40,50 +41,18 @@ describe("subscriptionWhere", () => {
             typename: "Movie",
         };
 
-        const node = new NodeBuilder({
+        const concreteEntity = new ConcreteEntity({
             name: "Movie",
-            primitiveFields: [
-                {
-                    fieldName: "title",
-                    typeMeta: {
-                        name: "String",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            where: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            create: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            update: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                        },
-                    },
-                    selectableOptions: {
-                        onRead: true,
-                        onAggregate: false,
-                    },
-                    settableOptions: {
-                        onCreate: true,
-                        onUpdate: true,
-                    },
-                    filterableOptions: {
-                        byValue: true,
-                        byAggregate: true,
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
-        }).instance();
+            labels: ["Movie"],
+            annotations: [],
+            attributes: [],
+            compositeEntities: [],
+            description: undefined,
+            relationships: [],
+        });
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        expect(subscriptionWhere({ where: args, event, node })).toBe(true);
+        expect(subscriptionWhere({ where: args, event, entityAdapter: concreteEntityAdapter })).toBe(true);
     });
 
     test("filters expected not", () => {
@@ -104,49 +73,17 @@ describe("subscriptionWhere", () => {
             typename: "Movie",
         };
 
-        const node = new NodeBuilder({
+        const concreteEntity = new ConcreteEntity({
             name: "Movie",
-            primitiveFields: [
-                {
-                    fieldName: "title",
-                    typeMeta: {
-                        name: "String",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            where: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            create: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            update: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                        },
-                    },
-                    selectableOptions: {
-                        onRead: true,
-                        onAggregate: false,
-                    },
-                    settableOptions: {
-                        onCreate: true,
-                        onUpdate: true,
-                    },
-                    filterableOptions: {
-                        byValue: true,
-                        byAggregate: true,
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
-        }).instance();
+            labels: ["Movie"],
+            annotations: [],
+            attributes: [],
+            compositeEntities: [],
+            description: undefined,
+            relationships: [],
+        });
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        expect(subscriptionWhere({ where: args, event, node })).toBe(false);
+        expect(subscriptionWhere({ where: args, event, entityAdapter: concreteEntityAdapter })).toBe(false);
     });
 });

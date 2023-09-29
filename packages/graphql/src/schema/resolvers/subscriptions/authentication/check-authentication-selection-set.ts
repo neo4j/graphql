@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import type Node from "../../../../classes/Node";
-import type { SubscriptionEventType } from "../types";
-import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
 import type { GraphQLResolveInfo } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
+import type { ConcreteEntity } from "../../../../schema-model/entity/ConcreteEntity";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { SubscriptionEventType } from "../types";
+import { checkAuthentication } from "./check-authentication";
 import type { SelectionFields } from "./selection-set-parser";
 import { parseSelectionSetForAuthenticated } from "./selection-set-parser";
-import { checkAuthentication } from "./check-authentication";
-import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
 
 export function checkAuthenticationOnSelectionSet(
     resolveInfo: GraphQLResolveInfo,
-    node: Node,
+    entityAdapter: ConcreteEntityAdapter,
     type: SubscriptionEventType,
     context: Neo4jGraphQLComposedSubscriptionsContext
 ) {
@@ -38,16 +38,12 @@ export function checkAuthenticationOnSelectionSet(
     if (!resolveTree) {
         return;
     }
-    const entities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
-    if (!entities.length) {
-        return;
-    }
-    const concreteEntity = entities[0] as ConcreteEntity;
+
     const authenticatedSelections = parseSelectionSetForAuthenticated({
         resolveTree,
-        entity: concreteEntity,
-        entityTypeName: node.subscriptionEventTypeNames[type],
-        entityPayloadTypeName: node.subscriptionEventPayloadFieldNames[type],
+        entity: entityAdapter,
+        entityTypeName: entityAdapter.operations.subscriptionEventTypeNames[type],
+        entityPayloadTypeName: entityAdapter.operations.subscriptionEventPayloadFieldNames[type],
         context,
     });
     authenticatedSelections.forEach(({ entity, fieldSelection }) =>
@@ -61,12 +57,12 @@ function checkAuthenticationOnSelection({
     context,
 }: {
     fieldSelection: SelectionFields;
-    entity: ConcreteEntity;
+    entity: ConcreteEntity | ConcreteEntityAdapter;
     context: Neo4jGraphQLComposedSubscriptionsContext;
 }) {
     checkAuthentication({ authenticated: entity, operation: "READ", context });
     for (const selectedField of Object.values(fieldSelection)) {
-        const field = entity.findAttribute(selectedField.name);
+        const field = entity.attributes.get(selectedField.name);
         if (field) {
             checkAuthentication({ authenticated: field, operation: "READ", context });
         }

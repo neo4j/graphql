@@ -21,6 +21,7 @@ import { GraphQLFloat, GraphQLInputObjectType, GraphQLNonNull } from "graphql";
 
 export const CartesianPointInput = new GraphQLInputObjectType({
     name: "CartesianPointInput",
+    description: "Input type for a cartesian point",
     fields: {
         x: {
             type: new GraphQLNonNull(GraphQLFloat),

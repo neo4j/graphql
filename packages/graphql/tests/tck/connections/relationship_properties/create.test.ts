@@ -117,14 +117,14 @@ describe("Relationship Properties Create Cypher", () => {
                         \\"actors\\": {
                             \\"create\\": [
                                 {
-                                    \\"node\\": {
-                                        \\"name\\": \\"Tom Hanks\\"
-                                    },
                                     \\"edge\\": {
                                         \\"screenTime\\": {
                                             \\"low\\": 60,
                                             \\"high\\": 0
                                         }
+                                    },
+                                    \\"node\\": {
+                                        \\"name\\": \\"Tom Hanks\\"
                                     }
                                 }
                             ]

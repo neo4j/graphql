@@ -19,6 +19,8 @@
 
 import { SchemaComposer } from "graphql-compose";
 import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { deleteResolver } from "./delete";
 
 describe("Delete resolver", () => {
@@ -27,10 +29,20 @@ describe("Delete resolver", () => {
             name: "Movie",
             relationFields: [],
         }).instance();
+        const concreteEntity = new ConcreteEntity({
+            name: "Movie",
+            labels: ["Movie"],
+            annotations: [],
+            attributes: [],
+            compositeEntities: [],
+            description: undefined,
+            relationships: [],
+        });
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
         const composer = new SchemaComposer();
 
-        const result = deleteResolver({ node, composer });
+        const result = deleteResolver({ node, composer, concreteEntityAdapter });
         expect(result.type).toBe(`DeleteInfo!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

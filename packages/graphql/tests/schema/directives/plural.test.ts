@@ -42,6 +42,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -53,6 +56,9 @@ describe("Plural option", () => {
               techs: [Tech!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -79,6 +85,7 @@ describe("Plural option", () => {
               techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -166,6 +173,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -200,6 +210,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -211,6 +224,9 @@ describe("Plural option", () => {
               techs: [Tech!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -237,6 +253,7 @@ describe("Plural option", () => {
               techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -324,6 +341,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -358,6 +378,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -369,6 +392,9 @@ describe("Plural option", () => {
               technologies: [Tech!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -395,6 +421,7 @@ describe("Plural option", () => {
               technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -482,6 +509,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -516,6 +546,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -527,6 +560,9 @@ describe("Plural option", () => {
               techs: [Techs!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -553,6 +589,7 @@ describe("Plural option", () => {
               techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -625,6 +662,9 @@ describe("Plural option", () => {
               value_STARTS_WITH: String
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -659,6 +699,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -670,6 +713,9 @@ describe("Plural option", () => {
               techs: [User!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -696,6 +742,7 @@ describe("Plural option", () => {
               techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -714,6 +761,9 @@ describe("Plural option", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -802,6 +852,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -813,6 +866,9 @@ describe("Plural option", () => {
               users: [User!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -839,6 +895,7 @@ describe("Plural option", () => {
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -851,6 +908,9 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -945,6 +1005,9 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -956,6 +1019,9 @@ describe("Plural option", () => {
               users: [Users!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -982,6 +1048,7 @@ describe("Plural option", () => {
               usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -994,6 +1061,9 @@ describe("Plural option", () => {
               shortest: String
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

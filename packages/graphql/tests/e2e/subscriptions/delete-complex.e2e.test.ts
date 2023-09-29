@@ -83,7 +83,8 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
                 url: String!
             }
             
-            union Director = ${typePerson} | ${typeActor}
+            #union Director = ${typePerson} | ${typeActor}
+            union Director =  ${typeActor} | ${typePerson}
             
             interface Reviewer {
                 reputation: Int!

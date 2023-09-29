@@ -647,7 +647,6 @@ describe("Connections Alias", () => {
         }
     });
 
-
     test("should alias a property on the node", async () => {
         const session = await neo4j.getSession();
 

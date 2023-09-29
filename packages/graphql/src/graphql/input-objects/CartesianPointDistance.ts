@@ -22,6 +22,7 @@ import { CartesianPointInput } from "./CartesianPointInput";
 
 export const CartesianPointDistance = new GraphQLInputObjectType({
     name: "CartesianPointDistance",
+    description: "Input type for a cartesian point with a distance",
     fields: {
         point: {
             type: new GraphQLNonNull(CartesianPointInput),

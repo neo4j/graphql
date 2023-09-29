@@ -675,7 +675,7 @@ describe("Cypher Update", () => {
             CALL {
             WITH *
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
-            WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_this_delete_actors0param0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param1)
+            WHERE (this_delete_actors0.name = $updateMovies_args_delete_actors0_where_this_delete_actors0param0 AND this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_this_delete_actors0param1)
             WITH this_delete_actors0_relationship, collect(DISTINCT this_delete_actors0) AS this_delete_actors0_to_delete
             CALL {
             	WITH this_delete_actors0_to_delete
@@ -690,25 +690,25 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": {
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param0\\": \\"Actor to delete\\",
+                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"updateMovies_args_delete_actors0_where_this_delete_actors0param1\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
                             \\"actors\\": [
                                 {
                                     \\"where\\": {
+                                        \\"node\\": {
+                                            \\"name\\": \\"Actor to delete\\"
+                                        },
                                         \\"edge\\": {
                                             \\"screenTime\\": {
                                                 \\"low\\": 60,
                                                 \\"high\\": 0
                                             }
-                                        },
-                                        \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
                                         }
                                     }
                                 }

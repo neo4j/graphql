@@ -21,7 +21,6 @@ import type { ObjectFields } from "../get-obj-field-meta";
 
 type ObjectFieldsInspectionResult = {
     hasNonGeneratedProperties: boolean;
-    anyNonNullRelProperties: boolean;
     hasNonNullNonGeneratedProperties: boolean;
 };
 
@@ -29,7 +28,6 @@ export function inspectObjectFields(objectFields?: ObjectFields): ObjectFieldsIn
     const result: ObjectFieldsInspectionResult = {
         hasNonGeneratedProperties: false,
         hasNonNullNonGeneratedProperties: false,
-        anyNonNullRelProperties: false,
     };
 
     if (!objectFields) {
@@ -45,13 +43,6 @@ export function inspectObjectFields(objectFields?: ObjectFields): ObjectFieldsIn
     ];
     result.hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
     result.hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
-    result.anyNonNullRelProperties = [
-        ...objectFields.primitiveFields,
-        ...objectFields.scalarFields,
-        ...objectFields.enumFields,
-        ...objectFields.temporalFields,
-        ...objectFields.pointFields,
-    ].some((field) => field.typeMeta.required);
 
     return result;
 }
