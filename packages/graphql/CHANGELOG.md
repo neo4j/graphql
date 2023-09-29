@@ -1,5 +1,21 @@
 # @neo4j/graphql
 
+## 4.2.0
+
+### Minor Changes
+
+-   [#4044](https://github.com/neo4j/graphql/pull/4044) [`059ea1c83`](https://github.com/neo4j/graphql/commit/059ea1c839516a807921a90a3966547acc4f3d33) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Improved the transpilation implementation.
+
+### Patch Changes
+
+-   [#4011](https://github.com/neo4j/graphql/pull/4011) [`3602fc466`](https://github.com/neo4j/graphql/commit/3602fc4669ae11ff06e0cd4c431dff8d05cdd6b9) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix issue 4015, selecting the node field twice with a different selection set resulted in one selection set being ignored.
+
+-   [#4011](https://github.com/neo4j/graphql/pull/4011) [`ad2fc2aea`](https://github.com/neo4j/graphql/commit/ad2fc2aea3c452d536bba80e0396337db9cecc59) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix issue 3923, applying multiple predicates on different node implementations using a connection filter resulted in some predicates not being applied.
+
+-   [#4011](https://github.com/neo4j/graphql/pull/4011) [`ef92e7ba0`](https://github.com/neo4j/graphql/commit/ef92e7ba02fc9ab2e52cb0966748fac7e6f4a846) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix issue 4007, selecting an edges field using an alias resulted in the node fields not being returned.
+
+-   [#4011](https://github.com/neo4j/graphql/pull/4011) [`a2933854a`](https://github.com/neo4j/graphql/commit/a2933854a5fe6662e9c01616e31019d7a453c613) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix issue 4004, when a user queried a cypher field defined with an argument named "options" produced a runtime error.
+
 ## 4.1.3
 
 ### Patch Changes
