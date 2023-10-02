@@ -3550,7 +3550,7 @@ __metadata:
     webpack-cli: 5.1.4
     webpack-dev-server: 4.15.1
     webpack-notifier: 1.15.0
-    zustand: 4.4.1
+    zustand: 4.4.2
   languageName: unknown
   linkType: soft
 
@@ -26814,9 +26814,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"zustand@npm:4.4.1":
-  version: 4.4.1
-  resolution: "zustand@npm:4.4.1"
+"zustand@npm:4.4.2":
+  version: 4.4.2
+  resolution: "zustand@npm:4.4.2"
   dependencies:
     use-sync-external-store: 1.2.0
   peerDependencies:
@@ -26830,6 +26830,6 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 80acd0fbf633782996642802c8692bbb80ae5c80a8dff4c501b88250acd5ccd468fbc6398bdce198475a25e3839c91385b81da921274f33ffb5c2d08c3eab400
+  checksum: ca10785e144561c52888578d1a04272ea5b2e6dad8ac6d9ae43b8de9bad5e4864ed8688c277eb4e2f68efd23a59db5e4c6f846eaf874f4f61c9c8271727380b4
   languageName: node
   linkType: hard
