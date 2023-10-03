@@ -31,7 +31,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 
 export class CompositeReadOperation extends Operation {
     private children: CompositeReadPartial[];
-    private entity: InterfaceEntityAdapter | UnionEntityAdapter;
+    private _entity: InterfaceEntityAdapter | UnionEntityAdapter;
     private relationship: RelationshipAdapter | undefined;
     protected pagination: Pagination | undefined;
     protected sortFields: Sort[] = [];
@@ -46,9 +46,13 @@ export class CompositeReadOperation extends Operation {
         relationship: RelationshipAdapter | undefined;
     }) {
         super();
-        this.entity = compositeEntity;
+        this._entity = compositeEntity;
         this.children = children;
         this.relationship = relationship;
+    }
+
+    public get entity(): InterfaceEntityAdapter | UnionEntityAdapter {
+        return this._entity;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -56,6 +60,24 @@ export class CompositeReadOperation extends Operation {
     }
 
     public transpile(options: OperationTranspileOptions): OperationTranspileResult {
+        if (!this.relationship) {
+            // this is top-level abstract read
+            const nestedSubqueries = this.children.flatMap((c) => {
+                const result = c.transpile({
+                    context: options.context,
+                    returnVariable: options.returnVariable,
+                });
+                return result.clauses;
+            });
+            const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(
+                options.returnVariable
+            );
+            return {
+                clauses: [nestedSubquery],
+                projectionExpr: options.returnVariable,
+            };
+        }
+
         const parentNode = options.context.target;
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({

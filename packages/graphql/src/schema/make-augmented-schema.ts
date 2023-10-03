@@ -170,7 +170,7 @@ function makeAugmentedSchema(
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
-    const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
+    const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
 
     const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
         interfaceTypes,
@@ -245,6 +245,7 @@ function makeAugmentedSchema(
             relationships,
             relationshipFields,
             userDefinedFieldDirectivesForNode,
+            propagatedDirectivesForNode,
         });
         if (updatedRelationships) {
             relationships = updatedRelationships;
@@ -316,7 +317,7 @@ function makeAugmentedSchema(
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                     node,
-                    concreteEntityAdapter,
+                    entityAdapter: concreteEntityAdapter,
                 }),
             });
             composer.Query.setFieldDirectives(
@@ -393,12 +394,18 @@ function makeAugmentedSchema(
 
     schemaModel.compositeEntities.forEach((entity) => {
         if (entity instanceof UnionEntity) {
+            const unionEntityAdapter = new UnionEntityAdapter(entity);
             withWhereInputType({
-                entityAdapter: new UnionEntityAdapter(entity),
+                entityAdapter: unionEntityAdapter,
                 userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
                 features,
                 composer,
             });
+            // composer.Query.addFields({
+            //     [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+            //         entityAdapter: unionEntityAdapter,
+            //     }),
+            // });
             return;
         }
         if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
@@ -407,8 +414,10 @@ function makeAugmentedSchema(
                 DirectiveNode[]
             >;
             const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            const propagatedDirectives = propagatedDirectivesForNode.get(entity.name) || [];
+            const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
             withInterfaceType({
-                entityAdapter: new InterfaceEntityAdapter(entity),
+                entityAdapter: interfaceEntityAdapter,
                 userDefinedFieldDirectives,
                 userDefinedInterfaceDirectives,
                 composer,
@@ -416,6 +425,20 @@ function makeAugmentedSchema(
                     includeRelationships: true,
                 },
             });
+            // TODO: mirror everything on interfaces target of relationships
+            // TODO: create different type containing the _on field (for each implementing concrete entity)
+            // Q: should _on contain also implementing interface types?
+            if (interfaceEntityAdapter.isReadable) {
+                composer.Query.addFields({
+                    [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                        entityAdapter: interfaceEntityAdapter,
+                    }),
+                });
+                composer.Query.setFieldDirectives(
+                    interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+                    graphqlDirectivesToCompose(propagatedDirectives)
+                );
+            }
             return;
         }
         return;
@@ -501,20 +524,26 @@ function makeAugmentedSchema(
         ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
-    unionTypes.forEach((union) => {
-        // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
-        const unionTypeInSchema = parsedDoc.definitions.find((def) => {
-            if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === union.name.value) return true;
-            return false;
-        });
-        if (!generatedResolvers[union.name.value] && unionTypeInSchema) {
-            generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+    schemaModel.compositeEntities.forEach((compositeEntityAdapter) => {
+        const shouldGenerateResolver = true;
+        // if (compositeEntityAdapter instanceof UnionEntityAdapter) {
+        //     // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
+        //     shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
+        //         if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === compositeEntityAdapter.name)
+        //             return true;
+        //         return false;
+        //     });
+        // }
+        if (compositeEntityAdapter instanceof UnionEntityAdapter) {
+            return;
         }
-    });
-
-    interfaceRelationships.forEach((i) => {
-        if (!generatedResolvers[i.name.value]) {
-            generatedResolvers[i.name.value] = { __resolveType: (root) => root.__resolveType };
+        if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
+            generatedResolvers[compositeEntityAdapter.name] = {
+                __resolveType: (root) => {
+                    console.log("inside resolver for", compositeEntityAdapter.name, root);
+                    return root.__resolveType;
+                },
+            };
         }
     });
 
@@ -618,6 +647,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     relationships,
     relationshipFields,
     userDefinedFieldDirectivesForNode,
+    propagatedDirectivesForNode,
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
@@ -626,6 +656,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     relationships: Relationship[];
     relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+    propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
 }) {
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
         string,
@@ -660,6 +691,19 @@ function doForInterfacesThatAreTargetOfARelationship({
             relationshipFields,
         }),
     ];
+
+    const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+    if (interfaceEntityAdapter.isReadable) {
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                entityAdapter: interfaceEntityAdapter,
+            }),
+        });
+        composer.Query.setFieldDirectives(
+            interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
+    }
 
     return relationships;
 }

@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
-import type { QueryASTContext } from "../../QueryASTContext";
+import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -29,7 +29,7 @@ export class CompositeReadPartial extends ReadOperation {
         if (this.relationship) {
             return this.transpileNestedCompositeRelationship(this.relationship, { returnVariable, context });
         } else {
-            throw new Error("Top level interfaces are not supported");
+            return this.transpileTopLevelCompositeEntity({ returnVariable, context });
         }
     }
 
@@ -81,13 +81,38 @@ export class CompositeReadPartial extends ReadOperation {
         };
     }
 
+    // dupe from transpileNestedCompositeRelationship
+    private transpileTopLevelCompositeEntity({
+        returnVariable,
+        context,
+    }: OperationTranspileOptions): OperationTranspileResult {
+        // const parentNode = context.target;
+        console.log("transpileTopLevelCompositeEntity", context.target, this.target.name);
+        const targetNode = createNodeFromEntity(this.target);
+        const nestedContext = new QueryASTContext({
+            target: targetNode,
+            env: context.env,
+            neo4jGraphQLContext: context.neo4jGraphQLContext,
+        });
+        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+        const ret = this.getProjectionClause(nestedContext, returnVariable);
+
+        const clause = Cypher.concat(...preSelection, matchClause, subqueries, ret);
+
+        return {
+            clauses: [clause],
+            projectionExpr: returnVariable,
+        };
+    }
+
     protected getProjectionClause(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
         const projection = this.getProjectionMap(context);
 
         const targetNodeName = this.target.name;
         projection.set({
             __resolveType: new Cypher.Literal(targetNodeName),
-            __id: Cypher.id(context.source!), // NOTE: I think this is a bug and should be target
+            __id: Cypher.id(context.target), // NOTE: I think this is a bug and should be target
         });
 
         const withClause = new Cypher.With([projection, context.target]);

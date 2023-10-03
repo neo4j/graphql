@@ -78,7 +78,7 @@ export function augmentFulltextSchema(
                 type: withFullTextResultType({ composer, concreteEntityAdapter }).NonNull.List.NonNull,
                 description:
                     "Query a full-text index. This query returns the query score, but does not allow for aggregations. Use the `fulltext` argument under other queries for this functionality.",
-                resolve: fulltextResolver({ node, index: nodeIndex }),
+                resolve: fulltextResolver({ node, index: nodeIndex, entityAdapter: concreteEntityAdapter }),
                 args: {
                     phrase: new GraphQLNonNull(GraphQLString),
                     where: concreteEntityAdapter.operations.fulltextTypeNames.where,

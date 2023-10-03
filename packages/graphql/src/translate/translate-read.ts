@@ -28,25 +28,26 @@ import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
 function translateQuery({
     context,
-    entity,
+    entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    entity: ConcreteEntity;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     // TODO: Rename QueryAST to OperationsTree
     const queryASTFactory = new QueryASTFactory(context.schemaModel);
 
-    if (!entity) throw new Error("Entity not found");
-    const queryAST = queryASTFactory.createQueryAST(resolveTree, entity, context);
+    if (!entityAdapter) throw new Error("Entity not found");
+    const queryAST = queryASTFactory.createQueryAST(resolveTree, entityAdapter, context);
     debug(queryAST.print());
     const clause = queryAST.transpile(context);
     return clause.build();
@@ -58,21 +59,25 @@ export function translateRead(
         context,
         isRootConnectionField,
         isGlobalNode,
+        entityAdapter,
     }: {
         context: Neo4jGraphQLTranslationContext;
-        node: Node;
+        node?: Node;
         isRootConnectionField?: boolean;
         isGlobalNode?: boolean;
+        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     },
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
 
     if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase && !isGlobalNode) {
-        const entity = context.schemaModel.getEntity(node.name) as ConcreteEntity;
-        return translateQuery({ context, entity });
+        return translateQuery({ context, entityAdapter });
     }
 
+    if (!node) {
+        throw new Error("Translating Read: Node cannot be undefined.");
+    }
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
     const cypherFieldAliasMap: CypherFieldReferenceMap = {};

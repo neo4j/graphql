@@ -95,7 +95,11 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
         const userDefinedInterfaceDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
             [];
+        const propagatedDirectives =
+            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
+            [];
         userDefinedDirectivesForInterface.set(definitionNode.name.value, userDefinedInterfaceDirectives);
+        propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
         const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(
             definitionNode,
             definitionNodes

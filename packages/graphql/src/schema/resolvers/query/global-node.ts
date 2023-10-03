@@ -27,8 +27,9 @@ import { fromGlobalId } from "../../../utils/global-ids";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
-export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
+export function globalNodeResolver({ nodes, entities }: { nodes: Node[]; entities: ConcreteEntityAdapter[] }) {
     async function resolve(
         _root: any,
         args: { id: string },
@@ -40,8 +41,9 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         if (!typeName || !field || !id) return null;
 
         const node = nodes.find((n) => n.name === typeName);
+        const entityAdapter = entities.find((n) => n.name === typeName);
 
-        if (!node) return null;
+        if (!entityAdapter) return null;
 
         // modify the resolve tree and append the fragment selectionSet
         const parseInfo = parseResolveInfo(info) ?? { fieldsByTypeName: [] };
@@ -58,7 +60,7 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         }, {} as FieldsByTypeName);
 
         const resolveTree = {
-            name: node.plural,
+            name: entityAdapter.plural,
             alias: "node",
             args: { where: { [field]: id } },
             fieldsByTypeName,
@@ -70,6 +72,7 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
             context: context as Neo4jGraphQLTranslationContext,
             node,
             isGlobalNode: true,
+            entityAdapter,
         });
         const executeResult = await execute({
             cypher,
@@ -84,7 +87,7 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
         const thisValue = executeResult.records[0]?.this;
 
         if (executeResult.records.length && thisValue) {
-            obj = { ...thisValue, id: args.id, __resolveType: node.name };
+            obj = { ...thisValue, id: args.id, __resolveType: entityAdapter.name };
         }
 
         return obj;
