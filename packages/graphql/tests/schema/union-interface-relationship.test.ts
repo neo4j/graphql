@@ -1724,6 +1724,7 @@ describe("Union Interface Relationships", () => {
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+              reviewers: [Reviewer!]!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

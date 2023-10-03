@@ -7429,6 +7429,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people: [Person!]!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8282,6 +8283,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people: [Person!]!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -9135,6 +9137,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people: [Person!]!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
