@@ -36,6 +36,7 @@ describe("Interfaces tests", () => {
     const SomeNodeType = new UniqueType("SomeNode");
     const OtherNodeType = new UniqueType("OtherNode");
     const MyImplementationType = new UniqueType("MyImplementation");
+    const MyOtherImplementationType = new UniqueType("MyOtherImplementation");
 
     async function graphqlQuery(query: string, token: string) {
         return graphql({
@@ -50,8 +51,10 @@ describe("Interfaces tests", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type ${SomeNodeType} {
+            type ${SomeNodeType} implements MyOtherInterface & MyInterface {
                 id: ID! @id @unique
+                something: String
+                somethingElse: String
                 other: ${OtherNodeType}! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
             type ${OtherNodeType} {
@@ -61,8 +64,18 @@ describe("Interfaces tests", () => {
             interface MyInterface {
                 id: ID! @id
             }
+            interface MyOtherInterface implements MyInterface {
+                id: ID! @id
+                something: String
+            }
+
             type ${MyImplementationType} implements MyInterface {
                 id: ID! @id @unique
+            }
+
+            type ${MyOtherImplementationType} implements MyInterface {
+                id: ID! @id @unique
+                someField: String
             }
 
             extend type ${SomeNodeType} @authentication
@@ -73,8 +86,9 @@ describe("Interfaces tests", () => {
         session = await neo4j.getSession();
 
         await session.run(`
-            CREATE(:${SomeNodeType} { id: "1" })-[:HAS_OTHER_NODES]->(other:${OtherNodeType} { id: "2" })
+            CREATE(:${SomeNodeType} { id: "1", something:"somenode",somethingElse:"test"  })-[:HAS_OTHER_NODES]->(other:${OtherNodeType} { id: "2" })
             CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} { id: "3" })
+            CREATE(:${MyOtherImplementationType} { id: "4", someField: "bla" })
         `);
 
         const neoGraphql = new Neo4jGraphQL({
@@ -120,6 +134,65 @@ describe("Interfaces tests", () => {
                             id: "3",
                         },
                     },
+                },
+            ],
+        });
+    });
+
+    test.only("should return results on top-level simple query on interface target to a relationship", async () => {
+        const query = `
+            query {
+                myInterfaces {
+                    id
+                    ... on ${MyOtherImplementationType} {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on ${SomeNodeType} {
+                            somethingElse
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myInterfaces: [
+                {
+                    id: "1",
+                    something: "somenode",
+                    somethingElse: "test",
+                },
+                {
+                    id: "3",
+                },
+                {
+                    id: "4",
+                    someField: "bla",
+                },
+            ],
+        });
+    });
+    test("should return results on top-level simple query on simple interface", async () => {
+        const query = `
+            query {
+                myOtherInterfaces {
+                    id
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myOtherInterfaces: [
+                {
+                    id: "1",
                 },
             ],
         });
