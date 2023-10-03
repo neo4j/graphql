@@ -101,7 +101,7 @@ describe("@auth allow on specific interface implementation", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH this1 { .id, .content, __resolveType: \\"Comment\\", __id: id(this) } AS this1
+                    WITH this1 { .id, .content, __resolveType: \\"Comment\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
@@ -110,7 +110,7 @@ describe("@auth allow on specific interface implementation", () => {
                     WITH *, count(this5) AS creatorCount
                     WITH *
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this4 { .id, .content, __resolveType: \\"Post\\", __id: id(this) } AS this4
+                    WITH this4 { .id, .content, __resolveType: \\"Post\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -162,7 +162,7 @@ describe("@auth allow on specific interface implementation", () => {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                     WHERE this1.id = $param1
-                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this) } AS this1
+                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
@@ -178,7 +178,7 @@ describe("@auth allow on specific interface implementation", () => {
                         WITH this7 { .content } AS this7
                         RETURN collect(this7) AS var8
                     }
-                    WITH this4 { comments: var8, __resolveType: \\"Post\\", __id: id(this) } AS this4
+                    WITH this4 { comments: var8, __resolveType: \\"Post\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
