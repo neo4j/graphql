@@ -22,13 +22,13 @@ import type { GraphQLCreateInput } from "./batch-create/types";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import { mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
 import { UnwindCreateVisitor } from "./batch-create/unwind-create-visitors/UnwindCreateVisitor";
-import createProjectionAndParams from "./create-projection-and-params";
-import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 
 export default async function unwindCreate({
     context,
@@ -54,53 +54,29 @@ export default async function unwindCreate({
     createNodeAST.accept(unwindCreateVisitor);
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
 
-    const projectionWith: string[] = [];
-    let predicates: Cypher.Predicate[] = [];
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create] || {};
-    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
-    const metaNames: string[] = [];
-    let projectionCypher: Cypher.Expr | undefined;
-
-    if (metaNames.length > 0) {
-        projectionWith.push(`${metaNames.join(" + ")} AS meta`);
+    // TODO refactor this with proper variable names and errors;
+    const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!concreteEntityAdapter) {
+        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    let projectionSubquery: Cypher.Clause | undefined;
-    if (nodeProjection) {
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: rootNodeVariable,
-            cypherFieldAliasMap: {},
-        });
-        projectionSubquery = Cypher.concat(...projection.subqueries);
-        projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
-            return `${compileCypher(rootNodeVariable, env)} ${compileCypher(projection.projection, env)}`;
-        });
-        predicates = projection.predicates;
-    }
+    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
+        resolveTree,
+        concreteEntityAdapter.entity,
+        context
+    );
+    const queryASTEnv = new QueryASTEnv();
+    const queryASTContext = new QueryASTContext({
+        target: rootNodeVariable,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+    });
+    const projectionCypher = queryAST.transpile(queryASTContext);
 
     const unwindCreate = Cypher.concat(unwindQuery, createCypher);
-    const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
-    const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
-
-    let withWhere: Cypher.With | undefined;
-    if (predicates.length) {
-        withWhere = new Cypher.With("*").where(Cypher.and(...predicates));
-    }
 
     const createQuery = new Cypher.RawCypher((env) => {
-        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
-        const withWhereStr = compileCypherIfExists(withWhere, env);
-
-        const cypher = filterTruthy([
-            compileCypher(unwindCreate, env),
-            projectionWithStr,
-            projectionSubqueryStr,
-            withWhereStr,
-            compileCypher(returnStatement, env),
-        ])
+        const cypher = filterTruthy([compileCypher(unwindCreate, env), compileCypher(projectionCypher, env)])
             .filter(Boolean)
             .join("\n");
 
@@ -118,27 +94,4 @@ export default async function unwindCreate({
             resolvedCallbacks,
         },
     };
-}
-
-function generateCreateReturnStatementCypher(
-    projection: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
-): Cypher.Expr {
-    return new Cypher.RawCypher((env: Cypher.Environment) => {
-        const statements: string[] = [];
-
-        if (projection) {
-            statements.push(`collect(${compileCypher(projection, env)}) AS data`);
-        }
-
-        if (subscriptionsEnabled) {
-            statements.push(META_CYPHER_VARIABLE);
-        }
-
-        if (statements.length === 0) {
-            statements.push("'Query cannot conclude with CALL'");
-        }
-
-        return `RETURN ${statements.join(", ")}`;
-    });
 }

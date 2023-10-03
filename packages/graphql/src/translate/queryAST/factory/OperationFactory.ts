@@ -20,7 +20,7 @@
 import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
-import { Integer } from "neo4j-driver";
+import { Integer, isRelationship } from "neo4j-driver";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -49,7 +49,9 @@ import { FilterFactory } from "./FilterFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { UnwindCreateOperation } from "../ast/operations/UnwindCreateOperation";
 
+const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
@@ -63,6 +65,43 @@ export class OperationsFactory {
 
         const authFilterFactory = new AuthFilterFactory(queryASTFactory);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
+    }
+
+    public createTopLevelOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): ReadOperation | UnwindCreateOperation {
+        if (resolveTree.name === entity.operations.rootTypeFieldNames.create) {
+            return this.createUnwindCreateOperation(entity, resolveTree, context);
+        }
+
+        const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation; // interface are supported only for top level read operations;
+        op.nodeAlias = TOP_LEVEL_NODE_NAME;
+        return op;
+    }
+
+    private createUnwindCreateOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): UnwindCreateOperation {
+        const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
+        ); // all the create projection fields.
+        // TODO: Do it for each response fields.
+        //const firstRes = responseFields[0] as ResolveTree;
+        const unwindCreateOP = new UnwindCreateOperation({ target: entity });
+        const projectionFields = responseFields
+            .filter((f) => f.name === entity.plural)
+            .map((field) => {
+                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                readOP.setPartOfMutation(true);
+                return readOP;
+            });
+
+        unwindCreateOP.setProjectionFields(projectionFields);
+        return unwindCreateOP;
     }
 
     public createReadOperation(
@@ -80,7 +119,6 @@ export class OperationsFactory {
                 targetOperations: ["READ"],
                 context,
             });
-
             const operation = new ReadOperation({
                 target: entity,
                 relationship,

@@ -355,6 +355,120 @@ describe("Batch Create", () => {
             }"
         `);
     });
+    
+    test("nested batch, (simone test)", async () => {
+        const query = gql`
+            mutation {
+                createMovies(
+                    input: [
+                        { id: "1", actors: { create: [{ node: { name: "actor 1" }, edge: { year: 2022 } }] } }
+                        { id: "2", actors: { create: [{ node: { name: "actor 1" }, edge: { year: 2022 } }] } }
+                    ]
+                ) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "UNWIND $create_param0 AS create_var4
+            CALL {
+                WITH create_var4
+                CREATE (create_this0:Movie)
+                SET
+                    create_this0.id = create_var4.id
+                WITH create_this0, create_var4
+                CALL {
+                    WITH create_this0, create_var4
+                    UNWIND create_var4.actors.create AS create_var5
+                    WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
+                    CREATE (create_this8:Actor)
+                    SET
+                        create_this8.name = create_var6.name,
+                        create_this8.id = randomUUID()
+                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
+                    SET
+                        create_this9.year = create_var7.year
+                    WITH create_this8
+                    CALL {
+                    	WITH create_this8
+                    	MATCH (create_this8)-[create_this8_website_Website_unique:HAS_WEBSITE]->(:Website)
+                    	WITH count(create_this8_website_Website_unique) as c
+                    	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
+                    	RETURN c AS create_this8_website_Website_unique_ignored
+                    }
+                    RETURN collect(NULL) AS create_var10
+                }
+                WITH create_this0
+                CALL {
+                	WITH create_this0
+                	MATCH (create_this0)-[create_this0_website_Website_unique:HAS_WEBSITE]->(:Website)
+                	WITH count(create_this0_website_Website_unique) as c
+                	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+                	RETURN c AS create_this0_website_Website_unique_ignored
+                }
+                RETURN create_this0
+            }
+            CALL {
+                WITH create_this0
+                MATCH (create_this0)<-[create_this1:ACTED_IN]-(create_this2:Actor)
+                WITH create_this2 { .name } AS create_this2
+                RETURN collect(create_this2) AS create_var3
+            }
+            RETURN collect(create_this0 { .id, actors: create_var3 }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"create_param0\\": [
+                    {
+                        \\"id\\": \\"1\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        \\"id\\": \\"2\\",
+                        \\"actors\\": {
+                            \\"create\\": [
+                                {
+                                    \\"node\\": {
+                                        \\"name\\": \\"actor 1\\"
+                                    },
+                                    \\"edge\\": {
+                                        \\"year\\": {
+                                            \\"low\\": 2022,
+                                            \\"high\\": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
 
     test("connect", async () => {
         const query = gql`

@@ -43,13 +43,14 @@ export class QueryASTFactory {
     ): QueryAST {
         const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name);
         if (!entityAdapter) throw new Error(`Entity ${entity.name} not found`);
-
+        const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context);
+        /*  
         const operation = this.operationsFactory.createReadOperation(
             entityAdapter,
             resolveTree,
             context
-        ) as ReadOperation; // TOP level with interfaces is not yet supported
-        operation.nodeAlias = TOP_LEVEL_NODE_NAME;
+        ) as ReadOperation; // TOP level with interfaces is not yet supported */
+       // operation.nodeAlias = TOP_LEVEL_NODE_NAME;
         return new QueryAST(operation);
     }
 }

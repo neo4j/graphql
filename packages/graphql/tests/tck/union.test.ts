@@ -63,6 +63,7 @@ describe("Cypher Union", () => {
                         }
                         ... on Genre {
                             name
+                        
                         }
                     }
                 }

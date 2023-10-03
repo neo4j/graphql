@@ -48,6 +48,15 @@ export class ReadOperation extends Operation {
     protected sortFields: Sort[] = [];
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
+    /**
+     * isPartOfMutation describes if the ReadOperation is part of a mutation,
+     * there a few differences in the cypher produced between top-level read operations an those that are part of mutations.
+     * The main differences are:
+     * - The Top-level MATCH is no longer needed as it's implicit in the mutation
+     * - The RETURN clause contains the subscription meta field.
+     * - The return variable is named "this" instead of "data"
+     **/
+    private isPartOfMutation: boolean = false;
 
     constructor({
         target,
@@ -66,6 +75,10 @@ export class ReadOperation extends Operation {
 
     public setFields(fields: Field[]) {
         this.fields = fields;
+    }
+
+    public setPartOfMutation(isPartOfMutation: boolean) {
+        this.isPartOfMutation = isPartOfMutation;
     }
 
     public addSort(...sort: Sort[]): void {
@@ -218,8 +231,7 @@ export class ReadOperation extends Operation {
         const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
-        const projection = this.getProjectionMap(context);
-
+        const ret: Cypher.Return = this.getReturnStatement(context, returnVariable);
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
 
         let filterSubqueryWith: Cypher.With | undefined;
@@ -241,8 +253,6 @@ export class ReadOperation extends Operation {
             }
         }
 
-        const ret = new Cypher.Return([projection, returnVariable]);
-
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
@@ -251,29 +261,48 @@ export class ReadOperation extends Operation {
 
         const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
 
-        let sortAndLimitBlock: Cypher.Clause;
-        if (this.hasCypherSort()) {
-            // This is a performance optimisation
-            sortAndLimitBlock = Cypher.concat(...cypherFieldSubqueries, sortBlock);
-        } else {
-            sortAndLimitBlock = Cypher.concat(sortBlock, ...cypherFieldSubqueries);
-        }
+        const sortAndLimitBlock: Cypher.Clause = this.hasCypherSort()
+            ? Cypher.concat(...cypherFieldSubqueries, sortBlock)
+            : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
-        const clause = Cypher.concat(
-            ...preSelection,
-            ...authFilterSubqueries,
-            matchClause,
-            filterSubqueriesClause,
-            filterSubqueryWith,
-            sortAndLimitBlock,
-            subqueries,
-            ret
-        );
+        let clause: Cypher.Clause;
+    
+        // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
+        if (this.isPartOfMutation) {
+            clause = Cypher.concat(
+                ...preSelection,
+                ...authFilterSubqueries,
+                filterSubqueriesClause,
+                filterSubqueryWith,
+                sortAndLimitBlock,
+                subqueries,
+                ret
+            );
+        } else {
+            clause = Cypher.concat(
+                ...preSelection,
+                ...authFilterSubqueries,
+                matchClause,
+                filterSubqueriesClause,
+                filterSubqueryWith,
+                sortAndLimitBlock,
+                subqueries,
+                ret
+            );
+        }
 
         return {
             clauses: [clause],
             projectionExpr: returnVariable,
         };
+    }
+
+    private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
+        const projection = this.getProjectionMap(context);
+        if (this.isPartOfMutation) {
+            return new Cypher.Return([Cypher.collect(projection), returnVariable]);
+        }
+        return new Cypher.Return([projection, returnVariable]);
     }
 
     private hasCypherSort(): boolean {
