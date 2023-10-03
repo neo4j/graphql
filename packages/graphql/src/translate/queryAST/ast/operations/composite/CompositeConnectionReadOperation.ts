@@ -27,6 +27,7 @@ import type { Sort, SortField } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 import { QueryASTContext } from "../../QueryASTContext";
 import { filterTruthy } from "../../../../../utils/utils";
+import { isNestedContext } from "../../../utils/is-nested-context";
 
 export class CompositeConnectionReadOperation extends Operation {
     private children: CompositeConnectionPartial[];
@@ -49,6 +50,7 @@ export class CompositeConnectionReadOperation extends Operation {
                 context,
                 returnVariable: edgeVar,
             });
+            if (!isNestedContext(context)) throw new Error("No parent node found!");
             const parentNode = context.target;
             return result.clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));
         });

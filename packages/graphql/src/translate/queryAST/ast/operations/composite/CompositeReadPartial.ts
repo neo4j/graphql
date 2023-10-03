@@ -23,6 +23,7 @@ import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { isNestedContext } from "../../../utils/is-nested-context";
 
 export class CompositeReadPartial extends ReadOperation {
     public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
@@ -37,6 +38,7 @@ export class CompositeReadPartial extends ReadOperation {
         entity: RelationshipAdapter,
         { returnVariable, context }: OperationTranspileOptions
     ): OperationTranspileResult {
+        if (!isNestedContext(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(this.target);
@@ -107,6 +109,7 @@ export class CompositeReadPartial extends ReadOperation {
     }
 
     protected getProjectionClause(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
+        if (!isNestedContext(context)) throw new Error("No parent node found!");
         const projection = this.getProjectionMap(context);
 
         const targetNodeName = this.target.name;

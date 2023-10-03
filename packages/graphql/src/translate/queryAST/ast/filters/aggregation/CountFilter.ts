@@ -22,6 +22,7 @@ import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { isNestedContext } from "../../../utils/is-nested-context";
 
 export class CountFilter extends Filter {
     protected comparisonValue: unknown;
@@ -44,6 +45,7 @@ export class CountFilter extends Filter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        if (!isNestedContext(queryASTContext)) throw new Error("No parent node found!");
         return this.createBaseOperation({
             operator: this.operator,
             expr: Cypher.count(queryASTContext.target),
