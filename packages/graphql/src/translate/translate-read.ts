@@ -32,6 +32,7 @@ import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -40,7 +41,7 @@ function translateQuery({
     entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     // TODO: Rename QueryAST to OperationsTree
@@ -65,7 +66,7 @@ export function translateRead(
         node?: Node;
         isRootConnectionField?: boolean;
         isGlobalNode?: boolean;
-        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
     },
     varName = "this"
 ): Cypher.CypherResult {

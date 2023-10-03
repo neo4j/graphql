@@ -119,6 +119,64 @@ describe("unions", () => {
         }
     });
 
+    test.only("should read top-level simple query on union", async () => {
+        const session = await neo4j.getSession();
+
+        const typeDefs = `
+            union Search = ${GenreType} | ${MovieType}
+
+            type ${GenreType} {
+                name: String
+            }
+
+            type ${MovieType} {
+                title: String
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const query = `
+            query {
+                searches {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:${MovieType} {title: "The Matrix"})
+                CREATE (g:${GenreType} {name: "Action"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValues(),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any).searches).toIncludeSameMembers([
+                { name: "Action" },
+                { title: "The Matrix" },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should read and return correct union members with where argument", async () => {
         const session = await neo4j.getSession();
 

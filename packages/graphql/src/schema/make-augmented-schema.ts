@@ -401,11 +401,12 @@ function makeAugmentedSchema(
                 features,
                 composer,
             });
-            // composer.Query.addFields({
-            //     [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-            //         entityAdapter: unionEntityAdapter,
-            //     }),
-            // });
+            // TODO: add annotations to UnionEntity
+            composer.Query.addFields({
+                [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                    entityAdapter: unionEntityAdapter,
+                }),
+            });
             return;
         }
         if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
