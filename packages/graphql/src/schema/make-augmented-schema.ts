@@ -525,17 +525,14 @@ function makeAugmentedSchema(
     };
 
     schemaModel.compositeEntities.forEach((compositeEntityAdapter) => {
-        const shouldGenerateResolver = true;
-        // if (compositeEntityAdapter instanceof UnionEntityAdapter) {
-        //     // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
-        //     shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
-        //         if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === compositeEntityAdapter.name)
-        //             return true;
-        //         return false;
-        //     });
-        // }
-        if (compositeEntityAdapter instanceof UnionEntityAdapter) {
-            return;
+        let shouldGenerateResolver = true;
+        if (compositeEntityAdapter instanceof UnionEntity) {
+            // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
+            shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
+                if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === compositeEntityAdapter.name)
+                    return true;
+                return false;
+            });
         }
         if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
             generatedResolvers[compositeEntityAdapter.name] = {
