@@ -27,7 +27,7 @@ import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { delay } from "../../../src/utils/utils";
 import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Single instance Subscription", () => {
     let neo4j: Neo4j;
