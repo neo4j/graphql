@@ -104,7 +104,7 @@ function makeAugmentedSchema(
         subgraph?: Subgraph;
     } = {},
     schemaModel: Neo4jGraphQLSchemaModel,
-    experimentalSchema: boolean
+    _experimentalSchema: boolean
 ): {
     nodes: Node[];
     relationships: Relationship[];
