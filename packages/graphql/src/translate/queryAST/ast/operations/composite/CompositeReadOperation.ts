@@ -59,23 +59,24 @@ export class CompositeReadOperation extends Operation {
         return this.children;
     }
 
+    private transpileTopLevelCompositeRead(options: OperationTranspileOptions): OperationTranspileResult {
+        const nestedSubqueries = this.children.flatMap((c) => {
+            const result = c.transpile({
+                context: options.context,
+                returnVariable: options.returnVariable,
+            });
+            return result.clauses;
+        });
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(options.returnVariable);
+        return {
+            clauses: [nestedSubquery],
+            projectionExpr: options.returnVariable,
+        };
+    }
+
     public transpile(options: OperationTranspileOptions): OperationTranspileResult {
         if (!this.relationship) {
-            // this is top-level abstract read
-            const nestedSubqueries = this.children.flatMap((c) => {
-                const result = c.transpile({
-                    context: options.context,
-                    returnVariable: options.returnVariable,
-                });
-                return result.clauses;
-            });
-            const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(
-                options.returnVariable
-            );
-            return {
-                clauses: [nestedSubquery],
-                projectionExpr: options.returnVariable,
-            };
+            return this.transpileTopLevelCompositeRead(options);
         }
 
         const parentNode = options.context.target;

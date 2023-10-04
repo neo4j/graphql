@@ -88,8 +88,6 @@ export class CompositeReadPartial extends ReadOperation {
         returnVariable,
         context,
     }: OperationTranspileOptions): OperationTranspileResult {
-        // const parentNode = context.target;
-        console.log("transpileTopLevelCompositeEntity", context.target, this.target.name);
         const targetNode = createNodeFromEntity(this.target);
         const nestedContext = new QueryASTContext({
             target: targetNode,
