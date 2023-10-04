@@ -319,7 +319,6 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes: [MovieNode!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -650,7 +649,6 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes: [MovieNode!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

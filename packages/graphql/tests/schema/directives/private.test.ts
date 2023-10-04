@@ -88,7 +88,6 @@ describe("@private directive", () => {
             }
 
             type Query {
-              userInterfaces: [UserInterface!]!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!

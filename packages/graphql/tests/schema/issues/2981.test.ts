@@ -860,7 +860,6 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               bookTitleSvs(options: BookTitle_SVOptions, where: BookTitle_SVWhere): [BookTitle_SV!]!
               bookTitleSvsAggregate(where: BookTitle_SVWhere): BookTitle_SVAggregateSelection!
               bookTitleSvsConnection(after: String, first: Int, sort: [BookTitle_SVSort], where: BookTitle_SVWhere): BookTitleSvsConnection!
-              bookTitles: [BookTitle!]!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksAggregate(where: BookWhere): BookAggregateSelection!
               booksConnection(after: String, first: Int, sort: [BookSort], where: BookWhere): BooksConnection!
