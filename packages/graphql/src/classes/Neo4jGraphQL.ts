@@ -60,6 +60,7 @@ export interface Neo4jGraphQLConstructor {
     driver?: Driver;
     debug?: boolean;
     validate?: boolean;
+    experimentalSchema?: boolean;
 }
 
 class Neo4jGraphQL {
@@ -88,10 +89,10 @@ class Neo4jGraphQL {
 
     private debug?: boolean;
     private validate: boolean;
-    private experimentalSchema: boolean = false;
+    private experimentalSchema: boolean;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { driver, features, typeDefs, resolvers, debug, validate = true } = input;
+        const { driver, features, typeDefs, resolvers, debug, validate = true, experimentalSchema = false } = input;
 
         this.driver = driver;
         this.features = this.parseNeo4jFeatures(features);
@@ -101,6 +102,7 @@ class Neo4jGraphQL {
 
         this.debug = debug;
         this.validate = validate;
+        this.experimentalSchema = experimentalSchema;
 
         this.checkEnableDebug();
 
@@ -111,12 +113,7 @@ class Neo4jGraphQL {
         }
     }
 
-    public async getSchema(
-        { experimental }: { experimental: boolean } = { experimental: false }
-    ): Promise<GraphQLSchema> {
-        if (experimental === true) {
-            this.experimentalSchema = true;
-        }
+    public async getSchema(): Promise<GraphQLSchema> {
         return this.getExecutableSchema();
     }
 
