@@ -331,7 +331,7 @@ export type NodeSubscriptionsEvent =
               old: undefined;
               new: Record<string, any>;
           };
-          id: number; // | string
+          id: number;
           timestamp: number;
       }
     | {
@@ -341,7 +341,7 @@ export type NodeSubscriptionsEvent =
               old: Record<string, any>;
               new: Record<string, any>;
           };
-          id: number; // | string
+          id: number;
           timestamp: number;
       }
     | {
@@ -351,7 +351,7 @@ export type NodeSubscriptionsEvent =
               old: Record<string, any>;
               new: undefined;
           };
-          id: number; // | string
+          id: number;
           timestamp: number;
       };
 export type RelationshipSubscriptionsEvent =
