@@ -47,19 +47,19 @@ export class UnwindCreateOperation extends Operation {
         this.projectionFields.push(...operations);
     }
 
-    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
         // TODO: implement the actual unwind create
-        const clauses = this.getProjectionClause({ context, returnVariable });
-        return { projectionExpr: returnVariable, clauses };
+        const clauses = this.getProjectionClause({ context });
+        return { projectionExpr: context.returnVariable, clauses };
     }
 
-    private getProjectionClause({ context, returnVariable }: OperationTranspileOptions): Cypher.Clause[] {
+    private getProjectionClause({ context }: OperationTranspileOptions): Cypher.Clause[] {
         if (this.projectionFields.length === 0) {
             return [new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"))];
         }
         return this.projectionFields.map((projectionOP) => {
-            return Cypher.concat(...projectionOP.transpile({ context, returnVariable }).clauses);
+            return Cypher.concat(...projectionOP.transpile({ context }).clauses);
         });
     }
 }

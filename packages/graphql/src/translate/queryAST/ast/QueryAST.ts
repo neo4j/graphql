@@ -36,10 +36,12 @@ export class QueryAST {
         if (this.operation instanceof ReadOperation) {
             const queryASTEnv = new QueryASTEnv();
             const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+
             const context = new QueryASTContext({
                 target: node,
                 env: queryASTEnv,
                 neo4jGraphQLContext,
+                returnVariable: new Cypher.NamedVariable("this"),
             });
             return this.transpile(context);
         }
@@ -47,8 +49,9 @@ export class QueryAST {
     }
 
     public transpile(context: QueryASTContext): Cypher.Clause {
-        const returnVariable = this.operation instanceof ReadOperation ? "this" : "data";
-        const result = this.operation.transpile({ context, returnVariable: new Cypher.NamedVariable(returnVariable) });
+        const result = this.operation.transpile({
+            context,
+        });
         return Cypher.concat(...result.clauses);
     }
 

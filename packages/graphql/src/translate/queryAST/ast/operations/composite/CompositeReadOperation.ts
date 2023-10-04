@@ -60,7 +60,6 @@ export class CompositeReadOperation extends Operation {
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({
                 context: options.context,
-                returnVariable: options.returnVariable,
             });
 
             let clauses = result.clauses;
@@ -70,14 +69,14 @@ export class CompositeReadOperation extends Operation {
             return clauses;
         });
 
-        let aggrExpr: Cypher.Expr = Cypher.collect(options.returnVariable);
+        let aggrExpr: Cypher.Expr = Cypher.collect(options.context.returnVariable);
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(options.returnVariable);
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(options.context.returnVariable);
 
         if (this.sortFields.length > 0) {
-            nestedSubquery.orderBy(...this.getSortFields(options.context, options.returnVariable));
+            nestedSubquery.orderBy(...this.getSortFields(options.context, options.context.returnVariable));
         }
         if (this.pagination) {
             const paginationField = this.pagination.getPagination();
@@ -91,11 +90,11 @@ export class CompositeReadOperation extends Operation {
             }
         }
 
-        nestedSubquery.return([aggrExpr, options.returnVariable]);
+        nestedSubquery.return([aggrExpr, options.context.returnVariable]);
 
         return {
             clauses: [nestedSubquery],
-            projectionExpr: options.returnVariable,
+            projectionExpr: options.context.returnVariable,
         };
     }
 

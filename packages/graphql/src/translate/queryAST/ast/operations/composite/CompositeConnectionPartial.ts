@@ -25,7 +25,7 @@ import type { Sort } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
-    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
@@ -107,7 +107,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             }
         }
 
-        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(returnVariable);
+        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(context.returnVariable);
 
         const subClause = Cypher.concat(
             ...preSelection,
@@ -120,7 +120,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         return {
             clauses: [subClause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

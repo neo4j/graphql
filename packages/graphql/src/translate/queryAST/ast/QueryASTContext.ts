@@ -41,6 +41,7 @@ export class QueryASTContext {
     public readonly target: Cypher.Node;
     public readonly relationship?: Cypher.Relationship;
     public readonly source?: Cypher.Node;
+    public readonly returnVariable: Cypher.Variable;
 
     public env: QueryASTEnv;
     public neo4jGraphQLContext: Neo4jGraphQLContext;
@@ -51,18 +52,21 @@ export class QueryASTContext {
         source,
         env,
         neo4jGraphQLContext,
+        returnVariable,
     }: {
         target: Cypher.Node;
         relationship?: Cypher.Relationship;
         source?: Cypher.Node;
         env?: QueryASTEnv;
         neo4jGraphQLContext: Neo4jGraphQLContext;
+        returnVariable?: Cypher.Variable;
     }) {
         this.target = target;
         this.relationship = relationship;
         this.source = source;
         this.env = env ?? new QueryASTEnv();
         this.neo4jGraphQLContext = neo4jGraphQLContext;
+        this.returnVariable = returnVariable ?? new Cypher.Variable();
     }
 
     public getRelationshipScope(): Scope {
@@ -85,13 +89,22 @@ export class QueryASTContext {
         return scopeVar;
     }
 
-    public push({ relationship, target }: { relationship: Cypher.Relationship; target: Cypher.Node }): QueryASTContext {
+    public push({
+        relationship,
+        target,
+        returnVariable,
+    }: {
+        relationship: Cypher.Relationship;
+        target: Cypher.Node;
+        returnVariable?: Cypher.Variable;
+    }): QueryASTContext {
         return new QueryASTContext({
             source: this.target,
             relationship: relationship,
             target: target,
             env: this.env,
             neo4jGraphQLContext: this.neo4jGraphQLContext,
+            returnVariable,
         });
     }
 }

@@ -25,9 +25,9 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "../ope
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export class CompositeReadPartial extends ReadOperation {
-    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
-            return this.transpileNestedCompositeRelationship(this.relationship, { returnVariable, context });
+            return this.transpileNestedCompositeRelationship(this.relationship, { context });
         } else {
             throw new Error("Top level interfaces are not supported");
         }
@@ -35,7 +35,7 @@ export class CompositeReadPartial extends ReadOperation {
 
     private transpileNestedCompositeRelationship(
         entity: RelationshipAdapter,
-        { returnVariable, context }: OperationTranspileOptions
+        { context }: OperationTranspileOptions
     ): OperationTranspileResult {
         const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
@@ -64,7 +64,7 @@ export class CompositeReadPartial extends ReadOperation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(
             ...preSelection,
@@ -77,7 +77,7 @@ export class CompositeReadPartial extends ReadOperation {
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: nestedContext.returnVariable,
         };
     }
 

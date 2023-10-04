@@ -70,6 +70,7 @@ export default async function unwindCreate({
         target: rootNodeVariable,
         env: queryASTEnv,
         neo4jGraphQLContext: context,
+        returnVariable: new Cypher.NamedVariable("data"),
     });
     const projectionCypher = queryAST.transpile(queryASTContext);
 

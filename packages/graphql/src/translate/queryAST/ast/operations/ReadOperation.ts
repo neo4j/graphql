@@ -107,7 +107,7 @@ export class ReadOperation extends Operation {
 
     private transpileNestedRelationship(
         entity: RelationshipAdapter,
-        { context, returnVariable }: OperationTranspileOptions
+        { context }: OperationTranspileOptions
     ): OperationTranspileResult {
         //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
@@ -141,7 +141,7 @@ export class ReadOperation extends Operation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList);
+        const ret = this.getProjectionClause(nestedContext, nestedContext.returnVariable, entity.isList);
 
         const clause = Cypher.concat(
             ...preSelection,
@@ -155,7 +155,7 @@ export class ReadOperation extends Operation {
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: nestedContext.returnVariable,
         };
     }
 
@@ -207,10 +207,9 @@ export class ReadOperation extends Operation {
         };
     }
 
-    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
             return this.transpileNestedRelationship(this.relationship, {
-                returnVariable: new Cypher.Variable(),
                 context,
             });
         }
@@ -231,7 +230,7 @@ export class ReadOperation extends Operation {
         const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
-        const ret: Cypher.Return = this.getReturnStatement(context, returnVariable);
+        const ret: Cypher.Return = this.getReturnStatement(context, context.returnVariable);
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
 
         let filterSubqueryWith: Cypher.With | undefined;
@@ -293,7 +292,7 @@ export class ReadOperation extends Operation {
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 
