@@ -139,7 +139,7 @@ describe("Interfaces tests", () => {
         });
     });
 
-    test.only("should return results on top-level simple query on interface target to a relationship", async () => {
+    test("should return results on top-level simple query on interface target to a relationship", async () => {
         const query = `
             query {
                 myInterfaces {
@@ -182,6 +182,12 @@ describe("Interfaces tests", () => {
             query {
                 myOtherInterfaces {
                     id
+                    ... on ${SomeNodeType} {
+                        id
+                        other {
+                            id
+                        }
+                    }
                 }
             }
         `;
@@ -193,6 +199,9 @@ describe("Interfaces tests", () => {
             myOtherInterfaces: [
                 {
                     id: "1",
+                    other: {
+                        id: "2",
+                    },
                 },
             ],
         });

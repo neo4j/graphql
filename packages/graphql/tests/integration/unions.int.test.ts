@@ -118,8 +118,72 @@ describe("unions", () => {
             await session.close();
         }
     });
+    test("read Unions with missing types", async () => {
+        const session = await neo4j.getSession();
 
-    test.only("should read top-level simple query on union", async () => {
+        const typeDefs = `
+            union Search = ${GenreType} | ${MovieType}
+
+            type ${GenreType} {
+                name: String
+            }
+
+            type ${MovieType} {
+                title: String
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                ${MovieType.plural} {
+                    search {
+                        ... on ${GenreType} {
+                            name
+                        }
+                        
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:${MovieType} {title: "${movieTitle}"})
+                CREATE (g:${GenreType} {name: "${genreName}"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValues(),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            const movies = (gqlResult.data as any)[MovieType.plural][0];
+
+            expect(movies.search).toIncludeSameMembers([{ name: genreName }, {}]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should read top-level simple query on union", async () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
@@ -148,6 +212,11 @@ describe("unions", () => {
                     }
                     ... on ${MovieType} {
                         title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
                     }
                 }
             }
@@ -170,7 +239,7 @@ describe("unions", () => {
 
             expect((gqlResult.data as any).searches).toIncludeSameMembers([
                 { name: "Action" },
-                { title: "The Matrix" },
+                { title: "The Matrix", search: [{ name: "Action" }, {}] },
             ]);
         } finally {
             await session.close();
