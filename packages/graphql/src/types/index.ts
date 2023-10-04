@@ -28,7 +28,7 @@ import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOpti
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
-import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "../classes";
 
