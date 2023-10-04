@@ -47,7 +47,7 @@ import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { wrapSubscription } from "../schema/resolvers/composition/wrap-subscription";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 
@@ -60,6 +60,7 @@ export interface Neo4jGraphQLConstructor {
     driver?: Driver;
     debug?: boolean;
     validate?: boolean;
+    experimental?: boolean;
 }
 
 class Neo4jGraphQL {
@@ -88,9 +89,10 @@ class Neo4jGraphQL {
 
     private debug?: boolean;
     private validate: boolean;
+    private experimental: boolean;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { driver, features, typeDefs, resolvers, debug, validate = true } = input;
+        const { driver, features, typeDefs, resolvers, debug, validate = true, experimental = false } = input;
 
         this.driver = driver;
         this.features = this.parseNeo4jFeatures(features);
@@ -100,6 +102,7 @@ class Neo4jGraphQL {
 
         this.debug = debug;
         this.validate = validate;
+        this.experimental = experimental;
 
         this.checkEnableDebug();
 
@@ -372,15 +375,13 @@ class Neo4jGraphQL {
 
             this.schemaModel = this.generateSchemaModel(document);
 
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema({
                 document,
-                {
-                    features: this.features,
-                    generateSubscriptions: Boolean(this.features?.subscriptions),
-                    userCustomResolvers: this.resolvers,
-                },
-                this.schemaModel
-            );
+                features: this.features,
+                userCustomResolvers: this.resolvers,
+                schemaModel: this.schemaModel,
+                _experimental: this.experimental,
+            });
 
             if (this.validate) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
@@ -437,16 +438,14 @@ class Neo4jGraphQL {
 
         this.schemaModel = this.generateSchemaModel(document);
 
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema({
             document,
-            {
-                features: this.features,
-                generateSubscriptions: Boolean(this.features?.subscriptions),
-                userCustomResolvers: this.resolvers,
-                subgraph,
-            },
-            this.schemaModel
-        );
+            features: this.features,
+            userCustomResolvers: this.resolvers,
+            subgraph,
+            schemaModel: this.schemaModel,
+            _experimental: this.experimental,
+        });
 
         if (this.validate) {
             validateUserDefinition({
@@ -478,11 +477,12 @@ class Neo4jGraphQL {
         }
 
         const setup = async () => {
-            const subscriptionsMechanism = this.features?.subscriptions;
-            if (subscriptionsMechanism) {
-                subscriptionsMechanism.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
-                if (subscriptionsMechanism.init) {
-                    await subscriptionsMechanism.init();
+            const subscriptionsEngine = this.features?.subscriptions;
+            if (subscriptionsEngine) {
+                subscriptionsEngine.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
+                if (subscriptionsEngine.init) {
+                    if (!this.schemaModel) throw new Error("SchemaModel not available on subscription mechanism");
+                    await subscriptionsEngine.init({ schemaModel: this.schemaModel });
                 }
             }
         };
