@@ -401,12 +401,13 @@ function makeAugmentedSchema(
                 features,
                 composer,
             });
-            // TODO: add annotations to UnionEntity
-            composer.Query.addFields({
-                [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                    entityAdapter: unionEntityAdapter,
-                }),
-            });
+            if (unionEntityAdapter.isReadable) {
+                composer.Query.addFields({
+                    [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                        entityAdapter: unionEntityAdapter,
+                    }),
+                });
+            }
             return;
         }
         if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
@@ -427,8 +428,7 @@ function makeAugmentedSchema(
                 },
             });
             // TODO: mirror everything on interfaces target of relationships
-            // TODO: create different type containing the _on field (for each implementing concrete entity)
-            // Q: should _on contain also implementing interface types?
+            // TODO [top-level-abstract-types-filtering]: _on should contain also implementing interface types?
             if (interfaceEntityAdapter.isReadable) {
                 composer.Query.addFields({
                     [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -537,10 +537,7 @@ function makeAugmentedSchema(
         }
         if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
             generatedResolvers[compositeEntityAdapter.name] = {
-                __resolveType: (root) => {
-                    console.log("inside resolver for", compositeEntityAdapter.name, root);
-                    return root.__resolveType;
-                },
+                __resolveType: (root) => root.__resolveType,
             };
         }
     });
