@@ -530,16 +530,38 @@ function makeAugmentedSchema({
         ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
+    // schemaModel.compositeEntities.forEach((compositeEntityAdapter) => {
+    //     console.log("composite:", compositeEntityAdapter.name)
+    //     let shouldGenerateResolver = true;
+    //     if (compositeEntityAdapter instanceof UnionEntity) {
+    //         // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
+    //         shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
+    //             if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === compositeEntityAdapter.name)
+    //                 return true;
+    //             return false;
+    //         });
+    //     }
+    //     if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
+    //         generatedResolvers[compositeEntityAdapter.name] = {
+    //             __resolveType: (root) => root.__resolveType,
+    //         };
+    //     }
+    // });
+
     schemaModel.compositeEntities.forEach((compositeEntityAdapter) => {
         let shouldGenerateResolver = true;
-        if (compositeEntityAdapter instanceof UnionEntity) {
-            // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
-            shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
-                if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === compositeEntityAdapter.name)
-                    return true;
-                return false;
-            });
-        }
+        // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
+        shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
+            if (
+                ((def.kind === Kind.UNION_TYPE_DEFINITION && compositeEntityAdapter instanceof UnionEntityAdapter) ||
+                    (def.kind === Kind.INTERFACE_TYPE_DEFINITION &&
+                        compositeEntityAdapter instanceof InterfaceEntityAdapter)) &&
+                def.name.value === compositeEntityAdapter.name
+            )
+                return true;
+            return false;
+        });
+
         if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
             generatedResolvers[compositeEntityAdapter.name] = {
                 __resolveType: (root) => root.__resolveType,
