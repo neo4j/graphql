@@ -33,18 +33,17 @@ export class QueryAST {
     }
 
     public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
-        const queryASTEnv = new QueryASTEnv();
-        const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
-        const context = new QueryASTContext({
-            target: node,
-            env: queryASTEnv,
-            neo4jGraphQLContext,
-        });
-        //const returnVariable = this.operation.isMutation ? new Cypher.NamedVariable("this") : undefined;
-
-        /*         const result = this.operation.transpile({ context, returnVariable: new Cypher.NamedVariable("this") });
-        return Cypher.concat(...result.clauses); */
-        return this.transpile(context);
+        if (this.operation instanceof ReadOperation) {
+            const queryASTEnv = new QueryASTEnv();
+            const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+            const context = new QueryASTContext({
+                target: node,
+                env: queryASTEnv,
+                neo4jGraphQLContext,
+            });
+            return this.transpile(context);
+        }
+        throw new Error("Operation not supported yet");
     }
 
     public transpile(context: QueryASTContext): Cypher.Clause {
