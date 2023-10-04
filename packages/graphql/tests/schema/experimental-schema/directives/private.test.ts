@@ -36,7 +36,7 @@ describe("@private directive", () => {
                 private: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

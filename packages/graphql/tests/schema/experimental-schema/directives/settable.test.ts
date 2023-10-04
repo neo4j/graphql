@@ -37,7 +37,7 @@ describe("@settable", () => {
                 description: String @settable(onCreate: false, onUpdate: true)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -205,7 +205,7 @@ describe("@settable", () => {
                 description: String @settable(onCreate: true, onUpdate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -613,7 +613,7 @@ describe("@settable", () => {
                         @settable(onCreate: false, onUpdate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1072,7 +1072,7 @@ describe("@settable", () => {
                         @settable(onCreate: true, onUpdate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1522,7 +1522,7 @@ describe("@settable", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onUpdate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -2155,7 +2155,7 @@ describe("@settable", () => {
                     actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onCreate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -2805,7 +2805,7 @@ describe("@settable", () => {
                         @settable(onCreate: false, onUpdate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -3328,7 +3328,7 @@ describe("@settable", () => {
                         @settable(onCreate: true, onUpdate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -3834,7 +3834,7 @@ describe("@settable", () => {
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onUpdate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -4523,7 +4523,7 @@ describe("@settable", () => {
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onCreate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -5234,7 +5234,7 @@ describe("@settable", () => {
                         @settable(onCreate: false, onUpdate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -5747,7 +5747,7 @@ describe("@settable", () => {
                         @settable(onCreate: true, onUpdate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -6242,7 +6242,7 @@ describe("@settable", () => {
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onUpdate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -7146,7 +7146,7 @@ describe("@settable", () => {
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT) @settable(onCreate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {

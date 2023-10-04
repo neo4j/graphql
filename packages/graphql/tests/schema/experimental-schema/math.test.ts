@@ -30,7 +30,7 @@ describe("Algebraic", () => {
                 viewers: Int!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -201,7 +201,7 @@ describe("Algebraic", () => {
                 viewers: BigInt!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -377,7 +377,7 @@ describe("Algebraic", () => {
                 viewers: Float!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -557,7 +557,7 @@ describe("Algebraic", () => {
                 directs: [Movie!]! @relationship(type: "DIRECTS", direction: OUT)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1147,7 +1147,7 @@ describe("Algebraic", () => {
                 worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1766,7 +1766,7 @@ describe("Algebraic", () => {
                 pay: Float
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

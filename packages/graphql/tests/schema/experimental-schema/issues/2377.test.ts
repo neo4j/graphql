@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
                 updatedAt: DateTime! @timestamp(operations: [UPDATE])
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
