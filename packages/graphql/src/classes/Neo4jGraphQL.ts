@@ -47,7 +47,7 @@ import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { wrapSubscription } from "../schema/resolvers/composition/wrap-subscription";
 import { getDefinitionNodes } from "../schema/get-definition-nodes";
 
@@ -478,11 +478,12 @@ class Neo4jGraphQL {
         }
 
         const setup = async () => {
-            const subscriptionsMechanism = this.features?.subscriptions;
-            if (subscriptionsMechanism) {
-                subscriptionsMechanism.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
-                if (subscriptionsMechanism.init) {
-                    await subscriptionsMechanism.init();
+            const subscriptionsEngine = this.features?.subscriptions;
+            if (subscriptionsEngine) {
+                subscriptionsEngine.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
+                if (subscriptionsEngine.init) {
+                    if (!this.schemaModel) throw new Error("SchemaModel not available on subscription mechanism");
+                    await subscriptionsEngine.init({ schemaModel: this.schemaModel });
                 }
             }
         };

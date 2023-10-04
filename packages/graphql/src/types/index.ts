@@ -28,6 +28,7 @@ import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOpti
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "../classes";
 
@@ -387,6 +388,10 @@ export type RelationshipSubscriptionsEvent =
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
+export type SubscriptionEngineContext = {
+    schemaModel: Neo4jGraphQLSchemaModel;
+};
+
 /** Defines a custom mechanism to transport subscription events internally between servers */
 export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
@@ -394,7 +399,7 @@ export interface Neo4jGraphQLSubscriptionsEngine {
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
 
     /** To be called, if needed, in getSchema */
-    init?(): Promise<void>;
+    init?(context: SubscriptionEngineContext): Promise<void>;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;
