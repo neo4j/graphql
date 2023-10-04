@@ -88,6 +88,7 @@ class Neo4jGraphQL {
 
     private debug?: boolean;
     private validate: boolean;
+    private experimentalSchema: boolean = false;
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { driver, features, typeDefs, resolvers, debug, validate = true } = input;
@@ -110,7 +111,12 @@ class Neo4jGraphQL {
         }
     }
 
-    public async getSchema(): Promise<GraphQLSchema> {
+    public async getSchema(
+        { experimental }: { experimental: boolean } = { experimental: false }
+    ): Promise<GraphQLSchema> {
+        if (experimental === true) {
+            this.experimentalSchema = true;
+        }
         return this.getExecutableSchema();
     }
 
@@ -379,7 +385,8 @@ class Neo4jGraphQL {
                     generateSubscriptions: Boolean(this.features?.subscriptions),
                     userCustomResolvers: this.resolvers,
                 },
-                this.schemaModel
+                this.schemaModel,
+                this.experimentalSchema
             );
 
             if (this.validate) {
@@ -445,7 +452,8 @@ class Neo4jGraphQL {
                 userCustomResolvers: this.resolvers,
                 subgraph,
             },
-            this.schemaModel
+            this.schemaModel,
+            this.experimentalSchema
         );
 
         if (this.validate) {

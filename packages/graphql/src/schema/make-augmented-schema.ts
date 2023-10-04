@@ -103,7 +103,8 @@ function makeAugmentedSchema(
         userCustomResolvers?: IResolvers | Array<IResolvers>;
         subgraph?: Subgraph;
     } = {},
-    schemaModel: Neo4jGraphQLSchemaModel
+    schemaModel: Neo4jGraphQLSchemaModel,
+    experimentalSchema: boolean
 ): {
     nodes: Node[];
     relationships: Relationship[];
