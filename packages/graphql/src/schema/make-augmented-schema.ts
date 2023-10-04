@@ -90,22 +90,21 @@ function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name:
     return "name" in x;
 }
 
-function makeAugmentedSchema(
-    document: DocumentNode,
-    {
-        features,
-        generateSubscriptions,
-        userCustomResolvers,
-        subgraph,
-    }: {
-        features?: Neo4jFeaturesSettings;
-        generateSubscriptions?: boolean;
-        userCustomResolvers?: IResolvers | Array<IResolvers>;
-        subgraph?: Subgraph;
-    } = {},
-    schemaModel: Neo4jGraphQLSchemaModel,
-    _experimentalSchema: boolean
-): {
+function makeAugmentedSchema({
+    document,
+    features,
+    userCustomResolvers,
+    subgraph,
+    schemaModel,
+    _experimental,
+}: {
+    document: DocumentNode;
+    features?: Neo4jFeaturesSettings;
+    userCustomResolvers?: IResolvers | Array<IResolvers>;
+    subgraph?: Subgraph;
+    schemaModel: Neo4jGraphQLSchemaModel;
+    _experimental: boolean;
+}): {
     nodes: Node[];
     relationships: Relationship[];
     typeDefs: DocumentNode;
@@ -422,7 +421,7 @@ function makeAugmentedSchema(
         return;
     });
 
-    if (generateSubscriptions && nodes.length) {
+    if (Boolean(features?.subscriptions) && nodes.length) {
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,

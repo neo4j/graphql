@@ -60,7 +60,7 @@ export interface Neo4jGraphQLConstructor {
     driver?: Driver;
     debug?: boolean;
     validate?: boolean;
-    experimentalSchema?: boolean;
+    experimental?: boolean;
 }
 
 class Neo4jGraphQL {
@@ -89,10 +89,10 @@ class Neo4jGraphQL {
 
     private debug?: boolean;
     private validate: boolean;
-    private experimentalSchema: boolean;
+    private experimental: boolean;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { driver, features, typeDefs, resolvers, debug, validate = true, experimentalSchema = false } = input;
+        const { driver, features, typeDefs, resolvers, debug, validate = true, experimental = false } = input;
 
         this.driver = driver;
         this.features = this.parseNeo4jFeatures(features);
@@ -102,7 +102,7 @@ class Neo4jGraphQL {
 
         this.debug = debug;
         this.validate = validate;
-        this.experimentalSchema = experimentalSchema;
+        this.experimental = experimental;
 
         this.checkEnableDebug();
 
@@ -375,16 +375,13 @@ class Neo4jGraphQL {
 
             this.schemaModel = this.generateSchemaModel(document);
 
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(
+            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema({
                 document,
-                {
-                    features: this.features,
-                    generateSubscriptions: Boolean(this.features?.subscriptions),
-                    userCustomResolvers: this.resolvers,
-                },
-                this.schemaModel,
-                this.experimentalSchema
-            );
+                features: this.features,
+                userCustomResolvers: this.resolvers,
+                schemaModel: this.schemaModel,
+                _experimental: this.experimental,
+            });
 
             if (this.validate) {
                 validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
@@ -441,17 +438,14 @@ class Neo4jGraphQL {
 
         this.schemaModel = this.generateSchemaModel(document);
 
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(
+        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema({
             document,
-            {
-                features: this.features,
-                generateSubscriptions: Boolean(this.features?.subscriptions),
-                userCustomResolvers: this.resolvers,
-                subgraph,
-            },
-            this.schemaModel,
-            this.experimentalSchema
-        );
+            features: this.features,
+            userCustomResolvers: this.resolvers,
+            subgraph,
+            schemaModel: this.schemaModel,
+            _experimental: this.experimental,
+        });
 
         if (this.validate) {
             validateUserDefinition({
