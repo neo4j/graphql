@@ -96,14 +96,14 @@ function makeAugmentedSchema({
     userCustomResolvers,
     subgraph,
     schemaModel,
-    _experimental,
+    experimental,
 }: {
     document: DocumentNode;
     features?: Neo4jFeaturesSettings;
     userCustomResolvers?: IResolvers | Array<IResolvers>;
     subgraph?: Subgraph;
     schemaModel: Neo4jGraphQLSchemaModel;
-    _experimental: boolean;
+    experimental: boolean;
 }): {
     nodes: Node[];
     relationships: Relationship[];
@@ -246,6 +246,7 @@ function makeAugmentedSchema({
             relationshipFields,
             userDefinedFieldDirectivesForNode,
             propagatedDirectivesForNode,
+            experimental,
         });
         if (updatedRelationships) {
             relationships = updatedRelationships;
@@ -401,12 +402,14 @@ function makeAugmentedSchema({
                 features,
                 composer,
             });
-            if (unionEntityAdapter.isReadable) {
-                composer.Query.addFields({
-                    [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                        entityAdapter: unionEntityAdapter,
-                    }),
-                });
+            if (experimental) {
+                if (unionEntityAdapter.isReadable) {
+                    composer.Query.addFields({
+                        [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                            entityAdapter: unionEntityAdapter,
+                        }),
+                    });
+                }
             }
             return;
         }
@@ -427,18 +430,20 @@ function makeAugmentedSchema({
                     includeRelationships: true,
                 },
             });
-            // TODO: mirror everything on interfaces target of relationships
-            // TODO [top-level-abstract-types-filtering]: _on should contain also implementing interface types?
-            if (interfaceEntityAdapter.isReadable) {
-                composer.Query.addFields({
-                    [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                        entityAdapter: interfaceEntityAdapter,
-                    }),
-                });
-                composer.Query.setFieldDirectives(
-                    interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-                    graphqlDirectivesToCompose(propagatedDirectives)
-                );
+            if (experimental) {
+                // TODO: mirror everything on interfaces target of relationships
+                // TODO [top-level-abstract-types-filtering]: _on should contain also implementing interface types?
+                if (interfaceEntityAdapter.isReadable) {
+                    composer.Query.addFields({
+                        [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                            entityAdapter: interfaceEntityAdapter,
+                        }),
+                    });
+                    composer.Query.setFieldDirectives(
+                        interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+                        graphqlDirectivesToCompose(propagatedDirectives)
+                    );
+                }
             }
             return;
         }
@@ -643,6 +648,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     relationshipFields,
     userDefinedFieldDirectivesForNode,
     propagatedDirectivesForNode,
+    experimental,
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
@@ -652,6 +658,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
+    experimental: boolean;
 }) {
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
         string,
@@ -687,17 +694,19 @@ function doForInterfacesThatAreTargetOfARelationship({
         }),
     ];
 
-    const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
-    if (interfaceEntityAdapter.isReadable) {
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                entityAdapter: interfaceEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(
-            interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
+    if (experimental) {
+        const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+        if (interfaceEntityAdapter.isReadable) {
+            composer.Query.addFields({
+                [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                    entityAdapter: interfaceEntityAdapter,
+                }),
+            });
+            composer.Query.setFieldDirectives(
+                interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+        }
     }
 
     return relationships;
