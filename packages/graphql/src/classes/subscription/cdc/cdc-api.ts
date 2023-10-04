@@ -20,40 +20,46 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Driver } from "neo4j-driver";
 import type { CDCEvent, CDCQueryResponse } from "./cdc-types";
+import { filterTruthy } from "../../../utils/utils";
 
 export class CDCApi {
     private driver: Driver;
-    private token: string = "";
+    private lastChangeId: string = "";
 
     constructor(driver: Driver) {
         this.driver = driver;
     }
 
     public async queryEvents(): Promise<CDCEvent[]> {
-        if (!this.token) {
-            this.token = await this.fetchCurrentToken();
+        if (!this.lastChangeId) {
+            this.lastChangeId = await this.fetchCurrentChangeId();
         }
 
-        const tokenLiteral = new Cypher.Literal(this.token);
-        const queryProcedure = CDCCypher.query(tokenLiteral).yield("id", "event");
+        const lastChangeIdLiteral = new Cypher.Literal(this.lastChangeId);
+        const queryProcedure = CDCProcedures.query(lastChangeIdLiteral).yield("id", "event");
 
         const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
 
-        this.updateTokenWithLastEvent(events);
+        this.updateChangeIdWithLastEvent(events);
         return events.map((query) => query.event);
     }
 
-    private async fetchCurrentToken(): Promise<string> {
-        const currentProcedure = CDCCypher.current();
+    private async fetchCurrentChangeId(): Promise<string> {
+        const currentProcedure = CDCProcedures.current();
 
         const result = await this.runProcedure<{ id: string }>(currentProcedure);
-        return result[0]!.id;
+
+        if (result[0] && result[0].id) {
+            return result[0].id;
+        } else {
+            throw new Error("id not available on cdc.current");
+        }
     }
 
-    private updateTokenWithLastEvent(events: CDCQueryResponse[]): void {
+    private updateChangeIdWithLastEvent(events: CDCQueryResponse[]): void {
         const lastEvent = events[events.length - 1];
         if (lastEvent) {
-            this.token = lastEvent.id;
+            this.lastChangeId = lastEvent.id;
         }
     }
 
@@ -68,12 +74,13 @@ export class CDCApi {
 }
 
 /** Wrapper of Cypher Builder for CDC */
-class CDCCypher {
+class CDCProcedures {
     static current(): Cypher.Procedure {
         return new Cypher.Procedure<"id">("cdc.current");
     }
 
-    static query(token: Cypher.Expr): Cypher.Procedure {
-        return new Cypher.Procedure<"id" | "txId" | "seq" | "metadata" | "event">("cdc.query", [token]);
+    static query(from: Cypher.Expr, selectors?: Cypher.Expr): Cypher.Procedure {
+        const procedureParams = filterTruthy([from, selectors]);
+        return new Cypher.Procedure<"id" | "txId" | "seq" | "metadata" | "event">("cdc.query", procedureParams);
     }
 }
