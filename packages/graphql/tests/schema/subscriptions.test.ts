@@ -2208,6 +2208,7 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              actors: [Actor!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -5356,6 +5357,7 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              actors: [Actor!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

@@ -3220,6 +3220,7 @@ describe("Directive-preserve", () => {
               blogs(options: BlogOptions, where: BlogWhere): [Blog!]!
               blogsAggregate(where: BlogWhere): BlogAggregateSelection!
               blogsConnection(after: String, first: Int, sort: [BlogSort], where: BlogWhere): BlogsConnection!
+              contents: [Content!]!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
