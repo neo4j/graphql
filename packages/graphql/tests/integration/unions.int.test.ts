@@ -202,6 +202,7 @@ describe("unions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers: {},
+            experimental: true,
         });
 
         const query = `

@@ -28,7 +28,7 @@ describe("Cypher Union", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    beforeAll(() => {
+    beforeEach(() => {
         typeDefs = gql`
             union Search = Genre | Movie
 
@@ -54,6 +54,11 @@ describe("Cypher Union", () => {
     });
 
     test("Read union top-level", async () => {
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+            experimental: true,
+        });
         const query = gql`
             {
                 searches {
@@ -87,6 +92,11 @@ describe("Cypher Union", () => {
     });
 
     test("Read union top-level with relationship on member type", async () => {
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+            experimental: true,
+        });
         const query = gql`
             {
                 searches {

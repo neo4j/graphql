@@ -32,6 +32,7 @@ describe("Interfaces tests", () => {
     let neo4j: Neo4j;
     let driver: Driver;
     let session: Session;
+    let typeDefs: string;
 
     const SomeNodeType = new UniqueType("SomeNode");
     const OtherNodeType = new UniqueType("OtherNode");
@@ -49,8 +50,10 @@ describe("Interfaces tests", () => {
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
 
-        const typeDefs = `
+    beforeEach(async () => {
+        typeDefs = `
             type ${SomeNodeType} implements MyOtherInterface & MyInterface {
                 id: ID! @id @unique
                 something: String
@@ -103,8 +106,12 @@ describe("Interfaces tests", () => {
         schema = await neoGraphql.getSchema();
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
+        await session.run(`MATCH (n) DETACH DELETE n;`);
         await session.close();
+    });
+
+    afterAll(async () => {
         await driver.close();
     });
 
@@ -140,6 +147,18 @@ describe("Interfaces tests", () => {
     });
 
     test("should return results on top-level simple query on interface target to a relationship", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
         const query = `
             query {
                 myInterfaces {
@@ -178,6 +197,18 @@ describe("Interfaces tests", () => {
         });
     });
     test("should return results on top-level simple query on simple interface", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
         const query = `
             query {
                 myOtherInterfaces {
