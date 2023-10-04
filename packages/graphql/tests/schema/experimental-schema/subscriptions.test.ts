@@ -50,9 +50,7 @@ describe("Subscriptions", () => {
                 subscriptions: plugin,
             },
         });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -693,9 +691,7 @@ describe("Subscriptions", () => {
             },
         });
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1461,9 +1457,7 @@ describe("Subscriptions", () => {
             },
         });
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -2601,9 +2595,7 @@ describe("Subscriptions", () => {
             },
         });
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -3482,9 +3474,7 @@ describe("Subscriptions", () => {
                 subscriptions: plugin,
             },
         });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -4008,9 +3998,7 @@ describe("Subscriptions", () => {
                 subscriptions: plugin,
             },
         });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -4617,9 +4605,7 @@ describe("Subscriptions", () => {
             },
         });
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -5705,9 +5691,7 @@ describe("Subscriptions", () => {
             },
         });
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

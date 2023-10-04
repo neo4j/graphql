@@ -48,10 +48,8 @@ describe("Interface Relationships", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -608,10 +606,8 @@ describe("Interface Relationships", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -2108,10 +2104,8 @@ describe("Interface Relationships", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -3014,7 +3008,7 @@ describe("Interface Relationships", () => {
 
         // expect(() => {
         //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
+        //     const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
         // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
     });
 
@@ -3047,10 +3041,8 @@ describe("Interface Relationships", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

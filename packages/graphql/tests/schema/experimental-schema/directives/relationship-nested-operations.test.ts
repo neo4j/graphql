@@ -36,8 +36,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const schema = await neoSchema.getSchema();
 
             const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
             expect(updateFieldInput).toBeUndefined();
@@ -393,10 +393,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -766,10 +764,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1147,10 +1143,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1511,10 +1505,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1879,10 +1871,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -2248,10 +2238,8 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -2604,10 +2592,8 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -3015,10 +3001,8 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -3558,10 +3542,8 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -4070,8 +4052,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const schema = await neoSchema.getSchema();
 
             const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
             expect(updateFieldInput).toBeUndefined();
@@ -4457,10 +4439,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -4888,10 +4868,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -5327,10 +5305,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -5735,10 +5711,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -6152,10 +6126,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -6570,10 +6542,8 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -6957,10 +6927,8 @@ describe("Relationship nested operations", () => {
                         @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -7454,10 +7422,8 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -8045,10 +8011,8 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -8566,8 +8530,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const schema = await neoSchema.getSchema();
 
             const updateFieldInput = schema.getType("MovieActorsUpdateFieldInput") as GraphQLNamedInputType;
             expect(updateFieldInput).toBeUndefined();
@@ -8982,10 +8946,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CREATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -9419,10 +9381,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -9855,10 +9815,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [UPDATE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -10288,10 +10246,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DELETE])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -10715,10 +10671,8 @@ describe("Relationship nested operations", () => {
                     actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -11143,10 +11097,8 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -11683,10 +11635,8 @@ describe("Relationship nested operations", () => {
                     producers: [Person!]! @relationship(type: "PRODUCED", direction: IN, nestedOperations: [DISCONNECT])
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {

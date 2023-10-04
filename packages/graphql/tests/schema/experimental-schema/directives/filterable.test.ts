@@ -51,7 +51,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
 
             expect(movieWhereType).toBeDefined();
@@ -120,7 +120,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -227,7 +227,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -317,7 +317,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -367,7 +367,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -417,7 +417,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -467,7 +467,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -521,7 +521,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -575,7 +575,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -629,7 +629,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -683,7 +683,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -741,7 +741,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -799,7 +799,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -857,7 +857,7 @@ describe("@filterable directive", () => {
                     subscriptions: plugin,
                 },
             });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const schema = await neoSchema.getSchema();
 
             const movieWhereType = schema.getType("MovieWhere") as GraphQLInputObjectType;
             expect(movieWhereType).toBeDefined();
@@ -908,7 +908,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -1726,7 +1726,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -2586,7 +2586,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -3410,7 +3410,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -4184,7 +4184,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -5046,7 +5046,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -5880,7 +5880,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -6657,7 +6657,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -7510,7 +7510,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -8363,7 +8363,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -9220,7 +9220,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -10451,7 +10451,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -11682,7 +11682,7 @@ describe("@filterable directive", () => {
                         subscriptions: plugin,
                     },
                 });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const schema = await neoSchema.getSchema();
 
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`

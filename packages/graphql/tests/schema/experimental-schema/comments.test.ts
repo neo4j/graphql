@@ -56,10 +56,8 @@ describe("Comments", () => {
                 customScalar: CustomScalar
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -300,10 +298,8 @@ describe("Comments", () => {
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -730,10 +726,8 @@ describe("Comments", () => {
                     actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1271,10 +1265,8 @@ describe("Comments", () => {
                     searchNoDirective: Search
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {

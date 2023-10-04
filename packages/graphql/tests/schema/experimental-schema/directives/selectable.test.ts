@@ -37,10 +37,8 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: false, onAggregate: true)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
@@ -207,10 +205,8 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: true, onAggregate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
@@ -372,10 +368,8 @@ describe("@selectable", () => {
                 description: String @selectable(onRead: false, onAggregate: false)
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
@@ -537,9 +531,7 @@ describe("@selectable", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionMechanism } });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
@@ -778,10 +770,8 @@ describe("@selectable", () => {
                         @selectable(onRead: false, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
                   query: Query
@@ -1227,10 +1217,8 @@ describe("@selectable", () => {
                         @selectable(onRead: true, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
                   query: Query
@@ -1703,10 +1691,8 @@ describe("@selectable", () => {
                         @selectable(onRead: false, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
                   query: Query
@@ -2217,10 +2203,8 @@ describe("@selectable", () => {
                         @selectable(onRead: true, onAggregate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
                   query: Query
@@ -2763,10 +2747,8 @@ describe("@selectable", () => {
                         @selectable(onRead: false, onAggregate: true)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
                   query: Query
@@ -3249,10 +3231,8 @@ describe("@selectable", () => {
                         @selectable(onRead: true, onAggregate: false)
                 }
             `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(
-                lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-            );
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
                   query: Query

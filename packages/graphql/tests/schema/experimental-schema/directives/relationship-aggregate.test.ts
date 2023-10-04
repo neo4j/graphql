@@ -37,8 +37,8 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
@@ -65,8 +65,8 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
@@ -93,8 +93,8 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
@@ -121,8 +121,8 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
@@ -169,8 +169,8 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+        const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
@@ -218,8 +218,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const schema = await neoSchema.getSchema();
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -672,8 +672,8 @@ describe("@relationship directive, aggregate argument", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const schema = await neoSchema.getSchema({ experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+            const schema = await neoSchema.getSchema();
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -1143,8 +1143,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -1562,8 +1562,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -1985,8 +1985,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {
@@ -2507,8 +2507,8 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
-                const schema = await neoSchema.getSchema({ experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, experimentalSchema: true });
+                const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
                     "schema {

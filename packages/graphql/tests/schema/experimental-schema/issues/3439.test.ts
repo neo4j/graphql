@@ -61,13 +61,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         const subscriptionsEngine = new TestSubscriptionsEngine();
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
 
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
         expect(errors).toHaveLength(0);
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -1321,13 +1319,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         const subscriptionsEngine = new TestSubscriptionsEngine();
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
 
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
         expect(errors).toHaveLength(0);
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -2502,13 +2498,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         const subscriptionsEngine = new TestSubscriptionsEngine();
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
 
-        const schema = await neoSchema.getSchema({ experimental: true });
+        const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
         expect(errors).toHaveLength(0);
 
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {

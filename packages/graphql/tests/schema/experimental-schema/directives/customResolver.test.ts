@@ -46,9 +46,7 @@ describe("@customResolver directive", () => {
         };
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-        const printedSchema = printSchemaWithDirectives(
-            lexicographicSortSchema(await neoSchema.getSchema({ experimental: true }))
-        );
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
