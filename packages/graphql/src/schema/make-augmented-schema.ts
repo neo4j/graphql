@@ -23,9 +23,11 @@ import type {
     DirectiveNode,
     DocumentNode,
     GraphQLScalarType,
+    InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
@@ -532,14 +534,16 @@ function makeAugmentedSchema({
 
     schemaModel.compositeEntities.forEach((compositeEntity) => {
         let shouldGenerateResolver = true;
+        const definitionIsOfTheSameType = (
+            def: DefinitionNode
+        ): def is UnionTypeDefinitionNode | InterfaceTypeDefinitionNode =>
+            (def.kind === Kind.UNION_TYPE_DEFINITION && compositeEntity instanceof UnionEntity) ||
+            (def.kind === Kind.INTERFACE_TYPE_DEFINITION && compositeEntity instanceof InterfaceEntity);
         // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
         shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
-            if (
-                ((def.kind === Kind.UNION_TYPE_DEFINITION && compositeEntity instanceof UnionEntity) ||
-                    (def.kind === Kind.INTERFACE_TYPE_DEFINITION && compositeEntity instanceof InterfaceEntity)) &&
-                def.name.value === compositeEntity.name
-            )
+            if (definitionIsOfTheSameType(def) && def.name.value === compositeEntity.name) {
                 return true;
+            }
             return false;
         });
         if (shouldGenerateResolver && !generatedResolvers[compositeEntity.name]) {

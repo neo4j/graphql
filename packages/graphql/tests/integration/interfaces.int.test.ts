@@ -108,10 +108,10 @@ describe("Interfaces tests", () => {
 
     afterEach(async () => {
         await session.run(`MATCH (n) DETACH DELETE n;`);
-        await session.close();
     });
 
     afterAll(async () => {
+        await session.close();
         await driver.close();
     });
 
