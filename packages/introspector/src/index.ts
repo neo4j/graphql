@@ -21,6 +21,7 @@ import type { Session } from "neo4j-driver";
 import graphqlFormatter from "./transforms/neo4j-graphql";
 import toInternalStruct from "./to-internal-struct";
 import type { Neo4jStruct } from "./types";
+export { graphqlFormatter };
 
 export async function toGenericStruct(sessionFactory: () => Session): Promise<Neo4jStruct> {
     return toInternalStruct(sessionFactory);

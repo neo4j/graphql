@@ -34,7 +34,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
         try {
-            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
+            await cSession.executeWrite((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
         } catch (e) {
             if (e instanceof Error) {
                 if (
@@ -69,7 +69,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         if (MULTIDB_SUPPORT) {
             const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
             try {
-                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+                await cSession.executeWrite((tx) => tx.run(`DROP DATABASE ${dbName}`));
             } catch (e) {
                 // ignore
             }
@@ -86,7 +86,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
                 CREATE (a:Actor {name: $props.name})
@@ -125,7 +125,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
                 CREATE (p:Play:Theater {title: $props.title})
@@ -192,7 +192,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             int: neo4j.int(1),
         };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
                 CREATE (a:Actor {name: $props.name})
@@ -251,7 +251,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             roles: ["Footballer", "Drunken man on the street"],
         };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:\`Movie-Label\` {title: $props.title})
                 CREATE (a:\`Actor-Label\` {name: $props.name})

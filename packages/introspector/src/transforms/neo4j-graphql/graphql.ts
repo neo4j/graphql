@@ -27,15 +27,25 @@ import { RelationshipPropertiesDirective } from "./directives/RelationshipProper
 import createRelationshipFields from "./utils/create-relationship-fields";
 import generateGraphQLSafeName from "./utils/generate-graphql-safe-name";
 import nodeKey from "../../utils/node-key";
+import type Node from "../../classes/Node";
 
 type GraphQLNodeMap = {
     [key: string]: GraphQLNode;
 };
 
-export default function graphqlFormatter(neo4jStruct: Neo4jStruct, readonly = false): string {
+type FormatterOptions = {
+    getNodeLabel?: (node: Node) => string;
+    sanitizeRelType?: (relType: string) => string;
+};
+
+export default function graphqlFormatter(
+    neo4jStruct: Neo4jStruct,
+    readonly = false,
+    options: FormatterOptions = {}
+): string {
     const { nodes, relationships } = neo4jStruct;
-    const bareNodes = transformNodes(nodes);
-    const withRelationships = hydrateWithRelationships(bareNodes, relationships);
+    const bareNodes = transformNodes(nodes, options);
+    const withRelationships = hydrateWithRelationships(bareNodes, relationships, options);
     const sorted = Object.keys(withRelationships).sort((a, b) => {
         return withRelationships[a].typeName > withRelationships[b].typeName ? 1 : -1;
     });
@@ -46,7 +56,7 @@ export default function graphqlFormatter(neo4jStruct: Neo4jStruct, readonly = fa
     return sortedWithRelationships.join("\n\n");
 }
 
-function transformNodes(nodes: NodeMap): GraphQLNodeMap {
+function transformNodes(nodes: NodeMap, options: FormatterOptions = {}): GraphQLNodeMap {
     const out = {};
     const takenTypeNames: string[] = [];
     Object.keys(nodes).forEach((nodeType) => {
@@ -54,9 +64,12 @@ function transformNodes(nodes: NodeMap): GraphQLNodeMap {
         if (!nodeType) {
             return;
         }
+
         const neo4jNode = nodes[nodeType];
+
         const neo4jNodeKey = nodeKey(neo4jNode.labels);
-        const mainLabel = neo4jNode.labels[0];
+
+        const mainLabel = options.getNodeLabel ? options.getNodeLabel(neo4jNode) : neo4jNode.labels[0];
         const typeName = generateGraphQLSafeName(mainLabel);
 
         const uniqueTypeName = uniqueString(typeName, takenTypeNames);
@@ -79,7 +92,11 @@ function transformNodes(nodes: NodeMap): GraphQLNodeMap {
     return out;
 }
 
-function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap): GraphQLNodeMap {
+function hydrateWithRelationships(
+    nodes: GraphQLNodeMap,
+    rels: RelationshipMap,
+    options: FormatterOptions = {}
+): GraphQLNodeMap {
     Object.entries(rels).forEach(([relType, rel]) => {
         let relInterfaceName: string;
 
@@ -94,12 +111,14 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
             relTypePropertiesFields.forEach((f) => relInterfaceNode.addField(f));
             nodes[relInterfaceName] = relInterfaceNode;
         }
+        // console.dir(rel, { depth: 7 });
         rel.paths.forEach((path) => {
             const { fromField, toField } = createRelationshipFields(
                 nodes[path.fromTypeId].typeName,
                 nodes[path.toTypeId].typeName,
                 relType,
-                relInterfaceName
+                relInterfaceName,
+                options.sanitizeRelType
             );
             nodes[path.fromTypeId].addField(fromField);
             nodes[path.toTypeId].addField(toField);

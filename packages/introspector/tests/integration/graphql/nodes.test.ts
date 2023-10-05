@@ -19,7 +19,7 @@
 
 import * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { toGraphQLTypeDefs } from "../../../src/index";
+import { graphqlFormatter, toGenericStruct, toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
 describe("GraphQL - Infer Schema nodes basic tests", () => {
@@ -34,7 +34,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
         try {
-            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
+            await cSession.executeWrite((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
         } catch (e) {
             if (e instanceof Error) {
                 if (
@@ -69,7 +69,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         if (MULTIDB_SUPPORT) {
             const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
             try {
-                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+                await cSession.executeWrite((tx) => tx.run(`DROP DATABASE ${dbName}`));
             } catch (e) {
                 // ignore
             }
@@ -85,7 +85,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperty = "testString";
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run("CREATE (:TestLabel {nodeProperty: $prop})", { prop: nodeProperty })
         );
         const bm = wSession.lastBookmark();
@@ -112,7 +112,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperties = { str: "testString", int: neo4j.int(42), number: 80, strArr: ["Stella", "Molly"] };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 "CREATE (:TestLabel {strProp: $props.str, intProp: $props.int, numberProp: $props.number, strArrProp: $props.strArr})",
                 { props: nodeProperties }
@@ -145,7 +145,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (:TestLabel {strProp: $props.first})
                 CREATE (:TestLabel2 {singleProp: $props.second})`,
@@ -180,7 +180,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (:TestLabel {strProp: $props.first})
                 CREATE (:TestLabel2:TestLabel3 {singleProp: $props.second})`,
@@ -215,7 +215,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 "CREATE (:`Test``Label` {strProp: $props.first}) CREATE (:`Test-Label` {singleProp: $props.second})",
                 { props: nodeProperties }
@@ -249,7 +249,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         }
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) => tx.run("CREATE (:`2number` {prop: 1})"));
+        await wSession.executeWrite((tx) => tx.run("CREATE (:`2number` {prop: 1})"));
         const bm = wSession.lastBookmark();
         await wSession.close();
 
@@ -274,7 +274,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperties = { str: "testString", int: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (:FullNode {amb: $props.str, str: $props.str})
                 CREATE (:FullNode {amb: $props.int, str: $props.str})
@@ -307,7 +307,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         }
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run("CREATE ({prop: 1}) CREATE ({prop: 2}) CREATE (:EmptyNode) CREATE (:FullNode {prop: 1})")
         );
         const bm = wSession.lastBookmark();
@@ -333,7 +333,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         }
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) => tx.run("CREATE (:EmptyNode)-[:RELATIONSHIP]->(:FullNode {prop: 1})"));
+        await wSession.executeWrite((tx) => tx.run("CREATE (:EmptyNode)-[:RELATIONSHIP]->(:FullNode {prop: 1})"));
         const bm = wSession.lastBookmark();
         await wSession.close();
 
@@ -363,7 +363,7 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
 
         const nodeProperties = { first: "testString", second: neo4j.int(42) };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (:TestLabel {strProp: $props.first})
                 CREATE (:TestLabel2:TestLabel3 {singleProp: $props.second})`,
@@ -390,5 +390,76 @@ describe("GraphQL - Infer Schema nodes basic tests", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         await expect(neoSchema.getSchema()).resolves.not.toThrow();
+    });
+
+    test("Should support custom label mapping", async () => {
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        const nodeProperties = { first: "testString", second: neo4j.int(42) };
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.executeWrite((tx) =>
+            tx.run(
+                `CREATE (a:TestLabel {strProp: $props.first})
+              CREATE (b:TestLabel2:TestLabel3 {singleProp: $props.second})
+              CREATE (a)-[:RelationshipName]->(b)`,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const genericStruct = await toGenericStruct(sessionFactory(bm) as any);
+        const typeDefs = graphqlFormatter(genericStruct, false, {
+            getNodeLabel: (node: any) => `${node.labels.join("-")}`,
+            sanitizeRelType: (relType: string) => relType.replace(/Name$/, ""),
+        });
+        expect(typeDefs).toMatch(
+            `type TestLabel {
+  relationshipTestLabel2TestLabel3S: [TestLabel2_TestLabel3!]! @relationship(type: "RelationshipName", direction: OUT)
+  strProp: String!
+}
+
+type TestLabel2_TestLabel3 @node(labels: ["TestLabel2", "TestLabel3"]) {
+  singleProp: BigInt!
+  testLabelsRelationship: [TestLabel!]! @relationship(type: "RelationshipName", direction: IN)
+}`.replace(/ {2}/g, "\t")
+        );
+    });
+
+    test("Should not require custom label mapping", async () => {
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        const nodeProperties = { first: "testString", second: neo4j.int(42) };
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.executeWrite((tx) =>
+            tx.run(
+                `CREATE (a:TestLabel {strProp: $props.first})
+            CREATE (b:TestLabel2:TestLabel3 {singleProp: $props.second})
+            CREATE (a)-[:RelationshipName]->(b)`,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        const genericStruct = await toGenericStruct(sessionFactory(bm) as any);
+        const typeDefs = graphqlFormatter({ ...genericStruct }, false);
+        expect(typeDefs).toMatch(
+            `type TestLabel {
+  relationshipNameTestLabel2S: [TestLabel2!]! @relationship(type: "RelationshipName", direction: OUT)
+  strProp: String!
+}
+
+type TestLabel2 @node(labels: ["TestLabel2", "TestLabel3"]) {
+  singleProp: BigInt!
+  testLabelsRelationshipName: [TestLabel!]! @relationship(type: "RelationshipName", direction: IN)
+}`.replace(/ {2}/g, "\t")
+        );
     });
 });

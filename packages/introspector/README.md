@@ -97,7 +97,7 @@ You can introspect the schema and then transform it to any desired format.
 Example:
 
 ```js
-import { toGenericStruct } from "@neo4j/introspector";
+import { toGenericStruct, graphqlFormatter } from "@neo4j/introspector";
 import neo4j from "neo4j-driver";
 
 const driver = neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4j", "password"));
@@ -105,8 +105,64 @@ const driver = neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4j", 
 const sessionFactory = () => driver.session({ defaultAccessMode: neo4j.session.READ });
 
 async function main() {
+    const readonly = true; // We don't want to expose mutations in this case
     const genericStruct = await toGenericStruct(sessionFactory);
+
     // Programmatically transform to what you need.
+
+    // create type definitions for gql from the generic string.
+    const typeDefs = graphqlFormatter(genericStruct, readonly);
+
+    const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+    const server = new ApolloServer({
+        schema: await neoSchema.getSchema(),
+    });
+
+    await startStandaloneServer(server, {
+        context: async ({ req }) => ({ req }),
+    });
+}
+
+main();
+```
+
+### Sanitize GraphQL type names
+
+You can sanitize the GraphQL type names by passing functions using the `sanitizeNodeLabels` and `sanitizeRelationshipTypes` options.
+
+```js
+import { toGenericStruct, graphqlFormatter } from "@neo4j/introspector";
+import neo4j from "neo4j-driver";
+
+const driver = neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4j", "password"));
+
+const sessionFactory = () => driver.session({ defaultAccessMode: neo4j.session.READ });
+
+async function main() {
+    const readonly = true; // We don't want to expose mutations in this case
+    const genericStruct = await toGenericStruct(sessionFactory);
+
+    // Programmatically transform to what you need.
+
+    // create type definitions for gql from the generic string.
+    const typeDefs = graphqlFormatter(genericStruct, readonly, {
+        sanitizeNodeLabels: (node) =>
+            node.labels
+                .sort((a, b) => a.length - b.length)[0] // Take the shortest label
+                .replace(/[^a-zA-Z0-9]/g, "") // Remove all non-alphanumeric characters
+                .replace(/^graph_node_prefix__/g, ""), // Remove a prefix
+        // Remove all non-alphanumeric characters from the relationship types
+        sanitizeRelationshipTypes: (type) => type.replace(/[^a-zA-Z0-9]/g, ""),
+    });
+
+    const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+    const server = new ApolloServer({
+        schema: await neoSchema.getSchema(),
+    });
+
+    await startStandaloneServer(server, {
+        context: async ({ req }) => ({ req }),
+    });
 }
 
 main();
