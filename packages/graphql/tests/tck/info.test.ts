@@ -154,3 +154,141 @@ describe("info", () => {
         `);
     });
 });
+describe.only("info (unwind disabled by subscription)", () => {
+    let typeDefs: DocumentNode;
+    let neoSchema: Neo4jGraphQL;
+
+    beforeAll(() => {
+        typeDefs = gql`
+            type Actor {
+                name: String!
+            }
+
+            type Movie {
+                id: ID
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                subscriptions: true,
+            },
+        });
+    });
+
+    test("should return info from a create mutation", async () => {
+        const query = gql`
+            mutation {
+                createMovies(input: [{ title: "title", actors: { create: [{ node: { name: "Keanu" } }] } }]) {
+                    info {
+                        bookmark
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            WITH [] AS meta
+            CREATE (this0:Movie)
+            SET this0.title = $this0_title
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            WITH *, meta + { event: \\"create\\", id: id(this0_actors0_node), properties: { old: null, new: this0_actors0_node { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta
+            MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
+            WITH meta + { event: \\"create_relationship\\", timestamp: timestamp(), id_from: id(this0_actors0_node), id_to: id(this0), id: id(this0_actors0_relationship), relationshipName: \\"ACTED_IN\\", fromTypename: \\"Actor\\", toTypename: \\"Movie\\", properties: { from: this0_actors0_node { .* }, to: this0 { .* }, relationship: this0_actors0_relationship { .* } } } AS meta, this0, this0_actors0_node
+            WITH *, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            RETURN this0, meta AS this0_meta
+            }
+            WITH this0, this0_meta AS meta
+            RETURN meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_title\\": \\"title\\",
+                \\"this0_actors0_node_name\\": \\"Keanu\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("should return info from a delete mutation", async () => {
+        const query = gql`
+            mutation {
+                deleteMovies(where: { id: "123" }) {
+                    bookmark
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "WITH [] AS meta
+            MATCH (this:Movie)
+            WHERE this.id = $param0
+            WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this)-[r]-()
+            	WITH this, collect(DISTINCT r) AS relationships_to_delete
+            	UNWIND relationships_to_delete AS x
+            	WITH CASE
+            		WHEN id(this)=id(startNode(x)) THEN { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(this), id_to: id(endNode(x)), id: id(x), relationshipName: type(x), fromLabels: labels(this), toLabels: labels(endNode(x)), properties: { from: properties(this), to: properties(endNode(x)), relationship: x { .* } } }
+            		WHEN id(this)=id(endNode(x)) THEN { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(startNode(x)), id_to: id(this), id: id(x), relationshipName: type(x), fromLabels: labels(startNode(x)), toLabels: labels(this), properties: { from: properties(startNode(x)), to: properties(this), relationship: x { .* } } }
+            	END AS meta
+            	RETURN collect(DISTINCT meta) AS relationship_meta
+            }
+            WITH REDUCE(m=meta, r IN relationship_meta | m + r) AS meta, this
+            DETACH DELETE this
+            WITH collect(meta) AS meta
+            WITH REDUCE(m=[], n IN meta | m + n) AS meta
+            RETURN meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"123\\"
+            }"
+        `);
+    });
+
+    test("should return info from an update mutation", async () => {
+        const query = gql`
+            mutation {
+                updateMovies(where: { id: "123" }) {
+                    info {
+                        bookmark
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "WITH [] AS meta
+            MATCH (this:Movie)
+            WHERE this.id = $param0
+            WITH *
+            UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
+            RETURN
+            collect(DISTINCT m) as meta"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"123\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+});
