@@ -3628,7 +3628,7 @@ __metadata:
     jest: 29.7.0
     jest-extended: 4.0.1
     jose: ^4.13.1
-    jwks-rsa: 3.0.1
+    jwks-rsa: 3.1.0
     koa: 2.14.2
     koa-jwt: 4.0.4
     koa-router: 12.0.0
@@ -7270,7 +7270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.17.14":
+"@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.17.17":
   version: 4.17.18
   resolution: "@types/express@npm:4.17.18"
   dependencies:
@@ -7413,7 +7413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.3, @types/jsonwebtoken@npm:^9.0.0":
+"@types/jsonwebtoken@npm:9.0.3, @types/jsonwebtoken@npm:^9.0.2":
   version: 9.0.3
   resolution: "@types/jsonwebtoken@npm:9.0.3"
   dependencies:
@@ -17187,10 +17187,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.10.4, jose@npm:^4.13.1":
+"jose@npm:^4.13.1":
   version: 4.14.6
   resolution: "jose@npm:4.14.6"
   checksum: eae81a234e7bf1446b1bd80722b3462b014e3835b155c3a7799c1c5043163a53a0dc28d347004151b031e6b7b863403aabf8814d9cc217ce21f8c2f3ebd4b335
+  languageName: node
+  linkType: hard
+
+"jose@npm:^4.14.6":
+  version: 4.15.2
+  resolution: "jose@npm:4.15.2"
+  checksum: 8f0cab1eef31243abe14a935b2b330cd95f10f9b69808fd642088ae5000e50e566664934537d2c6413ab2f6b54acd8265a5033da05157aa1260c5f1d7e57fab0
   languageName: node
   linkType: hard
 
@@ -17493,17 +17500,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:3.0.1":
-  version: 3.0.1
-  resolution: "jwks-rsa@npm:3.0.1"
+"jwks-rsa@npm:3.1.0":
+  version: 3.1.0
+  resolution: "jwks-rsa@npm:3.1.0"
   dependencies:
-    "@types/express": ^4.17.14
-    "@types/jsonwebtoken": ^9.0.0
+    "@types/express": ^4.17.17
+    "@types/jsonwebtoken": ^9.0.2
     debug: ^4.3.4
-    jose: ^4.10.4
+    jose: ^4.14.6
     limiter: ^1.1.5
-    lru-memoizer: ^2.1.4
-  checksum: 943bf7792d23761c1e9d1f4d1b67e967ea5b38968583a87a7c862f6df0b9c4a5a34a97fa82efcd375776476664b2916df757aafab69013ab05d3e1fa9fbc1363
+    lru-memoizer: ^2.2.0
+  checksum: eef0c174b0dc7015585982de3aa6644bb8d5b355ebcfc3a40e52ab66cbb9b7c0b699089fd68b7f5d68ae01735a45251f1c1ebc35e9d749e5b84693cc871b0f93
   languageName: node
   linkType: hard
 
@@ -18426,7 +18433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-memoizer@npm:^2.1.4":
+"lru-memoizer@npm:^2.2.0":
   version: 2.2.0
   resolution: "lru-memoizer@npm:2.2.0"
   dependencies:
