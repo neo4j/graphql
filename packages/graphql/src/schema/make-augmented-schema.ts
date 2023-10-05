@@ -23,11 +23,9 @@ import type {
     DirectiveNode,
     DocumentNode,
     GraphQLScalarType,
-    InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
-    UnionTypeDefinitionNode,
 } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
