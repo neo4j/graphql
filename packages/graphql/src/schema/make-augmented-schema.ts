@@ -23,9 +23,11 @@ import type {
     DirectiveNode,
     DocumentNode,
     GraphQLScalarType,
+    InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
@@ -530,40 +532,20 @@ function makeAugmentedSchema({
         ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
-    // schemaModel.compositeEntities.forEach((compositeEntityAdapter) => {
-    //     console.log("composite:", compositeEntityAdapter.name)
-    //     let shouldGenerateResolver = true;
-    //     if (compositeEntityAdapter instanceof UnionEntity) {
-    //         // It is possible to make union types "writeonly". In this case adding a resolver for them breaks schema generation.
-    //         shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
-    //             if (def.kind === Kind.UNION_TYPE_DEFINITION && def.name.value === compositeEntityAdapter.name)
-    //                 return true;
-    //             return false;
-    //         });
-    //     }
-    //     if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
-    //         generatedResolvers[compositeEntityAdapter.name] = {
-    //             __resolveType: (root) => root.__resolveType,
-    //         };
-    //     }
-    // });
-
-    schemaModel.compositeEntities.forEach((compositeEntityAdapter) => {
+    schemaModel.compositeEntities.forEach((compositeEntity) => {
         let shouldGenerateResolver = true;
         // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
         shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
             if (
-                ((def.kind === Kind.UNION_TYPE_DEFINITION && compositeEntityAdapter instanceof UnionEntityAdapter) ||
-                    (def.kind === Kind.INTERFACE_TYPE_DEFINITION &&
-                        compositeEntityAdapter instanceof InterfaceEntityAdapter)) &&
-                def.name.value === compositeEntityAdapter.name
+                ((def.kind === Kind.UNION_TYPE_DEFINITION && compositeEntity instanceof UnionEntity) ||
+                    (def.kind === Kind.INTERFACE_TYPE_DEFINITION && compositeEntity instanceof InterfaceEntity)) &&
+                def.name.value === compositeEntity.name
             )
                 return true;
             return false;
         });
-
-        if (shouldGenerateResolver && !generatedResolvers[compositeEntityAdapter.name]) {
-            generatedResolvers[compositeEntityAdapter.name] = {
+        if (shouldGenerateResolver && !generatedResolvers[compositeEntity.name]) {
+            generatedResolvers[compositeEntity.name] = {
                 __resolveType: (root) => root.__resolveType,
             };
         }
