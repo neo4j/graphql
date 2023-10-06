@@ -237,4 +237,150 @@ describe("Interfaces tests", () => {
             ],
         });
     });
+
+    test("should return results on top-level simple query on simple interface with filters", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const query = `
+            query {
+                myOtherInterfaces(where: {OR: [{id: "2"}, {_on:{ ${SomeNodeType}: { other: {id: "2"}} } }]}) {
+                    id
+                    ... on ${SomeNodeType} {
+                        id
+                        other {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myOtherInterfaces: [
+                {
+                    id: "1",
+                    other: {
+                        id: "2",
+                    },
+                },
+            ],
+        });
+    });
+
+    test.only("should return results on top-level simple query on interface target to a relationship with filters", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const query = `
+            query {
+                myInterfaces(where: { OR: [{
+                     _on: { ${MyOtherImplementationType}: {someField_NOT: "bla"} }
+                    }, {
+                        _on: { ${SomeNodeType}: {somethingElse_NOT: "test"} }
+                    }]
+                }) {
+                    id
+                    ... on ${MyOtherImplementationType} {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on ${SomeNodeType} {
+                            somethingElse
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myInterfaces: [
+                {
+                    id: "3",
+                },
+            ],
+        });
+    });
+
+    test.skip("should return results on top-level simple query on interface target to a relationship with filters including implementing interface", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const query = `
+            query {
+                # myInterfaces(where: { OR: [{ _on: { ${MyOtherImplementationType}: {someField: "bla"} }, {_on: { MyOtherInterface: {something: "somenode"}}}}]) {
+                myInterfaces(where: { OR: [{
+                     _on: { ${MyOtherImplementationType}: {someField: "bla"} }
+                    }, {
+                     _on: {  MyOtherInterface: {something: "somenode"} }
+                    }]
+                }) {
+                    id
+                    ... on ${MyOtherImplementationType} {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on ${SomeNodeType} {
+                            somethingElse
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myInterfaces: [
+                {
+                    id: "1",
+                    something: "somenode",
+                    somethingElse: "test",
+                },
+                {
+                    id: "3",
+                },
+                {
+                    id: "4",
+                    someField: "bla",
+                },
+            ],
+        });
+    });
 });
