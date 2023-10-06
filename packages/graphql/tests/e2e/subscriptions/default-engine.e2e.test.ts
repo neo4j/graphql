@@ -27,12 +27,12 @@ import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { delay } from "../../../src/utils/utils";
 import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Single instance Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-    let plugin: Neo4jGraphQLSubscriptionsDefaultEngine;
+    let engine: Neo4jGraphQLSubscriptionsDefaultEngine;
 
     const typeMovie = new UniqueType("Movie");
 
@@ -52,7 +52,7 @@ describe("Single instance Subscription", () => {
     let wsClient2: WebSocketTestClient;
 
     beforeAll(async () => {
-        plugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
+        engine = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = `
          type ${typeMovie} {
              title: String
@@ -66,7 +66,7 @@ describe("Single instance Subscription", () => {
             typeDefs,
             driver,
             features: {
-                subscriptions: plugin,
+                subscriptions: engine,
             },
         });
 
@@ -97,21 +97,21 @@ describe("Single instance Subscription", () => {
 
     // NOTE: This test **may** be flaky, if so, feel free to remove it
     test("listeners are properly triggered and cleaned up", async () => {
-        expect(plugin.events.getMaxListeners()).toBe(0);
-        expect(plugin.events.listenerCount("create")).toBe(0);
+        expect(engine.events.getMaxListeners()).toBe(0);
+        expect(engine.events.listenerCount("create")).toBe(0);
 
         await wsClient.subscribe(subscriptionQuery);
         await wsClient2.subscribe(subscriptionQuery);
 
         await delay(50); // Sorry listener count takes a bit to update
-        expect(plugin.events.listenerCount("create")).toBe(2);
+        expect(engine.events.listenerCount("create")).toBe(2);
 
         await wsClient2.close();
         await delay(50); // Sorry listener count takes a bit to update
-        expect(plugin.events.listenerCount("create")).toBe(1);
+        expect(engine.events.listenerCount("create")).toBe(1);
     });
 
-    test("multiple listeners attached to local event plugin", async () => {
+    test("multiple listeners attached to local event engine", async () => {
         await wsClient.subscribe(subscriptionQuery);
         await wsClient2.subscribe(subscriptionQuery);
 

@@ -18,12 +18,12 @@
  */
 
 import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../types";
+import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../../types";
 
 export class Neo4jGraphQLSubscriptionsDefaultEngine implements Neo4jGraphQLSubscriptionsEngine {
     public events: EventEmitter = new EventEmitter();
 
-    publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
+    public publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
         this.events.emit(eventMeta.event, eventMeta);
     }
 }
