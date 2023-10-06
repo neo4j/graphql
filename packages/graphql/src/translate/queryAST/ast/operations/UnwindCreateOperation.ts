@@ -23,7 +23,8 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { QueryASTContext } from "../QueryASTContext";
+import { OperationField } from "../fields/OperationField";
+import type { ReadOperation } from "./ReadOperation";
 
 /**
  * This is currently just a dummy tree node,
@@ -31,7 +32,7 @@ import { QueryASTContext } from "../QueryASTContext";
  **/
 export class UnwindCreateOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
-    public projectionFields: Operation[] = [];
+    public projectionFields: ReadOperation[] = [];
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
     constructor({ target }: { target: ConcreteEntityAdapter }) {
@@ -43,7 +44,7 @@ export class UnwindCreateOperation extends Operation {
         return filterTruthy(this.projectionFields);
     }
 
-    public setProjectionFields(operations: Operation[]) {
+    public setProjectionFields(operations: ReadOperation[]) {
         this.projectionFields.push(...operations);
     }
 
@@ -55,11 +56,13 @@ export class UnwindCreateOperation extends Operation {
     }
 
     private getProjectionClause({ context }: OperationTranspileOptions): Cypher.Clause[] {
-        if (this.projectionFields.length === 0) {
+       /*   if (this.projectionFields.length === 0) {
             return [new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"))];
-        }
-        return this.projectionFields.map((projectionOP) => {
-            return Cypher.concat(...projectionOP.transpile({ context }).clauses);
+        }  */
+
+        return this.projectionFields.map((operationField) => {
+            return Cypher.concat(...operationField.transpile({ context }).clauses);
         });
+
     }
 }

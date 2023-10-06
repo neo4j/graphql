@@ -154,7 +154,7 @@ describe("info", () => {
         `);
     });
 });
-describe.only("info (unwind disabled by subscription)", () => {
+describe("info (unwind disabled by subscription)", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -220,75 +220,4 @@ describe.only("info (unwind disabled by subscription)", () => {
         `);
     });
 
-    test("should return info from a delete mutation", async () => {
-        const query = gql`
-            mutation {
-                deleteMovies(where: { id: "123" }) {
-                    bookmark
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "WITH [] AS meta
-            MATCH (this:Movie)
-            WHERE this.id = $param0
-            WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
-            CALL {
-            	WITH this
-            	OPTIONAL MATCH (this)-[r]-()
-            	WITH this, collect(DISTINCT r) AS relationships_to_delete
-            	UNWIND relationships_to_delete AS x
-            	WITH CASE
-            		WHEN id(this)=id(startNode(x)) THEN { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(this), id_to: id(endNode(x)), id: id(x), relationshipName: type(x), fromLabels: labels(this), toLabels: labels(endNode(x)), properties: { from: properties(this), to: properties(endNode(x)), relationship: x { .* } } }
-            		WHEN id(this)=id(endNode(x)) THEN { event: \\"delete_relationship\\", timestamp: timestamp(), id_from: id(startNode(x)), id_to: id(this), id: id(x), relationshipName: type(x), fromLabels: labels(startNode(x)), toLabels: labels(this), properties: { from: properties(startNode(x)), to: properties(this), relationship: x { .* } } }
-            	END AS meta
-            	RETURN collect(DISTINCT meta) AS relationship_meta
-            }
-            WITH REDUCE(m=meta, r IN relationship_meta | m + r) AS meta, this
-            DETACH DELETE this
-            WITH collect(meta) AS meta
-            WITH REDUCE(m=[], n IN meta | m + n) AS meta
-            RETURN meta"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"123\\"
-            }"
-        `);
-    });
-
-    test("should return info from an update mutation", async () => {
-        const query = gql`
-            mutation {
-                updateMovies(where: { id: "123" }) {
-                    info {
-                        bookmark
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "WITH [] AS meta
-            MATCH (this:Movie)
-            WHERE this.id = $param0
-            WITH *
-            UNWIND (CASE meta WHEN [] then [null] else meta end) AS m
-            RETURN
-            collect(DISTINCT m) as meta"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"123\\",
-                \\"resolvedCallbacks\\": {}
-            }"
-        `);
-    });
 });

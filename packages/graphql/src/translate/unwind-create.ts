@@ -66,13 +66,18 @@ export default async function unwindCreate({
         context
     );
     const queryASTEnv = new QueryASTEnv();
+    queryASTEnv.topLevelOperationName = "UNWIND";
     const queryASTContext = new QueryASTContext({
         target: rootNodeVariable,
         env: queryASTEnv,
         neo4jGraphQLContext: context,
         returnVariable: new Cypher.NamedVariable("data"),
     });
-    const projectionCypher = queryAST.transpile(queryASTContext);
+    const clauses = queryAST.transpile(queryASTContext).clauses;
+
+    const projectionCypher = clauses.length
+        ? Cypher.concat(...clauses)
+        : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
     const unwindCreate = Cypher.concat(unwindQuery, createCypher);
 

@@ -204,36 +204,44 @@ describe("Batch Create, Interface", () => {
             CALL {
                 WITH this0
                 CALL {
-                    WITH *
-                    MATCH (this0)<-[create_this0:EMPLOYED]-(create_this1:Actor)
-                    WITH create_this1 { __resolveType: \\"Actor\\", __id: id(this0), .name } AS create_this1
-                    RETURN create_this1 AS create_var2
-                    UNION
-                    WITH *
-                    MATCH (this0)<-[create_this3:EMPLOYED]-(create_this4:Modeler)
-                    WITH create_this4 { __resolveType: \\"Modeler\\", __id: id(this0), .name } AS create_this4
-                    RETURN create_this4 AS create_var2
+                    WITH this0
+                    CALL {
+                        WITH *
+                        MATCH (this0)<-[create_this0:EMPLOYED]-(create_this1:Actor)
+                        WITH create_this1 { .name, __resolveType: \\"Actor\\", __id: id(this0) } AS create_this1
+                        RETURN create_this1 AS create_var2
+                        UNION
+                        WITH *
+                        MATCH (this0)<-[create_this3:EMPLOYED]-(create_this4:Modeler)
+                        WITH create_this4 { .name, __resolveType: \\"Modeler\\", __id: id(this0) } AS create_this4
+                        RETURN create_this4 AS create_var2
+                    }
+                    WITH create_var2
+                    RETURN collect(create_var2) AS create_var2
                 }
-                WITH create_var2
-                RETURN collect(create_var2) AS create_var2
+                RETURN this0 { .id, workers: create_var2 } AS create_var5
             }
             CALL {
                 WITH this1
                 CALL {
-                    WITH *
-                    MATCH (this1)<-[create_this5:EMPLOYED]-(create_this6:Actor)
-                    WITH create_this6 { __resolveType: \\"Actor\\", __id: id(this1), .name } AS create_this6
-                    RETURN create_this6 AS create_var7
-                    UNION
-                    WITH *
-                    MATCH (this1)<-[create_this8:EMPLOYED]-(create_this9:Modeler)
-                    WITH create_this9 { __resolveType: \\"Modeler\\", __id: id(this1), .name } AS create_this9
-                    RETURN create_this9 AS create_var7
+                    WITH this1
+                    CALL {
+                        WITH *
+                        MATCH (this1)<-[create_this6:EMPLOYED]-(create_this7:Actor)
+                        WITH create_this7 { .name, __resolveType: \\"Actor\\", __id: id(this1) } AS create_this7
+                        RETURN create_this7 AS create_var8
+                        UNION
+                        WITH *
+                        MATCH (this1)<-[create_this9:EMPLOYED]-(create_this10:Modeler)
+                        WITH create_this10 { .name, __resolveType: \\"Modeler\\", __id: id(this1) } AS create_this10
+                        RETURN create_this10 AS create_var8
+                    }
+                    WITH create_var8
+                    RETURN collect(create_var8) AS create_var8
                 }
-                WITH create_var7
-                RETURN collect(create_var7) AS create_var7
+                RETURN this1 { .id, workers: create_var8 } AS create_var11
             }
-            RETURN [this0 { .id, workers: create_var2 }, this1 { .id, workers: create_var7 }] AS data"
+            RETURN [create_var5, create_var11] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -415,93 +423,109 @@ describe("Batch Create, Interface", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:HAS_WEBSITE]->(create_this1:Website)
-                WITH create_this1 { .address } AS create_this1
-                RETURN head(collect(create_this1)) AS create_var2
-            }
-            CALL {
-                WITH this0
                 CALL {
-                    WITH *
-                    MATCH (this0)<-[create_this3:EMPLOYED]-(create_this4:Actor)
-                    WITH create_this4 { __resolveType: \\"Actor\\", __id: id(this0), .name } AS create_this4
-                    RETURN create_this4 AS create_var5
-                    UNION
-                    WITH *
-                    MATCH (this0)<-[create_this6:EMPLOYED]-(create_this7:Modeler)
-                    WITH create_this7 { __resolveType: \\"Modeler\\", __id: id(this0), .name } AS create_this7
-                    RETURN create_this7 AS create_var5
+                    WITH this0
+                    MATCH (this0)-[create_this0:HAS_WEBSITE]->(create_this1:Website)
+                    WITH create_this1 { .address } AS create_this1
+                    RETURN head(collect(create_this1)) AS create_var2
                 }
-                WITH create_var5
-                RETURN collect(create_var5) AS create_var5
-            }
-            CALL {
-                WITH this1
-                MATCH (this1)-[create_this8:HAS_WEBSITE]->(create_this9:Website)
-                WITH create_this9 { .address } AS create_this9
-                RETURN head(collect(create_this9)) AS create_var10
+                CALL {
+                    WITH this0
+                    CALL {
+                        WITH *
+                        MATCH (this0)<-[create_this3:EMPLOYED]-(create_this4:Actor)
+                        WITH create_this4 { .name, __resolveType: \\"Actor\\", __id: id(this0) } AS create_this4
+                        RETURN create_this4 AS create_var5
+                        UNION
+                        WITH *
+                        MATCH (this0)<-[create_this6:EMPLOYED]-(create_this7:Modeler)
+                        WITH create_this7 { .name, __resolveType: \\"Modeler\\", __id: id(this0) } AS create_this7
+                        RETURN create_this7 AS create_var5
+                    }
+                    WITH create_var5
+                    RETURN collect(create_var5) AS create_var5
+                }
+                RETURN this0 { .id, website: create_var2, workers: create_var5 } AS create_var8
             }
             CALL {
                 WITH this1
                 CALL {
-                    WITH *
-                    MATCH (this1)<-[create_this11:EMPLOYED]-(create_this12:Actor)
-                    WITH create_this12 { __resolveType: \\"Actor\\", __id: id(this1), .name } AS create_this12
-                    RETURN create_this12 AS create_var13
-                    UNION
-                    WITH *
-                    MATCH (this1)<-[create_this14:EMPLOYED]-(create_this15:Modeler)
-                    WITH create_this15 { __resolveType: \\"Modeler\\", __id: id(this1), .name } AS create_this15
-                    RETURN create_this15 AS create_var13
+                    WITH this1
+                    MATCH (this1)-[create_this9:HAS_WEBSITE]->(create_this10:Website)
+                    WITH create_this10 { .address } AS create_this10
+                    RETURN head(collect(create_this10)) AS create_var11
                 }
-                WITH create_var13
-                RETURN collect(create_var13) AS create_var13
-            }
-            CALL {
-                WITH this2
-                MATCH (this2)-[create_this16:HAS_WEBSITE]->(create_this17:Website)
-                WITH create_this17 { .address } AS create_this17
-                RETURN head(collect(create_this17)) AS create_var18
+                CALL {
+                    WITH this1
+                    CALL {
+                        WITH *
+                        MATCH (this1)<-[create_this12:EMPLOYED]-(create_this13:Actor)
+                        WITH create_this13 { .name, __resolveType: \\"Actor\\", __id: id(this1) } AS create_this13
+                        RETURN create_this13 AS create_var14
+                        UNION
+                        WITH *
+                        MATCH (this1)<-[create_this15:EMPLOYED]-(create_this16:Modeler)
+                        WITH create_this16 { .name, __resolveType: \\"Modeler\\", __id: id(this1) } AS create_this16
+                        RETURN create_this16 AS create_var14
+                    }
+                    WITH create_var14
+                    RETURN collect(create_var14) AS create_var14
+                }
+                RETURN this1 { .id, website: create_var11, workers: create_var14 } AS create_var17
             }
             CALL {
                 WITH this2
                 CALL {
-                    WITH *
-                    MATCH (this2)<-[create_this19:EMPLOYED]-(create_this20:Actor)
-                    WITH create_this20 { __resolveType: \\"Actor\\", __id: id(this2), .name } AS create_this20
-                    RETURN create_this20 AS create_var21
-                    UNION
-                    WITH *
-                    MATCH (this2)<-[create_this22:EMPLOYED]-(create_this23:Modeler)
-                    WITH create_this23 { __resolveType: \\"Modeler\\", __id: id(this2), .name } AS create_this23
-                    RETURN create_this23 AS create_var21
+                    WITH this2
+                    MATCH (this2)-[create_this18:HAS_WEBSITE]->(create_this19:Website)
+                    WITH create_this19 { .address } AS create_this19
+                    RETURN head(collect(create_this19)) AS create_var20
                 }
-                WITH create_var21
-                RETURN collect(create_var21) AS create_var21
-            }
-            CALL {
-                WITH this3
-                MATCH (this3)-[create_this24:HAS_WEBSITE]->(create_this25:Website)
-                WITH create_this25 { .address } AS create_this25
-                RETURN head(collect(create_this25)) AS create_var26
+                CALL {
+                    WITH this2
+                    CALL {
+                        WITH *
+                        MATCH (this2)<-[create_this21:EMPLOYED]-(create_this22:Actor)
+                        WITH create_this22 { .name, __resolveType: \\"Actor\\", __id: id(this2) } AS create_this22
+                        RETURN create_this22 AS create_var23
+                        UNION
+                        WITH *
+                        MATCH (this2)<-[create_this24:EMPLOYED]-(create_this25:Modeler)
+                        WITH create_this25 { .name, __resolveType: \\"Modeler\\", __id: id(this2) } AS create_this25
+                        RETURN create_this25 AS create_var23
+                    }
+                    WITH create_var23
+                    RETURN collect(create_var23) AS create_var23
+                }
+                RETURN this2 { .id, website: create_var20, workers: create_var23 } AS create_var26
             }
             CALL {
                 WITH this3
                 CALL {
-                    WITH *
-                    MATCH (this3)<-[create_this27:EMPLOYED]-(create_this28:Actor)
-                    WITH create_this28 { __resolveType: \\"Actor\\", __id: id(this3), .name } AS create_this28
-                    RETURN create_this28 AS create_var29
-                    UNION
-                    WITH *
-                    MATCH (this3)<-[create_this30:EMPLOYED]-(create_this31:Modeler)
-                    WITH create_this31 { __resolveType: \\"Modeler\\", __id: id(this3), .name } AS create_this31
-                    RETURN create_this31 AS create_var29
+                    WITH this3
+                    MATCH (this3)-[create_this27:HAS_WEBSITE]->(create_this28:Website)
+                    WITH create_this28 { .address } AS create_this28
+                    RETURN head(collect(create_this28)) AS create_var29
                 }
-                WITH create_var29
-                RETURN collect(create_var29) AS create_var29
+                CALL {
+                    WITH this3
+                    CALL {
+                        WITH *
+                        MATCH (this3)<-[create_this30:EMPLOYED]-(create_this31:Actor)
+                        WITH create_this31 { .name, __resolveType: \\"Actor\\", __id: id(this3) } AS create_this31
+                        RETURN create_this31 AS create_var32
+                        UNION
+                        WITH *
+                        MATCH (this3)<-[create_this33:EMPLOYED]-(create_this34:Modeler)
+                        WITH create_this34 { .name, __resolveType: \\"Modeler\\", __id: id(this3) } AS create_this34
+                        RETURN create_this34 AS create_var32
+                    }
+                    WITH create_var32
+                    RETURN collect(create_var32) AS create_var32
+                }
+                RETURN this3 { .id, website: create_var29, workers: create_var32 } AS create_var35
             }
-            RETURN [this0 { .id, website: create_var2, workers: create_var5 }, this1 { .id, website: create_var10, workers: create_var13 }, this2 { .id, website: create_var18, workers: create_var21 }, this3 { .id, website: create_var26, workers: create_var29 }] AS data"
+            RETURN [create_var8, create_var17, create_var26, create_var35] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

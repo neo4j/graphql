@@ -95,13 +95,17 @@ describe("Relationship Properties Connect Cypher", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
+                    WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                }
+                RETURN this0 { .title, actorsConnection: create_var2 } AS create_var3
             }
-            RETURN [this0 { .title, actorsConnection: create_var2 }] AS data"
+            RETURN [create_var3] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -171,13 +175,17 @@ describe("Relationship Properties Connect Cypher", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
+                    WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                }
+                RETURN this0 { .title, actorsConnection: create_var2 } AS create_var3
             }
-            RETURN [this0 { .title, actorsConnection: create_var2 }] AS data"
+            RETURN [create_var3] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

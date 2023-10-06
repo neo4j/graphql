@@ -69,7 +69,7 @@ describe("tck/rfs/003", () => {
                         }
                         RETURN create_this1
                     }
-                    RETURN 'Query cannot conclude with CALL'"
+                    RETURN \\"Query cannot conclude with CALL\\""
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -129,7 +129,7 @@ describe("tck/rfs/003", () => {
                         }
                         RETURN create_this1
                     }
-                    RETURN 'Query cannot conclude with CALL'"
+                    RETURN \\"Query cannot conclude with CALL\\""
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -215,7 +215,7 @@ describe("tck/rfs/003", () => {
                             }
                             RETURN create_this1
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -307,7 +307,7 @@ describe("tck/rfs/003", () => {
                             }
                             RETURN create_this1
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -976,7 +976,7 @@ describe("tck/rfs/003", () => {
                         }
                         RETURN this0
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1049,7 +1049,7 @@ describe("tck/rfs/003", () => {
                         }
                         RETURN this0
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1165,7 +1165,7 @@ describe("tck/rfs/003", () => {
                             }
                             RETURN this0
                             }
-                            RETURN 'Query cannot conclude with CALL'"
+                            RETURN \\"Query cannot conclude with CALL\\""
                         `);
 
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -77,36 +77,36 @@ describe("Relationship Properties Create Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var4
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var4
-                CREATE (create_this0:Movie)
+                WITH create_var0
+                CREATE (create_this1:Movie)
                 SET
-                    create_this0.title = create_var4.title
-                WITH create_this0, create_var4
+                    create_this1.title = create_var0.title
+                WITH create_this1, create_var0
                 CALL {
-                    WITH create_this0, create_var4
-                    UNWIND create_var4.actors.create AS create_var5
-                    WITH create_var5.node AS create_var6, create_var5.edge AS create_var7, create_this0
-                    CREATE (create_this8:Actor)
+                    WITH create_this1, create_var0
+                    UNWIND create_var0.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this1
+                    CREATE (create_this5:Actor)
                     SET
-                        create_this8.name = create_var6.name
-                    MERGE (create_this0)<-[create_this9:ACTED_IN]-(create_this8)
+                        create_this5.name = create_var3.name
+                    MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
                     SET
-                        create_this9.screenTime = create_var7.screenTime
-                    RETURN collect(NULL) AS create_var10
+                        create_this6.screenTime = create_var4.screenTime
+                    RETURN collect(NULL) AS create_var7
                 }
-                RETURN create_this0
+                RETURN create_this1
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0:Movie)<-[create_this1:ACTED_IN]-(create_this2:Actor)
-                WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
+                WITH create_this1
+                MATCH (create_this1)<-[create_this8:ACTED_IN]-(create_this9:Actor)
+                WITH { screenTime: create_this8.screenTime, node: { name: create_this9.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                RETURN { edges: edges, totalCount: totalCount } AS create_var10
             }
-            RETURN collect(create_this0 { .title, actorsConnection: create_var3 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var10 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

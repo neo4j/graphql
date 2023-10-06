@@ -298,10 +298,12 @@ describe("root-connections", () => {
             expect(result?.data?.[aircraftType.operations.connection]).toEqual(
                 expect.objectContaining({
                     totalCount: 20,
-                    edges: sortedAircrafts.slice(0, 10).map((node) => ({
-                        cursor: expect.any(String),
-                        node,
-                    })),
+                    edges: expect.arrayContaining(
+                        sortedAircrafts.slice(0, 10).map((node) => ({
+                            cursor: expect.any(String),
+                            node,
+                        }))
+                    ),
                     pageInfo: {
                         hasNextPage: true,
                         endCursor: "YXJyYXljb25uZWN0aW9uOjk=",

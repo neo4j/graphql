@@ -108,29 +108,22 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param2 AS create_var1
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var1
-                CREATE (create_this0:User)
+                WITH create_var0
+                CREATE (create_this1:User)
                 SET
-                    create_this0.id = create_var1.id
-                RETURN create_this0
+                    create_this1.id = create_var0.id
+                RETURN create_this1
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN collect(create_this0 { .id }) AS data"
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN collect(create_this1 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"sub\\": \\"super_admin\\"
-                },
-                \\"create_param2\\": [
+                \\"create_param0\\": [
                     {
                         \\"id\\": \\"id-1\\"
                     },
@@ -138,6 +131,13 @@ describe("Cypher Auth Projection", () => {
                         \\"id\\": \\"id-2\\"
                     }
                 ],
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"super_admin\\"
+                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);

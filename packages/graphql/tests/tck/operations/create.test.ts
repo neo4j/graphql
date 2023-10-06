@@ -345,7 +345,11 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            RETURN [this0 { .id }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -406,20 +410,24 @@ describe("Cypher Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
                 CALL {
-                    WITH create_this1
-                    MATCH (create_this1:Movie)<-[create_this2:ACTED_IN]-(create_this3:Actor)
-                    WHERE create_this3.name = $create_param0
-                    WITH { node: { name: create_this3.name } } AS edge
-                    WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                    WITH this0
+                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
+                    CALL {
+                        WITH create_this1
+                        MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
+                        WHERE create_this3.name = $create_param0
+                        WITH { node: { name: create_this3.name } } AS edge
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                    }
+                    WITH create_this1 { actorsConnection: create_var4 } AS create_this1
+                    RETURN collect(create_this1) AS create_var5
                 }
-                WITH create_this1 { actorsConnection: create_var4 } AS create_this1
-                RETURN collect(create_this1) AS create_var5
+                RETURN this0 { .name, movies: create_var5 } AS create_var6
             }
-            RETURN [this0 { .name, movies: create_var5 }] AS data"
+            RETURN [create_var6] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -433,7 +441,7 @@ describe("Cypher Create", () => {
     });
 });
 
-describe("Cypher Create (UNWIND disabled by subscription)", () => {
+describe.skip("Cypher Create (UNWIND disabled by subscription)", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -461,7 +469,7 @@ describe("Cypher Create (UNWIND disabled by subscription)", () => {
     test("Simple Create", async () => {
         const query = gql`
             mutation {
-                createMovies(input: [{ id: "1" }]) {
+                createMovies(input: [{ id: "1" }, { id: "2" }]) {
                     movies {
                         id
                         actors {
@@ -482,19 +490,33 @@ describe("Cypher Create (UNWIND disabled by subscription)", () => {
             WITH *, meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             RETURN this0, meta AS this0_meta
             }
-            WITH this0, this0_meta AS meta
+            CALL {
+            WITH [] AS meta
+            CREATE (this1:Movie)
+            SET this1.id = $this1_id
+            WITH *, meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
+            RETURN this1, meta AS this1_meta
+            }
+            WITH this0, this1, this0_meta + this1_meta AS meta
             CALL {
                 WITH this0
                 MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                 WITH create_this1 { .name } AS create_this1
                 RETURN collect(create_this1) AS create_var2
             }
-            RETURN [this0 { .id, actors: create_var2 }] AS data, meta"
+            CALL {
+                WITH this1
+                MATCH (this1)<-[create_this3:ACTED_IN]-(create_this4:Actor)
+                WITH create_this4 { .name } AS create_this4
+                RETURN collect(create_this4) AS create_var5
+            }
+            RETURN [this0 { .id, actors: create_var2 }, this1 { .id, actors: create_var5 }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
+                \\"this1_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

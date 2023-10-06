@@ -23,7 +23,7 @@ import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import type { Operation } from "./operations/operations";
+import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
     private operation: Operation;
@@ -43,16 +43,15 @@ export class QueryAST {
                 neo4jGraphQLContext,
                 returnVariable: new Cypher.NamedVariable("this"),
             });
-            return this.transpile(context);
+            return Cypher.concat(...this.transpile(context).clauses);
         }
         throw new Error("Operation not supported yet");
     }
 
-    public transpile(context: QueryASTContext): Cypher.Clause {
-        const result = this.operation.transpile({
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        return this.operation.transpile({
             context,
         });
-        return Cypher.concat(...result.clauses);
     }
 
     public print(): string {

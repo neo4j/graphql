@@ -298,8 +298,8 @@ export class ReadOperation extends Operation {
 
     private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
         const projection = this.getProjectionMap(context);
-        if (this.isPartOfMutation) {
-            return new Cypher.Return([Cypher.collect(projection), returnVariable]);
+        if (context.env.topLevelOperationName === "UNWIND") {
+        return new Cypher.Return([Cypher.collect(projection), returnVariable]);
         }
         return new Cypher.Return([projection, returnVariable]);
     }
