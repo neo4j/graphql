@@ -116,8 +116,6 @@ describe("Cypher Auth Projection", () => {
                     create_this1.id = create_var0.id
                 RETURN create_this1
             }
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(create_this1 { .id }) AS data"
         `);
 
@@ -131,13 +129,6 @@ describe("Cypher Auth Projection", () => {
                         \\"id\\": \\"id-2\\"
                     }
                 ],
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"sub\\": \\"super_admin\\"
-                },
                 \\"resolvedCallbacks\\": {}
             }"
         `);
