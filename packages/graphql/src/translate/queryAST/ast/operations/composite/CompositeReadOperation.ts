@@ -31,7 +31,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 
 export class CompositeReadOperation extends Operation {
     private children: CompositeReadPartial[];
-    private _entity: InterfaceEntityAdapter | UnionEntityAdapter;
+    private entity: InterfaceEntityAdapter | UnionEntityAdapter;
     private relationship: RelationshipAdapter | undefined;
     protected pagination: Pagination | undefined;
     protected sortFields: Sort[] = [];
@@ -46,13 +46,9 @@ export class CompositeReadOperation extends Operation {
         relationship: RelationshipAdapter | undefined;
     }) {
         super();
-        this._entity = compositeEntity;
+        this.entity = compositeEntity;
         this.children = children;
         this.relationship = relationship;
-    }
-
-    public get entity(): InterfaceEntityAdapter | UnionEntityAdapter {
-        return this._entity;
     }
 
     public getChildren(): QueryASTNode[] {
