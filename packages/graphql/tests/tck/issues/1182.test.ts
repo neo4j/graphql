@@ -89,8 +89,8 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
                 MERGE (this0_actors_connectOrCreate0:Actor { id: $this0_actors_connectOrCreate_param0 })
                 ON CREATE SET
                     this0_actors_connectOrCreate0.name = $this0_actors_connectOrCreate_param1,
-                    this0_actors_connectOrCreate0.homeAddress = $this0_actors_connectOrCreate_param2,
-                    this0_actors_connectOrCreate0.dob = $this0_actors_connectOrCreate_param3
+                    this0_actors_connectOrCreate0.dob = $this0_actors_connectOrCreate_param2,
+                    this0_actors_connectOrCreate0.homeAddress = $this0_actors_connectOrCreate_param3
                 MERGE (this0)<-[this0_actors_connectOrCreate_this0:ACTED_IN]-(this0_actors_connectOrCreate0)
                 RETURN count(*) AS _
             }
@@ -105,10 +105,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
                 \\"this0_actors_connectOrCreate_param0\\": \\"1\\",
                 \\"this0_actors_connectOrCreate_param1\\": \\"Tom Hanks\\",
                 \\"this0_actors_connectOrCreate_param2\\": {
-                    \\"longitude\\": 1,
-                    \\"latitude\\": 2
-                },
-                \\"this0_actors_connectOrCreate_param3\\": {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1,
@@ -117,6 +113,10 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"this0_actors_connectOrCreate_param3\\": {
+                    \\"longitude\\": 1,
+                    \\"latitude\\": 2
                 },
                 \\"resolvedCallbacks\\": {}
             }"

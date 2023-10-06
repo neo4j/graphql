@@ -18,9 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AggregationField } from "./AggregationField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { AggregationField } from "./AggregationField";
 
 export class AggregationAttributeField extends AggregationField {
     private attribute: AttributeAdapter;
@@ -43,7 +43,7 @@ export class AggregationAttributeField extends AggregationField {
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        if (this.attribute.isString()) {
+        if (this.attribute.typeHelper.isString()) {
             const aggrProp = target.property(this.attribute.databaseName);
             const listVar = new Cypher.NamedVariable("list");
             return new Cypher.With(target)
@@ -57,7 +57,7 @@ export class AggregationAttributeField extends AggregationField {
                     returnVar,
                 ]);
         }
-        if (this.attribute.isInt() || this.attribute.isFloat()) {
+        if (this.attribute.typeHelper.isInt() || this.attribute.typeHelper.isFloat()) {
             const aggrProp = target.property(this.attribute.databaseName);
             return new Cypher.Return([
                 new Cypher.Map({
@@ -70,7 +70,7 @@ export class AggregationAttributeField extends AggregationField {
             ]);
         }
 
-        if (this.attribute.isDateTime()) {
+        if (this.attribute.typeHelper.isDateTime()) {
             const aggrProp = target.property(this.attribute.databaseName);
             return new Cypher.Return([
                 new Cypher.Map({

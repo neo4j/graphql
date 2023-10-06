@@ -18,14 +18,22 @@
  */
 
 import type { SchemaComposer } from "graphql-compose";
+import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 
-export function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
-    const resolveMethods = composer.getResolveMethods();
+export function getResolveAndSubscriptionMethods(composer: SchemaComposer): GraphQLToolsResolveMethods<any> {
+    const resolveMethods: GraphQLToolsResolveMethods<any> = composer.getResolveMethods();
 
-    const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce((acc, [key, value]) => {
-        acc[key] = { subscribe: value.subscribe, resolve: value.resolve };
-        return acc;
-    }, {});
+    const subscriptionMethods = Object.entries(composer.Subscription.getFields()).reduce(
+        (acc: GraphQLToolsResolveMethods<any>, [key, value]) => {
+            if (!value.subscribe || !value.resolve) {
+                return acc;
+            }
+
+            acc[key] = { subscribe: value.subscribe, resolve: value.resolve };
+            return acc;
+        },
+        {}
+    );
     return {
         ...resolveMethods,
         Subscription: subscriptionMethods,

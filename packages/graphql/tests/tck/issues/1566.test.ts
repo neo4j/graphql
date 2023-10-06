@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/1566", () => {
     let typeDefs: DocumentNode;
@@ -100,6 +100,23 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
                 END) AS this0
             }
             RETURN this { .id, hasFeedItems: this0 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 4656564,
+                    \\"high\\": 0
+                },
+                \\"param1\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"param2\\": {
+                    \\"low\\": 0,
+                    \\"high\\": 0
+                }
+            }"
         `);
     });
 });

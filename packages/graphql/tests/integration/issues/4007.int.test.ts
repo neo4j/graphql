@@ -102,6 +102,4 @@ describe("https://github.com/neo4j/graphql/issues/4007", () => {
             await session.close();
         }
     });
-
-
 });

@@ -116,14 +116,14 @@ describe("Interface Relationships - Update update", () => {
                         \\"update\\": {
                             \\"actedIn\\": [
                                 {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"title\\": \\"New Title\\"
-                                        }
-                                    },
                                     \\"where\\": {
                                         \\"node\\": {
                                             \\"title\\": \\"Old Title\\"
+                                        }
+                                    },
+                                    \\"update\\": {
+                                        \\"node\\": {
+                                            \\"title\\": \\"New Title\\"
                                         }
                                     }
                                 }
@@ -207,6 +207,11 @@ describe("Interface Relationships - Update update", () => {
                         \\"update\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title\\": \\"Old Title\\"
+                                        }
+                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"actors\\": [
@@ -218,11 +223,6 @@ describe("Interface Relationships - Update update", () => {
                                                     }
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
                                         }
                                     }
                                 }
@@ -301,6 +301,11 @@ describe("Interface Relationships - Update update", () => {
                         \\"update\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title\\": \\"Old Title\\"
+                                        }
+                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"_on\\": {
@@ -316,11 +321,6 @@ describe("Interface Relationships - Update update", () => {
                                                     ]
                                                 }
                                             }
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
                                         }
                                     }
                                 }
@@ -410,6 +410,11 @@ describe("Interface Relationships - Update update", () => {
                         \\"update\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title\\": \\"Old Title\\"
+                                        }
+                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"_on\\": {
@@ -434,11 +439,6 @@ describe("Interface Relationships - Update update", () => {
                                                     }
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title\\": \\"Old Title\\"
                                         }
                                     }
                                 }

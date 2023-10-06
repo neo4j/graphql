@@ -21,7 +21,7 @@ import { gql } from "graphql-tag";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import type { EventMeta } from "../../../src/types";

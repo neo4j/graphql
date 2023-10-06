@@ -18,6 +18,8 @@
  */
 
 import { upperFirst } from "graphql-compose";
+import { MutationOperations } from "../../../graphql/directives/mutation";
+import { SubscriptionEvent } from "../../../graphql/directives/subscription";
 import { toGlobalId } from "../../../utils/global-ids";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
@@ -96,6 +98,74 @@ export class ConcreteEntityAdapter {
         }
     }
 
+    public findAttribute(name: string): AttributeAdapter | undefined {
+        return this.attributes.get(name);
+    }
+
+    get isReadable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.read === true;
+    }
+    get isAggregable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+    }
+    get isCreatable(): boolean {
+        return (
+            this.annotations.mutation === undefined ||
+            this.annotations.mutation.operations.has(MutationOperations.CREATE)
+        );
+    }
+    get isUpdatable(): boolean {
+        return (
+            this.annotations.mutation === undefined ||
+            this.annotations.mutation.operations.has(MutationOperations.UPDATE)
+        );
+    }
+    get isDeletable(): boolean {
+        return (
+            this.annotations.mutation === undefined ||
+            this.annotations.mutation.operations.has(MutationOperations.DELETE)
+        );
+    }
+    get isSubscribable(): boolean {
+        return this.annotations.subscription === undefined || this.annotations.subscription.events?.size > 0;
+    }
+    get isSubscribableOnCreate(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.CREATED)
+        );
+    }
+    get isSubscribableOnUpdate(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.UPDATED)
+        );
+    }
+    get isSubscribableOnDelete(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.DELETED)
+        );
+    }
+    get isSubscribableOnRelationshipCreate(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_CREATED)
+        );
+    }
+    get isSubscribableOnRelationshipDelete(): boolean {
+        return (
+            this.annotations.subscription === undefined ||
+            this.annotations.subscription.events.has(SubscriptionEvent.RELATIONSHIP_DELETED)
+        );
+    }
+
+    /**
+     * Categories
+     * = a grouping of attributes
+     * used to generate different types for the Entity that contains these Attributes
+     */
+
     public get mutableFields(): AttributeAdapter[] {
         return this.mutableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
@@ -150,20 +220,17 @@ export class ConcreteEntityAdapter {
     public get onCreateInputFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isOnCreateField());
     }
-    // public get scalarFields(): AttributeAdapter[] {
-    //     return Array.from(this.attributes.values()).filter((attribute) => attribute.isScalarField());
-    // }
-
-    // public get enumFields(): AttributeAdapter[] {
-    //     return Array.from(this.attributes.values()).filter((attribute) => attribute.isEnumField());
-    // }
 
     public get temporalFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isTemporal());
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.typeHelper.isTemporal());
     }
 
-    public findAttribute(name: string): AttributeAdapter | undefined {
-        return this.attributes.get(name);
+    public get subscriptionEventPayloadFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
+    }
+
+    public get subscriptionWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
     }
 
     public findRelationship(name: string): RelationshipAdapter | undefined {
@@ -171,7 +238,6 @@ export class ConcreteEntityAdapter {
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
-
     public getLabels(): string[] {
         return Array.from(this.labels);
     }

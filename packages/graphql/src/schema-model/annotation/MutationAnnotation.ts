@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-export class MutationAnnotation {
-    public readonly operations: string[];
+import type { MutationOperations } from "../../graphql/directives/mutation";
 
-    constructor({ operations }: { operations: string[] }) {
+export class MutationAnnotation {
+    public readonly operations: Set<MutationOperations>;
+
+    constructor({ operations }: { operations: Set<MutationOperations> }) {
         this.operations = operations;
     }
 }

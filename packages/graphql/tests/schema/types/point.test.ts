@@ -38,6 +38,9 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -49,6 +52,9 @@ describe("Point", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -127,6 +133,9 @@ describe("Point", () => {
               startCursor: String
             }
 
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
             type Point {
               crs: String!
               height: Float
@@ -135,12 +144,14 @@ describe("Point", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point with a distance\\"\\"\\"
             input PointDistance {
               \\"\\"\\"The distance in metres to be used when comparing two points\\"\\"\\"
               distance: Float!
               point: PointInput!
             }
 
+            \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
@@ -153,6 +164,7 @@ describe("Point", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -160,6 +172,9 @@ describe("Point", () => {
               DESC
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -190,6 +205,9 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
+            \\"\\"\\"
             type CartesianPoint {
               crs: String!
               srid: Int!
@@ -198,17 +216,22 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"Input type for a cartesian point with a distance\\"\\"\\"
             input CartesianPointDistance {
               distance: Float!
               point: CartesianPointInput!
             }
 
+            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
             input CartesianPointInput {
               x: Float!
               y: Float!
               z: Float
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -220,6 +243,9 @@ describe("Point", () => {
               machines: [Machine!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -304,6 +330,7 @@ describe("Point", () => {
               machinesConnection(after: String, first: Int, sort: [MachineSort], where: MachineWhere): MachinesConnection!
             }
 
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
             enum SortDirection {
               \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
@@ -311,6 +338,9 @@ describe("Point", () => {
               DESC
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -341,6 +371,9 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -352,6 +385,9 @@ describe("Point", () => {
               movies: [Movie!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -416,6 +452,9 @@ describe("Point", () => {
               startCursor: String
             }
 
+            \\"\\"\\"
+            A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point
+            \\"\\"\\"
             type Point {
               crs: String!
               height: Float
@@ -424,6 +463,7 @@ describe("Point", () => {
               srid: Int!
             }
 
+            \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
@@ -436,6 +476,9 @@ describe("Point", () => {
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -466,6 +509,9 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
+            \\"\\"\\"
             type CartesianPoint {
               crs: String!
               srid: Int!
@@ -474,12 +520,16 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"Input type for a cartesian point\\"\\"\\"
             input CartesianPointInput {
               x: Float!
               y: Float!
               z: Float
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
             type CreateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!
@@ -491,6 +541,9 @@ describe("Point", () => {
               machines: [Machine!]!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
             type DeleteInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
@@ -561,6 +614,9 @@ describe("Point", () => {
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
             type UpdateInfo {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesCreated: Int!

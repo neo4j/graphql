@@ -17,37 +17,38 @@
  * limitations under the License.
  */
 
-import type { Node, RelationField, RelationshipSubscriptionsEvent } from "../../../../../types";
-import type { ObjectFields } from "../../../../get-obj-field-meta";
+import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipSubscriptionsEvent } from "../../../../../types";
 import type { RecordType, RelationshipType } from "../../types";
-import { filterByProperties } from "./filter-by-properties";
-import { parseFilterProperty } from "../utils/parse-filter-property";
-import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { filterRelationshipKey } from "../utils/filter-relationship-key";
+import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
+import { parseFilterProperty } from "../utils/parse-filter-property";
+import { filterByProperties } from "./filter-by-properties";
 
 export function filterByRelationshipProperties({
-    node,
+    entityAdapter,
     whereProperties,
     receivedEvent,
-    nodes,
-    relationshipFields,
 }: {
-    node: Node;
+    entityAdapter: ConcreteEntityAdapter;
     whereProperties: Record<
         string,
         RecordType | Record<string, RecordType | RelationshipType> | Array<Record<string, RecordType>>
     >;
     receivedEvent: RelationshipSubscriptionsEvent;
-    nodes: Node[];
-    relationshipFields: Map<string, ObjectFields>;
 }): boolean {
     const receivedEventProperties = receivedEvent.properties;
     const receivedEventRelationshipType = receivedEvent.relationshipName;
-    const relationships = node.relationFields.filter((f) => f.typeUnescaped === receivedEventRelationshipType);
+    // const relationships = node.relationFields.filter((f) => f.typeUnescaped === receivedEventRelationshipType);
+    // TODO: this was f.typeUnescaped
+    const relationships = Array.from(entityAdapter.relationships.values()).filter(
+        (f) => f.type === receivedEventRelationshipType
+    );
     if (!relationships.length) {
         return false;
     }
-    const receivedEventRelationship = relationships[0] as RelationField; // ONE relationship only possible
+    const receivedEventRelationship = relationships[0] as RelationshipAdapter; // ONE relationship only possible
 
     for (const [wherePropertyKey, wherePropertyValue] of Object.entries(whereProperties)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(wherePropertyKey)) {
@@ -55,20 +56,16 @@ export function filterByRelationshipProperties({
             let comparisonResults;
             if (wherePropertyKey === "NOT") {
                 comparisonResults = filterByRelationshipProperties({
-                    node,
+                    entityAdapter,
                     whereProperties: wherePropertyValue as Record<string, RecordType>,
                     receivedEvent,
-                    nodes,
-                    relationshipFields,
                 });
             } else {
                 comparisonResults = (wherePropertyValue as Array<Record<string, RecordType>>).map((whereCl) => {
                     return filterByRelationshipProperties({
-                        node,
+                        entityAdapter,
                         whereProperties: whereCl,
                         receivedEvent,
-                        nodes,
-                        relationshipFields,
                     });
                 });
             }
@@ -79,12 +76,12 @@ export function filterByRelationshipProperties({
         }
         const { fieldName } = parseFilterProperty(wherePropertyKey);
 
-        const connectedNodeFieldName = node.subscriptionEventPayloadFieldNames.create_relationship;
+        const connectedNodeFieldName = entityAdapter.operations.subscriptionEventPayloadFieldNames.create_relationship;
         if (fieldName === connectedNodeFieldName) {
             const key = receivedEventRelationship.direction === "IN" ? "to" : "from";
             if (
                 !filterByProperties({
-                    node,
+                    attributes: entityAdapter.attributes,
                     whereProperties: wherePropertyValue,
                     receivedProperties: receivedEventProperties[key],
                 })
@@ -97,9 +94,7 @@ export function filterByRelationshipProperties({
             return filterRelationshipKey({
                 receivedEventRelationship,
                 where: wherePropertyValue,
-                relationshipFields,
                 receivedEvent,
-                nodes,
             });
         }
     }

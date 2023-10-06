@@ -18,16 +18,16 @@
  */
 
 import { RelationshipQueryDirectionOption } from "../constants";
-import type { RelationField } from "../types";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 export type DirectedArgument = {
     type: "Boolean";
     defaultValue: boolean;
 };
 
-export function getDirectedArgument(relationField: RelationField): DirectedArgument | undefined {
+export function getDirectedArgument(relationshipAdapter: RelationshipAdapter): DirectedArgument | undefined {
     let defaultValue: boolean;
-    switch (relationField.queryDirection) {
+    switch (relationshipAdapter.queryDirection) {
         case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
             defaultValue = true;
             break;
@@ -48,9 +48,9 @@ export function getDirectedArgument(relationField: RelationField): DirectedArgum
 
 export function addDirectedArgument<T extends Record<string, any>>(
     args: T,
-    relationField: RelationField
+    relationshipAdapter: RelationshipAdapter
 ): T & { directed?: DirectedArgument } {
-    const directedArg = getDirectedArgument(relationField);
+    const directedArg = getDirectedArgument(relationshipAdapter);
     if (directedArg) {
         return { ...args, directed: directedArg };
     }

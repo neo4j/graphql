@@ -263,7 +263,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:4.9.3, @apollo/server@npm:^4.7.0":
+"@apollo/server@npm:4.9.4":
+  version: 4.9.4
+  resolution: "@apollo/server@npm:4.9.4"
+  dependencies:
+    "@apollo/cache-control-types": ^1.0.3
+    "@apollo/server-gateway-interface": ^1.1.1
+    "@apollo/usage-reporting-protobuf": ^4.1.1
+    "@apollo/utils.createhash": ^2.0.0
+    "@apollo/utils.fetcher": ^2.0.0
+    "@apollo/utils.isnodelike": ^2.0.0
+    "@apollo/utils.keyvaluecache": ^2.1.0
+    "@apollo/utils.logger": ^2.0.0
+    "@apollo/utils.usagereporting": ^2.1.0
+    "@apollo/utils.withrequired": ^2.0.0
+    "@graphql-tools/schema": ^9.0.0
+    "@josephg/resolvable": ^1.0.0
+    "@types/express": ^4.17.13
+    "@types/express-serve-static-core": ^4.17.30
+    "@types/node-fetch": ^2.6.1
+    async-retry: ^1.2.1
+    body-parser: ^1.20.0
+    cors: ^2.8.5
+    express: ^4.17.1
+    loglevel: ^1.6.8
+    lru-cache: ^7.10.1
+    negotiator: ^0.6.3
+    node-abort-controller: ^3.1.1
+    node-fetch: ^2.6.7
+    uuid: ^9.0.0
+    whatwg-mimetype: ^3.0.0
+  peerDependencies:
+    graphql: ^16.6.0
+  checksum: bf7105ffceaed6e3c54f1506513944bb324ae32e92b1aabb3ec7de1b9fee1373bdec6e1a3f5efb7c7f8090671f1ba2d37c01f5b1456c93127ffede1a0b554bac
+  languageName: node
+  linkType: hard
+
+"@apollo/server@npm:^4.7.0":
   version: 4.9.3
   resolution: "@apollo/server@npm:4.9.3"
   dependencies:
@@ -1660,7 +1696,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/commands@npm:6.2.5, @codemirror/commands@npm:^6.0.0, @codemirror/commands@npm:^6.2.1":
+"@codemirror/commands@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@codemirror/commands@npm:6.3.0"
+  dependencies:
+    "@codemirror/language": ^6.0.0
+    "@codemirror/state": ^6.2.0
+    "@codemirror/view": ^6.0.0
+    "@lezer/common": ^1.1.0
+  checksum: d6ade0ba7d4f80c2e44163935783d2f2f35c8b641a4b4f62452c0630211670abe5093786cf5a4af14147102d4284dae660a26f3ae58fd840e838685a81107d11
+  languageName: node
+  linkType: hard
+
+"@codemirror/commands@npm:^6.0.0, @codemirror/commands@npm:^6.2.1":
   version: 6.2.5
   resolution: "@codemirror/commands@npm:6.2.5"
   dependencies:
@@ -3416,7 +3464,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
-    "@apollo/server": 4.9.3
+    "@apollo/server": 4.9.4
     "@neo4j/graphql": ^4.0.0
     "@types/amqplib": 0.10.2
     "@types/body-parser": 1.19.3
@@ -3450,7 +3498,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^5.0.0
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
-    "@neo4j/graphql": ^4.1.3
+    "@neo4j/graphql": ^4.2.0
     "@types/jest": 29.5.5
     "@types/node": 18.15.1
     camelcase: 6.3.0
@@ -3476,7 +3524,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@codemirror/autocomplete": 6.9.1
-    "@codemirror/commands": 6.2.5
+    "@codemirror/commands": 6.3.0
     "@codemirror/lang-javascript": 6.2.1
     "@codemirror/language": 6.9.1
     "@dnd-kit/core": 6.0.8
@@ -3485,7 +3533,7 @@ __metadata:
     "@graphiql/react": 0.19.4
     "@neo4j-ndl/base": 1.10.3
     "@neo4j-ndl/react": 1.10.8
-    "@neo4j/graphql": 4.1.3
+    "@neo4j/graphql": 4.2.0
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.38.1
     "@tsconfig/create-react-app": 2.0.1
@@ -3493,7 +3541,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 13.0.2
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.8
+    "@types/react-dom": 18.2.10
     "@types/webpack": 5.28.3
     autoprefixer: 10.4.16
     classnames: 2.3.2
@@ -3538,16 +3586,16 @@ __metadata:
     webpack-cli: 5.1.4
     webpack-dev-server: 4.15.1
     webpack-notifier: 1.15.0
-    zustand: 4.4.1
+    zustand: 4.4.3
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@4.1.3, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.1.3, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@4.2.0, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.2.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": 2.5.5
-    "@apollo/server": 4.9.3
+    "@apollo/server": 4.9.4
     "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 8.1.0
     "@graphql-tools/merge": ^9.0.0
@@ -3563,7 +3611,7 @@ __metadata:
     "@types/pluralize": 0.0.31
     "@types/randomstring": 1.1.9
     "@types/semver": 7.5.3
-    "@types/supertest": 2.0.13
+    "@types/supertest": 2.0.14
     "@types/ws": 8.5.6
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -3580,7 +3628,7 @@ __metadata:
     jest: 29.7.0
     jest-extended: 4.0.1
     jose: ^4.13.1
-    jwks-rsa: 3.0.1
+    jwks-rsa: 3.1.0
     koa: 2.14.2
     koa-jwt: 4.0.4
     koa-router: 12.0.0
@@ -7222,7 +7270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.17.14":
+"@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.17.17":
   version: 4.17.18
   resolution: "@types/express@npm:4.17.18"
   dependencies:
@@ -7365,7 +7413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.3, @types/jsonwebtoken@npm:^9.0.0":
+"@types/jsonwebtoken@npm:9.0.3, @types/jsonwebtoken@npm:^9.0.2":
   version: 9.0.3
   resolution: "@types/jsonwebtoken@npm:9.0.3"
   dependencies:
@@ -7552,12 +7600,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.8":
-  version: 18.2.8
-  resolution: "@types/react-dom@npm:18.2.8"
+"@types/react-dom@npm:18.2.10":
+  version: 18.2.10
+  resolution: "@types/react-dom@npm:18.2.10"
   dependencies:
     "@types/react": "*"
-  checksum: d36264631028d021b73cd9e015f10b95c4959ae1ce8f7a7419f318d1f05b1d063e6afffcd2a349a6bccd64ccc9ee9d2d976e1f0437643f0e7db621fa035bca65
+  checksum: ced70643d82dd9d165cd6d1a98ec7556daf77d8fdec1ed19badb744a2a2370a84cc109248667536d7f850409e85432c300ec9f8c87d46e066ad295ddf9b6ab03
   languageName: node
   linkType: hard
 
@@ -7674,12 +7722,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:2.0.13":
-  version: 2.0.13
-  resolution: "@types/supertest@npm:2.0.13"
+"@types/supertest@npm:2.0.14":
+  version: 2.0.14
+  resolution: "@types/supertest@npm:2.0.14"
   dependencies:
     "@types/superagent": "*"
-  checksum: fe66be8e16626f254dc9d9691706942689f47a84edf7d3baaeadd6d4d576dbf915ee70cebdd7034015e83fa91fcd2dcff1cd0252514e4c510619817a183b5b4f
+  checksum: 9f6850a22b8f0fd4c26a6dfd9b64771a66476b1a4f841a3b84a9da843ce69463efbf37594fe107297dd14a225d199b802464d48d70e9413238c637903d392137
   languageName: node
   linkType: hard
 
@@ -7756,15 +7804,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/eslint-plugin@npm:6.7.3"
+"@typescript-eslint/eslint-plugin@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/eslint-plugin@npm:6.7.4"
   dependencies:
     "@eslint-community/regexpp": ^4.5.1
-    "@typescript-eslint/scope-manager": 6.7.3
-    "@typescript-eslint/type-utils": 6.7.3
-    "@typescript-eslint/utils": 6.7.3
-    "@typescript-eslint/visitor-keys": 6.7.3
+    "@typescript-eslint/scope-manager": 6.7.4
+    "@typescript-eslint/type-utils": 6.7.4
+    "@typescript-eslint/utils": 6.7.4
+    "@typescript-eslint/visitor-keys": 6.7.4
     debug: ^4.3.4
     graphemer: ^1.4.0
     ignore: ^5.2.4
@@ -7777,25 +7825,25 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: ac2790882199047abc59c0407a862f3339645623d03ea0aae5a73fd4bac6abfb753afcf9f23fd51cd1d5aa73f132ef94e2850774c4b2a3d99ebb83030b09429c
+  checksum: 91d5051ae935d8bb61091665ee1e5c456992a0c29b58c86c1bb2b72c935dd831c0d3c7726a8d609455ae4a8b4ba8786ebeeef4bc7eff388b5f77475e7a634dc0
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/parser@npm:6.7.3"
+"@typescript-eslint/parser@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/parser@npm:6.7.4"
   dependencies:
-    "@typescript-eslint/scope-manager": 6.7.3
-    "@typescript-eslint/types": 6.7.3
-    "@typescript-eslint/typescript-estree": 6.7.3
-    "@typescript-eslint/visitor-keys": 6.7.3
+    "@typescript-eslint/scope-manager": 6.7.4
+    "@typescript-eslint/types": 6.7.4
+    "@typescript-eslint/typescript-estree": 6.7.4
+    "@typescript-eslint/visitor-keys": 6.7.4
     debug: ^4.3.4
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 658f3294b281db06ebb46884b92172d45eb402ec25c7d4a09cc2461eee359266029af7a49eb9006ee7c3e0003ba53a06f4bee84aa2e99d2d9a3507b9c84ff775
+  checksum: 60e7c01a69c1a67577f031cd6ef3c7980a9aedf2045b9950e339836acb2fe9d7bf0c8909fa95d713a8270f19dead43d82beb27dcf8705f81fe35b14b737e8fe0
   languageName: node
   linkType: hard
 
@@ -7809,22 +7857,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/scope-manager@npm:6.7.3"
+"@typescript-eslint/scope-manager@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/scope-manager@npm:6.7.4"
   dependencies:
-    "@typescript-eslint/types": 6.7.3
-    "@typescript-eslint/visitor-keys": 6.7.3
-  checksum: 08215444b7c70af5c45e185ba3c31c550a0a671ab464a67058cbee680c94aa9d1a062958976d8b09f7bcabf2f63114cdc7be2e4e32e2dfdcb2d7cc79961b7b32
+    "@typescript-eslint/types": 6.7.4
+    "@typescript-eslint/visitor-keys": 6.7.4
+  checksum: 8475d28f6408c204fb6bf25df45c1f16cad950190e31346c4b1ae15461a96f30b31b6fd1d3d635b41db6aa9a3fd3de25f04823632c74eeea478f34ebd134a1b0
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/type-utils@npm:6.7.3"
+"@typescript-eslint/type-utils@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/type-utils@npm:6.7.4"
   dependencies:
-    "@typescript-eslint/typescript-estree": 6.7.3
-    "@typescript-eslint/utils": 6.7.3
+    "@typescript-eslint/typescript-estree": 6.7.4
+    "@typescript-eslint/utils": 6.7.4
     debug: ^4.3.4
     ts-api-utils: ^1.0.1
   peerDependencies:
@@ -7832,7 +7880,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: f30a5ab4f88f76457810d72e3ada79fefd94dbbb456069ac004bd7601c9b7f15689b906b66cd849c230f30ae65f6f7039fb169609177ab545b34bacab64f015e
+  checksum: 231240a1aa1008a1b1facdd40b931433606947254f6e04705d154791a8b2c15d5ce3355b7d8a29cf7bb53c2e2eca1340c7860dd395389858d442af06c586d1fd
   languageName: node
   linkType: hard
 
@@ -7843,10 +7891,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/types@npm:6.7.3"
-  checksum: 4adb6177ec710e7438610fee553839a7abecc498dbb36d0170786bab66c5e5415cd720ac06419fd905458ad88c39b661603af5f013adc299137ccb4c51c4c879
+"@typescript-eslint/types@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/types@npm:6.7.4"
+  checksum: 287ae48a2bb722b866460bcb2ba4ff908348145b3fc0af4ea75679d474e9ba3632bf64689044f181fe8ca3cb5f41238bb31ea428d5e78f1c3982f6dac6b7b149
   languageName: node
   linkType: hard
 
@@ -7868,12 +7916,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/typescript-estree@npm:6.7.3"
+"@typescript-eslint/typescript-estree@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/typescript-estree@npm:6.7.4"
   dependencies:
-    "@typescript-eslint/types": 6.7.3
-    "@typescript-eslint/visitor-keys": 6.7.3
+    "@typescript-eslint/types": 6.7.4
+    "@typescript-eslint/visitor-keys": 6.7.4
     debug: ^4.3.4
     globby: ^11.1.0
     is-glob: ^4.0.3
@@ -7882,24 +7930,24 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: eaba1feb0e6882b0bad292172c118aac43ba683d1f04b940b542a20035468d030b062b036ea49eca36aa21782e9b1019e87717003b3c3db7d12dc707466b7eb7
+  checksum: 2e8f5e972403233522eff09cfe7a0a23549cfd462e82b434aa32ddbdba5b329be5a549514a157f6b79e2d0159c9348d23b202e5d915d4f2c7cbfe72e1a48a429
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/utils@npm:6.7.3"
+"@typescript-eslint/utils@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/utils@npm:6.7.4"
   dependencies:
     "@eslint-community/eslint-utils": ^4.4.0
     "@types/json-schema": ^7.0.12
     "@types/semver": ^7.5.0
-    "@typescript-eslint/scope-manager": 6.7.3
-    "@typescript-eslint/types": 6.7.3
-    "@typescript-eslint/typescript-estree": 6.7.3
+    "@typescript-eslint/scope-manager": 6.7.4
+    "@typescript-eslint/types": 6.7.4
+    "@typescript-eslint/typescript-estree": 6.7.4
     semver: ^7.5.4
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0
-  checksum: 685b7c9fa95ad085f30e26431dc41b3059a42a16925defe2a94b32fb46974bfc168000de7d4d9ad4a1d0568a983f9d3c01ea6bc6cfa9a798e482719af9e9165b
+  checksum: 75e197dd58b230436ceb51f2050bb3af8796b05a197eaf741251f8e9c4d9ba1a99d654d090da0c49d31b20da79d9cc3746cbb663ffd5ea614d7a960d64676d65
   languageName: node
   linkType: hard
 
@@ -7931,13 +7979,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/visitor-keys@npm:6.7.3":
-  version: 6.7.3
-  resolution: "@typescript-eslint/visitor-keys@npm:6.7.3"
+"@typescript-eslint/visitor-keys@npm:6.7.4":
+  version: 6.7.4
+  resolution: "@typescript-eslint/visitor-keys@npm:6.7.4"
   dependencies:
-    "@typescript-eslint/types": 6.7.3
+    "@typescript-eslint/types": 6.7.4
     eslint-visitor-keys: ^3.4.1
-  checksum: cef64173a919107f420703e204d97d0afef0d9bd7a67570df5bdb39ac9464211c5a7b3af735d8f41e8004b443ab83e88b1d6fb951886aed4d3fe9d4778667199
+  checksum: 34d09798b6c48dc059e88c6cb3df5f96e859bd65d1dd05d907b8a3c7a5708a737d50607081fb14a4b974b90cfe4169a93db974bf53af8b282420187f73b0afac
   languageName: node
   linkType: hard
 
@@ -8647,7 +8695,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 2.0.1
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^10.0.0
-    "@neo4j/graphql": ^4.1.3
+    "@neo4j/graphql": ^4.2.0
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.8.1
     graphql-tag: ^2.12.6
@@ -13035,9 +13083,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:27.4.0":
-  version: 27.4.0
-  resolution: "eslint-plugin-jest@npm:27.4.0"
+"eslint-plugin-jest@npm:27.4.2":
+  version: 27.4.2
+  resolution: "eslint-plugin-jest@npm:27.4.2"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -13049,7 +13097,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: c33593dba87e750123555c2de32fb174d6f2c92342571492f8dbde01bf61a8ac229dff31bd08fea16c3ca2c4843fc2fec985459c351319c019016767ed1cd78e
+  checksum: 99a8301ae00c37da97866b8b13c89a077716d2c653b26bc417d242e7300a43237c0017fd488c43966fa38585f19050facdbbc71d03ca36a1ce6f2ba930a9143e
   languageName: node
   linkType: hard
 
@@ -17139,10 +17187,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.10.4, jose@npm:^4.13.1":
+"jose@npm:^4.13.1":
   version: 4.14.6
   resolution: "jose@npm:4.14.6"
   checksum: eae81a234e7bf1446b1bd80722b3462b014e3835b155c3a7799c1c5043163a53a0dc28d347004151b031e6b7b863403aabf8814d9cc217ce21f8c2f3ebd4b335
+  languageName: node
+  linkType: hard
+
+"jose@npm:^4.14.6":
+  version: 4.15.2
+  resolution: "jose@npm:4.15.2"
+  checksum: 8f0cab1eef31243abe14a935b2b330cd95f10f9b69808fd642088ae5000e50e566664934537d2c6413ab2f6b54acd8265a5033da05157aa1260c5f1d7e57fab0
   languageName: node
   linkType: hard
 
@@ -17445,17 +17500,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:3.0.1":
-  version: 3.0.1
-  resolution: "jwks-rsa@npm:3.0.1"
+"jwks-rsa@npm:3.1.0":
+  version: 3.1.0
+  resolution: "jwks-rsa@npm:3.1.0"
   dependencies:
-    "@types/express": ^4.17.14
-    "@types/jsonwebtoken": ^9.0.0
+    "@types/express": ^4.17.17
+    "@types/jsonwebtoken": ^9.0.2
     debug: ^4.3.4
-    jose: ^4.10.4
+    jose: ^4.14.6
     limiter: ^1.1.5
-    lru-memoizer: ^2.1.4
-  checksum: 943bf7792d23761c1e9d1f4d1b67e967ea5b38968583a87a7c862f6df0b9c4a5a34a97fa82efcd375776476664b2916df757aafab69013ab05d3e1fa9fbc1363
+    lru-memoizer: ^2.2.0
+  checksum: eef0c174b0dc7015585982de3aa6644bb8d5b355ebcfc3a40e52ab66cbb9b7c0b699089fd68b7f5d68ae01735a45251f1c1ebc35e9d749e5b84693cc871b0f93
   languageName: node
   linkType: hard
 
@@ -18378,7 +18433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-memoizer@npm:^2.1.4":
+"lru-memoizer@npm:^2.2.0":
   version: 2.2.0
   resolution: "lru-memoizer@npm:2.2.0"
   dependencies:
@@ -18737,7 +18792,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.1.3
+    "@neo4j/graphql": ^4.2.0
     graphql: 16.8.1
     neo4j-driver: 5.13.0
   languageName: unknown
@@ -19590,8 +19645,8 @@ __metadata:
     "@changesets/changelog-github": 0.4.8
     "@changesets/cli": 2.26.2
     "@tsconfig/node16": 1.0.4
-    "@typescript-eslint/eslint-plugin": 6.7.3
-    "@typescript-eslint/parser": 6.7.3
+    "@typescript-eslint/eslint-plugin": 6.7.4
+    "@typescript-eslint/parser": 6.7.4
     concurrently: 8.2.1
     dotenv: 16.3.1
     eslint: 8.50.0
@@ -19600,7 +19655,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.6.1
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.28.1
-    eslint-plugin-jest: 27.4.0
+    eslint-plugin-jest: 27.4.2
     eslint-plugin-jsx-a11y: 6.7.1
     eslint-plugin-react: 7.33.2
     eslint-plugin-simple-import-sort: 10.0.0
@@ -26802,9 +26857,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"zustand@npm:4.4.1":
-  version: 4.4.1
-  resolution: "zustand@npm:4.4.1"
+"zustand@npm:4.4.3":
+  version: 4.4.3
+  resolution: "zustand@npm:4.4.3"
   dependencies:
     use-sync-external-store: 1.2.0
   peerDependencies:
@@ -26818,6 +26873,6 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 80acd0fbf633782996642802c8692bbb80ae5c80a8dff4c501b88250acd5ccd468fbc6398bdce198475a25e3839c91385b81da921274f33ffb5c2d08c3eab400
+  checksum: 3ed16457a3a4b9fe6523f52d397af37db8fab5687dd21a23ede25f657346b25df374490baea27f10d416faae5e96acf7b4065c86044746d775881d266d1500f0
   languageName: node
   linkType: hard

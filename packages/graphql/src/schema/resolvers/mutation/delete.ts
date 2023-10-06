@@ -19,15 +19,24 @@
 
 import type { GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
-import { translateDelete } from "../../../translate";
 import type { Node } from "../../../classes";
-import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
-import { execute } from "../../../utils";
-import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { translateDelete } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { publishEventsToSubscriptionMechanism } from "../../subscriptions/publish-events-to-subscription-mechanism";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function deleteResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
+export function deleteResolver({
+    node,
+    composer,
+    concreteEntityAdapter,
+}: {
+    node: Node;
+    composer: SchemaComposer;
+    concreteEntityAdapter: ConcreteEntityAdapter;
+}) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
@@ -47,16 +56,16 @@ export function deleteResolver({ node, composer }: { node: Node; composer: Schem
         return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }
 
-    const hasDeleteInput = composer.has(`${node.name}DeleteInput`);
+    const hasDeleteInput = composer.has(concreteEntityAdapter.operations.deleteInputTypeName);
 
     return {
         type: `DeleteInfo!`,
         resolve,
         args: {
-            where: `${node.name}Where`,
+            where: concreteEntityAdapter.operations.whereInputTypeName,
             ...(hasDeleteInput
                 ? {
-                      delete: `${node.name}DeleteInput`,
+                      delete: concreteEntityAdapter.operations.deleteInputTypeName,
                   }
                 : {}),
         },

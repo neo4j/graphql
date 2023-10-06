@@ -18,26 +18,28 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import { execute } from "../../../utils";
-import type { CypherField } from "../../../types";
-import { graphqlArgsToCompose } from "../../to-compose";
-import { isNeoInt } from "../../../utils/utils";
+import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { translateTopLevelCypher } from "../../../translate";
-import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import type { CypherField } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { isNeoInt } from "../../../utils/utils";
+import { graphqlArgsToCompose } from "../../to-compose";
+import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function cypherResolver({
     field,
-    statement,
+    attributeAdapter,
     type,
 }: {
-    field: CypherField;
-    statement: string;
+    field: CypherField; // TODO: make this go away
+    attributeAdapter: AttributeAdapter;
     type: "Query" | "Mutation";
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info);
+        const statement = attributeAdapter.annotations.cypher?.statement as string; // this is known because of how we get here
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
@@ -79,7 +81,7 @@ export function cypherResolver({
             return value;
         });
 
-        if (!field.typeMeta.array) {
+        if (!attributeAdapter.typeHelper.isList()) {
             return values[0];
         }
 
@@ -87,8 +89,8 @@ export function cypherResolver({
     }
 
     return {
-        type: field.typeMeta.pretty,
+        type: attributeAdapter.getTypePrettyName(),
         resolve,
-        args: graphqlArgsToCompose(field.arguments),
+        args: graphqlArgsToCompose(attributeAdapter.args),
     };
 }

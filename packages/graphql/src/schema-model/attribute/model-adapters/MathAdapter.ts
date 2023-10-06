@@ -23,24 +23,27 @@ export class MathAdapter {
     readonly AttributeAdapter: AttributeAdapter;
 
     constructor(AttributeAdapter: AttributeAdapter) {
-        if (!AttributeAdapter.isNumeric()) {
+        if (!AttributeAdapter.typeHelper.isNumeric()) {
             throw new Error("Math model available only for numeric attributes");
         }
         this.AttributeAdapter = AttributeAdapter;
     }
 
     getMathOperations(): string[] {
-        return [this.getAdd(), this.getSubtract(), this.getMultiply(), this.getDivide()];
+        const operations = [this.getAdd(), this.getSubtract()];
+        this.AttributeAdapter.typeHelper.isFloat() && operations.push(this.getMultiply());
+        this.AttributeAdapter.typeHelper.isFloat() && operations.push(this.getDivide());
+        return operations;
     }
 
     getAdd(): string {
-        return this.AttributeAdapter.isInt() || this.AttributeAdapter.isBigInt()
+        return this.AttributeAdapter.typeHelper.isInt() || this.AttributeAdapter.typeHelper.isBigInt()
             ? `${this.AttributeAdapter.name}_INCREMENT`
             : `${this.AttributeAdapter.name}_ADD`;
     }
 
     getSubtract(): string {
-        return this.AttributeAdapter.isInt() || this.AttributeAdapter.isBigInt()
+        return this.AttributeAdapter.typeHelper.isInt() || this.AttributeAdapter.typeHelper.isBigInt()
             ? `${this.AttributeAdapter.name}_DECREMENT`
             : `${this.AttributeAdapter.name}_SUBTRACT`;
     }

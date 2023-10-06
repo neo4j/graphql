@@ -26,6 +26,7 @@ type RootTypeFieldNames = {
     update: string;
     delete: string;
     aggregate: string;
+    connection: string;
     subscribe: {
         created: string;
         updated: string;
@@ -96,6 +97,9 @@ export class ConcreteEntityOperations {
     public get connectOrCreateWhereInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}ConnectOrCreateWhere`;
     }
+    public get connectWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}ConnectWhere`;
+    }
 
     public get createInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}CreateInput`;
@@ -117,6 +121,14 @@ export class ConcreteEntityOperations {
         return `${this.concreteEntityAdapter.name}Fulltext`;
     }
 
+    public getFullTextIndexInputTypeName(indexName: string): string {
+        return `${this.concreteEntityAdapter.name}${upperFirst(indexName)}Fulltext`;
+    }
+
+    public getFullTextIndexQueryFieldName(indexName: string): string {
+        return `${this.concreteEntityAdapter.plural}Fulltext${upperFirst(indexName)}`;
+    }
+
     public get sortInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}Sort`;
     }
@@ -129,12 +141,36 @@ export class ConcreteEntityOperations {
         return `${this.concreteEntityAdapter.name}ConnectInput`;
     }
 
+    public get connectOrCreateInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}ConnectOrCreateInput`;
+    }
+
     public get disconnectInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}DisconnectInput`;
     }
 
     public get onCreateInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}OnCreateInput`;
+    }
+
+    public get subscriptionEventPayloadTypeName(): string {
+        return `${this.concreteEntityAdapter.name}EventPayload`;
+    }
+
+    public get subscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}SubscriptionWhere`;
+    }
+
+    public get relationshipsSubscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationshipsSubscriptionWhere`;
+    }
+
+    public get relationshipCreatedSubscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationshipCreatedSubscriptionWhere`;
+    }
+
+    public get relationshipDeletedSubscriptionWhereInputTypeName(): string {
+        return `${this.concreteEntityAdapter.name}RelationshipDeletedSubscriptionWhere`;
     }
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
@@ -144,6 +180,7 @@ export class ConcreteEntityOperations {
             update: `update${this.pascalCasePlural}`,
             delete: `delete${this.pascalCasePlural}`,
             aggregate: `${this.concreteEntityAdapter.plural}Aggregate`,
+            connection: `${this.concreteEntityAdapter.plural}Connection`,
             subscribe: {
                 created: `${this.concreteEntityAdapter.singular}Created`,
                 updated: `${this.concreteEntityAdapter.singular}Updated`,
@@ -198,12 +235,12 @@ export class ConcreteEntityOperations {
 
     public get updateMutationArgumentNames(): UpdateMutationArgumentNames {
         return {
-            connect: `${this.concreteEntityAdapter.name}ConnectInput`,
-            disconnect: `${this.concreteEntityAdapter.name}DisconnectInput`,
+            connect: this.connectInputTypeName,
+            disconnect: this.disconnectInputTypeName,
             create: this.relationInputTypeName,
             update: this.updateInputTypeName,
             delete: this.deleteInputTypeName,
-            connectOrCreate: `${this.concreteEntityAdapter.name}ConnectOrCreateInput`,
+            connectOrCreate: this.connectOrCreateInputTypeName,
             where: this.whereInputTypeName,
         };
     }

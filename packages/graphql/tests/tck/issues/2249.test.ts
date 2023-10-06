@@ -140,6 +140,12 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                                 {
                                     \\"create\\": [
                                         {
+                                            \\"edge\\": {
+                                                \\"score\\": {
+                                                    \\"low\\": 10,
+                                                    \\"high\\": 0
+                                                }
+                                            },
                                             \\"node\\": {
                                                 \\"Person\\": {
                                                     \\"name\\": \\"Ana\\",
@@ -147,12 +153,6 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                                                         \\"low\\": 100,
                                                         \\"high\\": 0
                                                     }
-                                                }
-                                            },
-                                            \\"edge\\": {
-                                                \\"score\\": {
-                                                    \\"low\\": 10,
-                                                    \\"high\\": 0
                                                 }
                                             }
                                         }

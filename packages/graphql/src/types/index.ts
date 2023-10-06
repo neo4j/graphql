@@ -25,8 +25,10 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
+import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 
 export { Node } from "../classes";
 
@@ -282,7 +284,7 @@ export interface CypherQueryOptions {
 }
 
 /** Input field for graphql-compose */
-export type InputField = { type: string; defaultValue?: string; directives?: Directive[] } | string;
+export type InputField = { type: string; defaultValue?: DefaultAnnotationValue; directives?: Directive[] } | string;
 
 /** Raw event metadata returned from queries */
 export type NodeSubscriptionMeta = {
@@ -386,6 +388,10 @@ export type RelationshipSubscriptionsEvent =
 /** Serialized subscription event */
 export type SubscriptionsEvent = NodeSubscriptionsEvent | RelationshipSubscriptionsEvent;
 
+export type SubscriptionEngineContext = {
+    schemaModel: Neo4jGraphQLSchemaModel;
+};
+
 /** Defines a custom mechanism to transport subscription events internally between servers */
 export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
@@ -393,7 +399,7 @@ export interface Neo4jGraphQLSubscriptionsEngine {
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
 
     /** To be called, if needed, in getSchema */
-    init?(): Promise<void>;
+    init?(context: SubscriptionEngineContext): Promise<void>;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;

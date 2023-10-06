@@ -50,21 +50,6 @@ export type SchemaConfigurationFlags = {
     subscribeDeleteRelationship: boolean;
 };
 
-function getDefaultSchemaConfigurationFlags(): SchemaConfigurationFlags {
-    return {
-        read: true,
-        aggregate: true,
-        create: true,
-        delete: true,
-        update: true,
-        subscribeCreate: true,
-        subscribeUpdate: true,
-        subscribeDelete: true,
-        subscribeCreateRelationship: true,
-        subscribeDeleteRelationship: true,
-    };
-}
-
 // obtain a schema configuration object from a list of SchemaExtensionNode
 export function schemaConfigurationFromSchemaExtensions(schemaExtensions: SchemaExtensionNode[]): SchemaConfiguration {
     const schemaConfiguration: SchemaConfiguration = {};
@@ -152,7 +137,18 @@ export function getSchemaConfigurationFlags(options: {
         throw new Error("@subscription directive already defined at the schema location");
     }
 
-    const schemaConfigurationFlags = getDefaultSchemaConfigurationFlags();
+    const schemaConfigurationFlags: SchemaConfigurationFlags = {
+        read: true,
+        aggregate: true,
+        create: true,
+        delete: true,
+        update: true,
+        subscribeCreate: true,
+        subscribeUpdate: true,
+        subscribeDelete: true,
+        subscribeCreateRelationship: true,
+        subscribeDeleteRelationship: true,
+    };
 
     if (options.excludeDirective) {
         const excludeOperationsSet = new Set(options.excludeDirective.operations);

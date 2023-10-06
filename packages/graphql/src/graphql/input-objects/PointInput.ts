@@ -21,6 +21,7 @@ import { GraphQLFloat, GraphQLInputObjectType, GraphQLNonNull } from "graphql";
 
 export const PointInput = new GraphQLInputObjectType({
     name: "PointInput",
+    description: "Input type for a point",
     fields: {
         longitude: {
             type: new GraphQLNonNull(GraphQLFloat),

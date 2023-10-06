@@ -19,7 +19,7 @@
 
 import { Kind, type FieldNode, type GraphQLResolveInfo, type SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
-import type { ConnectionField, ConnectionQueryArgs } from "../types";
+import type { ConnectionQueryArgs } from "../types";
 import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
@@ -33,12 +33,12 @@ function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | u
 }
 
 export function connectionFieldResolver({
-    connectionField,
+    connectionFieldName,
     source,
     args,
     info,
 }: {
-    connectionField: ConnectionField;
+    connectionFieldName: string;
     source: any;
     args: ConnectionQueryArgs;
     info: GraphQLResolveInfo;
@@ -46,7 +46,7 @@ export function connectionFieldResolver({
     const firstField = info.fieldNodes[0] as FieldNode;
     const { selectionSet } = firstField;
 
-    let value = source[connectionField.fieldName];
+    let value = source[connectionFieldName];
     if (firstField.alias) {
         value = source[firstField.alias.value];
     }

@@ -564,6 +564,11 @@ describe("@auth allow on specific interface implementation", () => {
                         \\"disconnect\\": {
                             \\"content\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"id\\": \\"post-id\\"
+                                        }
+                                    },
                                     \\"disconnect\\": {
                                         \\"_on\\": {
                                             \\"Post\\": [
@@ -579,11 +584,6 @@ describe("@auth allow on specific interface implementation", () => {
                                                     ]
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
                                         }
                                     }
                                 }

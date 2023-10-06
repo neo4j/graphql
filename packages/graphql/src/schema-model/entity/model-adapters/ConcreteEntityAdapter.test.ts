@@ -119,6 +119,7 @@ describe("ConcreteEntityAdapter", () => {
                 create: "createUsers",
                 delete: "deleteUsers",
                 read: "users",
+                connection: "usersConnection",
                 subscribe: {
                     created: "userCreated",
                     deleted: "userDeleted",

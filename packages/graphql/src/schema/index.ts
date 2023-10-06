@@ -17,4 +17,5 @@
  * limitations under the License.
  */
 
+// export { default as makeAugmentedSchema } from "./make-augmented-schema";
 export { default as makeAugmentedSchema } from "./make-augmented-schema";

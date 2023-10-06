@@ -18,19 +18,18 @@
  */
 
 import { int } from "neo4j-driver";
-import type { Node, PrimitiveField } from "../../../../../types";
+import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { getFilteringFn } from "../utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../utils/multiple-conditions-aggregation-map";
 import { parseFilterProperty } from "../utils/parse-filter-property";
-import { isFloatType, isIDAsString, isStringType } from "../utils/type-checks";
 
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
 export function filterByProperties<T>({
-    node,
+    attributes,
     whereProperties,
     receivedProperties,
 }: {
-    node: Node;
+    attributes: Map<string, AttributeAdapter>;
     whereProperties: Record<string, T | Array<Record<string, T>> | Record<string, T>>;
     receivedProperties: Record<string, T>;
 }): boolean {
@@ -40,13 +39,13 @@ export function filterByProperties<T>({
             let comparisonResults;
             if (k === "NOT") {
                 comparisonResults = filterByProperties({
-                    node,
+                    attributes,
                     whereProperties: v as Record<string, T>,
                     receivedProperties,
                 });
             } else {
                 comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                    return filterByProperties({ node, whereProperties: whereCl, receivedProperties });
+                    return filterByProperties({ attributes, whereProperties: whereCl, receivedProperties });
                 });
             }
 
@@ -59,7 +58,7 @@ export function filterByProperties<T>({
             if (!receivedValue) {
                 return false;
             }
-            const fieldMeta = node.primitiveFields.find((f) => f.fieldName === fieldName);
+            const fieldMeta = attributes.get(fieldName);
             const checkFilterPasses = getFilteringFn(operator, operatorMapOverrides);
 
             if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
@@ -70,33 +69,38 @@ export function filterByProperties<T>({
     return true;
 }
 
+const isFloatOrStringOrIDAsString = (attributeAdapter: AttributeAdapter | undefined, value: string | number) =>
+    attributeAdapter?.typeHelper.isFloat() ||
+    attributeAdapter?.typeHelper.isString() ||
+    (attributeAdapter?.typeHelper.isID() && int(value).toString() !== value);
+
 const operatorMapOverrides = {
-    INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
+    INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: AttributeAdapter | undefined) => {
+        if (isFloatOrStringOrIDAsString(fieldMeta, filtered)) {
             return received.some((v) => v === filtered);
         }
         // int/ bigint
         const filteredAsNeo4jInteger = int(filtered);
         return received.some((r) => int(r).equals(filteredAsNeo4jInteger));
     },
-    NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
+    NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: AttributeAdapter | undefined) => {
+        if (isFloatOrStringOrIDAsString(fieldMeta, filtered)) {
             return !received.some((v) => v === filtered);
         }
         // int/ bigint
         const filteredAsNeo4jInteger = int(filtered);
         return !received.some((r) => int(r).equals(filteredAsNeo4jInteger));
     },
-    IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
+    IN: (received: string | number, filtered: [string | number], fieldMeta: AttributeAdapter | undefined) => {
+        if (isFloatOrStringOrIDAsString(fieldMeta, received)) {
             return filtered.some((v) => v === received);
         }
         // int/ bigint
         const receivedAsNeo4jInteger = int(received);
         return filtered.some((r) => int(r).equals(receivedAsNeo4jInteger));
     },
-    NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
-        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
+    NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: AttributeAdapter | undefined) => {
+        if (isFloatOrStringOrIDAsString(fieldMeta, received)) {
             return !filtered.some((v) => v === received);
         }
         // int/ bigint

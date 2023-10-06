@@ -17,22 +17,24 @@
  * limitations under the License.
  */
 
+import { DEPRECATED } from "../constants";
+
 export const DEPRECATE_NOT = {
-    name: "deprecated",
+    name: DEPRECATED,
     args: {
         reason: "Negation filters will be deprecated, use the NOT operator to achieve the same behavior",
     },
 };
 
 export const DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS = {
-    name: "deprecated",
+    name: DEPRECATED,
     args: {
         reason: "Please use the explicit _LENGTH version for string aggregation.",
     },
 };
 
 export const DEPRECATE_INVALID_AGGREGATION_FILTERS = {
-    name: "deprecated",
+    name: DEPRECATED,
     args: {
         reason: "Aggregation filters that are not relying on an aggregating function will be deprecated.",
     },

@@ -41,16 +41,17 @@ import type { DefinitionCollection } from "./parser/definition-collection";
 import { getDefinitionCollection } from "./parser/definition-collection";
 import { parseAnnotations } from "./parser/parse-annotation";
 import { parseArguments } from "./parser/parse-arguments";
-import { parseAttribute, parseAttributeArguments, parseField } from "./parser/parse-attribute";
+import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribute";
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
+import { PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT } from "../constants";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
     const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
-        acc[definition.name.value] = generateOperation(definition);
+        acc[definition.name.value] = generateOperation(definition, definitionCollection);
         return acc;
     }, {});
 
@@ -197,7 +198,7 @@ function generateInterfaceEntity(
     return new InterfaceEntity({
         ...interfaceEntity,
         description: definition.description?.value,
-        attributes: filterTruthy(fields) as Attribute[],
+        attributes: filterTruthy(fields),
         annotations,
     });
 }
@@ -365,13 +366,12 @@ function generateRelationshipField(
             );
         });
 
-        attributes = filterTruthy(fields) as Attribute[];
+        attributes = filterTruthy(fields);
     }
 
     const annotations = parseAnnotations(mergedDirectives);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
 
-    // TODO: add property interface name
     return new Relationship({
         name: fieldName,
         type: type as string,
@@ -427,13 +427,19 @@ function generateConcreteEntity(
     });
 
     const inheritedDirectives = inheritsFrom?.flatMap((i) => i?.directives || []);
-    const annotations = createEntityAnnotations((definition.directives || []).concat(inheritedDirectives || []));
+    // schema configuration directives are propagated onto concrete entities
+    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
+        PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT.includes(x.name.value)
+    );
+    const annotations = createEntityAnnotations(
+        (definition.directives || []).concat(inheritedDirectives || []).concat(schemaDirectives || [])
+    );
 
     return new ConcreteEntity({
         name: definition.name.value,
         description: definition.description?.value,
         labels: getLabels(definition),
-        attributes: filterTruthy(fields) as Attribute[],
+        attributes: filterTruthy(fields),
         annotations,
     });
 }
@@ -472,12 +478,17 @@ function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Ann
     return schemaModelAnnotations.concat(annotations);
 }
 
-function generateOperation(definition: ObjectTypeDefinitionNode): Operation {
-    const fields = (definition.fields || []).map((fieldDefinition) => parseField(fieldDefinition));
+function generateOperation(
+    definition: ObjectTypeDefinitionNode,
+    definitionCollection: DefinitionCollection
+): Operation {
+    const attributes = (definition.fields || [])
+        .map((fieldDefinition) => parseAttribute(fieldDefinition, undefined, definitionCollection))
+        .filter((attribute) => attribute.annotations.cypher);
 
     return new Operation({
         name: definition.name.value,
-        fields: filterTruthy(fields),
+        attributes,
         annotations: createEntityAnnotations(definition.directives || []),
     });
 }

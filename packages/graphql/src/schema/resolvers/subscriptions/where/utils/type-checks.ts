@@ -18,7 +18,9 @@
  */
 
 import { int } from "neo4j-driver";
-import type { PrimitiveField, RelationField } from "../../../../../types";
+import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { PrimitiveField } from "../../../../../types";
 import type { InterfaceSpecificType, InterfaceType, StandardType } from "../../types";
 
 export function isFloatType(fieldMeta: PrimitiveField | undefined) {
@@ -39,16 +41,16 @@ export function isIDAsString(fieldMeta: PrimitiveField | undefined, value: strin
 
 export function isInterfaceType(
     node: StandardType | InterfaceType,
-    receivedEventRelationship: RelationField
+    receivedEventRelationship: RelationshipAdapter
 ): node is InterfaceType {
-    return !!receivedEventRelationship.interface?.implementations;
+    return !!(receivedEventRelationship.target instanceof InterfaceEntityAdapter);
 }
 
 export function isStandardType(
     node: StandardType | InterfaceType,
-    receivedEventRelationship: RelationField
+    receivedEventRelationship: RelationshipAdapter
 ): node is StandardType {
-    return !receivedEventRelationship.interface?.implementations;
+    return !(receivedEventRelationship.target instanceof InterfaceEntityAdapter);
 }
 
 export function isInterfaceSpecificFieldType(node: unknown): node is InterfaceSpecificType {

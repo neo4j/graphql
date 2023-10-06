@@ -203,6 +203,7 @@ describe("issues/3591", () => {
               update?: InputMaybe<RestaurantUpdateInput>;
             };
 
+            /** An enum for sorting in either ascending or descending order. */
             export enum SortDirection {
               /** Sort by field values in ascending order. */
               Asc = \\"ASC\\",
@@ -246,6 +247,7 @@ describe("issues/3591", () => {
               companies: Array<Company>;
             };
 
+            /** Information about the number of nodes and relationships created during a create mutation */
             export type CreateInfo = {
               __typename?: \\"CreateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -266,6 +268,7 @@ describe("issues/3591", () => {
               users: Array<User>;
             };
 
+            /** Information about the number of nodes and relationships deleted during a delete mutation */
             export type DeleteInfo = {
               __typename?: \\"DeleteInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -325,6 +328,7 @@ describe("issues/3591", () => {
               companies: Array<Company>;
             };
 
+            /** Information about the number of nodes and relationships created and deleted during an update mutation */
             export type UpdateInfo = {
               __typename?: \\"UpdateInfo\\";
               /** @deprecated This field has been deprecated because bookmarks are now handled by the driver. */
@@ -350,12 +354,17 @@ describe("issues/3591", () => {
             export type User = {
               __typename?: \\"User\\";
               id: Scalars[\\"ID\\"][\\"output\\"];
-              company: Array<Company>;
               companyAggregate?: Maybe<UserCompanyCompanyAggregationSelection>;
-              favoriteRestaurants: Array<Restaurant>;
+              company: Array<Company>;
               favoriteRestaurantsAggregate?: Maybe<UserRestaurantFavoriteRestaurantsAggregationSelection>;
+              favoriteRestaurants: Array<Restaurant>;
               companyConnection: UserCompanyConnection;
               favoriteRestaurantsConnection: UserFavoriteRestaurantsConnection;
+            };
+
+            export type UserCompanyAggregateArgs = {
+              where?: InputMaybe<CompanyWhere>;
+              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type UserCompanyArgs = {
@@ -364,19 +373,14 @@ describe("issues/3591", () => {
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
-            export type UserCompanyAggregateArgs = {
-              where?: InputMaybe<CompanyWhere>;
+            export type UserFavoriteRestaurantsAggregateArgs = {
+              where?: InputMaybe<RestaurantWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
             export type UserFavoriteRestaurantsArgs = {
               where?: InputMaybe<RestaurantWhere>;
               options?: InputMaybe<RestaurantOptions>;
-              directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
-            };
-
-            export type UserFavoriteRestaurantsAggregateArgs = {
-              where?: InputMaybe<RestaurantWhere>;
               directed?: InputMaybe<Scalars[\\"Boolean\\"][\\"input\\"]>;
             };
 
@@ -477,10 +481,10 @@ describe("issues/3591", () => {
             };
 
             export type CompanyOptions = {
-              /** Specify one or more CompanySort objects to sort Companies by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<CompanySort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more CompanySort objects to sort Companies by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<CompanySort>>;
             };
 
             /** Fields to sort Companies by. The order in which sorts are applied is not guaranteed when specifying many fields in one CompanySort object. */
@@ -498,9 +502,6 @@ describe("issues/3591", () => {
             };
 
             export type CompanyWhere = {
-              OR?: InputMaybe<Array<CompanyWhere>>;
-              AND?: InputMaybe<Array<CompanyWhere>>;
-              NOT?: InputMaybe<CompanyWhere>;
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
@@ -561,6 +562,9 @@ describe("issues/3591", () => {
               field3_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               field3_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<CompanyWhere>>;
+              AND?: InputMaybe<Array<CompanyWhere>>;
+              NOT?: InputMaybe<CompanyWhere>;
             };
 
             export type RestaurantConnectWhere = {
@@ -572,10 +576,10 @@ describe("issues/3591", () => {
             };
 
             export type RestaurantOptions = {
-              /** Specify one or more RestaurantSort objects to sort Restaurants by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<RestaurantSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more RestaurantSort objects to sort Restaurants by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<RestaurantSort>>;
             };
 
             /** Fields to sort Restaurants by. The order in which sorts are applied is not guaranteed when specifying many fields in one RestaurantSort object. */
@@ -588,9 +592,6 @@ describe("issues/3591", () => {
             };
 
             export type RestaurantWhere = {
-              OR?: InputMaybe<Array<RestaurantWhere>>;
-              AND?: InputMaybe<Array<RestaurantWhere>>;
-              NOT?: InputMaybe<RestaurantWhere>;
               name?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
@@ -606,6 +607,9 @@ describe("issues/3591", () => {
               name_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               name_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<RestaurantWhere>>;
+              AND?: InputMaybe<Array<RestaurantWhere>>;
+              NOT?: InputMaybe<RestaurantWhere>;
             };
 
             export type UserCompanyAggregateInput = {
@@ -631,8 +635,8 @@ describe("issues/3591", () => {
             };
 
             export type UserCompanyConnectionWhere = {
-              AND?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               OR?: InputMaybe<Array<UserCompanyConnectionWhere>>;
+              AND?: InputMaybe<Array<UserCompanyConnectionWhere>>;
               NOT?: InputMaybe<UserCompanyConnectionWhere>;
               node?: InputMaybe<CompanyWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -652,8 +656,8 @@ describe("issues/3591", () => {
             };
 
             export type UserCompanyFieldInput = {
-              create?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
               connect?: InputMaybe<Array<UserCompanyConnectFieldInput>>;
+              create?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
             };
 
             export type UserCompanyNodeAggregationWhereInput = {
@@ -835,11 +839,11 @@ describe("issues/3591", () => {
 
             export type UserCompanyUpdateFieldInput = {
               where?: InputMaybe<UserCompanyConnectionWhere>;
-              create?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
               connect?: InputMaybe<Array<UserCompanyConnectFieldInput>>;
+              disconnect?: InputMaybe<Array<UserCompanyDisconnectFieldInput>>;
+              create?: InputMaybe<Array<UserCompanyCreateFieldInput>>;
               update?: InputMaybe<UserCompanyUpdateConnectionInput>;
               delete?: InputMaybe<Array<UserCompanyDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<UserCompanyDisconnectFieldInput>>;
             };
 
             export type UserConnectInput = {
@@ -891,8 +895,8 @@ describe("issues/3591", () => {
             };
 
             export type UserFavoriteRestaurantsConnectionWhere = {
-              AND?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               OR?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
+              AND?: InputMaybe<Array<UserFavoriteRestaurantsConnectionWhere>>;
               NOT?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
               node?: InputMaybe<RestaurantWhere>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
@@ -912,8 +916,8 @@ describe("issues/3591", () => {
             };
 
             export type UserFavoriteRestaurantsFieldInput = {
-              create?: InputMaybe<Array<UserFavoriteRestaurantsCreateFieldInput>>;
               connect?: InputMaybe<Array<UserFavoriteRestaurantsConnectFieldInput>>;
+              create?: InputMaybe<Array<UserFavoriteRestaurantsCreateFieldInput>>;
             };
 
             export type UserFavoriteRestaurantsNodeAggregationWhereInput = {
@@ -983,18 +987,18 @@ describe("issues/3591", () => {
 
             export type UserFavoriteRestaurantsUpdateFieldInput = {
               where?: InputMaybe<UserFavoriteRestaurantsConnectionWhere>;
-              create?: InputMaybe<Array<UserFavoriteRestaurantsCreateFieldInput>>;
               connect?: InputMaybe<Array<UserFavoriteRestaurantsConnectFieldInput>>;
+              disconnect?: InputMaybe<Array<UserFavoriteRestaurantsDisconnectFieldInput>>;
+              create?: InputMaybe<Array<UserFavoriteRestaurantsCreateFieldInput>>;
               update?: InputMaybe<UserFavoriteRestaurantsUpdateConnectionInput>;
               delete?: InputMaybe<Array<UserFavoriteRestaurantsDeleteFieldInput>>;
-              disconnect?: InputMaybe<Array<UserFavoriteRestaurantsDisconnectFieldInput>>;
             };
 
             export type UserOptions = {
-              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
-              sort?: InputMaybe<Array<UserSort>>;
               limit?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
               offset?: InputMaybe<Scalars[\\"Int\\"][\\"input\\"]>;
+              /** Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array. */
+              sort?: InputMaybe<Array<UserSort>>;
             };
 
             export type UserRelationInput = {
@@ -1017,9 +1021,6 @@ describe("issues/3591", () => {
             };
 
             export type UserWhere = {
-              OR?: InputMaybe<Array<UserWhere>>;
-              AND?: InputMaybe<Array<UserWhere>>;
-              NOT?: InputMaybe<UserWhere>;
               id?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
@@ -1035,11 +1036,13 @@ describe("issues/3591", () => {
               id_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
               /** @deprecated Negation filters will be deprecated, use the NOT operator to achieve the same behavior */
               id_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"ID\\"][\\"input\\"]>;
+              OR?: InputMaybe<Array<UserWhere>>;
+              AND?: InputMaybe<Array<UserWhere>>;
+              NOT?: InputMaybe<UserWhere>;
               /** @deprecated Use \`company_SOME\` instead. */
               company?: InputMaybe<CompanyWhere>;
               /** @deprecated Use \`company_NONE\` instead. */
               company_NOT?: InputMaybe<CompanyWhere>;
-              companyAggregate?: InputMaybe<UserCompanyAggregateInput>;
               /** Return Users where all of the related Companies match this filter */
               company_ALL?: InputMaybe<CompanyWhere>;
               /** Return Users where none of the related Companies match this filter */
@@ -1048,11 +1051,11 @@ describe("issues/3591", () => {
               company_SINGLE?: InputMaybe<CompanyWhere>;
               /** Return Users where some of the related Companies match this filter */
               company_SOME?: InputMaybe<CompanyWhere>;
+              companyAggregate?: InputMaybe<UserCompanyAggregateInput>;
               /** @deprecated Use \`favoriteRestaurants_SOME\` instead. */
               favoriteRestaurants?: InputMaybe<RestaurantWhere>;
               /** @deprecated Use \`favoriteRestaurants_NONE\` instead. */
               favoriteRestaurants_NOT?: InputMaybe<RestaurantWhere>;
-              favoriteRestaurantsAggregate?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
               /** Return Users where all of the related Restaurants match this filter */
               favoriteRestaurants_ALL?: InputMaybe<RestaurantWhere>;
               /** Return Users where none of the related Restaurants match this filter */
@@ -1061,6 +1064,7 @@ describe("issues/3591", () => {
               favoriteRestaurants_SINGLE?: InputMaybe<RestaurantWhere>;
               /** Return Users where some of the related Restaurants match this filter */
               favoriteRestaurants_SOME?: InputMaybe<RestaurantWhere>;
+              favoriteRestaurantsAggregate?: InputMaybe<UserFavoriteRestaurantsAggregateInput>;
               /** @deprecated Use \`companyConnection_SOME\` instead. */
               companyConnection?: InputMaybe<UserCompanyConnectionWhere>;
               /** @deprecated Use \`companyConnection_NONE\` instead. */

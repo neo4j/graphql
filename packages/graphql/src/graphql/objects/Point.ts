@@ -21,6 +21,8 @@ import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLStr
 
 export const Point = new GraphQLObjectType({
     name: "Point",
+    description:
+        "A point in a coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#point",
     fields: {
         longitude: {
             type: new GraphQLNonNull(GraphQLFloat),

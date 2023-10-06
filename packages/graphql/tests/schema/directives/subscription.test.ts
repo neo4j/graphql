@@ -716,37 +716,8 @@ describe("@subscription directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionPlugin } });
             const schema = await neoSchema.getSchema();
-            const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const actorCreated = subscriptionFields["actorCreated"];
-            const movieCreated = subscriptionFields["movieCreated"];
-
-            expect(actorCreated).toBeUndefined();
-            expect(movieCreated).toBeUndefined();
-
-            const actorUpdated = subscriptionFields["actorUpdated"];
-            const movieUpdated = subscriptionFields["movieUpdated"];
-
-            expect(actorUpdated).toBeUndefined();
-            expect(movieUpdated).toBeUndefined();
-
-            const actorDeleted = subscriptionFields["actorDeleted"];
-            const movieDeleted = subscriptionFields["movieDeleted"];
-
-            expect(actorDeleted).toBeUndefined();
-            expect(movieDeleted).toBeUndefined();
-
-            const actorRelationshipCreated = subscriptionFields["actorRelationshipCreated"];
-            const movieRelationshipCreated = subscriptionFields["movieRelationshipCreated"];
-
-            expect(actorRelationshipCreated).toBeUndefined();
-            expect(movieRelationshipCreated).toBeUndefined();
-
-            const actorRelationshipDeleted = subscriptionFields["actorRelationshipDeleted"];
-            const movieRelationshipDeleted = subscriptionFields["movieRelationshipDeleted"];
-
-            expect(actorRelationshipDeleted).toBeUndefined();
-            expect(movieRelationshipDeleted).toBeUndefined();
+            const subscriptionType = schema.getSubscriptionType();
+            expect(subscriptionType).toBeUndefined();
         });
 
         test("should not throw an Error when is mixed with @query", async () => {

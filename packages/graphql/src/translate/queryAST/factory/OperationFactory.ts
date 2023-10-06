@@ -17,38 +17,38 @@
  * limitations under the License.
  */
 
+import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { FilterFactory } from "./FilterFactory";
-import { FieldFactory } from "./FieldFactory";
-import type { QueryASTFactory } from "./QueryASTFactory";
+import { cursorToOffset } from "graphql-relay";
+import { Integer } from "neo4j-driver";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { filterTruthy, isObject, isString } from "../../../utils/utils";
+import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
-import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
-import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
-import { Integer } from "neo4j-driver";
-import { AggregationOperation } from "../ast/operations/AggregationOperation";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { AuthorizationFactory } from "./AuthorizationFactory";
-import { AuthFilterFactory } from "./AuthFilterFactory";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
-import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { CompositeConnectionPartial } from "../ast/operations/composite/CompositeConnectionPartial";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
-import { isUnionEntity } from "../utils/is-union-entity";
-import { getConcreteWhere } from "../utils/get-concrete-where";
-import { filterTruthy, isObject, isString } from "../../../utils/utils";
-import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
-import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
-import { checkEntityAuthentication } from "../../authorization/check-authentication";
-import { mergeDeep } from "@graphql-tools/utils";
-import { cursorToOffset } from "graphql-relay";
+import { getConcreteWhere } from "../utils/get-concrete-where";
+import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { isInterfaceEntity } from "../utils/is-interface-entity";
+import { isUnionEntity } from "../utils/is-union-entity";
+import { AuthFilterFactory } from "./AuthFilterFactory";
+import { AuthorizationFactory } from "./AuthorizationFactory";
+import { FieldFactory } from "./FieldFactory";
+import { FilterFactory } from "./FilterFactory";
+import type { QueryASTFactory } from "./QueryASTFactory";
+import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
+import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 export class OperationsFactory {
     private filterFactory: FilterFactory;
@@ -139,15 +139,21 @@ export class OperationsFactory {
             });
         }
 
-        const rawProjectionFields = { ...resolveTree.fieldsByTypeName[relationship.getAggregationFieldTypename()] };
+        const rawProjectionFields = {
+            ...resolveTree.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()],
+        };
         const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
         const projectionFields = parsedProjectionFields.fields;
 
         const edgeRawFields = {
-            ...parsedProjectionFields.edge?.fieldsByTypeName[relationship.getAggregationFieldTypename("edge")],
+            ...parsedProjectionFields.edge?.fieldsByTypeName[
+                relationship.operations.getAggregationFieldTypename("edge")
+            ],
         };
         const nodeRawFields = {
-            ...parsedProjectionFields.node?.fieldsByTypeName[relationship.getAggregationFieldTypename("node")],
+            ...parsedProjectionFields.node?.fieldsByTypeName[
+                relationship.operations.getAggregationFieldTypename("node")
+            ],
         };
 
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
@@ -326,14 +332,16 @@ export class OperationsFactory {
         operation: T;
         whereArgs: Record<string, any>;
     }): T {
-        const resolveTreeConnectionFields = { ...resolveTree.fieldsByTypeName[relationship.connectionFieldTypename] };
+        const resolveTreeConnectionFields = {
+            ...resolveTree.fieldsByTypeName[relationship.operations.connectionFieldTypename],
+        };
 
         const edgeFieldsRaw = this.findFieldsByNameInResolveTree(resolveTreeConnectionFields, "edges");
         const resolveTreeEdgeFields: Record<string, ResolveTree> =
             mergeDeep(
                 filterTruthy(
                     edgeFieldsRaw.map(
-                        (edgeField) => edgeField?.fieldsByTypeName[relationship.relationshipFieldTypename]
+                        (edgeField) => edgeField?.fieldsByTypeName[relationship.operations.relationshipFieldTypename]
                     )
                 )
             ) ?? {};

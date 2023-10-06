@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "graphql-compose";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
@@ -30,8 +29,13 @@ import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntit
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
+import { RelationshipOperations } from "./RelationshipOperations";
+import { plural, singular } from "../../utils/string-manipulation";
+import { RelationshipNestedOperationsOption } from "../../../constants";
+import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 
 export class RelationshipAdapter {
+    private _listFiltersModel: ListFiltersAdapter | undefined;
     public readonly name: string;
     public readonly type: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
@@ -40,7 +44,7 @@ export class RelationshipAdapter {
     private _target: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
-    public readonly nestedOperations: NestedOperation[];
+    public readonly nestedOperations: Set<NestedOperation>;
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
     public readonly description?: string;
@@ -49,6 +53,12 @@ export class RelationshipAdapter {
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
+
+    private _singular: string | undefined;
+    private _plural: string | undefined;
+
+    // specialize models
+    private _operations: RelationshipOperations | undefined;
 
     constructor(
         relationship: Relationship,
@@ -91,7 +101,7 @@ export class RelationshipAdapter {
         this.direction = direction;
         this.isList = isList;
         this.queryDirection = queryDirection;
-        this.nestedOperations = nestedOperations;
+        this.nestedOperations = new Set(nestedOperations);
         this.aggregate = aggregate;
         this.isNullable = isNullable;
         this.rawEntity = target;
@@ -102,119 +112,34 @@ export class RelationshipAdapter {
         this.inheritedFrom = inheritedFrom;
     }
 
-    public get prefixForTypename(): string {
-        // TODO: if relationship field is inherited  by source (part of a implemented Interface, not necessarily annotated as rel)
-        // then return this.interface.name
-        // TODO: how to get implemented interfaces here??
-        // console.log(this.inheritedFrom, this.source.name, this.name);
-
-        return this.inheritedFrom || this.source.name;
-    }
-
-    public get fieldInputPrefixForTypename(): string {
-        const isTargetInterface = this.target instanceof InterfaceEntityAdapter;
-        if (isTargetInterface) {
-            return this.source.name;
+    get operations(): RelationshipOperations {
+        if (!this._operations) {
+            return new RelationshipOperations(this);
         }
-        return this.prefixForTypename;
+        return this._operations;
     }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get connectionFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}Connection`;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get relationshipFieldTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}Relationship`;
-    }
-
-    public get fieldInputTypeName(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}FieldInput`;
-    }
-
-    public get updateFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateFieldInput`;
-    }
-
-    public get createFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}CreateFieldInput`;
-    }
-
-    public get deleteFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DeleteFieldInput`;
-    }
-    public get connectFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}ConnectFieldInput`;
-    }
-
-    public get disconnectFieldInputTypeName(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}DisconnectFieldInput`;
-    }
-
-    public getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter?: ConcreteEntityAdapter): string {
-        if (this.target instanceof UnionEntityAdapter) {
-            if (!concreteTargetEntityAdapter) {
-                throw new Error("missing concreteTargetEntityAdapter");
+    get listFiltersModel(): ListFiltersAdapter | undefined {
+        if (!this._listFiltersModel) {
+            if (!this.isList) {
+                return;
             }
-            return `${this.prefixForTypename}${upperFirst(this.name)}${
-                concreteTargetEntityAdapter.name
-            }ConnectOrCreateFieldInput`;
+            this._listFiltersModel = new ListFiltersAdapter(this);
         }
-        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectOrCreateFieldInput`;
+        return this._listFiltersModel;
     }
 
-    public getConnectOrCreateOnCreateFieldInputTypeName(concreteTargetEntityAdapter: ConcreteEntityAdapter): string {
-        return `${this.getConnectOrCreateFieldInputTypeName(concreteTargetEntityAdapter)}OnCreate`;
+    public get singular(): string {
+        if (!this._singular) {
+            this._singular = singular(this.name);
+        }
+        return this._singular;
     }
 
-    public get connectionFieldName(): string {
-        return `${this.name}Connection`;
-    }
-
-    public get connectionWhereTypename(): string {
-        return `${this.prefixForTypename}${upperFirst(this.name)}ConnectionWhere`;
-    }
-    public get updateConnectionInputTypename(): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.name)}UpdateConnectionInput`;
-    }
-
-    public get aggregateInputTypeName(): string {
-        return `${this.source.name}${upperFirst(this.name)}AggregateInput`;
-    }
-
-    public getAggregationWhereInputTypeName(isA: "Node" | "Edge"): string {
-        return `${this.source.name}${upperFirst(this.name)}${isA}AggregationWhereInput`;
-    }
-
-    public get edgeCreateInputTypeName(): string {
-        return `${this.propertiesTypeName}CreateInput${this.hasNonNullNonGeneratedProperties ? `!` : ""}`;
-    }
-
-    public get edgeUpdateInputTypeName(): string {
-        return `${this.propertiesTypeName}UpdateInput`;
-    }
-
-    public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {
-        // TODO: use this._target in the end; currently passed-in as argument because unions need this per refNode
-        // const target = this._target;
-        // if (!(target instanceof ConcreteEntityAdapter)) {
-        //     // something is wrong
-        //     return;=
-        // }
-        return {
-            where: `${target.operations.connectOrCreateWhereInputTypeName}!`,
-            onCreate: `${this.getConnectOrCreateOnCreateFieldInputTypeName(target)}!`,
-        };
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
-        const nestedFieldStr = upperFirst(nestedField || "");
-        const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
-        return `${this.source.name}${this.target.name}${upperFirst(
-            this.name
-        )}${nestedFieldStr}${aggregationStr}Selection`;
+    public get plural(): string {
+        if (!this._plural) {
+            this._plural = plural(this.name);
+        }
+        return this._plural;
     }
 
     private initAttributes(attributes: Map<string, Attribute>) {
@@ -276,13 +201,6 @@ export class RelationshipAdapter {
         return this._target;
     }
 
-    getTargetTypePrettyName(): string {
-        if (this.isList) {
-            return `[${this.target.name}!]${this.isNullable === false ? "!" : ""}`;
-        }
-        return `${this.target.name}${this.isNullable === false ? "!" : ""}`;
-    }
-
     isReadable(): boolean {
         return this.annotations.selectable?.onRead !== false;
     }
@@ -307,23 +225,53 @@ export class RelationshipAdapter {
         return this.annotations.settable?.onUpdate !== false;
     }
 
-    /*
-        const nonGeneratedProperties = [
-            ...objectFields.primitiveFields.filter((field) => !field.autogenerate),
-            ...objectFields.scalarFields,
-            ...objectFields.enumFields,
-            ...objectFields.temporalFields.filter((field) => !field.timestamps),
-            ...objectFields.pointFields,
-        ];
-        result.hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
-    */
+    shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+        let relationshipTarget = this.target;
+        if (ifUnionRelationshipTargetEntity) {
+            relationshipTarget = ifUnionRelationshipTargetEntity;
+        }
+        return (
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
+            // The connectOrCreate field is not generated if the related type does not have a unique field
+            (this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
+                relationshipTarget instanceof ConcreteEntityAdapter &&
+                relationshipTarget.uniqueFields.length > 0)
+        );
+    }
+
+    shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+        const onlyConnectOrCreate =
+            this.nestedOperations.size === 1 &&
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE);
+
+        if (this.target instanceof InterfaceEntityAdapter) {
+            return this.nestedOperations.size > 0 && !onlyConnectOrCreate;
+        }
+        if (this.target instanceof UnionEntityAdapter) {
+            if (!ifUnionRelationshipTargetEntity) {
+                throw new Error("Expected member entity");
+            }
+            const onlyConnectOrCreateAndNoUniqueFields =
+                onlyConnectOrCreate && !ifUnionRelationshipTargetEntity.uniqueFields.length;
+            return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
+        }
+        const onlyConnectOrCreateAndNoUniqueFields = onlyConnectOrCreate && !this.target.uniqueFields.length;
+        return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
+    }
+
     public get nonGeneratedProperties(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isNonGeneratedField());
     }
-
     public get hasNonNullNonGeneratedProperties(): boolean {
-        return this.nonGeneratedProperties.some((property) => property.isRequired());
+        return this.nonGeneratedProperties.some((property) => property.typeHelper.isRequired());
     }
+
+    /**
+     * Categories
+     * = a grouping of attributes
+     * used to generate different types for the Entity that contains these Attributes
+     */
 
     public get aggregableFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
@@ -331,5 +279,31 @@ export class RelationshipAdapter {
 
     public get aggregationWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
+    }
+
+    public get createInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isCreateInputField());
+    }
+
+    public get updateInputFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
+    }
+
+    public get sortableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
+    }
+
+    public get whereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
+    public get subscriptionWhereFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
+    }
+
+    public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) =>
+            attribute.isSubscriptionConnectedRelationshipField()
+        );
     }
 }

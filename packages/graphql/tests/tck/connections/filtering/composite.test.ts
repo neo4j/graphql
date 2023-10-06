@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Composite", () => {
     let typeDefs: DocumentNode;
@@ -80,7 +80,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE ((this0.screenTime > $param1 AND this0.screenTime < $param2) AND (this1.firstName = $param3 AND this1.lastName = $param4))
+                WHERE ((this1.firstName = $param1 AND this1.lastName = $param2) AND (this0.screenTime > $param3 AND this0.screenTime < $param4))
                 WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -92,16 +92,16 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"param1\\": {
+                \\"param1\\": \\"Tom\\",
+                \\"param2\\": \\"Hanks\\",
+                \\"param3\\": {
                     \\"low\\": 30,
                     \\"high\\": 0
                 },
-                \\"param2\\": {
+                \\"param4\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                },
-                \\"param3\\": \\"Tom\\",
-                \\"param4\\": \\"Hanks\\"
+                }
             }"
         `);
     });
@@ -137,7 +137,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE (NOT (this0.screenTime < $param1 AND this0.screenTime > $param2) AND NOT (this1.firstName = $param3 AND this1.lastName = $param4))
+                WHERE (NOT (this1.firstName = $param1 AND this1.lastName = $param2) AND NOT (this0.screenTime < $param3 AND this0.screenTime > $param4))
                 WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -149,16 +149,16 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"param1\\": {
+                \\"param1\\": \\"Tom\\",
+                \\"param2\\": \\"Hanks\\",
+                \\"param3\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"param2\\": {
+                \\"param4\\": {
                     \\"low\\": 30,
                     \\"high\\": 0
-                },
-                \\"param3\\": \\"Tom\\",
-                \\"param4\\": \\"Hanks\\"
+                }
             }"
         `);
     });
@@ -350,5 +350,4 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             }"
         `);
     });
-
 });

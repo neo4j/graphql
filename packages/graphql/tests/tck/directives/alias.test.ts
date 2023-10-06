@@ -210,16 +210,16 @@ describe("Cypher alias directive", () => {
                         \\"actedIn\\": {
                             \\"create\\": [
                                 {
-                                    \\"node\\": {
-                                        \\"title\\": \\"Molly's game\\",
-                                        \\"rating\\": 5
-                                    },
                                     \\"edge\\": {
                                         \\"character\\": \\"Molly\\",
                                         \\"screenTime\\": {
                                             \\"low\\": 120,
                                             \\"high\\": 0
                                         }
+                                    },
+                                    \\"node\\": {
+                                        \\"title\\": \\"Molly's game\\",
+                                        \\"rating\\": 5
                                     }
                                 }
                             ]

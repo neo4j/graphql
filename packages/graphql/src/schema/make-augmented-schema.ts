@@ -20,90 +20,91 @@
 import type { IResolvers } from "@graphql-tools/utils";
 import type {
     DefinitionNode,
+    DirectiveNode,
     DocumentNode,
     GraphQLScalarType,
     NameNode,
     ObjectTypeDefinitionNode,
     SchemaExtensionNode,
 } from "graphql";
-import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, ObjectTypeComposer } from "graphql-compose";
+import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind, parse, print } from "graphql";
+import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
-import pluralize from "pluralize";
+import type { Node } from "../classes";
+import type Relationship from "../classes/Relationship";
+import * as Scalars from "../graphql/scalars";
+import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
+import { ensureNonEmptyInput } from "./ensure-non-empty-input";
+import getCustomResolvers from "./get-custom-resolvers";
+import { getDefinitionNodes } from "./get-definition-nodes";
+import type { ObjectFields } from "./get-obj-field-meta";
+import getObjFieldMeta from "./get-obj-field-meta";
 import { cypherResolver } from "./resolvers/field/cypher";
-import { numericalResolver } from "./resolvers/field/numerical";
-import { aggregateResolver } from "./resolvers/query/aggregate";
-import { findResolver } from "./resolvers/query/read";
-import { rootConnectionResolver } from "./resolvers/query/root-connection";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
-import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
-import { augmentFulltextSchema } from "./augment/fulltext";
-import * as Scalars from "../graphql/scalars";
-import type { Node } from "../classes";
-import type Relationship from "../classes/Relationship";
-import createConnectionFields from "./create-connection-fields";
-import getCustomResolvers from "./get-custom-resolvers";
-import type { ObjectFields } from "./get-obj-field-meta";
-import getObjFieldMeta from "./get-obj-field-meta";
-import getSortableFields from "./get-sortable-fields";
-import {
-    graphqlDirectivesToCompose,
-    objectFieldsToComposeFields,
-    objectFieldsToCreateInputFields,
-    objectFieldsToUpdateInputFields,
-} from "./to-compose";
-import getUniqueFields from "./get-unique-fields";
-import getWhereFields from "./get-where-fields";
-import { upperFirst } from "../utils/upper-first";
-import { ensureNonEmptyInput } from "./ensure-non-empty-input";
-import { getDefinitionNodes } from "./get-definition-nodes";
+import { aggregateResolver } from "./resolvers/query/aggregate";
+import { findResolver } from "./resolvers/query/read";
+import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./to-compose";
 
 // GraphQL type imports
+import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
-import { SortDirection } from "../graphql/enums/SortDirection";
-import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
-import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
-import { FloatWhere } from "../graphql/input-objects/FloatWhere";
-import { PointDistance } from "../graphql/input-objects/PointDistance";
-import { PointInput } from "../graphql/input-objects/PointInput";
-import { QueryOptions } from "../graphql/input-objects/QueryOptions";
-import { CartesianPoint } from "../graphql/objects/CartesianPoint";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
-import { Point } from "../graphql/objects/Point";
 import { UpdateInfo } from "../graphql/objects/UpdateInfo";
-import { addArrayMethodsToITC } from "./array-methods";
+import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import type { Operation } from "../schema-model/Operation";
+import { OperationAdapter } from "../schema-model/OperationAdapter";
+import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
+import { UnionEntity } from "../schema-model/entity/UnionEntity";
+import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { CypherField, Neo4jFeaturesSettings } from "../types";
+import { filterTruthy } from "../utils/utils";
+import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
+import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
+import { deprecationMap } from "./deprecation-map";
+import { withAggregateSelectionType } from "./generation/aggregate-types";
+import { withCreateInputType } from "./generation/create-input";
+import { withInterfaceType } from "./generation/interface-type";
+import { withObjectType } from "./generation/object-type";
+import { withMutationResponseTypes } from "./generation/response-types";
+import { withOptionsInputType, withSortInputType } from "./generation/sort-and-options-input";
+import { withUpdateInputType } from "./generation/update-input";
+import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
-import { addMathOperatorsToITC } from "./math";
-import { getSchemaConfigurationFlags, schemaConfigurationFromSchemaExtensions } from "./schema-configuration";
+import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import type { BaseField, Neo4jFeaturesSettings } from "../types";
-import createRelationshipFields from "./create-relationship-fields/create-relationship-fields";
+import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
 }
 
-function makeAugmentedSchema(
-    document: DocumentNode,
-    {
-        features,
-        generateSubscriptions,
-        userCustomResolvers,
-        subgraph,
-    }: {
-        features?: Neo4jFeaturesSettings;
-        generateSubscriptions?: boolean;
-        userCustomResolvers?: IResolvers | Array<IResolvers>;
-        subgraph?: Subgraph;
-    } = {}
-): {
+function makeAugmentedSchema({
+    document,
+    features,
+    userCustomResolvers,
+    subgraph,
+    schemaModel,
+    _experimental,
+}: {
+    document: DocumentNode;
+    features?: Neo4jFeaturesSettings;
+    userCustomResolvers?: IResolvers | Array<IResolvers>;
+    subgraph?: Subgraph;
+    schemaModel: Neo4jGraphQLSchemaModel;
+    _experimental: boolean;
+}): {
     nodes: Node[];
     relationships: Relationship[];
     typeDefs: DocumentNode;
@@ -114,72 +115,60 @@ function makeAugmentedSchema(
 
     let relationships: Relationship[] = [];
 
-    const createInfo = composer.createObjectTC(CreateInfo);
-    const deleteInfo = composer.createObjectTC(DeleteInfo);
-    const updateInfo = composer.createObjectTC(UpdateInfo);
-    [createInfo, deleteInfo, updateInfo].forEach((info) => {
-        info.deprecateFields({
-            bookmark: "This field has been deprecated because bookmarks are now handled by the driver.",
-        });
-    });
-    const pageInfo = composer.createObjectTC(PageInfo);
+    const definitionNodes = getDefinitionNodes(document);
+    const customResolvers = getCustomResolvers(document);
+    const { interfaceTypes, scalarTypes, objectTypes, enumTypes, unionTypes, schemaExtensions } = definitionNodes;
 
-    if (subgraph) {
-        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+    // TODO: maybe use schemaModel.definitionCollection instead of definitionNodes? need to add inputObjectTypes and customResolvers
+    const schemaGenerator = new AugmentedSchemaGenerator(
+        schemaModel,
+        definitionNodes,
+        [customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription].filter(
+            (x): x is ObjectTypeDefinitionNode => Boolean(x)
+        )
+    );
+    const generatorComposer = schemaGenerator.generate();
+    composer.merge(generatorComposer);
 
-        createInfo.setDirectiveByName(shareable);
-        deleteInfo.setDirectiveByName(shareable);
-        updateInfo.setDirectiveByName(shareable);
-        pageInfo.setDirectiveByName(shareable);
+    // TODO: move these to SchemaGenerator once the other types are moved (in the meantime references to object types are causing errors because they are not present in the generated schema)
+    const pipedDefs = [
+        ...definitionNodes.enumTypes,
+        ...definitionNodes.scalarTypes,
+        ...definitionNodes.inputObjectTypes,
+        ...definitionNodes.unionTypes,
+        ...definitionNodes.directives,
+        ...filterTruthy([
+            customResolvers.customQuery,
+            customResolvers.customMutation,
+            customResolvers.customSubscription,
+        ]),
+    ];
+    if (pipedDefs.length) {
+        composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: pipedDefs }));
     }
 
-    composer.createInputTC(QueryOptions);
-    const sortDirection = composer.createEnumTC(SortDirection);
+    // Loop over all entries in the deprecation map and add field deprecations to all types in the map.
+    for (const [typeName, deprecatedFields] of deprecationMap) {
+        const typeComposer = composer.getOTC(typeName);
+        typeComposer.deprecateFields(
+            deprecatedFields.reduce((acc, { field, reason }) => ({ ...acc, [field]: reason }), {})
+        );
+    }
+
+    // TODO: ideally move these in getSubgraphSchema()
+    if (subgraph) {
+        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+        [CreateInfo.name, UpdateInfo.name, DeleteInfo.name, PageInfo.name].forEach((typeName) => {
+            const typeComposer = composer.getOTC(typeName);
+            typeComposer.setDirectiveByName(shareable);
+        });
+    }
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
 
-    const customResolvers = getCustomResolvers(document);
-
-    const definitionNodes = getDefinitionNodes(document);
-
-    const {
-        interfaceTypes,
-        scalarTypes,
-        objectTypes,
-        enumTypes,
-        inputObjectTypes,
-        directives,
-        unionTypes,
-        schemaExtensions,
-    } = definitionNodes;
-
-    const globalSchemaConfiguration = schemaConfigurationFromSchemaExtensions(schemaExtensions);
-
-    const extraDefinitions = [
-        ...enumTypes,
-        ...scalarTypes,
-        ...inputObjectTypes,
-        ...unionTypes,
-        ...directives,
-        ...[customResolvers.customQuery, customResolvers.customMutation, customResolvers.customSubscription],
-    ].filter(Boolean) as DefinitionNode[];
-
-    Object.values(Scalars).forEach((scalar: GraphQLScalarType) => composer.addTypeDefs(`scalar ${scalar.name}`));
-
-    if (extraDefinitions.length) {
-        composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
-    }
-
     const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } =
-        getNodesResult;
-
-    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
-    // because it will purge the unused types but leave behind orphaned field resolvers
-    //
-    // These are flags to check whether the types are used and then create them if they are
-    let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
@@ -189,9 +178,19 @@ function makeAugmentedSchema(
         interfaceRelationshipNames
     );
 
-    const relationshipFields = new Map<string, ObjectFields>();
-    const interfaceCommonFields = new Map<string, ObjectFields>();
+    const {
+        userDefinedFieldDirectivesForNode,
+        userDefinedDirectivesForNode,
+        propagatedDirectivesForNode,
+        userDefinedDirectivesForInterface,
+    } = getUserDefinedDirectives(definitionNodes);
 
+    /**
+     * TODO [translation-layer-compatibility]
+     * keeping this `relationshipFields` scaffold for backwards compatibility on translation layer
+     * actual functional logic is in schemaModel.concreteEntities.forEach
+     */
+    const relationshipFields = new Map<string, ObjectFields>();
     relationshipProperties.forEach((relationship) => {
         const relFields = getObjFieldMeta({
             enums: enumTypes,
@@ -203,632 +202,250 @@ function makeAugmentedSchema(
             callbacks,
         });
 
-        if (!pointInTypeDefs) {
-            pointInTypeDefs = relFields.pointFields.some((field) => field.typeMeta.name === "Point");
-        }
-        if (!cartesianPointInTypeDefs) {
-            cartesianPointInTypeDefs = relFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
-        }
-
         relationshipFields.set(relationship.name.value, relFields);
-
-        const baseFields: BaseField[][] = Object.values(relFields);
-
-        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
-
-        const propertiesInterface = composer.createInterfaceTC({
-            name: relationship.name.value,
-            fields: objectComposeFields,
-        });
-
-        composer.createInputTC({
-            name: `${relationship.name.value}Sort`,
-            fields: propertiesInterface.getFieldNames().reduce((res, f) => {
-                return { ...res, [f]: "SortDirection" };
-            }, {}),
-        });
-
-        const relationshipUpdateITC = composer.createInputTC({
-            name: `${relationship.name.value}UpdateInput`,
-            fields: objectFieldsToUpdateInputFields([
-                ...relFields.primitiveFields.filter(
-                    (field) => !field.autogenerate && !field.readonly && !field.callback
-                ),
-                ...relFields.scalarFields,
-                ...relFields.enumFields,
-                ...relFields.temporalFields.filter((field) => !field.timestamps),
-                ...relFields.pointFields,
-            ]),
-        });
-
-        addMathOperatorsToITC(relationshipUpdateITC);
-
-        addArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
-        addArrayMethodsToITC(relationshipUpdateITC, relFields.pointFields);
-
-        const relationshipWhereFields = getWhereFields({
-            typeName: relationship.name.value,
-            fields: {
-                scalarFields: relFields.scalarFields,
-                enumFields: relFields.enumFields,
-                temporalFields: relFields.temporalFields,
-                pointFields: relFields.pointFields,
-                primitiveFields: relFields.primitiveFields,
-            },
-            features,
-        });
-
-        composer.createInputTC({
-            name: `${relationship.name.value}Where`,
-            fields: relationshipWhereFields,
-        });
-
-        composer.createInputTC({
-            name: `${relationship.name.value}CreateInput`,
-            fields: objectFieldsToCreateInputFields([
-                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.callback),
-                ...relFields.scalarFields,
-                ...relFields.enumFields,
-                ...relFields.temporalFields,
-                ...relFields.pointFields,
-            ]),
-        });
     });
 
+    // this is the new "functional" way for the above forEach
+    // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
+    const seenRelationshipPropertiesInterfaces = new Set<string>();
+    schemaModel.concreteEntities.forEach((concreteEntity) => {
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
+
+        for (const relationshipAdapter of concreteEntityAdapter.relationships.values()) {
+            {
+                if (
+                    !relationshipAdapter.propertiesTypeName ||
+                    seenRelationshipPropertiesInterfaces.has(relationshipAdapter.propertiesTypeName)
+                ) {
+                    continue;
+                }
+                doForRelationshipPropertiesInterface({
+                    composer,
+                    relationshipAdapter,
+                    userDefinedDirectivesForInterface,
+                    userDefinedFieldDirectivesForNode,
+                    features,
+                });
+                seenRelationshipPropertiesInterfaces.add(relationshipAdapter.propertiesTypeName);
+            }
+        }
+    });
+
+    // temporary helper to keep track of which interface entities were already "visited"
+    // currently generated schema depends on these types being created BEFORE the rest
+    // ideally the dependency should be eradicated and these should be part of the schemaModel.compositeEntities.forEach
+    const seenInterfaces = new Set<string>();
     interfaceRelationships.forEach((interfaceRelationship) => {
-        const implementations = objectTypes.filter((n) =>
-            n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
-        );
-
-        const interfaceFields = getObjFieldMeta({
-            enums: enumTypes,
-            interfaces: [...filteredInterfaceTypes, ...interfaceRelationships],
-            objects: objectTypes,
-            scalars: scalarTypes,
-            unions: unionTypes,
-            obj: interfaceRelationship,
-            callbacks,
-        });
-
-        if (!pointInTypeDefs) {
-            pointInTypeDefs = interfaceFields.pointFields.some((field) => field.typeMeta.name === "Point");
-        }
-        if (!cartesianPointInTypeDefs) {
-            cartesianPointInTypeDefs = interfaceFields.pointFields.some(
-                (field) => field.typeMeta.name === "CartesianPoint"
-            );
-        }
-
-        const baseFields: BaseField[][] = Object.values(interfaceFields);
-        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
-
-        const composeInterface = composer.createInterfaceTC({
-            name: interfaceRelationship.name.value,
-            fields: objectComposeFields,
-        });
-
-        interfaceCommonFields.set(interfaceRelationship.name.value, interfaceFields);
-
-        const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
-            tc.addFields({
-                limit: "Int",
-                offset: "Int",
-            });
-        });
-
-        const interfaceSortableFields = getSortableFields(interfaceFields).reduce(
-            (res, f) => ({
-                ...res,
-                [f.fieldName]: {
-                    type: sortDirection.getTypeName(),
-                    directives: graphqlDirectivesToCompose(
-                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
-                    ),
-                },
-            }),
-            {}
-        );
-
-        if (Object.keys(interfaceSortableFields).length) {
-            const interfaceSortInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Sort`, (tc) => {
-                tc.addFields(interfaceSortableFields);
-                tc.setDescription(
-                    `Fields to sort ${pluralize(
-                        interfaceRelationship.name.value
-                    )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${interfaceRelationship.name.value}Sort`} object.`
-                );
-            });
-
-            interfaceOptionsInput.addFields({
-                sort: {
-                    description: `Specify one or more ${`${interfaceRelationship.name.value}Sort`} objects to sort ${pluralize(
-                        interfaceRelationship.name.value
-                    )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                    type: interfaceSortInput.List,
-                },
-            });
-        }
-
-        const interfaceWhereFields = getWhereFields({
-            typeName: interfaceRelationship.name.value,
-            fields: {
-                scalarFields: interfaceFields.scalarFields,
-                enumFields: interfaceFields.enumFields,
-                temporalFields: interfaceFields.temporalFields,
-                pointFields: interfaceFields.pointFields,
-                primitiveFields: interfaceFields.primitiveFields,
-            },
-            isInterface: true,
-            features,
-        });
-
-        const [
-            implementationsConnectInput,
-            implementationsDeleteInput,
-            implementationsDisconnectInput,
-            implementationsUpdateInput,
-            implementationsWhereInput,
-        ] = ["ConnectInput", "DeleteInput", "DisconnectInput", "UpdateInput", "Where"].map((suffix) =>
-            composer.createInputTC({
-                name: `${interfaceRelationship.name.value}Implementations${suffix}`,
-                fields: {},
-            })
-        ) as [InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer, InputTypeComposer];
-
-        composer.createInputTC({
-            name: `${interfaceRelationship.name.value}Where`,
-            fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
-        });
-
-        const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
-
-        const interfaceRelationshipITC = composer.getOrCreateITC(
-            `${interfaceRelationship.name.value}UpdateInput`,
-            (tc) => {
-                tc.addFields({
-                    ...objectFieldsToUpdateInputFields([
-                        ...interfaceFields.primitiveFields,
-                        ...interfaceFields.scalarFields,
-                        ...interfaceFields.enumFields,
-                        ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
-                        ...interfaceFields.pointFields,
-                    ]),
-                    _on: implementationsUpdateInput,
-                });
-            }
-        );
-
-        addMathOperatorsToITC(interfaceRelationshipITC);
-
-        createRelationshipFields({
-            relationshipFields: interfaceFields.relationFields,
-            schemaComposer: composer,
-            composeNode: composeInterface,
-            sourceName: interfaceRelationship.name.value,
-            nodes,
-            relationshipPropertyFields: relationshipFields,
+        const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
+        const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
+        const updatedRelationships = doForInterfacesThatAreTargetOfARelationship({
+            composer,
+            interfaceEntityAdapter,
             subgraph,
+            relationships,
+            relationshipFields,
+            userDefinedFieldDirectivesForNode,
         });
-
-        relationships = [
-            ...relationships,
-            ...createConnectionFields({
-                connectionFields: interfaceFields.connectionFields,
-                schemaComposer: composer,
-                composeNode: composeInterface,
-                sourceName: interfaceRelationship.name.value,
-                nodes,
-                relationshipPropertyFields: relationshipFields,
-            }),
-        ];
-
-        implementations.forEach((implementation) => {
-            const node = nodes.find((n) => n.name === implementation.name.value) as Node;
-
-            implementationsWhereInput.addFields({
-                [implementation.name.value]: {
-                    type: `${implementation.name.value}Where`,
-                },
-            });
-
-            if (node.relationFields.length) {
-                implementationsConnectInput.addFields({
-                    [implementation.name.value]: {
-                        type: `[${implementation.name.value}ConnectInput!]`,
-                    },
-                });
-
-                implementationsDeleteInput.addFields({
-                    [implementation.name.value]: {
-                        type: `[${implementation.name.value}DeleteInput!]`,
-                    },
-                });
-
-                implementationsDisconnectInput.addFields({
-                    [implementation.name.value]: {
-                        type: `[${implementation.name.value}DisconnectInput!]`,
-                    },
-                });
-            }
-
-            interfaceCreateInput.addFields({
-                [implementation.name.value]: {
-                    type: `${implementation.name.value}CreateInput`,
-                },
-            });
-
-            implementationsUpdateInput.addFields({
-                [implementation.name.value]: {
-                    type: `${implementation.name.value}UpdateInput`,
-                },
-            });
-        });
-
-        if (implementationsConnectInput.getFieldNames().length) {
-            const interfaceConnectInput = composer.getOrCreateITC(
-                `${interfaceRelationship.name.value}ConnectInput`,
-                (tc) => {
-                    tc.addFields({ _on: implementationsConnectInput });
-                }
-            );
-            interfaceConnectInput.setField("_on", implementationsConnectInput);
+        if (updatedRelationships) {
+            relationships = updatedRelationships;
         }
-
-        if (implementationsDeleteInput.getFieldNames().length) {
-            const interfaceDeleteInput = composer.getOrCreateITC(
-                `${interfaceRelationship.name.value}DeleteInput`,
-                (tc) => {
-                    tc.addFields({ _on: implementationsDeleteInput });
-                }
-            );
-            interfaceDeleteInput.setField("_on", implementationsDeleteInput);
-        }
-
-        if (implementationsDisconnectInput.getFieldNames().length) {
-            const interfaceDisconnectInput = composer.getOrCreateITC(
-                `${interfaceRelationship.name.value}DisconnectInput`,
-                (tc) => {
-                    tc.addFields({ _on: implementationsDisconnectInput });
-                }
-            );
-            interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
-        }
-
-        ensureNonEmptyInput(composer, `${interfaceRelationship.name.value}CreateInput`);
-        ensureNonEmptyInput(composer, `${interfaceRelationship.name.value}UpdateInput`);
-        [
-            implementationsConnectInput,
-            implementationsDeleteInput,
-            implementationsDisconnectInput,
-            implementationsUpdateInput,
-            implementationsWhereInput,
-        ].forEach((c) => ensureNonEmptyInput(composer, c));
+        seenInterfaces.add(interfaceRelationship.name.value);
     });
 
-    if (pointInTypeDefs) {
-        // Every field (apart from CRS) in Point needs a custom resolver
-        // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(Point);
-        composer.createInputTC(PointInput);
-        composer.createInputTC(PointDistance);
-    }
+    schemaModel.concreteEntities.forEach((concreteEntity) => {
+        /**
+         * TODO [translation-layer-compatibility]
+         * need the node for fulltext translation
+         */
+        const node = nodes.find((n) => n.name === concreteEntity.name);
+        if (!node) {
+            throw new Error(`Node not found with the name ${concreteEntity.name}`);
+        }
+        const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-    if (cartesianPointInTypeDefs) {
-        // Every field (apart from CRS) in CartesianPoint needs a custom resolver
-        // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(CartesianPoint);
-        composer.createInputTC(CartesianPointInput);
-        composer.createInputTC(CartesianPointDistance);
-    }
-
-    if (floatWhereInTypeDefs) {
-        composer.createInputTC(FloatWhere);
-    }
-
-    nodes.forEach((node) => {
-        const nodeFields = objectFieldsToComposeFields([
-            ...node.primitiveFields,
-            ...node.cypherFields,
-            ...node.enumFields,
-            ...node.scalarFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.temporalFields,
-            ...node.pointFields,
-            ...node.customResolverFields,
-        ]);
-
-        const composeNode = composer.createObjectTC({
-            name: node.name,
-            fields: nodeFields,
-            description: node.description,
-            directives: graphqlDirectivesToCompose([...node.otherDirectives, ...node.propagatedDirectives]),
-            interfaces: node.interfaces.map((x) => x.name.value),
-        });
-
-        if (node.isGlobalNode) {
-            composeNode.setField("id", {
-                type: new GraphQLNonNull(GraphQLID),
-                resolve: (src) => {
-                    const field = node.getGlobalIdField();
-                    const value = src[field] as string | number;
-                    return node.toGlobalId(value.toString());
-                },
-            });
-
-            composeNode.addInterface("Node");
+        const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
+        if (!userDefinedFieldDirectives) {
+            throw new Error(`User defined field directives not found for ${concreteEntityAdapter.name}`);
         }
 
-        const sortFields = getSortableFields(node).reduce(
-            (res: InputTypeComposerFieldConfigMapDefinition, f) => ({
-                ...res,
-                [f.fieldName]: {
-                    type: sortDirection.getTypeName(),
-                    directives: graphqlDirectivesToCompose(
-                        f.otherDirectives.filter((directive) => directive.name.value === "deprecated")
-                    ),
-                },
-            }),
-            {}
+        const propagatedDirectives = propagatedDirectivesForNode.get(concreteEntity.name) || [];
+        const userDefinedObjectDirectives = (userDefinedDirectivesForNode.get(concreteEntity.name) || []).concat(
+            propagatedDirectives
         );
 
-        const nodeSortTypeName = `${node.name}Sort`;
-        if (Object.keys(sortFields).length) {
-            const sortInput = composer.createInputTC({
-                name: nodeSortTypeName,
-                fields: sortFields,
-                description: `Fields to sort ${upperFirst(
-                    node.plural
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
-            });
-
-            composer.createInputTC({
-                name: `${node.name}Options`,
-                fields: {
-                    sort: {
-                        description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
-                            node.plural
-                        )} by. The sorts will be applied in the order in which they are arranged in the array.`,
-                        type: sortInput.NonNull.List,
-                    },
-                    limit: "Int",
-                    offset: "Int",
-                },
-            });
-        } else {
-            composer.createInputTC({
-                name: `${node.name}Options`,
-                fields: { limit: "Int", offset: "Int" },
-            });
-        }
-
-        const queryFields = getWhereFields({
-            typeName: node.name,
-            fields: {
-                temporalFields: node.temporalFields,
-                enumFields: node.enumFields,
-                pointFields: node.pointFields,
-                primitiveFields: node.primitiveFields,
-                scalarFields: node.scalarFields,
-            },
-            features,
+        withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+        withAggregateSelectionType({ concreteEntityAdapter, aggregationTypesMapper, propagatedDirectives, composer });
+        withWhereInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, features, composer });
+        /**
+         * TODO [translation-layer-compatibility]
+         * Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
+         */
+        augmentFulltextSchema(node, composer, concreteEntityAdapter);
+        withUniqueWhereInputType({ concreteEntityAdapter, composer });
+        withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+        withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+        withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
+        const composeNode = withObjectType({
+            concreteEntityAdapter,
+            userDefinedFieldDirectives,
+            userDefinedObjectDirectives,
+            composer,
         });
-
-        const countField = {
-            type: "Int!",
-            resolve: numericalResolver,
-            args: {},
-        };
-
-        composer.createObjectTC({
-            name: node.aggregateTypeNames.selection,
-            fields: {
-                count: countField,
-                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
-                    if (field.typeMeta.array) {
-                        return res;
-                    }
-                    if (!field.selectableOptions.onAggregate) {
-                        return res;
-                    }
-                    const objectTypeComposer = aggregationTypesMapper.getAggregationType({
-                        fieldName: field.typeMeta.name,
-                        nullable: !field.typeMeta.required,
-                    });
-
-                    if (!objectTypeComposer) return res;
-
-                    res[field.fieldName] = objectTypeComposer.NonNull;
-
-                    return res;
-                }, {}),
-            },
-            directives: graphqlDirectivesToCompose(node.propagatedDirectives),
-        });
-
-        const nodeWhereTypeName = `${node.name}Where`;
-        composer.createInputTC({
-            name: nodeWhereTypeName,
-            fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
-        });
-
-        augmentFulltextSchema(node, composer, nodeWhereTypeName, nodeSortTypeName);
-
-        const uniqueFields = getUniqueFields(node);
-
-        composer.createInputTC({
-            name: `${node.name}UniqueWhere`,
-            fields: uniqueFields,
-        });
-
-        composer.createInputTC({
-            name: `${node.name}CreateInput`,
-            fields: objectFieldsToCreateInputFields([
-                ...node.primitiveFields.filter((field) => !field.callback),
-                ...node.scalarFields,
-                ...node.enumFields,
-                ...node.temporalFields,
-                ...node.pointFields,
-            ]),
-        });
-
-        const nodeUpdateITC = composer.createInputTC({
-            name: `${node.name}UpdateInput`,
-            fields: objectFieldsToUpdateInputFields([
-                ...node.primitiveFields.filter((field) => !field.callback),
-                ...node.scalarFields,
-                ...node.enumFields,
-                ...node.temporalFields.filter((field) => !field.timestamps),
-                ...node.pointFields,
-            ]),
-        });
-
-        addMathOperatorsToITC(nodeUpdateITC);
-
-        addArrayMethodsToITC(nodeUpdateITC, node.mutableFields);
-
-        const mutationResponseTypeNames = node.mutationResponseTypeNames;
-
-        composer.createObjectTC({
-            name: mutationResponseTypeNames.create,
-            fields: {
-                info: `CreateInfo!`,
-                [node.plural]: `[${node.name}!]!`,
-            },
-            directives: graphqlDirectivesToCompose(node.propagatedDirectives),
-        });
-
-        composer.createObjectTC({
-            name: mutationResponseTypeNames.update,
-            fields: {
-                info: `UpdateInfo!`,
-                [node.plural]: `[${node.name}!]!`,
-            },
-            directives: graphqlDirectivesToCompose(node.propagatedDirectives),
-        });
-
         createRelationshipFields({
-            relationshipFields: node.relationFields,
+            entityAdapter: concreteEntityAdapter,
             schemaComposer: composer,
             composeNode,
-            sourceName: node.name,
-            nodes,
-            relationshipPropertyFields: relationshipFields,
             subgraph,
+            userDefinedFieldDirectives,
         });
-
         relationships = [
             ...relationships,
             ...createConnectionFields({
-                connectionFields: node.connectionFields,
+                entityAdapter: concreteEntityAdapter,
                 schemaComposer: composer,
                 composeNode,
-                sourceName: node.name,
-                nodes,
-                relationshipPropertyFields: relationshipFields,
+                userDefinedFieldDirectives,
+                relationshipFields,
             }),
         ];
 
-        ensureNonEmptyInput(composer, `${node.name}UpdateInput`);
-        ensureNonEmptyInput(composer, `${node.name}CreateInput`);
+        ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
+        ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
 
-        const rootTypeFieldNames = node.rootTypeFieldNames;
-
-        const schemaConfigurationFlags = getSchemaConfigurationFlags({
-            globalSchemaConfiguration,
-            nodeSchemaConfiguration: node.schemaConfiguration,
-            excludeDirective: node.exclude,
-        });
-
-        if (schemaConfigurationFlags.read) {
+        if (concreteEntityAdapter.isReadable) {
             composer.Query.addFields({
-                [rootTypeFieldNames.read]: findResolver({ node }),
+                [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                    node,
+                    concreteEntityAdapter,
+                }),
             });
             composer.Query.setFieldDirectives(
-                rootTypeFieldNames.read,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
+                concreteEntityAdapter.operations.rootTypeFieldNames.read,
+                graphqlDirectivesToCompose(propagatedDirectives)
             );
             composer.Query.addFields({
-                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
-            });
-            composer.Query.setFieldDirectives(
-                `${node.plural}Connection`,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
-        if (schemaConfigurationFlags.aggregate) {
-            composer.Query.addFields({
-                [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
-            });
-            composer.Query.setFieldDirectives(
-                rootTypeFieldNames.aggregate,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
-
-        if (schemaConfigurationFlags.create) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.create]: createResolver({ node }),
-            });
-            composer.Mutation.setFieldDirectives(
-                rootTypeFieldNames.create,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
-
-        if (schemaConfigurationFlags.delete) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.delete]: deleteResolver({ node, composer }),
-            });
-            composer.Mutation.setFieldDirectives(
-                rootTypeFieldNames.delete,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
-            );
-        }
-
-        if (schemaConfigurationFlags.update) {
-            composer.Mutation.addFields({
-                [rootTypeFieldNames.update]: updateResolver({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                     node,
                     composer,
+                    concreteEntityAdapter,
+                    propagatedDirectives,
+                }),
+            });
+            composer.Query.setFieldDirectives(
+                concreteEntityAdapter.operations.rootTypeFieldNames.connection,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+        }
+        if (concreteEntityAdapter.isAggregable) {
+            composer.Query.addFields({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                    node,
+                    concreteEntityAdapter,
+                }),
+            });
+            composer.Query.setFieldDirectives(
+                concreteEntityAdapter.operations.rootTypeFieldNames.aggregate,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+        }
+
+        if (concreteEntityAdapter.isCreatable) {
+            composer.Mutation.addFields({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver({
+                    node,
+                    concreteEntityAdapter,
                 }),
             });
             composer.Mutation.setFieldDirectives(
-                rootTypeFieldNames.update,
-                graphqlDirectivesToCompose(node.propagatedDirectives)
+                concreteEntityAdapter.operations.rootTypeFieldNames.create,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+        }
+
+        if (concreteEntityAdapter.isDeletable) {
+            composer.Mutation.addFields({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.delete]: deleteResolver({
+                    node,
+                    composer,
+                    concreteEntityAdapter,
+                }),
+            });
+            composer.Mutation.setFieldDirectives(
+                concreteEntityAdapter.operations.rootTypeFieldNames.delete,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+        }
+
+        if (concreteEntityAdapter.isUpdatable) {
+            composer.Mutation.addFields({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver({
+                    node,
+                    composer,
+                    concreteEntityAdapter,
+                }),
+            });
+            composer.Mutation.setFieldDirectives(
+                concreteEntityAdapter.operations.rootTypeFieldNames.update,
+                graphqlDirectivesToCompose(propagatedDirectives)
             );
         }
     });
 
-    unionTypes.forEach((union) => {
-        const fields = union.types!.reduce((f: Record<string, string>, type) => {
-            return { ...f, [type.name.value]: `${type.name.value}Where` };
-        }, {});
-
-        composer.createInputTC({
-            name: `${union.name.value}Where`,
-            fields,
-        });
+    schemaModel.compositeEntities.forEach((entity) => {
+        if (entity instanceof UnionEntity) {
+            withWhereInputType({
+                entityAdapter: new UnionEntityAdapter(entity),
+                userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
+                features,
+                composer,
+            });
+            return;
+        }
+        if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
+            const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(entity.name) as Map<
+                string,
+                DirectiveNode[]
+            >;
+            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            withInterfaceType({
+                entityAdapter: new InterfaceEntityAdapter(entity),
+                userDefinedFieldDirectives,
+                userDefinedInterfaceDirectives,
+                composer,
+                config: {
+                    includeRelationships: true,
+                },
+            });
+            return;
+        }
+        return;
     });
 
-    if (generateSubscriptions && nodes.length) {
+    if (Boolean(features?.subscriptions) && nodes.length) {
         generateSubscriptionTypes({
             schemaComposer: composer,
-            nodes,
-            relationshipFields,
-            interfaceCommonFields,
-            globalSchemaConfiguration,
+            schemaModel,
+            userDefinedFieldDirectivesForNode,
         });
     }
 
-    ["Mutation", "Query"].forEach((type) => {
+    ["Query", "Mutation"].forEach((type) => {
         const objectComposer: ObjectTypeComposer = composer[type];
-        const cypherType: ObjectTypeDefinitionNode = customResolvers[`customCypher${type}`];
 
-        if (cypherType) {
+        const operation: Operation | undefined = schemaModel.operations[type];
+        if (!operation) {
+            return;
+        }
+        const operationAdapter = new OperationAdapter(operation);
+        const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(type) as Map<string, DirectiveNode[]>;
+
+        for (const attributeAdapter of operationAdapter.attributes.values()) {
+            /**
+             * TODO [translation-layer-compatibility]
+             * needed for compatibility with translation layer
+             */
             const objectFields = getObjFieldMeta({
-                obj: cypherType,
+                obj: customResolvers[`customCypher${type}`],
                 scalars: scalarTypes,
                 enums: enumTypes,
                 interfaces: filteredInterfaceTypes,
@@ -836,62 +453,26 @@ function makeAugmentedSchema(
                 objects: objectTypes,
                 callbacks,
             });
-
-            const objectComposeFields = objectFieldsToComposeFields([
-                ...objectFields.enumFields,
-                ...objectFields.interfaceFields,
-                ...objectFields.primitiveFields,
-                ...objectFields.relationFields,
-                ...objectFields.scalarFields,
-                ...objectFields.unionFields,
-                ...objectFields.objectFields,
-                ...objectFields.temporalFields,
-            ]);
-
-            objectComposer.addFields(objectComposeFields);
-
-            objectFields.cypherFields.forEach((field) => {
-                const customResolver = cypherResolver({
-                    field,
-                    statement: field.statement,
-                    type: type as "Query" | "Mutation",
-                });
-
-                const composedField = objectFieldsToComposeFields([field])[field.fieldName];
-
-                objectComposer.addFields({ [field.fieldName]: { ...composedField, ...customResolver } });
+            const field = objectFields.cypherFields.find((f) => f.fieldName === attributeAdapter.name) as CypherField;
+            const customResolver = cypherResolver({
+                field,
+                attributeAdapter,
+                type: type as "Query" | "Mutation",
             });
+
+            const composedField = attributeAdapterToComposeFields([attributeAdapter], userDefinedFieldDirectives)[
+                attributeAdapter.name
+            ];
+
+            objectComposer.addFields({ [attributeAdapter.name]: { ...composedField, ...customResolver } });
         }
-    });
-
-    filteredInterfaceTypes.forEach((inter) => {
-        const objectFields = getObjFieldMeta({
-            obj: inter,
-            scalars: scalarTypes,
-            enums: enumTypes,
-            interfaces: filteredInterfaceTypes,
-            unions: unionTypes,
-            objects: objectTypes,
-            callbacks,
-        });
-
-        const baseFields: BaseField[][] = Object.values(objectFields);
-        const objectComposeFields = objectFieldsToComposeFields(baseFields.reduce((acc, x) => [...acc, ...x], []));
-
-        composer.createInterfaceTC({
-            name: inter.name.value,
-            description: inter.description?.value,
-            fields: objectComposeFields,
-            directives: graphqlDirectivesToCompose(
-                (inter.directives || []).filter(
-                    (x) => !["auth", "authorization", "authentication", "exclude"].includes(x.name.value)
-                )
-            ),
-        });
     });
 
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
+    }
+    if (!Object.values(composer.Subscription.getFields()).length) {
+        composer.delete("Subscription");
     }
 
     const generatedTypeDefs = composer.toSDL();
@@ -901,7 +482,7 @@ function makeAugmentedSchema(
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
-    const generatedResolveMethods: Record<string, any> = {};
+    const generatedResolveMethods: GraphQLToolsResolveMethods<any> = {};
 
     for (const [key, value] of Object.entries(resolveMethods)) {
         if (documentNames.has(key)) {
@@ -956,7 +537,15 @@ function makeAugmentedSchema(
             ...parsedDoc.definitions.filter((definition) => {
                 // Filter out default scalars, they are not needed and can cause issues
                 if (definition.kind === Kind.SCALAR_TYPE_DEFINITION) {
-                    if (["Boolean", "Float", "ID", "Int", "String"].includes(definition.name.value)) {
+                    if (
+                        [
+                            GraphQLBoolean.name,
+                            GraphQLFloat.name,
+                            GraphQLID.name,
+                            GraphQLInt.name,
+                            GraphQLString.name,
+                        ].includes(definition.name.value)
+                    ) {
                         return false;
                     }
                 }
@@ -988,3 +577,89 @@ function makeAugmentedSchema(
 }
 
 export default makeAugmentedSchema;
+
+function doForRelationshipPropertiesInterface({
+    composer,
+    relationshipAdapter,
+    userDefinedDirectivesForInterface,
+    userDefinedFieldDirectivesForNode,
+    features,
+}: {
+    composer: SchemaComposer;
+    relationshipAdapter: RelationshipAdapter;
+    userDefinedDirectivesForInterface: Map<string, DirectiveNode[]>;
+    userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+    features?: Neo4jFeaturesSettings;
+}) {
+    if (!relationshipAdapter.propertiesTypeName) {
+        return;
+    }
+    const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(
+        relationshipAdapter.propertiesTypeName
+    ) as Map<string, DirectiveNode[]>;
+    const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(relationshipAdapter.name) || [];
+    withInterfaceType({
+        entityAdapter: relationshipAdapter,
+        userDefinedFieldDirectives,
+        userDefinedInterfaceDirectives,
+        composer,
+    });
+    withSortInputType({ relationshipAdapter, userDefinedFieldDirectives, composer });
+    withUpdateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
+    withWhereInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, features, composer });
+    withCreateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
+}
+
+function doForInterfacesThatAreTargetOfARelationship({
+    composer,
+    interfaceEntityAdapter,
+    features,
+    subgraph,
+    relationships,
+    relationshipFields,
+    userDefinedFieldDirectivesForNode,
+}: {
+    composer: SchemaComposer;
+    interfaceEntityAdapter: InterfaceEntityAdapter;
+    features?: Neo4jFeaturesSettings;
+    subgraph?: Subgraph;
+    relationships: Relationship[];
+    relationshipFields: Map<string, ObjectFields>;
+    userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+}) {
+    const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
+        string,
+        DirectiveNode[]
+    >;
+    withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
+    withWhereInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, features, composer });
+    withCreateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
+    withUpdateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
+
+    const composeInterface = withInterfaceType({
+        entityAdapter: interfaceEntityAdapter,
+        userDefinedFieldDirectives,
+        userDefinedInterfaceDirectives: [],
+        composer,
+    });
+    createRelationshipFields({
+        entityAdapter: interfaceEntityAdapter,
+        schemaComposer: composer,
+        composeNode: composeInterface,
+        subgraph,
+        userDefinedFieldDirectives,
+    });
+
+    relationships = [
+        ...relationships,
+        ...createConnectionFields({
+            entityAdapter: interfaceEntityAdapter,
+            schemaComposer: composer,
+            composeNode: composeInterface,
+            userDefinedFieldDirectives,
+            relationshipFields,
+        }),
+    ];
+
+    return relationships;
+}

@@ -21,11 +21,11 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/";
+import { Neo4jDatabaseInfo } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import Neo4j from "../setup/neo4j";
-import { Neo4jDatabaseInfo } from "../../../src/classes";
 
 describe("Create with specific neo4jDatabaseInfo set correctly", () => {
     let neo4j: Neo4j;
@@ -64,8 +64,6 @@ describe("Create with specific neo4jDatabaseInfo set correctly", () => {
 
     test("simple mutation", async () => {
         const result = await createMovie("dsa");
-
-        console.log(result.body);
 
         expect(result.body).toEqual({
             data: { [typeMovie.operations.create]: { [typeMovie.plural]: [{ title: "dsa" }] } },

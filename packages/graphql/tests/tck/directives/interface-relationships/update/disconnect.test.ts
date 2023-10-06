@@ -213,6 +213,11 @@ describe("Interface Relationships - Update disconnect", () => {
                         \\"disconnect\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title_STARTS_WITH\\": \\"The \\"
+                                        }
+                                    },
                                     \\"disconnect\\": {
                                         \\"actors\\": [
                                             {
@@ -223,11 +228,6 @@ describe("Interface Relationships - Update disconnect", () => {
                                                 }
                                             }
                                         ]
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
                                     }
                                 }
                             ]
@@ -312,6 +312,11 @@ describe("Interface Relationships - Update disconnect", () => {
                         \\"disconnect\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title_STARTS_WITH\\": \\"The \\"
+                                        }
+                                    },
                                     \\"disconnect\\": {
                                         \\"_on\\": {
                                             \\"Movie\\": [
@@ -327,11 +332,6 @@ describe("Interface Relationships - Update disconnect", () => {
                                                     ]
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
                                         }
                                     }
                                 }
@@ -433,16 +433,12 @@ describe("Interface Relationships - Update disconnect", () => {
                         \\"disconnect\\": {
                             \\"actedIn\\": [
                                 {
+                                    \\"where\\": {
+                                        \\"node\\": {
+                                            \\"title_STARTS_WITH\\": \\"The \\"
+                                        }
+                                    },
                                     \\"disconnect\\": {
-                                        \\"actors\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
-                                                    }
-                                                }
-                                            }
-                                        ],
                                         \\"_on\\": {
                                             \\"Movie\\": [
                                                 {
@@ -457,12 +453,16 @@ describe("Interface Relationships - Update disconnect", () => {
                                                     ]
                                                 }
                                             ]
-                                        }
-                                    },
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
+                                        },
+                                        \\"actors\\": [
+                                            {
+                                                \\"where\\": {
+                                                    \\"node\\": {
+                                                        \\"name\\": \\"Actor\\"
+                                                    }
+                                                }
+                                            }
+                                        ]
                                     }
                                 }
                             ]

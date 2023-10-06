@@ -18,8 +18,8 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AttributeField } from "./AttributeField";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { AttributeField } from "./AttributeField";
 
 export class PointAttributeField extends AttributeField {
     private crs: boolean;
@@ -45,7 +45,7 @@ export class PointAttributeField extends AttributeField {
 
         // Sadly need to select the whole point object due to the risk of height/z
         // being selected on a 2D point, to which the database will throw an error
-        if (this.attribute.isList()) {
+        if (this.attribute.typeHelper.isList()) {
             const arrayProjection = this.createPointArrayProjection(pointProperty);
             return caseStatement.then(arrayProjection).else(Cypher.Null);
         } else {

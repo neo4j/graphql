@@ -25,20 +25,20 @@ const tests = [
     {
         name: "should parse correctly when CREATED event is passed",
         directive: makeDirectiveNode("subscription", { events: ["CREATED"] }, subscriptionDirective),
-        events: ["CREATED"],
-        expected: { events: ["CREATED"] },
+        events: new Set(["CREATED"]),
+        expected: { events: new Set(["CREATED"]) },
     },
     {
         name: "should parse correctly when UPDATED event is passed",
         directive: makeDirectiveNode("subscription", { events: ["UPDATED"] }, subscriptionDirective),
-        events: ["UPDATED"],
-        expected: { events: ["UPDATED"] },
+        events: new Set(["UPDATED"]),
+        expected: { events: new Set(["UPDATED"]) },
     },
     {
         name: "should parse correctly when CREATE and UPDATE events are passed",
         directive: makeDirectiveNode("subscription", { events: ["CREATED", "UPDATED"] }, subscriptionDirective),
-        events: ["CREATED", "UPDATED"],
-        expected: { events: ["CREATED", "UPDATED"] },
+        events: new Set(["CREATED", "UPDATED"]),
+        expected: { events: new Set(["CREATED", "UPDATED"]) },
     },
 ];
 
