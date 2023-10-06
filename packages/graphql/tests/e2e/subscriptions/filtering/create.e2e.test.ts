@@ -21,20 +21,40 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
+import { delay } from "../../../../src/utils/utils";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
-import { delay } from "../../../../src/utils/utils";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { WebSocketTestClient } from "../../setup/ws-client";
 
-describe("Create Subscription with optional filters valid for all types", () => {
+describe.each([
+    {
+        name: "Neo4jGraphQLSubscriptionsDefaultEngine",
+        engine: (_driver: Driver, _db: string) => new Neo4jGraphQLSubscriptionsDefaultEngine(),
+    },
+    {
+        name: "Neo4jGraphQLSubscriptionsCDCEngine",
+        engine: (driver: Driver, db: string) =>
+            new Neo4jGraphQLSubscriptionsCDCEngine({
+                driver,
+                pollTime: 100,
+                queryConfig: {
+                    database: db,
+                },
+            }),
+    },
+    // ])("$name Create Subscription", ({ engine }) => {
+])("$name Create Subscription with optional filters valid for all types", ({ engine }) => {
     let neo4j: Neo4j;
     let driver: Driver;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
     let typeMovie: UniqueType;
+    let subscriptionEngine: Neo4jGraphQLSubscriptionsEngine;
 
     beforeEach(async () => {
         typeMovie = new UniqueType("Movie");
@@ -53,11 +73,13 @@ describe("Create Subscription with optional filters valid for all types", () => 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
 
+        subscriptionEngine = engine(driver, neo4j.getIntegrationDatabaseName());
+
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
             features: {
-                subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+                subscriptions: subscriptionEngine,
             },
         });
 
@@ -75,7 +97,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
     afterEach(async () => {
         await wsClient.close();
-
+        subscriptionEngine.close();
         await server.close();
         await driver.close();
     });
