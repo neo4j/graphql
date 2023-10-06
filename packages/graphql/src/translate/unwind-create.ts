@@ -22,10 +22,8 @@ import type { GraphQLCreateInput } from "./batch-create/types";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
 import { mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
 import { UnwindCreateVisitor } from "./batch-create/unwind-create-visitors/UnwindCreateVisitor";
-import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
-import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
@@ -38,7 +36,7 @@ export default async function unwindCreate({
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     if (context.subscriptionsEnabled) {
-        throw new UnsupportedUnwindOptimization("Unwind create optimisation does not yet support subscriptions");
+        throw new UnsupportedUnwindOptimization("Unwind create optimization does not yet support subscriptions");
     }
     const { resolveTree } = context;
     const input = resolveTree.args.input as GraphQLCreateInput | GraphQLCreateInput[];
@@ -79,16 +77,9 @@ export default async function unwindCreate({
         ? Cypher.concat(...clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
-    const unwindCreate = Cypher.concat(unwindQuery, createCypher);
+    const unwindCreate = Cypher.concat(unwindQuery, createCypher, projectionCypher);
 
-    const createQuery = new Cypher.RawCypher((env) => {
-        const cypher = filterTruthy([compileCypher(unwindCreate, env), compileCypher(projectionCypher, env)])
-            .filter(Boolean)
-            .join("\n");
-
-        return cypher;
-    });
-    const createQueryCypher = createQuery.build("create_");
+    const createQueryCypher = unwindCreate.build("create_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });

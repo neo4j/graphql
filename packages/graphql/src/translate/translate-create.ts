@@ -18,32 +18,18 @@
  */
 
 import type { Node } from "../classes";
-import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import Cypher, { NamedVariable } from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
-import type { ResolveTree } from "graphql-parse-resolve-info";
-import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
+import { compileCypherIfExists } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-
-/* type ProjectionAndParamsResult = {
-    projection: Cypher.Expr;
-    projectionSubqueries: Cypher.Clause;
-    authPredicate?: Cypher.Predicate;
-};
- */
-type CompositeProjectionAndParamsResult = {
-    projectionSubqueriesClause: Cypher.Clause | undefined;
-    projectionList: Cypher.Expr[];
-    authPredicates: Cypher.Predicate[];
-};
 
 export default async function translateCreate({
     context,
@@ -125,67 +111,11 @@ export default async function translateCreate({
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
-
-    //    let parsedProjection: CompositeProjectionAndParamsResult | undefined;
-    /*  if (nodeProjection) {
-        const projectionFromInput: ProjectionAndParamsResult[] = varNameVariables.map((varName) => {
-            const projection = createProjectionAndParams({
-                node,
-                context,
-                resolveTree: nodeProjection,
-                varName,
-                cypherFieldAliasMap: {},
-            });
-
-            const projectionExpr = new Cypher.RawCypher(
-                (env) => `${compileCypher(varName, env)} ${compileCypher(projection.projection, env)}`
-            );
-
-            const projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
-
-            const authPredicates: Cypher.Predicate[] = [];
-
-            if (projection.predicates.length) {
-                authPredicates.push(Cypher.and(...projection.predicates));
-            }
-
-            if (authPredicates.length) {
-                return {
-                    projection: projectionExpr,
-                    projectionSubqueries: projectionSubquery,
-                    projectionAuth: Cypher.and(...authPredicates),
-                };
-            }
-
-            return { projection: projectionExpr, projectionSubqueries: projectionSubquery };
-        });
-
-        parsedProjection = projectionFromInput.reduce(
-            (acc: CompositeProjectionAndParamsResult, { projection, projectionSubqueries, authPredicate }) => {
-                return {
-                    authPredicates: authPredicate ? [...acc.authPredicates, authPredicate] : acc.authPredicates,
-                    projectionSubqueriesClause: Cypher.concat(acc.projectionSubqueriesClause, projectionSubqueries),
-                    projectionList: acc.projectionList.concat(projection),
-                };
-            },
-            {
-                projectionSubqueriesClause: undefined,
-                projectionList: [],
-                authPredicates: [],
-            }
-        );
-    } */
     // TODO refactor this with proper variable names and errors;
     const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
     if (!concreteEntityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
-    /*  const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create] as Record<
-        string,
-        ResolveTree
-    >; */
-
-    //const hasProjection = Object.values(mutationResponse).some((field) => field.name === node.plural);
 
     const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
         resolveTree,
@@ -195,13 +125,10 @@ export default async function translateCreate({
     const queryASTEnv = new QueryASTEnv();
     queryASTEnv.topLevelOperationName = "CREATE";
     const projectedVariables: Cypher.Node[] = [];
-    //let projectionClause: Cypher.Clause | undefined;
 
     const projectionClause = Cypher.concat(
         ...filterTruthy(
             varNameVariables.map((varName): Cypher.Clause | undefined => {
-                // The current behavior is to create a Read Projection for each input object,
-                // the following code is to maintain that behavior but at the same time using the new translation layer
                 const queryASTContext = new QueryASTContext({
                     target: varName,
                     env: queryASTEnv,
@@ -216,36 +143,11 @@ export default async function translateCreate({
             })
         )
     );
-    // TODO move to a different block
-    let returnStatement: Cypher.Return | undefined;
-    if (projectedVariables.length) {
-        returnStatement = new Cypher.Return([new Cypher.List(projectedVariables), new Cypher.NamedVariable("data")]);
-        if (context.subscriptionsEnabled) {
-            returnStatement.addColumns(new Cypher.NamedVariable("meta"));
-        }
-    } else if (context.subscriptionsEnabled) {
-        returnStatement = new Cypher.Return(new Cypher.NamedVariable("meta"));
-    } else {
-        returnStatement = new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
-    }
-
-    //console.log(Cypher.concat(...projection).build().cypher);
-
-    /*     const projectionList = parsedProjection?.projectionList.length
-        ? new Cypher.List(parsedProjection.projectionList)
-        : undefined; */
-    //const returnStatement = generateCreateReturnStatement(projectionList, context.subscriptionsEnabled);
-
+    const returnStatement = getReturnStatement(projectedVariables, context);
     const createQuery = new Cypher.RawCypher((env) => {
-        //const projectionSubqueriesStr = compileCypherIfExists(parsedProjection?.projectionSubqueriesClause, env);
-
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
-            /*  parsedProjection?.authPredicates.length
-                ? compileCypher(new Cypher.With("*").where(Cypher.and(...parsedProjection.authPredicates)), env)
-                : "",
-            projectionSubqueriesStr ? `\n${projectionSubqueriesStr}` : "", */
             compileCypherIfExists(projectionClause, env),
             compileCypherIfExists(returnStatement, env),
         ])
@@ -275,25 +177,19 @@ export default async function translateCreate({
     return result;
 }
 
-/* function generateCreateReturnStatement(
-    projectionExpr: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
-): Cypher.Clause {
-    const statements = new Cypher.RawCypher((env) => {
-        let statStr;
-        if (projectionExpr) {
-            statStr = `${compileCypher(projectionExpr, env)} AS data`;
-        }
-
-        if (subscriptionsEnabled) {
-            statStr = statStr ? `${statStr}, ${META_CYPHER_VARIABLE}` : META_CYPHER_VARIABLE;
-        }
-
-        if (!statStr) {
-            statStr = "'Query cannot conclude with CALL'";
-        }
-        return statStr;
-    });
-
-    return new Cypher.Return(statements);
-} */
+function getReturnStatement(
+    projectedVariables: Cypher.Variable[],
+    context: Neo4jGraphQLTranslationContext
+): Cypher.Return {
+    const ret = new Cypher.Return();
+    if (projectedVariables.length) {
+        ret.addColumns([new Cypher.List(projectedVariables), new Cypher.NamedVariable("data")]);
+    }
+    if (context.subscriptionsEnabled) {
+        ret.addColumns(new Cypher.NamedVariable("meta"));
+    }
+    if (!projectedVariables.length && !context.subscriptionsEnabled) {
+        ret.addColumns(new Cypher.Literal("Query cannot conclude with CALL"));
+    }
+    return ret;
+}

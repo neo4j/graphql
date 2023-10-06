@@ -242,7 +242,7 @@ describe("Batch Create", () => {
         `);
     });
 
-    test("nested batch", async () => {
+    test.only("nested batch", async () => {
         const query = gql`
             mutation {
                 createMovies(

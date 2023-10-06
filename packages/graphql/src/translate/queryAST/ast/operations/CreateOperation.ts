@@ -23,16 +23,16 @@ import type { OperationTranspileOptions, OperationTranspileResult } from "./oper
 import { Operation } from "./operations";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { OperationField } from "../fields/OperationField";
 import type { ReadOperation } from "./ReadOperation";
 
 /**
  * This is currently just a dummy tree node,
- * The whole mutation part is still implemented in the old way, the scope of this node is just to contains the nested fields.
+ * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
  **/
-export class UnwindCreateOperation extends Operation {
+export class CreateOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
-    public projectionFields: ReadOperation[] = [];
+    // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
+    public projectionOperations: ReadOperation[] = [];
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
     constructor({ target }: { target: ConcreteEntityAdapter }) {
@@ -41,28 +41,23 @@ export class UnwindCreateOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy(this.projectionFields);
+        return filterTruthy(this.projectionOperations);
     }
 
-    public setProjectionFields(operations: ReadOperation[]) {
-        this.projectionFields.push(...operations);
+    public addProjectionOperations(operations: ReadOperation[]) {
+        this.projectionOperations.push(...operations);
     }
 
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
-        // TODO: implement the actual unwind create
+        // TODO: implement the actual create / unwind create
         const clauses = this.getProjectionClause({ context });
         return { projectionExpr: context.returnVariable, clauses };
     }
 
     private getProjectionClause({ context }: OperationTranspileOptions): Cypher.Clause[] {
-       /*   if (this.projectionFields.length === 0) {
-            return [new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"))];
-        }  */
-
-        return this.projectionFields.map((operationField) => {
+        return this.projectionOperations.map((operationField) => {
             return Cypher.concat(...operationField.transpile({ context }).clauses);
         });
-
     }
 }

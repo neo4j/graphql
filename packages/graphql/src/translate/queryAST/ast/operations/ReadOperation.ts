@@ -48,15 +48,6 @@ export class ReadOperation extends Operation {
     protected sortFields: Sort[] = [];
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
-    /**
-     * isPartOfMutation describes if the ReadOperation is part of a mutation,
-     * there a few differences in the cypher produced between top-level read operations an those that are part of mutations.
-     * The main differences are:
-     * - The Top-level MATCH is no longer needed as it's implicit in the mutation
-     * - The RETURN clause contains the subscription meta field.
-     * - The return variable is named "this" instead of "data"
-     **/
-    private isPartOfMutation: boolean = false;
 
     constructor({
         target,
@@ -75,10 +66,6 @@ export class ReadOperation extends Operation {
 
     public setFields(fields: Field[]) {
         this.fields = fields;
-    }
-
-    public setPartOfMutation(isPartOfMutation: boolean) {
-        this.isPartOfMutation = isPartOfMutation;
     }
 
     public addSort(...sort: Sort[]): void {
@@ -265,9 +252,9 @@ export class ReadOperation extends Operation {
             : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
         let clause: Cypher.Clause;
-    
+
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
-        if (this.isPartOfMutation) {
+        if (context.env.topLevelOperationName === "UNWIND" || context.env.topLevelOperationName === "CREATE") {
             clause = Cypher.concat(
                 ...preSelection,
                 ...authFilterSubqueries,
@@ -299,7 +286,7 @@ export class ReadOperation extends Operation {
     private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
         const projection = this.getProjectionMap(context);
         if (context.env.topLevelOperationName === "UNWIND") {
-        return new Cypher.Return([Cypher.collect(projection), returnVariable]);
+            return new Cypher.Return([Cypher.collect(projection), returnVariable]);
         }
         return new Cypher.Return([projection, returnVariable]);
     }
