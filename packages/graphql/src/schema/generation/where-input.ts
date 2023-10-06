@@ -90,10 +90,16 @@ export function withWhereInputType({
             NOT: whereInputType,
         });
     } else if (entityAdapter instanceof InterfaceEntityAdapter) {
+        whereInputType.addFields({
+            OR: whereInputType.NonNull.List,
+            AND: whereInputType.NonNull.List,
+            NOT: whereInputType,
+        });
         const implementationsWhereInputType = makeImplementationsWhereInput({
             interfaceEntityAdapter: entityAdapter,
             composer,
         });
+        // TODO: add interfaces that implement this interface here
         whereInputType.addFields({ _on: implementationsWhereInputType });
     }
     return whereInputType;
