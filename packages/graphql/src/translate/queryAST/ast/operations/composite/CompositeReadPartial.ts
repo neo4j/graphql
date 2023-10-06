@@ -95,6 +95,14 @@ export class CompositeReadPartial extends ReadOperation {
             neo4jGraphQLContext: context.neo4jGraphQLContext,
         });
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
+        const filterPredicates = this.getPredicates(nestedContext);
+        // TODO: impl auth
+        const authFiltersPredicate = [];
+        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
+        if (wherePredicate) {
+            // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
+            matchClause.where(wherePredicate);
+        }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const ret = this.getProjectionClause(nestedContext, returnVariable);
 
