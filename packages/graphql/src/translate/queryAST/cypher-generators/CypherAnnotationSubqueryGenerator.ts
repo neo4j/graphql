@@ -25,7 +25,7 @@ import type { Field } from "../ast/fields/Field";
 import type { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { assertIsCypherNode } from "../utils/is-cypher-node";
 import { wrapSubqueryInCall } from "../utils/wrap-subquery-in-call";
-import { isNestedContext } from "../utils/is-nested-context";
+import { hasTarget } from "../utils/context-has-target";
 
 /** Variable exposed to the user in their custom cypher */
 const CYPHER_TARGET_VARIABLE = new Cypher.NamedVariable("this");
@@ -119,7 +119,7 @@ export class CypherAnnotationSubqueryGenerator {
         rawArguments: Record<string, any>;
         extraParams: Record<string, any>;
     }): Cypher.Call {
-        if (!isNestedContext(this.context)) throw new Error("No parent node found!");
+        if (!hasTarget(this.context)) throw new Error("No parent node found!");
         const target = this.context.target;
         const aliasTargetToPublicTarget = new Cypher.With([target, CYPHER_TARGET_VARIABLE]);
 

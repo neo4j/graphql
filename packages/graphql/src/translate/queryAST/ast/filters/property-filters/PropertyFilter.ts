@@ -24,7 +24,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
 import type { QueryASTNode } from "../../QueryASTNode";
-import { isNestedContext } from "../../../utils/is-nested-context";
+import { hasTarget } from "../../../utils/context-has-target";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -76,7 +76,7 @@ export class PropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!isNestedContext(queryASTContext)) throw new Error("No parent node found!");
+            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);
