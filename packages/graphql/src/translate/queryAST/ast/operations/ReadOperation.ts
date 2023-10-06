@@ -200,6 +200,8 @@ export class ReadOperation extends Operation {
                 context,
             });
         }
+        const isCreateSelection =
+            context.env.topLevelOperationName === "UNWIND" || context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
 
         const filterSubqueries = this.filters
@@ -227,10 +229,14 @@ export class ReadOperation extends Operation {
         const shouldAddWithForAuth = authFiltersPredicate.length > 0 && preSelection.length === 0;
         if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
-            filterSubqueryWith = new Cypher.With("*");
+            if (!isCreateSelection) {
+                filterSubqueryWith = new Cypher.With("*");
+            }
         }
 
-        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
+        const wherePredicate = isCreateSelection
+            ? filterPredicates
+            : Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             if (filterSubqueryWith) {
                 filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
@@ -254,16 +260,8 @@ export class ReadOperation extends Operation {
         let clause: Cypher.Clause;
 
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
-        if (context.env.topLevelOperationName === "UNWIND" || context.env.topLevelOperationName === "CREATE") {
-            clause = Cypher.concat(
-                ...preSelection,
-                ...authFilterSubqueries,
-                filterSubqueriesClause,
-                filterSubqueryWith,
-                sortAndLimitBlock,
-                subqueries,
-                ret
-            );
+        if (isCreateSelection) {
+            clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
         } else {
             clause = Cypher.concat(
                 ...preSelection,
