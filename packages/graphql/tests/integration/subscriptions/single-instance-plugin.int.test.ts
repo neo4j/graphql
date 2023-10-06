@@ -25,8 +25,8 @@ import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/Neo
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import type { EventMeta } from "../../../src/types";
-// TODO: REMOVE SKIP
-describe.skip("Subscriptions Single Instance Plugin", () => {
+
+describe("Subscriptions Single Instance Plugin", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
