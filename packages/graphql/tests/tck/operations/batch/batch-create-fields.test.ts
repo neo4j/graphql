@@ -429,7 +429,7 @@ describe("Batch Create, Scalar types", () => {
             CREATE (this0:Movie)
             SET this0.createdAt = datetime()
             SET this0.id = $this0_id
-            WITH this0
+            WITH *
             CREATE (this0_actors0_node:Actor)
             SET this0_actors0_node.createdAt = datetime()
             SET this0_actors0_node.id = randomUUID()
@@ -458,7 +458,7 @@ describe("Batch Create, Scalar types", () => {
             CREATE (this1:Movie)
             SET this1.createdAt = datetime()
             SET this1.id = $this1_id
-            WITH this1
+            WITH *
             CREATE (this1_actors0_node:Actor)
             SET this1_actors0_node.createdAt = datetime()
             SET this1_actors0_node.id = randomUUID()
@@ -487,7 +487,7 @@ describe("Batch Create, Scalar types", () => {
             CREATE (this2:Movie)
             SET this2.createdAt = datetime()
             SET this2.id = $this2_id
-            WITH this2
+            WITH *
             CREATE (this2_website0_node:Website)
             SET this2_website0_node.address = $this2_website0_node_address
             MERGE (this2)-[:HAS_WEBSITE]->(this2_website0_node)
