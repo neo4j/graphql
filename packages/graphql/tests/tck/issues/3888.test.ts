@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
         });
     });
 
-    test.only("should not add an authorization check for connects coming from create", async () => {
+    test("should not add an authorization check for connects coming from create", async () => {
         const query = gql`
             mutation {
                 createPosts(
