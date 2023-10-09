@@ -1,5 +1,12 @@
 # @neo4j/graphql-toolbox
 
+## 2.0.13
+
+### Patch Changes
+
+-   Updated dependencies [[`97f38c337`](https://github.com/neo4j/graphql/commit/97f38c337a71fe48dec281ddc0e30cd8183eead2)]:
+    -   @neo4j/graphql@4.3.1
+
 ## 2.0.12
 
 ### Patch Changes
