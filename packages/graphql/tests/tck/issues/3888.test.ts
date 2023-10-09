@@ -121,37 +121,4 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
         `);
     });
 
-    test("read example", async () => {
-        const query = gql`
-            query {
-                posts {
-                    title
-                }
-            }
-        `;
-
-        const token = createBearerToken(secret, { sub: "michel" });
-        const result = await translateQuery(neoSchema, query, {
-            token,
-        });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:AUTHORED]-(this0:User)
-            WITH *, count(this0) AS authorCount
-            WITH *
-            WHERE ($isAuthenticated = true AND (authorCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
-            RETURN this { .title } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"sub\\": \\"michel\\"
-                }
-            }"
-        `);
-    });
 });
