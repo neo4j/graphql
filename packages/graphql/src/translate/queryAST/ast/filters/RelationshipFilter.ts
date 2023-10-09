@@ -25,6 +25,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { QueryASTNode } from "../QueryASTNode";
 import { Memoize } from "typescript-memoize";
 import { filterTruthy } from "../../../../utils/utils";
+import { hasTarget } from "../../utils/context-has-target";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
@@ -91,6 +92,7 @@ export class RelationshipFilter extends Filter {
 
         const nestedSelection = filterTruthy(
             this.targetNodeFilters.map((f) => {
+                if (!hasTarget(context)) throw new Error("No parent node found!");
                 const selection = f.getSelection(context);
                 if (selection.length === 0) return undefined;
 
@@ -171,6 +173,7 @@ export class RelationshipFilter extends Filter {
             case "NONE":
             case "SOME":
             case "SINGLE": {
+                if (!hasTarget(context)) throw new Error("No parent node found!");
                 const match = new Cypher.Match(pattern);
 
                 const returnVar = new Cypher.Variable();
@@ -234,6 +237,7 @@ export class RelationshipFilter extends Filter {
         const match = new Cypher.Match(pattern);
 
         const subqueries = this.targetNodeFilters.map((f) => {
+            if (!hasTarget(context)) throw new Error("No parent node found!");
             const returnVar = new Cypher.Variable();
             returnVariables.push(returnVar);
             const nestedSubqueries = f.getSubqueries(context).map((sq) => {
@@ -279,6 +283,7 @@ export class RelationshipFilter extends Filter {
     public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
         if (this.shouldCreateOptionalMatch() && !this.subqueryPredicate) {
             const nestedContext = this.getNestedContext(queryASTContext);
+            if (!hasTarget(nestedContext)) throw new Error("No parent node found!");
 
             const pattern = new Cypher.Pattern(nestedContext.source!)
                 .withoutLabels()
@@ -324,6 +329,7 @@ export class RelationshipFilter extends Filter {
         queryASTContext: QueryASTContext;
         innerPredicate: Cypher.Predicate;
     }): Cypher.Predicate {
+        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
         const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
             innerPredicate
         );

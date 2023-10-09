@@ -380,7 +380,7 @@ class Neo4jGraphQL {
                 features: this.features,
                 userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
-                _experimental: this.experimental,
+                experimental: this.experimental,
             });
 
             if (this.validate) {
@@ -444,7 +444,7 @@ class Neo4jGraphQL {
             userCustomResolvers: this.resolvers,
             subgraph,
             schemaModel: this.schemaModel,
-            _experimental: this.experimental,
+            experimental: this.experimental,
         });
 
         if (this.validate) {

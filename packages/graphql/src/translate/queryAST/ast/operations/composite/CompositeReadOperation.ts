@@ -55,11 +55,29 @@ export class CompositeReadOperation extends Operation {
         return this.children;
     }
 
-    public transpile(options: OperationTranspileOptions): OperationTranspileResult {
-        const parentNode = options.context.target;
+    private transpileTopLevelCompositeRead(context: QueryASTContext): OperationTranspileResult {
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({
-                context: options.context,
+                context: context,
+            });
+            return result.clauses;
+        });
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(context.returnVariable);
+        return {
+            clauses: [nestedSubquery],
+            projectionExpr: context.returnVariable,
+        };
+    }
+
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+        if (!this.relationship) {
+            return this.transpileTopLevelCompositeRead(context);
+        }
+
+        const parentNode = context.target;
+        const nestedSubqueries = this.children.flatMap((c) => {
+            const result = c.transpile({
+                context: context,
             });
 
             let clauses = result.clauses;
@@ -69,14 +87,16 @@ export class CompositeReadOperation extends Operation {
             return clauses;
         });
 
-        let aggrExpr: Cypher.Expr = Cypher.collect(options.context.returnVariable);
+        let aggrExpr: Cypher.Expr = Cypher.collect(context.returnVariable);
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(options.context.returnVariable);
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(
+            context.returnVariable
+        );
 
         if (this.sortFields.length > 0) {
-            nestedSubquery.orderBy(...this.getSortFields(options.context, options.context.returnVariable));
+            nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
         }
         if (this.pagination) {
             const paginationField = this.pagination.getPagination();
@@ -90,11 +110,11 @@ export class CompositeReadOperation extends Operation {
             }
         }
 
-        nestedSubquery.return([aggrExpr, options.context.returnVariable]);
+        nestedSubquery.return([aggrExpr, context.returnVariable]);
 
         return {
             clauses: [nestedSubquery],
-            projectionExpr: options.context.returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

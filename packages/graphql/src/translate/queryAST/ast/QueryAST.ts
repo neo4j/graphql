@@ -24,6 +24,7 @@ import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
+import { CompositeReadOperation } from "./operations/composite/CompositeReadOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -33,12 +34,19 @@ export class QueryAST {
     }
 
     public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
+        const queryASTEnv = new QueryASTEnv();
         if (this.operation instanceof ReadOperation) {
-            const queryASTEnv = new QueryASTEnv();
+            // TODO add composite Read
             const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
-
             const context = new QueryASTContext({
                 target: node,
+                env: queryASTEnv,
+                neo4jGraphQLContext,
+                returnVariable: new Cypher.NamedVariable("this"),
+            });
+            return Cypher.concat(...this.transpile(context).clauses);
+        } else if (this.operation instanceof CompositeReadOperation) {
+            const context = new QueryASTContext({
                 env: queryASTEnv,
                 neo4jGraphQLContext,
                 returnVariable: new Cypher.NamedVariable("this"),

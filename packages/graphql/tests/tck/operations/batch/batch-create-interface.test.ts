@@ -150,7 +150,7 @@ describe("Batch Create, Interface", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH this0
+            WITH *
             CREATE (this0_workersActor0_node:Actor)
             SET this0_workersActor0_node.id = $this0_workersActor0_node_id
             SET this0_workersActor0_node.name = $this0_workersActor0_node_name
@@ -177,7 +177,7 @@ describe("Batch Create, Interface", () => {
             CALL {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
-            WITH this1
+            WITH *
             CREATE (this1_workersModeler0_node:Modeler)
             SET this1_workersModeler0_node.id = $this1_workersModeler0_node_id
             SET this1_workersModeler0_node.name = $this1_workersModeler0_node_name
@@ -208,12 +208,12 @@ describe("Batch Create, Interface", () => {
                     CALL {
                         WITH *
                         MATCH (this0)<-[create_this0:EMPLOYED]-(create_this1:Actor)
-                        WITH create_this1 { .name, __resolveType: \\"Actor\\", __id: id(this0) } AS create_this1
+                        WITH create_this1 { .name, __resolveType: \\"Actor\\", __id: id(create_this1) } AS create_this1
                         RETURN create_this1 AS create_var2
                         UNION
                         WITH *
                         MATCH (this0)<-[create_this3:EMPLOYED]-(create_this4:Modeler)
-                        WITH create_this4 { .name, __resolveType: \\"Modeler\\", __id: id(this0) } AS create_this4
+                        WITH create_this4 { .name, __resolveType: \\"Modeler\\", __id: id(create_this4) } AS create_this4
                         RETURN create_this4 AS create_var2
                     }
                     WITH create_var2
@@ -228,12 +228,12 @@ describe("Batch Create, Interface", () => {
                     CALL {
                         WITH *
                         MATCH (this1)<-[create_this6:EMPLOYED]-(create_this7:Actor)
-                        WITH create_this7 { .name, __resolveType: \\"Actor\\", __id: id(this1) } AS create_this7
+                        WITH create_this7 { .name, __resolveType: \\"Actor\\", __id: id(create_this7) } AS create_this7
                         RETURN create_this7 AS create_var8
                         UNION
                         WITH *
                         MATCH (this1)<-[create_this9:EMPLOYED]-(create_this10:Modeler)
-                        WITH create_this10 { .name, __resolveType: \\"Modeler\\", __id: id(this1) } AS create_this10
+                        WITH create_this10 { .name, __resolveType: \\"Modeler\\", __id: id(create_this10) } AS create_this10
                         RETURN create_this10 AS create_var8
                     }
                     WITH create_var8
@@ -305,7 +305,7 @@ describe("Batch Create, Interface", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
-            WITH this0
+            WITH *
             CREATE (this0_workersActor0_node:Actor)
             SET this0_workersActor0_node.id = $this0_workersActor0_node_id
             SET this0_workersActor0_node.name = $this0_workersActor0_node_name
@@ -332,7 +332,7 @@ describe("Batch Create, Interface", () => {
             CALL {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
-            WITH this1
+            WITH *
             CREATE (this1_workersActor0_node:Actor)
             SET this1_workersActor0_node.id = $this1_workersActor0_node_id
             SET this1_workersActor0_node.name = $this1_workersActor0_node_name
@@ -359,7 +359,7 @@ describe("Batch Create, Interface", () => {
             CALL {
             CREATE (this2:Movie)
             SET this2.id = $this2_id
-            WITH this2
+            WITH *
             CREATE (this2_website0_node:Website)
             SET this2_website0_node.address = $this2_website0_node_address
             MERGE (this2)-[:HAS_WEBSITE]->(this2_website0_node)
@@ -434,12 +434,12 @@ describe("Batch Create, Interface", () => {
                     CALL {
                         WITH *
                         MATCH (this0)<-[create_this3:EMPLOYED]-(create_this4:Actor)
-                        WITH create_this4 { .name, __resolveType: \\"Actor\\", __id: id(this0) } AS create_this4
+                        WITH create_this4 { .name, __resolveType: \\"Actor\\", __id: id(create_this4) } AS create_this4
                         RETURN create_this4 AS create_var5
                         UNION
                         WITH *
                         MATCH (this0)<-[create_this6:EMPLOYED]-(create_this7:Modeler)
-                        WITH create_this7 { .name, __resolveType: \\"Modeler\\", __id: id(this0) } AS create_this7
+                        WITH create_this7 { .name, __resolveType: \\"Modeler\\", __id: id(create_this7) } AS create_this7
                         RETURN create_this7 AS create_var5
                     }
                     WITH create_var5
@@ -460,12 +460,12 @@ describe("Batch Create, Interface", () => {
                     CALL {
                         WITH *
                         MATCH (this1)<-[create_this12:EMPLOYED]-(create_this13:Actor)
-                        WITH create_this13 { .name, __resolveType: \\"Actor\\", __id: id(this1) } AS create_this13
+                        WITH create_this13 { .name, __resolveType: \\"Actor\\", __id: id(create_this13) } AS create_this13
                         RETURN create_this13 AS create_var14
                         UNION
                         WITH *
                         MATCH (this1)<-[create_this15:EMPLOYED]-(create_this16:Modeler)
-                        WITH create_this16 { .name, __resolveType: \\"Modeler\\", __id: id(this1) } AS create_this16
+                        WITH create_this16 { .name, __resolveType: \\"Modeler\\", __id: id(create_this16) } AS create_this16
                         RETURN create_this16 AS create_var14
                     }
                     WITH create_var14
@@ -486,12 +486,12 @@ describe("Batch Create, Interface", () => {
                     CALL {
                         WITH *
                         MATCH (this2)<-[create_this21:EMPLOYED]-(create_this22:Actor)
-                        WITH create_this22 { .name, __resolveType: \\"Actor\\", __id: id(this2) } AS create_this22
+                        WITH create_this22 { .name, __resolveType: \\"Actor\\", __id: id(create_this22) } AS create_this22
                         RETURN create_this22 AS create_var23
                         UNION
                         WITH *
                         MATCH (this2)<-[create_this24:EMPLOYED]-(create_this25:Modeler)
-                        WITH create_this25 { .name, __resolveType: \\"Modeler\\", __id: id(this2) } AS create_this25
+                        WITH create_this25 { .name, __resolveType: \\"Modeler\\", __id: id(create_this25) } AS create_this25
                         RETURN create_this25 AS create_var23
                     }
                     WITH create_var23
@@ -512,12 +512,12 @@ describe("Batch Create, Interface", () => {
                     CALL {
                         WITH *
                         MATCH (this3)<-[create_this30:EMPLOYED]-(create_this31:Actor)
-                        WITH create_this31 { .name, __resolveType: \\"Actor\\", __id: id(this3) } AS create_this31
+                        WITH create_this31 { .name, __resolveType: \\"Actor\\", __id: id(create_this31) } AS create_this31
                         RETURN create_this31 AS create_var32
                         UNION
                         WITH *
                         MATCH (this3)<-[create_this33:EMPLOYED]-(create_this34:Modeler)
-                        WITH create_this34 { .name, __resolveType: \\"Modeler\\", __id: id(this3) } AS create_this34
+                        WITH create_this34 { .name, __resolveType: \\"Modeler\\", __id: id(create_this34) } AS create_this34
                         RETURN create_this34 AS create_var32
                     }
                     WITH create_var32

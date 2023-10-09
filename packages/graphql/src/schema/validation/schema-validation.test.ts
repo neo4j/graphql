@@ -50,7 +50,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -76,7 +76,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -101,7 +101,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -134,7 +134,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -159,7 +159,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -194,7 +194,7 @@ describe("schema validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                 document: userDocument,
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
             const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
             expect(executeValidate).not.toThrow();
@@ -220,7 +220,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -239,7 +239,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -264,7 +264,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -289,7 +289,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -308,7 +308,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 const errors = getError(executeValidate);
@@ -348,7 +348,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 const errors = getError(executeValidate);
@@ -388,7 +388,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 const errors = getError(executeValidate);
@@ -428,7 +428,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
@@ -471,7 +471,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
@@ -514,7 +514,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
@@ -557,7 +557,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
@@ -600,7 +600,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -641,7 +641,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -680,7 +680,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -699,7 +699,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -723,7 +723,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -742,7 +742,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument }); //
 
@@ -775,7 +775,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -797,7 +797,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -830,7 +830,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -850,7 +850,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -888,7 +888,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -914,7 +914,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -955,7 +955,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrow(
@@ -979,7 +979,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1004,7 +1004,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1038,7 +1038,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1072,7 +1072,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1100,7 +1100,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1132,7 +1132,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1159,7 +1159,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1186,7 +1186,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1220,7 +1220,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1242,7 +1242,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1285,7 +1285,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).toThrow(
@@ -1328,7 +1328,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1367,7 +1367,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1410,7 +1410,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () =>
                     validateUserDefinition({
@@ -1445,7 +1445,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () =>
                     validateUserDefinition({
@@ -1480,7 +1480,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () =>
                     validateUserDefinition({
@@ -1515,7 +1515,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () =>
                     validateUserDefinition({
@@ -1563,7 +1563,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () =>
                     validateUserDefinition({
@@ -1599,7 +1599,7 @@ describe("schema validation", () => {
                     document: userDocument,
                     features: { subscriptions: true },
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () =>
                     validateUserDefinition({
@@ -1639,7 +1639,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1657,7 +1657,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1680,7 +1680,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1698,7 +1698,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1723,7 +1723,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1751,7 +1751,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -1772,7 +1772,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1799,7 +1799,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -1818,7 +1818,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -1844,7 +1844,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1875,7 +1875,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -1901,7 +1901,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -1937,7 +1937,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -1962,7 +1962,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -1986,7 +1986,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2019,7 +2019,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2052,7 +2052,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -2079,7 +2079,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -2110,7 +2110,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -2136,7 +2136,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2162,7 +2162,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2190,7 +2190,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -2212,7 +2212,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 const errors = getError(executeValidate);
@@ -2247,7 +2247,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2288,7 +2288,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -2322,7 +2322,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 const errors = getError(executeValidate);
@@ -2356,7 +2356,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -2389,7 +2389,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -2422,7 +2422,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -2455,7 +2455,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -2498,7 +2498,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -2534,7 +2534,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -2570,7 +2570,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 expect(executeValidate).not.toThrow();
@@ -2594,7 +2594,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -2623,7 +2623,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -2641,7 +2641,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2663,7 +2663,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2695,7 +2695,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
@@ -2720,7 +2720,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -2747,7 +2747,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -2766,7 +2766,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -2789,7 +2789,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -2820,7 +2820,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -2846,7 +2846,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -2890,7 +2890,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -2926,7 +2926,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -2959,7 +2959,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -2999,7 +2999,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -3039,7 +3039,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -3073,7 +3073,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -3111,7 +3111,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -3137,7 +3137,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -3163,7 +3163,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
 
@@ -3192,7 +3192,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
@@ -3212,7 +3212,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
                 const errors = getError(executeValidate);
@@ -3254,7 +3254,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
 
@@ -3305,7 +3305,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 expect(executeValidate).not.toThrow();
@@ -3346,7 +3346,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument, jwt });
                 const errors = getError(executeValidate);
@@ -3384,7 +3384,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -3425,7 +3425,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -3466,7 +3466,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -3500,7 +3500,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -3550,7 +3550,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -3591,7 +3591,7 @@ describe("schema validation", () => {
                 const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                     document: userDocument,
                     schemaModel,
-                    _experimental: false,
+                    experimental: false,
                 });
 
                 const executeValidate = () =>
@@ -3624,7 +3624,7 @@ describe("schema validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                 document: userDocument,
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
 
             const executeValidate = () =>
@@ -3649,7 +3649,7 @@ describe("schema validation", () => {
             const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                 document: userDocument,
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
 
             const executeValidate = () =>
@@ -3685,7 +3685,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3709,7 +3709,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3738,7 +3738,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3767,7 +3767,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3793,7 +3793,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3827,7 +3827,7 @@ describe("schema validation", () => {
                         document: userDocument,
                         features: { subscriptions: true },
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
 
                     const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
@@ -3853,7 +3853,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3884,7 +3884,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3920,7 +3920,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -3967,7 +3967,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4002,7 +4002,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4026,7 +4026,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4056,7 +4056,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4086,7 +4086,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4112,7 +4112,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4143,7 +4143,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4174,7 +4174,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4219,7 +4219,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({
@@ -4267,7 +4267,7 @@ describe("schema validation", () => {
                     const { typeDefs: augmentedDocument } = makeAugmentedSchema({
                         document: userDocument,
                         schemaModel,
-                        _experimental: false,
+                        experimental: false,
                     });
                     const executeValidate = () =>
                         validateUserDefinition({

@@ -19,10 +19,12 @@
 
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 export class QueryASTFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -35,12 +37,11 @@ export class QueryASTFactory {
 
     public createQueryAST(
         resolveTree: ResolveTree,
-        entity: ConcreteEntity,
+        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): QueryAST {
-        const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name);
-        if (!entityAdapter) throw new Error(`Entity ${entity.name} not found`);
         const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context);
+
         return new QueryAST(operation);
     }
 }

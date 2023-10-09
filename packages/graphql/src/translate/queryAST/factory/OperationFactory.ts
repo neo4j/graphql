@@ -68,15 +68,15 @@ export class OperationsFactory {
     }
 
     public createTopLevelOperation(
-        entity: ConcreteEntityAdapter,
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): ReadOperation | CreateOperation {
-        if (resolveTree.name === entity.operations.rootTypeFieldNames.create) {
+        if (isConcreteEntity(entity) && resolveTree.name === entity.operations.rootTypeFieldNames.create) {
             return this.createUnwindCreateOperation(entity, resolveTree, context);
         }
 
-        const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation; // interface are supported only for top level read operations;
+        const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
         op.nodeAlias = TOP_LEVEL_NODE_NAME;
         return op;
     }
@@ -102,7 +102,7 @@ export class OperationsFactory {
     }
 
     public createReadOperation(
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): ReadOperation | CompositeReadOperation {

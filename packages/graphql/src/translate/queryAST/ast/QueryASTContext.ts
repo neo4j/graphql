@@ -38,7 +38,7 @@ export class QueryASTEnv {
 }
 
 export class QueryASTContext {
-    public readonly target: Cypher.Node;
+    public readonly target?: Cypher.Node;
     public readonly relationship?: Cypher.Relationship;
     public readonly source?: Cypher.Node;
     public readonly returnVariable: Cypher.Variable;
@@ -54,7 +54,7 @@ export class QueryASTContext {
         neo4jGraphQLContext,
         returnVariable,
     }: {
-        target: Cypher.Node;
+        target?: Cypher.Node;
         relationship?: Cypher.Relationship;
         source?: Cypher.Node;
         env?: QueryASTEnv;
@@ -75,6 +75,7 @@ export class QueryASTContext {
     }
 
     public getTargetScope(): Scope {
+        if (!this.target) throw new Error("Cannot get target scope on top-level context");
         return this.env.getScope(this.target);
     }
 

@@ -133,7 +133,7 @@ function createCreateAndParams({
                         }
 
                         if (!context.subscriptionsEnabled) {
-                            res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                            res.creates.push(`\nWITH *`);
                         }
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
@@ -204,9 +204,7 @@ function createCreateAndParams({
                                 fromTypename,
                                 toTypename,
                             });
-                            res.creates.push(
-                                `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
-                            );
+                            res.creates.push(`WITH *, ${eventWithMetaStr}`);
                         }
 
                         const relationshipValidationStr = createRelationshipValidationStr({

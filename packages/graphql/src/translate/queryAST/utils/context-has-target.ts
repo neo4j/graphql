@@ -17,22 +17,10 @@
  * limitations under the License.
  */
 
-import { globalNodeResolver } from "./global-node";
-import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+import type Cypher from "@neo4j/cypher-builder";
+import type { QueryASTContext } from "../ast/QueryASTContext";
 
-describe("Global node resolver", () => {
-    test("should return the correct type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-            primitiveFields: [],
-            isGlobalNode: true,
-        }).instance();
-
-        const result = globalNodeResolver({ nodes: [node], entities: [] });
-        expect(result.type).toBe("Node");
-        expect(result.resolve).toBeInstanceOf(Function);
-        expect(result.args).toMatchObject({
-            id: "ID!",
-        });
-    });
-});
+/** Checks if provided context has the target field defined (which would make it a nested translation context) */
+export function hasTarget(context: QueryASTContext): context is QueryASTContext & { target: Cypher.Node } {
+    return context.target !== undefined;
+}

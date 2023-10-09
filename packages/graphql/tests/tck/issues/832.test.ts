@@ -740,12 +740,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                     CALL {
                         WITH *
                         MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Person)
-                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(this0) } AS create_this1
+                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_this1
                         RETURN create_this1 AS create_var2
                         UNION
                         WITH *
                         MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:Place)
-                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(this0) } AS create_this4
+                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(create_this4) } AS create_this4
                         RETURN create_this4 AS create_var2
                     }
                     WITH create_var2
@@ -756,12 +756,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                     CALL {
                         WITH *
                         MATCH (this0)-[create_this5:ACTED_IN]->(create_this6:Person)
-                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(this0) } AS create_this6
+                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(create_this6) } AS create_this6
                         RETURN create_this6 AS create_var7
                         UNION
                         WITH *
                         MATCH (this0)-[create_this8:ACTED_IN]->(create_this9:Place)
-                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(this0) } AS create_this9
+                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(create_this9) } AS create_this9
                         RETURN create_this9 AS create_var7
                     }
                     WITH create_var7
@@ -776,12 +776,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                     CALL {
                         WITH *
                         MATCH (this1)<-[create_this11:ACTED_IN]-(create_this12:Person)
-                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(this1) } AS create_this12
+                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(create_this12) } AS create_this12
                         RETURN create_this12 AS create_var13
                         UNION
                         WITH *
                         MATCH (this1)<-[create_this14:ACTED_IN]-(create_this15:Place)
-                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(this1) } AS create_this15
+                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(create_this15) } AS create_this15
                         RETURN create_this15 AS create_var13
                     }
                     WITH create_var13
@@ -792,12 +792,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                     CALL {
                         WITH *
                         MATCH (this1)-[create_this16:ACTED_IN]->(create_this17:Person)
-                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(this1) } AS create_this17
+                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(create_this17) } AS create_this17
                         RETURN create_this17 AS create_var18
                         UNION
                         WITH *
                         MATCH (this1)-[create_this19:ACTED_IN]->(create_this20:Place)
-                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(this1) } AS create_this20
+                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(create_this20) } AS create_this20
                         RETURN create_this20 AS create_var18
                     }
                     WITH create_var18

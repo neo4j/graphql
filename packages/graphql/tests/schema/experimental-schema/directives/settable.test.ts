@@ -3171,6 +3171,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3678,6 +3679,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -4367,6 +4369,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -5072,6 +5075,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -5597,6 +5601,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6091,6 +6096,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6883,6 +6889,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -7807,6 +7814,7 @@ describe("@settable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions: [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

@@ -112,6 +112,10 @@ export class InterfaceEntityAdapter {
         return upperFirst(this.plural);
     }
 
+    get isReadable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.read === true;
+    }
+
     /**
      * Categories
      * = a grouping of attributes

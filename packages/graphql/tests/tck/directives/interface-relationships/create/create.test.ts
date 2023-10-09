@@ -95,7 +95,7 @@ describe("Interface Relationships - Create create", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CREATE (this0_actedInMovie0_node:Movie)
             SET this0_actedInMovie0_node.title = $this0_actedInMovie0_node_title
             SET this0_actedInMovie0_node.runtime = $this0_actedInMovie0_node_runtime
@@ -110,12 +110,12 @@ describe("Interface Relationships - Create create", () => {
                     CALL {
                         WITH *
                         MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
-                        WITH create_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this0) } AS create_this1
+                        WITH create_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(create_this1) } AS create_this1
                         RETURN create_this1 AS create_var2
                         UNION
                         WITH *
                         MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:Series)
-                        WITH create_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this0) } AS create_this4
+                        WITH create_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(create_this4) } AS create_this4
                         RETURN create_this4 AS create_var2
                     }
                     WITH create_var2

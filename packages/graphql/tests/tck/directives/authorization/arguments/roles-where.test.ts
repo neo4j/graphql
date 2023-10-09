@@ -389,7 +389,7 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH *
                     MATCH (this)-[this0:HAS_POST]->(this1:Post)
                     WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND $param4 IN $jwt.roles) OR ($isAuthenticated = true AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .id, __resolveType: \\"Post\\", __id: id(this) } AS this1
+                    WITH this1 { .id, __resolveType: \\"Post\\", __id: id(this1) } AS this1
                     RETURN this1 AS var3
                 }
                 WITH var3

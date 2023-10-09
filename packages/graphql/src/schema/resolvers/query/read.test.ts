@@ -38,7 +38,7 @@ describe("Read resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = findResolver({ node, concreteEntityAdapter });
+        const result = findResolver({ node, entityAdapter: concreteEntityAdapter });
         expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

@@ -58,7 +58,7 @@ export default async function unwindCreate({
 
     const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
         resolveTree,
-        concreteEntityAdapter.entity,
+        concreteEntityAdapter,
         context
     );
     const queryASTEnv = new QueryASTEnv();

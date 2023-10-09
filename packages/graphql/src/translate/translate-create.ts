@@ -118,7 +118,7 @@ export default async function translateCreate({
 
     const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
         resolveTree,
-        concreteEntityAdapter.entity,
+        concreteEntityAdapter,
         context
     );
     const queryASTEnv = new QueryASTEnv();
