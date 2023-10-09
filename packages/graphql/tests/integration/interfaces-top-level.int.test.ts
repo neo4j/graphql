@@ -222,7 +222,7 @@ describe("Interfaces tests", () => {
         });
     });
 
-    test.only("should return results on top-level simple query on interface target to a relationship with filters", async () => {
+    test("should return results on top-level simple query on interface target to a relationship with filters", async () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
