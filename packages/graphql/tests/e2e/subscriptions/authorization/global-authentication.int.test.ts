@@ -23,11 +23,11 @@ import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { UniqueType } from "../../../utils/graphql-types";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Subscription global authentication", () => {
     let neo4j: Neo4j;
@@ -65,7 +65,7 @@ describe("Subscription global authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -140,7 +140,7 @@ describe("Subscription global authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -215,7 +215,7 @@ describe("Subscription global authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 

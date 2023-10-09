@@ -17,23 +17,23 @@
  * limitations under the License.
  */
 
-import { filterTruthy } from "../../../../utils/utils";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
-import type { Field } from "../fields/Field";
-import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
-import { Operation } from "./operations";
-import type { Pagination } from "../pagination/Pagination";
-import type { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import { filterTruthy } from "../../../../utils/utils";
+import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { Sort } from "../sort/Sort";
+import type { Field } from "../fields/Field";
 import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
+import type { Filter } from "../filters/Filter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { Pagination } from "../pagination/Pagination";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
-import { isNestedContext } from "../../utils/is-nested-context";
+import type { Sort } from "../sort/Sort";
+import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
+import { Operation } from "./operations";
+import { hasTarget } from "../../utils/context-has-target";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -98,7 +98,7 @@ export class ReadOperation extends Operation {
         { context, returnVariable }: OperationTranspileOptions
     ): OperationTranspileResult {
         //TODO: dupe from transpile
-        if (!isNestedContext(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
@@ -112,7 +112,9 @@ export class ReadOperation extends Operation {
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const filterPredicates = this.getPredicates(nestedContext);
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
+            new Cypher.Call(sq).innerWith(targetNode)
+        );
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
@@ -133,8 +135,8 @@ export class ReadOperation extends Operation {
 
         const clause = Cypher.concat(
             ...preSelection,
-            matchClause,
             ...authFilterSubqueries,
+            matchClause,
             withWhere,
             subqueries,
             ...sortSubqueries,
@@ -152,7 +154,7 @@ export class ReadOperation extends Operation {
         returnVariable: Cypher.Variable,
         isArray: boolean
     ): Cypher.Return {
-        if (!isNestedContext(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const projection = this.getProjectionMap(context);
 
         let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);
@@ -210,8 +212,9 @@ export class ReadOperation extends Operation {
             .map((sq) => new Cypher.Call(sq).innerWith(node));
         const filterPredicates = this.getPredicates(context);
 
-        // THis may no longer be relevant?
-        const authFilterSubqueries = this.getAuthFilterSubqueries(context);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
+            new Cypher.Call(sq).innerWith(node)
+        );
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
         const sortSubqueries = this.sortFields
@@ -293,7 +296,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!isNestedContext(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         return filterTruthy(
             this.fields.flatMap((f) => {
                 if (f instanceof CypherAttributeField) {
@@ -307,7 +310,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!isNestedContext(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         return filterTruthy(
             this.getCypherFields().flatMap((f) => {
                 return f.getSubqueries(context);
@@ -324,7 +327,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
-        if (!isNestedContext(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const projectionFields = this.fields.map((f) => f.getProjectionField(context.target));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField(context));
 

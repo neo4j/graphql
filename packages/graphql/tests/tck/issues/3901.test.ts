@@ -125,7 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             CREATE (this0:Serie)
             SET this0.id = randomUUID()
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CREATE (this0_seasons0_node:Season)
             SET this0_seasons0_node.id = randomUUID()
             SET this0_seasons0_node.number = $this0_seasons0_node_number

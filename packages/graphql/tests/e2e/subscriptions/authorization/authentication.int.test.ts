@@ -24,11 +24,11 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
 import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
 import { createBearerToken } from "../../../utils/create-bearer-token";
 import { cleanNodes } from "../../../utils/clean-nodes";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("Subscription authentication", () => {
     const typeMovie = new UniqueType("Movie");
@@ -66,7 +66,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -190,7 +190,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -282,7 +282,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -390,7 +390,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -500,7 +500,7 @@ describe("Subscription authentication", () => {
                         authorization: {
                             key: secret,
                         },
-                        subscriptions: new TestSubscriptionsEngine(),
+                        subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                     },
                 });
 
@@ -589,7 +589,7 @@ describe("Subscription authentication", () => {
                         authorization: {
                             key: secret,
                         },
-                        subscriptions: new TestSubscriptionsEngine(),
+                        subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                     },
                 });
 
@@ -731,7 +731,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -5112,7 +5112,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -5458,7 +5458,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 
@@ -5549,7 +5549,7 @@ describe("Subscription authentication", () => {
                     authorization: {
                         key: secret,
                     },
-                    subscriptions: new TestSubscriptionsEngine(),
+                    subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
                 },
             });
 

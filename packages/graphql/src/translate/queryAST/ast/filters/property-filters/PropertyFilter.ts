@@ -18,13 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { FilterOperator } from "../Filter";
-import { Filter } from "../Filter";
-import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
-import { isNestedContext } from "../../../utils/is-nested-context";
+import type { FilterOperator } from "../Filter";
+import { Filter } from "../Filter";
+import { hasTarget } from "../../../utils/context-has-target";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -59,7 +59,7 @@ export class PropertyFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.attachedTo}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.attribute.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
@@ -76,7 +76,7 @@ export class PropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!isNestedContext(queryASTContext)) throw new Error("No parent node found!");
+            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);

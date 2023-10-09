@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
-import { isNestedContext } from "../../../utils/is-nested-context";
+import { hasTarget } from "../../../utils/context-has-target";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
@@ -95,7 +95,7 @@ export class AggregationPropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!isNestedContext(queryASTContext)) throw new Error("No parent node found!");
+            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);

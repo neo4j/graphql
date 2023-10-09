@@ -538,15 +538,16 @@ function makeAugmentedSchema({
         ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
+    // TODO: improve this logic so we don't iterate through the entire document for each compositeEntity
+    // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
     schemaModel.compositeEntities.forEach((compositeEntity) => {
-        let shouldGenerateResolver = true;
         const definitionIsOfTheSameType = (
             def: DefinitionNode
         ): def is UnionTypeDefinitionNode | InterfaceTypeDefinitionNode =>
             (def.kind === Kind.UNION_TYPE_DEFINITION && compositeEntity instanceof UnionEntity) ||
             (def.kind === Kind.INTERFACE_TYPE_DEFINITION && compositeEntity instanceof InterfaceEntity);
-        // It is possible to make types "writeonly". In this case adding a resolver for them breaks schema generation.
-        shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
+
+        const shouldGenerateResolver = parsedDoc.definitions.some((def): boolean => {
             if (definitionIsOfTheSameType(def) && def.name.value === compositeEntity.name) {
                 return true;
             }

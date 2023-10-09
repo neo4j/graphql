@@ -25,7 +25,7 @@ import type { LogicalFilter } from "../LogicalFilter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../../QueryASTNode";
-import { isNestedContext } from "../../../utils/is-nested-context";
+import { hasTarget } from "../../../utils/context-has-target";
 
 export class AggregationFilter extends Filter {
     private relationship: RelationshipAdapter;
@@ -48,7 +48,7 @@ export class AggregationFilter extends Filter {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!isNestedContext(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         this.subqueryReturnVariable = new Cypher.Variable();
         const relatedEntity = this.relationship.target as any;
         const relatedNode = new Cypher.Node({

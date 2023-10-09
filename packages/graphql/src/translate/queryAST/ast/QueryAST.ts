@@ -23,12 +23,12 @@ import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import type { CompositeReadOperation } from "./operations/composite/CompositeReadOperation";
+import type { Operation } from "./operations/operations";
 
 export class QueryAST {
-    private operation: ReadOperation | CompositeReadOperation;
+    private operation: Operation;
 
-    constructor(operation: ReadOperation | CompositeReadOperation) {
+    constructor(operation: Operation) {
         this.operation = operation;
     }
 
