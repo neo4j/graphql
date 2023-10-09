@@ -100,7 +100,6 @@ export class CompositeReadPartial extends ReadOperation {
         const authFiltersPredicate = [];
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
-            // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
             matchClause.where(wherePredicate);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
