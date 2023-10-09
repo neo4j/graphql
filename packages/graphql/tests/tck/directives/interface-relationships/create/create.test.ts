@@ -95,7 +95,7 @@ describe("Interface Relationships - Create create", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CREATE (this0_actedInMovie0_node:Movie)
             SET this0_actedInMovie0_node.title = $this0_actedInMovie0_node_title
             SET this0_actedInMovie0_node.runtime = $this0_actedInMovie0_node_runtime

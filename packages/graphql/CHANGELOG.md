@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 4.3.1
+
+### Patch Changes
+
+-   [#4084](https://github.com/neo4j/graphql/pull/4084) [`97f38c337`](https://github.com/neo4j/graphql/commit/97f38c337a71fe48dec281ddc0e30cd8183eead2) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix authentication filters rules in nested elements #4077
+
 ## 4.3.0
 
 ### Minor Changes

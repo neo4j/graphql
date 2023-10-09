@@ -122,10 +122,10 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CREATE (this0_contentPost0_node:Post)
             SET this0_contentPost0_node.id = $this0_contentPost0_node_id
-            WITH this0, this0_contentPost0_node
+            WITH *
             CREATE (this0_contentPost0_node_creator0_node:User)
             SET this0_contentPost0_node_creator0_node.id = $this0_contentPost0_node_creator0_node_id
             MERGE (this0_contentPost0_node)<-[:HAS_CONTENT]-(this0_contentPost0_node_creator0_node)
@@ -210,10 +210,10 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CREATE (this0_contentComment0_node:Comment)
             SET this0_contentComment0_node.id = $this0_contentComment0_node_id
-            WITH this0, this0_contentComment0_node
+            WITH *
             CREATE (this0_contentComment0_node_creator0_node:User)
             SET this0_contentComment0_node_creator0_node.id = $this0_contentComment0_node_creator0_node_id
             MERGE (this0_contentComment0_node)<-[:HAS_CONTENT]-(this0_contentComment0_node_creator0_node)
