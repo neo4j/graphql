@@ -18,12 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { FilterOperator } from "../Filter";
-import { Filter } from "../Filter";
-import type { QueryASTContext } from "../../QueryASTContext";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { FilterOperator } from "../Filter";
+import { Filter } from "../Filter";
 
 export class PropertyFilter extends Filter {
     protected attribute: AttributeAdapter;
@@ -58,7 +58,7 @@ export class PropertyFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.attachedTo}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.attribute.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
