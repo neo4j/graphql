@@ -28,7 +28,7 @@ describe("Cypher Union", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    beforeAll(() => {
+    beforeEach(() => {
         typeDefs = gql`
             union Search = Genre | Movie
 
@@ -51,6 +51,112 @@ describe("Cypher Union", () => {
             typeDefs,
             features: { authorization: { key: secret } },
         });
+    });
+
+    test("Read union top-level", async () => {
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+            experimental: true,
+        });
+        const query = gql`
+            {
+                searches {
+                    ... on Movie {
+                        title
+                    }
+                    ... on Genre {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:Genre)
+                WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:Movie)
+                WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+            }
+            RETURN this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Read union top-level with relationship on member type", async () => {
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+            experimental: true,
+        });
+        const query = gql`
+            {
+                searches {
+                    ... on Movie {
+                        title
+                        search {
+                            ... on Genre {
+                                name
+                            }
+                        }
+                    }
+                    ... on Genre {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:Genre)
+                WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:Movie)
+                CALL {
+                    WITH this1
+                    CALL {
+                        WITH *
+                        MATCH (this1)-[this2:SEARCH]->(this3:Genre)
+                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this3.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WITH this3 { .name, __resolveType: \\"Genre\\", __id: id(this3) } AS this3
+                        RETURN this3 AS var4
+                        UNION
+                        WITH *
+                        MATCH (this1)-[this5:SEARCH]->(this6:Movie)
+                        WITH this6 { __resolveType: \\"Movie\\", __id: id(this6) } AS this6
+                        RETURN this6 AS var4
+                    }
+                    WITH var4
+                    RETURN collect(var4) AS var4
+                }
+                WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+            }
+            RETURN this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
+                }
+            }"
+        `);
     });
 
     test("Read Unions simple", async () => {
@@ -80,12 +186,12 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this) } AS this1
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this) } AS this4
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -129,12 +235,12 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this) } AS this1
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this) } AS this4
+                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -185,13 +291,13 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE (this1.name = $param1 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this) } AS this1
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
                     WHERE this4.title = $param4
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this) } AS this4
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2

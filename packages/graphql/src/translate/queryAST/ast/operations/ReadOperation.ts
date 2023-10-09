@@ -33,6 +33,7 @@ import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
+import { hasTarget } from "../../utils/context-has-target";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -97,7 +98,7 @@ export class ReadOperation extends Operation {
         { context, returnVariable }: OperationTranspileOptions
     ): OperationTranspileResult {
         //TODO: dupe from transpile
-        if (!context.target) throw new Error("No parent node found!");
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
@@ -153,6 +154,7 @@ export class ReadOperation extends Operation {
         returnVariable: Cypher.Variable,
         isArray: boolean
     ): Cypher.Return {
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const projection = this.getProjectionMap(context);
 
         let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);
@@ -294,6 +296,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         return filterTruthy(
             this.fields.flatMap((f) => {
                 if (f instanceof CypherAttributeField) {
@@ -307,6 +310,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         return filterTruthy(
             this.getCypherFields().flatMap((f) => {
                 return f.getSubqueries(context);
@@ -323,6 +327,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const projectionFields = this.fields.map((f) => f.getProjectionField(context.target));
         const sortProjectionFields = this.sortFields.map((f) => f.getProjectionField(context));
 

@@ -84,12 +84,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this) } AS this1
+                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this) } AS this4
+                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -127,12 +127,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:CURRENTLY_ACTING_IN]->(this1:Movie)
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this) } AS this1
+                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:CURRENTLY_ACTING_IN]->(this4:Series)
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this) } AS this4
+                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -170,12 +170,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this) } AS this1
+                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this) } AS this4
+                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -225,7 +225,7 @@ describe("Interface Relationships", () => {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this) } AS this1
+                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                 }
                 WITH var2
@@ -268,13 +268,13 @@ describe("Interface Relationships", () => {
                     WITH *
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this) } AS this1
+                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:Series)
                     WHERE this4.title STARTS WITH $param1
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this) } AS this4
+                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2

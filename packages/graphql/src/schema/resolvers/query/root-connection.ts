@@ -66,6 +66,7 @@ export function rootConnectionResolver({
             context: context as Neo4jGraphQLTranslationContext,
             node,
             isRootConnectionField: true,
+            entityAdapter: concreteEntityAdapter,
         });
 
         const executeResult = await execute({

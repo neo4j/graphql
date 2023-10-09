@@ -20,6 +20,8 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { FulltextContext } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -30,9 +32,11 @@ import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-
 export function fulltextResolver({
     node,
     index,
+    entityAdapter,
 }: {
     node: Node;
     index: FulltextContext;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }): GraphQLFieldResolver<any, any, any> {
     return async function resolve(
         _root: any,
@@ -53,7 +57,7 @@ export function fulltextResolver({
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateRead(
-            { context: context as Neo4jGraphQLTranslationContext, node },
+            { context: context as Neo4jGraphQLTranslationContext, node, entityAdapter },
             node.singular
         );
         const executeResult = await execute({

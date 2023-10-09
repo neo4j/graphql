@@ -52,7 +52,7 @@ describe("makeAugmentedSchema", () => {
         `;
 
         const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-        const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, _experimental: false });
+        const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, experimental: false });
         const document = neoSchema.typeDefs;
         const queryObject = document.definitions.find(
             (x) => x.kind === Kind.OBJECT_TYPE_DEFINITION && x.name.value === "Query"
@@ -102,7 +102,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, _experimental: false });
+            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, experimental: false });
 
             const document = neoSchema.typeDefs;
 
@@ -133,7 +133,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
 
             const document = neoSchema.typeDefs;
@@ -166,7 +166,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
 
             const document = neoSchema.typeDefs;
@@ -202,7 +202,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
 
             const document = neoSchema.typeDefs;
@@ -242,7 +242,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
-                _experimental: false,
+                experimental: false,
             });
 
             const document = neoSchema.typeDefs;
@@ -276,7 +276,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, _experimental: false });
+            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, experimental: false });
 
             const document = neoSchema.typeDefs;
 
@@ -296,7 +296,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            expect(() => makeAugmentedSchema({ document: typeDefs, schemaModel, _experimental: false })).not.toThrow(
+            expect(() => makeAugmentedSchema({ document: typeDefs, schemaModel, experimental: false })).not.toThrow(
                 'Error: Type with name "ActionMapping" does not exists'
             );
         });

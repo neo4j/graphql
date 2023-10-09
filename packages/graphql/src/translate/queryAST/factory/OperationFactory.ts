@@ -66,7 +66,7 @@ export class OperationsFactory {
     }
 
     public createReadOperation(
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): ReadOperation | CompositeReadOperation {

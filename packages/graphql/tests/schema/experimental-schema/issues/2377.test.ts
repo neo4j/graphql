@@ -141,6 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type Query {
+              resourceEntities: [ResourceEntity!]!
               resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!

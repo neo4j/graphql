@@ -84,17 +84,17 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
-                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this) } AS this3
+                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this3) } AS this3
                     RETURN this3 AS var4
                     UNION
                     WITH *
                     MATCH (this)-[this5:HAS_KEYWORD]->(this6:Hashtag)
-                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this) } AS this6
+                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this6) } AS this6
                     RETURN this6 AS var4
                     UNION
                     WITH *
                     MATCH (this)-[this7:HAS_KEYWORD]->(this8:Text)
-                    WITH this8 { __resolveType: \\"Text\\", __id: id(this) } AS this8
+                    WITH this8 { __resolveType: \\"Text\\", __id: id(this8) } AS this8
                     RETURN this8 AS var4
                 }
                 WITH var4
@@ -138,17 +138,17 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
-                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this) } AS this3
+                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this3) } AS this3
                     RETURN this3 AS var4
                     UNION
                     WITH *
                     MATCH (this)-[this5:HAS_KEYWORD]->(this6:Hashtag)
-                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this) } AS this6
+                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this6) } AS this6
                     RETURN this6 AS var4
                     UNION
                     WITH *
                     MATCH (this)-[this7:HAS_KEYWORD]->(this8:Text)
-                    WITH this8 { __resolveType: \\"Text\\", __id: id(this) } AS this8
+                    WITH this8 { __resolveType: \\"Text\\", __id: id(this8) } AS this8
                     RETURN this8 AS var4
                 }
                 WITH var4

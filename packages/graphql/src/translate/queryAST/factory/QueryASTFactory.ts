@@ -19,11 +19,13 @@
 
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import type { ReadOperation } from "../ast/operations/ReadOperation";
+import { ReadOperation } from "../ast/operations/ReadOperation";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 const TOP_LEVEL_NODE_NAME = "this";
 
@@ -38,18 +40,13 @@ export class QueryASTFactory {
 
     public createQueryAST(
         resolveTree: ResolveTree,
-        entity: ConcreteEntity,
+        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): QueryAST {
-        const entityAdapter = this.schemaModel.getConcreteEntityAdapter(entity.name);
-        if (!entityAdapter) throw new Error(`Entity ${entity.name} not found`);
-
-        const operation = this.operationsFactory.createReadOperation(
-            entityAdapter,
-            resolveTree,
-            context
-        ) as ReadOperation; // TOP level with interfaces is not yet supported
-        operation.nodeAlias = TOP_LEVEL_NODE_NAME;
+        const operation = this.operationsFactory.createReadOperation(entityAdapter, resolveTree, context);
+        if (operation instanceof ReadOperation) {
+            operation.nodeAlias = TOP_LEVEL_NODE_NAME;
+        }
         return new QueryAST(operation);
     }
 }
