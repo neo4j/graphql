@@ -40,12 +40,6 @@ describe("unions", () => {
         MovieType = new UniqueType("Movie");
     });
 
-    // afterEach(async () => {
-    //     const session = driver.session();
-    //     await session.run(`MATCH (n) DETACH DELETE n;`);
-    //     await session.close();
-    // });
-
     afterAll(async () => {
         await driver.close();
     });

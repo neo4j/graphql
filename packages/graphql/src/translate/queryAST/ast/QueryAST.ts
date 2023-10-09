@@ -23,7 +23,7 @@ import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import { Operation } from "./operations/operations";
+import type { Operation } from "./operations/operations";
 
 export class QueryAST {
     private operation: Operation;

@@ -19,7 +19,7 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
@@ -107,10 +107,6 @@ describe("Interfaces tests", () => {
         });
         schema = await neoGraphql.getSchema();
     });
-
-    // afterEach(async () => {
-    //     await driver.executeQuery(`MATCH (n) DETACH DELETE n;`);
-    // });
 
     afterAll(async () => {
         await driver.close();
