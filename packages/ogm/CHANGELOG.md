@@ -1,5 +1,27 @@
 # @neo4j/graphql-ogm
 
+## 4.3.1
+
+### Patch Changes
+
+-   Updated dependencies [[`97f38c337`](https://github.com/neo4j/graphql/commit/97f38c337a71fe48dec281ddc0e30cd8183eead2)]:
+    -   @neo4j/graphql@4.3.1
+
+## 4.3.0
+
+### Minor Changes
+
+-   [#4036](https://github.com/neo4j/graphql/pull/4036) [`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Schema generation logic improved
+
+    -   allow operations on Interface relationships to Interfaces
+    -   add descriptions to generated graphql types
+    -   improve schema generation logic
+
+### Patch Changes
+
+-   Updated dependencies [[`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9)]:
+    -   @neo4j/graphql@4.3.0
+
 ## 4.2.0
 
 ### Patch Changes

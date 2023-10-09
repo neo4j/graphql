@@ -25,11 +25,14 @@ import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
+import { delay } from "../../../src/utils/utils";
 import { UniqueType } from "../../utils/graphql-types";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
-describe("Default single instance Subscription", () => {
+describe("Single instance Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
+    let engine: Neo4jGraphQLSubscriptionsDefaultEngine;
 
     const typeMovie = new UniqueType("Movie");
 
@@ -49,6 +52,7 @@ describe("Default single instance Subscription", () => {
     let wsClient2: WebSocketTestClient;
 
     beforeAll(async () => {
+        engine = new Neo4jGraphQLSubscriptionsDefaultEngine();
         const typeDefs = `
          type ${typeMovie} {
              title: String
@@ -62,11 +66,17 @@ describe("Default single instance Subscription", () => {
             typeDefs,
             driver,
             features: {
-                subscriptions: true,
+                subscriptions: engine,
             },
         });
 
-        server = new ApolloTestServer(neoSchema);
+        // eslint-disable-next-line @typescript-eslint/require-await
+        server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+            sessionConfig: {
+                database: neo4j.getIntegrationDatabaseName(),
+            },
+            token: req.headers.authorization,
+        }));
         await server.start();
     });
 
@@ -85,7 +95,23 @@ describe("Default single instance Subscription", () => {
         await driver.close();
     });
 
-    test("multiple listeners attached to default plugin", async () => {
+    // NOTE: This test **may** be flaky, if so, feel free to remove it
+    test("listeners are properly triggered and cleaned up", async () => {
+        expect(engine.events.getMaxListeners()).toBe(0);
+        expect(engine.events.listenerCount("create")).toBe(0);
+
+        await wsClient.subscribe(subscriptionQuery);
+        await wsClient2.subscribe(subscriptionQuery);
+
+        await delay(50); // Sorry listener count takes a bit to update
+        expect(engine.events.listenerCount("create")).toBe(2);
+
+        await wsClient2.close();
+        await delay(50); // Sorry listener count takes a bit to update
+        expect(engine.events.listenerCount("create")).toBe(1);
+    });
+
+    test("multiple listeners attached to local event engine", async () => {
         await wsClient.subscribe(subscriptionQuery);
         await wsClient2.subscribe(subscriptionQuery);
 

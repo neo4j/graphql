@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import { filterTruthy } from "../../../../utils/utils";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
-import type { Field } from "../fields/Field";
-import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
-import { Operation } from "./operations";
-import type { Pagination } from "../pagination/Pagination";
-import type { QueryASTContext } from "../QueryASTContext";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import { filterTruthy } from "../../../../utils/utils";
+import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { Sort } from "../sort/Sort";
+import type { Field } from "../fields/Field";
 import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
+import type { Filter } from "../filters/Filter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { Pagination } from "../pagination/Pagination";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
+import type { Sort } from "../sort/Sort";
+import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
+import { Operation } from "./operations";
 import { hasTarget } from "../../utils/context-has-target";
 
 export class ReadOperation extends Operation {
@@ -112,7 +112,9 @@ export class ReadOperation extends Operation {
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const filterPredicates = this.getPredicates(nestedContext);
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
+            new Cypher.Call(sq).innerWith(targetNode)
+        );
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
@@ -133,8 +135,8 @@ export class ReadOperation extends Operation {
 
         const clause = Cypher.concat(
             ...preSelection,
-            matchClause,
             ...authFilterSubqueries,
+            matchClause,
             withWhere,
             subqueries,
             ...sortSubqueries,
@@ -210,8 +212,9 @@ export class ReadOperation extends Operation {
             .map((sq) => new Cypher.Call(sq).innerWith(node));
         const filterPredicates = this.getPredicates(context);
 
-        // THis may no longer be relevant?
-        const authFilterSubqueries = this.getAuthFilterSubqueries(context);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
+            new Cypher.Call(sq).innerWith(node)
+        );
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
         const sortSubqueries = this.sortFields
