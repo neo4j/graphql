@@ -122,9 +122,11 @@ export default async function translateCreate({
         context
     );
     const queryASTEnv = new QueryASTEnv();
-    queryASTEnv.topLevelOperationName = "CREATE";
     const projectedVariables: Cypher.Node[] = [];
-
+    /**
+     * Currently, the create projections are resolved separately for each input,
+     * the following block reuses the same ReadOperation for each of the variable names generated during the create operations.
+     **/
     const projectionClause = Cypher.concat(
         ...filterTruthy(
             varNameVariables.map((varName): Cypher.Clause | undefined => {

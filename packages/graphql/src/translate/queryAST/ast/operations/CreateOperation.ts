@@ -50,6 +50,7 @@ export class CreateOperation extends Operation {
 
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
+        context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create
         const clauses = this.getProjectionClause({ context });
         return { projectionExpr: context.returnVariable, clauses };

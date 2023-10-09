@@ -35,27 +35,30 @@ export class QueryAST {
 
     public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
         const queryASTEnv = new QueryASTEnv();
+        const returnVariable = new Cypher.NamedVariable("this");
+        let context: QueryASTContext;
         if (this.operation instanceof ReadOperation) {
-            // TODO add composite Read
             const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
-            const context = new QueryASTContext({
+            context = new QueryASTContext({
                 target: node,
                 env: queryASTEnv,
                 neo4jGraphQLContext,
-                returnVariable: new Cypher.NamedVariable("this"),
+                returnVariable,
             });
-            return Cypher.concat(...this.transpile(context).clauses);
         } else if (this.operation instanceof CompositeReadOperation) {
-            const context = new QueryASTContext({
+            context = new QueryASTContext({
                 env: queryASTEnv,
                 neo4jGraphQLContext,
-                returnVariable: new Cypher.NamedVariable("this"),
+                returnVariable,
             });
-            return Cypher.concat(...this.transpile(context).clauses);
+        } else {
+            throw new Error("Operation not supported yet");
         }
-        throw new Error("Operation not supported yet");
+        return Cypher.concat(...this.transpile(context).clauses);
     }
-
+    /**
+     * Transpile the QueryAST to a Cypher builder tree, this is used temporary to transpile incomplete trees, helpful to migrate the legacy code
+     **/
     public transpile(context: QueryASTContext): OperationTranspileResult {
         return this.operation.transpile({
             context,

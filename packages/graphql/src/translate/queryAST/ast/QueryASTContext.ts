@@ -24,7 +24,7 @@ type Scope = Map<string, Cypher.Variable>;
 
 export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
-    public topLevelOperationName: "READ" | "CREATE" | "UNWIND" = "READ";
+    public topLevelOperationName: "READ" | "CREATE" = "READ";
     public getScope(element: Cypher.Node | Cypher.Relationship): Scope {
         const scope = this.scopes.get(element);
         if (scope) {
@@ -42,6 +42,7 @@ export class QueryASTContext {
     public readonly relationship?: Cypher.Relationship;
     public readonly source?: Cypher.Node;
     public readonly returnVariable: Cypher.Variable;
+    public readonly shouldCollect: boolean; // temporary hack to describe if we should collect the return variable (used for unwind create)
 
     public env: QueryASTEnv;
     public neo4jGraphQLContext: Neo4jGraphQLContext;
@@ -53,6 +54,7 @@ export class QueryASTContext {
         env,
         neo4jGraphQLContext,
         returnVariable,
+        shouldCollect,
     }: {
         target?: Cypher.Node;
         relationship?: Cypher.Relationship;
@@ -60,6 +62,7 @@ export class QueryASTContext {
         env?: QueryASTEnv;
         neo4jGraphQLContext: Neo4jGraphQLContext;
         returnVariable?: Cypher.Variable;
+        shouldCollect?: boolean;
     }) {
         this.target = target;
         this.relationship = relationship;
@@ -67,6 +70,7 @@ export class QueryASTContext {
         this.env = env ?? new QueryASTEnv();
         this.neo4jGraphQLContext = neo4jGraphQLContext;
         this.returnVariable = returnVariable ?? new Cypher.Variable();
+        this.shouldCollect = shouldCollect ?? false;
     }
 
     public getRelationshipScope(): Scope {

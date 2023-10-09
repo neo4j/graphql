@@ -204,8 +204,7 @@ export class ReadOperation extends Operation {
                 context,
             });
         }
-        const isCreateSelection =
-            context.env.topLevelOperationName === "UNWIND" || context.env.topLevelOperationName === "CREATE";
+        const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
 
         const filterSubqueries = this.filters
@@ -288,7 +287,7 @@ export class ReadOperation extends Operation {
 
     private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
         const projection = this.getProjectionMap(context);
-        if (context.env.topLevelOperationName === "UNWIND") {
+        if (context.shouldCollect) {
             return new Cypher.Return([Cypher.collect(projection), returnVariable]);
         }
         return new Cypher.Return([projection, returnVariable]);

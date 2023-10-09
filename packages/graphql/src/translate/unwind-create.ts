@@ -62,12 +62,12 @@ export default async function unwindCreate({
         context
     );
     const queryASTEnv = new QueryASTEnv();
-    queryASTEnv.topLevelOperationName = "UNWIND";
     const queryASTContext = new QueryASTContext({
         target: rootNodeVariable,
         env: queryASTEnv,
         neo4jGraphQLContext: context,
         returnVariable: new Cypher.NamedVariable("data"),
+        shouldCollect: true,
     });
     const clauses = queryAST.transpile(queryASTContext).clauses;
 
