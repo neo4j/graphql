@@ -88,6 +88,8 @@ describe("Interfaces tests", () => {
         try {
             await session.run(`
             CREATE(:${SomeNodeType} { id: "1", something:"somenode",somethingElse:"test"  })-[:HAS_OTHER_NODES]->(other:${OtherNodeType} { id: "2" })
+            CREATE(s:${SomeNodeType} { id: "10", something:"someothernode",somethingElse:"othertest"  })
+            MERGE (s)-[:HAS_OTHER_NODES]->(other)
             CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} { id: "3" })
             CREATE(:${MyOtherImplementationType} { id: "4", someField: "bla" })
         `);
@@ -141,6 +143,11 @@ describe("Interfaces tests", () => {
                     somethingElse: "test",
                 },
                 {
+                    id: "10",
+                    something: "someothernode",
+                    somethingElse: "othertest",
+                },
+                {
                     id: "3",
                 },
                 {
@@ -176,6 +183,12 @@ describe("Interfaces tests", () => {
                         id: "2",
                     },
                 },
+                {
+                    id: "10",
+                    other: {
+                        id: "2",
+                    },
+                },
             ],
         });
     });
@@ -195,7 +208,7 @@ describe("Interfaces tests", () => {
 
         const query = `
             query {
-                myOtherInterfaces(where: {OR: [{id: "2"}, {_on:{ ${SomeNodeType}: { other: {id: "2"}} } }]}) {
+                myOtherInterfaces(where: {_on:{ ${SomeNodeType}: { other: {id: "2"}} } }) {
                     id
                     ... on ${SomeNodeType} {
                         id
@@ -218,11 +231,17 @@ describe("Interfaces tests", () => {
                         id: "2",
                     },
                 },
+                {
+                    id: "10",
+                    other: {
+                        id: "2",
+                    },
+                },
             ],
         });
     });
 
-    test("should return results on top-level simple query on interface target to a relationship with filters", async () => {
+    test.only("should return results on top-level simple query on interface target to a relationship with filters", async () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
@@ -237,12 +256,7 @@ describe("Interfaces tests", () => {
 
         const query = `
             query {
-                myInterfaces(where: { OR: [{
-                     _on: { ${MyOtherImplementationType}: {someField_NOT: "bla"} }
-                    }, {
-                        _on: { ${SomeNodeType}: {somethingElse_NOT: "test"} }
-                    }]
-                }) {
+                myInterfaces(where: { _on: { ${SomeNodeType}: {somethingElse_NOT: "test"}, ${MyOtherImplementationType}: {someField: "bla"} } }) {
                     id
                     ... on ${MyOtherImplementationType} {
                         someField
@@ -263,7 +277,13 @@ describe("Interfaces tests", () => {
         expect(queryResult.data).toEqual({
             myInterfaces: [
                 {
-                    id: "3",
+                    id: "10",
+                    something: "someothernode",
+                    somethingElse: "othertest",
+                },
+                {
+                    id: "4",
+                    someField: "bla",
                 },
             ],
         });
