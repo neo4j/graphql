@@ -22,6 +22,7 @@ import { DEPRECATED } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
@@ -30,7 +31,7 @@ export function withOptionsInputType({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -112,7 +113,7 @@ function makeSortInput({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -133,7 +134,7 @@ function makeOptionsInput({
     entityAdapter,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
     const optionsInput = composer.createInputTC({

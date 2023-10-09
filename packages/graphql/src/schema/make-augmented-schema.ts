@@ -405,6 +405,11 @@ function makeAugmentedSchema({
                 composer,
             });
             if (experimental) {
+                withOptionsInputType({
+                    entityAdapter: unionEntityAdapter,
+                    userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
+                    composer,
+                });
                 if (unionEntityAdapter.isReadable) {
                     composer.Query.addFields({
                         [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -441,6 +446,7 @@ function makeAugmentedSchema({
                     features,
                     composer,
                 });
+                withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
                 if (interfaceEntityAdapter.isReadable) {
                     composer.Query.addFields({
                         [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
