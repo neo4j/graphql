@@ -164,6 +164,10 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            input MovieNodeImplementationsWhere {
+              Movie: MovieWhere
+            }
+
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -226,6 +230,20 @@ describe("Interfaces", () => {
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieNodeMoviesUpdateConnectionInput
               where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeWhere {
+              _on: MovieNodeImplementationsWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
             }
 
             input MovieOptions {
@@ -319,7 +337,7 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes: [MovieNode!]!
+              movieNodes(where: MovieNodeWhere): [MovieNode!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -495,6 +513,10 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            input MovieNodeImplementationsWhere {
+              Movie: MovieWhere
+            }
+
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -557,6 +579,20 @@ describe("Interfaces", () => {
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieNodeMoviesUpdateConnectionInput
               where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeWhere {
+              _on: MovieNodeImplementationsWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
             }
 
             input MovieOptions {
@@ -650,7 +686,7 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes: [MovieNode!]!
+              movieNodes(where: MovieNodeWhere): [MovieNode!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
