@@ -228,7 +228,7 @@ export class ConnectionReadOperation extends Operation {
                 edges: edgesVar,
                 totalCount: totalCount,
             }),
-            nestedContext.returnVariable,
+            context.returnVariable,
         ]);
         const subClause = Cypher.concat(
             ...preSelection,
@@ -244,7 +244,7 @@ export class ConnectionReadOperation extends Operation {
 
         return {
             clauses: [subClause],
-            projectionExpr: nestedContext.returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

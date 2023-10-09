@@ -111,7 +111,6 @@ export default async function translateCreate({
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
-    // TODO refactor this with proper variable names and errors;
     const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
     if (!concreteEntityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);

@@ -51,8 +51,6 @@ export default async function unwindCreate({
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
-
-    // TODO refactor this with proper variable names and errors;
     const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
     if (!concreteEntityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);

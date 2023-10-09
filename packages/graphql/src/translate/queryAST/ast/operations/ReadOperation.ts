@@ -128,7 +128,7 @@ export class ReadOperation extends Operation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, nestedContext.returnVariable, entity.isList);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
 
         const clause = Cypher.concat(
             ...preSelection,
@@ -142,7 +142,7 @@ export class ReadOperation extends Operation {
 
         return {
             clauses: [clause],
-            projectionExpr: nestedContext.returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 
