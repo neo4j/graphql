@@ -350,7 +350,7 @@ describe("Cypher Union", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CREATE (this0_search_Genre0_node:Genre)
             SET this0_search_Genre0_node.name = $this0_search_Genre0_node_name
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
