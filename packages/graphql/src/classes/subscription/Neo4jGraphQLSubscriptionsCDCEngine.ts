@@ -67,7 +67,7 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     }
 
     /** Stops CDC polling */
-    close(): void {
+    public close(): void {
         this.closed = true;
         if (this.timer) {
             clearTimeout(this.timer);
@@ -81,11 +81,11 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
                 return;
             }
             this.pollEvents()
-                .then(() => {
-                    this.triggerPoll();
-                })
                 .catch((err) => {
                     console.error(err);
+                })
+                .finally(() => {
+                    this.triggerPoll();
                 });
         }, this.pollTime);
     }
@@ -98,21 +98,5 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
                 this.events.emit(parsedEvent.event, parsedEvent);
             }
         }
-        // return cdcEvents.map((query) => {
-        //     query.metadata.txStartTime.toStandardDate().getTime();
-        //     return query.event;
-        // });
-        // const subscriptionEvents = this.parseEvents(cdcEvents);
-        // this.publishSubscriptionEvents(subscriptionEvents);
     }
-
-    // private parseEvents(cdcEvents: CDCEvent[]): SubscriptionsEvent[] {
-    //     return filterTruthy(cdcEvents.map((e) => this.parser.parseCDCEvent(e)));
-    // }
-
-    // private publishSubscriptionEvents(events: SubscriptionsEvent[]): void {
-    //     for (const event of events) {
-    //         this.events.emit(event.event, event);
-    //     }
-    // }
 }

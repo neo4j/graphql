@@ -18,13 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Driver, QueryConfig, Session } from "neo4j-driver";
-import type { CDCQueryResponse } from "./cdc-types";
+import type { Driver, QueryConfig } from "neo4j-driver";
 import { filterTruthy } from "../../../utils/utils";
+import type { CDCQueryResponse } from "./cdc-types";
 
 export class CDCApi {
     private driver: Driver;
-    private lastChangeId: string = ""; // TODO: rename to cursor
+    private cursor: string = "";
     private queryConfig: QueryConfig | undefined;
 
     constructor(driver: Driver, queryConfig?: QueryConfig) {
@@ -34,12 +34,12 @@ export class CDCApi {
 
     /** Queries events since last call to queryEvents */
     public async queryEvents(): Promise<CDCQueryResponse[]> {
-        if (!this.lastChangeId) {
-            this.lastChangeId = await this.fetchCurrentChangeId();
+        if (!this.cursor) {
+            this.cursor = await this.fetchCurrentChangeId();
         }
 
-        const lastChangeIdLiteral = new Cypher.Literal(this.lastChangeId);
-        const queryProcedure = CDCProcedures.query(lastChangeIdLiteral);
+        const cursorLiteral = new Cypher.Literal(this.cursor);
+        const queryProcedure = CDCProcedures.query(cursorLiteral);
 
         const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
         this.updateChangeIdWithLastEvent(events);
@@ -47,7 +47,7 @@ export class CDCApi {
     }
 
     public async updateCursor(): Promise<void> {
-        this.lastChangeId = await this.fetchCurrentChangeId();
+        this.cursor = await this.fetchCurrentChangeId();
     }
 
     private async fetchCurrentChangeId(): Promise<string> {
@@ -65,7 +65,7 @@ export class CDCApi {
     private updateChangeIdWithLastEvent(events: CDCQueryResponse[]): void {
         const lastEvent = events[events.length - 1];
         if (lastEvent) {
-            this.lastChangeId = lastEvent.id;
+            this.cursor = lastEvent.id;
         }
     }
 
