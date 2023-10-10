@@ -180,7 +180,6 @@ export class AggregationOperation extends Operation {
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, {
             context,
-            returnVariable: new Cypher.Variable(),
         });
         return {
             clauses,

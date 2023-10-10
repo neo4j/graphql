@@ -26,17 +26,17 @@ import type { RelationshipAdapter } from "../../../../../schema-model/relationsh
 import { hasTarget } from "../../../utils/context-has-target";
 
 export class CompositeReadPartial extends ReadOperation {
-    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
-            return this.transpileNestedCompositeRelationship(this.relationship, { returnVariable, context });
+            return this.transpileNestedCompositeRelationship(this.relationship, { context });
         } else {
-            return this.transpileTopLevelCompositeEntity({ returnVariable, context });
+            return this.transpileTopLevelCompositeEntity({ context });
         }
     }
 
     private transpileNestedCompositeRelationship(
         entity: RelationshipAdapter,
-        { returnVariable, context }: OperationTranspileOptions
+        { context }: OperationTranspileOptions
     ): OperationTranspileResult {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
@@ -66,7 +66,7 @@ export class CompositeReadPartial extends ReadOperation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(
             ...preSelection,
@@ -79,13 +79,12 @@ export class CompositeReadPartial extends ReadOperation {
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: nestedContext.returnVariable,
         };
     }
 
     // dupe from transpileNestedCompositeRelationship
     private transpileTopLevelCompositeEntity({
-        returnVariable,
         context,
     }: OperationTranspileOptions): OperationTranspileResult {
         const targetNode = createNodeFromEntity(this.target);
@@ -96,13 +95,13 @@ export class CompositeReadPartial extends ReadOperation {
         });
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
-        const ret = this.getProjectionClause(nestedContext, returnVariable);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(...preSelection, matchClause, subqueries, ret);
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

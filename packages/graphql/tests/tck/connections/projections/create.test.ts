@@ -70,23 +70,23 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var4
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var4
-                CREATE (create_this0:Movie)
+                WITH create_var0
+                CREATE (create_this1:Movie)
                 SET
-                    create_this0.title = create_var4.title
-                RETURN create_this0
+                    create_this1.title = create_var0.title
+                RETURN create_this1
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0:Movie)<-[create_this1:ACTED_IN]-(create_this2:Actor)
-                WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
+                WITH create_this1
+                MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
+                WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                RETURN { edges: edges, totalCount: totalCount } AS create_var4
             }
-            RETURN collect(create_this0 { .title, actorsConnection: create_var3 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var4 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -123,23 +123,23 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var4
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var4
-                CREATE (create_this0:Movie)
+                WITH create_var0
+                CREATE (create_this1:Movie)
                 SET
-                    create_this0.title = create_var4.title
-                RETURN create_this0
+                    create_this1.title = create_var0.title
+                RETURN create_this1
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0:Movie)<-[create_this1:ACTED_IN]-(create_this2:Actor)
-                WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
+                WITH create_this1
+                MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
+                WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                RETURN { edges: edges, totalCount: totalCount } AS create_var4
             }
-            RETURN collect(create_this0 { .title, actorsConnection: create_var3 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var4 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -179,30 +179,29 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param1 AS create_var4
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var4
-                CREATE (create_this0:Movie)
+                WITH create_var0
+                CREATE (create_this1:Movie)
                 SET
-                    create_this0.title = create_var4.title
-                RETURN create_this0
+                    create_this1.title = create_var0.title
+                RETURN create_this1
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0:Movie)<-[create_this1:ACTED_IN]-(create_this2:Actor)
-                WHERE create_this2.name = $create_param0
-                WITH { screenTime: create_this1.screenTime, node: { name: create_this2.name } } AS edge
+                WITH create_this1
+                MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
+                WHERE create_this3.name = $create_param1
+                WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                RETURN { edges: edges, totalCount: totalCount } AS create_var4
             }
-            RETURN collect(create_this0 { .title, actorsConnection: create_var3 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var4 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"Tom Hanks\\",
-                \\"create_param1\\": [
+                \\"create_param0\\": [
                     {
                         \\"title\\": \\"Forrest Gump\\"
                     },
@@ -210,6 +209,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                         \\"title\\": \\"Toy Story\\"
                     }
                 ],
+                \\"create_param1\\": \\"Tom Hanks\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

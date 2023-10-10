@@ -49,7 +49,9 @@ import { FilterFactory } from "./FilterFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { CreateOperation } from "../ast/operations/CreateOperation";
 
+const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
@@ -63,6 +65,40 @@ export class OperationsFactory {
 
         const authFilterFactory = new AuthFilterFactory(queryASTFactory);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
+    }
+
+    public createTopLevelOperation(
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): ReadOperation | CreateOperation {
+        if (isConcreteEntity(entity) && resolveTree.name === entity.operations.rootTypeFieldNames.create) {
+            return this.createUnwindCreateOperation(entity, resolveTree, context);
+        }
+
+        const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+        op.nodeAlias = TOP_LEVEL_NODE_NAME;
+        return op;
+    }
+
+    private createUnwindCreateOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): CreateOperation {
+        const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
+        );
+        const createOP = new CreateOperation({ target: entity });
+        const projectionFields = responseFields
+            .filter((f) => f.name === entity.plural)
+            .map((field) => {
+                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                return readOP;
+            });
+
+        createOP.addProjectionOperations(projectionFields);
+        return createOP;
     }
 
     public createReadOperation(
@@ -80,7 +116,6 @@ export class OperationsFactory {
                 targetOperations: ["READ"],
                 context,
             });
-
             const operation = new ReadOperation({
                 target: entity,
                 relationship,

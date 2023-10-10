@@ -136,4 +136,5 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             },
         });
     });
+
 });

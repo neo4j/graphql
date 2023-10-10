@@ -22,12 +22,9 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { ReadOperation } from "../ast/operations/ReadOperation";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-
-const TOP_LEVEL_NODE_NAME = "this";
 
 export class QueryASTFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -43,10 +40,8 @@ export class QueryASTFactory {
         entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): QueryAST {
-        const operation = this.operationsFactory.createReadOperation(entityAdapter, resolveTree, context);
-        if (operation instanceof ReadOperation) {
-            operation.nodeAlias = TOP_LEVEL_NODE_NAME;
-        }
+        const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context);
+
         return new QueryAST(operation);
     }
 }

@@ -100,11 +100,15 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:HAS_GENRE]->(create_this1:Genre)
-                WITH create_this1 { .id, .value } AS create_this1
-                RETURN collect(create_this1) AS create_var2
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[create_this0:HAS_GENRE]->(create_this1:Genre)
+                    WITH create_this1 { .id, .value } AS create_this1
+                    RETURN collect(create_this1) AS create_var2
+                }
+                RETURN this0 { .id, .name, genre: create_var2 } AS create_var3
             }
-            RETURN [this0 { .id, .name, genre: create_var2 }] AS data"
+            RETURN [create_var3] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
