@@ -3558,7 +3558,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 13.0.2
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.12
+    "@types/react-dom": 18.2.13
     "@types/webpack": 5.28.3
     autoprefixer: 10.4.16
     classnames: 2.3.2
@@ -7617,12 +7617,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.12":
-  version: 18.2.12
-  resolution: "@types/react-dom@npm:18.2.12"
+"@types/react-dom@npm:18.2.13":
+  version: 18.2.13
+  resolution: "@types/react-dom@npm:18.2.13"
   dependencies:
     "@types/react": "*"
-  checksum: 64eaf808e91c1d58270ea92dda0e0cbb671f7289be4a5a4e0ccbd85857dd69394970eaa403d958dfbca739735c0af9cde4cf8fe135ff34434838360beae8d306
+  checksum: 22ba066b141dca5a5a9227fae0afc7c94b470fff8e8a38ade72649da57a8ea04d0cb2ba3e22005e7d8e772d49bddd28855b1dd98e6defd033bba6afb6edff883
   languageName: node
   linkType: hard
 
