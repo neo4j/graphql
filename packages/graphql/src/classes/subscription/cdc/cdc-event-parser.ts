@@ -35,7 +35,9 @@ export class CDCEventParser {
         if (cdcEvent.eventType === "n") {
             return this.parseNodeEvent(cdcEvent, timestamp);
         } else {
-            return this.parseRelationshipEvent(cdcEvent, timestamp);
+            // Relationship not supported
+            return undefined;
+            // return this.parseRelationshipEvent(cdcEvent, timestamp);
         }
     }
 
