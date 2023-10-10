@@ -2215,17 +2215,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react@npm:^0.24.2":
-  version: 0.24.8
-  resolution: "@floating-ui/react@npm:0.24.8"
+"@floating-ui/react@npm:0.25.1":
+  version: 0.25.1
+  resolution: "@floating-ui/react@npm:0.25.1"
   dependencies:
     "@floating-ui/react-dom": ^2.0.1
-    aria-hidden: ^1.2.3
+    "@floating-ui/utils": ^0.1.1
     tabbable: ^6.0.1
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: b345d3bbb7b1eb4a8d09bb5cb0c46713b0b051578a1bb15fb49708b27009dcb992cdd55ffc79ae56d7e4494ce122f6e971e7d2737c9a2bffd88cb2408230f9af
+  checksum: 3b63c3472f742c6d94ff7fee56bb36f768e216e4d8483e71b189e5c6bf3a5c1bb5b273add022becb1d979ffba4c638dc104eb91d1cc8fb5ff7c9b8ed07f2769d
+  languageName: node
+  linkType: hard
+
+"@floating-ui/utils@npm:^0.1.1":
+  version: 0.1.6
+  resolution: "@floating-ui/utils@npm:0.1.6"
+  checksum: b34d4b5470869727f52e312e08272edef985ba5a450a76de0917ba0a9c6f5df2bdbeb99448e2c60f39b177fb8981c772ff1831424e75123471a27ebd5b52c1eb
   languageName: node
   linkType: hard
 
@@ -3434,21 +3441,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:1.10.3, @neo4j-ndl/base@npm:^1.10.3":
-  version: 1.10.3
-  resolution: "@neo4j-ndl/base@npm:1.10.3"
-  checksum: 2feeb345bc9ba187f77bd6d9763927a5173b6ee5aea7f28bc55f95da14c8e8fd59764dbc6348af982b7c0fabf8e1228377e4ca51056aa821453cfecf5689f170
+"@neo4j-ndl/base@npm:2.0.1, @neo4j-ndl/base@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@neo4j-ndl/base@npm:2.0.1"
+  checksum: fa04b90578eb1d7b38e9a3bb6f3957bde6640bfcd2175e3f42f02d3279c5a998426637463901b3c0db755fff5a9cfdff34ecac7fe33551c4f0f10386fd1ff60f
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:1.10.8":
-  version: 1.10.8
-  resolution: "@neo4j-ndl/react@npm:1.10.8"
+"@neo4j-ndl/react@npm:2.0.4":
+  version: 2.0.4
+  resolution: "@neo4j-ndl/react@npm:2.0.4"
   dependencies:
-    "@floating-ui/react": ^0.24.2
+    "@floating-ui/react": 0.25.1
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^1.10.3
+    "@neo4j-ndl/base": ^2.0.1
+    "@table-nav/core": 0.0.7
+    "@table-nav/react": 0.0.7
     "@tanstack/react-table": ^8.9.3
     classnames: ^2.3.1
     date-fns: ^2.30.0
@@ -3466,7 +3475,7 @@ __metadata:
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: 69941f61a0e89a628b698c3c7c5a2c2dabbdafba89aa67e89bee1db56ddbe65ec8d2deeeaa0b008475062f7a742760a0a63f1d7c2541ad7b0943a7b32e0202f1
+  checksum: 43fce5a66d41eabde527bc721a18d16f30aaa8933f0d9b26addb86dcedf90976e298f0aaf3ab002ad5ba47ad53a577e85e0b3cdbfb0ec7895faf5b08e9fdc460
   languageName: node
   linkType: hard
 
@@ -3548,8 +3557,8 @@ __metadata:
     "@dnd-kit/modifiers": 6.0.1
     "@dnd-kit/sortable": 7.0.2
     "@graphiql/react": 0.19.4
-    "@neo4j-ndl/base": 1.10.3
-    "@neo4j-ndl/react": 1.10.8
+    "@neo4j-ndl/base": 2.0.1
+    "@neo4j-ndl/react": 2.0.4
     "@neo4j/graphql": 4.3.1
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.38.1
@@ -6995,6 +7004,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@table-nav/core@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@table-nav/core@npm:0.0.7"
+  checksum: 8383c06225306da5c94c646b65809f4e1aa5e2e9462c6ecdd95aae1d4d6b62cb5ea41b4b76e7afee2a7bf1160386835879705b41c22440ca9b84fa28da4c3295
+  languageName: node
+  linkType: hard
+
+"@table-nav/react@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@table-nav/react@npm:0.0.7"
+  peerDependencies:
+    "@table-nav/core": ^0.0.7
+  checksum: 98eee0ceffd162be9616863d9b63f0d93c5baaf83c2b3f8dc38fa9939eaeb86a78a8dc3586c9e0f546c0dcbf20c1923c49f2ea8c9de49c3562f3e3e4db42cdf9
+  languageName: node
+  linkType: hard
+
 "@tanstack/react-table@npm:^8.9.3":
   version: 8.10.3
   resolution: "@tanstack/react-table@npm:8.10.3"
@@ -8802,7 +8827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aria-hidden@npm:^1.1.1, aria-hidden@npm:^1.2.3":
+"aria-hidden@npm:^1.1.1":
   version: 1.2.3
   resolution: "aria-hidden@npm:1.2.3"
   dependencies:
