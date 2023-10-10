@@ -68,7 +68,7 @@
         "graphql-ws": "5.14.1",
         "is-uuid": "1.0.2",
         "jest": "29.7.0",
-        "jest-extended": "4.0.1",
+        "jest-extended": "4.0.2",
         "jwks-rsa": "3.1.0",
         "koa": "2.14.2",
         "koa-jwt": "4.0.4",
