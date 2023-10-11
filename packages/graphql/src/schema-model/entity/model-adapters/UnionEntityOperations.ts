@@ -50,10 +50,6 @@ export class UnionEntityOperations {
         return `${this.unionEntityAdapter.name}Where`;
     }
 
-    public get optionsInputTypeName(): string {
-        return `${this.unionEntityAdapter.name}Options`;
-    }
-
     public get subscriptionEventPayloadTypeName(): string {
         return `${this.unionEntityAdapter.name}EventPayload`;
     }
