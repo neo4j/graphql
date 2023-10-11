@@ -52,6 +52,7 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 // GraphQL type imports
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
@@ -71,6 +72,7 @@ import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
 import { deprecationMap } from "./deprecation-map";
+import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
 import { withInterfaceType } from "./generation/interface-type";
@@ -84,7 +86,6 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -421,11 +422,13 @@ function makeAugmentedSchema({
         return;
     });
 
-    if (Boolean(features?.subscriptions) && nodes.length) {
+    if (features?.subscriptions && nodes.length) {
+        const isCDCEngine = features.subscriptions instanceof Neo4jGraphQLSubscriptionsCDCEngine;
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,
             userDefinedFieldDirectivesForNode,
+            generateRelationshipTypes: !isCDCEngine,
         });
     }
 
