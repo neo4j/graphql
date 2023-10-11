@@ -40,7 +40,7 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     }: {
         driver: Driver;
         pollTime?: number;
-        queryConfig: QueryConfig;
+        queryConfig?: QueryConfig;
     }) {
         this.cdcApi = new CDCApi(driver, queryConfig);
         this.pollTime = pollTime;
