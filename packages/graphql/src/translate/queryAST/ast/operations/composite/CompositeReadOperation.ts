@@ -64,6 +64,20 @@ export class CompositeReadOperation extends Operation {
             return result.clauses;
         });
         const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(options.returnVariable);
+        if (this.sortFields.length > 0) {
+            nestedSubquery.orderBy(...this.getSortFields(options.context, options.returnVariable));
+        }
+        if (this.pagination) {
+            const paginationField = this.pagination.getPagination();
+            if (paginationField) {
+                if (paginationField.skip) {
+                    nestedSubquery.skip(paginationField.skip);
+                }
+                if (paginationField.limit) {
+                    nestedSubquery.limit(paginationField.limit);
+                }
+            }
+        }
         return {
             clauses: [nestedSubquery],
             projectionExpr: options.returnVariable,
