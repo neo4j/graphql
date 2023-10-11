@@ -97,7 +97,7 @@ export const SchemaSettings = () => {
                             More information:{" "}
                             <a
                                 className="underline"
-                                href="https://neo4j.com/docs/graphql-manual/current/filtering/#filtering-regex"
+                                href="https://neo4j.com/docs/graphql/current/queries-aggregations/filtering/#_regex_matching"
                                 target="_blank"
                                 rel="noreferrer"
                             >
