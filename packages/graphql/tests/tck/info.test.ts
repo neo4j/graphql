@@ -19,27 +19,23 @@
 
 import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
-import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../src";
+import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 
-describe("Relationship Properties Create Cypher", () => {
+describe("info", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-            }
-
             type Actor {
                 name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
-                screenTime: Int!
+            type Movie {
+                id: ID
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -48,27 +44,14 @@ describe("Relationship Properties Create Cypher", () => {
         });
     });
 
-    test("Create movie with a relationship that has properties", async () => {
+    test("should return info from a create mutation", async () => {
         const query = gql`
             mutation {
-                createMovies(
-                    input: [
-                        {
-                            title: "Forrest Gump"
-                            actors: { create: [{ node: { name: "Tom Hanks" }, edge: { screenTime: 60 } }] }
-                        }
-                    ]
-                ) {
-                    movies {
-                        title
-                        actorsConnection {
-                            edges {
-                                screenTime
-                                node {
-                                    name
-                                }
-                            }
-                        }
+                createMovies(input: [{ title: "title", actors: { create: [{ node: { name: "Keanu" } }] } }]) {
+                    info {
+                        bookmark
+                        nodesCreated
+                        relationshipsCreated
                     }
                 }
             }
@@ -92,45 +75,80 @@ describe("Relationship Properties Create Cypher", () => {
                     SET
                         create_this5.name = create_var3.name
                     MERGE (create_this1)<-[create_this6:ACTED_IN]-(create_this5)
-                    SET
-                        create_this6.screenTime = create_var4.screenTime
                     RETURN collect(NULL) AS create_var7
                 }
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
-                MATCH (create_this1)<-[create_this8:ACTED_IN]-(create_this9:Actor)
-                WITH { screenTime: create_this8.screenTime, node: { name: create_this9.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var10
-            }
-            RETURN collect(create_this1 { .title, actorsConnection: create_var10 }) AS data"
+            RETURN \\"Query cannot conclude with CALL\\""
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"create_param0\\": [
                     {
-                        \\"title\\": \\"Forrest Gump\\",
+                        \\"title\\": \\"title\\",
                         \\"actors\\": {
                             \\"create\\": [
                                 {
-                                    \\"edge\\": {
-                                        \\"screenTime\\": {
-                                            \\"low\\": 60,
-                                            \\"high\\": 0
-                                        }
-                                    },
                                     \\"node\\": {
-                                        \\"name\\": \\"Tom Hanks\\"
+                                        \\"name\\": \\"Keanu\\"
                                     }
                                 }
                             ]
                         }
                     }
                 ],
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("should return info from a delete mutation", async () => {
+        const query = gql`
+            mutation {
+                deleteMovies(where: { id: "123" }) {
+                    bookmark
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.id = $param0
+            DETACH DELETE this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"123\\"
+            }"
+        `);
+    });
+
+    test("should return info from an update mutation", async () => {
+        const query = gql`
+            mutation {
+                updateMovies(where: { id: "123" }) {
+                    info {
+                        bookmark
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.id = $param0
+            RETURN 'Query cannot conclude with CALL'"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"123\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

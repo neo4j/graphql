@@ -130,7 +130,7 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
-    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
@@ -228,7 +228,7 @@ export class ConnectionReadOperation extends Operation {
                 edges: edgesVar,
                 totalCount: totalCount,
             }),
-            returnVariable,
+            context.returnVariable,
         ]);
         const subClause = Cypher.concat(
             ...preSelection,
@@ -244,7 +244,7 @@ export class ConnectionReadOperation extends Operation {
 
         return {
             clauses: [subClause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

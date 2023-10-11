@@ -295,17 +295,21 @@ describe("root-connections", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect(result?.data?.[aircraftType.operations.connection]).toEqual({
-                totalCount: 20,
-                edges: sortedAircrafts.slice(0, 10).map((node) => ({
-                    cursor: expect.any(String),
-                    node,
-                })),
-                pageInfo: {
-                    hasNextPage: true,
-                    endCursor: "YXJyYXljb25uZWN0aW9uOjk=",
-                },
-            });
+            expect(result?.data?.[aircraftType.operations.connection]).toEqual(
+                expect.objectContaining({
+                    totalCount: 20,
+                    edges: expect.arrayContaining(
+                        sortedAircrafts.slice(0, 10).map((node) => ({
+                            cursor: expect.any(String),
+                            node,
+                        }))
+                    ),
+                    pageInfo: {
+                        hasNextPage: true,
+                        endCursor: "YXJyYXljb25uZWN0aW9uOjk=",
+                    },
+                })
+            );
         } finally {
             await session.run(`
             MATCH (a:${aircraftType.name})

@@ -23,7 +23,8 @@ import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import type { Operation } from "./operations/operations";
+import type { Operation, OperationTranspileResult } from "./operations/operations";
+import { CompositeReadOperation } from "./operations/composite/CompositeReadOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -32,27 +33,36 @@ export class QueryAST {
         this.operation = operation;
     }
 
-    public transpile(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
+    public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
         const queryASTEnv = new QueryASTEnv();
-        let context: QueryASTContext | undefined;
+        const returnVariable = new Cypher.NamedVariable("this");
+        let context: QueryASTContext;
         if (this.operation instanceof ReadOperation) {
             const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
             context = new QueryASTContext({
                 target: node,
                 env: queryASTEnv,
                 neo4jGraphQLContext,
+                returnVariable,
             });
-        } else {
+        } else if (this.operation instanceof CompositeReadOperation) {
             context = new QueryASTContext({
                 env: queryASTEnv,
                 neo4jGraphQLContext,
+                returnVariable,
             });
+        } else {
+            throw new Error("Operation not supported yet");
         }
-        const result = this.operation.transpile({
+        return Cypher.concat(...this.transpile(context).clauses);
+    }
+    /**
+     * Transpile the QueryAST to a Cypher builder tree, this is used temporary to transpile incomplete trees, helpful to migrate the legacy code
+     **/
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        return this.operation.transpile({
             context,
-            returnVariable: new Cypher.NamedVariable("this"),
         });
-        return Cypher.concat(...result.clauses);
     }
 
     public print(): string {
