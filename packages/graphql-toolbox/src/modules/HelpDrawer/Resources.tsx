@@ -19,6 +19,7 @@
 
 import { useContext, useEffect } from "react";
 
+import { TextLink } from "@neo4j-ndl/react";
 import {
     AcademicCapIconOutline,
     ArrowSmallUpIconOutline,
@@ -140,28 +141,31 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                     return (
                         <li key={link.href} className="mt-6 cursor-pointer">
                             {link.options?.isCannyChangelog ? (
-                                <div
-                                    data-canny-changelog
-                                    className="flex justify-start items-center"
-                                    onClick={handleTrackCannyChangelogLink}
-                                    onKeyDown={handleTrackCannyChangelogLink}
-                                    role="link"
-                                    tabIndex={0}
-                                >
+                                <div className="flex justify-start items-center">
                                     {link.icon}
-                                    <p className="p-0 m-0">{link.label}</p>
+                                    <TextLink
+                                        data-canny-changelog
+                                        className="flex justify-start items-center"
+                                        onClick={handleTrackCannyChangelogLink}
+                                        onKeyDown={handleTrackCannyChangelogLink}
+                                        role="link"
+                                        tabIndex={0}
+                                    >
+                                        <p className="p-0 m-0">{link.label}</p>
+                                    </TextLink>
                                 </div>
                             ) : (
-                                <a
-                                    className="flex justify-start items-center"
-                                    href={link.href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    onClick={() => handleTrackHelpLearnFeatureLinks(link.label)}
-                                >
+                                <div className="flex justify-start items-center">
                                     {link.icon}
-                                    <p className="p-0 m-0">{link.label}</p>
-                                </a>
+                                    <TextLink
+                                        href={link.href}
+                                        rel="noreferrer"
+                                        onClick={() => handleTrackHelpLearnFeatureLinks(link.label)}
+                                        externalLink
+                                    >
+                                        {link.label}
+                                    </TextLink>
+                                </div>
                             )}
                         </li>
                     );
@@ -195,11 +199,11 @@ export const Resources = ({ showSchemaView }: Props): JSX.Element => {
                         links={linksDocumentation}
                         screen={screen.view}
                     />
-                    <hr className="border-gray-200 mb-6" />
+                    <hr className="border-neutral-50 mb-6" />
                 </>
             ) : null}
             <ResourceLinksBlock listBlockTitle="Github" links={linksGithub} screen={screen.view} />
-            <hr className="border-gray-200 mb-6" />
+            <hr className="border-neutral-50 mb-6" />
             <ResourceLinksBlock listBlockTitle="Resources" links={linksForResources} screen={screen.view} />
         </div>
     );

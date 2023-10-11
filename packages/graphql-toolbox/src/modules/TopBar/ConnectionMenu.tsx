@@ -19,7 +19,7 @@
 
 import { useContext, useEffect } from "react";
 
-import { Menu, MenuItem, MenuItems } from "@neo4j-ndl/react";
+import { Menu } from "@neo4j-ndl/react";
 import { CheckIconOutline } from "@neo4j-ndl/react/icons";
 
 import { AuthContext } from "../../contexts/auth";
@@ -66,16 +66,16 @@ export const ConnectionMenu = ({
             id={CONNECTION_MENU_ID}
             open={openConnectionMenu}
             anchorEl={menuButtonRef.current}
-            className="mt-2"
+            className="mt-2 ndl-theme-light"
             onClick={() => setOpenConnectionMenu(false)}
         >
-            <MenuItems>
+            <Menu.Items>
                 {auth.databases?.length ? (
                     <>
                         <Menu.Subheader title="Databases" />
                         {auth.databases.map((db) => {
                             return (
-                                <MenuItem
+                                <Menu.Item
                                     key={db.name}
                                     data-test-topbar-database={db.name}
                                     title={db.name.length > 50 ? `${db.name.substring(0, 48)}...` : db.name}
@@ -90,16 +90,16 @@ export const ConnectionMenu = ({
                 {!auth.isNeo4jDesktop ? (
                     <>
                         <Menu.Divider />
-                        <MenuItem
+                        <Menu.Item
                             data-test-topbar-disconnect
-                            className="n-text-danger-50"
+                            className="text-hibiscus-45"
                             title="Disconnect"
-                            description={<span className="n-text-neutral-80">{dbmsUrlWithUsername}</span>}
+                            description={<span className="text-neutral-80">{dbmsUrlWithUsername}</span>}
                             onClick={() => auth?.logout()}
                         />
                     </>
                 ) : null}
-            </MenuItems>
+            </Menu.Items>
         </Menu>
     );
 };
