@@ -838,7 +838,11 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN [this0 { .id }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -917,7 +921,11 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN [this0 { .id }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

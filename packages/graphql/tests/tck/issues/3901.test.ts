@@ -180,7 +180,11 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_var0 = true AND $authorization_param1 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)) AND $authorization_param2 IN $jwt.roles AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            RETURN [this0 { .id, .title }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .id, .title } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

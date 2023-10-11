@@ -104,7 +104,11 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             }
             RETURN this0
             }
-            RETURN [this0 { .title }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .title } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

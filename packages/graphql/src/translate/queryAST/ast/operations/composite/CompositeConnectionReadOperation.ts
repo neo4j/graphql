@@ -40,15 +40,15 @@ export class CompositeConnectionReadOperation extends Operation {
         this.children = children;
     }
 
-    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
 
         const nestedSubqueries = this.children.flatMap((c) => {
+            const subQueryContext = new QueryASTContext({ ...context, returnVariable: edgeVar });
             const result = c.transpile({
-                context,
-                returnVariable: edgeVar,
+                context: subQueryContext,
             });
             if (!hasTarget(context)) throw new Error("No parent node found!");
             const parentNode = context.target;
@@ -92,12 +92,12 @@ export class CompositeConnectionReadOperation extends Operation {
                 edges: edgesVar,
                 totalCount: totalCount,
             }),
-            returnVariable,
+            context.returnVariable,
         ]);
 
         return {
             clauses: [Cypher.concat(nestedSubquery, extraWithOrder, returnClause)],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

@@ -95,7 +95,7 @@ export class ReadOperation extends Operation {
 
     private transpileNestedRelationship(
         entity: RelationshipAdapter,
-        { context, returnVariable }: OperationTranspileOptions
+        { context }: OperationTranspileOptions
     ): OperationTranspileResult {
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
@@ -131,7 +131,7 @@ export class ReadOperation extends Operation {
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
 
-        const ret = this.getProjectionClause(nestedContext, returnVariable, entity.isList);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
 
         const clause = Cypher.concat(
             ...preSelection,
@@ -145,7 +145,7 @@ export class ReadOperation extends Operation {
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 
@@ -198,13 +198,13 @@ export class ReadOperation extends Operation {
         };
     }
 
-    public transpile({ context, returnVariable }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
             return this.transpileNestedRelationship(this.relationship, {
-                returnVariable: new Cypher.Variable(),
                 context,
             });
         }
+        const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
 
         const filterSubqueries = this.filters
@@ -223,8 +223,7 @@ export class ReadOperation extends Operation {
         const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
-        const projection = this.getProjectionMap(context);
-
+        const ret: Cypher.Return = this.getReturnStatement(context, context.returnVariable);
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
 
         let filterSubqueryWith: Cypher.With | undefined;
@@ -234,10 +233,14 @@ export class ReadOperation extends Operation {
         const shouldAddWithForAuth = authFiltersPredicate.length > 0 && preSelection.length === 0;
         if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
-            filterSubqueryWith = new Cypher.With("*");
+            if (!isCreateSelection) {
+                filterSubqueryWith = new Cypher.With("*");
+            }
         }
 
-        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
+        const wherePredicate = isCreateSelection
+            ? filterPredicates
+            : Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             if (filterSubqueryWith) {
                 filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
@@ -245,8 +248,6 @@ export class ReadOperation extends Operation {
                 matchClause.where(wherePredicate);
             }
         }
-
-        const ret = new Cypher.Return([projection, returnVariable]);
 
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
@@ -256,29 +257,40 @@ export class ReadOperation extends Operation {
 
         const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
 
-        let sortAndLimitBlock: Cypher.Clause;
-        if (this.hasCypherSort()) {
-            // This is a performance optimisation
-            sortAndLimitBlock = Cypher.concat(...cypherFieldSubqueries, sortBlock);
-        } else {
-            sortAndLimitBlock = Cypher.concat(sortBlock, ...cypherFieldSubqueries);
-        }
+        const sortAndLimitBlock: Cypher.Clause = this.hasCypherSort()
+            ? Cypher.concat(...cypherFieldSubqueries, sortBlock)
+            : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
-        const clause = Cypher.concat(
-            ...preSelection,
-            ...authFilterSubqueries,
-            matchClause,
-            filterSubqueriesClause,
-            filterSubqueryWith,
-            sortAndLimitBlock,
-            subqueries,
-            ret
-        );
+        let clause: Cypher.Clause;
+
+        // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
+        if (isCreateSelection) {
+            clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
+        } else {
+            clause = Cypher.concat(
+                ...preSelection,
+                ...authFilterSubqueries,
+                matchClause,
+                filterSubqueriesClause,
+                filterSubqueryWith,
+                sortAndLimitBlock,
+                subqueries,
+                ret
+            );
+        }
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
+    }
+
+    private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
+        const projection = this.getProjectionMap(context);
+        if (context.shouldCollect) {
+            return new Cypher.Return([Cypher.collect(projection), returnVariable]);
+        }
+        return new Cypher.Return([projection, returnVariable]);
     }
 
     private hasCypherSort(): boolean {

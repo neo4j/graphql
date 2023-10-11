@@ -91,7 +91,11 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [this0 { .name }] AS data"
+                CALL {
+                    WITH this0
+                    RETURN this0 { .name } AS create_var0
+                }
+                RETURN [create_var0] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -238,7 +242,11 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [this0 { .name }] AS data"
+                CALL {
+                    WITH this0
+                    RETURN this0 { .name } AS create_var0
+                }
+                RETURN [create_var0] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -298,7 +306,11 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [this0 { .name }] AS data"
+                CALL {
+                    WITH this0
+                    RETURN this0 { .name } AS create_var0
+                }
+                RETURN [create_var0] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -506,7 +518,11 @@ describe("Create or Connect", () => {
                 }
                 RETURN this0
                 }
-                RETURN [this0 { .name }] AS data"
+                CALL {
+                    WITH this0
+                    RETURN this0 { .name } AS create_var0
+                }
+                RETURN [create_var0] AS data"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

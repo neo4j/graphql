@@ -50,7 +50,7 @@ function translateQuery({
     if (!entityAdapter) throw new Error("Entity not found");
     const queryAST = queryASTFactory.createQueryAST(resolveTree, entityAdapter, context);
     debug(queryAST.print());
-    const clause = queryAST.transpile(context);
+    const clause = queryAST.build(context);
     return clause.build();
 }
 

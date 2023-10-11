@@ -22,7 +22,6 @@ import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTContext } from "../QueryASTContext";
 
 export type OperationTranspileOptions = {
-    returnVariable: Cypher.Variable; // TODO: Remove
     context: QueryASTContext;
 };
 

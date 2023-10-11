@@ -89,47 +89,44 @@ describe("Cypher Projection", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param3 AS create_var10
+            "UNWIND $create_param0 AS create_var0
             CALL {
-                WITH create_var10
-                CREATE (create_this0:Product)
+                WITH create_var0
+                CREATE (create_this1:Product)
                 SET
-                    create_this0.id = create_var10.id
-                RETURN create_this0
+                    create_this1.id = create_var0.id
+                RETURN create_this1
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0)-[create_this1:HAS_PHOTO]->(create_this2:Photo)
-                WHERE create_this2.url = $create_param0
-                WITH create_this2 { .url, location: CASE
-                    WHEN create_this2.location IS NOT NULL THEN { point: create_this2.location }
+                WITH create_this1
+                MATCH (create_this1)-[create_this2:HAS_PHOTO]->(create_this3:Photo)
+                WHERE create_this3.url = $create_param1
+                WITH create_this3 { .url, location: CASE
+                    WHEN create_this3.location IS NOT NULL THEN { point: create_this3.location }
                     ELSE NULL
-                END } AS create_this2
-                RETURN collect(create_this2) AS create_var3
+                END } AS create_this3
+                RETURN collect(create_this3) AS create_var4
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0)-[create_this4:HAS_COLOR]->(create_this5:Color)
-                WHERE create_this5.id = $create_param1
-                WITH create_this5 { .id } AS create_this5
-                RETURN collect(create_this5) AS create_var6
+                WITH create_this1
+                MATCH (create_this1)-[create_this5:HAS_COLOR]->(create_this6:Color)
+                WHERE create_this6.id = $create_param2
+                WITH create_this6 { .id } AS create_this6
+                RETURN collect(create_this6) AS create_var7
             }
             CALL {
-                WITH create_this0
-                MATCH (create_this0)-[create_this7:HAS_SIZE]->(create_this8:Size)
-                WHERE create_this8.name = $create_param2
-                WITH create_this8 { .name } AS create_this8
-                RETURN collect(create_this8) AS create_var9
+                WITH create_this1
+                MATCH (create_this1)-[create_this8:HAS_SIZE]->(create_this9:Size)
+                WHERE create_this9.name = $create_param3
+                WITH create_this9 { .name } AS create_this9
+                RETURN collect(create_this9) AS create_var10
             }
-            RETURN collect(create_this0 { .id, photos: create_var3, colors: create_var6, sizes: create_var9 }) AS data"
+            RETURN collect(create_this1 { .id, photos: create_var4, colors: create_var7, sizes: create_var10 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"create_param0\\": \\"url.com\\",
-                \\"create_param1\\": \\"123\\",
-                \\"create_param2\\": \\"small\\",
-                \\"create_param3\\": [
+                \\"create_param0\\": [
                     {
                         \\"id\\": \\"1\\"
                     },
@@ -137,6 +134,9 @@ describe("Cypher Projection", () => {
                         \\"id\\": \\"2\\"
                     }
                 ],
+                \\"create_param1\\": \\"url.com\\",
+                \\"create_param2\\": \\"123\\",
+                \\"create_param3\\": \\"small\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
