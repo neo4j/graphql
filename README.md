@@ -30,6 +30,7 @@ and [development guide](./docs/contributing/DEVELOPING.md) to get started!
 * [Discord](https://discord.gg/neo4j)
 * [Examples](./examples)
 * [Hands-on Course](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql)
+* [Neo4j Community](https://community.neo4j.com/c/drivers-stacks/graphql/33)
 
 ## Navigating
 
