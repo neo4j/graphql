@@ -143,7 +143,7 @@ export const SchemaSettings = () => {
                                 More information:{" "}
                                 <a
                                     className="underline"
-                                    href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
+                                    href="https://neo4j.com/docs/graphql/current/type-definitions/directives/indexes-and-constraints/#_asserting_constraints"
                                     target="_blank"
                                     rel="noreferrer"
                                 >
