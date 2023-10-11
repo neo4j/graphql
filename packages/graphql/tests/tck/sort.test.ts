@@ -351,4 +351,102 @@ describe("Cypher sort tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
+    test("Simple Sort on Interfaces", async () => {
+        const typeDefs = `
+            type SomeNodeType implements MyOtherInterface & MyInterface {
+                id: ID! @id @unique
+                something: String
+                somethingElse: String
+                other: [OtherNodeType!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
+            }
+            type OtherNodeType {
+                id: ID! @id @unique
+                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
+            }
+            interface MyInterface {
+                id: ID! @id
+            }
+            interface MyOtherInterface implements MyInterface {
+                id: ID! @id
+                something: String
+            }
+
+            type MyImplementationType implements MyInterface {
+                id: ID! @id @unique
+            }
+
+            type MyOtherImplementationType implements MyInterface {
+                id: ID! @id @unique
+                someField: String
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            experimental: true,
+        });
+
+        const query = gql`
+            query {
+                myInterfaces(
+                    where: { _on: { SomeNodeType: { somethingElse_NOT: "test" }, MyOtherImplementationType: {} } }
+                    options: { sort: [{ id: ASC }], limit: 10 }
+                ) {
+                    id
+                    ... on MyOtherImplementationType {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on SomeNodeType {
+                            somethingElse
+                            other(options: { sort: [{ id: DESC }], limit: 2 }) {
+                                id
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                WHERE NOT (this0.somethingElse = $param0)
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                    WITH this2 { .id } AS this2
+                    ORDER BY this2.id DESC
+                    LIMIT $param1
+                    RETURN collect(this2) AS var3
+                }
+                WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this4:MyOtherImplementationType)
+                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
+                RETURN this4 AS this
+            }
+            RETURN this
+            ORDER BY this.id ASC
+            LIMIT $param2"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test\\",
+                \\"param1\\": {
+                    \\"low\\": 2,
+                    \\"high\\": 0
+                },
+                \\"param2\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
 });
