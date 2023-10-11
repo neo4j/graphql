@@ -6,11 +6,11 @@
 
 /* Login window */
 
-.login-window-bg {
-    background-image: url("./assets/graphic-bottom-left.svg"), url("./assets/graphic-top-right.svg");
-    background-position: left bottom, right top;
-    background-size: 120px 200px;
-    background-repeat: no-repeat, no-repeat;
+.login-bg {
+    background-image: url("./assets/login-background.svg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* ----------------------*/
