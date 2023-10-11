@@ -350,7 +350,6 @@ describe("Interfaces tests", () => {
         });
     });
 
-    // TODO: add to tck
     test("should return results on top-level simple query on interface target to a relationship sorted", async () => {
         const query = `
             query {
