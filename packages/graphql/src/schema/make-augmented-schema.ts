@@ -405,11 +405,6 @@ function makeAugmentedSchema({
                 composer,
             });
             if (experimental) {
-                withOptionsInputType({
-                    entityAdapter: unionEntityAdapter,
-                    userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
-                    composer,
-                });
                 if (unionEntityAdapter.isReadable) {
                     composer.Query.addFields({
                         [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
