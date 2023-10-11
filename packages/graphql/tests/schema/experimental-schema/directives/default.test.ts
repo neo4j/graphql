@@ -128,7 +128,7 @@ describe("@default directive", () => {
             }
 
             type Query {
-              userInterfaces(where: UserInterfaceWhere): [UserInterface!]!
+              userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -210,6 +210,23 @@ describe("@default directive", () => {
 
             input UserInterfaceImplementationsWhere {
               User: UserWhere
+            }
+
+            input UserInterfaceOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserInterfaceSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort UserInterfaces by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserInterfaceSort object.
+            \\"\\"\\"
+            input UserInterfaceSort {
+              fromInterface: SortDirection
+              toBeOverridden: SortDirection
             }
 
             input UserInterfaceWhere {

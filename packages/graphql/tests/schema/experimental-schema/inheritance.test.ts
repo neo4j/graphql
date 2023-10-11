@@ -436,7 +436,7 @@ describe("inheritance", () => {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              people(where: PersonWhere): [Person!]!
+              people(options: PersonOptions, where: PersonWhere): [Person!]!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

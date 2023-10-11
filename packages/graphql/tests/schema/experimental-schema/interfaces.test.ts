@@ -232,6 +232,22 @@ describe("Interfaces", () => {
               where: MovieNodeMoviesConnectionWhere
             }
 
+            input MovieNodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieNodeSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort MovieNodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieNodeSort object.
+            \\"\\"\\"
+            input MovieNodeSort {
+              id: SortDirection
+            }
+
             input MovieNodeWhere {
               _on: MovieNodeImplementationsWhere
               id: ID
@@ -337,7 +353,7 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes(where: MovieNodeWhere): [MovieNode!]!
+              movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -581,6 +597,22 @@ describe("Interfaces", () => {
               where: MovieNodeMoviesConnectionWhere
             }
 
+            input MovieNodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieNodeSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort MovieNodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieNodeSort object.
+            \\"\\"\\"
+            input MovieNodeSort {
+              id: SortDirection
+            }
+
             input MovieNodeWhere {
               _on: MovieNodeImplementationsWhere
               id: ID
@@ -686,7 +718,7 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes(where: MovieNodeWhere): [MovieNode!]!
+              movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
