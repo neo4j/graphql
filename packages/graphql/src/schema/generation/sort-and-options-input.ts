@@ -31,15 +31,15 @@ export function withOptionsInputType({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
 }): InputTypeComposer {
     const optionsInputType = makeOptionsInput({ entityAdapter, composer });
-    if (!entityAdapter.sortableFields.length) {
+    const sortInput = makeSortInput({ entityAdapter, userDefinedFieldDirectives, composer });
+    if (!sortInput) {
         return optionsInputType;
     }
-    const sortInput = makeSortInput({ entityAdapter, userDefinedFieldDirectives, composer });
     // TODO: Concrete vs Abstract discrepancy
     // is this intended? For ConcreteEntity is NonNull, for InterfaceEntity is nullable
     const sortFieldType = entityAdapter instanceof ConcreteEntityAdapter ? sortInput.NonNull.List : sortInput.List;
@@ -113,11 +113,14 @@ function makeSortInput({
     userDefinedFieldDirectives,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     composer: SchemaComposer;
-}): InputTypeComposer {
+}): InputTypeComposer | undefined {
     const sortFields = makeSortFields({ entityAdapter, userDefinedFieldDirectives });
+    if (!Object.keys(sortFields).length) {
+        return;
+    }
     const sortInput = composer.createInputTC({
         name: entityAdapter.operations.sortInputTypeName,
         fields: sortFields,
