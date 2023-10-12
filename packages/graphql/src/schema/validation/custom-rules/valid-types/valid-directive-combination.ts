@@ -51,6 +51,7 @@ import {
     invalidFieldCombinations,
     invalidInterfaceCombinations,
     invalidObjectCombinations,
+    invalidUnionCombinations,
 } from "../../utils/invalid-directive-combinations";
 import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
 import {
@@ -186,6 +187,9 @@ function getInvalidCombinations(kind: ASTNode["kind"]): Record<PropertyKey, Read
     if (kind === Kind.INTERFACE_TYPE_DEFINITION || kind === Kind.INTERFACE_TYPE_EXTENSION) {
         return invalidInterfaceCombinations;
     }
+    if (kind === Kind.UNION_TYPE_DEFINITION || kind === Kind.UNION_TYPE_EXTENSION) {
+        return invalidUnionCombinations;
+    }
     // Allow user directives to be used anywhere
     return {};
 }
@@ -229,6 +233,7 @@ export function SchemaOrTypeDirectives(context: SDLValidationContext): ASTVisito
 
             const isSchemaLevel = node.kind === Kind.SCHEMA_DEFINITION || node.kind === Kind.SCHEMA_EXTENSION;
             const isTypeLevel = isTypeDefinitionNode(node) || isTypeExtensionNode(node);
+
             if (!isSchemaLevel && !isTypeLevel) {
                 // only check combination of schema-level and type-level
                 return;

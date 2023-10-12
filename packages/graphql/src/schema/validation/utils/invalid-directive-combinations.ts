@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { FieldDirective, InterfaceDirective, ObjectDirective } from "../../../constants";
+import type { FieldDirective, InterfaceDirective, ObjectDirective, UnionDirective } from "../../../constants";
 import { FIELD_DIRECTIVES } from "../../../constants";
 
 type InvalidFieldCombinations = Record<FieldDirective, ReadonlyArray<FieldDirective | "private">>;
@@ -72,6 +72,13 @@ type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<Int
 
 export const invalidInterfaceCombinations: InvalidInterfaceCombinations = {
     relationshipProperties: [],
+    query: [],
+};
+
+type InvalidUnionCombinations = Record<UnionDirective, ReadonlyArray<UnionDirective>>;
+
+export const invalidUnionCombinations: InvalidUnionCombinations = {
+    query: [],
 };
 
 type InvalidObjectCombinations = Record<Exclude<ObjectDirective, "jwt">, ReadonlyArray<ObjectDirective>>;
