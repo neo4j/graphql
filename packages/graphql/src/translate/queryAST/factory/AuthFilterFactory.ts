@@ -86,7 +86,7 @@ export class AuthFilterFactory extends FilterFactory {
         context: Neo4jGraphQLTranslationContext
     ): Filter[] {
         return Object.entries(where).map(([key, value]) => {
-            const { fieldName, operator } = parseWhereField(key);
+            const { fieldName, operator, isNot } = parseWhereField(key);
             if (!fieldName) {
                 throw new Error(`Failed to find field name in filter: ${key}`);
             }
@@ -103,10 +103,12 @@ export class AuthFilterFactory extends FilterFactory {
 
                 target = jwtPayload.property(...paths);
             }
+
             return new JWTFilter({
                 operator: operator || "EQ",
                 JWTClaim: target,
                 comparisonValue: value,
+                isNot,
             });
         });
     }

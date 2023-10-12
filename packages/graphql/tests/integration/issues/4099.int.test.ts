@@ -33,6 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
     const secret = "secret";
 
     let User: UniqueType;
+    let Person: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -43,6 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
         session = await neo4j.getSession();
 
         User = new UniqueType("User");
+        Person = new UniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
@@ -50,6 +52,10 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
             }
 
             type ${User} @authorization(filter: [{ operations: [READ], where: { jwt: { isAdmin: true } } }]) {
+                id: ID @id
+            }
+
+            type ${Person} @authorization(filter: [{ operations: [READ], where: { jwt: { isAdmin_NOT: true } } }]) {
                 id: ID @id
             }
         `;
@@ -68,11 +74,12 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
     beforeEach(async () => {
         await session.run(`
             CREATE (:${User} { id: 1 })
+            CREATE (:${Person} { id: 1 })
         `);
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [User]);
+        await cleanNodes(session, [User, Person]);
         await session.close();
     });
 
@@ -126,5 +133,53 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
         expect(result.errors).toBeUndefined();
 
         expect((result.data as any)[User.plural]).toEqual([]);
+    });
+
+    test("returns users if isAdmin false", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Person.plural} {
+                    id
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { isAdmin: false });
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(result.errors).toBeUndefined();
+
+        expect((result.data as any)[Person.plural]).toEqual([
+            {
+                id: "1",
+            },
+        ]);
+    });
+
+    test("does not return users if isAdmin true", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Person.plural} {
+                    id
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { isAdmin: true });
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(result.errors).toBeUndefined();
+
+        expect((result.data as any)[Person.plural]).toEqual([]);
     });
 });
