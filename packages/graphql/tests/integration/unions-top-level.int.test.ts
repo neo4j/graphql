@@ -23,8 +23,9 @@ import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
 import { graphql } from "graphql";
 import type { GraphQLSchema } from "graphql";
+import gql from "graphql-tag";
 
-describe("unions", () => {
+describe("Top-level union query fields", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -234,5 +235,77 @@ describe("unions", () => {
         expect((gqlResult.data as any).searches).toIncludeSameMembers([
             { title: "The Matrix", search: [{ name: "Action" }, {}] },
         ]);
+    });
+});
+
+describe("Top-level union query fields - schema configuration", () => {
+    let driver: Driver;
+    let neo4j: Neo4j;
+
+    let GenreType: UniqueType;
+    let MovieType: UniqueType;
+    let schema: GraphQLSchema;
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        GenreType = new UniqueType("Genre");
+        MovieType = new UniqueType("Movie");
+
+        const typeDefs = gql`
+        union Search @query(read: false)  = ${GenreType} | ${MovieType} 
+
+        type ${GenreType} {
+            name: String
+        }
+
+        type ${MovieType} {
+            title: String
+            search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+        }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+            experimental: true,
+        });
+        schema = await neoSchema.getSchema();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should read top-level simple query on union", async () => {
+        const query = `
+            query {
+                searches {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]).toHaveProperty("message", 'Cannot query field "searches" on type "Query".');
     });
 });

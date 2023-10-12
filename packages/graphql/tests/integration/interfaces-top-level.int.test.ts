@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src";
 import { UniqueType } from "../utils/graphql-types";
 import { createBearerToken } from "../utils/create-bearer-token";
 
-describe("Interfaces tests", () => {
+describe("Top-level interface query fields", () => {
     const secret = "the-secret";
 
     let schema: GraphQLSchema;
@@ -407,5 +407,104 @@ describe("Interfaces tests", () => {
                 },
             ],
         });
+    });
+});
+
+describe("Top-level interface query fields - schema configuration", () => {
+    const secret = "the-secret";
+
+    let schema: GraphQLSchema;
+    let neo4j: Neo4j;
+    let driver: Driver;
+
+    const SomeNodeType = new UniqueType("SomeNode");
+    const OtherNodeType = new UniqueType("OtherNode");
+    const MyImplementationType = new UniqueType("MyImplementation");
+    const MyOtherImplementationType = new UniqueType("MyOtherImplementation");
+
+    async function graphqlQuery(query: string, token: string) {
+        return graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+    }
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
+    test("should throw error on top-level simple query on interface target to a relationship", async () => {
+        const typeDefs = `
+            type ${SomeNodeType} implements MyOtherInterface & MyInterface {
+                id: ID! @id @unique
+                something: String
+                somethingElse: String
+                other: [${OtherNodeType}!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
+            }
+            type ${OtherNodeType} {
+                id: ID! @id @unique
+                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
+            }
+            interface MyInterface @query(read: false) {
+                id: ID! @id
+            }
+            interface MyOtherInterface implements MyInterface {
+                id: ID! @id
+                something: String
+            }
+
+            type ${MyImplementationType} implements MyInterface {
+                id: ID! @id @unique
+            }
+
+            type ${MyOtherImplementationType} implements MyInterface {
+                id: ID! @id @unique
+                someField: String
+            }
+
+            extend type ${SomeNodeType} @authentication
+
+            extend type ${OtherNodeType} @authentication
+        `;
+
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const query = `
+            query {
+                myInterfaces {
+                    id
+                    ... on ${MyOtherImplementationType} {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on ${SomeNodeType} {
+                            somethingElse
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toHaveLength(1);
+        expect(queryResult.errors?.[0]).toHaveProperty("message", 'Cannot query field "myInterfaces" on type "Query".');
     });
 });
