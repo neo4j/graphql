@@ -304,7 +304,7 @@ describe("Interfaces tests", () => {
 
         const query = `
             query {
-                myInterfaces(where: { _on: { ${MyOtherImplementationType}: {someField: "bla"} } }) {
+                myInterfaces(where: { _on: { ${MyOtherImplementationType}: {} } }) {
                     id
                     ... on ${MyOtherImplementationType} {
                         someField
