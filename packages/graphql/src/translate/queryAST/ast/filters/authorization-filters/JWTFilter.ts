@@ -54,10 +54,6 @@ export class JWTFilter extends Filter {
     }
 
     public getPredicate(_context: QueryASTContext): Predicate | undefined {
-        if (this.comparisonValue === null) {
-            return this.getNullPredicate(this.JWTClaim);
-        }
-
         const operation = createComparisonOperation({
             operator: this.operator,
             property: this.JWTClaim,
@@ -71,16 +67,11 @@ export class JWTFilter extends Filter {
         return `${super.print()} <${this.operator} ${this.comparisonValue}>`;
     }
 
-    private getNullPredicate(propertyRef: Cypher.Property): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.isNotNull(propertyRef);
-        } else {
-            return Cypher.isNull(propertyRef);
-        }
-    }
-
     private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) return Cypher.not(predicate);
-        else return predicate;
+        if (this.isNot) {
+            return Cypher.not(predicate);
+        } else {
+            return predicate;
+        }
     }
 }
