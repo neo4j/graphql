@@ -22,7 +22,7 @@ import { DirectiveLocation, GraphQLDirective, GraphQLString, GraphQLNonNull } fr
 export const pluralDirective = new GraphQLDirective({
     name: "plural",
     description: "Instructs @neo4j/graphql to use the given value as the plural of the type name",
-    locations: [DirectiveLocation.OBJECT],
+    locations: [DirectiveLocation.OBJECT, DirectiveLocation.INTERFACE, DirectiveLocation.UNION],
     args: {
         value: {
             description: "The value to use as the plural of the type name.",
