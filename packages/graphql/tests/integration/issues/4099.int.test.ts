@@ -135,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
         expect((result.data as any)[User.plural]).toEqual([]);
     });
 
-    test("returns users if isAdmin false", async () => {
+    test("returns people if isAdmin false", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Person.plural} {
@@ -161,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/4099", () => {
         ]);
     });
 
-    test("does not return users if isAdmin true", async () => {
+    test("does not return people if isAdmin true", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Person.plural} {
