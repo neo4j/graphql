@@ -46,6 +46,8 @@ export const ScalarOrEnumType = new GraphQLScalarType({
                 return ast.value;
             case Kind.BOOLEAN:
                 return ast.value;
+            case Kind.ENUM:
+                return ast.value;
             default:
                 throw new Error(
                     "Value must be one of types: Int | Float | String | Boolean | ID | DateTime | Date | Enum"
