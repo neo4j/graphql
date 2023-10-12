@@ -288,4 +288,75 @@ describe("Interfaces tests", () => {
             ],
         });
     });
+
+    test("Type filtering using onType", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const query = `
+            query {
+                myInterfaces(where: { _on: { ${MyOtherImplementationType}: {someField: "bla"} } }) {
+                    id
+                    ... on ${MyOtherImplementationType} {
+                        someField
+                    }
+                    
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myInterfaces: [
+                {
+                    id: "4",
+                    someField: "bla",
+                },
+            ],
+        });
+    });
+
+    test("Filter overriding using onType", async () => {
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+            experimental: true,
+        });
+        schema = await neoGraphql.getSchema();
+
+        const query = `
+            query {
+                myInterfaces(where: { id_STARTS_WITH: "4", _on: { ${MyOtherImplementationType}: {id_STARTS_WITH: "1"} } }) {
+                    id
+                    ... on ${MyOtherImplementationType} {
+                        someField
+                    }
+                    
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            myInterfaces: [],
+        });
+    });
 });
