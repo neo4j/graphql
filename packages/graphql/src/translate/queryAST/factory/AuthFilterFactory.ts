@@ -91,10 +91,6 @@ export class AuthFilterFactory extends FilterFactory {
                 throw new Error(`Failed to find field name in filter: ${key}`);
             }
 
-            if (!operator) {
-                throw new Error(`Failed to find operator in filter: ${key}`);
-            }
-
             const mappedJwtClaim = context.authorization.claims?.get(fieldName);
 
             let target: Cypher.Property = jwtPayload.property(fieldName);
