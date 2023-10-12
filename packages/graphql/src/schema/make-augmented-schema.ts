@@ -185,6 +185,7 @@ function makeAugmentedSchema({
         userDefinedDirectivesForNode,
         propagatedDirectivesForNode,
         userDefinedDirectivesForInterface,
+        userDefinedDirectivesForUnion,
     } = getUserDefinedDirectives(definitionNodes);
 
     /**
@@ -405,6 +406,12 @@ function makeAugmentedSchema({
                 composer,
             });
             if (experimental) {
+                // strip-out the schema config directives from the union type
+                const def = composer.getUTC(unionEntityAdapter.name);
+                def.setDirectives(
+                    graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
+                );
+
                 if (unionEntityAdapter.isReadable) {
                     composer.Query.addFields({
                         [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
