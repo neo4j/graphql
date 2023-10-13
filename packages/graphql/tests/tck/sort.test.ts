@@ -351,9 +351,14 @@ describe("Cypher sort tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+});
 
-    test("Sort on Interface top-level", async () => {
-        const typeDefs = `
+describe("Top-level Interface query sort", () => {
+    let typeDefs: DocumentNode;
+    let neoSchema: Neo4jGraphQL;
+
+    beforeAll(() => {
+        typeDefs = gql`
             type SomeNodeType implements MyOtherInterface & MyInterface {
                 id: ID! @id @unique
                 something: String
@@ -381,11 +386,14 @@ describe("Cypher sort tests", () => {
                 someField: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({
+
+        neoSchema = new Neo4jGraphQL({
             typeDefs,
             experimental: true,
         });
+    });
 
+    test("Sort on Interface top-level", async () => {
         const query = gql`
             query {
                 myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
@@ -443,40 +451,52 @@ describe("Cypher sort tests", () => {
         `);
     });
 
-    test("Sort with filter on Interface top-level", async () => {
-        const typeDefs = `
-            type SomeNodeType implements MyOtherInterface & MyInterface {
-                id: ID! @id @unique
-                something: String
-                somethingElse: String
-                other: [OtherNodeType!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
-            }
-            type OtherNodeType {
-                id: ID! @id @unique
-                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
-            }
-            interface MyInterface {
-                id: ID! @id
-            }
-            interface MyOtherInterface implements MyInterface {
-                id: ID! @id
-                something: String
-            }
-
-            type MyImplementationType implements MyInterface {
-                id: ID! @id @unique
-            }
-
-            type MyOtherImplementationType implements MyInterface {
-                id: ID! @id @unique
-                someField: String
+    test("Sort on Interface top-level without projecting the sorted field", async () => {
+        const query = gql`
+            query {
+                myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
+                    ... on MyOtherImplementationType {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                    }
+                }
             }
         `;
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            experimental: true,
-        });
 
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                WITH this0 { .something, .id, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:MyImplementationType)
+                WITH this1 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+                UNION
+                MATCH (this2:MyOtherImplementationType)
+                WITH this2 { .someField, .id, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
+                RETURN this2 AS this
+            }
+            RETURN this
+            ORDER BY this.id ASC
+            LIMIT $param0"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Sort with filter on Interface top-level", async () => {
         const query = gql`
             query {
                 myInterfaces(
@@ -536,39 +556,6 @@ describe("Cypher sort tests", () => {
     });
 
     test("Sort on Interfaces filtered by _on type", async () => {
-        const typeDefs = `
-            type SomeNodeType implements MyOtherInterface & MyInterface {
-                id: ID! @id @unique
-                something: String
-                somethingElse: String
-                other: [OtherNodeType!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
-            }
-            type OtherNodeType {
-                id: ID! @id @unique
-                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
-            }
-            interface MyInterface {
-                id: ID! @id
-            }
-            interface MyOtherInterface implements MyInterface {
-                id: ID! @id
-                something: String
-            }
-
-            type MyImplementationType implements MyInterface {
-                id: ID! @id @unique
-            }
-
-            type MyOtherImplementationType implements MyInterface {
-                id: ID! @id @unique
-                someField: String
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            experimental: true,
-        });
-
         const query = gql`
             query {
                 myInterfaces(
@@ -616,39 +603,6 @@ describe("Cypher sort tests", () => {
     });
 
     test("Sort on Interfaces top-level + nested", async () => {
-        const typeDefs = `
-            type SomeNodeType implements MyOtherInterface & MyInterface {
-                id: ID! @id @unique
-                something: String
-                somethingElse: String
-                other: [OtherNodeType!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
-            }
-            type OtherNodeType {
-                id: ID! @id @unique
-                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
-            }
-            interface MyInterface {
-                id: ID! @id
-            }
-            interface MyOtherInterface implements MyInterface {
-                id: ID! @id
-                something: String
-            }
-
-            type MyImplementationType implements MyInterface {
-                id: ID! @id @unique
-            }
-
-            type MyOtherImplementationType implements MyInterface {
-                id: ID! @id @unique
-                someField: String
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            experimental: true,
-        });
-
         const query = gql`
             query {
                 myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
