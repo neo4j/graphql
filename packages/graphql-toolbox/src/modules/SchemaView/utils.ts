@@ -21,7 +21,7 @@ import { directives, objects, scalars } from "@neo4j/graphql";
 import type { GraphQLDirective, GraphQLScalarType } from "graphql";
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
 
-const unsupportedDirectives = ["@authorization"];
+const unsupportedDirectives = ["@authorization", "@authentication", "@subscriptionsAuthorization"];
 
 export function getUnsupportedDirective(directiveName: string): string | undefined {
     for (const unsupportedDirective of unsupportedDirectives) {
