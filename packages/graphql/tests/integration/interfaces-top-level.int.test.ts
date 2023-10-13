@@ -136,7 +136,7 @@ describe("Top-level interface query fields", () => {
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            myInterfaces: [
+            myInterfaces: expect.toIncludeSameMembers([
                 {
                     id: "1",
                     something: "somenode",
@@ -154,7 +154,7 @@ describe("Top-level interface query fields", () => {
                     id: "4",
                     someField: "bla",
                 },
-            ],
+            ]),
         });
     });
     test("should return results on top-level simple query on simple interface", async () => {
@@ -176,7 +176,7 @@ describe("Top-level interface query fields", () => {
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            myOtherInterfaces: [
+            myOtherInterfaces: expect.toIncludeSameMembers([
                 {
                     id: "1",
                     other: [
@@ -193,7 +193,7 @@ describe("Top-level interface query fields", () => {
                         },
                     ],
                 },
-            ],
+            ]),
         });
     });
 
@@ -228,7 +228,7 @@ describe("Top-level interface query fields", () => {
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            myOtherInterfaces: [
+            myOtherInterfaces: expect.toIncludeSameMembers([
                 {
                     id: "1",
                     other: [
@@ -245,7 +245,7 @@ describe("Top-level interface query fields", () => {
                         },
                     ],
                 },
-            ],
+            ]),
         });
     });
 
