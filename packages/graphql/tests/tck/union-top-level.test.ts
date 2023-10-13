@@ -32,12 +32,7 @@ describe("Union top level operations", () => {
         typeDefs = gql`
             union Search = Genre | Movie
 
-            type Genre
-                @authorization(
-                    validate: [
-                        { when: [BEFORE], operations: [READ], where: { node: { name: "$jwt.jwtAllowedNamesExample" } } }
-                    ]
-                ) {
+            type Genre {
                 name: String
             }
 
@@ -109,44 +104,35 @@ describe("Union top level operations", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL {
-                    MATCH (this0:Genre)
-                    WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
-                    RETURN this0 AS this
-                    UNION
-                    MATCH (this1:Movie)
+            "CALL {
+                MATCH (this0:Genre)
+                WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:Movie)
+                CALL {
+                    WITH this1
                     CALL {
-                        WITH this1
-                        CALL {
-                            WITH *
-                            MATCH (this1)-[this2:SEARCH]->(this3:Genre)
-                            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this3.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                            WITH this3 { .name, __resolveType: \\"Genre\\", __id: id(this3) } AS this3
-                            RETURN this3 AS var4
-                            UNION
-                            WITH *
-                            MATCH (this1)-[this5:SEARCH]->(this6:Movie)
-                            WITH this6 { __resolveType: \\"Movie\\", __id: id(this6) } AS this6
-                            RETURN this6 AS var4
-                        }
-                        WITH var4
-                        RETURN collect(var4) AS var4
+                        WITH *
+                        MATCH (this1)-[this2:SEARCH]->(this3:Genre)
+                        WITH this3 { .name, __resolveType: \\"Genre\\", __id: id(this3) } AS this3
+                        RETURN this3 AS var4
+                        UNION
+                        WITH *
+                        MATCH (this1)-[this5:SEARCH]->(this6:Movie)
+                        WITH this6 { __resolveType: \\"Movie\\", __id: id(this6) } AS this6
+                        RETURN this6 AS var4
                     }
-                    WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
-                    RETURN this1 AS this
+                    WITH var4
+                    RETURN collect(var4) AS var4
                 }
-                RETURN this"
-            `);
+                WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+            }
+            RETURN this"
+        `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"isAuthenticated\\": true,
-                    \\"jwt\\": {
-                        \\"roles\\": [],
-                        \\"jwtAllowedNamesExample\\": \\"Horror\\"
-                    }
-                }"
-            `);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Read union with relationship on member type with filters", async () => {
@@ -184,7 +170,6 @@ describe("Union top level operations", () => {
                     CALL {
                         WITH *
                         MATCH (this1)-[this2:SEARCH]->(this3:Genre)
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this3.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH this3 { .name, __resolveType: \\"Genre\\", __id: id(this3) } AS this3
                         RETURN this3 AS var4
                         UNION
@@ -204,12 +189,7 @@ describe("Union top level operations", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
-                }
+                \\"param0\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -245,7 +225,6 @@ describe("Union top level operations", () => {
                     CALL {
                         WITH *
                         MATCH (this0)-[this1:SEARCH]->(this2:Genre)
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this2.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH this2 { .name, __resolveType: \\"Genre\\", __id: id(this2) } AS this2
                         RETURN this2 AS var3
                         UNION
@@ -265,12 +244,7 @@ describe("Union top level operations", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
-                }
+                \\"param0\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -309,7 +283,6 @@ describe("Union top level operations", () => {
                     CALL {
                         WITH *
                         MATCH (this0)-[this3:SEARCH]->(this4:Genre)
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this4.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH this4 { .name, __resolveType: \\"Genre\\", __id: id(this4) } AS this4
                         RETURN this4 AS var5
                         UNION
@@ -329,12 +302,7 @@ describe("Union top level operations", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Action\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
-                }
+                \\"param0\\": \\"Action\\"
             }"
         `);
     });
