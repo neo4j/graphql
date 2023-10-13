@@ -22,6 +22,7 @@ import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
 import { graphql } from "graphql";
+import type { GraphQLSchema } from "graphql";
 
 describe("unions", () => {
     let driver: Driver;
@@ -29,15 +30,49 @@ describe("unions", () => {
 
     let GenreType: UniqueType;
     let MovieType: UniqueType;
+    let schema: GraphQLSchema;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         GenreType = new UniqueType("Genre");
         MovieType = new UniqueType("Movie");
+
+        const typeDefs = `
+        union Search = ${GenreType} | ${MovieType}
+
+        type ${GenreType} {
+            name: String
+        }
+
+        type ${MovieType} {
+            title: String
+            search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+        }
+        `;
+
+        const session = await neo4j.getSession();
+
+        try {
+            await session.run(`
+                CREATE (m:${MovieType} {title: "The Matrix"})
+                CREATE (g:${GenreType} {name: "Action"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+        } finally {
+            await session.close();
+        }
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+            experimental: true,
+        });
+        schema = await neoSchema.getSchema();
     });
 
     afterAll(async () => {
@@ -45,26 +80,6 @@ describe("unions", () => {
     });
 
     test("should read top-level simple query on union", async () => {
-        const session = await neo4j.getSession();
-        const typeDefs = `
-            union Search = ${GenreType} | ${MovieType}
-
-            type ${GenreType} {
-                name: String
-            }
-
-            type ${MovieType} {
-                title: String
-                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            resolvers: {},
-            experimental: true,
-        });
-
         const query = `
             query {
                 searches {
@@ -83,27 +98,141 @@ describe("unions", () => {
             }
         `;
 
-        try {
-            await session.run(`
-                CREATE (m:${MovieType} {title: "The Matrix"})
-                CREATE (g:${GenreType} {name: "Action"})
-                MERGE (m)-[:SEARCH]->(m)
-                MERGE (m)-[:SEARCH]->(g)
-            `);
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).searches).toIncludeSameMembers([
-                { name: "Action" },
-                { title: "The Matrix", search: [{ name: "Action" }, {}] },
-            ]);
-        } finally {
-            await session.close();
-        }
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([
+            { name: "Action" },
+            { title: "The Matrix", search: [{ name: "Action" }, {}] },
+        ]);
+    });
+
+    test("should read top-level simple query on union with filters", async () => {
+        const query = `
+            query {
+                searches(where: {${MovieType.name}: {title_NOT: "The Matrix"}, ${GenreType.name}: {}}) {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([{ name: "Action" }]);
+    });
+
+    test("should read top-level simple query on union with filters - only specifying a filter for one constituent automatically filters-out the other constituents from the return data", async () => {
+        const query = `
+            query {
+                searches(where: {${MovieType.name}: {title_NOT: "The Matrix"}}) {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([]);
+    });
+
+    test("should read top-level simple query on union with filters on relationship field", async () => {
+        const query = `
+            query {
+                searches(where: {${MovieType.name}: {searchConnection: {${GenreType.name}: {node: { name: "Action"} }}}}) {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([
+            { title: "The Matrix", search: [{ name: "Action" }, {}] },
+        ]);
+    });
+
+    test("should read top-level simple query on union sorted", async () => {
+        const query = `
+            query {
+                searches(options: {limit: 1, offset: 1}) {
+                    ... on ${GenreType} {
+                        name
+                    }
+                    ... on ${MovieType} {
+                        title
+                        search {
+                            ... on ${GenreType} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).searches).toIncludeSameMembers([
+            { title: "The Matrix", search: [{ name: "Action" }, {}] },
+        ]);
     });
 });

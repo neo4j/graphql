@@ -63,6 +63,20 @@ export class CompositeReadOperation extends Operation {
             return result.clauses;
         });
         const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(context.returnVariable);
+        if (this.sortFields.length > 0) {
+            nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
+        }
+        if (this.pagination) {
+            const paginationField = this.pagination.getPagination();
+            if (paginationField) {
+                if (paginationField.skip) {
+                    nestedSubquery.skip(paginationField.skip);
+                }
+                if (paginationField.limit) {
+                    nestedSubquery.limit(paginationField.limit);
+                }
+            }
+        }
         return {
             clauses: [nestedSubquery],
             projectionExpr: context.returnVariable,
@@ -91,9 +105,7 @@ export class CompositeReadOperation extends Operation {
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(
-            context.returnVariable
-        );
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(context.returnVariable);
 
         if (this.sortFields.length > 0) {
             nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
