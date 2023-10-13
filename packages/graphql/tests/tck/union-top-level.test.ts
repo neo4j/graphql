@@ -307,7 +307,7 @@ describe("Union top level operations", () => {
         `);
     });
 
-    test("Read union with sort and filter", async () => {
+    test("Read union with pagination and filter", async () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
@@ -347,7 +347,7 @@ describe("Union top level operations", () => {
                     CALL {
                         WITH *
                         MATCH (this1)-[this2:SEARCH]->(this3:Genre)
-                        WHERE (this3.name STARTS WITH $param1 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this3.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                        WHERE this3.name STARTS WITH $param1
                         WITH this3 { .name, __resolveType: \\"Genre\\", __id: id(this3) } AS this3
                         RETURN this3 AS var4
                         UNION
@@ -357,35 +357,30 @@ describe("Union top level operations", () => {
                         RETURN this6 AS var4
                     }
                     WITH var4
-                    LIMIT $param4
+                    LIMIT $param2
                     RETURN collect(var4) AS var4
                 }
                 WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
             RETURN this
-            SKIP $param5
-            LIMIT $param6"
+            SKIP $param3
+            LIMIT $param4"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
                 \\"param1\\": \\"d\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"jwtAllowedNamesExample\\": \\"Horror\\"
-                },
-                \\"param4\\": {
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"param5\\": {
+                \\"param3\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 },
-                \\"param6\\": {
+                \\"param4\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }
