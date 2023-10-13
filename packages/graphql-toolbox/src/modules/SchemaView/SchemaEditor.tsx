@@ -21,18 +21,12 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
-import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
-import { lintGutter, lintKeymap } from "@codemirror/lint";
+import { bracketMatching, foldGutter, foldKeymap, indentOnInput, syntaxTree } from "@codemirror/language";
+import type { Diagnostic } from "@codemirror/lint";
+import { linter, lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { EditorState, Prec, StateEffect } from "@codemirror/state";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
+import { drawSelection, dropCursor, EditorView, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
 import { tokens } from "@neo4j-ndl/base";
 import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
@@ -46,7 +40,30 @@ import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { handleEditorDisableState } from "../EditorView/utils";
-import { getSchemaForLintAndAutocompletion } from "./utils";
+import { getSchemaForLintAndAutocompletion, getUnsupportedDirective } from "./utils";
+
+function unsupportedDirectivesLinter(view: EditorView) {
+    const diagnostics: Diagnostic[] = [];
+    const doc = view.state.doc;
+
+    syntaxTree(view.state)
+        .cursor()
+        .iterate((node) => {
+            if (node.name === "Directive") {
+                const directiveName = doc.sliceString(node.from, node.to);
+                const unsupportedDirective = getUnsupportedDirective(directiveName);
+                if (unsupportedDirective) {
+                    diagnostics.push({
+                        from: node.from,
+                        to: node.to,
+                        severity: "error",
+                        message: `The ${unsupportedDirective} directive is not currently supported by the GraphQL Toolbox.`,
+                    });
+                }
+            }
+        });
+    return diagnostics;
+}
 
 export interface Props {
     loading: boolean;
@@ -116,6 +133,7 @@ export const SchemaEditor = ({
             closedText: "▶",
             openText: "▼",
         }),
+        linter(unsupportedDirectivesLinter),
         graphql(getSchemaForLintAndAutocompletion()),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
         appSettings.showLintMarkers ? lintGutter() : [],
