@@ -52,8 +52,16 @@ export function rootConnectionResolver({
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const edgeTree = resolveTree.fieldsByTypeName[`${concreteEntityAdapter.upperFirstPlural}Connection`]?.edges;
+        const { cypher, params } = translateRead({
+            context: context as Neo4jGraphQLTranslationContext,
+            node,
+            entityAdapter: concreteEntityAdapter,
+            isRootConnectionField: true,
+        });
+
+        /*        const edgeTree = resolveTree.fieldsByTypeName[`${concreteEntityAdapter.upperFirstPlural}Connection`]?.edges;
         const nodeTree = edgeTree?.fieldsByTypeName[`${concreteEntityAdapter.name}Edge`]?.node;
         const resolveTreeForContext = nodeTree || resolveTree;
 
@@ -68,7 +76,7 @@ export function rootConnectionResolver({
             isRootConnectionField: true,
             entityAdapter: concreteEntityAdapter,
         });
-
+ */
         const executeResult = await execute({
             cypher,
             params,
