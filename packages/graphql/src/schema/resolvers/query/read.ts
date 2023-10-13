@@ -73,7 +73,9 @@ export function findResolver({
         };
     } else {
         // TODO: Interface/Union is WIP
-        args = {};
+        args = {
+            where: entityAdapter.operations.whereInputTypeName,
+        };
     }
 
     return {

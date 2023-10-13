@@ -1715,7 +1715,7 @@ describe("Union Interface Relationships", () => {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
-              directors: [Director!]!
+              directors(where: DirectorWhere): [Director!]!
               influencers(options: InfluencerOptions, where: InfluencerWhere): [Influencer!]!
               influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection!
               influencersConnection(after: String, first: Int, sort: [InfluencerSort], where: InfluencerWhere): InfluencersConnection!
@@ -1725,7 +1725,7 @@ describe("Union Interface Relationships", () => {
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-              reviewers: [Reviewer!]!
+              reviewers(where: ReviewerWhere): [Reviewer!]!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

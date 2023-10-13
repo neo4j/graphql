@@ -435,6 +435,12 @@ function makeAugmentedSchema({
             if (experimental) {
                 // TODO: mirror everything on interfaces target of relationships
                 // TODO [top-level-abstract-types-filtering]: _on should contain also implementing interface types?
+                withWhereInputType({
+                    entityAdapter: interfaceEntityAdapter,
+                    userDefinedFieldDirectives,
+                    features,
+                    composer,
+                });
                 if (interfaceEntityAdapter.isReadable) {
                     composer.Query.addFields({
                         [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({

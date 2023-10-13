@@ -94,6 +94,7 @@ export function withWhereInputType({
             interfaceEntityAdapter: entityAdapter,
             composer,
         });
+        // TODO: add interfaces that implement this interface here
         whereInputType.addFields({ _on: implementationsWhereInputType });
     }
     return whereInputType;
