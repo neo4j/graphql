@@ -17,9 +17,19 @@
  * limitations under the License.
  */
 
+import { directives, objects, scalars } from "@neo4j/graphql";
 import type { GraphQLDirective, GraphQLScalarType } from "graphql";
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
-import { directives, scalars, objects } from "@neo4j/graphql";
+
+const unsupportedDirectives = ["@authorization", "@authentication", "@subscriptionsAuthorization"];
+
+export function getUnsupportedDirective(directiveName: string): string | undefined {
+    for (const unsupportedDirective of unsupportedDirectives) {
+        if (directiveName.startsWith(unsupportedDirective)) {
+            return unsupportedDirective;
+        }
+    }
+}
 
 export const getSchemaForLintAndAutocompletion = (): GraphQLSchema => {
     return new GraphQLSchema({
