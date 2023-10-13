@@ -245,6 +245,67 @@ describe("Interface top level operations", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
+    test("Read interface with shared filters", async () => {
+        const query = gql`
+            {
+                myOtherInterfaces(where: { id_STARTS_WITH: "1" }) {
+                    id
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                WHERE this0.id STARTS WITH $param0
+                WITH this0 { .id, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+            }
+            RETURN this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"1\\"
+            }"
+        `);
+    });
+
+    test("Read interface with shared filters and concrete projection", async () => {
+        const query = gql`
+            {
+                myOtherInterfaces(where: { id_STARTS_WITH: "4" }) {
+                    id
+                    ... on SomeNodeType {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                WHERE this0.id STARTS WITH $param0
+                WITH this0 { .id, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+            }
+            RETURN this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"4\\"
+            }"
+        `);
+    });
+
     test("Read interface with filters", async () => {
         const query = gql`
             {
