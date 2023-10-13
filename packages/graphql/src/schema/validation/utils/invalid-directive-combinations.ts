@@ -73,12 +73,14 @@ type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<Int
 export const invalidInterfaceCombinations: InvalidInterfaceCombinations = {
     relationshipProperties: [],
     query: [],
+    plural: [],
 };
 
 type InvalidUnionCombinations = Record<UnionDirective, ReadonlyArray<UnionDirective>>;
 
 export const invalidUnionCombinations: InvalidUnionCombinations = {
     query: [],
+    plural: [],
 };
 
 type InvalidObjectCombinations = Record<Exclude<ObjectDirective, "jwt">, ReadonlyArray<ObjectDirective>>;

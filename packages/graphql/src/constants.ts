@@ -149,11 +149,11 @@ export const OBJECT_DIRECTIVES = [
 
 export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
 
-export const INTERFACE_DIRECTIVES = ["relationshipProperties", "query"] as const;
+export const INTERFACE_DIRECTIVES = ["relationshipProperties", "query", "plural"] as const;
 
 export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 
-export const UNION_DIRECTIVES = ["query"] as const;
+export const UNION_DIRECTIVES = ["query", "plural"] as const;
 
 export type UnionDirective = (typeof UNION_DIRECTIVES)[number];
 
