@@ -109,6 +109,38 @@ export class FilterFactory {
             return connectionFilters;
         }
     }
+    // TODO REMOVE IT, test of createConnectionPredicates
+    public createConnectionPredicatesWithoutRel(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        where: GraphQLWhereArg | GraphQLWhereArg[]
+    ): Filter[] {
+         /* let entityWhere = where;
+       if (isUnionEntity(rel.target) && where[entity.name]) {
+            entityWhere = where[entity.name];
+        } */
+        const filters = asArray(where).flatMap((nestedWhere) => {
+            return Object.entries(nestedWhere).flatMap(([key, value]: [string, GraphQLWhereArg]) => {
+                if (isLogicalOperator(key)) {
+                    const nestedFilters = this.createConnectionPredicatesWithoutRel(entity, value);
+                    return [
+                        new LogicalFilter({
+                            operation: key,
+                            filters: filterTruthy(nestedFilters),
+                        }),
+                    ];
+                }
+
+                const connectionWhereField = parseConnectionWhereFields(key);
+               /*  if (connectionWhereField.fieldName === "edge") {
+                    return this.createEdgeFilters(rel, value);
+                } */
+                if (connectionWhereField.fieldName === "node") {
+                    return this.createNodeFilters(entity, value);
+                }
+            });
+        });
+        return filterTruthy(filters);
+    }
 
     public createConnectionPredicates(
         rel: RelationshipAdapter,

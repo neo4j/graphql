@@ -185,9 +185,7 @@ export class FieldFactory {
         if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {
             attribute = entity.globalIdField;
             if (!attribute) throw new Error(`attribute ${fieldName} not found`);
-
-            // NOTE: for some reason, the alias needs to be the same as the database name
-            return new AttributeField({ alias: attribute.databaseName, attribute });
+            return new AttributeField({ alias: attribute.name, attribute });
         }
 
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);

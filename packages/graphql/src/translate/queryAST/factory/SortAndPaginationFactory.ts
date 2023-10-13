@@ -26,6 +26,7 @@ import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
+import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 
 export class SortAndPaginationFactory {
@@ -38,6 +39,25 @@ export class SortAndPaginationFactory {
 
     public createConnectionSortFields(
         options: ConnectionSortArg,
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter
+    ): { edge: Sort[]; node: Sort[] } {
+        if (isConcreteEntity(entityOrRel)) {
+            const nodeSortFields = this.createPropertySort(options.node || {}, entityOrRel);
+            return {
+                edge: [],
+                node: nodeSortFields,
+            };
+        }
+        const nodeSortFields = this.createPropertySort(options.node || {}, entityOrRel.target);
+        const edgeSortFields = this.createPropertySort(options.edge || {}, entityOrRel);
+        return {
+            edge: edgeSortFields,
+            node: nodeSortFields,
+        };
+    }
+    /* 
+    public createConnectionSortFields(
+        options: ConnectionSortArg,
         relationship: RelationshipAdapter
     ): { edge: Sort[]; node: Sort[] } {
         const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target);
@@ -46,7 +66,7 @@ export class SortAndPaginationFactory {
             edge: edgeSortFields,
             node: nodeSortFields,
         };
-    }
+    } */
 
     public createPagination(options: GraphQLOptionsArg): Pagination | undefined {
         if (options.limit || options.offset) {
