@@ -411,35 +411,31 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this0:SomeNodeType)
-                WHERE NOT (this0.somethingElse = $param0)
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
                     WITH this2 { .id } AS this2
-                    ORDER BY this2.id DESC
-                    LIMIT $param1
                     RETURN collect(this2) AS var3
                 }
                 WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
                 UNION
-                MATCH (this4:MyOtherImplementationType)
-                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
+                MATCH (this4:MyImplementationType)
+                WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
                 RETURN this4 AS this
+                UNION
+                MATCH (this5:MyOtherImplementationType)
+                WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                RETURN this5 AS this
             }
             RETURN this
             ORDER BY this.id ASC
-            LIMIT $param2"
+            LIMIT $param0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test\\",
-                \\"param1\\": {
-                    \\"low\\": 2,
-                    \\"high\\": 0
-                },
-                \\"param2\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -514,8 +510,6 @@ describe("Cypher sort tests", () => {
                     WITH this0
                     MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
                     WITH this2 { .id } AS this2
-                    ORDER BY this2.id DESC
-                    LIMIT $param1
                     RETURN collect(this2) AS var3
                 }
                 WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
@@ -527,17 +521,13 @@ describe("Cypher sort tests", () => {
             }
             RETURN this
             ORDER BY this.id ASC
-            LIMIT $param2"
+            LIMIT $param1"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"test\\",
                 \\"param1\\": {
-                    \\"low\\": 2,
-                    \\"high\\": 0
-                },
-                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -606,36 +596,18 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                MATCH (this0:SomeNodeType)
-                WHERE NOT (this0.somethingElse = $param0)
-                CALL {
-                    WITH this0
-                    MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
-                    WITH this2 { .id } AS this2
-                    ORDER BY this2.id DESC
-                    LIMIT $param1
-                    RETURN collect(this2) AS var3
-                }
-                WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                MATCH (this0:MyOtherImplementationType)
+                WITH this0 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
-                UNION
-                MATCH (this4:MyOtherImplementationType)
-                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
-                RETURN this4 AS this
             }
             RETURN this
             ORDER BY this.id ASC
-            LIMIT $param2"
+            LIMIT $param0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test\\",
-                \\"param1\\": {
-                    \\"low\\": 2,
-                    \\"high\\": 0
-                },
-                \\"param2\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -702,35 +674,37 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this0:SomeNodeType)
-                WHERE NOT (this0.somethingElse = $param0)
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
                     WITH this2 { .id } AS this2
                     ORDER BY this2.id DESC
-                    LIMIT $param1
+                    LIMIT $param0
                     RETURN collect(this2) AS var3
                 }
                 WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
                 UNION
-                MATCH (this4:MyOtherImplementationType)
-                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
+                MATCH (this4:MyImplementationType)
+                WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
                 RETURN this4 AS this
+                UNION
+                MATCH (this5:MyOtherImplementationType)
+                WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                RETURN this5 AS this
             }
             RETURN this
             ORDER BY this.id ASC
-            LIMIT $param2"
+            LIMIT $param1"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test\\",
-                \\"param1\\": {
+                \\"param0\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 },
-                \\"param2\\": {
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
