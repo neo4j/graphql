@@ -3515,7 +3515,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^5.0.0
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
-    "@neo4j/graphql": ^4.3.1
+    "@neo4j/graphql": ^4.3.2
     "@types/jest": 29.5.5
     "@types/node": 18.15.1
     camelcase: 6.3.0
@@ -3550,7 +3550,7 @@ __metadata:
     "@graphiql/react": 0.19.4
     "@neo4j-ndl/base": 1.10.3
     "@neo4j-ndl/react": 1.10.8
-    "@neo4j/graphql": 4.3.1
+    "@neo4j/graphql": 4.3.2
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.39.0
     "@tsconfig/create-react-app": 2.0.1
@@ -3607,7 +3607,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@4.3.1, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.3.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@4.3.2, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.3.2, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3648,7 +3648,7 @@ __metadata:
     jwks-rsa: 3.1.0
     koa: 2.14.2
     koa-jwt: 4.0.4
-    koa-router: 12.0.0
+    koa-router: 12.0.1
     libnpmsearch: 7.0.0
     mock-jwks: 1.0.10
     nock: 13.3.4
@@ -8726,7 +8726,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 2.0.1
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^10.0.0
-    "@neo4j/graphql": ^4.3.1
+    "@neo4j/graphql": ^4.3.2
     fork-ts-checker-webpack-plugin: 8.0.0
     graphql: 16.8.1
     graphql-tag: ^2.12.6
@@ -17631,15 +17631,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa-router@npm:12.0.0":
-  version: 12.0.0
-  resolution: "koa-router@npm:12.0.0"
+"koa-router@npm:12.0.1":
+  version: 12.0.1
+  resolution: "koa-router@npm:12.0.1"
   dependencies:
+    debug: ^4.3.4
     http-errors: ^2.0.0
     koa-compose: ^4.1.0
     methods: ^1.1.2
     path-to-regexp: ^6.2.1
-  checksum: 29b02fd96972c037e805f6ce2626c971f4fd9cba04005bfedc080ab425d31b4b1cfe2ebc000b26e4a45e68215a3a3ed557f836ba486ea0d2f1e7e78fc95f8dca
+  checksum: 62852af6c47dba9327c993594367b8bcd995fd49972d2539eae9afa231571680f75ebe0f439bf886256cdfaf791900c2d11fe31b894d9ba8c60d1c727c03b9ed
   languageName: node
   linkType: hard
 
@@ -18823,7 +18824,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.3.1
+    "@neo4j/graphql": ^4.3.2
     graphql: 16.8.1
     neo4j-driver: 5.13.0
   languageName: unknown

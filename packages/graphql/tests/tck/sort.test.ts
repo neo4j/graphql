@@ -351,9 +351,14 @@ describe("Cypher sort tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+});
 
-    test("Simple Sort on Interfaces", async () => {
-        const typeDefs = `
+describe("Top-level Interface query sort", () => {
+    let typeDefs: DocumentNode;
+    let neoSchema: Neo4jGraphQL;
+
+    beforeAll(() => {
+        typeDefs = gql`
             type SomeNodeType implements MyOtherInterface & MyInterface {
                 id: ID! @id @unique
                 something: String
@@ -381,17 +386,226 @@ describe("Cypher sort tests", () => {
                 someField: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({
+
+        neoSchema = new Neo4jGraphQL({
             typeDefs,
             experimental: true,
         });
+    });
 
+    test("Sort on Interface top-level", async () => {
+        const query = gql`
+            query {
+                myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
+                    id
+                    ... on MyOtherImplementationType {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on SomeNodeType {
+                            somethingElse
+                            other {
+                                id
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                    WITH this2 { .id } AS this2
+                    RETURN collect(this2) AS var3
+                }
+                WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this4:MyImplementationType)
+                WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
+                RETURN this4 AS this
+                UNION
+                MATCH (this5:MyOtherImplementationType)
+                WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                RETURN this5 AS this
+            }
+            RETURN this
+            ORDER BY this.id ASC
+            LIMIT $param0"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Sort on Interface top-level without projecting the sorted field", async () => {
+        const query = gql`
+            query {
+                myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
+                    ... on MyOtherImplementationType {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                WITH this0 { .something, .id, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:MyImplementationType)
+                WITH this1 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+                UNION
+                MATCH (this2:MyOtherImplementationType)
+                WITH this2 { .someField, .id, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
+                RETURN this2 AS this
+            }
+            RETURN this
+            ORDER BY this.id ASC
+            LIMIT $param0"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Sort with filter on Interface top-level", async () => {
         const query = gql`
             query {
                 myInterfaces(
                     where: { _on: { SomeNodeType: { somethingElse_NOT: "test" }, MyOtherImplementationType: {} } }
                     options: { sort: [{ id: ASC }], limit: 10 }
                 ) {
+                    id
+                    ... on MyOtherImplementationType {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on SomeNodeType {
+                            somethingElse
+                            other {
+                                id
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:SomeNodeType)
+                WHERE NOT (this0.somethingElse = $param0)
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                    WITH this2 { .id } AS this2
+                    RETURN collect(this2) AS var3
+                }
+                WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this4:MyOtherImplementationType)
+                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
+                RETURN this4 AS this
+            }
+            RETURN this
+            ORDER BY this.id ASC
+            LIMIT $param1"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"test\\",
+                \\"param1\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Sort on Interfaces filtered by _on type", async () => {
+        const query = gql`
+            query {
+                myInterfaces(
+                    where: { _on: { MyOtherImplementationType: {} } }
+                    options: { sort: [{ id: ASC }], limit: 10 }
+                ) {
+                    id
+                    ... on MyOtherImplementationType {
+                        someField
+                    }
+                    ... on MyOtherInterface {
+                        something
+                        ... on SomeNodeType {
+                            somethingElse
+                            other {
+                                id
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:MyOtherImplementationType)
+                WITH this0 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+            }
+            RETURN this
+            ORDER BY this.id ASC
+            LIMIT $param0"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Sort on Interfaces top-level + nested", async () => {
+        const query = gql`
+            query {
+                myInterfaces(options: { sort: [{ id: ASC }], limit: 10 }) {
                     id
                     ... on MyOtherImplementationType {
                         someField
@@ -414,35 +628,37 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this0:SomeNodeType)
-                WHERE NOT (this0.somethingElse = $param0)
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
                     WITH this2 { .id } AS this2
                     ORDER BY this2.id DESC
-                    LIMIT $param1
+                    LIMIT $param0
                     RETURN collect(this2) AS var3
                 }
                 WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
                 UNION
-                MATCH (this4:MyOtherImplementationType)
-                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
+                MATCH (this4:MyImplementationType)
+                WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
                 RETURN this4 AS this
+                UNION
+                MATCH (this5:MyOtherImplementationType)
+                WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                RETURN this5 AS this
             }
             RETURN this
             ORDER BY this.id ASC
-            LIMIT $param2"
+            LIMIT $param1"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test\\",
-                \\"param1\\": {
+                \\"param0\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 },
-                \\"param2\\": {
+                \\"param1\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
