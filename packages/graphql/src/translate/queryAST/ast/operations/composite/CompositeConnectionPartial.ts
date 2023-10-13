@@ -27,6 +27,7 @@ import type { Pagination } from "../../pagination/Pagination";
 export class CompositeConnectionPartial extends ConnectionReadOperation {
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
+        if (!this.relationship) throw new Error("connection fields are not supported on top level interface");
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);

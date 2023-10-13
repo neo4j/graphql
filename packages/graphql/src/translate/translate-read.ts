@@ -33,6 +33,8 @@ import { DEBUG_TRANSLATE } from "../constants";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { isConcreteEntity } from "./queryAST/utils/is-concrete-entity";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -54,6 +56,31 @@ function translateQuery({
     return clause.build();
 }
 
+/**
+ * This function maintains the old behavior where the resolveTree in the context was mutated by the connection resolver,
+ * in the new way all resolvers will use the queryASTFactory which doesn't requires this anymore .
+ **/
+function getConnectionResolveTree({
+    context,
+    entityAdapter,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entityAdapter: ConcreteEntityAdapter | UnionEntityAdapter | InterfaceEntityAdapter;
+}): ResolveTree {
+    if (isConcreteEntity(entityAdapter)) {
+        const edgeTree = context.resolveTree.fieldsByTypeName[`${entityAdapter.upperFirstPlural}Connection`]?.edges;
+        const nodeTree = edgeTree?.fieldsByTypeName[`${entityAdapter.name}Edge`]?.node;
+        const resolveTreeForContext = nodeTree || context.resolveTree;
+
+        return {
+            ...resolveTreeForContext,
+            args: context.resolveTree.args,
+        };
+    } else {
+        throw new Error("Root connection fields are not yet supported for interfaces and unions.");
+    }
+}
+
 export function translateRead(
     {
         node,
@@ -70,12 +97,14 @@ export function translateRead(
     },
     varName = "this"
 ): Cypher.CypherResult {
-    const { resolveTree } = context;
-
-    if (!isRootConnectionField && !resolveTree.args.fulltext && !resolveTree.args.phrase && !isGlobalNode) {
+    if (!context.resolveTree.args.fulltext && !context.resolveTree.args.phrase && !isGlobalNode) {
         return translateQuery({ context, entityAdapter });
     }
+    if (isRootConnectionField) {
+        context.resolveTree = getConnectionResolveTree({ context, entityAdapter });
+    }
 
+    const { resolveTree } = context;
     if (!node) {
         throw new Error("Translating Read: Node cannot be undefined.");
     }
