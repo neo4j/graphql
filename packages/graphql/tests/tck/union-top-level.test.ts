@@ -306,4 +306,85 @@ describe("Union top level operations", () => {
             }"
         `);
     });
+
+    test("Read union with pagination and filter", async () => {
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+            experimental: true,
+        });
+        const query = gql`
+            {
+                searches(options: { limit: 1, offset: 2 }, where: { Movie: { title_NOT: "The Matrix" }, Genre: {} }) {
+                    ... on Movie {
+                        title
+                        search(options: { limit: 10 }, where: { Genre: { name_STARTS_WITH: "d" }, Movie: {} }) {
+                            ... on Genre {
+                                name
+                            }
+                        }
+                    }
+                    ... on Genre {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { jwtAllowedNamesExample: "Horror" });
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:Genre)
+                WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:Movie)
+                WHERE NOT (this1.title = $param0)
+                CALL {
+                    WITH this1
+                    CALL {
+                        WITH *
+                        MATCH (this1)-[this2:SEARCH]->(this3:Genre)
+                        WHERE this3.name STARTS WITH $param1
+                        WITH this3 { .name, __resolveType: \\"Genre\\", __id: id(this3) } AS this3
+                        RETURN this3 AS var4
+                        UNION
+                        WITH *
+                        MATCH (this1)-[this5:SEARCH]->(this6:Movie)
+                        WITH this6 { __resolveType: \\"Movie\\", __id: id(this6) } AS this6
+                        RETURN this6 AS var4
+                    }
+                    WITH var4
+                    LIMIT $param2
+                    RETURN collect(var4) AS var4
+                }
+                WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+            }
+            RETURN this
+            SKIP $param3
+            LIMIT $param4"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Matrix\\",
+                \\"param1\\": \\"d\\",
+                \\"param2\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"param3\\": {
+                    \\"low\\": 2,
+                    \\"high\\": 0
+                },
+                \\"param4\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
 });

@@ -441,6 +441,7 @@ function makeAugmentedSchema({
                     features,
                     composer,
                 });
+                withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
                 if (interfaceEntityAdapter.isReadable) {
                     composer.Query.addFields({
                         [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({

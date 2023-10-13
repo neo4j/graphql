@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type Query {
-              resourceEntities(where: ResourceEntityWhere): [ResourceEntity!]!
+              resourceEntities(options: ResourceEntityOptions, where: ResourceEntityWhere): [ResourceEntity!]!
               resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
@@ -383,6 +383,24 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceEntityImplementationsWhere {
               Resource: ResourceWhere
+            }
+
+            input ResourceEntityOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ResourceEntitySort objects to sort ResourceEntities by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ResourceEntitySort]
+            }
+
+            \\"\\"\\"
+            Fields to sort ResourceEntities by. The order in which sorts are applied is not guaranteed when specifying many fields in one ResourceEntitySort object.
+            \\"\\"\\"
+            input ResourceEntitySort {
+              id: SortDirection
+              name: SortDirection
+              type: SortDirection
             }
 
             input ResourceEntityWhere {

@@ -1711,7 +1711,7 @@ describe("Algebraic", () => {
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
-              productions(where: ProductionWhere): [Production!]!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

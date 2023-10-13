@@ -1568,7 +1568,7 @@ describe("Directive-preserve", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              productions(where: ProductionWhere): [Production!]!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -2545,7 +2545,7 @@ describe("Directive-preserve", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              productions(where: ProductionWhere): [Production!]!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3220,7 +3220,7 @@ describe("Directive-preserve", () => {
               blogs(options: BlogOptions, where: BlogWhere): [Blog!]!
               blogsAggregate(where: BlogWhere): BlogAggregateSelection!
               blogsConnection(after: String, first: Int, sort: [BlogSort], where: BlogWhere): BlogsConnection!
-              contents(where: ContentWhere): [Content!]!
+              contents(options: QueryOptions, where: ContentWhere): [Content!]!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!

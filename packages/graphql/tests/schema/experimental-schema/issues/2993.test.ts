@@ -209,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type Query {
-              profiles(where: ProfileWhere): [Profile!]!
+              profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
