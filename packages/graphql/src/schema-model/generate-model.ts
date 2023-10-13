@@ -430,14 +430,11 @@ function generateConcreteEntity(
         return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
     });
 
-    const inheritedDirectives = inheritsFrom?.flatMap((i) => i?.directives || []);
     // schema configuration directives are propagated onto concrete entities
     const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
         PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT.includes(x.name.value)
     );
-    const annotations = createEntityAnnotations(
-        (definition.directives || []).concat(inheritedDirectives || []).concat(schemaDirectives || [])
-    );
+    const annotations = createEntityAnnotations((definition.directives || []).concat(schemaDirectives || []));
 
     return new ConcreteEntity({
         name: definition.name.value,
