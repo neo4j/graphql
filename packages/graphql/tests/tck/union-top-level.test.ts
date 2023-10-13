@@ -53,7 +53,7 @@ describe("Union top level operations", () => {
             experimental: true,
         });
     });
-    test("Read union ", async () => {
+    test("Read union", async () => {
         const query = gql`
             {
                 searches {
