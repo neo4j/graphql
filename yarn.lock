@@ -99,15 +99,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/composition@npm:2.5.5":
-  version: 2.5.5
-  resolution: "@apollo/composition@npm:2.5.5"
+"@apollo/composition@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@apollo/composition@npm:2.5.6"
   dependencies:
-    "@apollo/federation-internals": 2.5.5
-    "@apollo/query-graphs": 2.5.5
+    "@apollo/federation-internals": 2.5.6
+    "@apollo/query-graphs": 2.5.6
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 912ddf00d9aa01fc7df1cf82876cf3687711dffd652e3c0712ce00d5679954cae3a5b67be3063c6e1afe48ba1d78e7738354ed6b8973546f66fda2f65a46f03e
+  checksum: 65589966f7ed700c41153a2d869139e99433d85b2b864c843c8facfe9de048b9e3d8e8b4387ecf340f80f96146e9ccd1b5b5199a3ddf56de6fadea66c08ec2bf
   languageName: node
   linkType: hard
 
@@ -122,6 +122,20 @@ __metadata:
   peerDependencies:
     graphql: ^16.5.0
   checksum: 9192404f0a5ef3711e08c57f3ba628420ab2c1ab262ad266311e5e2ac54503040c554aa10a805496fb59c5794cd2239d8b29a25b62bfe9fe0cde7e0c7de822f9
+  languageName: node
+  linkType: hard
+
+"@apollo/federation-internals@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@apollo/federation-internals@npm:2.5.6"
+  dependencies:
+    "@types/uuid": ^9.0.0
+    chalk: ^4.1.0
+    js-levenshtein: ^1.1.6
+    uuid: ^9.0.0
+  peerDependencies:
+    graphql: ^16.5.0
+  checksum: 651e05ee85012f12be4dd334886e79d881bc81b1277c079e3a7486166b7084b1e34b868825286e9365c313d93af6c39b533281cba28b2c2710061c4f0ffd92f8
   languageName: node
   linkType: hard
 
@@ -154,13 +168,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/gateway@npm:2.5.5":
-  version: 2.5.5
-  resolution: "@apollo/gateway@npm:2.5.5"
+"@apollo/gateway@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@apollo/gateway@npm:2.5.6"
   dependencies:
-    "@apollo/composition": 2.5.5
-    "@apollo/federation-internals": 2.5.5
-    "@apollo/query-planner": 2.5.5
+    "@apollo/composition": 2.5.6
+    "@apollo/federation-internals": 2.5.6
+    "@apollo/query-planner": 2.5.6
     "@apollo/server-gateway-interface": ^1.1.0
     "@apollo/usage-reporting-protobuf": ^4.1.0
     "@apollo/utils.createhash": ^2.0.0
@@ -178,7 +192,7 @@ __metadata:
     node-fetch: ^2.6.7
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 7136f2cc83767b70f73e35144805f46844cf4e66c7d2d42b144a32f8ebc164fea128388aa0a789b77263a90f4b6bcddab4ea79578f9bc65819ff6e8d89ea0485
+  checksum: 3175ee46a400a9c3bba27847ca6088d76b2f471df9b8d88f0294794198638cf68a91e12423bdf870d9d1dbc2570f9d8b96de9391f8436e896a5638f01a3ff9c6
   languageName: node
   linkType: hard
 
@@ -205,33 +219,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/query-graphs@npm:2.5.5":
-  version: 2.5.5
-  resolution: "@apollo/query-graphs@npm:2.5.5"
+"@apollo/query-graphs@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@apollo/query-graphs@npm:2.5.6"
   dependencies:
-    "@apollo/federation-internals": 2.5.5
+    "@apollo/federation-internals": 2.5.6
     deep-equal: ^2.0.5
     ts-graphviz: ^1.5.4
     uuid: ^9.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: bc5f0216ae5e5dcbdc0e9cf8aa2682fe1958c06aaade82161b882a265a2c2c606eedc40c5da54067d59bcf3c95934b468932f8383bad4633036d4d494b1379c9
+  checksum: 3c6365b9ae78ad6f318d6ed076109fbee8725296a3046bb66da2fe0ad46d4c2ac39c15dd719f0d22fdfe1395189bf56f3c12005d7f2c66f0489dab70b0074912
   languageName: node
   linkType: hard
 
-"@apollo/query-planner@npm:2.5.5":
-  version: 2.5.5
-  resolution: "@apollo/query-planner@npm:2.5.5"
+"@apollo/query-planner@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@apollo/query-planner@npm:2.5.6"
   dependencies:
-    "@apollo/federation-internals": 2.5.5
-    "@apollo/query-graphs": 2.5.5
+    "@apollo/federation-internals": 2.5.6
+    "@apollo/query-graphs": 2.5.6
     "@apollo/utils.keyvaluecache": ^2.1.0
     chalk: ^4.1.0
     deep-equal: ^2.0.5
     pretty-format: ^29.0.0
   peerDependencies:
     graphql: ^16.5.0
-  checksum: d5a6f20da03ed4a15f2b23e40a4040e6136b96281d323c0b26801a6c346c12873811e81315e0921c31eef3584eb5111bf3e750fee30dcfa54094e23ee9a3134a
+  checksum: 5923d9cc5a6ae84f6d858bb99c0da1488e322d9e5addaa57ddc84a1ddab181e81f8567bf4deacdb0ffca572c4664bd7f704e5df0192d67c386464418f4dddc39
   languageName: node
   linkType: hard
 
@@ -1679,9 +1693,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/autocomplete@npm:6.10.1":
-  version: 6.10.1
-  resolution: "@codemirror/autocomplete@npm:6.10.1"
+"@codemirror/autocomplete@npm:6.10.2":
+  version: 6.10.2
+  resolution: "@codemirror/autocomplete@npm:6.10.2"
   dependencies:
     "@codemirror/language": ^6.0.0
     "@codemirror/state": ^6.0.0
@@ -1692,7 +1706,7 @@ __metadata:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.0.0
-  checksum: 5aec23a0b34bcd2bf09f439c22ed949cd560e525867913ee623ae31b2528441395bb43553eb1782e1d1ae40fdba43ee90d5169df6c58be076c5e231b1f7b8316
+  checksum: 360cea6a87ae9c4e3c996903f636a8f47f8ea6cd44504181e69dd8ccf666bad3e8cc6d8935e0eedd8aa118fdfe86ea78f41bc15288f3a7517dbb87115e057563
   languageName: node
   linkType: hard
 
@@ -3540,7 +3554,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@codemirror/autocomplete": 6.10.1
+    "@codemirror/autocomplete": 6.10.2
     "@codemirror/commands": 6.3.0
     "@codemirror/lang-javascript": 6.2.1
     "@codemirror/language": 6.9.1
@@ -3599,7 +3613,7 @@ __metadata:
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.1.0
     typescript: 5.1.6
-    webpack: 5.88.2
+    webpack: 5.89.0
     webpack-cli: 5.1.4
     webpack-dev-server: 4.15.1
     webpack-notifier: 1.15.0
@@ -3611,7 +3625,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@apollo/gateway": 2.5.5
+    "@apollo/gateway": 2.5.6
     "@apollo/server": 4.9.4
     "@apollo/subgraph": ^2.2.3
     "@faker-js/faker": 8.1.0
@@ -8734,7 +8748,7 @@ __metadata:
     ts-loader: 9.5.0
     tsconfig-paths-webpack-plugin: 4.1.0
     typescript: 5.1.6
-    webpack: 5.88.2
+    webpack: 5.89.0
   languageName: unknown
   linkType: soft
 
@@ -26293,7 +26307,44 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.88.2, webpack@npm:^5":
+"webpack@npm:5.89.0":
+  version: 5.89.0
+  resolution: "webpack@npm:5.89.0"
+  dependencies:
+    "@types/eslint-scope": ^3.7.3
+    "@types/estree": ^1.0.0
+    "@webassemblyjs/ast": ^1.11.5
+    "@webassemblyjs/wasm-edit": ^1.11.5
+    "@webassemblyjs/wasm-parser": ^1.11.5
+    acorn: ^8.7.1
+    acorn-import-assertions: ^1.9.0
+    browserslist: ^4.14.5
+    chrome-trace-event: ^1.0.2
+    enhanced-resolve: ^5.15.0
+    es-module-lexer: ^1.2.1
+    eslint-scope: 5.1.1
+    events: ^3.2.0
+    glob-to-regexp: ^0.4.1
+    graceful-fs: ^4.2.9
+    json-parse-even-better-errors: ^2.3.1
+    loader-runner: ^4.2.0
+    mime-types: ^2.1.27
+    neo-async: ^2.6.2
+    schema-utils: ^3.2.0
+    tapable: ^2.1.1
+    terser-webpack-plugin: ^5.3.7
+    watchpack: ^2.4.0
+    webpack-sources: ^3.2.3
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
+  bin:
+    webpack: bin/webpack.js
+  checksum: 43fe0dbc30e168a685ef5a86759d5016a705f6563b39a240aa00826a80637d4a3deeb8062e709d6a4b05c63e796278244c84b04174704dc4a37bedb0f565c5ed
+  languageName: node
+  linkType: hard
+
+"webpack@npm:^5":
   version: 5.88.2
   resolution: "webpack@npm:5.88.2"
   dependencies:
