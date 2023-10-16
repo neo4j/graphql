@@ -23,17 +23,18 @@ import { parseFilterProperty } from "../../../schema/resolvers/subscriptions/whe
 
 export function filterByValues<T>(
     whereInput: Record<string, T | Array<Record<string, T>> | Record<string, T>>,
-    receivedValues: Record<string, T>
+    receivedValues: Record<string, T>,
+    jwtClaims?: Map<string, string>
 ): boolean {
     for (const [k, v] of Object.entries(whereInput)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
             let comparisonResults;
             if (k === "NOT") {
-                comparisonResults = filterByValues(v as Record<string, T>, receivedValues);
+                comparisonResults = filterByValues(v as Record<string, T>, receivedValues, jwtClaims);
             } else {
                 comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                    return filterByValues(whereCl, receivedValues);
+                    return filterByValues(whereCl, receivedValues, jwtClaims);
                 });
             }
 
@@ -42,7 +43,16 @@ export function filterByValues<T>(
             }
         } else {
             const { fieldName, operator } = parseFilterProperty(k);
-            const receivedValue = receivedValues[fieldName];
+            let receivedValue: T | undefined;
+            console.log("here", fieldName, receivedValues);
+            const mappedJwtClaim = jwtClaims?.get(fieldName);
+            if (mappedJwtClaim) {
+                receivedValue = expandJwtClaim(mappedJwtClaim, receivedValues);
+                console.log("mapped", receivedValue);
+            } else {
+                receivedValue = receivedValues[fieldName];
+                console.log("NOT mapped", receivedValue);
+            }
             if (!receivedValue) {
                 return false;
             }
@@ -54,4 +64,16 @@ export function filterByValues<T>(
         }
     }
     return true;
+}
+
+function expandJwtClaim<T>(mappedJwtClaim: string, jwtData: Record<string, T>): T | undefined {
+    let receivedValue: T | undefined;
+    let paths = mappedJwtClaim.split(/(?<!\\)\./);
+
+    paths = paths.map((p) => p.replaceAll(/\\\./g, "."));
+
+    for (const p of paths) {
+        receivedValue = (receivedValue || jwtData)[p];
+    }
+    return receivedValue;
 }
