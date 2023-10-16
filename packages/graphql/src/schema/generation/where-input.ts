@@ -25,6 +25,7 @@ import type {
     InputTypeComposerFieldConfigMapDefinition,
     SchemaComposer,
 } from "graphql-compose";
+import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -60,7 +61,7 @@ export function withWhereInputType({
     features,
     composer,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter;
+    entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
@@ -105,7 +106,7 @@ function makeWhereFields({
     userDefinedFieldDirectives,
     features,
 }: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter;
+    entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {

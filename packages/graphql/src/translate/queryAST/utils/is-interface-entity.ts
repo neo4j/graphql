@@ -17,13 +17,10 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-export function isInterfaceEntity(
-    entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | RelationshipAdapter
-): entity is InterfaceEntityAdapter {
+export function isInterfaceEntity(entity: EntityAdapter | RelationshipAdapter): entity is InterfaceEntityAdapter {
     return entity instanceof InterfaceEntityAdapter;
 }
