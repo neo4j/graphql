@@ -82,8 +82,12 @@ export class OperationsFactory {
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isConnection) {
-                this.fixResolveTreeForTopLevelConnection(resolveTree);
-                const op = this.createConnectionOperationAST(entity, resolveTree, context) as ConnectionReadOperation;
+                const topLevelConnectionResolveTree = this.fixResolveTreeForTopLevelConnection(resolveTree);
+                const op = this.createConnectionOperationAST(
+                    entity,
+                    topLevelConnectionResolveTree,
+                    context
+                ) as ConnectionReadOperation;
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
@@ -94,17 +98,19 @@ export class OperationsFactory {
     // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
     // This function temporary adjust some inconsistencies waiting for the new API.
     // TODO: Remove it when the new API is ready.
-    private fixResolveTreeForTopLevelConnection(resolveTree: ResolveTree): void {
+    private fixResolveTreeForTopLevelConnection(resolveTree: ResolveTree): ResolveTree {
+        const topLevelConnectionResolveTree = Object.assign({}, resolveTree);
         // Move the sort arguments inside a "node" object.
-        if (resolveTree.args.sort) {
-            resolveTree.args.sort = (resolveTree.args.sort as any[]).map((sortField) => {
+        if (topLevelConnectionResolveTree.args.sort) {
+            topLevelConnectionResolveTree.args.sort = (resolveTree.args.sort as any[]).map((sortField) => {
                 return { node: sortField };
             });
         }
         // move the where arguments inside a "node" object.
-        if (resolveTree.args.where) {
-            resolveTree.args.where = { node: resolveTree.args.where };
+        if (topLevelConnectionResolveTree.args.where) {
+            topLevelConnectionResolveTree.args.where = { node: resolveTree.args.where };
         }
+        return topLevelConnectionResolveTree;
     }
 
     private createCreateOperation(
@@ -347,10 +353,10 @@ export class OperationsFactory {
                     whereArgs: resolveTreeWhere,
                 });
             }
-            throw new Error("topLevel connection not implemented for interfaces and unions");
+            throw new Error("topLevel connection is not implemented for interfaces and unions");
         }
     }
-  
+
     // TODO unify it with hydrate for nested connection
     // eslint-disable-next-line @typescript-eslint/comma-dangle
     private hydrateTopLevelConnectionOperationsASTWithSort<
