@@ -44,14 +44,11 @@ export function filterByValues<T>(
         } else {
             const { fieldName, operator } = parseFilterProperty(k);
             let receivedValue: T | undefined;
-            console.log("here", fieldName, receivedValues);
             const mappedJwtClaim = jwtClaims?.get(fieldName);
             if (mappedJwtClaim) {
                 receivedValue = expandJwtClaim(mappedJwtClaim, receivedValues);
-                console.log("mapped", receivedValue);
             } else {
                 receivedValue = receivedValues[fieldName];
-                console.log("NOT mapped", receivedValue);
             }
             if (!receivedValue) {
                 return false;
