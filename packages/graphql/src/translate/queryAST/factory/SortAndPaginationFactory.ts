@@ -55,18 +55,6 @@ export class SortAndPaginationFactory {
             node: nodeSortFields,
         };
     }
-    /* 
-    public createConnectionSortFields(
-        options: ConnectionSortArg,
-        relationship: RelationshipAdapter
-    ): { edge: Sort[]; node: Sort[] } {
-        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target);
-        const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
-        return {
-            edge: edgeSortFields,
-            node: nodeSortFields,
-        };
-    } */
 
     public createPagination(options: GraphQLOptionsArg): Pagination | undefined {
         if (options.limit || options.offset) {
