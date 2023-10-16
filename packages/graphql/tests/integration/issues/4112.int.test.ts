@@ -77,7 +77,6 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
         const secret = "123456";
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-        // testing the missing non non-null array
         const query = `
             query  {
                ${Category.plural} {
@@ -134,7 +133,6 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
         const secret = "123456";
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-        // testing the missing non non-null array
         const query = `
             query  {
                ${Category.plural} {
@@ -191,7 +189,6 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
         const secret = "123456";
         const neoSchema = new Neo4jGraphQL({ typeDefs, features: { authorization: { key: secret } } });
 
-        // testing the missing non non-null array
         const query = `
             query  {
                ${Category.plural} {
@@ -258,7 +255,6 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             features: { authorization: { key: secret } },
         });
 
-        // testing the missing non non-null array
         const query = `
             query  {
                 categories
