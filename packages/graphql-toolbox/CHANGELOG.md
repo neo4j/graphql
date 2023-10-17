@@ -1,5 +1,18 @@
 # @neo4j/graphql-toolbox
 
+## 2.1.0
+
+### Minor Changes
+
+-   [#4096](https://github.com/neo4j/graphql/pull/4096) [`b88809c11`](https://github.com/neo4j/graphql/commit/b88809c111dc0de62c833aa2cdd2addb5034c4b7) Thanks [@mjfwebb](https://github.com/mjfwebb)! - refactor: migrate components neo4j-ndl v2
+
+### Patch Changes
+
+-   [#4119](https://github.com/neo4j/graphql/pull/4119) [`6a8c31c60`](https://github.com/neo4j/graphql/commit/6a8c31c60be7f675cdc9f6c4106ef86d87dd6bc9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Show users when a valid directive is unsupported. Specifically the authorization directive in this case.
+
+-   Updated dependencies [[`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf), [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a)]:
+    -   @neo4j/graphql@4.3.3
+
 ## 2.0.14
 
 ### Patch Changes
