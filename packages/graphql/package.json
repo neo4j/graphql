@@ -56,7 +56,7 @@
         "@types/is-uuid": "1.0.0",
         "@types/jest": "29.5.5",
         "@types/jsonwebtoken": "9.0.3",
-        "@types/node": "18.15.1",
+        "@types/node": "18.18.5",
         "@types/pluralize": "0.0.31",
         "@types/randomstring": "1.1.9",
         "@types/semver": "7.5.3",
