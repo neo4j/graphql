@@ -40,6 +40,8 @@ import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttribu
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
+import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -303,11 +305,23 @@ export class FieldFactory {
     ): OperationField {
         const relationship = entity.findRelationship(fieldName);
         if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
-        const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(
-            relationship,
-            field,
-            context
-        );
+        const target = relationship.target;
+        let connectionOp: ConnectionReadOperation | CompositeConnectionReadOperation;
+        if (isConcreteEntity(target)) {
+            connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST({
+                relationship,
+                target,
+                resolveTree: field,
+                context,
+            });
+        } else {
+            connectionOp = this.queryASTFactory.operationsFactory.createCompositeConnectionOperationAST({
+                relationship,
+                target,
+                resolveTree: field,
+                context,
+            });
+        }
 
         return new OperationField({
             operation: connectionOp,
