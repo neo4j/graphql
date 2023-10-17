@@ -137,7 +137,11 @@ export function filterByAuthorizationRules({
         }
 
         if (wherePropertyKey === "jwt") {
-            return filterByValues(wherePropertyValue, context.authorization.jwt as Record<string, any>);
+            const { jwt, claims } = context.authorization;
+            if (!jwt) {
+                throw new Error("JWT Token must be present.");
+            }
+            return filterByValues(wherePropertyValue, jwt, claims);
         }
 
         return true;
