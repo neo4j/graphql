@@ -39,7 +39,9 @@ describe("OGM", () => {
             test("should throw to await ogm.init()", async () => {
                 const ogm = new OGM({ typeDefs: "type User {id: ID}" });
 
-                await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow(`You must await \`.init()\` before \`.assertIndexesAndConstraints()\``);
+                await expect(ogm.assertIndexesAndConstraints()).rejects.toThrow(
+                    `You must await \`.init()\` before \`.assertIndexesAndConstraints()\``
+                );
             });
             test("should throw neo4j-driver Driver missing", async () => {
                 const ogm = new OGM({ typeDefs: "type User {id: ID}" });
@@ -57,6 +59,19 @@ describe("OGM", () => {
                 const model = "not-real";
 
                 expect(() => ogm.model(model)).toThrow(`Could not find model ${model}`);
+            });
+        });
+
+        describe("createInitializer", () => {
+            test("should throw an error if schema initialization fails", async () => {
+                const incorrectTypeDefs = `
+                    type Query {
+                        randomNumber: Int @cypher(statement: "RETURN rand() as result", columnName: test)
+                    }
+                `;
+
+                const ogm = new OGM({ typeDefs: incorrectTypeDefs });
+                await expect(ogm.init()).rejects.toThrow(`Argument "columnName" has invalid value test.`);
             });
         });
     });
