@@ -127,7 +127,7 @@ export class ReadOperation extends Operation {
         let filterSubqueryWith: Cypher.With | undefined;
 
         // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFiltersPredicate.length > 0; //&& preSelection.length === 0;
+        const shouldAddWithForAuth = authFiltersPredicate.length > 0;
         if (authFilterSubqueries.length > 0 || shouldAddWithForAuth) {
             if (!isCreateSelection) {
                 filterSubqueryWith = new Cypher.With("*");
@@ -248,7 +248,7 @@ export class ReadOperation extends Operation {
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
         // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFiltersPredicate.length > 0; //&& preSelection.length === 0;
+        const shouldAddWithForAuth = authFiltersPredicate.length > 0;
         if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
             if (!isCreateSelection) {
