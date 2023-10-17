@@ -20,6 +20,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { EditorContextProvider, StorageContextProvider } from "@graphiql/react";
+import { NeedleThemeProvider } from "@neo4j-ndl/react";
 import type { GraphQLSchema } from "graphql";
 
 import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
@@ -85,7 +86,7 @@ export const Main = () => {
 
         return (
             <div
-                className="h-8 w-full n-bg-primary-70 text-white text-center cursor-pointer leading-8"
+                className="h-8 w-full bg-lavender-45 text-neutral-10 text-center cursor-pointer leading-8"
                 onClick={handleInterestedInGraphQLaaSClick}
                 onKeyDown={handleInterestedInGraphQLaaSClick}
                 role="button"
@@ -101,9 +102,11 @@ export const Main = () => {
             <EditorContextProvider>
                 <StorageContextProvider>
                     <Banner />
-                    <TopBar />
+                    <NeedleThemeProvider theme="dark">
+                        <TopBar />
+                    </NeedleThemeProvider>
                     <ViewSelector hasSchema={!!schema} />
-                    <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
+                    <div className="h-content-container w-full overflow-y-auto bg-neutral-15">
                         {screen.view === Screen.TYPEDEFS ? (
                             <SchemaView
                                 onSchemaChange={(schema) => {

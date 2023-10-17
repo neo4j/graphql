@@ -28,7 +28,7 @@ interface Props {
 export const SwitchDatabasePrompt = ({ selectedDatabaseName, onClose, onSwitchDatabase }: Props) => {
     return (
         <Dialog
-            id="switch-database-prompt"
+            ndl-id="switch-database-prompt"
             data-test-switch-database-prompt
             type="warning"
             open={!!selectedDatabaseName}

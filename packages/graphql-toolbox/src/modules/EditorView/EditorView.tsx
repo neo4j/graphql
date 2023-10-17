@@ -21,6 +21,7 @@ import { useCallback, useContext, useState } from "react";
 
 import { tokens } from "@neo4j-ndl/base";
 import { Switch } from "@neo4j-ndl/react";
+import classNames from "classnames";
 import GraphiQLExplorer from "graphiql-explorer";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
@@ -100,9 +101,9 @@ export const EditorView = ({ schema }: Props) => {
 
     return (
         <div className="w-full h-full flex">
-            <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
+            <div className={classNames("flex flex-col", showRightPanel ? "w-content-container" : "w-full")}>
                 <div className="w-full h-full flex">
-                    <div className="h-full w-96 bg-white border-t border-gray-100">
+                    <div className="h-full w-96 bg-neutral-10 border-t border-neutral-20">
                         <div className="h-content-docs-container p-6">
                             {schema ? (
                                 <>
@@ -146,7 +147,7 @@ export const EditorView = ({ schema }: Props) => {
                     </div>
 
                     {showDocs ? (
-                        <div className="h-content-docs-container w-96 absolute left-[388px] my-1 mx-0 z-50 bg-white shadow rounded">
+                        <div className="h-content-docs-container w-96 absolute left-[388px] my-1 mx-0 z-50 bg-neutral-10 shadow-raised rounded">
                             <DocExplorerComponent
                                 schema={schema}
                                 isEmbedded={false}
@@ -185,7 +186,7 @@ export const EditorView = ({ schema }: Props) => {
             </div>
 
             {showRightPanel ? (
-                <div className="h-full flex justify-start w-96 bg-white border-l border-gray-100 z-50">
+                <div className="h-full flex justify-start w-96 bg-neutral-10 border-l border-neutral-20 z-50">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={schema} />
                     ) : null}

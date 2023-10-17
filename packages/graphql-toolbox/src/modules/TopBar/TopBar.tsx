@@ -19,13 +19,14 @@
 
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { Button, IconButton, SmartTooltip, StatusIndicator } from "@neo4j-ndl/react";
+import { Button, IconButton, StatusIndicator, Tip, useNeedleTheme } from "@neo4j-ndl/react";
 import {
     ChatBubbleOvalLeftEllipsisIconOutline,
     ChevronDownIconOutline,
     Cog8ToothIconOutline,
     QuestionMarkCircleIconOutline,
 } from "@neo4j-ndl/react/icons";
+import classNames from "classnames";
 
 import { tracking } from "../../analytics/tracking";
 // @ts-ignore - SVG Import
@@ -39,6 +40,7 @@ import { ConnectionMenu } from "./ConnectionMenu";
 import { SwitchDatabasePrompt } from "./SwitchDatabasePrompt";
 
 export const TopBar = () => {
+    const { themeClassName } = useNeedleTheme();
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const screen = useContext(ScreenContext);
@@ -93,54 +95,52 @@ export const TopBar = () => {
         setNextSelectedDatabaseName(undefined);
     };
 
-    const ConnectionTooltip = () => {
-        return (
-            <SmartTooltip ref={menuButtonRef} allowedPlacements={["bottom"]}>
-                <>
-                    <p>Username: {auth.username}</p>
-                    <p>Connection Url: {auth.connectUrl}</p>
-                    <p>Neo4j Database Version: {auth.databaseInformation?.version || "-"}</p>
-                    <p>Neo4j Database Edition: {auth.databaseInformation?.edition || "-"}</p>
-                </>
-            </SmartTooltip>
-        );
-    };
-
     return (
-        <div className="flex w-full h-16 n-bg-neutral-90 border-b border-gray-100">
+        <div className={classNames("flex w-full h-16 bg-neutral-80 border-b border-neutral-20", themeClassName)}>
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
-                    <p className="ml-6 n-text-neutral-50 text-base whitespace-nowrap">GraphQL Toolbox</p>
+                    <p className="ml-6 text-neutral-10 text-base whitespace-nowrap">GraphQL Toolbox</p>
                 </div>
             </div>
             <div className="flex-1 flex justify-center items-center">
-                <div
-                    onClick={() => setOpenConnectionMenu(!openConnectionMenu)}
-                    onKeyDown={() => setOpenConnectionMenu(!openConnectionMenu)}
-                    ref={menuButtonRef}
-                    data-test-topbar-connection-information
-                    className="flex items-center n-text-dark-neutral-text-weaker cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                >
-                    <p className="mr-2">
-                        <StatusIndicator type={auth?.isConnected ? "success" : "danger"} />
-                    </p>
-                    <div className="items-center hidden lg:flex">
-                        <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
-                        <span className="mx-2">/</span>
-                        <span
-                            data-test-topbar-selected-database
-                            className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden"
+                <Tip allowedPlacements={["bottom"]}>
+                    <Tip.Trigger>
+                        <div
+                            onClick={() => setOpenConnectionMenu(!openConnectionMenu)}
+                            onKeyDown={() => setOpenConnectionMenu(!openConnectionMenu)}
+                            data-test-topbar-connection-information
+                            className="flex items-center text-dark-neutral-text-weaker cursor-pointer"
+                            role="button"
+                            tabIndex={0}
+                            ref={menuButtonRef}
                         >
-                            {auth.selectedDatabaseName}
-                        </span>
-                    </div>
-                    <div className="block lg:hidden">Connection</div>
-                    <ChevronDownIconOutline className="ml-2 w-4 h-4" />
-                </div>
-                <ConnectionTooltip />
+                            <p className="mr-2">
+                                <StatusIndicator type={auth?.isConnected ? "success" : "danger"} />
+                            </p>
+                            <div className="items-center hidden lg:flex">
+                                <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
+                                <span className="mx-2">/</span>
+                                <span
+                                    data-test-topbar-selected-database
+                                    className="max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden"
+                                >
+                                    {auth.selectedDatabaseName}
+                                </span>
+                            </div>
+                            <div className="block lg:hidden">Connection</div>
+                            <ChevronDownIconOutline className="ml-2 w-4 h-4" />
+                        </div>
+                    </Tip.Trigger>
+                    <Tip.Content style={{ width: "16rem" }} className="shadow-raised">
+                        <>
+                            <p>Username: {auth.username}</p>
+                            <p>Connection Url: {auth.connectUrl}</p>
+                            <p>Neo4j Database Version: {auth.databaseInformation?.version || "-"}</p>
+                            <p>Neo4j Database Edition: {auth.databaseInformation?.edition || "-"}</p>
+                        </>
+                    </Tip.Content>
+                </Tip>
                 <ConnectionMenu
                     menuButtonRef={menuButtonRef}
                     openConnectionMenu={openConnectionMenu}
@@ -158,7 +158,7 @@ export const TopBar = () => {
                 <div className="flex items-center text-sm">
                     <Button
                         data-test-send-feedback-topbar
-                        className="ndl-theme-dark mr-2 hidden lg:block"
+                        className={classNames(themeClassName, "mr-2 hidden lg:block")}
                         color="primary"
                         fill="outlined"
                         onClick={handleSendFeedbackClick}
@@ -167,7 +167,7 @@ export const TopBar = () => {
                     </Button>
                     <IconButton
                         data-test-send-feedback-topbar
-                        className="ndl-theme-dark flex lg:hidden"
+                        className={classNames(themeClassName, "flex lg:hidden")}
                         aria-label="Send feedback"
                         onClick={handleSendFeedbackClick}
                         size="large"
@@ -182,7 +182,7 @@ export const TopBar = () => {
                         </div>
                         <IconButton
                             data-test-topbar-help-button
-                            className="ndl-theme-dark"
+                            className={themeClassName}
                             aria-label="Help and learn drawer"
                             onClick={handleHelpClick}
                             size="large"
@@ -193,7 +193,7 @@ export const TopBar = () => {
                         <IconButton
                             clean
                             data-test-topbar-settings-button
-                            className="ndl-theme-dark"
+                            className={themeClassName}
                             aria-label="Application settings"
                             onClick={handleSettingsClick}
                             size="large"

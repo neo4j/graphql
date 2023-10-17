@@ -40,7 +40,7 @@ export const SchemaScreenDrawer = ({
                 <>
                     <button
                         data-test-help-drawer-keybindings-tile-schema-view
-                        className="w-full n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex text-sm"
+                        className="w-full bg-neutral-20 hover:bg-neutral-25 p-4 mb-8 rounded-2xl cursor-pointer flex text-sm"
                         onClick={() => setShowSubComponent(true)}
                     >
                         <ComputerDesktopIconOutline className="h-6 w-6 mr-2" />

@@ -40,6 +40,7 @@ export class TopBar extends Screen {
 
     public async selectDatabaseByName(name: string) {
         await this.page.waitForSelector(`[data-test-topbar-database="${name}"]`);
+        await this.page.mouse.move(100, 100);
         await this.page.click(`[data-test-topbar-database="${name}"]`);
     }
 
