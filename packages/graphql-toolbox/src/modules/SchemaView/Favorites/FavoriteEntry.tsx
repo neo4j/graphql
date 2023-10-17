@@ -109,7 +109,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
                 onKeyDown={() => onSelectFavorite(favorite.typeDefs)}
                 className="show-on-hover"
             >
-                <PlayCircleIconOutline color={tokens.colors.primary[50]} />
+                <PlayCircleIconOutline color={tokens.colors.baltic[50]} />
             </IconButton>
 
             {editMode ? (

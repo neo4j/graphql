@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2396", () => {
     let typeDefs: DocumentNode;
@@ -157,14 +157,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
             WITH *, count(this0) AS valuationCount
             WITH *
+            WITH *
             WHERE ((valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param0 | 1] WHERE true)) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {
                 WITH this
                 MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
+                WITH *
                 WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
                 CALL {
                     WITH this3
                     MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
+                    WITH *
                     WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
                     WITH this5 { .uuid } AS this5
                     RETURN head(collect(this5)) AS var6
@@ -221,14 +224,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
             WITH *, count(this0) AS valuationCount
             WITH *
+            WITH *
             WHERE ((this.price >= $param0 AND (valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param1 | 1] WHERE true))) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {
                 WITH this
                 MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
+                WITH *
                 WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
                 CALL {
                     WITH this3
                     MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
+                    WITH *
                     WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
                     WITH this5 { .uuid } AS this5
                     RETURN head(collect(this5)) AS var6
@@ -318,10 +324,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this7:HAS_VALUATION]->(this8:Valuation)
+                WITH *
                 WHERE ($isAuthenticated = true AND this8.archivedAt IS NULL)
                 CALL {
                     WITH this8
                     MATCH (this8)-[this9:VALUATION_FOR]->(this10:Estate)
+                    WITH *
                     WHERE ($isAuthenticated = true AND this10.archivedAt IS NULL)
                     WITH this10 { .uuid } AS this10
                     RETURN head(collect(this10)) AS var11
@@ -424,10 +432,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this7:HAS_VALUATION]->(this8:Valuation)
+                WITH *
                 WHERE ($isAuthenticated = true AND this8.archivedAt IS NULL)
                 CALL {
                     WITH this8
                     MATCH (this8)-[this9:VALUATION_FOR]->(this10:Estate)
+                    WITH *
                     WHERE ($isAuthenticated = true AND this10.archivedAt IS NULL)
                     WITH this10 { .uuid } AS this10
                     RETURN head(collect(this10)) AS var11
@@ -538,10 +548,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this7:HAS_VALUATION]->(this8:Valuation)
+                WITH *
                 WHERE ($isAuthenticated = true AND this8.archivedAt IS NULL)
                 CALL {
                     WITH this8
                     MATCH (this8)-[this9:VALUATION_FOR]->(this10:Estate)
+                    WITH *
                     WHERE ($isAuthenticated = true AND this10.archivedAt IS NULL)
                     WITH this10 { .uuid } AS this10
                     RETURN head(collect(this10)) AS var11

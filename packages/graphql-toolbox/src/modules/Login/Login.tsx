@@ -72,7 +72,7 @@ export const Login = () => {
                 onMouseOut={() => setIsHovering(false)}
                 onBlur={() => setIsHovering(false)}
             >
-                <ExclamationTriangleIconOutline className="n-text-warning-50 h-7 w-7" />
+                <ExclamationTriangleIconOutline className="text-lemon-55 h-7 w-7" />
                 {isHovering ? (
                     <Tooltip
                         arrowPosition="left"
@@ -87,9 +87,9 @@ export const Login = () => {
     };
 
     return (
-        <div data-test-login-form className="grid place-items-center h-screen bg-white">
-            <div className="w-[600px] min-h-[740px] login-window-bg flex flex-col justify-start shadow-2xl rounded-3xl py-8 px-24">
-                <img src={neo4jIcon} alt="Neo4j Logo" className="mx-auto mt-4" />
+        <div data-test-login-form className="grid place-items-center h-screen bg-palette-neutral-bg-default login-bg">
+            <div className="w-[600px] min-h-[740px] flex flex-col justify-start shadow-overlay rounded-3xl py-8 px-24 bg-neutral-10">
+                <img src={neo4jIcon} alt="Neo4j Logo" className="mx-auto mt-4 h-14" />
 
                 <h2 className="h2 text-3xl text-center mt-16 mb-8">Neo4j GraphQL Toolbox</h2>
 

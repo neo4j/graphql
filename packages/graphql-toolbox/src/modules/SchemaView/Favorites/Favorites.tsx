@@ -111,7 +111,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
 
     const EmptyState = (): JSX.Element => {
         return (
-            <div className="flex flex-col items-center justify-center leading-6 n-text-neutral-60">
+            <div className="flex flex-col items-center justify-center leading-6 text-neutral-60">
                 <p>No favorites to display.</p>
                 <p className="flex">
                     Click{" "}
@@ -211,7 +211,7 @@ export const Favorites = ({ onSelectFavorite }: FavoritesProps) => {
                         </IconButton>
                         <IconButton
                             aria-label="Delete selected favorites"
-                            className="border-none h-5 w-5 n-text-danger-30 ml-3"
+                            className="border-none h-5 w-5 text-hibiscus-45 ml-3"
                             clean
                             disabled={selectedFavorites.length === 0}
                             onClick={() => setShowConfirm(true)}

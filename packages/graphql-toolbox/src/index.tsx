@@ -23,7 +23,10 @@ import { App } from "./App";
 
 const container = document.getElementById("root");
 
-// @ts-ignore - types are currently missing in @types/react-dom
+if (!container) {
+    throw new Error("Could not find root element");
+}
+
 const root = ReactDOM.createRoot(container);
 
 root.render(<App />);

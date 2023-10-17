@@ -52,15 +52,6 @@ export function translateTopLevelCypher({
     if (annotation) {
         applyAuthentication({ context, annotation });
     }
-    const authorizationAnnotation = operationField.annotations.authorization;
-    if (authorizationAnnotation) {
-        const authorizationResults = authorizationAnnotation.validate?.map((rule) =>
-            filterByValues(rule.where, { jwt: context.authorization.jwt })
-        );
-        if (authorizationResults?.every((result) => result === false)) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-    }
 
     const { resolveTree } = context;
     let params = args;

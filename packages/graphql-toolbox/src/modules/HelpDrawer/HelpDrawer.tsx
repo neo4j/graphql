@@ -85,7 +85,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                 />
             )}
             {!showSubComponent ? (
-                <div className="mt-auto pt-4 flex justify-center n-text-primary-40 font-bold text-sm">
+                <div className="mt-auto pt-4 flex justify-center text-baltic-40 font-bold text-sm">
                     <CannyFeedbackButton screen={screen.view} />
                 </div>
             ) : null}
