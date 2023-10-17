@@ -36,7 +36,7 @@ export function subscriptionAuthorization({
     const subscriptionsAuthorization = entity.annotations.subscriptionsAuthorization;
 
     const matchedRules = (subscriptionsAuthorization?.filter || []).filter((rule) =>
-        rule.events.some((e) => e.toLowerCase() === event.event)
+        rule.events.some((e) => authorizationEventMatchesEvent(e, event.event))
     );
 
     if (!matchedRules.length) {
@@ -59,4 +59,39 @@ export function subscriptionAuthorization({
     });
 
     return multipleConditionsAggregationMap.OR(results);
+}
+
+function authorizationEventMatchesEvent(
+    authorizationEvent: "CREATED" | "UPDATED" | "DELETED" | "RELATIONSHIP_CREATED" | "RELATIONSHIP_DELETED",
+    event: "create" | "update" | "delete" | "create_relationship" | "delete_relationship"
+): boolean {
+    switch (authorizationEvent) {
+        case "CREATED":
+            if (event === "create") {
+                return true;
+            }
+            break;
+        case "UPDATED":
+            if (event === "update") {
+                return true;
+            }
+            break;
+        case "DELETED":
+            if (event === "delete") {
+                return true;
+            }
+            break;
+        case "RELATIONSHIP_CREATED":
+            if (event === "create_relationship") {
+                return true;
+            }
+            break;
+        case "RELATIONSHIP_DELETED":
+            if (event === "delete_relationship") {
+                return true;
+            }
+            break;
+    }
+
+    return false;
 }
