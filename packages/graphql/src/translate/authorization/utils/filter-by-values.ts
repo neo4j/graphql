@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import dotProp from "dot-prop";
 import { getFilteringFn } from "../../../schema/resolvers/subscriptions/where/utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../../../schema/resolvers/subscriptions/where/utils/multiple-conditions-aggregation-map";
 import { parseFilterProperty } from "../../../schema/resolvers/subscriptions/where/utils/parse-filter-property";
@@ -43,13 +44,7 @@ export function filterByValues<T>(
             }
         } else {
             const { fieldName, operator } = parseFilterProperty(k);
-            let receivedValue: T | undefined;
-            const mappedJwtClaim = jwtClaims?.get(fieldName);
-            if (mappedJwtClaim) {
-                receivedValue = expandJwtClaim(mappedJwtClaim, receivedValues);
-            } else {
-                receivedValue = receivedValues[fieldName];
-            }
+            const receivedValue = getReceivedValue({ fieldName, receivedValues, jwtClaims });
             if (!receivedValue) {
                 return false;
             }
@@ -63,14 +58,22 @@ export function filterByValues<T>(
     return true;
 }
 
-function expandJwtClaim<T>(mappedJwtClaim: string, jwtData: Record<string, T>): T | undefined {
-    let receivedValue: T | undefined;
-    let paths = mappedJwtClaim.split(/(?<!\\)\./);
-
-    paths = paths.map((p) => p.replaceAll(/\\\./g, "."));
-
-    for (const p of paths) {
-        receivedValue = (receivedValue || jwtData)[p];
+function getReceivedValue<T>({
+    fieldName,
+    receivedValues,
+    jwtClaims,
+}: {
+    fieldName: string;
+    receivedValues: Record<string, T>;
+    jwtClaims?: Map<string, string>;
+}): T | undefined {
+    const mappedJwtClaim = jwtClaims?.get(fieldName);
+    if (mappedJwtClaim) {
+        return expandJwtClaim(mappedJwtClaim, receivedValues);
+    } else {
+        return receivedValues[fieldName];
     }
-    return receivedValue;
+}
+function expandJwtClaim<T>(mappedJwtClaim: string, jwtData: Record<string, T>): T | undefined {
+    return dotProp.get<T>(jwtData, mappedJwtClaim);
 }
