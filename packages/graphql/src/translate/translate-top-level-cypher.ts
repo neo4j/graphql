@@ -52,17 +52,6 @@ export function translateTopLevelCypher({
     if (annotation) {
         applyAuthentication({ context, annotation });
     }
-    // TODO: is this even possible now?
-    const authorizationAnnotation = operationField.annotations.authorization;
-    if (authorizationAnnotation) {
-        const { jwt, claims } = context.authorization;
-        const authorizationResults = authorizationAnnotation.validate?.map((rule) =>
-            filterByValues(rule.where, { jwt }, claims)
-        );
-        if (authorizationResults?.every((result) => result === false)) {
-            throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
-        }
-    }
 
     const { resolveTree } = context;
     let params = args;
