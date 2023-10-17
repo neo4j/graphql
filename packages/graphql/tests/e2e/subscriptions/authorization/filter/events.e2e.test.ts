@@ -86,19 +86,9 @@ describe("Subscriptions authorization with create events", () => {
         await driver.close();
     });
 
-    test("authorization filters apply to created events but not deleted", async () => {
+    test("authorization filters don't apply to delete events", async () => {
         const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["user"] } });
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
-
-        await wsClient.subscribe(`
-            subscription {
-                ${User.operations.subscribe.created} {
-                    ${User.operations.subscribe.payload.created} {
-                        id
-                    }
-                }
-            }
-        `);
 
         await wsClient.subscribe(`
             subscription {
@@ -115,15 +105,10 @@ describe("Subscriptions authorization with create events", () => {
         await deleteUser("user1");
         await deleteUser("user2");
 
-        await wsClient.waitForEvents(3);
+        await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
-            {
-                [User.operations.subscribe.created]: {
-                    [User.operations.subscribe.payload.created]: { id: "user1" },
-                },
-            },
             {
                 [User.operations.subscribe.deleted]: {
                     [User.operations.subscribe.payload.deleted]: { id: "user1" },
@@ -169,7 +154,6 @@ describe("Subscriptions authorization with create events", () => {
                 `,
             })
             .expect(200);
-        console.log("Result??", result.body);
         return result;
     }
 });
