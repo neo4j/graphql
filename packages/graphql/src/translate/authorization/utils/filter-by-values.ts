@@ -69,11 +69,9 @@ function getReceivedValue<T>({
 }): T | undefined {
     const mappedJwtClaim = jwtClaims?.get(fieldName);
     if (mappedJwtClaim) {
-        return expandJwtClaim(mappedJwtClaim, receivedValues);
+        // expand the jwt claim
+        return dotProp.get<T>(receivedValues, mappedJwtClaim);
     } else {
         return receivedValues[fieldName];
     }
-}
-function expandJwtClaim<T>(mappedJwtClaim: string, jwtData: Record<string, T>): T | undefined {
-    return dotProp.get<T>(jwtData, mappedJwtClaim);
 }
