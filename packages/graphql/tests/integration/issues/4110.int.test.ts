@@ -32,8 +32,8 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     let session: Session;
     const secret = "secret";
 
-    let User: UniqueType;
-    let Person: UniqueType;
+    let Company: UniqueType;
+    let InBetween: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -43,20 +43,20 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     beforeEach(async () => {
         session = await neo4j.getSession();
 
-        User = new UniqueType("User");
-        Person = new UniqueType("Person");
+        Company = new UniqueType("User");
+        InBetween = new UniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
-            type Company
+            type ${Company}
                 @authorization(
                     filter: [{ operations: [READ], where: { node: { inBetween: { company: { id: "example" } } } } }]
                 ) {
                 id: ID @id
-                inBetween: InBetween @relationship(type: "CONNECT_TO", direction: OUT)
+                inBetween: ${InBetween} @relationship(type: "CONNECT_TO", direction: OUT)
             }
-            type InBetween {
+            type ${InBetween} {
                 id: ID @id
-                company: Company! @relationship(type: "CONNECT_TO", direction: IN)
+                company: ${Company}! @relationship(type: "CONNECT_TO", direction: IN)
             }
         `;
 
@@ -73,11 +73,11 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
 
     beforeEach(async () => {
         await session.run(`
-            CREATE (c1:Company { id: "example" })
-            CREATE (c2:Company { id: "another" })
+            CREATE (c1:${Company} { id: "example" })
+            CREATE (c2:${Company} { id: "another" })
 
-            CREATE (ib1:InBetween {id: "id1"})
-            CREATE (ib2:InBetween {id: "id2"})
+            CREATE (ib1:${InBetween} {id: "id1"})
+            CREATE (ib2:${InBetween} {id: "id2"})
 
             CREATE(ib1)<-[:CONNECT_TO]-(c1)
             CREATE(ib2)<-[:CONNECT_TO]-(c2)
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     });
 
     afterEach(async () => {
-        await cleanNodes(session, [User, Person]);
+        await cleanNodes(session, [Company, InBetween]);
         await session.close();
     });
 
@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
     test("filters companies on nested auth where", async () => {
         const query = /* GraphQL */ `
             query {
-                companies {
+                ${Company.plural} {
                     id
                     inBetween {
                         company {
@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
         });
 
         expect(result.errors).toBeUndefined();
-        expect((result.data as any)["companies"]).toEqual([
+        expect((result.data as any)[Company.plural]).toEqual([
             {
                 id: "example",
                 inBetween: {
