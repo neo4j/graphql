@@ -331,7 +331,7 @@ export class ConnectionReadOperation extends Operation {
             context.returnVariable,
         ]);
 
-        const connectionMathAndAuthClause = Cypher.concat(
+        const connectionMatchAndAuthClause = Cypher.concat(
             ...preSelection,
             selectionClause,
             ...authFilterSubqueries,
@@ -346,8 +346,8 @@ export class ConnectionReadOperation extends Operation {
             ...cypherFieldSubqueries
         );
         const orderedClauses = this.hasCypherSort()
-            ? [connectionMathAndAuthClause, subqueriesClause, paginationWith, withProjection, returnClause]
-            : [connectionMathAndAuthClause, paginationWith, subqueriesClause, withProjection, returnClause];
+            ? [connectionMatchAndAuthClause, subqueriesClause, paginationWith, withProjection, returnClause]
+            : [connectionMatchAndAuthClause, paginationWith, subqueriesClause, withProjection, returnClause];
         const clause = Cypher.concat(...orderedClauses);
 
         return {
