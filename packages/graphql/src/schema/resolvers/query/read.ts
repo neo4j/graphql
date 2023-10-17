@@ -20,8 +20,8 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
 import { QueryOptions } from "../../../graphql/input-objects/QueryOptions";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -29,13 +29,7 @@ import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({
-    node,
-    entityAdapter,
-}: {
-    node?: Node;
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
-}) {
+export function findResolver({ node, entityAdapter }: { node?: Node; entityAdapter: EntityAdapter }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 

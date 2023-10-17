@@ -30,9 +30,8 @@ import { getFromMap } from "../../utils/get-from-map";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { CompositeEntity } from "../CompositeEntity";
 import type { ConcreteEntity } from "../ConcreteEntity";
+import type { EntityAdapter } from "../EntityAdapter";
 import { ConcreteEntityOperations } from "./ConcreteEntityOperations";
-import type { InterfaceEntityAdapter } from "./InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "./UnionEntityAdapter";
 
 export class ConcreteEntityAdapter {
     public readonly name: string;
@@ -48,7 +47,7 @@ export class ConcreteEntityAdapter {
     private uniqueFieldsKeys: string[] = [];
     private constrainableFieldsKeys: string[] = [];
 
-    private _relatedEntities: (ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter)[] | undefined;
+    private _relatedEntities: EntityAdapter[] | undefined;
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -178,7 +177,7 @@ export class ConcreteEntityAdapter {
         return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
-    public get relatedEntities(): (ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter)[] {
+    public get relatedEntities(): EntityAdapter[] {
         if (!this._relatedEntities) {
             this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
         }

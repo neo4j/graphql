@@ -18,15 +18,14 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import { mapLabelsWithContext } from "../../../schema-model/utils/map-labels-with-context";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 export function createNodeFromEntity(
-    entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+    entity: EntityAdapter,
     neo4jGraphQLContext?: Neo4jGraphQLContext,
     name?: string
 ): Cypher.Node {

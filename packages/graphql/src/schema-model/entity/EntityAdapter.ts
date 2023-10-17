@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
-import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { ConcreteEntityAdapter } from "./model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "./model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "./model-adapters/UnionEntityAdapter";
 
-export function isUnionEntity(entity: EntityAdapter | RelationshipAdapter): entity is UnionEntityAdapter {
-    return entity instanceof UnionEntityAdapter;
-}
+export type EntityAdapter = ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
