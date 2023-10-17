@@ -19,22 +19,17 @@
 
 import type { GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
+import { QueryOptions } from "../../../graphql/input-objects/QueryOptions";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({
-    node,
-    entityAdapter,
-}: {
-    node?: Node;
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
-}) {
+export function findResolver({ node, entityAdapter }: { node?: Node; entityAdapter: EntityAdapter }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
@@ -56,29 +51,28 @@ export function findResolver({
         return executeResult.records.map((x) => x.this);
     }
 
-    let args;
+    const extraArgs = {};
     if (entityAdapter instanceof ConcreteEntityAdapter) {
-        args = {
-            where: entityAdapter.operations.whereInputTypeName,
-            options: entityAdapter.operations.optionsInputTypeName,
-            ...(entityAdapter.annotations.fulltext
-                ? {
-                      fulltext: {
-                          type: `${entityAdapter.name}Fulltext`,
-                          description:
-                              "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
-                      },
-                  }
-                : {}),
-        };
-    } else {
-        // TODO: Interface/Union is WIP
-        args = {};
+        if (entityAdapter.annotations.fulltext) {
+            extraArgs["fulltext"] = {
+                type: `${entityAdapter.name}Fulltext`,
+                description:
+                    "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
+            };
+        }
     }
+
+    const whereArgumentType = entityAdapter.operations.whereInputTypeName;
+    const optionsArgumentType =
+        entityAdapter instanceof UnionEntityAdapter ? QueryOptions : entityAdapter.operations.optionsInputTypeName;
 
     return {
         type: `[${entityAdapter.name}!]!`,
         resolve,
-        args,
+        args: {
+            where: whereArgumentType,
+            options: optionsArgumentType,
+            ...extraArgs,
+        },
     };
 }

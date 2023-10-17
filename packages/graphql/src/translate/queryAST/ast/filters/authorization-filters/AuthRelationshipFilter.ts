@@ -40,7 +40,9 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             .to(nestedContext.target);
 
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
+
         if (!predicate) return undefined;
+
         return this.wrapInNotIfNeeded(predicate);
     }
 

@@ -34,5 +34,10 @@ export const queryDirective = new GraphQLDirective({
             defaultValue: false,
         },
     },
-    locations: [DirectiveLocation.OBJECT, DirectiveLocation.SCHEMA],
+    locations: [
+        DirectiveLocation.OBJECT,
+        DirectiveLocation.SCHEMA,
+        DirectiveLocation.INTERFACE,
+        DirectiveLocation.UNION,
+    ],
 });
