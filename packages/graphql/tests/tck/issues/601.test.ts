@@ -99,6 +99,7 @@ describe("#601", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:REQUIRES]->(this1:Document)
+                WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
