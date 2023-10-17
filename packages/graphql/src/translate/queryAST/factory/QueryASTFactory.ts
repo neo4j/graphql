@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 
 export class QueryASTFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
@@ -37,7 +35,7 @@ export class QueryASTFactory {
 
     public createQueryAST(
         resolveTree: ResolveTree,
-        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        entityAdapter: EntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): QueryAST {
         const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context);

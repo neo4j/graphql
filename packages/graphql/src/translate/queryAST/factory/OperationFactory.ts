@@ -21,6 +21,7 @@ import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -32,6 +33,7 @@ import { checkEntityAuthentication } from "../../authorization/check-authenticat
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import { CreateOperation } from "../ast/operations/CreateOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import { CompositeConnectionPartial } from "../ast/operations/composite/CompositeConnectionPartial";
 import { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
@@ -49,7 +51,6 @@ import { FilterFactory } from "./FilterFactory";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { CreateOperation } from "../ast/operations/CreateOperation";
 import { parseOperationField } from "./parsers/parse-operation-fields";
 import type { Operation } from "../ast/operations/operations";
 
@@ -657,10 +658,7 @@ export class OperationsFactory {
         return operation;
     }
 
-    private getOptions(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
-        options: Record<string, any>
-    ): GraphQLOptionsArg | undefined {
+    private getOptions(entity: EntityAdapter, options: Record<string, any>): GraphQLOptionsArg | undefined {
         const limitDirective = isUnionEntity(entity) ? undefined : entity.annotations.limit;
 
         let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
@@ -732,7 +730,7 @@ export class OperationsFactory {
     }
 
     private hydrateCompositeReadOperationWithPagination(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        entity: EntityAdapter,
         operation: CompositeReadOperation | ReadOperation,
         resolveTree: ResolveTree
     ) {

@@ -17,24 +17,25 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
+import Debug from "debug";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
-import createProjectionAndParams from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLWhereArg, CypherFieldReferenceMap } from "../types";
-import { createMatchClause } from "./translate-top-level-match";
-import Cypher from "@neo4j/cypher-builder";
-import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
-import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import { compileCypher } from "../utils/compile-cypher";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { isConcreteEntity } from "./queryAST/utils/is-concrete-entity";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import type { CypherFieldReferenceMap, GraphQLOptionsArg, GraphQLWhereArg } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { compileCypher } from "../utils/compile-cypher";
+import createProjectionAndParams from "./create-projection-and-params";
+import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { createMatchClause } from "./translate-top-level-match";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -43,7 +44,7 @@ function translateQuery({
     entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
+    entityAdapter: EntityAdapter;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     // TODO: Rename QueryAST to OperationsTree
@@ -93,7 +94,7 @@ export function translateRead(
         node?: Node;
         isRootConnectionField?: boolean;
         isGlobalNode?: boolean;
-        entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
+        entityAdapter: EntityAdapter;
     },
     varName = "this"
 ): Cypher.CypherResult {
