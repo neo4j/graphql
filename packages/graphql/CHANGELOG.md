@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 4.3.3
+
+### Patch Changes
+
+-   [#4136](https://github.com/neo4j/graphql/pull/4136) [`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf) Thanks [@a-alle](https://github.com/a-alle)! - Fix `@jwtClaim` not working in `@authentication` rules
+
+-   [#4141](https://github.com/neo4j/graphql/pull/4141) [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix Authorization filters along with subqueries #4110
+
 ## 4.3.2
 
 ### Patch Changes
