@@ -17,15 +17,13 @@
  * limitations under the License.
  */
 
-import { Driver, session } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
 
 describe("https://github.com/neo4j/graphql/issues/4112", () => {
     let driver: Driver;
@@ -231,7 +229,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
         });
     });
 
-    test.only("should use jwtClaim alias on top-level cypher fields", async () => {
+    test("should use jwtClaim alias on top-level cypher fields", async () => {
         const typeDefs = gql`
             type JWT @jwt {
                 roles: [String!]! @jwtClaim(path: "myApplication.roles")
