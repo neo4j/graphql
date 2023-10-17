@@ -55,8 +55,6 @@ import { parseOperationField } from "./parsers/parse-operation-fields";
 import type { Operation } from "../ast/operations/operations";
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
-import { Entity } from "../../../schema-model/entity/Entity";
-import { operation } from "retry";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -236,10 +234,7 @@ export class OperationsFactory {
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
 
-        const filters = this.filterFactory.createNodeFilters(
-            relationship.target,
-            whereArgs
-        ); // Aggregation filters only apply to target node
+        const filters = this.filterFactory.createNodeFilters(relationship.target, whereArgs); // Aggregation filters only apply to target node
 
         operation.setFields(fields);
         operation.setNodeFields(nodeFields);
