@@ -17,23 +17,25 @@
  * limitations under the License.
  */
 
+import dotProp from "dot-prop";
 import { getFilteringFn } from "../../../schema/resolvers/subscriptions/where/utils/get-filtering-fn";
 import { multipleConditionsAggregationMap } from "../../../schema/resolvers/subscriptions/where/utils/multiple-conditions-aggregation-map";
 import { parseFilterProperty } from "../../../schema/resolvers/subscriptions/where/utils/parse-filter-property";
 
 export function filterByValues<T>(
     whereInput: Record<string, T | Array<Record<string, T>> | Record<string, T>>,
-    receivedValues: Record<string, T>
+    receivedValues: Record<string, T>,
+    jwtClaims?: Map<string, string>
 ): boolean {
     for (const [k, v] of Object.entries(whereInput)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
             let comparisonResults;
             if (k === "NOT") {
-                comparisonResults = filterByValues(v as Record<string, T>, receivedValues);
+                comparisonResults = filterByValues(v as Record<string, T>, receivedValues, jwtClaims);
             } else {
                 comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
-                    return filterByValues(whereCl, receivedValues);
+                    return filterByValues(whereCl, receivedValues, jwtClaims);
                 });
             }
 
@@ -42,7 +44,7 @@ export function filterByValues<T>(
             }
         } else {
             const { fieldName, operator } = parseFilterProperty(k);
-            const receivedValue = receivedValues[fieldName];
+            const receivedValue = getReceivedValue({ fieldName, receivedValues, jwtClaims });
             if (!receivedValue) {
                 return false;
             }
@@ -54,4 +56,22 @@ export function filterByValues<T>(
         }
     }
     return true;
+}
+
+function getReceivedValue<T>({
+    fieldName,
+    receivedValues,
+    jwtClaims,
+}: {
+    fieldName: string;
+    receivedValues: Record<string, T>;
+    jwtClaims?: Map<string, string>;
+}): T | undefined {
+    const mappedJwtClaim = jwtClaims?.get(fieldName);
+    if (mappedJwtClaim) {
+        // expand the jwt claim
+        return dotProp.get<T>(receivedValues, mappedJwtClaim);
+    } else {
+        return receivedValues[fieldName];
+    }
 }

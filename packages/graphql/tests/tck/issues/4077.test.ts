@@ -117,6 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             "MATCH (this:PreviewClip)
             OPTIONAL MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this0:Video)
             WITH *, count(this0) AS clippedFromCount
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this1:Video)
@@ -165,12 +166,14 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             OPTIONAL MATCH (this)<-[:PUBLISHER]-(this0:User)
             WITH *, count(this0) AS publisherCount
             WITH *
-            WHERE (($isAuthenticated = true AND (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND $param2 IN $jwt.roles) OR this.processing = $param3)
+            WITH *
+            WHERE (($isAuthenticated = true AND (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND $param2 IN $jwt.roles) OR ($param3 IS NOT NULL AND this.processing = $param3))
             CALL {
                 WITH this
                 MATCH (this)-[this1:VIDEO_HAS_PREVIEW_CLIP]->(this2:PreviewClip)
                 OPTIONAL MATCH (this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this3:Video)
                 WITH *, count(this3) AS clippedFromCount
+                WITH *
                 CALL {
                     WITH this2
                     MATCH (this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this4:Video)

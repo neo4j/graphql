@@ -42,7 +42,7 @@ import { EDITOR_QUERY_INPUT } from "../../constants";
 import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
+import { formatCode, handleEditorDisableState,ParserOptions } from "./utils";
 
 export interface Props {
     loading: boolean;
@@ -214,7 +214,7 @@ export const QueryEditor = ({ loading, onSubmit, schema }: Props) => {
                         >
                             <PlayIconOutline
                                 style={{
-                                    color: tokens.colors.primary[50],
+                                    color: tokens.colors.baltic[50],
                                 }}
                             />
                         </IconButton>

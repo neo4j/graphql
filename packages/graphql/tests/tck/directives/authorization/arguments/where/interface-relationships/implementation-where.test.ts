@@ -109,6 +109,7 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
             WITH *, count(this0) AS creatorCount
             WITH *
+            WITH *
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
             RETURN this { .id } AS this"
         `);
@@ -142,6 +143,7 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
             WITH *, count(this0) AS creatorCount
+            WITH *
             WITH *
             WHERE (this.content = $param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
             RETURN this { .id } AS this"

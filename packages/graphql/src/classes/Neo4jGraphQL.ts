@@ -301,6 +301,7 @@ class Neo4jGraphQL {
                 subscriptionsEngine: this.features.subscriptions,
                 schemaModel: this.schemaModel,
                 authorization: this.authorization,
+                jwtPayloadFieldsMap: this.jwtFieldsMap,
             });
         }
 

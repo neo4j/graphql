@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
@@ -27,8 +27,7 @@ import { linter, lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { EditorState, Prec, StateEffect } from "@codemirror/state";
 import { drawSelection, dropCursor, EditorView, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
-import { tokens } from "@neo4j-ndl/base";
-import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
+import { Button, IconButton, Tip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
 import { graphql } from "cm6-graphql";
@@ -90,8 +89,6 @@ export const SchemaEditor = ({
 }: Props) => {
     const theme = useContext(ThemeContext);
     const appSettings = useContext(AppSettingsContext);
-    const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
-    const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
     const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
     const [building, setBuilding] = useState<boolean>(false);
 
@@ -181,7 +178,6 @@ export const SchemaEditor = ({
                     <Button
                         data-test-schema-editor-build-button
                         aria-label="Build schema"
-                        style={{ backgroundColor: tokens.colors.primary[50] }}
                         className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
                         color="primary"
                         fill="filled"
@@ -201,31 +197,28 @@ export const SchemaEditor = ({
                 }
                 leftButtons={
                     <>
-                        <Button
-                            data-test-schema-editor-introspect-button
-                            ref={introspectionTooltipRef}
-                            aria-label="Generate type definitions"
-                            className={classNames(
-                                "mr-2",
-                                theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
-                            )}
-                            color="primary"
-                            fill="outlined"
-                            size="small"
-                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                            onClick={introspect}
-                            disabled={loading}
-                            loading={isIntrospecting}
-                        >
-                            Introspect
-                        </Button>
-                        <SmartTooltip
-                            allowedPlacements={["bottom"]}
-                            style={{ width: "19rem" }}
-                            ref={introspectionTooltipRef}
-                        >
-                            {"This will overwrite your current type definitions!"}
-                        </SmartTooltip>
+                        <Tip allowedPlacements={["bottom"]}>
+                            <Button
+                                data-test-schema-editor-introspect-button
+                                aria-label="Generate type definitions"
+                                className={classNames(
+                                    "mr-2",
+                                    theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                                )}
+                                color="primary"
+                                fill="outlined"
+                                size="small"
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                onClick={introspect}
+                                disabled={loading}
+                                loading={isIntrospecting}
+                            >
+                                <Tip.Trigger>Introspect</Tip.Trigger>
+                            </Button>
+                            <Tip.Content style={{ width: "19rem" }}>
+                                This will overwrite your current type definitions!
+                            </Tip.Content>
+                        </Tip>
 
                         <Button
                             data-test-schema-editor-prettify-button
@@ -243,30 +236,25 @@ export const SchemaEditor = ({
                             Prettify
                         </Button>
 
-                        <IconButton
-                            data-test-schema-editor-favourite-button
-                            ref={favoritesTooltipRef}
-                            aria-label="Save as favorite"
-                            style={{ height: "1.7rem" }}
-                            className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
-                            size="small"
-                            color="neutral"
-                            onClick={saveAsFavorite}
-                            disabled={loading}
-                        >
-                            <StarIconOutline
-                                style={{
-                                    color: tokens.colors.neutral[80],
-                                }}
-                            />
-                        </IconButton>
-                        <SmartTooltip
-                            allowedPlacements={["bottom"]}
-                            style={{ width: "8rem" }}
-                            ref={favoritesTooltipRef}
-                        >
-                            {"Save as Favorite"}
-                        </SmartTooltip>
+                        <Tip allowedPlacements={["bottom"]}>
+                            <Tip.Trigger>
+                                <IconButton
+                                    data-test-schema-editor-favourite-button
+                                    aria-label="Save as favorite"
+                                    style={{ height: "1.7rem" }}
+                                    className={classNames(
+                                        theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                                    )}
+                                    size="small"
+                                    color="neutral"
+                                    onClick={saveAsFavorite}
+                                    disabled={loading}
+                                >
+                                    <StarIconOutline />
+                                </IconButton>
+                            </Tip.Trigger>
+                            <Tip.Content>Save as Favorite</Tip.Content>
+                        </Tip>
                     </>
                 }
             ></FileName>
