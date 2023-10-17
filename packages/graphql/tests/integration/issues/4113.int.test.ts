@@ -18,12 +18,11 @@
  */
 
 import type { Driver, Session } from "neo4j-driver";
-import { graphql, lexicographicSortSchema } from "graphql";
+import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { printSchemaWithDirectives } from "@graphql-tools/utils";
 
 describe("https://github.com/neo4j/graphql/issues/4113", () => {
     let driver: Driver;
