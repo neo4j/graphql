@@ -27,7 +27,6 @@ import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-p
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
-import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
@@ -61,6 +60,8 @@ function createCreateAndParams({
     withVars,
     includeRelationshipValidation,
     topLevelNodeVariable,
+    idx = 0, // used to build authorization variable in auth subqueries
+    refNodeIndex = 0, // used to build authorization variable in auth subqueries
 }: {
     input: any;
     varName: string;
@@ -70,6 +71,8 @@ function createCreateAndParams({
     withVars: string[];
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
+    idx?: number;
+    refNodeIndex?: number;
 }): CreateAndParams {
     const conflictingProperties = findConflictingProperties({ node, input });
     if (conflictingProperties.length > 0) {
@@ -107,7 +110,7 @@ function createCreateAndParams({
                 refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
-            refNodes.forEach((refNode) => {
+            refNodes.forEach((refNode, refNodeIndex) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
@@ -154,6 +157,8 @@ function createCreateAndParams({
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
                             topLevelNodeVariable,
+                            idx: idx + index,
+                            refNodeIndex: refNodeIndex,
                         });
                         res.creates.push(nestedCreate);
                         res.params = { ...res.params, ...params };
@@ -361,6 +366,7 @@ function createCreateAndParams({
             },
         ],
         operations: ["CREATE"],
+        indexPrefix: `${refNodeIndex}_${idx}_`,
     });
 
     if (authorizationAndParams) {

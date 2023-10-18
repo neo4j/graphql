@@ -837,7 +837,7 @@ describe("Cypher Auth Where with Roles", () => {
             	RETURN count(*) AS connect_this0_posts_connect_Post0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_0_0_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_0_0_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -863,6 +863,8 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"authorization_param3\\": \\"admin\\",
                 \\"authorization_param4\\": \\"user\\",
                 \\"authorization_param5\\": \\"admin\\",
+                \\"authorization_0_0_param2\\": \\"user\\",
+                \\"authorization_0_0_param3\\": \\"admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -920,7 +922,7 @@ describe("Cypher Auth Where with Roles", () => {
             	RETURN count(*) AS connect_this0_posts_connect_Post0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND (($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND $authorization_0_0_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND $authorization_0_0_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -947,6 +949,8 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"authorization_param3\\": \\"admin\\",
                 \\"authorization_param4\\": \\"user\\",
                 \\"authorization_param5\\": \\"admin\\",
+                \\"authorization_0_0_param2\\": \\"user\\",
+                \\"authorization_0_0_param3\\": \\"admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

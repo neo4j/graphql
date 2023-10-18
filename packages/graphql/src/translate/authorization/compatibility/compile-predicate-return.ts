@@ -33,7 +33,10 @@ type CompiledPredicateReturn = {
  * The subqueries contain variables required by the predicate, and if they are not compiled with the same
  * environment, the predicate will be referring to non-existent variables and will re-assign variable from the subqueries.
  */
-export function compilePredicateReturn(predicateReturn: PredicateReturn): CompiledPredicateReturn {
+export function compilePredicateReturn(
+    predicateReturn: PredicateReturn,
+    indexPrefix?: string
+): CompiledPredicateReturn {
     const result: CompiledPredicateReturn = { cypher: "", params: {} };
 
     const { predicate, preComputedSubqueries } = predicateReturn;
@@ -49,7 +52,7 @@ export function compilePredicateReturn(predicateReturn: PredicateReturn): Compil
             }
             return predicateStr;
         });
-        const { cypher, params } = predicateCypher.build("authorization_");
+        const { cypher, params } = predicateCypher.build(`authorization_${indexPrefix || ""}`);
         result.cypher = cypher;
         result.params = params;
         result.subqueries = subqueries;
