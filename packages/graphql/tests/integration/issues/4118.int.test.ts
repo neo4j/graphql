@@ -20,8 +20,6 @@
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import type { GraphQLResponse } from "@apollo/server";
-import { ApolloServer } from "@apollo/server";
 import gql from "graphql-tag";
 import { graphql } from "graphql";
 
