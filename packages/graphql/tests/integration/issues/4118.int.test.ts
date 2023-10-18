@@ -159,7 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
     afterAll(async () => {
         await driver.close();
     });
-    test.only("create lols - subscriptions disabled", async () => {
+    test("create lols - subscriptions disabled", async () => {
         const neo4jGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
