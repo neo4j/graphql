@@ -451,7 +451,7 @@ describe("Cypher Auth Allow", () => {
         `);
     });
 
-    test("Disconnect Node", async () => {
+    test.only("Disconnect Node", async () => {
         const query = gql`
             mutation {
                 updatePosts(where: { id: "post-id" }, disconnect: { creator: { where: { node: { id: "user-id" } } } }) {

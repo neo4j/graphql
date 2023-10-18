@@ -67,7 +67,7 @@ export function createAuthorizationWherePredicate({
 
         if (key === "node") {
             const useExistExpr = context.neo4jDatabaseInfo?.gte("5");
-
+                   
             const { predicate, preComputedSubqueries } = createWherePredicate({
                 element: node,
                 context,

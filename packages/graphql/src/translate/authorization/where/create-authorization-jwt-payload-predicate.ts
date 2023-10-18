@@ -20,7 +20,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { GraphQLWhereArg } from "../../../types";
 import { asArray } from "../../../utils/utils";
-import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { LogicalOperator } from "../../utils/logical-operators";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createParameterWhere } from "../../where/create-parameter-where";
@@ -35,7 +34,6 @@ export function createJwtPayloadWherePredicate({
 }): Cypher.Predicate | undefined {
     const fields = Object.entries(where);
     const predicates: Cypher.Predicate[] = [];
-    getOrCreateCypherVariable;
     fields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
             const predicate = createNestedPredicate({
