@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { hasTarget } from "../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -33,7 +34,6 @@ import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import { hasTarget } from "../../utils/context-has-target";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -97,6 +97,8 @@ export class ReadOperation extends Operation {
         entity: RelationshipAdapter,
         { context }: OperationTranspileOptions
     ): OperationTranspileResult {
+        const isCreateSelection = context.env.topLevelOperationName === "CREATE";
+
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
@@ -121,8 +123,23 @@ export class ReadOperation extends Operation {
 
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         let withWhere: Cypher.With | undefined;
+
+        let filterSubqueryWith: Cypher.With | undefined;
+
+        // This weird condition is just for cypher compatibility
+        const shouldAddWithForAuth = authFiltersPredicate.length > 0;
+        if (authFilterSubqueries.length > 0 || shouldAddWithForAuth) {
+            if (!isCreateSelection) {
+                filterSubqueryWith = new Cypher.With("*");
+            }
+        }
+
         if (wherePredicate) {
-            matchClause.where(wherePredicate);
+            if (filterSubqueryWith) {
+                filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
+            } else {
+                matchClause.where(wherePredicate);
+            }
         }
 
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
@@ -135,8 +152,9 @@ export class ReadOperation extends Operation {
 
         const clause = Cypher.concat(
             ...preSelection,
-            ...authFilterSubqueries,
             matchClause,
+            ...authFilterSubqueries,
+            filterSubqueryWith,
             withWhere,
             subqueries,
             ...sortSubqueries,
@@ -230,7 +248,7 @@ export class ReadOperation extends Operation {
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
         // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFiltersPredicate.length > 0 && preSelection.length === 0;
+        const shouldAddWithForAuth = authFiltersPredicate.length > 0;
         if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.concat(...filterSubqueries);
             if (!isCreateSelection) {
@@ -269,8 +287,8 @@ export class ReadOperation extends Operation {
         } else {
             clause = Cypher.concat(
                 ...preSelection,
-                ...authFilterSubqueries,
                 matchClause,
+                ...authFilterSubqueries,
                 filterSubqueriesClause,
                 filterSubqueryWith,
                 sortAndLimitBlock,
