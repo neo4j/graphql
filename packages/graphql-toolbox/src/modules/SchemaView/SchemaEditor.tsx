@@ -198,23 +198,25 @@ export const SchemaEditor = ({
                 leftButtons={
                     <>
                         <Tip allowedPlacements={["bottom"]}>
-                            <Button
-                                data-test-schema-editor-introspect-button
-                                aria-label="Generate type definitions"
-                                className={classNames(
-                                    "mr-2",
-                                    theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
-                                )}
-                                color="primary"
-                                fill="outlined"
-                                size="small"
-                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                onClick={introspect}
-                                disabled={loading}
-                                loading={isIntrospecting}
-                            >
-                                <Tip.Trigger>Introspect</Tip.Trigger>
-                            </Button>
+                            <Tip.Trigger>
+                                <Button
+                                    data-test-schema-editor-introspect-button
+                                    aria-label="Generate type definitions"
+                                    className={classNames(
+                                        "mr-2",
+                                        theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                                    )}
+                                    color="primary"
+                                    fill="outlined"
+                                    size="small"
+                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                    onClick={introspect}
+                                    disabled={loading}
+                                    loading={isIntrospecting}
+                                >
+                                    Introspect
+                                </Button>
+                            </Tip.Trigger>
                             <Tip.Content style={{ width: "19rem" }}>
                                 This will overwrite your current type definitions!
                             </Tip.Content>
