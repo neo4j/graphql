@@ -99,12 +99,21 @@ export class AggregationOperation extends Operation {
     ): Cypher.Clause {
         const matchClause = new Cypher.Match(pattern);
         let extraSelectionWith: Cypher.With | undefined = undefined;
+
+        const nestedSubqueries = this.getChildren()
+            .flatMap((c) => {
+                return c.getSubqueries(context);
+            })
+            .map((sq) => {
+                return new Cypher.Call(sq).innerWith(target);
+            });
+
         const filterPredicates = this.getPredicates(context);
 
         const selectionClauses = this.getChildren().flatMap((c) => {
             return c.getSelection(context);
         });
-        if (selectionClauses.length > 0) {
+        if (selectionClauses.length > 0 || nestedSubqueries.length > 0) {
             extraSelectionWith = new Cypher.With("*");
         }
 
@@ -122,7 +131,15 @@ export class AggregationOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(context, target, sortClause);
         }
-        return Cypher.concat(matchClause, ...selectionClauses, extraSelectionWith, sortClause, ret);
+
+        return Cypher.concat(
+            matchClause,
+            ...selectionClauses,
+            ...nestedSubqueries,
+            extraSelectionWith,
+            sortClause,
+            ret
+        );
     }
 
     private transpileNestedRelationship(
@@ -130,7 +147,6 @@ export class AggregationOperation extends Operation {
         entity: RelationshipAdapter,
         { context }: OperationTranspileOptions
     ): Cypher.Clause[] {
-        //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
