@@ -134,7 +134,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:ApplicationVariant)
             WITH *
-            WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 CALL {
@@ -152,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this1:HAS_NAME]->(this2:NameDetails)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param6 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { fullName: this2.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -161,11 +161,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this4:HAS_MARKETS]->(this5:Market)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this5
                     MATCH (this5)-[this6:HAS_NAME]->(this7:NameDetails)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param8 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH { node: { fullName: this7.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
@@ -179,7 +179,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this10:HAS_BASE]-(this11:BaseObject)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param9 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH { node: { id: this11.id } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -192,10 +192,10 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             "{
                 \\"param0\\": true,
                 \\"isAuthenticated\\": true,
-                \\"param2\\": \\"ALL\\",
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
+                \\"param3\\": \\"ALL\\",
                 \\"param4\\": {
                     \\"low\\": 0,
                     \\"high\\": 0

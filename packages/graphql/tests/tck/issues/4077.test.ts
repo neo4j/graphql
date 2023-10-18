@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                 RETURN count(this1) = 1 AS var3
             }
             WITH *
-            WHERE ((NOT (this.markedAsDone = $param1) AND (clippedFromCount <> 0 AND this0.id = $param2)) AND (($isAuthenticated = true AND var3 = true) OR ($isAuthenticated = true AND $param4 IN $jwt.roles)))
+            WHERE ((NOT (this.markedAsDone = $param1) AND (clippedFromCount <> 0 AND this0.id = $param2)) AND (($isAuthenticated = true AND var3 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))))
             RETURN this { .id } AS this"
         `);
 
@@ -167,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
             WITH *, count(this0) AS publisherCount
             WITH *
             WITH *
-            WHERE (($isAuthenticated = true AND (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND $param2 IN $jwt.roles) OR ($param3 IS NOT NULL AND this.processing = $param3))
+            WHERE (($isAuthenticated = true AND (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($param3 IS NOT NULL AND this.processing = $param3))
             CALL {
                 WITH this
                 MATCH (this)-[this1:VIDEO_HAS_PREVIEW_CLIP]->(this2:PreviewClip)
@@ -184,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
                     RETURN count(this4) = 1 AS var6
                 }
                 WITH *
-                WHERE ((NOT (this2.markedAsDone = $param4) AND (clippedFromCount <> 0 AND this3.id = $param5)) AND (($isAuthenticated = true AND var6 = true) OR ($isAuthenticated = true AND $param6 IN $jwt.roles)))
+                WHERE ((NOT (this2.markedAsDone = $param4) AND (clippedFromCount <> 0 AND this3.id = $param5)) AND (($isAuthenticated = true AND var6 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))))
                 WITH this2 { .id } AS this2
                 RETURN collect(this2) AS var7
             }

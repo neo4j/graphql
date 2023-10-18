@@ -191,6 +191,10 @@ function createConnectAndParams({
 
             if (subqueries) {
                 subquery.push(subqueries);
+
+                if (whereStrs.length) {
+                    subquery.push("WITH *");
+                }
             }
         }
 
