@@ -227,14 +227,14 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                         store: {
                             name: "Store",
                         },
-                        items: [
+                        items: expect.toIncludeSameMembers([
                             {
                                 name: "Milk",
                             },
                             {
                                 name: "Eggs",
                             },
-                        ],
+                        ]),
                     },
                 ],
             },
@@ -479,14 +479,20 @@ describe("replicates the test for relationship to interface so that multiple ref
                         store: {
                             name: "Store",
                         },
-                        items: [
+                        items: expect.toIncludeSameMembers([
                             {
                                 name: "Milk",
                             },
                             {
                                 name: "Eggs",
                             },
-                        ],
+                            {
+                                name: "Milky",
+                            },
+                            {
+                                name: "Eggsy",
+                            },
+                        ]),
                     },
                 ],
             },
