@@ -118,7 +118,7 @@ describe("Node Directive", () => {
             OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:Person)
             WITH *, count(this0) AS creatorCount
             WITH *
-            WHERE ((creatorCount <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE ((creatorCount <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
 
@@ -126,13 +126,13 @@ describe("Node Directive", () => {
             "{
                 \\"param0\\": \\"123\\",
                 \\"isAuthenticated\\": true,
-                \\"param2\\": \\"admin\\",
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                }
+                },
+                \\"param3\\": \\"admin\\"
             }"
         `);
     });

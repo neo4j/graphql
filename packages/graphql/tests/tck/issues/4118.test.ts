@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_host_connect0_node:Tenant)
-            	WHERE this0_host_connect0_node.id = $this0_host_connect0_node_param0 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND size([(this0_host_connect0_node)<-[:ADMIN_IN]-(authorization_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_this0.userId = $jwt.id) | 1]) > 0) OR ($isAuthenticated = true AND $authorization_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE this0_host_connect0_node.id = $this0_host_connect0_node_param0 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND size([(this0_host_connect0_node)<-[:ADMIN_IN]-(authorization_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_this0.userId = $jwt.id) | 1]) > 0) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_param2 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	CALL {
             		WITH *
             		WITH collect(this0_host_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
             OPTIONAL MATCH (this0)-[:HOSTED_BY]->(authorization_this1:Tenant)
             WITH *, count(authorization_this1) AS hostCount
             WITH *
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (hostCount <> 0 AND size([(authorization_this1)<-[:ADMIN_IN]-(authorization_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND size([(this0_host_connect0_node)<-[:ADMIN_IN]-(authorization_this2:User) WHERE ($jwt.id IS NOT NULL AND authorization_this2.userId = $jwt.id) | 1]) > 0) OR ($isAuthenticated = true AND $authorization_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (hostCount <> 0 AND size([(authorization_this1)<-[:ADMIN_IN]-(authorization_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND size([(this0_host_connect0_node)<-[:ADMIN_IN]-(authorization_this2:User) WHERE ($jwt.id IS NOT NULL AND authorization_this2.userId = $jwt.id) | 1]) > 0) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_param2 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this0_host_connect_Tenant0
             }
             WITH *
@@ -212,7 +212,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[create_this0:HOSTED_BY]->(create_this1:Tenant)
-                    WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND size([(create_this1)<-[:ADMIN_IN]-(create_this2:User) WHERE ($jwt.id IS NOT NULL AND create_this2.userId = $jwt.id) | 1]) > 0) OR ($isAuthenticated = true AND $create_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND size([(create_this1)<-[:ADMIN_IN]-(create_this2:User) WHERE ($jwt.id IS NOT NULL AND create_this2.userId = $jwt.id) | 1]) > 0) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param2 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH create_this1 { .id } AS create_this1
                     RETURN head(collect(create_this1)) AS create_var3
                 }
