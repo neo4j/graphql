@@ -195,6 +195,7 @@ function createConnectAndParams({
         }
 
         if (whereStrs.length) {
+            subquery.push("WITH *");
             const predicate = `${whereStrs.join(" AND ")}`;
             if (aggregationWhere) {
                 const columns = [new Cypher.NamedVariable(nodeName)];

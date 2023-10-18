@@ -187,12 +187,10 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
 
         const settingsId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data
             .createTenants.tenants[0].settings.id;
-        const userId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data
-            .createTenants.tenants[0].admins[0].userId;
 
         const addOpeningDaysResponse = await apolloServer.executeOperation(
             { query: ADD_OPENING_DAYS, variables: { input: openingDayInput(settingsId) } },
-            { contextValue: { jwt: { id: userId } } }
+            { contextValue: { jwt: { id: myUserId } } }
         );
         expect(addOpeningDaysResponse).toMatchObject({
             body: {
@@ -221,7 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                             connect: {
                                 where: {
                                     node: {
-                                        id: userId,
+                                        id: myUserId,
                                     },
                                 },
                             },
@@ -238,19 +236,11 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                     },
                 },
             },
-            { contextValue: { jwt: { id: userId } } }
+            { contextValue: { jwt: { id: myUserId } } }
         );
-        expect(addLolResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: {
-                        createLOLs: {
-                            LOLs: [{ id: expect.any(String) }],
-                        },
-                    },
-                },
-            },
-        });
+        expect(
+            (addLolResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.errors[0].message
+        ).toEqual("Forbidden");
     });
 
     test("create lols - subscriptions enabled", async () => {
@@ -284,12 +274,10 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
 
         const settingsId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data
             .createTenants.tenants[0].settings.id;
-        const userId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data
-            .createTenants.tenants[0].admins[0].userId;
 
         const addOpeningDaysResponse = await apolloServer.executeOperation(
             { query: ADD_OPENING_DAYS, variables: { input: openingDayInput(settingsId) } },
-            { contextValue: { jwt: { id: userId } } }
+            { contextValue: { jwt: { id: myUserId } } }
         );
         expect(addOpeningDaysResponse).toMatchObject({
             body: {
@@ -319,7 +307,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                             connect: {
                                 where: {
                                     node: {
-                                        id: userId,
+                                        id: myUserId,
                                     },
                                 },
                             },
@@ -336,18 +324,10 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                     },
                 },
             },
-            { contextValue: { jwt: { id: userId } } }
+            { contextValue: { jwt: { id: myUserId } } }
         );
-        expect(addLolResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: {
-                        createLOLs: {
-                            LOLs: [{ id: expect.any(String) }],
-                        },
-                    },
-                },
-            },
-        });
+        expect(
+            (addLolResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.errors[0].message
+        ).toEqual("Forbidden");
     });
 });
