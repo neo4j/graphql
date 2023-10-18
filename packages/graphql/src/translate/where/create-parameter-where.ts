@@ -73,9 +73,7 @@ export function createParameterWhere({
         operator,
     });
 
-    if (isNot) {
-        return Cypher.not(comparisonOp);
-    }
+    const comparison = isNot ? Cypher.not(comparisonOp) : comparisonOp;
 
-    return comparisonOp;
+    return Cypher.and(Cypher.isNotNull(target), comparison);
 }

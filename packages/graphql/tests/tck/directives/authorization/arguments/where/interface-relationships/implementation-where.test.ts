@@ -692,6 +692,7 @@ describe("Cypher Auth Where", () => {
             	OPTIONAL MATCH (this0_content_connect1_node:Post)
             OPTIONAL MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
             	WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)))
             	CALL {
             		WITH *
@@ -784,6 +785,7 @@ describe("Cypher Auth Where", () => {
             	OPTIONAL MATCH (this0_content_connect1_node:Post)
             OPTIONAL MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
             	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub)))
             	CALL {
             		WITH *
@@ -875,6 +877,7 @@ describe("Cypher Auth Where", () => {
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
             OPTIONAL MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
             	WHERE (($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
@@ -957,6 +960,7 @@ describe("Cypher Auth Where", () => {
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
             OPTIONAL MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
             	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
@@ -1032,6 +1036,7 @@ describe("Cypher Auth Where", () => {
             	OPTIONAL MATCH (this_connect_content1_node:Post)
             OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
             	WHERE (($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
@@ -1105,6 +1110,7 @@ describe("Cypher Auth Where", () => {
             	OPTIONAL MATCH (this_connect_content1_node:Post)
             OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization_this0:User)
             WITH *, count(authorization_this0) AS creatorCount
+            WITH *
             	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND (($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_this0.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *

@@ -177,7 +177,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             OPTIONAL MATCH (this0)<-[:PUBLISHER]-(authorization_0_0_this0:User)
             WITH *, count(authorization_0_0_this0) AS publisherCount
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_0_0_var0 = true AND $authorization_0_0_param1 IN $jwt.roles AND $authorization_0_0_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_0_this0.id = $jwt.sub)) AND $authorization_0_0_param2 IN $jwt.roles AND $authorization_0_0_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_0_0_var0 = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_param2 IN $jwt.roles) AND ($jwt.roles IS NOT NULL AND $authorization_0_0_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_0_this0.id = $jwt.sub)) AND ($jwt.roles IS NOT NULL AND $authorization_0_0_param2 IN $jwt.roles) AND ($jwt.roles IS NOT NULL AND $authorization_0_0_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -195,14 +195,13 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
                     \\"high\\": 0
                 },
                 \\"isAuthenticated\\": true,
-                \\"authorization_0_0_param1\\": \\"verified\\",
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"michel\\"
                 },
+                \\"authorization_0_0_param2\\": \\"verified\\",
                 \\"authorization_0_0_param3\\": \\"creator\\",
                 \\"this0_publisher_connect0_node_param0\\": \\"ID\\",
-                \\"authorization_0_0_param2\\": \\"verified\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
