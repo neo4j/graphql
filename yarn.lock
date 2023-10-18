@@ -3577,7 +3577,7 @@ __metadata:
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.39.0
     "@tsconfig/create-react-app": 2.0.1
-    "@types/codemirror": 5.60.10
+    "@types/codemirror": 5.60.11
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 13.0.2
     "@types/prettier": 2.7.3
@@ -7233,12 +7233,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/codemirror@npm:5.60.10, @types/codemirror@npm:^5.60.8":
-  version: 5.60.10
-  resolution: "@types/codemirror@npm:5.60.10"
+"@types/codemirror@npm:5.60.11":
+  version: 5.60.11
+  resolution: "@types/codemirror@npm:5.60.11"
   dependencies:
     "@types/tern": "*"
-  checksum: c5977db03939f2a208f0ec7958be70b4fb205dd3f3122b2175ff28287a5424da95f9030b2838c61d37e6278ec53795861dec12439967c1e1da885b2b2a65b299
+  checksum: b8900e3b941bf054e9322d362e1e2facd3cf1281b456d672f992acc47bd3f5611ff46282e46188e7925f84e92d3ee534381e878f5a5ca4d705e6af7d201ec246
   languageName: node
   linkType: hard
 
@@ -7248,6 +7248,15 @@ __metadata:
   dependencies:
     "@types/tern": "*"
   checksum: f4594b9bc95306bbbe24d967e0749e28fe7b1e461c41621429b8c8bc295bda1704d99c1d7d5496efd987ee80d24f055155ddd742fa0c975cd69f279ccdaa0af9
+  languageName: node
+  linkType: hard
+
+"@types/codemirror@npm:^5.60.8":
+  version: 5.60.10
+  resolution: "@types/codemirror@npm:5.60.10"
+  dependencies:
+    "@types/tern": "*"
+  checksum: c5977db03939f2a208f0ec7958be70b4fb205dd3f3122b2175ff28287a5424da95f9030b2838c61d37e6278ec53795861dec12439967c1e1da885b2b2a65b299
   languageName: node
   linkType: hard
 
