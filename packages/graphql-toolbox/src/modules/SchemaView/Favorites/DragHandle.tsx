@@ -30,7 +30,7 @@ export const DragHandle = forwardRef<HTMLButtonElement>(function DragHandle(prop
             aria-label="Reorder favorite snippet"
             ref={ref}
             clean
-            size="extra-small"
+            size="small"
             style={{ cursor: "grab" }}
             {...rest}
         >
