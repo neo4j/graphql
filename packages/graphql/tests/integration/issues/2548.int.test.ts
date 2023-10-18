@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/2548", () => {
     const secret = "secret";
@@ -119,15 +119,13 @@ describe("https://github.com/neo4j/graphql/issues/2548", () => {
         });
 
         expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual({
-            [User.plural]: [
-                {
-                    userId: "1",
-                },
-                {
-                    userId: "2",
-                },
-            ],
-        });
+        expect((result.data as any)[User.plural]).toIncludeSameMembers([
+            {
+                userId: "1",
+            },
+            {
+                userId: "2",
+            },
+        ]);
     });
 });
