@@ -34,6 +34,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import { hasTarget } from "../../utils/context-has-target";
 import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
@@ -157,10 +158,7 @@ export class ConnectionReadOperation extends Operation {
 
         const filters = Cypher.and(...predicates, ...authPredicate);
 
-        const nodeProjectionSubqueries = this.nodeFields
-            .flatMap((f) => f.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
-
+        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [node]);
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
             .map((f) => f.getProjectionField(node))
@@ -271,10 +269,8 @@ export class ConnectionReadOperation extends Operation {
 
         const nodeProjectionSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
-        const sortSubqueries = this.sortFields
-            .flatMap((sf) => sf.node)
-            .flatMap((sq) => sq.getSubqueries(context))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
+        const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [node]);
         const nodeProjectionMap = this.getProjectionMap(context);
 
         const edgeVar = new Cypher.NamedVariable("edge");
@@ -404,28 +400,14 @@ export class ConnectionReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const nonCypherFields = this.nodeFields.filter((f) => !(f instanceof CypherAttributeField));
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return filterTruthy(
-            this.nodeFields.flatMap((f) => {
-                if (f instanceof CypherAttributeField) {
-                    return;
-                }
-                return f.getSubqueries(context);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(context.target);
-        });
+        return wrapSubqueriesInCypherCalls(context, nonCypherFields, [context.target]);
     }
 
     protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return filterTruthy(
-            this.getCypherFields().flatMap((f) => {
-                return f.getSubqueries(context);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(context.target);
-        });
+        return wrapSubqueriesInCypherCalls(context, this.getCypherFields(), [context.target]);
     }
 
     private getCypherFields(): Field[] {
