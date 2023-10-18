@@ -23,6 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import type { GraphQLResponse } from "@apollo/server";
 import { ApolloServer } from "@apollo/server";
 import gql from "graphql-tag";
+import { graphql } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/4118", () => {
     let driver: Driver;
@@ -84,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         }
     `;
 
-    const ADD_TENANT = gql`
+    const ADD_TENANT = `
         mutation addTenant($input: [TenantCreateInput!]!) {
             createTenants(input: $input) {
                 tenants {
@@ -100,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         }
     `;
 
-    const ADD_OPENING_DAYS = gql`
+    const ADD_OPENING_DAYS = `
         mutation addOpeningDays($input: [OpeningDayCreateInput!]!) {
             createOpeningDays(input: $input) {
                 openingDays {
@@ -138,11 +139,13 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             },
         };
         openingDayInput = (settingsId) => ({
-            settings: {
-                connect: {
-                    where: {
-                        node: {
-                            id: settingsId,
+            input: {
+                settings: {
+                    connect: {
+                        where: {
+                            node: {
+                                id: settingsId,
+                            },
                         },
                     },
                 },
@@ -164,83 +167,73 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             typeDefs,
             driver,
         });
-        const apolloServer = new ApolloServer({
-            schema: await neo4jGraphql.getSchema(),
-            introspection: true,
-        });
+        const schema = await neo4jGraphql.getSchema();
 
-        const addTenantResponse = await apolloServer.executeOperation(
-            { query: ADD_TENANT, variables: tenantVariables },
-            { contextValue: { jwt: { id: myUserId, roles: ["overlord"] } } }
-        );
+        const addTenantResponse = await graphql({
+            schema,
+            source: ADD_TENANT,
+            variableValues: tenantVariables,
+            contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
+        });
         expect(addTenantResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: {
-                        createTenants: {
-                            tenants: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
-                        },
-                    },
+            data: {
+                createTenants: {
+                    tenants: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
                 },
             },
         });
 
-        const settingsId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data
-            .createTenants.tenants[0].settings.id;
-
-        const addOpeningDaysResponse = await apolloServer.executeOperation(
-            { query: ADD_OPENING_DAYS, variables: { input: openingDayInput(settingsId) } },
-            { contextValue: { jwt: { id: myUserId } } }
-        );
-        expect(addOpeningDaysResponse).toMatchObject({
-            body: {
-                singleResult: { data: { createOpeningDays: { openingDays: [{ id: expect.any(String) }] } } },
-            },
+        const settingsId = (addTenantResponse.data as any).createTenants.tenants[0].settings.id;
+        const addOpeningDaysResponse = await graphql({
+            schema,
+            source: ADD_OPENING_DAYS,
+            variableValues: openingDayInput(settingsId),
+            contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
         });
-        const openingDayId = (addOpeningDaysResponse.body as GraphQLResponse["body"] & { singleResult: any })
-            .singleResult.data.createOpeningDays.openingDays[0].id;
+        expect(addOpeningDaysResponse).toMatchObject({
+            data: { createOpeningDays: { openingDays: [{ id: expect.any(String) }] } },
+        });
+        const openingDayId = (addOpeningDaysResponse.data as any).createOpeningDays.openingDays[0].id;
 
-        const addLolResponse = await apolloServer.executeOperation(
-            {
-                query: gql`
-                    mutation addLols($input: [LOLCreateInput!]!) {
-                        createLols(input: $input) {
-                            lols {
-                                host {
-                                    id
-                                }
-                            }
+        const addLolResponse = await graphql({
+            schema,
+            source: `
+            mutation addLols($input: [LOLCreateInput!]!) {
+                createLols(input: $input) {
+                    lols {
+                        host {
+                            id
                         }
                     }
-                `,
-                variables: {
-                    input: {
-                        host: {
-                            connect: {
-                                where: {
-                                    node: {
-                                        id: myUserId,
-                                    },
+                }
+            }
+        `,
+            variableValues: {
+                input: {
+                    host: {
+                        connect: {
+                            where: {
+                                node: {
+                                    id: myUserId,
                                 },
                             },
                         },
-                        openingDays: {
-                            connect: {
-                                where: {
-                                    node: {
-                                        id: openingDayId,
-                                    },
+                    },
+                    openingDays: {
+                        connect: {
+                            where: {
+                                node: {
+                                    id: openingDayId,
                                 },
                             },
                         },
                     },
                 },
             },
-            { contextValue: { jwt: { id: myUserId } } }
-        );
-        expect(
-            (addLolResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.errors[0].message
-        ).toBe("Forbidden");
+            contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
+        });
+
+        expect(addLolResponse.errors?.[0]?.message).toContain("Forbidden");
     });
 
     test("create lols - subscriptions enabled", async () => {
@@ -251,83 +244,72 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 subscriptions: true,
             },
         });
-        const apolloServer = new ApolloServer({
-            schema: await neo4jGraphql.getSchema(),
-            introspection: true,
-        });
+        const schema = await neo4jGraphql.getSchema();
 
-        const addTenantResponse = await apolloServer.executeOperation(
-            { query: ADD_TENANT, variables: tenantVariables },
-            { contextValue: { jwt: { id: myUserId, roles: ["overlord"] } } }
-        );
+        const addTenantResponse = await graphql({
+            schema,
+            source: ADD_TENANT,
+            variableValues: tenantVariables,
+            contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
+        });
         expect(addTenantResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: {
-                        createTenants: {
-                            tenants: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
-                        },
-                    },
+            data: {
+                createTenants: {
+                    tenants: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
                 },
             },
         });
 
-        const settingsId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data
-            .createTenants.tenants[0].settings.id;
-
-        const addOpeningDaysResponse = await apolloServer.executeOperation(
-            { query: ADD_OPENING_DAYS, variables: { input: openingDayInput(settingsId) } },
-            { contextValue: { jwt: { id: myUserId } } }
-        );
-        expect(addOpeningDaysResponse).toMatchObject({
-            body: {
-                singleResult: { data: { createOpeningDays: { openingDays: [{ id: expect.any(String) }] } } },
-            },
+        const settingsId = (addTenantResponse.data as any).createTenants.tenants[0].settings.id;
+        const addOpeningDaysResponse = await graphql({
+            schema,
+            source: ADD_OPENING_DAYS,
+            variableValues: openingDayInput(settingsId),
+            contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
         });
+        expect(addOpeningDaysResponse).toMatchObject({
+            data: { createOpeningDays: { openingDays: [{ id: expect.any(String) }] } },
+        });
+        const openingDayId = (addOpeningDaysResponse.data as any).createOpeningDays.openingDays[0].id;
 
-        const openingDayId = (addOpeningDaysResponse.body as GraphQLResponse["body"] & { singleResult: any })
-            .singleResult.data.createOpeningDays.openingDays[0].id;
-
-        const addLolResponse = await apolloServer.executeOperation(
-            {
-                query: gql`
-                    mutation addLols($input: [LOLCreateInput!]!) {
-                        createLols(input: $input) {
-                            lols {
-                                host {
-                                    id
-                                }
-                            }
+        const addLolResponse = await graphql({
+            schema,
+            source: `
+            mutation addLols($input: [LOLCreateInput!]!) {
+                createLols(input: $input) {
+                    lols {
+                        host {
+                            id
                         }
                     }
-                `,
-                variables: {
-                    input: {
-                        host: {
-                            connect: {
-                                where: {
-                                    node: {
-                                        id: myUserId,
-                                    },
+                }
+            }
+        `,
+            variableValues: {
+                input: {
+                    host: {
+                        connect: {
+                            where: {
+                                node: {
+                                    id: myUserId,
                                 },
                             },
                         },
-                        openingDays: {
-                            connect: {
-                                where: {
-                                    node: {
-                                        id: openingDayId,
-                                    },
+                    },
+                    openingDays: {
+                        connect: {
+                            where: {
+                                node: {
+                                    id: openingDayId,
                                 },
                             },
                         },
                     },
                 },
             },
-            { contextValue: { jwt: { id: myUserId } } }
-        );
-        expect(
-            (addLolResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.errors[0].message
-        ).toBe("Forbidden");
+            contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
+        });
+
+        expect(addLolResponse.errors?.[0]?.message).toContain("Forbidden");
     });
 });
