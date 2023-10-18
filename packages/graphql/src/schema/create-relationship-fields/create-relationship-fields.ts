@@ -66,17 +66,6 @@ export function createRelationshipFields({
         }
         const relationshipTarget = relationshipAdapter.target;
 
-        if (relationshipTarget instanceof InterfaceEntityAdapter) {
-            createRelationshipInterfaceFields({
-                relationship: relationshipAdapter,
-                composeNode,
-                schemaComposer,
-                userDefinedFieldDirectives,
-            });
-
-            return;
-        }
-
         if (relationshipTarget instanceof UnionEntityAdapter) {
             createRelationshipUnionFields({
                 relationship: relationshipAdapter,
@@ -95,9 +84,6 @@ export function createRelationshipFields({
                 userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
             );
         }
-
-        // ======== only on relationships to concrete:
-        withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives });
 
         // TODO: new way
         if (composeNode instanceof ObjectTypeComposer) {
@@ -121,6 +107,22 @@ export function createRelationshipFields({
                 });
             }
         }
+
+        // Specifically placed the check for InterfaceEntityAdapter here
+        // so that we exit the function at this point, after the aggregation fields have been added above
+        if (relationshipTarget instanceof InterfaceEntityAdapter) {
+            createRelationshipInterfaceFields({
+                relationship: relationshipAdapter,
+                composeNode,
+                schemaComposer,
+                userDefinedFieldDirectives,
+            });
+
+            return;
+        }
+
+        // ======== only on relationships to concrete entities:
+        withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives });
 
         // ======== only on relationships to concrete | unions:
         // TODO: refactor
