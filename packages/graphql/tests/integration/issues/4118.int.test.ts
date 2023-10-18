@@ -240,7 +240,7 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         );
         expect(
             (addLolResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.errors[0].message
-        ).toEqual("Forbidden");
+        ).toBe("Forbidden");
     });
 
     test("create lols - subscriptions enabled", async () => {
@@ -328,6 +328,6 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         );
         expect(
             (addLolResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.errors[0].message
-        ).toEqual("Forbidden");
+        ).toBe("Forbidden");
     });
 });
