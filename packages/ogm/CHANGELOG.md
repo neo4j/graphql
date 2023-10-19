@@ -1,5 +1,14 @@
 # @neo4j/graphql-ogm
 
+## 4.3.4
+
+### Patch Changes
+
+-   [#4143](https://github.com/neo4j/graphql/pull/4143) [`26e50499b`](https://github.com/neo4j/graphql/commit/26e50499bbcfbd5b428dd8f89d4577098c9b3a50) Thanks [@mjfwebb](https://github.com/mjfwebb)! - OGM.init() calls will throw errors instead of silently capturing them.
+
+-   Updated dependencies [[`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e), [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6), [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6)]:
+    -   @neo4j/graphql@4.3.4
+
 ## 4.3.3
 
 ### Patch Changes
