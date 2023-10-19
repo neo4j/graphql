@@ -23,11 +23,11 @@ import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 
 describe("Cypher sort tests", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = `
             type Movie {
                 id: ID
                 title: String
@@ -354,11 +354,11 @@ describe("Cypher sort tests", () => {
 });
 
 describe("Top-level Interface query sort", () => {
-    let typeDefs: DocumentNode;
+    let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        typeDefs = gql`
+        typeDefs = `
             type SomeNodeType implements MyOtherInterface & MyInterface {
                 id: ID! @id @unique
                 something: String
@@ -664,5 +664,242 @@ describe("Top-level Interface query sort", () => {
                 }
             }"
         `);
+    });
+
+    describe("add @limit directive on interface", () => {
+        beforeAll(() => {
+            typeDefs = typeDefs + `extend interface MyInterface @limit(default: 13, max: 15) `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                experimental: true,
+            });
+        });
+
+        test("Limit from directive on Interface", async () => {
+            const query = gql`
+                query {
+                    myInterfaces {
+                        id
+                        ... on MyOtherImplementationType {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on SomeNodeType {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                    MATCH (this0:SomeNodeType)
+                    CALL {
+                        WITH this0
+                        MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                        WITH this2 { .id } AS this2
+                        RETURN collect(this2) AS var3
+                    }
+                    WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                    RETURN this0 AS this
+                    UNION
+                    MATCH (this4:MyImplementationType)
+                    WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
+                    RETURN this4 AS this
+                    UNION
+                    MATCH (this5:MyOtherImplementationType)
+                    WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                    RETURN this5 AS this
+                }
+                RETURN this
+                LIMIT $param0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 13,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+        test("Max limit from directive on Interface overwrites the limit argument", async () => {
+            const query = gql`
+                query {
+                    myInterfaces(options: { limit: 16 }) {
+                        id
+                        ... on MyOtherImplementationType {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on SomeNodeType {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                    MATCH (this0:SomeNodeType)
+                    CALL {
+                        WITH this0
+                        MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                        WITH this2 { .id } AS this2
+                        RETURN collect(this2) AS var3
+                    }
+                    WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                    RETURN this0 AS this
+                    UNION
+                    MATCH (this4:MyImplementationType)
+                    WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
+                    RETURN this4 AS this
+                    UNION
+                    MATCH (this5:MyOtherImplementationType)
+                    WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                    RETURN this5 AS this
+                }
+                RETURN this
+                LIMIT $param0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 15,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+        test("Limit argument overwrites default if lower than max", async () => {
+            const query = gql`
+                query {
+                    myInterfaces(options: { limit: 3 }) {
+                        id
+                        ... on MyOtherImplementationType {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on SomeNodeType {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                    MATCH (this0:SomeNodeType)
+                    CALL {
+                        WITH this0
+                        MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                        WITH this2 { .id } AS this2
+                        RETURN collect(this2) AS var3
+                    }
+                    WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                    RETURN this0 AS this
+                    UNION
+                    MATCH (this4:MyImplementationType)
+                    WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
+                    RETURN this4 AS this
+                    UNION
+                    MATCH (this5:MyOtherImplementationType)
+                    WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                    RETURN this5 AS this
+                }
+                RETURN this
+                LIMIT $param0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 3,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+        test("Max limit from directive on Interface overwrites the limit argument - combines with sort", async () => {
+            const query = gql`
+                query {
+                    myInterfaces(options: { limit: 16, sort: [{ id: ASC }] }) {
+                        id
+                        ... on MyOtherImplementationType {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on SomeNodeType {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CALL {
+                    MATCH (this0:SomeNodeType)
+                    CALL {
+                        WITH this0
+                        MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
+                        WITH this2 { .id } AS this2
+                        RETURN collect(this2) AS var3
+                    }
+                    WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
+                    RETURN this0 AS this
+                    UNION
+                    MATCH (this4:MyImplementationType)
+                    WITH this4 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this4) } AS this4
+                    RETURN this4 AS this
+                    UNION
+                    MATCH (this5:MyOtherImplementationType)
+                    WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
+                    RETURN this5 AS this
+                }
+                RETURN this
+                ORDER BY this.id ASC
+                LIMIT $param0"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 15,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
     });
 });

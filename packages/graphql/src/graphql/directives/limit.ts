@@ -32,5 +32,5 @@ export const limitDirective = new GraphQLDirective({
             type: GraphQLInt,
         },
     },
-    locations: [DirectiveLocation.OBJECT],
+    locations: [DirectiveLocation.OBJECT, DirectiveLocation.INTERFACE],
 });
