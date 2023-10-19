@@ -18,8 +18,9 @@
  */
 
 import type { Node } from "../classes";
+import Debug from "debug";
 import createCreateAndParams from "./create-create-and-params";
-import { META_CYPHER_VARIABLE } from "../constants";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
@@ -30,6 +31,8 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export default async function translateCreate({
     context,
@@ -135,6 +138,7 @@ export default async function translateCreate({
                     env: queryASTEnv,
                     neo4jGraphQLContext: context,
                 });
+                debug(queryAST.print());
                 const queryASTResult = queryAST.transpile(queryASTContext);
                 if (queryASTResult.clauses.length) {
                     projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
@@ -144,6 +148,7 @@ export default async function translateCreate({
             })
         )
     );
+
     const returnStatement = getReturnStatement(projectedVariables, context);
     const createQuery = new Cypher.RawCypher((env) => {
         const cypher = filterTruthy([
