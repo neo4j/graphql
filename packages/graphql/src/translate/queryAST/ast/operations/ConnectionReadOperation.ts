@@ -266,11 +266,7 @@ export class ConnectionReadOperation extends Operation {
         const authFilterSubqueries = this.getAuthFilterSubqueries(context);
 
         const filters = Cypher.and(...predicates, ...authPredicate);
-
-        const nodeProjectionSubqueries = this.getFieldsSubqueries(context);
-        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
-        const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [node]);
+        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
         const nodeProjectionMap = this.getProjectionMap(context);
 
         const edgeVar = new Cypher.NamedVariable("edge");
@@ -336,15 +332,17 @@ export class ConnectionReadOperation extends Operation {
             withNodeAndTotalCount,
             unwindClause
         );
-        const subqueriesClause = Cypher.concat(
-            ...nodeProjectionSubqueries,
-            ...sortSubqueries,
-            ...cypherFieldSubqueries
+
+        const clause = Cypher.concat(
+            ...[
+                connectionMatchAndAuthClause,
+                ...prePaginationSubqueries,
+                paginationWith,
+                ...postPaginationSubqueries,
+                withProjection,
+                returnClause,
+            ]
         );
-        const orderedClauses = this.hasCypherSort()
-            ? [connectionMatchAndAuthClause, subqueriesClause, paginationWith, withProjection, returnClause]
-            : [connectionMatchAndAuthClause, paginationWith, subqueriesClause, withProjection, returnClause];
-        const clause = Cypher.concat(...orderedClauses);
 
         return {
             clauses: [clause],
@@ -399,26 +397,43 @@ export class ConnectionReadOperation extends Operation {
         });
     }
 
-    protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        const nonCypherFields = this.nodeFields.filter((f) => !(f instanceof CypherAttributeField));
+    protected getPreAndPostSubqueries(context: QueryASTContext): {
+        prePaginationSubqueries: Cypher.Clause[];
+        postPaginationSubqueries: Cypher.Clause[];
+    } {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return wrapSubqueriesInCypherCalls(context, nonCypherFields, [context.target]);
+        const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
+        const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
+            (sortFieldsFlagMap, sortField) => {
+                if (sortField instanceof CypherPropertySort) {
+                    sortFieldsFlagMap[sortField.getFieldName()] = true;
+                }
+                return sortFieldsFlagMap;
+            },
+            {}
+        );
+
+        const preAndPostFields = this.nodeFields.reduce<Record<"Pre" | "Post", Field[]>>(
+            (acc, nodeField) => {
+                if (nodeField instanceof CypherAttributeField && cypherSortFieldsFlagMap[nodeField.getFieldName()]) {
+                    acc.Pre.push(nodeField);
+                } else {
+                    acc.Post.push(nodeField);
+                }
+                return acc;
+            },
+            { Pre: [], Post: [] }
+        );
+        const preNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Pre, [context.target]);
+        const postNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Post, [context.target]);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [context.target]);
+
+        return {
+            prePaginationSubqueries: [...sortSubqueries, ...preNodeSubqueries],
+            postPaginationSubqueries: postNodeSubqueries,
+        };
     }
 
-    protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
-        return wrapSubqueriesInCypherCalls(context, this.getCypherFields(), [context.target]);
-    }
-
-    private getCypherFields(): Field[] {
-        return this.nodeFields.filter((f) => {
-            return f instanceof CypherAttributeField;
-        });
-    }
-
-    private hasCypherSort(): boolean {
-        return this.sortFields.some((s) => s.node.some((sn) => sn instanceof CypherPropertySort));
-    }
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
         if (!hasTarget(context)) throw new Error("No parent node found!");

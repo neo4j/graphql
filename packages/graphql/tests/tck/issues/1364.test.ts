@@ -192,6 +192,8 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 UNWIND result AS this0
                 RETURN head(collect(this0)) AS this0
             }
+            WITH *
+            ORDER BY this0 ASC
             CALL {
                 WITH this
                 CALL {
@@ -203,8 +205,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 UNWIND result AS this1
                 RETURN head(collect(this1)) AS this1
             }
-            WITH *
-            ORDER BY this0 ASC
             WITH { node: this { .title, totalGenres: this0, totalActors: this1 } } AS edge, totalCount, this
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
