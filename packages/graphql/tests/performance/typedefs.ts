@@ -47,6 +47,13 @@ export const typeDefs = `#graphql
         likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
         oneActorName: String
             @cypher(statement: "MATCH (this)<-[:ACTED_IN]-(a:Person) RETURN a.name AS name", columnName: "name")
+        otherMoviesWhereActorsActedIn: [Movie!]! 
+            @cypher(statement: """
+                MATCH (this)<-[:ACTED_IN]-(a:Person)-[:ACTED_IN]->(m:Movie)
+                WITH m
+                ORDER BY m.title DESC
+                RETURN distinct (m) as otherMovies
+                """, columnName: "otherMovies")
         favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
