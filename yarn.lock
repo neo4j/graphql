@@ -3578,7 +3578,7 @@ __metadata:
     "@playwright/test": 1.39.0
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.12
-    "@types/lodash.debounce": 4.0.7
+    "@types/lodash.debounce": 4.0.8
     "@types/markdown-it": 13.0.2
     "@types/prettier": 2.7.3
     "@types/react-dom": 18.2.13
@@ -7518,12 +7518,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:4.0.7":
-  version: 4.0.7
-  resolution: "@types/lodash.debounce@npm:4.0.7"
+"@types/lodash.debounce@npm:4.0.8":
+  version: 4.0.8
+  resolution: "@types/lodash.debounce@npm:4.0.8"
   dependencies:
     "@types/lodash": "*"
-  checksum: e873b2d77f89010876baba3437ef826b17221b98948e00b5590828334a481dea1c8f9d28543210e564adc53199584f42c3cb171f8b6c3614fefc0b4e0888679c
+  checksum: 63f195cb053ca390135a9aca62bb60fa149ca81838519871506b60760ff4113333709becb8e4147707eaa3d916dab7eff66b0588caf4ce508cabda9bee9c5b60
   languageName: node
   linkType: hard
 
