@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 4.3.4
+
+### Patch Changes
+
+-   [#4142](https://github.com/neo4j/graphql/pull/4142) [`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4118 - Invalid input WHERE on create with connect and auth
+
+-   [#4147](https://github.com/neo4j/graphql/pull/4147) [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4113 - auth subqueries variable name clash
+
+-   [#4146](https://github.com/neo4j/graphql/pull/4146) [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested aggregation filters #4115
+
 ## 4.3.3
 
 ### Patch Changes
