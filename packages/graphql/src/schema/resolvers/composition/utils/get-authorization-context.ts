@@ -18,10 +18,15 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import Debug from "debug";
 import type { Neo4jGraphQLAuthorization } from "../../../../classes/authorization/Neo4jGraphQLAuthorization";
 import type { AuthorizationContext } from "../../../../types";
 import type { Neo4jGraphQLContext } from "../../../../types/neo4j-graphql-context";
 import type { Neo4jGraphQLSubscriptionsConnectionParams } from "../../../../types/neo4j-graphql-subscriptions-context";
+import { DEBUG_MIDDLEWARE } from "../../../../constants";
+import { debugObject } from "../../../../debug/debug-object";
+
+const debug = Debug(DEBUG_MIDDLEWARE);
 
 export async function getAuthorizationContext(
     context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams,
@@ -33,6 +38,9 @@ export async function getAuthorizationContext(
         if (jwt) {
             context.jwt = jwt;
             const isAuthenticated = true;
+
+            debugObject(debug, "successfully decoded JWT", jwt);
+
             return {
                 isAuthenticated,
                 jwt: context.jwt,
@@ -42,6 +50,9 @@ export async function getAuthorizationContext(
             };
         } else {
             const isAuthenticated = false;
+
+            debug("request not authenticated");
+
             return {
                 isAuthenticated,
                 jwtParam: new Cypher.NamedParam("jwt", {}),
@@ -52,6 +63,8 @@ export async function getAuthorizationContext(
 
     const isAuthenticated = true;
     const jwt = context.jwt;
+
+    debugObject(debug, "using JWT provided in context", jwt);
 
     return {
         isAuthenticated,

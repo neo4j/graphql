@@ -19,20 +19,21 @@
 
 import Debug from "debug";
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
-import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Node, Relationship } from "../../../classes";
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../../classes/Executor";
-import { DEBUG_GRAPHQL } from "../../../constants";
+import { DEBUG_MIDDLEWARE } from "../../../constants";
 import type { AuthorizationContext, ContextFeatures, FulltextContext } from "../../../types";
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Neo4jGraphQLAuthorization } from "../../../classes/authorization/Neo4jGraphQLAuthorization";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import { getAuthorizationContext } from "./utils/get-authorization-context";
+import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
+import { debugObject } from "../../../debug/debug-object";
 
-const debug = Debug(DEBUG_GRAPHQL);
+const debug = Debug(DEBUG_MIDDLEWARE);
 
 export type WrapResolverArguments = {
     driver?: Driver;
@@ -81,14 +82,8 @@ export const wrapQueryAndMutation =
     }: WrapResolverArguments) =>
     (next: GraphQLFieldResolver<any, Neo4jGraphQLComposedContext>) =>
     async (root, args, context: Neo4jGraphQLContext, info: GraphQLResolveInfo) => {
-        if (debug.enabled) {
-            const query = print(info.operation);
-
-            debug(
-                "%s",
-                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
-            );
-        }
+        debugGraphQLResolveInfo(debug, info);
+        debugObject(debug, "incoming context", context);
 
         if (!context?.executionContext) {
             if (!driver) {
