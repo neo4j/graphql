@@ -34,6 +34,10 @@ export class AttributeField extends Field {
         return [];
     }
 
+    public getFieldName(): string {
+        return this.attribute.name;
+    }
+
     protected getCypherExpr(target: Cypher.Variable): Cypher.Expr {
         return target.property(this.attribute.databaseName);
     }

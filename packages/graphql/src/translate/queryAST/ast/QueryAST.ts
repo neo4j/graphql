@@ -18,13 +18,13 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { ReadOperation } from "./operations/ReadOperation";
 import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
-import { CompositeReadOperation } from "./operations/composite/CompositeReadOperation";
+import { ReadOperation } from "./operations/ReadOperation";
+import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -34,26 +34,7 @@ export class QueryAST {
     }
 
     public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
-        const queryASTEnv = new QueryASTEnv();
-        const returnVariable = new Cypher.NamedVariable("this");
-        let context: QueryASTContext;
-        if (this.operation instanceof ReadOperation) {
-            const node = createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
-            context = new QueryASTContext({
-                target: node,
-                env: queryASTEnv,
-                neo4jGraphQLContext,
-                returnVariable,
-            });
-        } else if (this.operation instanceof CompositeReadOperation) {
-            context = new QueryASTContext({
-                env: queryASTEnv,
-                neo4jGraphQLContext,
-                returnVariable,
-            });
-        } else {
-            throw new Error("Operation not supported yet");
-        }
+        const context = this.buildQueryASTContext(neo4jGraphQLContext);
         return Cypher.concat(...this.transpile(context).clauses);
     }
     /**
@@ -63,6 +44,24 @@ export class QueryAST {
         return this.operation.transpile({
             context,
         });
+    }
+
+    public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLContext): QueryASTContext {
+        const queryASTEnv = new QueryASTEnv();
+        const returnVariable = new Cypher.NamedVariable("this");
+        const node = this.getTargetFromOperation(neo4jGraphQLContext);
+        return new QueryASTContext({
+            target: node,
+            env: queryASTEnv,
+            neo4jGraphQLContext,
+            returnVariable,
+        });
+    }
+
+    public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Node | undefined {
+        if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
+            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+        }
     }
 
     public print(): string {

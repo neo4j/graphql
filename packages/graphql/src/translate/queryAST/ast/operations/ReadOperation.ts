@@ -34,6 +34,7 @@ import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -144,10 +145,7 @@ export class ReadOperation extends Operation {
 
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
-        const sortSubqueries = this.sortFields
-            .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
-
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
         const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
 
         const clause = Cypher.concat(
@@ -224,10 +222,7 @@ export class ReadOperation extends Operation {
         }
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
-
-        const filterSubqueries = this.filters
-            .flatMap((f) => f.getSubqueries(context))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
+        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [node]);
         const filterPredicates = this.getPredicates(context);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
@@ -235,9 +230,7 @@ export class ReadOperation extends Operation {
         );
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
-        const sortSubqueries = this.sortFields
-            .flatMap((sq) => sq.getSubqueries(context))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
+        const sortSubqueries = wrapSubqueriesInCypherCalls(context, this.sortFields, [node]);
         const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
@@ -326,28 +319,14 @@ export class ReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const nonCypherFields = this.fields.filter((f) => !(f instanceof CypherAttributeField));
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return filterTruthy(
-            this.fields.flatMap((f) => {
-                if (f instanceof CypherAttributeField) {
-                    return;
-                }
-                return f.getSubqueries(context);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(context.target);
-        });
+        return wrapSubqueriesInCypherCalls(context, nonCypherFields, [context.target]);
     }
 
     protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return filterTruthy(
-            this.getCypherFields().flatMap((f) => {
-                return f.getSubqueries(context);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(context.target);
-        });
+        return wrapSubqueriesInCypherCalls(context, this.getCypherFields(), [context.target]);
     }
 
     private getCypherFields(): Field[] {

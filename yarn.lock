@@ -3506,11 +3506,11 @@ __metadata:
   dependencies:
     "@apollo/server": 4.9.4
     "@neo4j/graphql": ^4.0.0
-    "@types/amqplib": 0.10.2
+    "@types/amqplib": 0.10.3
     "@types/body-parser": 1.19.4
     "@types/cors": 2.8.15
     "@types/debug": 4.1.10
-    "@types/jest": 29.5.5
+    "@types/jest": 29.5.6
     "@types/node": 18.15.1
     amqplib: 0.10.3
     body-parser: ^1.20.2
@@ -3538,8 +3538,8 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^5.0.0
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
-    "@neo4j/graphql": ^4.3.3
-    "@types/jest": 29.5.5
+    "@neo4j/graphql": ^4.3.4
+    "@types/jest": 29.5.6
     "@types/node": 18.15.1
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -3573,15 +3573,15 @@ __metadata:
     "@graphiql/react": 0.19.4
     "@neo4j-ndl/base": 2.0.4
     "@neo4j-ndl/react": 2.0.8
-    "@neo4j/graphql": 4.3.3
+    "@neo4j/graphql": 4.3.4
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.39.0
     "@tsconfig/create-react-app": 2.0.1
-    "@types/codemirror": 5.60.11
-    "@types/lodash.debounce": 4.0.7
-    "@types/markdown-it": 13.0.2
+    "@types/codemirror": 5.60.12
+    "@types/lodash.debounce": 4.0.8
+    "@types/markdown-it": 13.0.4
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.13
+    "@types/react-dom": 18.2.14
     "@types/webpack": 5.28.3
     autoprefixer: 10.4.16
     classnames: 2.3.2
@@ -3630,7 +3630,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@4.3.3, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.3.3, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@4.3.4, @neo4j/graphql@^4.0.0, @neo4j/graphql@^4.0.0-beta.0, @neo4j/graphql@^4.3.4, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3644,14 +3644,14 @@ __metadata:
     "@graphql-tools/utils": ^10.0.0
     "@neo4j/cypher-builder": ^1.4.0
     "@types/deep-equal": 1.0.3
-    "@types/is-uuid": 1.0.0
-    "@types/jest": 29.5.5
-    "@types/jsonwebtoken": 9.0.3
+    "@types/is-uuid": 1.0.1
+    "@types/jest": 29.5.6
+    "@types/jsonwebtoken": 9.0.4
     "@types/node": 18.15.1
-    "@types/pluralize": 0.0.31
-    "@types/randomstring": 1.1.9
-    "@types/semver": 7.5.3
-    "@types/supertest": 2.0.14
+    "@types/pluralize": 0.0.32
+    "@types/randomstring": 1.1.10
+    "@types/semver": 7.5.4
+    "@types/supertest": 2.0.15
     "@types/ws": 8.5.7
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -3704,9 +3704,9 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^4.0.0
-    "@types/jest": 29.5.5
+    "@types/jest": 29.5.6
     "@types/node": 18.15.1
-    "@types/pluralize": 0.0.31
+    "@types/pluralize": 0.0.32
     camelcase: ^6.3.0
     debug: ^4.3.4
     jest: 29.7.0
@@ -7142,12 +7142,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/amqplib@npm:0.10.2":
-  version: 0.10.2
-  resolution: "@types/amqplib@npm:0.10.2"
+"@types/amqplib@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@types/amqplib@npm:0.10.3"
   dependencies:
     "@types/node": "*"
-  checksum: 694486f4bb44add6e1e65c6ee495ca45e941037e91f5d5f714f641c26e16c09a38af25e71987614aa46febffa9fd08dfb6e6defb8ab9336f041fb6fab312b73f
+  checksum: 72c97c18cd20be38b2bf4c3c8be459fc67fbdf99e95338b724bf1183cfcf311b242133aaa73a564f4f950902d84f74374ac0fa35a578cf8b6140c44fe8c8dcb6
   languageName: node
   linkType: hard
 
@@ -7233,12 +7233,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/codemirror@npm:5.60.11":
-  version: 5.60.11
-  resolution: "@types/codemirror@npm:5.60.11"
+"@types/codemirror@npm:5.60.12":
+  version: 5.60.12
+  resolution: "@types/codemirror@npm:5.60.12"
   dependencies:
     "@types/tern": "*"
-  checksum: b8900e3b941bf054e9322d362e1e2facd3cf1281b456d672f992acc47bd3f5611ff46282e46188e7925f84e92d3ee534381e878f5a5ca4d705e6af7d201ec246
+  checksum: dff22f32ea42ccd3f9bfcf408631f94a11ffb4614ff4fa8cc55adf7da6e7ba96650533b8dd27d037242747bdaa85141e93520f84409db7bc394862a174a10e1e
   languageName: node
   linkType: hard
 
@@ -7419,10 +7419,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/is-uuid@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@types/is-uuid@npm:1.0.0"
-  checksum: f3f211b37ef7c1f290d7129455294e64be7f02e93d8e46eb5059fa2556b53abe1db228c33c0ef5ffa33f08d7df90ef2b4c76bf95c1cc1c41be3f0455164cc69b
+"@types/is-uuid@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@types/is-uuid@npm:1.0.1"
+  checksum: 5249ace79f8987839c6939dd5b5b42ec7caf5ab27a037194eada0e36c02f389d1e4d334f336c5cd0c702f58dbe38cdfa46ca6a8d86979025b5867a919182304f
   languageName: node
   linkType: hard
 
@@ -7451,13 +7451,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.5":
-  version: 29.5.5
-  resolution: "@types/jest@npm:29.5.5"
+"@types/jest@npm:29.5.6":
+  version: 29.5.6
+  resolution: "@types/jest@npm:29.5.6"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 56e55cde9949bcc0ee2fa34ce5b7c32c2bfb20e53424aa4ff3a210859eeaaa3fdf6f42f81a3f655238039cdaaaf108b054b7a8602f394e6c52b903659338d8c6
+  checksum: fa13a27bd1c8efd0381a419478769d0d6d3a8e93e1952d7ac3a16274e8440af6f73ed6f96ac1ff00761198badf2ee226b5ab5583a5d87a78d609ea78da5c5a24
   languageName: node
   linkType: hard
 
@@ -7493,7 +7493,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.3, @types/jsonwebtoken@npm:^9.0.2":
+"@types/jsonwebtoken@npm:9.0.4":
+  version: 9.0.4
+  resolution: "@types/jsonwebtoken@npm:9.0.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: 66323ca082008be98d1a1b2782e8c8895b9168bb4444362eaae56e4263728742b61c1b5c4d51276ee80eb592e4b339063425531168b529ca33fd0939cdb9eaa9
+  languageName: node
+  linkType: hard
+
+"@types/jsonwebtoken@npm:^9.0.2":
   version: 9.0.3
   resolution: "@types/jsonwebtoken@npm:9.0.3"
   dependencies:
@@ -7518,12 +7527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:4.0.7":
-  version: 4.0.7
-  resolution: "@types/lodash.debounce@npm:4.0.7"
+"@types/lodash.debounce@npm:4.0.8":
+  version: 4.0.8
+  resolution: "@types/lodash.debounce@npm:4.0.8"
   dependencies:
     "@types/lodash": "*"
-  checksum: e873b2d77f89010876baba3437ef826b17221b98948e00b5590828334a481dea1c8f9d28543210e564adc53199584f42c3cb171f8b6c3614fefc0b4e0888679c
+  checksum: 63f195cb053ca390135a9aca62bb60fa149ca81838519871506b60760ff4113333709becb8e4147707eaa3d916dab7eff66b0588caf4ce508cabda9bee9c5b60
   languageName: node
   linkType: hard
 
@@ -7541,13 +7550,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/markdown-it@npm:13.0.2":
-  version: 13.0.2
-  resolution: "@types/markdown-it@npm:13.0.2"
+"@types/markdown-it@npm:13.0.4":
+  version: 13.0.4
+  resolution: "@types/markdown-it@npm:13.0.4"
   dependencies:
     "@types/linkify-it": "*"
     "@types/mdurl": "*"
-  checksum: fe1f6a12ee8ad2246359376431a30d22c9b603e63e93e3e27d6920840934b9764034679a4d0b01ec54b0693c8d5c42012ec34715cba4f5b0736b8a4b66db4c74
+  checksum: 0af9c349467599f984e8faf548144e5c68ca8926d45e155cbc622897290fadb1fd31fced8194a2a1095406805dd21719d2bc74d8dc0295581d0eed771a4fd58b
   languageName: node
   linkType: hard
 
@@ -7638,10 +7647,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pluralize@npm:0.0.31":
-  version: 0.0.31
-  resolution: "@types/pluralize@npm:0.0.31"
-  checksum: 950d52d8f6709cdb7001336942fba0a63bf54b45695391fc2244d03db69b0eb6f187f80519d74941f5ce1dfa900d3975f2ed52e98b1f63a79045f5c085832beb
+"@types/pluralize@npm:0.0.32":
+  version: 0.0.32
+  resolution: "@types/pluralize@npm:0.0.32"
+  checksum: 788aa2ad144a0e7b318d03bddfeefecd65e97793e0faad748c458538abd8d680bcc096fe1219567a7c19d41d23b74e45868d7d43a06a44135798eb8da09a1655
   languageName: node
   linkType: hard
 
@@ -7666,10 +7675,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/randomstring@npm:1.1.9":
-  version: 1.1.9
-  resolution: "@types/randomstring@npm:1.1.9"
-  checksum: 979f3ed65c2d2137a9398b4d73c2a2b74bbbe21d95ff04e5d69e1031c7636f393ad2849ccbbcfce52133642c144bdade315bdffaa7547e323fcd740a16db3f81
+"@types/randomstring@npm:1.1.10":
+  version: 1.1.10
+  resolution: "@types/randomstring@npm:1.1.10"
+  checksum: 13ce9002b89796d48da539601efe3b9b1cd2d7edd1528502d515bc3e5748bd96b2dbb21c20cfa1d10eb19256daddacee01149c0dbdf98c8db0813731fc8b217e
   languageName: node
   linkType: hard
 
@@ -7680,12 +7689,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.13":
-  version: 18.2.13
-  resolution: "@types/react-dom@npm:18.2.13"
+"@types/react-dom@npm:18.2.14":
+  version: 18.2.14
+  resolution: "@types/react-dom@npm:18.2.14"
   dependencies:
     "@types/react": "*"
-  checksum: 22ba066b141dca5a5a9227fae0afc7c94b470fff8e8a38ade72649da57a8ea04d0cb2ba3e22005e7d8e772d49bddd28855b1dd98e6defd033bba6afb6edff883
+  checksum: 890289c70d1966c168037637c09cacefe6205bdd27a33252144a6b432595a2943775ac1a1accac0beddaeb67f8fdf721e076acb1adc990b08e51c3d9fd4e780c
   languageName: node
   linkType: hard
 
@@ -7739,7 +7748,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.5.3, @types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
+"@types/semver@npm:7.5.4":
+  version: 7.5.4
+  resolution: "@types/semver@npm:7.5.4"
+  checksum: 120c0189f6fec5f2d12d0d71ac8a4cfa952dc17fa3d842e8afddb82bba8828a4052f8799c1653e2b47ae1977435f38e8985658fde971905ce5afb8e23ee97ecf
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
   version: 7.5.3
   resolution: "@types/semver@npm:7.5.3"
   checksum: 349fdd1ab6c213bac5c991bac766bd07b8b12e63762462bb058740dcd2eb09c8193d068bb226f134661275f2022976214c0e727a4e5eb83ec1b131127c980d3e
@@ -7802,12 +7818,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:2.0.14":
-  version: 2.0.14
-  resolution: "@types/supertest@npm:2.0.14"
+"@types/supertest@npm:2.0.15":
+  version: 2.0.15
+  resolution: "@types/supertest@npm:2.0.15"
   dependencies:
     "@types/superagent": "*"
-  checksum: 9f6850a22b8f0fd4c26a6dfd9b64771a66476b1a4f841a3b84a9da843ce69463efbf37594fe107297dd14a225d199b802464d48d70e9413238c637903d392137
+  checksum: 89c1983662f0ab20969b3a6c44344397fd222d0f78b282619aabbe817f7c88a64210fd2b8b8f075ea22a27084e30ebc287bc5105619cbbf9af7f008e77f6eb93
   languageName: node
   linkType: hard
 
@@ -8784,7 +8800,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": 2.0.1
     "@apollo/server": ^4.7.0
     "@graphql-tools/wrap": ^10.0.0
-    "@neo4j/graphql": ^4.3.3
+    "@neo4j/graphql": ^4.3.4
     fork-ts-checker-webpack-plugin: 9.0.0
     graphql: 16.8.1
     graphql-tag: ^2.12.6
@@ -18882,7 +18898,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.3.3
+    "@neo4j/graphql": ^4.3.4
     graphql: 16.8.1
     neo4j-driver: 5.13.0
   languageName: unknown
