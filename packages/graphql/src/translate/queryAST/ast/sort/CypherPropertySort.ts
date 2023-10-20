@@ -43,6 +43,10 @@ export class CypherPropertySort extends Sort {
         return `${super.print()} <${this.attribute.name}>`;
     }
 
+    public getFieldName(): string {
+        return this.attribute.name;
+    }
+
     public getSortFields(
         context: QueryASTContext,
         variable: Cypher.Variable | Cypher.Property,

@@ -1,0 +1,70 @@
+query TopLevelSortWithCypher {
+    movies(options: { limit: 5, sort: { oneActorName: DESC } }) {
+        title
+        oneActorName
+    }
+}
+
+query TopLevelConnectionSortWithCypher {
+    moviesConnection(first: 5, sort: { oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+            }
+        }
+    }
+}
+
+query TopLevelSortWithCypherWithNested {
+    movies(options: { limit: 5, sort: { oneActorName: DESC } }) {
+        title
+        oneActorName
+        actors {
+            name
+        }
+    }
+}
+
+query TopLevelConnectionSortWithCypherWithNested {
+    moviesConnection(first: 5, sort: { oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+                actorsConnection {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Expensive Cypher fields not present in sort
+query TopLevelSortWithExpensiveCypher {
+    movies(options: { limit: 5, sort: { oneActorName: DESC } }) {
+        title
+        oneActorName
+        otherMoviesWhereActorsActedIn {
+            title
+        }
+    }
+}
+
+query TopLevelConnectionSortWithExpensiveCypher {
+    moviesConnection(first: 5, sort: { oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+                otherMoviesWhereActorsActedIn {
+                     title
+                }
+            }
+        }
+    }
+}

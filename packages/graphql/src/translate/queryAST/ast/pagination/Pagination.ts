@@ -53,4 +53,8 @@ export class Pagination extends QueryASTNode {
         }
         return n;
     }
+
+    public print(): string {
+        return `${super.print()} <skip: ${this.skip} | limit: ${this.limit}>`;
+    }
 }

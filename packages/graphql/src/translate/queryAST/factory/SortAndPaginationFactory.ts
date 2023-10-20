@@ -26,6 +26,7 @@ import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
+import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 
 export class SortAndPaginationFactory {
@@ -38,10 +39,17 @@ export class SortAndPaginationFactory {
 
     public createConnectionSortFields(
         options: ConnectionSortArg,
-        relationship: RelationshipAdapter
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter
     ): { edge: Sort[]; node: Sort[] } {
-        const nodeSortFields = this.createPropertySort(options.node || {}, relationship.target);
-        const edgeSortFields = this.createPropertySort(options.edge || {}, relationship);
+        if (isConcreteEntity(entityOrRel)) {
+            const nodeSortFields = this.createPropertySort(options.node || {}, entityOrRel);
+            return {
+                edge: [],
+                node: nodeSortFields,
+            };
+        }
+        const nodeSortFields = this.createPropertySort(options.node || {}, entityOrRel.target);
+        const edgeSortFields = this.createPropertySort(options.edge || {}, entityOrRel);
         return {
             edge: edgeSortFields,
             node: nodeSortFields,

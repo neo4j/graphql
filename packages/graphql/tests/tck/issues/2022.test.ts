@@ -104,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                     WITH this3 { .name, dbId: this3.id } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                WITH this1 { .auctionName, .lotNumber, buyer: var4, dbId: this1.id } AS this1
+                WITH this1 { .auctionName, .lotNumber, dbId: this1.id, buyer: var4 } AS this1
                 RETURN head(collect(this1)) AS var5
             }
             CALL {
@@ -113,11 +113,12 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 WITH this7 { .name, dbId: this7.id } AS this7
                 RETURN head(collect(this7)) AS var8
             }
-            WITH { node: this { .title, auction: var5, owner: var8, dbId: this.id } } AS edge, totalCount, this
+            WITH { node: this { .title, dbId: this.id, auction: var5, owner: var8 } } AS edge, totalCount, this
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
 });
