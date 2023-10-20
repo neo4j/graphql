@@ -18,7 +18,6 @@
  */
 
 import { gql } from "graphql-tag";
-import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../src";
 import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 
@@ -676,6 +675,65 @@ describe("Top-level Interface query sort", () => {
             });
         });
 
+        test("Limit from directive on Interface when interface queried nested", async () => {
+            const query = gql`
+                query {
+                    someNodeTypes {
+                        id
+                        other {
+                            id
+                            interfaceField {
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:SomeNodeType)
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:HAS_OTHER_NODES]->(this1:OtherNodeType)
+                    CALL {
+                        WITH this1
+                        CALL {
+                            WITH *
+                            MATCH (this1)-[this2:HAS_INTERFACE_NODES]->(this3:SomeNodeType)
+                            WITH this3 { .id, __resolveType: \\"SomeNodeType\\", __id: id(this3) } AS this3
+                            RETURN this3 AS var4
+                            UNION
+                            WITH *
+                            MATCH (this1)-[this5:HAS_INTERFACE_NODES]->(this6:MyImplementationType)
+                            WITH this6 { .id, __resolveType: \\"MyImplementationType\\", __id: id(this6) } AS this6
+                            RETURN this6 AS var4
+                            UNION
+                            WITH *
+                            MATCH (this1)-[this7:HAS_INTERFACE_NODES]->(this8:MyOtherImplementationType)
+                            WITH this8 { .id, __resolveType: \\"MyOtherImplementationType\\", __id: id(this8) } AS this8
+                            RETURN this8 AS var4
+                        }
+                        WITH var4
+                        LIMIT $param0
+                        RETURN head(collect(var4)) AS var4
+                    }
+                    WITH this1 { .id, interfaceField: var4 } AS this1
+                    RETURN collect(this1) AS var9
+                }
+                RETURN this { .id, other: var9 } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 13,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
         test("Limit from directive on Interface", async () => {
             const query = gql`
                 query {
