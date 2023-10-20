@@ -85,7 +85,7 @@ export class FilterFactory {
                 isNot: filterOps.isNot,
                 operator: filterOps.operator,
             });
-            const filters = this.createConnectionPredicates(relationship, relationship.target, where);
+            const filters = this.createConnectionPredicates({ rel: relationship, entity: relationship.target, where });
             connectionFilter.addFilters(filters);
             return [connectionFilter];
         } else {
@@ -98,7 +98,7 @@ export class FilterFactory {
                     isNot: filterOps.isNot,
                     operator: filterOps.operator,
                 });
-                const filters = this.createConnectionPredicates(relationship, concreteEntity, where);
+                const filters = this.createConnectionPredicates({ rel: relationship, entity: concreteEntity, where });
                 connectionFilter.addFilters(filters);
                 connectionFilters.push(connectionFilter);
             }
@@ -106,19 +106,23 @@ export class FilterFactory {
         }
     }
 
-    public createConnectionPredicates(
-        rel: RelationshipAdapter,
-        entity: EntityAdapter,
-        where: GraphQLWhereArg | GraphQLWhereArg[]
-    ): Filter[] {
+    public createConnectionPredicates({
+        rel,
+        entity,
+        where,
+    }: {
+        rel?: RelationshipAdapter;
+        entity: EntityAdapter;
+        where: GraphQLWhereArg | GraphQLWhereArg[];
+    }): Filter[] {
         let entityWhere = where;
-        if (isUnionEntity(rel.target) && where[entity.name]) {
+        if (rel && isUnionEntity(rel.target) && where[entity.name]) {
             entityWhere = where[entity.name];
         }
         const filters = asArray(entityWhere).flatMap((nestedWhere) => {
             return Object.entries(nestedWhere).flatMap(([key, value]: [string, GraphQLWhereArg]) => {
                 if (isLogicalOperator(key)) {
-                    const nestedFilters = this.createConnectionPredicates(rel, entity, value);
+                    const nestedFilters = this.createConnectionPredicates({ rel, entity, where: value });
                     return [
                         new LogicalFilter({
                             operation: key,
@@ -128,7 +132,7 @@ export class FilterFactory {
                 }
 
                 const connectionWhereField = parseConnectionWhereFields(key);
-                if (connectionWhereField.fieldName === "edge") {
+                if (rel && connectionWhereField.fieldName === "edge") {
                     return this.createEdgeFilters(rel, value);
                 }
                 if (connectionWhereField.fieldName === "node") {

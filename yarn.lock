@@ -3581,7 +3581,7 @@ __metadata:
     "@types/lodash.debounce": 4.0.8
     "@types/markdown-it": 13.0.4
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.13
+    "@types/react-dom": 18.2.14
     "@types/webpack": 5.28.3
     autoprefixer: 10.4.16
     classnames: 2.3.2
@@ -3649,9 +3649,9 @@ __metadata:
     "@types/jsonwebtoken": 9.0.4
     "@types/node": 18.15.1
     "@types/pluralize": 0.0.32
-    "@types/randomstring": 1.1.9
-    "@types/semver": 7.5.3
-    "@types/supertest": 2.0.14
+    "@types/randomstring": 1.1.10
+    "@types/semver": 7.5.4
+    "@types/supertest": 2.0.15
     "@types/ws": 8.5.7
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -7675,10 +7675,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/randomstring@npm:1.1.9":
-  version: 1.1.9
-  resolution: "@types/randomstring@npm:1.1.9"
-  checksum: 979f3ed65c2d2137a9398b4d73c2a2b74bbbe21d95ff04e5d69e1031c7636f393ad2849ccbbcfce52133642c144bdade315bdffaa7547e323fcd740a16db3f81
+"@types/randomstring@npm:1.1.10":
+  version: 1.1.10
+  resolution: "@types/randomstring@npm:1.1.10"
+  checksum: 13ce9002b89796d48da539601efe3b9b1cd2d7edd1528502d515bc3e5748bd96b2dbb21c20cfa1d10eb19256daddacee01149c0dbdf98c8db0813731fc8b217e
   languageName: node
   linkType: hard
 
@@ -7689,12 +7689,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.13":
-  version: 18.2.13
-  resolution: "@types/react-dom@npm:18.2.13"
+"@types/react-dom@npm:18.2.14":
+  version: 18.2.14
+  resolution: "@types/react-dom@npm:18.2.14"
   dependencies:
     "@types/react": "*"
-  checksum: 22ba066b141dca5a5a9227fae0afc7c94b470fff8e8a38ade72649da57a8ea04d0cb2ba3e22005e7d8e772d49bddd28855b1dd98e6defd033bba6afb6edff883
+  checksum: 890289c70d1966c168037637c09cacefe6205bdd27a33252144a6b432595a2943775ac1a1accac0beddaeb67f8fdf721e076acb1adc990b08e51c3d9fd4e780c
   languageName: node
   linkType: hard
 
@@ -7748,7 +7748,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.5.3, @types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
+"@types/semver@npm:7.5.4":
+  version: 7.5.4
+  resolution: "@types/semver@npm:7.5.4"
+  checksum: 120c0189f6fec5f2d12d0d71ac8a4cfa952dc17fa3d842e8afddb82bba8828a4052f8799c1653e2b47ae1977435f38e8985658fde971905ce5afb8e23ee97ecf
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
   version: 7.5.3
   resolution: "@types/semver@npm:7.5.3"
   checksum: 349fdd1ab6c213bac5c991bac766bd07b8b12e63762462bb058740dcd2eb09c8193d068bb226f134661275f2022976214c0e727a4e5eb83ec1b131127c980d3e
@@ -7811,12 +7818,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:2.0.14":
-  version: 2.0.14
-  resolution: "@types/supertest@npm:2.0.14"
+"@types/supertest@npm:2.0.15":
+  version: 2.0.15
+  resolution: "@types/supertest@npm:2.0.15"
   dependencies:
     "@types/superagent": "*"
-  checksum: 9f6850a22b8f0fd4c26a6dfd9b64771a66476b1a4f841a3b84a9da843ce69463efbf37594fe107297dd14a225d199b802464d48d70e9413238c637903d392137
+  checksum: 89c1983662f0ab20969b3a6c44344397fd222d0f78b282619aabbe817f7c88a64210fd2b8b8f075ea22a27084e30ebc287bc5105619cbbf9af7f008e77f6eb93
   languageName: node
   linkType: hard
 

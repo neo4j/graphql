@@ -174,3 +174,173 @@ describe("Cypher Auth Projection On Connections", () => {
         `);
     });
 });
+
+describe("Cypher Auth Projection On top-level connections", () => {
+    const secret = "secret";
+    let typeDefs: DocumentNode;
+    let neoSchema: Neo4jGraphQL;
+
+    beforeAll(() => {
+        typeDefs = gql`
+            type Post {
+                content: String
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
+            }
+
+            type User {
+                id: ID
+                name: String
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+            }
+
+            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id: "$jwt.sub" } } }])
+            extend type Post
+                @authorization(validate: [{ when: BEFORE, where: { node: { creator: { id: "$jwt.sub" } } } }])
+        `;
+
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+    });
+
+    test("One connection", async () => {
+        const query = gql`
+            {
+                usersConnection {
+                    edges {
+                        node {
+                            name
+                            postsConnection {
+                                edges {
+                                    node {
+                                        content
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, {
+            token,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:User)
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
+            WITH this, totalCount
+            CALL {
+                WITH this
+                MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                WITH *, count(this2) AS creatorCount
+                WITH *
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { content: this1.content } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
+            }
+            WITH { node: this { .name, postsConnection: var3 } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                }
+            }"
+        `);
+    });
+
+    test("Two connection", async () => {
+        const query = gql`
+            {
+                usersConnection {
+                    edges {
+                        node {
+                            name
+                            postsConnection {
+                                edges {
+                                    node {
+                                        content
+                                        creatorConnection {
+                                            edges {
+                                                node {
+                                                    name
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken("secret", { sub: "super_admin" });
+        const result = await translateQuery(neoSchema, query, {
+            token,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:User)
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
+            WITH this, totalCount
+            CALL {
+                WITH this
+                MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                WITH *, count(this2) AS creatorCount
+                WITH *
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL {
+                    WITH this1
+                    MATCH (this1)<-[this3:HAS_POST]-(this4:User)
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH { node: { name: this4.name } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var5
+                }
+                WITH { node: { content: this1.content, creatorConnection: var5 } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var6
+            }
+            WITH { node: this { .name, postsConnection: var6 } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [],
+                    \\"sub\\": \\"super_admin\\"
+                }
+            }"
+        `);
+    });
+});

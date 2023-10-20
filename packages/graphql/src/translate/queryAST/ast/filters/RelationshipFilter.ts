@@ -26,6 +26,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import { Memoize } from "typescript-memoize";
 import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
@@ -177,11 +178,7 @@ export class RelationshipFilter extends Filter {
                 const match = new Cypher.Match(pattern);
 
                 const returnVar = new Cypher.Variable();
-                const nestedSubqueries = this.targetNodeFilters.flatMap((f) => {
-                    return f.getSubqueries(context).map((sq) => {
-                        return new Cypher.Call(sq).innerWith(context.target);
-                    });
-                });
+                const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.targetNodeFilters, [context.target]);
 
                 const subqueriesFilters = this.targetNodeFilters.map((f) => f.getPredicate(context));
 

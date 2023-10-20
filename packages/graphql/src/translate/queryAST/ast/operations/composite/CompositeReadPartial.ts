@@ -24,6 +24,7 @@ import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { hasTarget } from "../../../utils/context-has-target";
+import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 
 export class CompositeReadPartial extends ReadOperation {
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
@@ -62,10 +63,7 @@ export class CompositeReadPartial extends ReadOperation {
             matchClause.where(wherePredicate);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
-        const sortSubqueries = this.sortFields
-            .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
-
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(
