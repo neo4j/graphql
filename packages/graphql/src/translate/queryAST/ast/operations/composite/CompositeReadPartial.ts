@@ -91,8 +91,9 @@ export class CompositeReadPartial extends ReadOperation {
         });
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
         const filterPredicates = this.getPredicates(nestedContext);
-        // TODO: impl auth
-        const authFiltersPredicate = [];
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             matchClause.where(wherePredicate);
@@ -100,7 +101,7 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
-        const clause = Cypher.concat(...preSelection, matchClause, subqueries, ret);
+        const clause = Cypher.concat(...preSelection, matchClause, ...authFilterSubqueries, subqueries, ret);
 
         return {
             clauses: [clause],
