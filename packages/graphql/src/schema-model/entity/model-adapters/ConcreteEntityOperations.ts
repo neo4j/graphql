@@ -172,6 +172,14 @@ export class ConcreteEntityOperations {
     public get relationshipDeletedSubscriptionWhereInputTypeName(): string {
         return `${this.concreteEntityAdapter.name}RelationshipDeletedSubscriptionWhere`;
     }
+    // top-level connection type name
+    public get connectionFieldTypename(): string {
+        return `${this.pascalCasePlural}Connection`;
+    }
+    // top-level connection edge type name, TODO: find a better name (this is coming from the RelationshipOperations)
+    public get relationshipFieldTypename(): string {
+        return `${this.concreteEntityAdapter.name}Edge`;
+    }
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {

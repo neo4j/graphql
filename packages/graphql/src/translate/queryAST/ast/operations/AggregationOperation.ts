@@ -31,6 +31,7 @@ import type { Pagination } from "../pagination/Pagination";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -100,14 +101,7 @@ export class AggregationOperation extends Operation {
         const matchClause = new Cypher.Match(pattern);
         let extraSelectionWith: Cypher.With | undefined = undefined;
 
-        const nestedSubqueries = this.getChildren()
-            .flatMap((c) => {
-                return c.getSubqueries(context);
-            })
-            .map((sq) => {
-                return new Cypher.Call(sq).innerWith(target);
-            });
-
+        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
         const filterPredicates = this.getPredicates(context);
 
         const selectionClauses = this.getChildren().flatMap((c) => {
