@@ -3579,7 +3579,7 @@ __metadata:
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.12
     "@types/lodash.debounce": 4.0.8
-    "@types/markdown-it": 13.0.4
+    "@types/markdown-it": 13.0.5
     "@types/prettier": 2.7.3
     "@types/react-dom": 18.2.14
     "@types/webpack": 5.28.4
@@ -7550,13 +7550,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/markdown-it@npm:13.0.4":
-  version: 13.0.4
-  resolution: "@types/markdown-it@npm:13.0.4"
+"@types/markdown-it@npm:13.0.5":
+  version: 13.0.5
+  resolution: "@types/markdown-it@npm:13.0.5"
   dependencies:
     "@types/linkify-it": "*"
     "@types/mdurl": "*"
-  checksum: 0af9c349467599f984e8faf548144e5c68ca8926d45e155cbc622897290fadb1fd31fced8194a2a1095406805dd21719d2bc74d8dc0295581d0eed771a4fd58b
+  checksum: 3c87efe8e24f77dc9aa1962b8f18d37530b63e33ab363653e568816de6d5b6185a65690da729e2757ba370a3499635da6b4fc4d9a99df9d85959d8c64c7fe8e9
   languageName: node
   linkType: hard
 
