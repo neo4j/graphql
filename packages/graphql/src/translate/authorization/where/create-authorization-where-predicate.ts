@@ -74,7 +74,7 @@ export function createAuthorizationWherePredicate({
                 // This doesn't _have_ to be done like this, we could just populate with the actual values instead of this approach - to discuss with Andres!
                 whereInput: populateWhereParams({ where: value, context }),
                 targetElement: target,
-                useExistExpr,
+                useExistExpr: useExistExpr,
                 checkParameterExistence: true,
             });
 

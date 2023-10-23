@@ -20,12 +20,13 @@
 import type { Node } from "../../../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import { createWherePredicate } from "../../where/create-where-predicate";
+import { createWherePredicateNew } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
 import { compileCypher } from "../../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
 
 export function createProjectionSubquery({
     parentNode,
@@ -80,8 +81,9 @@ export function createProjectionSubquery({
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
 
     if (whereInput) {
-        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
-            element: node,
+        const entity = getEntityAdapterFromNode(node, context);
+        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicateNew({
+            entity,
             context,
             whereInput,
             targetElement: targetNode,

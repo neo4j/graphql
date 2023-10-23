@@ -108,21 +108,21 @@ function createConnectAndParams({
             ) {
                 return { subquery: "", params: {} };
             }
-
-            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
-                whereInput: {
-                    ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                        if (k !== "_on") {
-                            // If this where key is also inside _on for this implementation, use the one in _on instead
-                            if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
-                                return args;
-                            }
-                            return { ...args, [k]: v };
+            const whereInput = {
+                ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                    if (k !== "_on") {
+                        // If this where key is also inside _on for this implementation, use the one in _on instead
+                        if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
+                            return args;
                         }
+                        return { ...args, [k]: v };
+                    }
 
-                        return args;
-                    }, {}),
-                },
+                    return args;
+                }, {}),
+            };
+            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
+                whereInput,
                 context,
                 node: relatedNode,
                 varName: nodeName,
