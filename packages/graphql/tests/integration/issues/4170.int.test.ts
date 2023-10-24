@@ -22,59 +22,66 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { graphql } from "graphql";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/4170", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+
+    const User = new UniqueType("User");
+    const Tenant = new UniqueType("Tenant");
+    const Settings = new UniqueType("Settings");
+    const OpeningDay = new UniqueType("OpeningDay");
+    const OpeningHoursInterval = new UniqueType("OpeningHoursInterval");
 
     const typeDefs = gql`
         type JWT @jwt {
             id: String
             roles: [String]
         }
-        type User @authorization(validate: [{ where: { node: { userId: "$jwt.id" } }, operations: [READ] }]) {
+        type ${User.name} @authorization(validate: [{ where: { node: { userId: "$jwt.id" } }, operations: [READ] }]) {
             userId: String! @unique
-            adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT)
+            adminAccess: [${Tenant.name}!]! @relationship(type: "ADMIN_IN", direction: OUT)
         }
 
-        type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) {
+        type ${Tenant.name} @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) {
             id: ID! @id
-            settings: Settings! @relationship(type: "HAS_SETTINGS", direction: OUT)
-            admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN)
+            settings: ${Settings.name}! @relationship(type: "HAS_SETTINGS", direction: OUT)
+            admins: [${User.name}!]! @relationship(type: "ADMIN_IN", direction: IN)
         }
 
-        type Settings @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
+        type ${Settings.name} @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
             id: ID! @id
-            tenant: Tenant! @relationship(type: "HAS_SETTINGS", direction: IN)
-            openingDays: [OpeningDay!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
+            tenant: ${Tenant.name}! @relationship(type: "HAS_SETTINGS", direction: IN)
+            openingDays: [${OpeningDay.name}!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
             name: String
         }
 
-        type OpeningDay
+        type ${OpeningDay.name}
             @authorization(
                 validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
             ) {
             id: ID! @id
-            settings: Settings @relationship(type: "VALID_GARAGES", direction: IN)
-            open: [OpeningHoursInterval!]! @relationship(type: "HAS_OPEN_INTERVALS", direction: OUT)
+            settings: ${Settings.name} @relationship(type: "VALID_GARAGES", direction: IN)
+            open: [${OpeningHoursInterval.name}!]! @relationship(type: "HAS_OPEN_INTERVALS", direction: OUT)
         }
 
-        type OpeningHoursInterval
+        type ${OpeningHoursInterval.name}
             @authorization(
                 validate: [
                     { where: { node: { openingDay: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } } }
                 ]
             ) {
             name: String
-            openingDay: OpeningDay! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN)
+            openingDay: ${OpeningDay.name}! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN)
             updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
         }
     `;
 
     const ADD_TENANT = `
-        mutation addTenant($input: [TenantCreateInput!]!) {
-            createTenants(input: $input) {
-                tenants {
+        mutation addTenant($input: [${Tenant.name}CreateInput!]!) {
+            ${Tenant.operations.create}(input: $input) {
+                ${Tenant.plural} {
                     id
                     admins {
                         userId
