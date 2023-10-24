@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { Annotations } from "../../annotation/Annotation";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { UnionEntity } from "../UnionEntity";
@@ -26,6 +27,8 @@ import { UnionEntityOperations } from "./UnionEntityOperations";
 export class UnionEntityAdapter {
     public readonly name: string;
     public concreteEntities: ConcreteEntityAdapter[];
+
+    public readonly annotations: Partial<Annotations>;
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -37,6 +40,7 @@ export class UnionEntityAdapter {
         this.name = entity.name;
         this.concreteEntities = [];
         this.initConcreteEntities(entity.concreteEntities);
+        this.annotations = entity.annotations;
     }
 
     private initConcreteEntities(entities: ConcreteEntity[]) {
@@ -62,8 +66,16 @@ export class UnionEntityAdapter {
 
     public get plural(): string {
         if (!this._plural) {
-            this._plural = plural(this.name);
+            if (this.annotations.plural) {
+                this._plural = plural(this.annotations.plural.value);
+            } else {
+                this._plural = plural(this.name);
+            }
         }
         return this._plural;
+    }
+
+    get isReadable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.read === true;
     }
 }

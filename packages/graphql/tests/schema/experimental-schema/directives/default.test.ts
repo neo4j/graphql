@@ -128,6 +128,7 @@ describe("@default directive", () => {
             }
 
             type Query {
+              userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -205,6 +206,51 @@ describe("@default directive", () => {
             interface UserInterface {
               fromInterface: String!
               toBeOverridden: String!
+            }
+
+            input UserInterfaceImplementationsWhere {
+              User: UserWhere
+            }
+
+            input UserInterfaceOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserInterfaceSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort UserInterfaces by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserInterfaceSort object.
+            \\"\\"\\"
+            input UserInterfaceSort {
+              fromInterface: SortDirection
+              toBeOverridden: SortDirection
+            }
+
+            input UserInterfaceWhere {
+              _on: UserInterfaceImplementationsWhere
+              fromInterface: String
+              fromInterface_CONTAINS: String
+              fromInterface_ENDS_WITH: String
+              fromInterface_IN: [String!]
+              fromInterface_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              fromInterface_STARTS_WITH: String
+              toBeOverridden: String
+              toBeOverridden_CONTAINS: String
+              toBeOverridden_ENDS_WITH: String
+              toBeOverridden_IN: [String!]
+              toBeOverridden_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              toBeOverridden_STARTS_WITH: String
             }
 
             input UserOptions {

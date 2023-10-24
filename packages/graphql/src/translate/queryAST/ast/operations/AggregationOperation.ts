@@ -17,20 +17,21 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
+import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
 import type { Filter } from "../filters/Filter";
-import Cypher from "@neo4j/cypher-builder";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { Pagination } from "../pagination/Pagination";
+import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import type { Pagination } from "../pagination/Pagination";
-import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { Sort } from "../sort/Sort";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -98,10 +99,24 @@ export class AggregationOperation extends Operation {
         context: QueryASTContext
     ): Cypher.Clause {
         const matchClause = new Cypher.Match(pattern);
+        let extraSelectionWith: Cypher.With | undefined = undefined;
+
+        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
         const filterPredicates = this.getPredicates(context);
 
+        const selectionClauses = this.getChildren().flatMap((c) => {
+            return c.getSelection(context);
+        });
+        if (selectionClauses.length > 0 || nestedSubqueries.length > 0) {
+            extraSelectionWith = new Cypher.With("*");
+        }
+
         if (filterPredicates) {
-            matchClause.where(filterPredicates);
+            if (extraSelectionWith) {
+                extraSelectionWith.where(filterPredicates);
+            } else {
+                matchClause.where(filterPredicates);
+            }
         }
         const ret = this.getFieldProjectionClause(target, returnVariable, field);
 
@@ -110,7 +125,15 @@ export class AggregationOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(context, target, sortClause);
         }
-        return Cypher.concat(matchClause, sortClause, ret);
+
+        return Cypher.concat(
+            matchClause,
+            ...selectionClauses,
+            ...nestedSubqueries,
+            extraSelectionWith,
+            sortClause,
+            ret
+        );
     }
 
     private transpileNestedRelationship(
@@ -118,7 +141,6 @@ export class AggregationOperation extends Operation {
         entity: RelationshipAdapter,
         { context }: OperationTranspileOptions
     ): Cypher.Clause[] {
-        //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
@@ -180,7 +202,6 @@ export class AggregationOperation extends Operation {
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, {
             context,
-            returnVariable: new Cypher.Variable(),
         });
         return {
             clauses,

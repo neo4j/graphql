@@ -55,12 +55,43 @@ export class CompositeReadOperation extends Operation {
         return this.children;
     }
 
-    public transpile(options: OperationTranspileOptions): OperationTranspileResult {
-        const parentNode = options.context.target;
+    private transpileTopLevelCompositeRead(context: QueryASTContext): OperationTranspileResult {
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile({
-                context: options.context,
-                returnVariable: options.returnVariable,
+                context: context,
+            });
+            return result.clauses;
+        });
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(context.returnVariable);
+        if (this.sortFields.length > 0) {
+            nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
+        }
+        if (this.pagination) {
+            const paginationField = this.pagination.getPagination();
+            if (paginationField) {
+                if (paginationField.skip) {
+                    nestedSubquery.skip(paginationField.skip);
+                }
+                if (paginationField.limit) {
+                    nestedSubquery.limit(paginationField.limit);
+                }
+            }
+        }
+        return {
+            clauses: [nestedSubquery],
+            projectionExpr: context.returnVariable,
+        };
+    }
+
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+        if (!this.relationship) {
+            return this.transpileTopLevelCompositeRead(context);
+        }
+
+        const parentNode = context.target;
+        const nestedSubqueries = this.children.flatMap((c) => {
+            const result = c.transpile({
+                context: context,
             });
 
             let clauses = result.clauses;
@@ -70,14 +101,14 @@ export class CompositeReadOperation extends Operation {
             return clauses;
         });
 
-        let aggrExpr: Cypher.Expr = Cypher.collect(options.returnVariable);
+        let aggrExpr: Cypher.Expr = Cypher.collect(context.returnVariable);
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(options.returnVariable);
+        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(context.returnVariable);
 
         if (this.sortFields.length > 0) {
-            nestedSubquery.orderBy(...this.getSortFields(options.context, options.returnVariable));
+            nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
         }
         if (this.pagination) {
             const paginationField = this.pagination.getPagination();
@@ -91,11 +122,11 @@ export class CompositeReadOperation extends Operation {
             }
         }
 
-        nestedSubquery.return([aggrExpr, options.returnVariable]);
+        nestedSubquery.return([aggrExpr, context.returnVariable]);
 
         return {
             clauses: [nestedSubquery],
-            projectionExpr: options.returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

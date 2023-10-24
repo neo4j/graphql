@@ -52,19 +52,12 @@ export function rootConnectionResolver({
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
-
-        const edgeTree = resolveTree.fieldsByTypeName[`${concreteEntityAdapter.upperFirstPlural}Connection`]?.edges;
-        const nodeTree = edgeTree?.fieldsByTypeName[`${concreteEntityAdapter.name}Edge`]?.node;
-        const resolveTreeForContext = nodeTree || resolveTree;
-
-        (context as Neo4jGraphQLTranslationContext).resolveTree = {
-            ...resolveTreeForContext,
-            args: resolveTree.args,
-        };
+        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
             node,
+            entityAdapter: concreteEntityAdapter,
             isRootConnectionField: true,
         });
 

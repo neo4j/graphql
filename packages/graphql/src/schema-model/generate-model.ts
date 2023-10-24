@@ -22,6 +22,7 @@ import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import { nodeDirective, privateDirective, relationshipDirective } from "../graphql/directives";
@@ -88,6 +89,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const unionEntities = Array.from(definitionCollection.unionTypes).map(([unionName, unionDefinition]) => {
         return generateUnionEntity(
             unionName,
+            unionDefinition,
             unionDefinition.types?.map((t) => t.name.value) || [],
             concreteEntitiesMap
         );
@@ -141,11 +143,13 @@ function hydrateInterfacesToTypeNamesMap(definitionCollection: DefinitionCollect
 
 function generateUnionEntity(
     entityDefinitionName: string,
+    unionDefinition: UnionTypeDefinitionNode,
     entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
 ): UnionEntity {
     const unionEntity = generateCompositeEntity(entityDefinitionName, entityImplementingTypeNames, concreteEntities);
-    return new UnionEntity(unionEntity);
+    const annotations = createEntityAnnotations(unionDefinition.directives || []);
+    return new UnionEntity({ ...unionEntity, annotations });
 }
 
 function generateInterfaceEntity(
@@ -426,14 +430,11 @@ function generateConcreteEntity(
         return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
     });
 
-    const inheritedDirectives = inheritsFrom?.flatMap((i) => i?.directives || []);
     // schema configuration directives are propagated onto concrete entities
     const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
         PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT.includes(x.name.value)
     );
-    const annotations = createEntityAnnotations(
-        (definition.directives || []).concat(inheritedDirectives || []).concat(schemaDirectives || [])
-    );
+    const annotations = createEntityAnnotations((definition.directives || []).concat(schemaDirectives || []));
 
     return new ConcreteEntity({
         name: definition.name.value,

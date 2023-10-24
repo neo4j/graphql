@@ -29,20 +29,24 @@ export class JWTFilter extends Filter {
     protected operator: FilterOperator;
     protected JWTClaim: Cypher.Property;
     protected comparisonValue: unknown;
+    protected isNot: boolean;
 
     constructor({
         operator,
         JWTClaim,
         comparisonValue,
+        isNot,
     }: {
         operator: FilterOperator;
         JWTClaim: Cypher.Property;
         comparisonValue: unknown;
+        isNot: boolean;
     }) {
         super();
         this.operator = operator;
         this.JWTClaim = JWTClaim;
         this.comparisonValue = comparisonValue;
+        this.isNot = isNot;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -50,14 +54,25 @@ export class JWTFilter extends Filter {
     }
 
     public getPredicate(_context: QueryASTContext): Predicate | undefined {
-        return createComparisonOperation({
+        const operation = createComparisonOperation({
             operator: this.operator,
             property: this.JWTClaim,
             param: new Cypher.Param(this.comparisonValue),
         });
+
+        const predicate = this.wrapInNotIfNeeded(operation);
+        return Cypher.and(Cypher.isNotNull(this.JWTClaim), predicate);
     }
 
     public print(): string {
         return `${super.print()} <${this.operator} ${this.comparisonValue}>`;
+    }
+
+    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
+        if (this.isNot) {
+            return Cypher.not(predicate);
+        } else {
+            return predicate;
+        }
     }
 }

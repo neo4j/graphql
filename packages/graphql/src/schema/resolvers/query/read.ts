@@ -19,26 +19,27 @@
 
 import type { GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { QueryOptions } from "../../../graphql/input-objects/QueryOptions";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({
-    node,
-    concreteEntityAdapter,
-}: {
-    node: Node;
-    concreteEntityAdapter: ConcreteEntityAdapter;
-}) {
+export function findResolver({ node, entityAdapter }: { node?: Node; entityAdapter: EntityAdapter }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const { cypher, params } = translateRead({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = translateRead({
+            context: context as Neo4jGraphQLTranslationContext,
+            node,
+            entityAdapter,
+        });
         const executeResult = await execute({
             cypher,
             params,
@@ -50,21 +51,28 @@ export function findResolver({
         return executeResult.records.map((x) => x.this);
     }
 
+    const extraArgs = {};
+    if (entityAdapter instanceof ConcreteEntityAdapter) {
+        if (entityAdapter.annotations.fulltext) {
+            extraArgs["fulltext"] = {
+                type: `${entityAdapter.name}Fulltext`,
+                description:
+                    "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
+            };
+        }
+    }
+
+    const whereArgumentType = entityAdapter.operations.whereInputTypeName;
+    const optionsArgumentType =
+        entityAdapter instanceof UnionEntityAdapter ? QueryOptions : entityAdapter.operations.optionsInputTypeName;
+
     return {
-        type: `[${concreteEntityAdapter.name}!]!`,
+        type: `[${entityAdapter.name}!]!`,
         resolve,
         args: {
-            where: concreteEntityAdapter.operations.whereInputTypeName,
-            options: concreteEntityAdapter.operations.optionsInputTypeName,
-            ...(concreteEntityAdapter.annotations.fulltext
-                ? {
-                      fulltext: {
-                          type: `${concreteEntityAdapter.name}Fulltext`,
-                          description:
-                              "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
-                      },
-                  }
-                : {}),
+            where: whereArgumentType,
+            options: optionsArgumentType,
+            ...extraArgs,
         },
     };
 }

@@ -345,7 +345,11 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            RETURN [this0 { .id }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -406,20 +410,24 @@ describe("Cypher Create", () => {
             }
             CALL {
                 WITH this0
-                MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
                 CALL {
-                    WITH create_this1
-                    MATCH (create_this1:Movie)<-[create_this2:ACTED_IN]-(create_this3:Actor)
-                    WHERE create_this3.name = $create_param0
-                    WITH { node: { name: create_this3.name } } AS edge
-                    WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                    WITH this0
+                    MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
+                    CALL {
+                        WITH create_this1
+                        MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
+                        WHERE create_this3.name = $create_param0
+                        WITH { node: { name: create_this3.name } } AS edge
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                    }
+                    WITH create_this1 { actorsConnection: create_var4 } AS create_this1
+                    RETURN collect(create_this1) AS create_var5
                 }
-                WITH create_this1 { actorsConnection: create_var4 } AS create_this1
-                RETURN collect(create_this1) AS create_var5
+                RETURN this0 { .name, movies: create_var5 } AS create_var6
             }
-            RETURN [this0 { .name, movies: create_var5 }] AS data"
+            RETURN [create_var6] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -1,5 +1,48 @@
 # @neo4j/graphql-toolbox
 
+## 2.1.1
+
+### Patch Changes
+
+-   [#4156](https://github.com/neo4j/graphql/pull/4156) [`d9c42fc50`](https://github.com/neo4j/graphql/commit/d9c42fc5062ffe3f7ebb403b3b33611f94c7dca5) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Update usage of neo4j-ndl components
+
+-   Updated dependencies [[`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e), [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6), [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6)]:
+    -   @neo4j/graphql@4.3.4
+
+## 2.1.0
+
+### Minor Changes
+
+-   [#4096](https://github.com/neo4j/graphql/pull/4096) [`b88809c11`](https://github.com/neo4j/graphql/commit/b88809c111dc0de62c833aa2cdd2addb5034c4b7) Thanks [@mjfwebb](https://github.com/mjfwebb)! - refactor: migrate components neo4j-ndl v2
+
+### Patch Changes
+
+-   [#4119](https://github.com/neo4j/graphql/pull/4119) [`6a8c31c60`](https://github.com/neo4j/graphql/commit/6a8c31c60be7f675cdc9f6c4106ef86d87dd6bc9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Show users when a valid directive is unsupported. Specifically the authorization directive in this case.
+
+-   Updated dependencies [[`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf), [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a)]:
+    -   @neo4j/graphql@4.3.3
+
+## 2.0.14
+
+### Patch Changes
+
+-   Updated dependencies [[`6592a6ab2`](https://github.com/neo4j/graphql/commit/6592a6ab24bb6cdfbf9cb59f99343ca33cf30342), [`e493402de`](https://github.com/neo4j/graphql/commit/e493402de5eed5dd43d433bbc37e250722d3d102), [`7ad89796f`](https://github.com/neo4j/graphql/commit/7ad89796f3f3dd92350ed49c0299189bb393b996), [`184a5209b`](https://github.com/neo4j/graphql/commit/184a5209b8186461e1ea7fdd3786456d8b2da11f), [`6592a6ab2`](https://github.com/neo4j/graphql/commit/6592a6ab24bb6cdfbf9cb59f99343ca33cf30342)]:
+    -   @neo4j/graphql@4.3.2
+
+## 2.0.13
+
+### Patch Changes
+
+-   Updated dependencies [[`97f38c337`](https://github.com/neo4j/graphql/commit/97f38c337a71fe48dec281ddc0e30cd8183eead2)]:
+    -   @neo4j/graphql@4.3.1
+
+## 2.0.12
+
+### Patch Changes
+
+-   Updated dependencies [[`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9)]:
+    -   @neo4j/graphql@4.3.0
+
 ## 2.0.11
 
 ### Patch Changes

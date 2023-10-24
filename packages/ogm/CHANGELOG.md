@@ -1,5 +1,50 @@
 # @neo4j/graphql-ogm
 
+## 4.3.4
+
+### Patch Changes
+
+-   [#4143](https://github.com/neo4j/graphql/pull/4143) [`26e50499b`](https://github.com/neo4j/graphql/commit/26e50499bbcfbd5b428dd8f89d4577098c9b3a50) Thanks [@mjfwebb](https://github.com/mjfwebb)! - OGM.init() calls will throw errors instead of silently capturing them.
+
+-   Updated dependencies [[`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e), [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6), [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6)]:
+    -   @neo4j/graphql@4.3.4
+
+## 4.3.3
+
+### Patch Changes
+
+-   Updated dependencies [[`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf), [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a)]:
+    -   @neo4j/graphql@4.3.3
+
+## 4.3.2
+
+### Patch Changes
+
+-   Updated dependencies [[`6592a6ab2`](https://github.com/neo4j/graphql/commit/6592a6ab24bb6cdfbf9cb59f99343ca33cf30342), [`e493402de`](https://github.com/neo4j/graphql/commit/e493402de5eed5dd43d433bbc37e250722d3d102), [`7ad89796f`](https://github.com/neo4j/graphql/commit/7ad89796f3f3dd92350ed49c0299189bb393b996), [`184a5209b`](https://github.com/neo4j/graphql/commit/184a5209b8186461e1ea7fdd3786456d8b2da11f), [`6592a6ab2`](https://github.com/neo4j/graphql/commit/6592a6ab24bb6cdfbf9cb59f99343ca33cf30342)]:
+    -   @neo4j/graphql@4.3.2
+
+## 4.3.1
+
+### Patch Changes
+
+-   Updated dependencies [[`97f38c337`](https://github.com/neo4j/graphql/commit/97f38c337a71fe48dec281ddc0e30cd8183eead2)]:
+    -   @neo4j/graphql@4.3.1
+
+## 4.3.0
+
+### Minor Changes
+
+-   [#4036](https://github.com/neo4j/graphql/pull/4036) [`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Schema generation logic improved
+
+    -   allow operations on Interface relationships to Interfaces
+    -   add descriptions to generated graphql types
+    -   improve schema generation logic
+
+### Patch Changes
+
+-   Updated dependencies [[`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9)]:
+    -   @neo4j/graphql@4.3.0
+
 ## 4.2.0
 
 ### Patch Changes

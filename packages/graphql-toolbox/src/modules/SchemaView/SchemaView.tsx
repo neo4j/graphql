@@ -188,7 +188,6 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
 
     const onSubmit = () => {
         if (!editorView) return;
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         const value = editorView?.state.doc.toString();
         if (value) {
             buildSchema(value).catch(() => null);
@@ -224,10 +223,10 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
             ) : null}
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="flex">
-                    <div className="h-content-container flex justify-start w-96 bg-white border-t border-gray-100 overflow-y-auto">
+                    <div className="h-content-container flex justify-start w-96 bg-neutral-10 border-t border-neutral-20 overflow-y-auto">
                         <div className="w-full">
                             <SchemaSettings />
-                            <hr className="border-gray-200" />
+                            <hr className="border-neutral-20" />
                             <Favorites onSelectFavorite={setTypeDefsFromFavorite} />
                         </div>
                     </div>
@@ -268,7 +267,7 @@ export const SchemaView = ({ onSchemaChange }: Props) => {
                 </div>
             </div>
             {showRightPanel ? (
-                <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100 z-50">
+                <div className="h-content-container flex justify-start w-96 bg-neutral-10 border-l border-neutral-20 z-50">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} />
                     ) : null}

@@ -75,6 +75,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
     const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
     const propagatedDirectivesForNode = new Map<string, DirectiveNode[]>();
     const userDefinedDirectivesForInterface = new Map<string, DirectiveNode[]>();
+    const userDefinedDirectivesForUnion = new Map<string, DirectiveNode[]>();
 
     for (const definitionNode of definitionNodes.objectTypes) {
         const userDefinedObjectDirectives =
@@ -95,12 +96,27 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
         const userDefinedInterfaceDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
             [];
+        const propagatedDirectives =
+            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
+            [];
         userDefinedDirectivesForInterface.set(definitionNode.name.value, userDefinedInterfaceDirectives);
+        propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
         const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(
             definitionNode,
             definitionNodes
         );
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
+    }
+
+    for (const definitionNode of definitionNodes.unionTypes) {
+        const userDefinedUnionDirectives =
+            definitionNode.directives?.filter((directive) => !isInArray(INTERFACE_DIRECTIVES, directive.name.value)) ||
+            [];
+        const propagatedDirectives =
+            definitionNode.directives?.filter((directive) => isInArray(PROPAGATED_DIRECTIVES, directive.name.value)) ||
+            [];
+        userDefinedDirectivesForUnion.set(definitionNode.name.value, userDefinedUnionDirectives);
+        propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
     }
 
     for (const definitionNode of definitionNodes.operations) {
@@ -115,5 +131,6 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
         userDefinedDirectivesForNode,
         propagatedDirectivesForNode,
         userDefinedDirectivesForInterface,
+        userDefinedDirectivesForUnion,
     };
 }

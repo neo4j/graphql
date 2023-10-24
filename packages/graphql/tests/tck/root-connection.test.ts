@@ -79,6 +79,7 @@ describe("Root Connection Query tests", () => {
             }"
         `);
     });
+
     test("should apply limit and sort before return", async () => {
         const query = gql`
             {

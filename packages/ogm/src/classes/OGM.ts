@@ -20,9 +20,9 @@
 import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import type { GraphQLSchema } from "graphql";
-import Model from "./Model";
-import { filterDocument } from "../utils/filter-document";
 import type { Driver, SessionConfig } from "neo4j-driver";
+import { filterDocument } from "../utils/filter-document";
+import Model from "./Model";
 
 export interface OGMConstructor extends Neo4jGraphQLConstructor {
     database?: string;
@@ -166,14 +166,19 @@ class OGM<ModelMap = unknown> {
     }
 
     private createInitializer(): Promise<void> {
-        return new Promise((resolve) => {
-            this.neoSchema.getSchema().then((schema) => {
-                this._schema = schema;
+        return new Promise((resolve, reject) => {
+            this.neoSchema
+                .getSchema()
+                .then((schema) => {
+                    this._schema = schema;
 
-                this.models.forEach((model) => this.initModel(model));
+                    this.models.forEach((model) => this.initModel(model));
 
-                resolve();
-            });
+                    resolve();
+                })
+                .catch((e) => {
+                    reject(e);
+                });
         });
     }
 }

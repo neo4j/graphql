@@ -17,24 +17,24 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { FilterFactory } from "./FilterFactory";
-import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
-import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamPropertyFilter";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { GraphQLWhereArg } from "../../../types";
+import type { AuthorizationOperation } from "../../../types/authorization";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { isLogicalOperator } from "../../utils/logical-operators";
+import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
+import type { Filter } from "../ast/filters/Filter";
+import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
-import type { Filter } from "../ast/filters/Filter";
-import type { GraphQLWhereArg } from "../../../types";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { AuthorizationOperation } from "../../../types/authorization";
-import { isLogicalOperator } from "../../utils/logical-operators";
-import Cypher from "@neo4j/cypher-builder";
-import { parseWhereField } from "./parsers/parse-where-field";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
+import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamPropertyFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { LogicalFilter } from "../ast/filters/LogicalFilter";
+import { FilterFactory } from "./FilterFactory";
+import { parseWhereField } from "./parsers/parse-where-field";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -86,13 +86,9 @@ export class AuthFilterFactory extends FilterFactory {
         context: Neo4jGraphQLTranslationContext
     ): Filter[] {
         return Object.entries(where).map(([key, value]) => {
-            const { fieldName, operator } = parseWhereField(key);
+            const { fieldName, operator, isNot } = parseWhereField(key);
             if (!fieldName) {
                 throw new Error(`Failed to find field name in filter: ${key}`);
-            }
-
-            if (!operator) {
-                throw new Error(`Failed to find operator in filter: ${key}`);
             }
 
             const mappedJwtClaim = context.authorization.claims?.get(fieldName);
@@ -107,10 +103,12 @@ export class AuthFilterFactory extends FilterFactory {
 
                 target = jwtPayload.property(...paths);
             }
+
             return new JWTFilter({
                 operator: operator || "EQ",
                 JWTClaim: target,
                 comparisonValue: value,
+                isNot,
             });
         });
     }
@@ -155,9 +153,18 @@ export class AuthFilterFactory extends FilterFactory {
                 attachedTo,
             });
         } else {
-            return new PropertyFilter({
+            if (comparisonValue === null) {
+                return new PropertyFilter({
+                    attribute,
+                    comparisonValue: comparisonValue,
+                    isNot,
+                    operator: filterOperator,
+                    attachedTo,
+                });
+            }
+            return new ParamPropertyFilter({
                 attribute,
-                comparisonValue: comparisonValue,
+                comparisonValue: new Cypher.Param(comparisonValue),
                 isNot,
                 operator: filterOperator,
                 attachedTo,

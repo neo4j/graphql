@@ -19,24 +19,27 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
-import type { QueryASTContext } from "../../QueryASTContext";
+import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { hasTarget } from "../../../utils/context-has-target";
+import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 
 export class CompositeReadPartial extends ReadOperation {
-    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.relationship) {
-            return this.transpileNestedCompositeRelationship(this.relationship, { returnVariable, context });
+            return this.transpileNestedCompositeRelationship(this.relationship, { context });
         } else {
-            throw new Error("Top level interfaces are not supported");
+            return this.transpileTopLevelCompositeEntity({ context });
         }
     }
 
     private transpileNestedCompositeRelationship(
         entity: RelationshipAdapter,
-        { returnVariable, context }: OperationTranspileOptions
+        { context }: OperationTranspileOptions
     ): OperationTranspileResult {
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
         const targetNode = createNodeFromEntity(this.target);
@@ -60,11 +63,8 @@ export class CompositeReadPartial extends ReadOperation {
             matchClause.where(wherePredicate);
         }
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
-        const sortSubqueries = this.sortFields
-            .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
-
-        const ret = this.getProjectionClause(nestedContext, returnVariable);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(
             ...preSelection,
@@ -77,17 +77,46 @@ export class CompositeReadPartial extends ReadOperation {
 
         return {
             clauses: [clause],
-            projectionExpr: returnVariable,
+            projectionExpr: nestedContext.returnVariable,
+        };
+    }
+
+    // dupe from transpileNestedCompositeRelationship
+    private transpileTopLevelCompositeEntity({ context }: OperationTranspileOptions): OperationTranspileResult {
+        const targetNode = createNodeFromEntity(this.target);
+        const nestedContext = new QueryASTContext({
+            target: targetNode,
+            env: context.env,
+            neo4jGraphQLContext: context.neo4jGraphQLContext,
+        });
+        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
+        const filterPredicates = this.getPredicates(nestedContext);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+
+        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
+        if (wherePredicate) {
+            matchClause.where(wherePredicate);
+        }
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable);
+
+        const clause = Cypher.concat(...preSelection, matchClause, ...authFilterSubqueries, subqueries, ret);
+
+        return {
+            clauses: [clause],
+            projectionExpr: context.returnVariable,
         };
     }
 
     protected getProjectionClause(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
+        if (!hasTarget(context)) throw new Error("No parent node found!");
         const projection = this.getProjectionMap(context);
 
         const targetNodeName = this.target.name;
         projection.set({
             __resolveType: new Cypher.Literal(targetNodeName),
-            __id: Cypher.id(context.source!), // NOTE: I think this is a bug and should be target
+            __id: Cypher.id(context.target),
         });
 
         const withClause = new Cypher.With([projection, context.target]);

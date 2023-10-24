@@ -1,5 +1,53 @@
 # @neo4j/graphql
 
+## 4.3.4
+
+### Patch Changes
+
+-   [#4142](https://github.com/neo4j/graphql/pull/4142) [`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4118 - Invalid input WHERE on create with connect and auth
+
+-   [#4147](https://github.com/neo4j/graphql/pull/4147) [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4113 - auth subqueries variable name clash
+
+-   [#4146](https://github.com/neo4j/graphql/pull/4146) [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested aggregation filters #4115
+
+## 4.3.3
+
+### Patch Changes
+
+-   [#4136](https://github.com/neo4j/graphql/pull/4136) [`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf) Thanks [@a-alle](https://github.com/a-alle)! - Fix `@jwtClaim` not working in `@authentication` rules
+
+-   [#4141](https://github.com/neo4j/graphql/pull/4141) [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix Authorization filters along with subqueries #4110
+
+## 4.3.2
+
+### Patch Changes
+
+-   [#4108](https://github.com/neo4j/graphql/pull/4108) [`6592a6ab2`](https://github.com/neo4j/graphql/commit/6592a6ab24bb6cdfbf9cb59f99343ca33cf30342) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add missing NOT filters for JWT claims.
+
+-   [#4071](https://github.com/neo4j/graphql/pull/4071) [`e493402de`](https://github.com/neo4j/graphql/commit/e493402de5eed5dd43d433bbc37e250722d3d102) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4056 variable not propagated
+
+-   [#4111](https://github.com/neo4j/graphql/pull/4111) [`7ad89796f`](https://github.com/neo4j/graphql/commit/7ad89796f3f3dd92350ed49c0299189bb393b996) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Add enum case to parseLiteral in ScalarOrEnumType
+
+-   [#4098](https://github.com/neo4j/graphql/pull/4098) [`184a5209b`](https://github.com/neo4j/graphql/commit/184a5209b8186461e1ea7fdd3786456d8b2da11f) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix filtering on aggregations (bug #4095)
+
+-   [#4108](https://github.com/neo4j/graphql/pull/4108) [`6592a6ab2`](https://github.com/neo4j/graphql/commit/6592a6ab24bb6cdfbf9cb59f99343ca33cf30342) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Removed conditional which was preventing equality checks in JWT payload.
+
+## 4.3.1
+
+### Patch Changes
+
+-   [#4084](https://github.com/neo4j/graphql/pull/4084) [`97f38c337`](https://github.com/neo4j/graphql/commit/97f38c337a71fe48dec281ddc0e30cd8183eead2) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix authentication filters rules in nested elements #4077
+
+## 4.3.0
+
+### Minor Changes
+
+-   [#4036](https://github.com/neo4j/graphql/pull/4036) [`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Schema generation logic improved
+
+    -   allow operations on Interface relationships to Interfaces
+    -   add descriptions to generated graphql types
+    -   improve schema generation logic
+
 ## 4.2.0
 
 ### Minor Changes

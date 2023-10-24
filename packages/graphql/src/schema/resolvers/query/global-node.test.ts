@@ -28,7 +28,7 @@ describe("Global node resolver", () => {
             isGlobalNode: true,
         }).instance();
 
-        const result = globalNodeResolver({ nodes: [node] });
+        const result = globalNodeResolver({ nodes: [node], entities: [] });
         expect(result.type).toBe("Node");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

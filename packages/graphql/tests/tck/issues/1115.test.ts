@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                     this_connectOrCreate_children0.tcId = $this_connectOrCreate_children_param1
                 MERGE (this)<-[this_connectOrCreate_children_this0:HAS]-(this_connectOrCreate_children0)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param3 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_connectOrCreate_children_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
             }
             WITH this
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                     this_connectOrCreate_children1.tcId = $this_connectOrCreate_children_param6
                 MERGE (this)<-[this_connectOrCreate_children_this1:HAS]-(this_connectOrCreate_children1)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $this_connectOrCreate_children_param7 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_connectOrCreate_children_param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
             }
             WITH *
@@ -113,10 +113,10 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 \\"this_connectOrCreate_children_param0\\": \\"123\\",
                 \\"this_connectOrCreate_children_param1\\": \\"123\\",
                 \\"isAuthenticated\\": true,
-                \\"this_connectOrCreate_children_param3\\": \\"upstream\\",
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
+                \\"this_connectOrCreate_children_param4\\": \\"upstream\\",
                 \\"this_connectOrCreate_children_param5\\": \\"456\\",
                 \\"this_connectOrCreate_children_param6\\": \\"456\\",
                 \\"this_connectOrCreate_children_param7\\": \\"upstream\\",

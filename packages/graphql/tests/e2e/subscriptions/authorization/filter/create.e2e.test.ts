@@ -44,7 +44,7 @@ describe("Subscriptions authorization with create events", () => {
 
         const typeDefs = `#graphql
             type JWTPayload @jwt {
-                roles: [String!]!
+                roles: [String!]! @jwtClaim(path: "myApplication.roles")
             }
 
             type ${User}
@@ -88,7 +88,7 @@ describe("Subscriptions authorization with create events", () => {
     });
 
     test("authorization filters out user without matching id", async () => {
-        const jwtToken = createJwtHeader(key, { sub: "user1", roles: ["user"] });
+        const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["user"] } });
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
 
         await wsClient.subscribe(`
@@ -117,7 +117,7 @@ describe("Subscriptions authorization with create events", () => {
     });
 
     test("returns nothing with wrong role", async () => {
-        const jwtToken = createJwtHeader(key, { sub: "user1", roles: ["wrong"] });
+        const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["wrong"] } });
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
 
         await wsClient.subscribe(`
@@ -138,7 +138,7 @@ describe("Subscriptions authorization with create events", () => {
     });
 
     test("returns both events with admin role", async () => {
-        const jwtToken = createJwtHeader(key, { sub: "user1", roles: ["admin"] });
+        const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["admin"] } });
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
 
         await wsClient.subscribe(`
@@ -186,6 +186,157 @@ describe("Subscriptions authorization with create events", () => {
                 `,
             })
             .expect(200);
+        return result;
+    }
+});
+
+describe("Subscriptions authentication with create events", () => {
+    let neo4j: Neo4j;
+    let driver: Driver;
+    let server: TestGraphQLServer;
+    let wsClient: WebSocketTestClient;
+    let User: UniqueType;
+    let key: string;
+    beforeEach(async () => {
+        key = "secret";
+
+        User = new UniqueType("User");
+
+        const typeDefs = `#graphql
+            type JWTPayload @jwt {
+                roles: [String!]! @jwtClaim(path: "myApplication.roles")
+            }
+
+            type ${User}
+                @authentication(jwt: { roles_INCLUDES: "admin" }) {
+                id: ID!
+            }
+        `;
+
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            features: {
+                authorization: { key },
+                subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+            },
+        });
+
+        // eslint-disable-next-line @typescript-eslint/require-await
+        server = new ApolloTestServer(neoSchema, async ({ req }) => ({
+            sessionConfig: {
+                database: neo4j.getIntegrationDatabaseName(),
+            },
+            token: req.headers.authorization,
+        }));
+        await server.start();
+    });
+
+    afterEach(async () => {
+        await wsClient.close();
+
+        await server.close();
+        await driver.close();
+    });
+
+    test("authorization filters out user without matching id", async () => {
+        const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["user"] } });
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+
+        await wsClient.subscribe(`
+            subscription {
+                ${User.operations.subscribe.created} {
+                    ${User.operations.subscribe.payload.created} {
+                        id
+                    }
+                }
+            }
+        `);
+
+        await createUser("user1");
+        await createUser("user2");
+
+        await wsClient.waitForEvents(1);
+
+        expect((wsClient.errors as any[])[0].message).toBe("Unauthenticated");
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("returns nothing with wrong role", async () => {
+        const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["wrong"] } });
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+
+        await wsClient.subscribe(`
+            subscription {
+                ${User.operations.subscribe.created} {
+                    ${User.operations.subscribe.payload.created} {
+                        id
+                    }
+                }
+            }
+        `);
+
+        await createUser("user1");
+        await createUser("user2");
+
+        expect((wsClient.errors as any[])[0].message).toBe("Unauthenticated");
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("returns both events with admin role", async () => {
+        const jwtToken = createJwtHeader(key, { sub: "user1", myApplication: { roles: ["admin"] } });
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+
+        await wsClient.subscribe(`
+            subscription {
+                ${User.operations.subscribe.created} {
+                    ${User.operations.subscribe.payload.created} {
+                        id
+                    }
+                }
+            }
+        `);
+
+        await createUser("user1");
+        await createUser("user2");
+
+        await wsClient.waitForEvents(2);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [User.operations.subscribe.created]: {
+                    [User.operations.subscribe.payload.created]: { id: "user1" },
+                },
+            },
+            {
+                [User.operations.subscribe.created]: {
+                    [User.operations.subscribe.payload.created]: { id: "user2" },
+                },
+            },
+        ]);
+    });
+
+    async function createUser(id: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .set("Authorization", createJwtHeader(key, { sub: "user1", myApplication: { roles: ["admin"] } }))
+            .send({
+                query: `
+                    mutation {
+                        ${User.operations.create}(input: [{ id: "${id}" }]) {
+                            ${User.plural} {
+                                id
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        console.log("Result??", result.body);
         return result;
     }
 });

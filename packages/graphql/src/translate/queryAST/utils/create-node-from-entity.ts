@@ -18,19 +18,19 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import { mapLabelsWithContext } from "../../../schema-model/utils/map-labels-with-context";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 
 export function createNodeFromEntity(
-    entity: ConcreteEntityAdapter,
+    entity: EntityAdapter,
     neo4jGraphQLContext?: Neo4jGraphQLContext,
     name?: string
 ): Cypher.Node {
-    const labels = neo4jGraphQLContext
-        ? mapLabelsWithContext(entity.getLabels(), neo4jGraphQLContext)
-        : entity.getLabels();
+    const nodeLabels = entity instanceof ConcreteEntityAdapter ? entity.getLabels() : [entity.name];
+    const labels = neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
 
     if (name) {
         return new Cypher.NamedNode(name, { labels });

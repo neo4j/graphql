@@ -23,10 +23,12 @@ import { ConnectionReadOperation } from "../ConnectionReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
 import type { Sort } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
+import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
-    public transpile({ returnVariable, context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (!context.target) throw new Error();
+        if (!this.relationship) throw new Error("connection fields are not supported on top level interface");
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
@@ -48,10 +50,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         const filters = Cypher.and(...predicates, ...authPredicate);
 
-        const nodeProjectionSubqueries = this.nodeFields
-            .flatMap((f) => f.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
-
+        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [node]);
         const nodeProjectionMap = new Cypher.Map();
 
         // This bit is different than normal connection ops
@@ -107,7 +106,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             }
         }
 
-        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(returnVariable);
+        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(context.returnVariable);
 
         const subClause = Cypher.concat(
             ...preSelection,
@@ -120,7 +119,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         return {
             clauses: [subClause],
-            projectionExpr: returnVariable,
+            projectionExpr: context.returnVariable,
         };
     }
 

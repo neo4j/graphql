@@ -17,31 +17,32 @@
  * limitations under the License.
  */
 
+import { RelationshipNestedOperationsOption } from "../../../constants";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
+import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
 import type { Entity } from "../../entity/Entity";
+import type { EntityAdapter } from "../../entity/EntityAdapter";
 import { InterfaceEntity } from "../../entity/InterfaceEntity";
 import { UnionEntity } from "../../entity/UnionEntity";
 import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
+import { plural, singular } from "../../utils/string-manipulation";
 import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
 import { RelationshipOperations } from "./RelationshipOperations";
-import { plural, singular } from "../../utils/string-manipulation";
-import { RelationshipNestedOperationsOption } from "../../../constants";
-import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 
 export class RelationshipAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
     public readonly name: string;
     public readonly type: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
-    public readonly source: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter;
+    public readonly source: EntityAdapter;
     private rawEntity: Entity;
-    private _target: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter | undefined;
+    private _target: EntityAdapter | undefined;
     public readonly direction: RelationshipDirection;
     public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: Set<NestedOperation>;
@@ -60,10 +61,7 @@ export class RelationshipAdapter {
     // specialize models
     private _operations: RelationshipOperations | undefined;
 
-    constructor(
-        relationship: Relationship,
-        sourceAdapter?: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter
-    ) {
+    constructor(relationship: Relationship, sourceAdapter?: EntityAdapter) {
         const {
             name,
             type,
@@ -186,7 +184,7 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
-    get target(): ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter {
+    get target(): EntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
                 this._target = new ConcreteEntityAdapter(this.rawEntity);

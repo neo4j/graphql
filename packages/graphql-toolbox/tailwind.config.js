@@ -1,5 +1,4 @@
 module.exports = {
-    content: ["./src/**/*.{html,ts,tsx}"],
     theme: {
         extend: {
             height: {
@@ -12,15 +11,16 @@ module.exports = {
             },
             colors: {
                 draculaDark: "#282A36",
-                contentBlue: "#F6F7FA",
             },
         },
     },
-    plugins: [],
+    presets: [require("@neo4j-ndl/base").tailwindConfig],
+    // plugins: [],
     // Be sure to disable preflight,
     // as we provide our own Preflight (CSS Reset)
     // with Needle out of the box
     corePlugins: {
         preflight: false,
     },
+    prefix: "",
 };

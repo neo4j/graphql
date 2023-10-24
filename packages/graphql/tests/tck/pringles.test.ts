@@ -112,27 +112,27 @@ describe("Cypher Create Pringles", () => {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CREATE (this0_sizes0_node:Size)
             SET this0_sizes0_node.id = $this0_sizes0_node_id
             SET this0_sizes0_node.name = $this0_sizes0_node_name
             MERGE (this0)-[:HAS_SIZE]->(this0_sizes0_node)
-            WITH this0
+            WITH *
             CREATE (this0_sizes1_node:Size)
             SET this0_sizes1_node.id = $this0_sizes1_node_id
             SET this0_sizes1_node.name = $this0_sizes1_node_name
             MERGE (this0)-[:HAS_SIZE]->(this0_sizes1_node)
-            WITH this0
+            WITH *
             CREATE (this0_colors0_node:Color)
             SET this0_colors0_node.id = $this0_colors0_node_id
             SET this0_colors0_node.name = $this0_colors0_node_name
             MERGE (this0)-[:HAS_COLOR]->(this0_colors0_node)
-            WITH this0
+            WITH *
             CREATE (this0_colors1_node:Color)
             SET this0_colors1_node.id = $this0_colors1_node_id
             SET this0_colors1_node.name = $this0_colors1_node_name
             MERGE (this0)-[:HAS_COLOR]->(this0_colors1_node)
-            WITH this0
+            WITH *
             CREATE (this0_photos0_node:Photo)
             SET this0_photos0_node.id = $this0_photos0_node_id
             SET this0_photos0_node.description = $this0_photos0_node_description
@@ -146,7 +146,7 @@ describe("Cypher Create Pringles", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos0_node_color_Color_unique_ignored
             }
-            WITH this0
+            WITH *
             CREATE (this0_photos1_node:Photo)
             SET this0_photos1_node.id = $this0_photos1_node_id
             SET this0_photos1_node.description = $this0_photos1_node_description
@@ -178,7 +178,7 @@ describe("Cypher Create Pringles", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
             	RETURN c AS this0_photos1_node_color_Color_unique_ignored
             }
-            WITH this0
+            WITH *
             CREATE (this0_photos2_node:Photo)
             SET this0_photos2_node.id = $this0_photos2_node_id
             SET this0_photos2_node.description = $this0_photos2_node_description
@@ -212,7 +212,11 @@ describe("Cypher Create Pringles", () => {
             }
             RETURN this0
             }
-            RETURN [this0 { .id }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

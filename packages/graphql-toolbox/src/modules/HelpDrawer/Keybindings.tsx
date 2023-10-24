@@ -58,7 +58,7 @@ const editorScreenCmds: RowEntryType[] = [
 
 const RowEntry = ({ label, winCmd, macCmd, isBgDark }: RowEntryType) => {
     return (
-        <div className={`flex text-xs py-4 px-2 ${isBgDark ? "n-bg-neutral-20 rounded-xl" : ""}`}>
+        <div className={`flex text-xs py-4 px-2 ${isBgDark ? "bg-neutral-20 rounded-xl" : ""}`}>
             <div className="flex-1 italic font-light">
                 <span className="whitespace-break-spaces pr-6">{label}</span>
             </div>

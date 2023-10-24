@@ -28,7 +28,7 @@ describe("Cypher Union", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    beforeAll(() => {
+    beforeEach(() => {
         typeDefs = gql`
             union Search = Genre | Movie
 
@@ -80,12 +80,12 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this) } AS this1
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this) } AS this4
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -129,12 +129,12 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this) } AS this1
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this) } AS this4
+                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -185,13 +185,13 @@ describe("Cypher Union", () => {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE (this1.name = $param1 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this) } AS this1
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
                     WHERE this4.title = $param4
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this) } AS this4
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
                 WITH var2
@@ -244,13 +244,17 @@ describe("Cypher Union", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CREATE (this0_search_Genre0_node:Genre)
             SET this0_search_Genre0_node.name = $this0_search_Genre0_node_name
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
             RETURN this0
             }
-            RETURN [this0 { .title }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .title } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -338,7 +342,11 @@ describe("Cypher Union", () => {
             }
             RETURN this0
             }
-            RETURN [this0 { .title }] AS data"
+            CALL {
+                WITH this0
+                RETURN this0 { .title } AS create_var0
+            }
+            RETURN [create_var0] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

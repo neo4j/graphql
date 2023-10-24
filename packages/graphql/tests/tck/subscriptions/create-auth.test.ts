@@ -91,7 +91,15 @@ describe("Subscriptions metadata on create", () => {
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
-            RETURN [this0 { .id }, this1 { .id }] AS data, meta"
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            CALL {
+                WITH this1
+                RETURN this1 { .id } AS create_var1
+            }
+            RETURN [create_var0, create_var1] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

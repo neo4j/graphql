@@ -17,24 +17,17 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
-import { bracketMatching, foldGutter, foldKeymap, indentOnInput } from "@codemirror/language";
-import { lintGutter, lintKeymap } from "@codemirror/lint";
+import { bracketMatching, foldGutter, foldKeymap, indentOnInput, syntaxTree } from "@codemirror/language";
+import type { Diagnostic } from "@codemirror/lint";
+import { linter, lintGutter, lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { EditorState, Prec, StateEffect } from "@codemirror/state";
-import {
-    drawSelection,
-    dropCursor,
-    EditorView,
-    highlightSpecialChars,
-    keymap,
-    lineNumbers,
-} from "@codemirror/view";
-import { tokens } from "@neo4j-ndl/base";
-import { Button, IconButton, SmartTooltip } from "@neo4j-ndl/react";
+import { drawSelection, dropCursor, EditorView, highlightSpecialChars, keymap, lineNumbers } from "@codemirror/view";
+import { Button, IconButton, Tip } from "@neo4j-ndl/react";
 import { StarIconOutline } from "@neo4j-ndl/react/icons";
 import classNames from "classnames";
 import { graphql } from "cm6-graphql";
@@ -46,7 +39,30 @@ import { AppSettingsContext } from "../../contexts/appsettings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { useStore } from "../../store";
 import { handleEditorDisableState } from "../EditorView/utils";
-import { getSchemaForLintAndAutocompletion } from "./utils";
+import { getSchemaForLintAndAutocompletion, getUnsupportedDirective } from "./utils";
+
+function unsupportedDirectivesLinter(view: EditorView) {
+    const diagnostics: Diagnostic[] = [];
+    const doc = view.state.doc;
+
+    syntaxTree(view.state)
+        .cursor()
+        .iterate((node) => {
+            if (node.name === "Directive") {
+                const directiveName = doc.sliceString(node.from, node.to);
+                const unsupportedDirective = getUnsupportedDirective(directiveName);
+                if (unsupportedDirective) {
+                    diagnostics.push({
+                        from: node.from,
+                        to: node.to,
+                        severity: "error",
+                        message: `The ${unsupportedDirective} directive is not currently supported by the GraphQL Toolbox.`,
+                    });
+                }
+            }
+        });
+    return diagnostics;
+}
 
 export interface Props {
     loading: boolean;
@@ -73,8 +89,6 @@ export const SchemaEditor = ({
 }: Props) => {
     const theme = useContext(ThemeContext);
     const appSettings = useContext(AppSettingsContext);
-    const favoritesTooltipRef = useRef<HTMLButtonElement | null>(null);
-    const introspectionTooltipRef = useRef<HTMLButtonElement | null>(null);
     const storedTypeDefs = useStore.getState().typeDefinitions || DEFAULT_TYPE_DEFS;
     const [building, setBuilding] = useState<boolean>(false);
 
@@ -116,6 +130,7 @@ export const SchemaEditor = ({
             closedText: "▶",
             openText: "▼",
         }),
+        linter(unsupportedDirectivesLinter),
         graphql(getSchemaForLintAndAutocompletion()),
         theme.theme === Theme.LIGHT ? tomorrow : dracula,
         appSettings.showLintMarkers ? lintGutter() : [],
@@ -163,7 +178,6 @@ export const SchemaEditor = ({
                     <Button
                         data-test-schema-editor-build-button
                         aria-label="Build schema"
-                        style={{ backgroundColor: tokens.colors.primary[50] }}
                         className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
                         color="primary"
                         fill="filled"
@@ -183,31 +197,30 @@ export const SchemaEditor = ({
                 }
                 leftButtons={
                     <>
-                        <Button
-                            data-test-schema-editor-introspect-button
-                            ref={introspectionTooltipRef}
-                            aria-label="Generate type definitions"
-                            className={classNames(
-                                "mr-2",
-                                theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
-                            )}
-                            color="primary"
-                            fill="outlined"
-                            size="small"
-                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                            onClick={introspect}
-                            disabled={loading}
-                            loading={isIntrospecting}
-                        >
-                            Introspect
-                        </Button>
-                        <SmartTooltip
-                            allowedPlacements={["bottom"]}
-                            style={{ width: "19rem" }}
-                            ref={introspectionTooltipRef}
-                        >
-                            {"This will overwrite your current type definitions!"}
-                        </SmartTooltip>
+                        <Tip allowedPlacements={["bottom"]}>
+                            <Tip.Trigger>
+                                <Button
+                                    data-test-schema-editor-introspect-button
+                                    aria-label="Generate type definitions"
+                                    className={classNames(
+                                        "mr-2",
+                                        theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                                    )}
+                                    color="primary"
+                                    fill="outlined"
+                                    size="small"
+                                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                    onClick={introspect}
+                                    disabled={loading}
+                                    loading={isIntrospecting}
+                                >
+                                    Introspect
+                                </Button>
+                            </Tip.Trigger>
+                            <Tip.Content style={{ width: "19rem" }}>
+                                This will overwrite your current type definitions!
+                            </Tip.Content>
+                        </Tip>
 
                         <Button
                             data-test-schema-editor-prettify-button
@@ -225,30 +238,25 @@ export const SchemaEditor = ({
                             Prettify
                         </Button>
 
-                        <IconButton
-                            data-test-schema-editor-favourite-button
-                            ref={favoritesTooltipRef}
-                            aria-label="Save as favorite"
-                            style={{ height: "1.7rem" }}
-                            className={classNames(theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark")}
-                            size="small"
-                            color="neutral"
-                            onClick={saveAsFavorite}
-                            disabled={loading}
-                        >
-                            <StarIconOutline
-                                style={{
-                                    color: tokens.colors.neutral[80],
-                                }}
-                            />
-                        </IconButton>
-                        <SmartTooltip
-                            allowedPlacements={["bottom"]}
-                            style={{ width: "8rem" }}
-                            ref={favoritesTooltipRef}
-                        >
-                            {"Save as Favorite"}
-                        </SmartTooltip>
+                        <Tip allowedPlacements={["bottom"]}>
+                            <Tip.Trigger>
+                                <IconButton
+                                    data-test-schema-editor-favourite-button
+                                    aria-label="Save as favorite"
+                                    style={{ height: "1.7rem" }}
+                                    className={classNames(
+                                        theme.theme === Theme.LIGHT ? "ndl-theme-light" : "ndl-theme-dark"
+                                    )}
+                                    size="small"
+                                    color="neutral"
+                                    onClick={saveAsFavorite}
+                                    disabled={loading}
+                                >
+                                    <StarIconOutline />
+                                </IconButton>
+                            </Tip.Trigger>
+                            <Tip.Content>Save as Favorite</Tip.Content>
+                        </Tip>
                     </>
                 }
             ></FileName>
