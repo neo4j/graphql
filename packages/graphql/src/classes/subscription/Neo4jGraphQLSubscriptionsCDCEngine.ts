@@ -30,7 +30,7 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     private pollTime: number;
 
     private _parser: CDCEventParser | undefined;
-    private timer: NodeJS.Timer | undefined;
+    private timer: ReturnType<typeof setTimeout> | undefined;
     private closed = false;
 
     constructor({
