@@ -18940,17 +18940,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"migration@workspace:examples/migration":
-  version: 0.0.0-use.local
-  resolution: "migration@workspace:examples/migration"
-  dependencies:
-    "@apollo/server": ^4.7.0
-    "@neo4j/graphql": ^4.3.4
-    graphql: 16.8.1
-    neo4j-driver: 5.13.0
-  languageName: unknown
-  linkType: soft
-
 "miller-rabin@npm:^4.0.0":
   version: 4.0.1
   resolution: "miller-rabin@npm:4.0.1"
