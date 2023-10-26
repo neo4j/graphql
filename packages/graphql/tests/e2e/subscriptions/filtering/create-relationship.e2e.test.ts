@@ -19,17 +19,35 @@
 
 import type { Driver } from "neo4j-driver";
 import supertest from "supertest";
+import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { delay } from "../../../../src/utils/utils";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
-import { WebSocketTestClient } from "../../setup/ws-client";
 import Neo4j from "../../setup/neo4j";
-import { cleanNodes } from "../../../utils/clean-nodes";
-import { delay } from "../../../../src/utils/utils";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "../../../../src/classes/subscription/Neo4jGraphQLSubscriptionsDefaultEngine";
+import { WebSocketTestClient } from "../../setup/ws-client";
 
-describe("Connect Subscription with optional filters valid for all types", () => {
+describe.each([
+    {
+        name: "Neo4jGraphQLSubscriptionsDefaultEngine",
+        engine: (_driver: Driver, _db: string) => new Neo4jGraphQLSubscriptionsDefaultEngine(),
+    },
+    // Relationship not supported on CDC
+    // {
+    //     name: "Neo4jGraphQLSubscriptionsCDCEngine",
+    //     engine: (driver: Driver, db: string) =>
+    //         new Neo4jGraphQLSubscriptionsCDCEngine({
+    //             driver,
+    //             pollTime: 100,
+    //             queryConfig: {
+    //                 database: db,
+    //             },
+    //         }),
+    // },
+])("$name - Connect Subscription with optional filters valid for all types", ({ engine }) => {
     let neo4j: Neo4j;
     let driver: Driver;
     let server: TestGraphQLServer;
@@ -40,6 +58,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
     let typePerson: UniqueType;
     let typeInfluencer: UniqueType;
     let typeDefs: string;
+    let subscriptionEngine: Neo4jGraphQLSubscriptionsEngine;
 
     beforeEach(async () => {
         typeActor = new UniqueType("Actor");
@@ -98,12 +117,12 @@ describe("Connect Subscription with optional filters valid for all types", () =>
 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-
+        subscriptionEngine = engine(driver, neo4j.getIntegrationDatabaseName());
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
             features: {
-                subscriptions: new Neo4jGraphQLSubscriptionsDefaultEngine(),
+                subscriptions: subscriptionEngine,
             },
         });
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -122,7 +141,7 @@ describe("Connect Subscription with optional filters valid for all types", () =>
     afterEach(async () => {
         await wsClient.close();
         await wsClient2.close();
-
+        subscriptionEngine.close();
         const session = driver.session();
         await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
 
