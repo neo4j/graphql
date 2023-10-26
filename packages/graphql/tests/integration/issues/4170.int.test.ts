@@ -86,6 +86,13 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     admins {
                         userId
                     }
+                    settings {
+                        openingDays {
+                            open {
+                                name
+                            }
+                        }
+                    }
                 }
             }
         }

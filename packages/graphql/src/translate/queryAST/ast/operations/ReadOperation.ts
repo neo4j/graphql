@@ -130,7 +130,8 @@ export class ReadOperation extends Operation {
         // This weird condition is just for cypher compatibility
         const shouldAddWithForAuth = authFiltersPredicate.length > 0;
         if (authFilterSubqueries.length > 0 || shouldAddWithForAuth) {
-            if (!isCreateSelection) {
+            if (!isCreateSelection || authFilterSubqueries.length) {
+                // for creates auth filters sometimes use variables from the subquery
                 filterSubqueryWith = new Cypher.With("*");
             }
         }
