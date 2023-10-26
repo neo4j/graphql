@@ -23,7 +23,16 @@ import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../../
 export class Neo4jGraphQLSubscriptionsDefaultEngine implements Neo4jGraphQLSubscriptionsEngine {
     public events: EventEmitter = new EventEmitter();
 
+    public closed = false;
+
     public publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
-        this.events.emit(eventMeta.event, eventMeta);
+        if (!this.closed) {
+            this.events.emit(eventMeta.event, eventMeta);
+        }
+    }
+
+    /** Stops event publishing */
+    public close(): void {
+        this.closed = true;
     }
 }

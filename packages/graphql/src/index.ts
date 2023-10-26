@@ -20,12 +20,13 @@
 import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";
 import { Neo4jGraphQLContext } from "./types/neo4j-graphql-context";
 
+import * as directives from "./graphql/directives";
 import { CartesianPoint } from "./graphql/objects/CartesianPoint";
 import { Point } from "./graphql/objects/Point";
-import * as directives from "./graphql/directives";
 import * as scalars from "./graphql/scalars";
 const objects = { Point, CartesianPoint };
 
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "./classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "./types";
 
 /**
@@ -36,9 +37,11 @@ export { Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLContext };
 /**
  * Library built-in GraphQL types.
  */
-export { directives, scalars, objects };
+export { directives, objects, scalars };
 
 /**
  * Allows for the implementation of custom subscriptions mechanisms.
  */
 export { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent };
+
+export { Neo4jGraphQLSubscriptionsCDCEngine };

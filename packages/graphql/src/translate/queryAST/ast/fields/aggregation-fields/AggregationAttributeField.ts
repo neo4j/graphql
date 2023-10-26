@@ -85,7 +85,7 @@ export class AggregationAttributeField extends AggregationField {
 
     private createDatetimeProjection(expr: Cypher.Expr) {
         return Cypher.apoc.date.convertFormat(
-            expr as any, // TODO: any due to a problem in CB types
+            expr,
             "iso_zoned_date_time",
             "iso_offset_date_time"
         );

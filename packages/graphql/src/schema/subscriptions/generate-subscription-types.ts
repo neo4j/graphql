@@ -37,10 +37,12 @@ export function generateSubscriptionTypes({
     schemaComposer,
     schemaModel,
     userDefinedFieldDirectivesForNode,
+    generateRelationshipTypes,
 }: {
     schemaComposer: SchemaComposer;
     schemaModel: Neo4jGraphQLSchemaModel;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+    generateRelationshipTypes: boolean;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
@@ -191,7 +193,7 @@ export function generateSubscriptionTypes({
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField({
+                        return getRelationshipField({
                             entityAdapter,
                             relationshipName: source.relationshipName,
                             nodeToRelationFieldMap,
@@ -211,7 +213,7 @@ export function generateSubscriptionTypes({
                 relationshipFieldName: {
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: RelationshipSubscriptionsEvent) => {
-                        return getRelationField({
+                        return getRelationshipField({
                             entityAdapter,
                             relationshipName: source.relationshipName,
                             nodeToRelationFieldMap,
@@ -223,7 +225,7 @@ export function generateSubscriptionTypes({
 
         if (hasProperties(relationsEventPayload)) {
             const resolveRelationship = (source: RelationshipSubscriptionsEvent) => {
-                const thisRel = getRelationField({
+                const thisRel = getRelationshipField({
                     entityAdapter,
                     relationshipName: source.relationshipName,
                     nodeToRelationFieldMap,
@@ -295,36 +297,38 @@ export function generateSubscriptionTypes({
             });
         }
 
-        const connectionWhere = generateSubscriptionConnectionWhereType({
-            entityAdapter,
-            schemaComposer,
-        });
-        if (entityAdapter.relationships.size > 0) {
-            if (entityAdapter.isSubscribableOnRelationshipCreate) {
-                subscriptionComposer.addFields({
-                    [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_created]: {
-                        ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
-                        type: relationshipCreatedEvent.NonNull,
-                        subscribe: generateSubscribeMethod({
-                            entityAdapter,
-                            type: "create_relationship",
-                        }),
-                        resolve: subscriptionResolve,
-                    },
-                });
-            }
-            if (entityAdapter.isSubscribableOnRelationshipDelete) {
-                subscriptionComposer.addFields({
-                    [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_deleted]: {
-                        ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
-                        type: relationshipDeletedEvent.NonNull,
-                        subscribe: generateSubscribeMethod({
-                            entityAdapter,
-                            type: "delete_relationship",
-                        }),
-                        resolve: subscriptionResolve,
-                    },
-                });
+        if (generateRelationshipTypes) {
+            const connectionWhere = generateSubscriptionConnectionWhereType({
+                entityAdapter,
+                schemaComposer,
+            });
+            if (entityAdapter.relationships.size > 0) {
+                if (entityAdapter.isSubscribableOnRelationshipCreate) {
+                    subscriptionComposer.addFields({
+                        [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_created]: {
+                            ...(connectionWhere?.created && { args: { where: connectionWhere?.created } }),
+                            type: relationshipCreatedEvent.NonNull,
+                            subscribe: generateSubscribeMethod({
+                                entityAdapter,
+                                type: "create_relationship",
+                            }),
+                            resolve: subscriptionResolve,
+                        },
+                    });
+                }
+                if (entityAdapter.isSubscribableOnRelationshipDelete) {
+                    subscriptionComposer.addFields({
+                        [entityAdapter.operations.rootTypeFieldNames.subscribe.relationship_deleted]: {
+                            ...(connectionWhere?.deleted && { args: { where: connectionWhere?.deleted } }),
+                            type: relationshipDeletedEvent.NonNull,
+                            subscribe: generateSubscribeMethod({
+                                entityAdapter,
+                                type: "delete_relationship",
+                            }),
+                            resolve: subscriptionResolve,
+                        },
+                    });
+                }
             }
         }
     });
@@ -344,7 +348,7 @@ function getRelationshipEventDataForNode(
     let condition = event.toTypename === entityAdapter.name;
     if (event.toTypename === event.fromTypename) {
         // must check relationship direction from schema
-        const relationship = getRelationField({
+        const relationship = getRelationshipField({
             entityAdapter,
             relationshipName: event.relationshipName,
             nodeToRelationFieldMap,
@@ -367,7 +371,7 @@ function getRelationshipEventDataForNode(
     };
 }
 
-function getRelationField({
+function getRelationshipField({
     entityAdapter,
     relationshipName,
     nodeToRelationFieldMap,
