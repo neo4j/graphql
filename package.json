@@ -10,7 +10,6 @@
     "workspaces": [
         "packages/*",
         "packages/graphql/tests/performance/server",
-        "examples/migration",
         "examples/neo-place",
         "examples/subscriptions/*"
     ],
