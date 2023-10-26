@@ -36,7 +36,7 @@ export function createJwtPayloadWherePredicate({
     const predicates: Cypher.Predicate[] = [];
     fields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
-            const predicate = createNestedPredicate({
+            const predicate = createNestedPredicateLegacy({
                 key,
                 value: asArray(value),
                 context,
@@ -62,7 +62,7 @@ export function createJwtPayloadWherePredicate({
     return Cypher.and(...predicates);
 }
 
-function createNestedPredicate({
+function createNestedPredicateLegacy({
     key,
     value,
     context,

@@ -19,13 +19,13 @@
 
 import type { GraphQLWhereArg } from "../../types";
 import type { Node } from "../../classes";
-import { createWherePredicateNew } from "./create-where-predicate";
+import { acreateWherePredicateNew } from "./create-where-predicate";
 import Cypher from "@neo4j/cypher-builder";
 import { compileCypherIfExists } from "../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 
-// TODO: Remove this method and replace for directly using createWherePredicate
+// TODO: Remove this method and replace for directly using createWherePredicateLegacy
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
 export default function createWhereAndParams({
     whereInput,
@@ -44,7 +44,7 @@ export default function createWhereAndParams({
 }): [string, string, any] {
     const nodeRef = new Cypher.NamedNode(varName);
     const entity = getEntityAdapterFromNode(node, context);
-    const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicateNew({
+    const { predicate: wherePredicate, preComputedSubqueries } = acreateWherePredicateNew({
         entity,
         context,
         whereInput,

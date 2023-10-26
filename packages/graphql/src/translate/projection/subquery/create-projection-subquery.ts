@@ -20,7 +20,7 @@
 import type { Node } from "../../../classes";
 import type { GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
-import { createWherePredicateNew } from "../../where/create-where-predicate";
+import { acreateWherePredicateNew } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
@@ -82,7 +82,7 @@ export function createProjectionSubquery({
 
     if (whereInput) {
         const entity = getEntityAdapterFromNode(node, context);
-        const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicateNew({
+        const { predicate: wherePredicate, preComputedSubqueries } = acreateWherePredicateNew({
             entity,
             context,
             whereInput,

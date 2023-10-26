@@ -24,7 +24,7 @@ import type { GraphQLWhereArg, PredicateReturn } from "../../../types";
 import { asArray } from "../../../utils/utils";
 import type { LogicalOperator } from "../../utils/logical-operators";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
-import { createWherePredicate } from "../../where/create-where-predicate";
+import { createWherePredicateLegacy } from "../../where/create-where-predicate";
 import { createJwtPayloadWherePredicate } from "./create-authorization-jwt-payload-predicate";
 import { populateWhereParams } from "../utils/populate-where-params";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -46,7 +46,7 @@ export function createAuthorizationWherePredicate({
 
     fields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
-            const { predicate, preComputedSubqueries } = createNestedPredicate({
+            const { predicate, preComputedSubqueries } = createNestedPredicateLegacy({
                 key,
                 context,
                 value: asArray(value),
@@ -67,8 +67,8 @@ export function createAuthorizationWherePredicate({
 
         if (key === "node") {
             const useExistExpr = context.neo4jDatabaseInfo?.gte("5");
-                   
-            const { predicate, preComputedSubqueries } = createWherePredicate({
+
+            const { predicate, preComputedSubqueries } = createWherePredicateLegacy({
                 element: node,
                 context,
                 // This doesn't _have_ to be done like this, we could just populate with the actual values instead of this approach - to discuss with Andres!
@@ -107,7 +107,7 @@ export function createAuthorizationWherePredicate({
     };
 }
 
-function createNestedPredicate({
+function createNestedPredicateLegacy({
     key,
     context,
     value,

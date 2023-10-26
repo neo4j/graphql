@@ -37,8 +37,8 @@ import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 const debug = Debug(DEBUG_TRANSLATE);
 
 /** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
-// Previous implementation TODO remove it
-export function createWherePredicate({
+// Previous implementation TODO remove it after the new implementation support useExistsExpr, checkParameterExistence
+export function createWherePredicateLegacy({
     targetElement,
     whereInput,
     context,
@@ -58,7 +58,7 @@ export function createWherePredicate({
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
-            const { predicate, preComputedSubqueries } = createNestedPredicate({
+            const { predicate, preComputedSubqueries } = createNestedPredicateLegacy({
                 key: key,
                 element,
                 targetElement,
@@ -97,7 +97,7 @@ export function createWherePredicate({
     };
 }
 
-function createNestedPredicate({
+function createNestedPredicateLegacy({
     key,
     element,
     targetElement,
@@ -118,7 +118,7 @@ function createNestedPredicate({
     let subqueries: Cypher.CompositeClause | undefined;
 
     value.forEach((v) => {
-        const { predicate, preComputedSubqueries } = createWherePredicate({
+        const { predicate, preComputedSubqueries } = createWherePredicateLegacy({
             whereInput: v,
             element,
             targetElement,
@@ -136,7 +136,7 @@ function createNestedPredicate({
     return { predicate: logicalPredicate, preComputedSubqueries: subqueries };
 }
 
-export function createWherePredicateNew({
+export function acreateWherePredicateNew({
     targetElement,
     whereInput,
     context,
