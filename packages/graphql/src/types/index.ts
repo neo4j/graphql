@@ -400,6 +400,9 @@ export interface Neo4jGraphQLSubscriptionsEngine {
 
     /** To be called, if needed, in getSchema */
     init?(context: SubscriptionEngineContext): Promise<void>;
+
+    /** Stops subscription */
+    close(): void;
 }
 
 export type CallbackReturnValue = string | number | boolean | undefined | null;
