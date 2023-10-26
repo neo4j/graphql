@@ -16,7 +16,7 @@ Experiment with your Neo4j GraphQL API.
 
 1. [Documentation](https://neo4j.com/docs/graphql-manual/current/toolbox/)
 
-![Neo4j GraphQL Toolbox](https://github.com/neo4j/graphql/blob/dev/docs/modules/ROOT/images/toolbox-editor-view.png)
+![Neo4j GraphQL Toolbox](https://github.com/neo4j/graphql/blob/dev/docs/modules/ROOT/images/toolbox-editor-view-v2.png)
 
 ## Link
 
