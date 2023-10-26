@@ -23,7 +23,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
 
-describe("S3 - context-variable-not-always-resolved-on-cypher-queries", () => {
+describe("context-variable-not-always-resolved-on-cypher-queries", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
