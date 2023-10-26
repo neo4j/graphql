@@ -6,7 +6,7 @@ on:
       - dev
       - master
     paths:
-      - "packages/graphql/**"
+      - "packages/graphql/tests/tck/**"
 
 jobs:
   performance-tests:
