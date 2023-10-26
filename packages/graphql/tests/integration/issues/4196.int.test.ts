@@ -49,17 +49,17 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
         const typeDefs = /* GraphQL */ `
             type ${Foo} {
                 name: String
-                ${Bar.plural}: [${Bar}!]! @relationship(type: "relatesTo", direction: OUT)
+                bars: [${Bar}!]! @relationship(type: "relatesTo", direction: OUT)
             }
             
             type ${Bar} {
                 name: String
-                ${FooBar.plural}: [${FooBar}!]! @relationship(type: "relatesTo", direction: OUT)
+                foobars: [${FooBar}!]! @relationship(type: "relatesTo", direction: OUT)
             }
-            
+
             type ${FooBar} {
                 name: String
-                ${Bar.plural}: [${FooBar}!]! @relationship(type: "relatesTo", direction: IN)
+                bars: [${FooBar}!]! @relationship(type: "relatesTo", direction: IN)
             }
         `;
 
@@ -91,8 +91,8 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
             query {
                 ${Foo.plural} (options: {sort: {name: ASC}}) {
                     name
-                    ${Bar.plural} {
-                        ${FooBar.plural} {
+                    bars {
+                        foobars {
                             name
                         }
                     }
@@ -110,9 +110,9 @@ describe("https://github.com/neo4j/graphql/issues/4196", () => {
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({
             [Foo.plural]: [
-                { name: "A", [Bar.plural]: [{ [FooBar.plural]: [{ name: "a" }] }] },
-                { name: "B", [Bar.plural]: [] },
-                { name: "C", [Bar.plural]: [{ [FooBar.plural]: [{ name: "b" }] }] },
+                { name: "A", bars: [{ foobars: [{ name: "a" }] }] },
+                { name: "B", bars: [] },
+                { name: "C", bars: [{ foobars: [{ name: "b" }] }] },
             ],
         });
     });
