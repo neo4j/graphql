@@ -23,10 +23,17 @@ export class TestSubscriptionsEngine implements Neo4jGraphQLSubscriptionsEngine 
     public events = new EventEmitter();
 
     public eventList: SubscriptionsEvent[] = [];
+    private closed = false;
 
     // eslint-disable-next-line @typescript-eslint/require-await
     async publish(eventMeta: SubscriptionsEvent): Promise<void> {
-        this.eventList.push(eventMeta);
-        this.events.emit(eventMeta.event, eventMeta);
+        if (!this.closed) {
+            this.eventList.push(eventMeta);
+            this.events.emit(eventMeta.event, eventMeta);
+        }
+    }
+
+    public close(): void {
+        this.closed = true;
     }
 }

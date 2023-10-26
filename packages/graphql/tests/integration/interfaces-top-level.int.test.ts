@@ -503,103 +503,243 @@ describe("Top-level interface query fields", () => {
             ],
         });
     });
-});
 
-describe("Top-level interface query fields - schema configuration", () => {
-    const secret = "the-secret";
-
-    let schema: GraphQLSchema;
-    let neo4j: Neo4j;
-    let driver: Driver;
-
-    const SomeNodeType = new UniqueType("SomeNode");
-    const OtherNodeType = new UniqueType("OtherNode");
-    const MyImplementationType = new UniqueType("MyImplementation");
-    const MyOtherImplementationType = new UniqueType("MyOtherImplementation");
-
-    async function graphqlQuery(query: string, token: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues({ token }),
-        });
-    }
-
-    beforeAll(async () => {
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("should throw error on top-level simple query on interface target to a relationship", async () => {
-        const typeDefs = `
-            type ${SomeNodeType} implements MyOtherInterface & MyInterface {
-                id: ID! @id @unique
-                something: String
-                somethingElse: String
-                other: [${OtherNodeType}!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
+    describe("add authorization", () => {
+        beforeAll(async () => {
+            typeDefs =
+                typeDefs +
+                `
+            type JWT @jwt {
+                roles: [String]
+                groups: [String]
             }
-            type ${OtherNodeType} {
-                id: ID! @id @unique
-                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
-            }
-            interface MyInterface @query(read: false) {
-                id: ID! @id
-            }
-            interface MyOtherInterface implements MyInterface {
-                id: ID! @id
-                something: String
-            }
-
-            type ${MyImplementationType} implements MyInterface {
-                id: ID! @id @unique
-            }
-
-            type ${MyOtherImplementationType} implements MyInterface {
-                id: ID! @id @unique
-                someField: String
-            }
-
-            extend type ${SomeNodeType} @authentication
-
-            extend type ${OtherNodeType} @authentication
-        `;
-
-        const neoGraphql = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-            features: {
-                authorization: {
-                    key: secret,
-                },
-            },
-            experimental: true,
-        });
-        schema = await neoGraphql.getSchema();
-
-        const query = `
-            query {
-                myInterfaces {
-                    id
-                    ... on ${MyOtherImplementationType} {
-                        someField
+            extend type ${SomeNodeType} @authorization(
+                filter: [
+                    {
+                        operations: [READ]
+                        where: { node: { something: "$jwt.jwtAllowedNamesExample" }, jwt: { roles_INCLUDES: "admin" } }
                     }
-                    ... on MyOtherInterface {
-                        something
-                        ... on ${SomeNodeType} {
-                            somethingElse
+                ]
+            ) 
+            extend type ${MyImplementationType} @authorization(validate: [{ operations: [READ], where: { jwt: { groups_INCLUDES: "a" } } }])
+            `;
+            const neoGraphql = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+                experimental: true,
+            });
+            schema = await neoGraphql.getSchema();
+        });
+        test("should return authorized results on top-level simple query on interface target to a relationship", async () => {
+            const query = `
+                query {
+                    myInterfaces {
+                        id
+                        ... on ${MyOtherImplementationType} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType} {
+                                somethingElse
+                            }
                         }
                     }
                 }
-            }
-        `;
+            `;
 
-        const token = createBearerToken(secret, {});
-        const queryResult = await graphqlQuery(query, token);
-        expect(queryResult.errors).toHaveLength(1);
-        expect(queryResult.errors?.[0]).toHaveProperty("message", 'Cannot query field "myInterfaces" on type "Query".');
+            const token = createBearerToken(secret, {
+                roles: ["admin"],
+                groups: ["a"],
+                jwtAllowedNamesExample: "somenode",
+            });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data).toEqual({
+                myInterfaces: expect.toIncludeSameMembers([
+                    {
+                        id: "1",
+                        something: "somenode",
+                        somethingElse: "test",
+                    },
+                    {
+                        id: "3",
+                    },
+                    {
+                        id: "4",
+                        someField: "bla",
+                    },
+                ]),
+            });
+        });
+
+        test("should throw forbidden if jwt incorrect on top-level simple query on interface target to a relationship", async () => {
+            const query = `
+                query {
+                    myInterfaces {
+                        id
+                        ... on ${MyOtherImplementationType} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType} {
+                                somethingElse
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, { jwtAllowedNamesExample: "somenode" });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors?.[0]?.message).toBe("Forbidden");
+        });
+
+        test("should return authorization filtered results if jwt incorrect on top-level simple query on simple interface", async () => {
+            const query = `
+                query {
+                    myOtherInterfaces {
+                        id
+                        ... on ${SomeNodeType} {
+                            id
+                            other {
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, {});
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data).toEqual({
+                myOtherInterfaces: [],
+            });
+        });
+
+        test("should return all results if jwt correct on top-level simple query on simple interface", async () => {
+            const query = `
+                query {
+                    myOtherInterfaces {
+                        id
+                        ... on ${SomeNodeType} {
+                            id
+                            other {
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, { roles: ["admin"], jwtAllowedNamesExample: "somenode" });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data).toEqual({
+                myOtherInterfaces: expect.toIncludeSameMembers([
+                    {
+                        id: "1",
+                        other: [
+                            {
+                                id: "2",
+                            },
+                        ],
+                    },
+                ]),
+            });
+        });
+
+        test("should combine filters with authorization filters", async () => {
+            const neoGraphql = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+                experimental: true,
+            });
+            schema = await neoGraphql.getSchema();
+
+            const query = `
+                query {
+                    myInterfaces(where: { _on: { ${SomeNodeType}: {somethingElse_NOT: "test"}, ${MyOtherImplementationType}: {someField: "bla"} } }) {
+                        id
+                        ... on ${MyOtherImplementationType} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType} {
+                                somethingElse
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, { roles: ["admin"], jwtAllowedNamesExample: "somenode" });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data).toEqual({
+                myInterfaces: [
+                    {
+                        id: "4",
+                        someField: "bla",
+                    },
+                ],
+            });
+        });
+    });
+
+    describe("add schema configuration", () => {
+        beforeAll(async () => {
+            typeDefs = typeDefs + `extend interface MyInterface @query(read: false)`;
+            const neoGraphql = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+                experimental: true,
+            });
+            schema = await neoGraphql.getSchema();
+        });
+        test("should throw error on top-level simple query on interface target to a relationship", async () => {
+            const query = `
+                query {
+                    myInterfaces {
+                        id
+                        ... on ${MyOtherImplementationType} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType} {
+                                somethingElse
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, {});
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toHaveLength(1);
+            expect(queryResult.errors?.[0]).toHaveProperty(
+                "message",
+                'Cannot query field "myInterfaces" on type "Query".'
+            );
+        });
     });
 });

@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import type { ExecuteResult } from "../../utils/execute";
-import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import type {
     EventMeta,
     Neo4jGraphQLSubscriptionsEngine,
@@ -28,7 +27,8 @@ import type {
     RelationshipSubscriptionMetaTypenameParameters,
     SubscriptionsEvent,
 } from "../../types";
-import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import type { ExecuteResult } from "../../utils/execute";
+import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
 
 export function publishEventsToSubscriptionMechanism(
     executeResult: ExecuteResult,
@@ -200,7 +200,7 @@ function getTypenamesFromLabels({
     return schemaModel.getEntitiesByLabels(labels).map((entity) => entity.name);
 }
 
-function serializeProperties(properties: Record<string, any> | undefined): Record<string, any> | undefined {
+export function serializeProperties(properties: Record<string, any> | undefined): Record<string, any> | undefined {
     if (!properties) {
         return undefined;
     }

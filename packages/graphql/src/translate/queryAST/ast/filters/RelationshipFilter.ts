@@ -27,6 +27,7 @@ import { Memoize } from "typescript-memoize";
 import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
@@ -72,10 +73,8 @@ export class RelationshipFilter extends Filter {
 
     @Memoize()
     protected getNestedContext(context: QueryASTContext): QueryASTContext {
-        const relatedEntity = this.relationship.target as any;
-        const target = new Cypher.Node({
-            labels: relatedEntity.labels,
-        });
+        const relatedEntity = this.relationship.target;
+        const target = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
         });
@@ -135,10 +134,8 @@ export class RelationshipFilter extends Filter {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         // NOTE: not using getNestedContext because this should not be memoized in ALL operations
-        const relatedEntity = this.relationship.target as any;
-        const target = new Cypher.Node({
-            labels: relatedEntity.labels,
-        });
+        const relatedEntity = this.relationship.target;
+        const target = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
         });

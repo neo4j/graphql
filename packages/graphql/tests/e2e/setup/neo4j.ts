@@ -67,6 +67,14 @@ class Neo4j {
             }
         }
 
+        try {
+            await this.driver.executeQuery(
+                `ALTER DATABASE ${this.getIntegrationDatabaseName()} SET OPTION txLogEnrichment "FULL"`
+            );
+        } catch (err: any) {
+            //Nothing
+        }
+
         return this.driver;
     }
 

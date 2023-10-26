@@ -360,10 +360,10 @@ export class ReadOperation extends Operation {
         clause.orderBy(...orderByFields);
 
         if (pagination?.skip) {
-            clause.skip(pagination.skip as any);
+            clause.skip(pagination.skip);
         }
         if (pagination?.limit) {
-            clause.limit(pagination.limit as any);
+            clause.limit(pagination.limit);
         }
     }
 }
