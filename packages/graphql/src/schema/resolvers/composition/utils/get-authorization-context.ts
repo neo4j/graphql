@@ -23,10 +23,10 @@ import type { Neo4jGraphQLAuthorization } from "../../../../classes/authorizatio
 import type { AuthorizationContext } from "../../../../types";
 import type { Neo4jGraphQLContext } from "../../../../types/neo4j-graphql-context";
 import type { Neo4jGraphQLSubscriptionsConnectionParams } from "../../../../types/neo4j-graphql-subscriptions-context";
-import { DEBUG_MIDDLEWARE } from "../../../../constants";
+import { DEBUG_AUTH } from "../../../../constants";
 import { debugObject } from "../../../../debug/debug-object";
 
-const debug = Debug(DEBUG_MIDDLEWARE);
+const debug = Debug(DEBUG_AUTH);
 
 export async function getAuthorizationContext(
     context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams,

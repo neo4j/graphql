@@ -24,7 +24,7 @@ import type { Node, Relationship } from "../../../classes";
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../../classes/Executor";
-import { DEBUG_MIDDLEWARE } from "../../../constants";
+import { DEBUG_GRAPHQL } from "../../../constants";
 import type { AuthorizationContext, ContextFeatures, FulltextContext } from "../../../types";
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Neo4jGraphQLAuthorization } from "../../../classes/authorization/Neo4jGraphQLAuthorization";
@@ -33,7 +33,7 @@ import { getAuthorizationContext } from "./utils/get-authorization-context";
 import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
 import { debugObject } from "../../../debug/debug-object";
 
-const debug = Debug(DEBUG_MIDDLEWARE);
+const debug = Debug(DEBUG_GRAPHQL);
 
 export type WrapResolverArguments = {
     driver?: Driver;

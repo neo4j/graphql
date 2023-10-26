@@ -24,11 +24,11 @@ import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQL
 import type { AuthorizationContext, Neo4jGraphQLSubscriptionsEngine } from "../../../types";
 import type { Neo4jGraphQLSubscriptionsContext } from "../../../types/neo4j-graphql-subscriptions-context";
 import { getAuthorizationContext } from "./utils/get-authorization-context";
-import { DEBUG_MIDDLEWARE } from "../../../constants";
+import { DEBUG_GRAPHQL } from "../../../constants";
 import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
 import { debugObject } from "../../../debug/debug-object";
 
-const debug = Debug(DEBUG_MIDDLEWARE);
+const debug = Debug(DEBUG_GRAPHQL);
 
 export type WrapSubscriptionArgs = {
     schemaModel: Neo4jGraphQLSchemaModel;
