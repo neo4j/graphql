@@ -136,7 +136,7 @@ function createNestedPredicateLegacy({
     return { predicate: logicalPredicate, preComputedSubqueries: subqueries };
 }
 
-export function acreateWherePredicateNew({
+export function createWherePredicate({
     targetElement,
     whereInput,
     context,

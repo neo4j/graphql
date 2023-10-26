@@ -20,7 +20,7 @@
 import type { GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import Cypher from "@neo4j/cypher-builder";
-import { acreateWherePredicateNew } from "./where/create-where-predicate";
+import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../types/authorization";
@@ -116,7 +116,7 @@ export function createMatchClause({
     if (where) {
         const entity = getEntityAdapterFromNode(node, context);
 
-        const { predicate: whereOp, preComputedSubqueries } = acreateWherePredicateNew({
+        const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
             targetElement: matchNode,
             whereInput: where,
             context,
