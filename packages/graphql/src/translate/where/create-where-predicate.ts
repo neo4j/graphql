@@ -30,14 +30,10 @@ import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { FilterFactory } from "../queryAST/factory/FilterFactory";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
 import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
-import Debug from "debug";
-import { DEBUG_TRANSLATE } from "../../constants";
-import type { QueryASTNode } from "../queryAST/ast/QueryASTNode";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
-const debug = Debug(DEBUG_TRANSLATE);
 
 /** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
-// Previous implementation TODO remove it after the new implementation support useExistsExpr, checkParameterExistence
+// TODO: Previous implementation of createPredicateWhere, remove it after the new implementation support useExistsExpr, checkParameterExistence
 export function createWherePredicateLegacy({
     targetElement,
     whereInput,
@@ -173,11 +169,6 @@ export function createWherePredicate({
     });
 
     const filters = filterFactory.createNodeFilters(entity, whereInput);
-
-    filters.forEach((p) => {
-        debug(print(p));
-    });
-
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
     const predicates = filters.map((f) => f.getPredicate(queryASTContext));
     const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
@@ -187,33 +178,4 @@ export function createWherePredicate({
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
     };
-}
-
-// debug helper remove it
-function print(treeNode: QueryASTNode) {
-    const resultLines = getTreeLines(treeNode);
-    return resultLines.join("\n");
-}
-
-function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
-    const nodeName = treeNode.print();
-    const resultLines: string[] = [];
-
-    if (depth === 0) {
-        resultLines.push(`${nodeName}`);
-    } else if (depth === 1) {
-        resultLines.push(`|${"────".repeat(depth)} ${nodeName}`);
-    } else {
-        resultLines.push(`|${"    ".repeat(depth - 1)} |──── ${nodeName}`);
-    }
-
-    const children = treeNode.getChildren();
-    if (children.length > 0) {
-        children.forEach((curr) => {
-            const childLines = getTreeLines(curr, depth + 1);
-            resultLines.push(...childLines);
-        });
-    }
-
-    return resultLines;
 }

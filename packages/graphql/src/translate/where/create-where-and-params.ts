@@ -25,7 +25,7 @@ import { compileCypherIfExists } from "../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 
-// TODO: Remove this method and replace for directly using createWherePredicateLegacy
+// TODO: Remove this method and replace for directly using createWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
 export default function createWhereAndParams({
     whereInput,
