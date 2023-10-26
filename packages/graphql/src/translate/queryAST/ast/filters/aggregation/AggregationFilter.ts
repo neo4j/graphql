@@ -26,6 +26,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { hasTarget } from "../../../utils/context-has-target";
+import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
 
 export class AggregationFilter extends Filter {
     private relationship: RelationshipAdapter;
@@ -50,10 +51,8 @@ export class AggregationFilter extends Filter {
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         this.subqueryReturnVariable = new Cypher.Variable();
-        const relatedEntity = this.relationship.target as any;
-        const relatedNode = new Cypher.Node({
-            labels: relatedEntity.labels,
-        });
+        const relatedEntity = this.relationship.target;
+        const relatedNode = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
 
         const relationshipTarget = new Cypher.Relationship({
             type: this.relationship.type,
