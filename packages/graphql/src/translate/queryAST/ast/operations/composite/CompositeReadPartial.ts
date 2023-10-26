@@ -42,7 +42,7 @@ export class CompositeReadPartial extends ReadOperation {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(this.target);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(parentNode)
@@ -83,7 +83,7 @@ export class CompositeReadPartial extends ReadOperation {
 
     // dupe from transpileNestedCompositeRelationship
     private transpileTopLevelCompositeEntity({ context }: OperationTranspileOptions): OperationTranspileResult {
-        const targetNode = createNodeFromEntity(this.target);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const nestedContext = new QueryASTContext({
             target: targetNode,
             env: context.env,
