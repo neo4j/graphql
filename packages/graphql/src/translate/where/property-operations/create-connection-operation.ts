@@ -23,7 +23,7 @@ import type { Node, Relationship } from "../../../classes";
 import type { WhereOperator } from "../types";
 // Recursive function
 
-import { createWherePredicate } from "../create-where-predicate";
+import { createWherePredicateLegacy } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationPredicate } from "./create-relationship-operation";
@@ -162,7 +162,7 @@ export function createConnectionWherePropertyOperation({
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const { predicate: result, preComputedSubqueries } = createWherePredicate({
+            const { predicate: result, preComputedSubqueries } = createWherePredicateLegacy({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
@@ -191,7 +191,7 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const { predicate: result, preComputedSubqueries } = createWherePredicate({
+            const { predicate: result, preComputedSubqueries } = createWherePredicateLegacy({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
                 context,

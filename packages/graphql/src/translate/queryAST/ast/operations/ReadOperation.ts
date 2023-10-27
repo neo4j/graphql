@@ -237,7 +237,6 @@ export class ReadOperation extends Operation {
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
         const ret: Cypher.Return = this.getReturnStatement(context, context.returnVariable);
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
-
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
@@ -274,7 +273,6 @@ export class ReadOperation extends Operation {
             : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
         let clause: Cypher.Clause;
-
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
         if (isCreateSelection) {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
