@@ -21,7 +21,7 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("Top-level Interface query sort", () => {
+describe("Top-level Interface query pagination (sort and limit)", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
