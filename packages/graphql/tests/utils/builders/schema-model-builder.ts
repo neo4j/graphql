@@ -17,14 +17,18 @@
  * limitations under the License.
  */
 
-import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
-import type { Node } from "../types";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import type { DocumentNode } from "graphql";
+import type { Neo4jGraphQLSchemaModel } from "../../../src/schema-model/Neo4jGraphQLSchemaModel";
+import { generateModel } from "../../../src/schema-model/generate-model";
 
-export function getEntityAdapterFromNode(node: Node, context: Neo4jGraphQLTranslationContext): EntityAdapter {
-    const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!entity) {
-        throw new Error(`Could not find entity for node ${node.name}`);
+export class SchemaModelBuilder {
+    private schemaModel: Neo4jGraphQLSchemaModel;
+
+    constructor(typeDefs: DocumentNode) {
+        this.schemaModel = generateModel(typeDefs);
     }
-    return entity;
+
+    public instance(): Neo4jGraphQLSchemaModel {
+        return this.schemaModel;
+    }
 }

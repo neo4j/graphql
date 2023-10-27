@@ -21,10 +21,33 @@ import createWhereAndParams from "./create-where-and-params";
 import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import type { Node } from "../../../src/classes";
+import { SchemaModelBuilder } from "../../../tests/utils/builders/schema-model-builder";
+import { gql } from "graphql-tag";
 
 describe("createWhereAndParams", () => {
+    let context: Neo4jGraphQLTranslationContext;
+    let node: Node;
+
     test("should be a function", () => {
         expect(createWhereAndParams).toBeInstanceOf(Function);
+    });
+
+    beforeAll(() => {
+        node = new NodeBuilder({
+            name: "Movie",
+            primitiveFields: [],
+            isGlobalNode: true,
+            globalIdField: "title",
+        }).instance();
+
+        const typeDefs = gql`
+            type Movie {
+                title: String! @relayId
+            }
+        `;
+        const schemaModel = new SchemaModelBuilder(typeDefs).instance();
+        context = new ContextBuilder({ schemaModel }).instance();
     });
 
     test("should return the correct clause with 1 param", () => {
@@ -33,10 +56,6 @@ describe("createWhereAndParams", () => {
         };
 
         const varName = "this";
-
-        const node = new NodeBuilder().instance();
-
-        const context = new ContextBuilder({}).instance();
 
         const result = createWhereAndParams({ whereInput, varName, node, context });
 
@@ -48,13 +67,6 @@ describe("createWhereAndParams", () => {
     test("should return a clause with the correct idField when using the `id` where argument on a global node", () => {
         const varName = "this";
 
-        const node = new NodeBuilder({
-            name: "Movie",
-            primitiveFields: [],
-            isGlobalNode: true,
-            globalIdField: "title",
-        }).instance();
-
         const whereInput = {
             id: node.toGlobalId("some title"),
         };
@@ -63,7 +75,7 @@ describe("createWhereAndParams", () => {
             whereInput,
             varName,
             node,
-            context: {} as Neo4jGraphQLTranslationContext,
+            context,
         });
 
         expect(result[0]).toBe(`WHERE this.title = $this_param0`);
