@@ -29,13 +29,6 @@ describe("Interfaces", () => {
                 id: ID
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie)
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
             }
 
             type Movie implements MovieNode {
@@ -392,13 +385,6 @@ describe("Interfaces", () => {
                 id: ID
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie)
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
             }
 
             type Movie implements MovieNode {
