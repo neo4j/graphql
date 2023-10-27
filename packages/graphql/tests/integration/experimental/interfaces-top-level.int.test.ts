@@ -25,7 +25,6 @@ import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { cleanNodes } from "../../utils/clean-nodes";
-import gql from "graphql-tag";
 
 describe("Top-level interface query fields", () => {
     const secret = "the-secret";
