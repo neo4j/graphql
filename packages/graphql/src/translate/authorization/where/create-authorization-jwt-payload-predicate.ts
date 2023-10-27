@@ -62,6 +62,9 @@ export function createJwtPayloadWherePredicate({
     return Cypher.and(...predicates);
 }
 
+/**
+ * @deprecated
+ **/
 function createNestedPredicateLegacy({
     key,
     value,
