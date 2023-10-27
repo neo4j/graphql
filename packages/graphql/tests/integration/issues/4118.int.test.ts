@@ -22,17 +22,24 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { graphql } from "graphql";
+import { UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/4118", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+
+    const User = new UniqueType("User");
+    const Tenant = new UniqueType("Tenant");
+    const Settings = new UniqueType("Settings");
+    const OpeningDay = new UniqueType("OpeningDay");
+    const LOL = new UniqueType("LOL");
 
     const typeDefs = gql`
         type JWT @jwt {
             id: String
             roles: [String]
         }
-        type User
+        type ${User.name}
             @authorization(
                 validate: [
                     { where: { node: { userId: "$jwt.id" } }, operations: [READ] }
@@ -40,10 +47,10 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 ]
             ) {
             userId: String! @unique
-            adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT)
+            adminAccess: [${Tenant.name}!]! @relationship(type: "ADMIN_IN", direction: OUT)
         }
 
-        type Tenant
+        type ${Tenant.name}
             @authorization(
                 validate: [
                     { where: { node: { admins: { userId: "$jwt.id" } } } }
@@ -51,11 +58,11 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 ]
             ) {
             id: ID! @id
-            settings: Settings! @relationship(type: "HAS_SETTINGS", direction: OUT)
-            admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN)
+            settings: ${Settings.name}! @relationship(type: "HAS_SETTINGS", direction: OUT)
+            admins: [${User.name}!]! @relationship(type: "ADMIN_IN", direction: IN)
         }
 
-        type Settings
+        type ${Settings.name}
             @authorization(
                 validate: [
                     { where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }
@@ -63,30 +70,30 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
                 ]
             ) {
             id: ID! @id
-            tenant: Tenant! @relationship(type: "HAS_SETTINGS", direction: IN)
-            openingDays: [OpeningDay!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
+            tenant: ${Tenant.name}! @relationship(type: "HAS_SETTINGS", direction: IN)
+            openingDays: [${OpeningDay.name}!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
             name: String
         }
 
-        type OpeningDay
+        type ${OpeningDay.name}
             @authorization(
                 validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
             ) {
-            settings: Settings @relationship(type: "VALID_OPENING_DAYS", direction: IN)
+            settings: ${Settings.name} @relationship(type: "VALID_OPENING_DAYS", direction: IN)
             id: ID! @id
             name: String
         }
 
-        type LOL @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) {
-            host: Tenant! @relationship(type: "HOSTED_BY", direction: OUT)
-            openingDays: [OpeningDay!]! @relationship(type: "HAS_OPENING_DAY", direction: OUT)
+        type ${LOL.name} @authorization(validate: [{ where: { node: { host: { admins: { userId: "$jwt.id" } } } } }]) {
+            host: ${Tenant.name}! @relationship(type: "HOSTED_BY", direction: OUT)
+            openingDays: [${OpeningDay.name}!]! @relationship(type: "HAS_OPENING_DAY", direction: OUT)
         }
     `;
 
     const ADD_TENANT = `
-        mutation addTenant($input: [TenantCreateInput!]!) {
-            createTenants(input: $input) {
-                tenants {
+        mutation addTenant($input: [${Tenant.name}CreateInput!]!) {
+            ${Tenant.operations.create}(input: $input) {
+                ${Tenant.plural} {
                     id
                     admins {
                         userId
@@ -100,9 +107,9 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
     `;
 
     const ADD_OPENING_DAYS = `
-        mutation addOpeningDays($input: [OpeningDayCreateInput!]!) {
-            createOpeningDays(input: $input) {
-                openingDays {
+        mutation addOpeningDays($input: [${OpeningDay.name}CreateInput!]!) {
+            ${OpeningDay.operations.create}(input: $input) {
+                ${OpeningDay.plural} {
                     id
                 }
             }
@@ -175,13 +182,13 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         });
         expect(addTenantResponse).toMatchObject({
             data: {
-                createTenants: {
-                    tenants: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
+                [Tenant.operations.create]: {
+                    [Tenant.plural]: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
                 },
             },
         });
 
-        const settingsId = (addTenantResponse.data as any).createTenants.tenants[0].settings.id;
+        const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
         const addOpeningDaysResponse = await graphql({
             schema,
             source: ADD_OPENING_DAYS,
@@ -189,16 +196,17 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
         });
         expect(addOpeningDaysResponse).toMatchObject({
-            data: { createOpeningDays: { openingDays: [{ id: expect.any(String) }] } },
+            data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
         });
-        const openingDayId = (addOpeningDaysResponse.data as any).createOpeningDays.openingDays[0].id;
+        const openingDayId = (addOpeningDaysResponse.data as any)[OpeningDay.operations.create][OpeningDay.plural][0]
+            .id;
 
         const addLolResponse = await graphql({
             schema,
             source: `
-            mutation addLols($input: [LOLCreateInput!]!) {
-                createLols(input: $input) {
-                    lols {
+            mutation addLols($input: [${LOL.name}CreateInput!]!) {
+                ${LOL.operations.create}(input: $input) {
+                    ${LOL.plural} {
                         host {
                             id
                         }
@@ -252,13 +260,13 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
         });
         expect(addTenantResponse).toMatchObject({
             data: {
-                createTenants: {
-                    tenants: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
+                [Tenant.operations.create]: {
+                    [Tenant.plural]: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
                 },
             },
         });
 
-        const settingsId = (addTenantResponse.data as any).createTenants.tenants[0].settings.id;
+        const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
         const addOpeningDaysResponse = await graphql({
             schema,
             source: ADD_OPENING_DAYS,
@@ -266,16 +274,17 @@ describe("https://github.com/neo4j/graphql/issues/4118", () => {
             contextValue: neo4j.getContextValues({ jwt: { id: myUserId, roles: ["overlord"] } }),
         });
         expect(addOpeningDaysResponse).toMatchObject({
-            data: { createOpeningDays: { openingDays: [{ id: expect.any(String) }] } },
+            data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
         });
-        const openingDayId = (addOpeningDaysResponse.data as any).createOpeningDays.openingDays[0].id;
+        const openingDayId = (addOpeningDaysResponse.data as any)[OpeningDay.operations.create][OpeningDay.plural][0]
+            .id;
 
         const addLolResponse = await graphql({
             schema,
             source: `
-            mutation addLols($input: [LOLCreateInput!]!) {
-                createLols(input: $input) {
-                    lols {
+            mutation addLols($input: [${LOL.name}CreateInput!]!) {
+                ${LOL.operations.create}(input: $input) {
+                    ${LOL.plural} {
                         host {
                             id
                         }

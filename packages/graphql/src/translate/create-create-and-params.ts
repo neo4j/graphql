@@ -157,7 +157,7 @@ function createCreateAndParams({
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
                             topLevelNodeVariable,
-                            idx: idx + index,
+                            idx: idx + index + 1,
                             refNodeIndex: refNodeIndex,
                         });
                         res.creates.push(nestedCreate);
