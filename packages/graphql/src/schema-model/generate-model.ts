@@ -46,7 +46,7 @@ import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribut
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
-import { PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT } from "../constants";
+import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "../constants";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -432,7 +432,7 @@ function generateConcreteEntity(
 
     // schema configuration directives are propagated onto concrete entities
     const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
-        PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT.includes(x.name.value)
+        SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES.includes(x.name.value)
     );
     const annotations = createEntityAnnotations((definition.directives || []).concat(schemaDirectives || []));
 

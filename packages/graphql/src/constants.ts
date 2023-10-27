@@ -108,6 +108,7 @@ export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";
 export const DBMS_COMPONENTS_QUERY =
     "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
 
+export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = ["filterable", "selectable", "settable"];
 export const FIELD_DIRECTIVES = [
     "alias",
     "authentication",
@@ -116,35 +117,32 @@ export const FIELD_DIRECTIVES = [
     "customResolver",
     "cypher",
     "default",
-    "filterable",
     "id",
     "jwtClaim",
     "populatedBy",
     "relationship",
     "relayId",
-    "selectable",
-    "settable",
     "subscriptionsAuthorization",
     "timestamp",
     "unique",
+    ...SCHEMA_CONFIGURATION_FIELD_DIRECTIVES,
 ] as const;
 
 export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
 
+export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = ["query", "mutation", "subscription"];
 export const OBJECT_DIRECTIVES = [
     "authentication",
     "authorization",
-    "deprecated",
-    "fulltext",
-    "jwt",
-    "mutation",
-    "node",
-    "plural",
-    "query",
-    "limit",
-    "shareable",
-    "subscription",
     "subscriptionsAuthorization",
+    "plural",
+    "limit",
+    "fulltext",
+    "node",
+    "jwt",
+    "shareable",
+    "deprecated",
+    ...SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES,
 ] as const;
 
 export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
@@ -160,5 +158,3 @@ export type UnionDirective = (typeof UNION_DIRECTIVES)[number];
 export const DEPRECATED = "deprecated";
 
 export const PROPAGATED_DIRECTIVES = ["shareable", DEPRECATED] as const;
-
-export const PROPAGATED_DIRECTIVES_FROM_SCHEMA_TO_OBJECT = ["query", "mutation", "subscription"];
