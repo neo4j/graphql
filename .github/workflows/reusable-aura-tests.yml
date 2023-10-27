@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.BRANCH || github.ref }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn
@@ -64,7 +64,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: yarn

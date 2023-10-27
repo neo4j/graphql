@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { DateTime, Integer } from "neo4j-driver";
+
 type CDCEventState = {
     properties: Record<string, unknown>;
     labels: string[];
@@ -56,9 +58,17 @@ export type CDCNodeEvent = {
     labels: string[];
 };
 
+export type CDCMetadata = {
+    txStartTime: DateTime;
+    // Other metadata is ignored here
+};
+
 export type CDCEvent = CDCNodeEvent | CDCRelationshipEvent;
 
 export type CDCQueryResponse = {
     id: string;
     event: CDCEvent;
+    metadata: CDCMetadata;
+    txId: Integer;
+    seq: Integer;
 };

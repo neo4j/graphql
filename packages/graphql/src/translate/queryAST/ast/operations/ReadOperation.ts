@@ -103,7 +103,7 @@ export class ReadOperation extends Operation {
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
+        const targetNode = createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)
@@ -362,10 +362,10 @@ export class ReadOperation extends Operation {
         clause.orderBy(...orderByFields);
 
         if (pagination?.skip) {
-            clause.skip(pagination.skip as any);
+            clause.skip(pagination.skip);
         }
         if (pagination?.limit) {
-            clause.limit(pagination.limit as any);
+            clause.limit(pagination.limit);
         }
     }
 }
