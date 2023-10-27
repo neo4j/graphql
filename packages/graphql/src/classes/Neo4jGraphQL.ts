@@ -361,6 +361,7 @@ class Neo4jGraphQL {
                     document: initialDocument,
                     features: this.features,
                     additionalDefinitions: { enums, interfaces, unions, objects },
+                    experimental: this.experimental,
                 });
             }
 
@@ -424,6 +425,7 @@ class Neo4jGraphQL {
                     unions,
                     objects,
                 },
+                experimental: this.experimental,
             });
         }
 

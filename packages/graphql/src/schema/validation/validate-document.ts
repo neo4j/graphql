@@ -178,6 +178,7 @@ function runValidationRulesOnFilteredDocument({
     document,
     extra,
     features,
+    experimental,
 }: {
     schema: GraphQLSchema;
     document: DocumentNode;
@@ -188,13 +189,14 @@ function runValidationRulesOnFilteredDocument({
         objects?: ObjectTypeDefinitionNode[];
     };
     features: Neo4jFeaturesSettings | undefined;
+    experimental: boolean;
 }) {
     const errors = validateSDL(
         document,
         [
             ...specifiedSDLRules,
             directiveIsValid(extra, features?.populatedBy?.callbacks),
-            ValidDirectiveAtFieldLocation,
+            ValidDirectiveAtFieldLocation(experimental),
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,
@@ -220,6 +222,7 @@ function validateDocument({
     document,
     features,
     additionalDefinitions,
+    experimental,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
@@ -231,6 +234,7 @@ function validateDocument({
         unions?: UnionTypeDefinitionNode[];
         objects?: ObjectTypeDefinitionNode[];
     };
+    experimental: boolean;
 }): void {
     const filteredDocument = filterDocument(document);
     const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
@@ -259,6 +263,7 @@ function validateDocument({
         document: filteredDocument,
         extra,
         features,
+        experimental,
     });
 
     const schema = extendSchema(schemaToExtend, filteredDocument);
