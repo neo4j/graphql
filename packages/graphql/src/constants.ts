@@ -26,9 +26,9 @@ export const REQUIRED_APOC_FUNCTIONS = ["apoc.util.validatePredicate", "apoc.dat
 export const AUTHORIZATION_UNAUTHENTICATED = "Unauthenticated";
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
-export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
-export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
+export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execution`;
 export const DEBUG_GENERATE = `${DEBUG_PREFIX}:generate`;
+export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_TRANSLATE = `${DEBUG_PREFIX}:translate`;
 export const RELATIONSHIP_REQUIREMENT_PREFIX = "@neo4j/graphql/RELATIONSHIP-REQUIRED";
 
