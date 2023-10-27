@@ -4272,6 +4272,112 @@ describe("validation 2.0", () => {
         });
     });
 
+    describe("Valid directives on fields of interface types", () => {
+        test("@cypher can't be used on the field of an interface type", () => {
+            const doc = gql`
+                interface Person {
+                    name: String
+                        @cypher(
+                            statement: """
+                            RETURN "Keanu" as x
+                            """
+                            columnName: "x"
+                        )
+                }
+
+                type Actor implements Person {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @cypher is not supported on fields of the Person type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher"]);
+        });
+
+        test("@relationship ok to be used on the field of an interface type", () => {
+            const doc = gql`
+                interface Person {
+                    actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
+                }
+
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]!
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@private ok to be used on the field of an interface type", () => {
+            const doc = gql`
+                interface Person {
+                    name: String @private
+                    id: ID
+                }
+
+                type Actor implements Person {
+                    name: String
+                    id: ID
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@settable ok to be used on the field of an interface type", () => {
+            const doc = gql`
+                interface Person {
+                    name: String @settable(onCreate: false)
+                }
+
+                type Actor implements Person {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+    });
     describe("JWT directives", () => {
         describe("invalid", () => {
             test("@jwt cannot combined", () => {
