@@ -6,7 +6,7 @@ on:
       - dev
       - master
     paths:
-      - "packages/graphql/**"
+      - "packages/graphql/tests/tck/**"
 
 jobs:
   performance-tests:
@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
 

@@ -19,7 +19,6 @@
 
 import Debug from "debug";
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
-import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Node, Relationship } from "../../../classes";
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
@@ -31,6 +30,8 @@ import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQL
 import type { Neo4jGraphQLAuthorization } from "../../../classes/authorization/Neo4jGraphQLAuthorization";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import { getAuthorizationContext } from "./utils/get-authorization-context";
+import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
+import { debugObject } from "../../../debug/debug-object";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -81,14 +82,8 @@ export const wrapQueryAndMutation =
     }: WrapResolverArguments) =>
     (next: GraphQLFieldResolver<any, Neo4jGraphQLComposedContext>) =>
     async (root, args, context: Neo4jGraphQLContext, info: GraphQLResolveInfo) => {
-        if (debug.enabled) {
-            const query = print(info.operation);
-
-            debug(
-                "%s",
-                `Incoming GraphQL:\nQuery:\n${query}\nVariables:\n${JSON.stringify(info.variableValues, null, 2)}`
-            );
-        }
+        debugGraphQLResolveInfo(debug, info);
+        debugObject(debug, "incoming context", context);
 
         if (!context?.executionContext) {
             if (!driver) {

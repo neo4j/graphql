@@ -45,6 +45,7 @@ import {
 import type { CypherQueryOptions } from "../types";
 import type { GraphQLResolveInfo } from "graphql";
 import { print } from "graphql";
+import { debugCypherAndParams } from "../debug/debug-cypher-and-params";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -288,10 +289,7 @@ export class Executor {
     ): Result {
         const queryToRun = this.generateQuery(query);
 
-        debug(
-            "%s",
-            `About to execute Cypher:\nCypher:\n${queryToRun}\nParams:\n${JSON.stringify(parameters, null, 2)}`
-        );
+        debugCypherAndParams(debug, queryToRun, parameters);
 
         return transaction.run(queryToRun, parameters);
     }

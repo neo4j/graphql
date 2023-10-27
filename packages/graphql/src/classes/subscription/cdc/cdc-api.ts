@@ -18,30 +18,36 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Driver } from "neo4j-driver";
-import type { CDCEvent, CDCQueryResponse } from "./cdc-types";
+import type { Driver, QueryConfig } from "neo4j-driver";
 import { filterTruthy } from "../../../utils/utils";
+import type { CDCQueryResponse } from "./cdc-types";
 
 export class CDCApi {
     private driver: Driver;
-    private lastChangeId: string = "";
+    private cursor: string = "";
+    private queryConfig: QueryConfig | undefined;
 
-    constructor(driver: Driver) {
+    constructor(driver: Driver, queryConfig?: QueryConfig) {
         this.driver = driver;
+        this.queryConfig = queryConfig;
     }
 
-    public async queryEvents(): Promise<CDCEvent[]> {
-        if (!this.lastChangeId) {
-            this.lastChangeId = await this.fetchCurrentChangeId();
+    /** Queries events since last call to queryEvents */
+    public async queryEvents(): Promise<CDCQueryResponse[]> {
+        if (!this.cursor) {
+            this.cursor = await this.fetchCurrentChangeId();
         }
 
-        const lastChangeIdLiteral = new Cypher.Literal(this.lastChangeId);
-        const queryProcedure = CDCProcedures.query(lastChangeIdLiteral).yield("id", "event");
+        const cursorLiteral = new Cypher.Literal(this.cursor);
+        const queryProcedure = CDCProcedures.query(cursorLiteral);
 
         const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
-
         this.updateChangeIdWithLastEvent(events);
-        return events.map((query) => query.event);
+        return events;
+    }
+
+    public async updateCursor(): Promise<void> {
+        this.cursor = await this.fetchCurrentChangeId();
     }
 
     private async fetchCurrentChangeId(): Promise<string> {
@@ -59,14 +65,14 @@ export class CDCApi {
     private updateChangeIdWithLastEvent(events: CDCQueryResponse[]): void {
         const lastEvent = events[events.length - 1];
         if (lastEvent) {
-            this.lastChangeId = lastEvent.id;
+            this.cursor = lastEvent.id;
         }
     }
 
     private async runProcedure<T>(procedure: Cypher.Clause): Promise<T[]> {
         const { cypher, params } = procedure.build();
 
-        const result = await this.driver.executeQuery(cypher, params);
+        const result = await this.driver.executeQuery(cypher, params, this.queryConfig);
         return result.records.map((record) => {
             return record.toObject() as Record<string, any>;
         }) as T[];

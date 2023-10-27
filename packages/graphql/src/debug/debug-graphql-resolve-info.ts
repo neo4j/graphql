@@ -17,22 +17,20 @@
  * limitations under the License.
  */
 
-import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../../types";
+import type { Debugger } from "debug";
+import { print, type GraphQLResolveInfo } from "graphql";
 
-export class Neo4jGraphQLSubscriptionsDefaultEngine implements Neo4jGraphQLSubscriptionsEngine {
-    public events: EventEmitter = new EventEmitter();
-
-    public closed = false;
-
-    public publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
-        if (!this.closed) {
-            this.events.emit(eventMeta.event, eventMeta);
-        }
-    }
-
-    /** Stops event publishing */
-    public close(): void {
-        this.closed = true;
+/**
+ * Logs the GraphQL query and variable values from a GraphQLResolveInfo instance.
+ *
+ * @param debug A Debugger instance.
+ * @param info The GraphQLResolveInfo instance to be logged.
+ */
+export function debugGraphQLResolveInfo(debug: Debugger, info: GraphQLResolveInfo) {
+    if (debug.enabled) {
+        const query = print(info.operation);
+        debug("received graphql query");
+        debug(query);
+        debug("variable values: %O", "variable values:", info.variableValues);
     }
 }
