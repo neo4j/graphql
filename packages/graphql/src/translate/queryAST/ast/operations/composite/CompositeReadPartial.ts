@@ -18,13 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { hasTarget } from "../../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
 import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { hasTarget } from "../../../utils/context-has-target";
-import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 
 export class CompositeReadPartial extends ReadOperation {
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
@@ -62,8 +61,16 @@ export class CompositeReadPartial extends ReadOperation {
             // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
             matchClause.where(wherePredicate);
         }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
-        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
+        // const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+        // const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
+
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
+        // const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+        const sortSubqueries = this.sortFields
+            .flatMap((sq) => sq.getSubqueries(nestedContext))
+            .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
+
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(
