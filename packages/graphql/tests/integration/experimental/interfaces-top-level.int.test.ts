@@ -20,10 +20,11 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src";
-import { UniqueType } from "../utils/graphql-types";
-import { createBearerToken } from "../utils/create-bearer-token";
+import Neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src";
+import { UniqueType } from "../../utils/graphql-types";
+import { createBearerToken } from "../../utils/create-bearer-token";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("Top-level interface query fields", () => {
     const secret = "the-secret";
@@ -111,6 +112,9 @@ describe("Top-level interface query fields", () => {
     });
 
     afterAll(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodes(session, [SomeNodeType, OtherNodeType, MyImplementationType, MyOtherImplementationType]);
+        await session.close();
         await driver.close();
     });
 
@@ -697,6 +701,116 @@ describe("Top-level interface query fields", () => {
                     },
                 ],
             });
+        });
+    });
+
+    describe("add limit directive", () => {
+        beforeAll(async () => {
+            typeDefs = typeDefs + `extend interface MyInterface @limit(default: 1, max: 3) `;
+            const neoGraphql = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+                experimental: true,
+            });
+            schema = await neoGraphql.getSchema();
+        });
+
+        test("Limit from directive on Interface", async () => {
+            const query = /* GraphQL */ `
+                query {
+                    myInterfaces {
+                        id
+                        ... on ${MyOtherImplementationType.name} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType.name} {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, {
+                roles: ["admin"],
+                groups: ["a"],
+                jwtAllowedNamesExample: "somenode",
+            });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data?.myInterfaces).toHaveLength(1);
+        });
+
+        test("Max limit from directive on Interface overwrites the limit argument", async () => {
+            const query = /* GraphQL */ `
+                query {
+                    myInterfaces(options: { limit: 6 }) {
+                        id
+                        ... on ${MyOtherImplementationType.name} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType.name} {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, {
+                roles: ["admin"],
+                groups: ["a"],
+                jwtAllowedNamesExample: "somenode",
+            });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data?.myInterfaces).toHaveLength(3);
+        });
+
+        test("Limit argument overwrites default if lower than max", async () => {
+            const query = /* GraphQL */ `
+                query {
+                    myInterfaces(options: { limit: 2 }) {
+                        id
+                        ... on ${MyOtherImplementationType.name} {
+                            someField
+                        }
+                        ... on MyOtherInterface {
+                            something
+                            ... on ${SomeNodeType.name} {
+                                somethingElse
+                                other {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, {
+                roles: ["admin"],
+                groups: ["a"],
+                jwtAllowedNamesExample: "somenode",
+            });
+            const queryResult = await graphqlQuery(query, token);
+            expect(queryResult.errors).toBeUndefined();
+            expect(queryResult.data?.myInterfaces).toHaveLength(2);
         });
     });
 
