@@ -126,6 +126,184 @@ describe("list of lists warning", () => {
         expect(warn).toHaveBeenCalledOnce();
     });
 });
+describe("default max limit bypass warning", () => {
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warn.mockReset();
+    });
+
+    test("max limit on interface does not trigger warning if no limit on concrete", () => {
+        const doc = gql`
+            interface Production @limit(max: 10) {
+                title: String
+            }
+
+            type Movie implements Production {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    test("max limit on concrete should trigger warning if no limit on interface", () => {
+        const doc = gql`
+            interface Production {
+                title: String
+            }
+
+            type Movie implements Production @limit(max: 10) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+
+    test("max limit lower on interface than concrete does not trigger warning", () => {
+        const doc = gql`
+            interface Production @limit(max: 2) {
+                title: String
+            }
+
+            type Movie implements Production @limit(max: 10) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    test("Max limit higher on interface than concrete should trigger warning", () => {
+        const doc = gql`
+            interface Production @limit(max: 10) {
+                title: String
+            }
+
+            type Movie implements Production @limit(max: 2) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+
+    test("Max limit higher on interface than concrete should trigger warning - multiple implementing types", () => {
+        const doc = gql`
+            interface Production @limit(max: 10) {
+                title: String
+            }
+
+            type Movie implements Production {
+                title: String
+            }
+
+            type Series implements Production @limit(max: 2) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+
+    test("Max limit higher on interface than concrete should trigger warning - on both implementing types", () => {
+        const doc = gql`
+            interface Production @limit(max: 10) {
+                title: String
+            }
+
+            type Movie implements Production @limit(max: 6) {
+                title: String
+            }
+
+            type Series implements Production @limit(max: 2) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
+        );
+        expect(warn).toHaveBeenLastCalledWith(
+            "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
+        );
+        expect(warn).toHaveBeenCalledTimes(2);
+    });
+
+    test("Max limit on interface does not trigger warning if only default limit set on concrete", () => {
+        const doc = gql`
+            interface Production @limit(max: 10) {
+                title: String
+            }
+
+            type Movie implements Production @limit(default: 6) {
+                title: String
+            }
+
+            type Series implements Production @limit(default: 3) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+        });
+
+        expect(warn).not.toHaveBeenCalledOnce();
+    });
+});
 
 describe("validation 2.0", () => {
     describe("Directive Argument (existence)", () => {

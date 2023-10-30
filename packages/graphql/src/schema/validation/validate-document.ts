@@ -63,6 +63,7 @@ import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
+import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -207,6 +208,7 @@ function runValidationRulesOnFilteredDocument({
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
+            WarnIfAMaxLimitCanBeBypassedThroughInterface,
         ],
         schema
     );
