@@ -54,6 +54,7 @@ describe("validateDuplicateRelationshipFields", () => {
                 document: doc,
                 features: {},
                 additionalDefinitions,
+                experimental: false,
             })
         );
         expect(errors).toHaveLength(1);
@@ -83,7 +84,9 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
+        expect(() =>
+            validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
+        ).not.toThrow();
     });
 
     test("should not throw an error if multiple relationship fields in the same type have the same relationship type but have different directions.", () => {
@@ -95,6 +98,8 @@ describe("validateDuplicateRelationshipFields", () => {
             }
         `;
 
-        expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).not.toThrow();
+        expect(() =>
+            validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false })
+        ).not.toThrow();
     });
 });

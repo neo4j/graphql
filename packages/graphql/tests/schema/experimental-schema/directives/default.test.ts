@@ -26,8 +26,8 @@ describe("@default directive", () => {
     test("sets default values in schema", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                fromInterface: String! @default(value: "Interface default value")
-                toBeOverridden: String! @default(value: "Interface override value")
+                fromInterface: String!
+                toBeOverridden: String!
             }
 
             type User implements UserInterface {
@@ -37,7 +37,7 @@ describe("@default directive", () => {
                 numberOfFriends: Int! @default(value: 0)
                 rating: Float! @default(value: 0.0)
                 verifiedDate: DateTime! @default(value: "1970-01-01T00:00:00.000Z")
-                fromInterface: String!
+                fromInterface: String! @default(value: "Interface default value")
                 toBeOverridden: String! @default(value: "Overridden value")
                 location: Location! @default(value: HERE)
             }

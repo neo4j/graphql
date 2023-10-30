@@ -38,10 +38,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
             interface MyInterface {
-                id: ID! @id
+                id: ID! 
             }
             interface MyOtherInterface implements MyInterface {
-                id: ID! @id
+                id: ID!
                 something: String
             }
 
