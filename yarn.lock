@@ -3681,7 +3681,7 @@ __metadata:
     is-uuid: 1.0.2
     jest: 29.7.0
     jest-extended: 4.0.2
-    jose: ^4.13.1
+    jose: ^5.0.0
     jwks-rsa: 3.1.0
     koa: 2.14.2
     koa-jwt: 4.0.4
@@ -17355,17 +17355,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.13.1":
-  version: 4.14.6
-  resolution: "jose@npm:4.14.6"
-  checksum: eae81a234e7bf1446b1bd80722b3462b014e3835b155c3a7799c1c5043163a53a0dc28d347004151b031e6b7b863403aabf8814d9cc217ce21f8c2f3ebd4b335
-  languageName: node
-  linkType: hard
-
 "jose@npm:^4.14.6":
   version: 4.15.2
   resolution: "jose@npm:4.15.2"
   checksum: 8f0cab1eef31243abe14a935b2b330cd95f10f9b69808fd642088ae5000e50e566664934537d2c6413ab2f6b54acd8265a5033da05157aa1260c5f1d7e57fab0
+  languageName: node
+  linkType: hard
+
+"jose@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "jose@npm:5.0.1"
+  checksum: aee36762eda2838f7ca450d9a5bb00e3e609dd6c9c93a01c6cbd047b1019cb280062c3e42e831252754eb1591c9e615dbfd00d350f253c07b455e56f901b2a52
   languageName: node
   linkType: hard
 
