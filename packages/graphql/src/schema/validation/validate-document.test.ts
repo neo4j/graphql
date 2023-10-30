@@ -2422,6 +2422,28 @@ describe("validation 2.0", () => {
         });
 
         describe("@limit", () => {
+            test("@limit default must be > 0 on Interface", () => {
+                const doc = gql`
+                    interface Person @limit(default: -1) {
+                        name: String
+                    }
+                    type User implements Person {
+                        name: String
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@limit.default invalid value: -1. Must be greater than 0."
+                );
+                expect(errors[0]).toHaveProperty("path", ["Person", "@limit", "default"]);
+            });
+
             test("@limit default must be > 0", () => {
                 const doc = gql`
                     type User @limit(default: -1) {

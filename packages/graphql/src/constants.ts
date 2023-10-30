@@ -147,7 +147,7 @@ export const OBJECT_DIRECTIVES = [
 
 export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
 
-export const INTERFACE_DIRECTIVES = ["relationshipProperties", "query", "plural"] as const;
+export const INTERFACE_DIRECTIVES = ["relationshipProperties", "query", "plural", "limit"] as const;
 
 export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 

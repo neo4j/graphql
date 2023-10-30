@@ -74,6 +74,7 @@ export const invalidInterfaceCombinations: InvalidInterfaceCombinations = {
     relationshipProperties: [],
     query: [],
     plural: [],
+    limit: [],
 };
 
 type InvalidUnionCombinations = Record<UnionDirective, ReadonlyArray<UnionDirective>>;
