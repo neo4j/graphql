@@ -41,14 +41,6 @@ export class AuthorizationFilters extends Filter {
         this.whereFilters = whereFilters;
     }
 
-    public addValidationFilter(filter: AuthorizationRuleFilter) {
-        this.validationFilters.push(filter);
-    }
-
-    public addWhereFilter(filter: AuthorizationRuleFilter) {
-        this.whereFilters.push(filter);
-    }
-
     public getPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
         const validateInnerPredicate = Cypher.or(...this.validationFilters.map((f) => f.getPredicate(context)));
         const wherePredicate = Cypher.or(...this.whereFilters.map((f) => f.getPredicate(context)));

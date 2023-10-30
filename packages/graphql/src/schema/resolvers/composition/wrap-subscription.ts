@@ -18,11 +18,17 @@
  */
 
 import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
+import Debug from "debug";
 import type { Neo4jGraphQLAuthorization } from "../../../classes/authorization/Neo4jGraphQLAuthorization";
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { AuthorizationContext, Neo4jGraphQLSubscriptionsEngine } from "../../../types";
 import type { Neo4jGraphQLSubscriptionsContext } from "../../../types/neo4j-graphql-subscriptions-context";
 import { getAuthorizationContext } from "./utils/get-authorization-context";
+import { DEBUG_GRAPHQL } from "../../../constants";
+import { debugGraphQLResolveInfo } from "../../../debug/debug-graphql-resolve-info";
+import { debugObject } from "../../../debug/debug-object";
+
+const debug = Debug(DEBUG_GRAPHQL);
 
 export type WrapSubscriptionArgs = {
     schemaModel: Neo4jGraphQLSchemaModel;
@@ -41,6 +47,9 @@ export const wrapSubscription =
     (resolverArgs: WrapSubscriptionArgs) =>
     (next: GraphQLFieldResolver<any, Neo4jGraphQLComposedSubscriptionsContext>) =>
     async (root: any, args: any, context: Neo4jGraphQLSubscriptionsContext, info: GraphQLResolveInfo) => {
+        debugGraphQLResolveInfo(debug, info);
+        debugObject(debug, "incoming context", context);
+
         const subscriptionsEngine = resolverArgs.subscriptionsEngine;
         const schemaModel = resolverArgs.schemaModel;
         const authorization = resolverArgs.authorization;
