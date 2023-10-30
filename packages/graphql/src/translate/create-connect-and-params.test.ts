@@ -27,10 +27,17 @@ import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import type { RelationField } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
+import type { Node } from "../../src/classes";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { SchemaModelBuilder } from "../../tests/utils/builders/schema-model-builder";
+import { gql } from "graphql-tag";
 
 describe("createConnectAndParams", () => {
-    test("should return the correct connection", () => {
-        const node = new NodeBuilder({
+    let node: Node;
+    let context: Neo4jGraphQLTranslationContext;
+
+    beforeAll(() => {
+        node = new NodeBuilder({
             name: "Movie",
             enumFields: [],
             scalarFields: [],
@@ -87,18 +94,21 @@ describe("createConnectAndParams", () => {
             pointFields: [],
             objectFields: [],
         }).instance();
-
-        const context = new ContextBuilder({
+        const types = gql`
+            type Movie {
+                title: String!
+                similarMovies: [Movie!]! @relationship(type: "SIMILAR", direction: OUT)
+            }
+        `;
+        const schemaModel = new SchemaModelBuilder(types).instance();
+        context = new ContextBuilder({
             nodes: [node],
-            schemaModel: new Neo4jGraphQLSchemaModel({
-                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
-                compositeEntities: [],
-                operations: {},
-                annotations: [],
-            }),
+            schemaModel,
             neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
         }).instance();
+    });
 
+    test("should return the correct connection", () => {
         const result = createConnectAndParams({
             withVars: ["this"],
             value: [

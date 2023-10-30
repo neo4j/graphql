@@ -1,5 +1,25 @@
 # @neo4j/graphql
 
+## 4.4.0
+
+### Minor Changes
+
+-   [#4194](https://github.com/neo4j/graphql/pull/4194) [`39749a381`](https://github.com/neo4j/graphql/commit/39749a38104b49895d993cd2f9a8401c38894564) Thanks [@angrykoala](https://github.com/angrykoala)! - Beta support for Neo4j Change Data Capture based subscriptions using `Neo4jGraphQLSubscriptionsCDCEngine`
+
+### Patch Changes
+
+-   [#4211](https://github.com/neo4j/graphql/pull/4211) [`9324e6509`](https://github.com/neo4j/graphql/commit/9324e6509ed59825ee7c670923916d5a6f7e4c77) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix label mapping for filters where the target node contains dynamic labels.
+
+-   [#4195](https://github.com/neo4j/graphql/pull/4195) [`3bbcefa54`](https://github.com/neo4j/graphql/commit/3bbcefa54bc23d39c10875aa06667ac0bd2b0cf0) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4170 - authorization variable name clash
+
+-   [#4197](https://github.com/neo4j/graphql/pull/4197) [`1fd192632`](https://github.com/neo4j/graphql/commit/1fd1926320bf9355e77c045a3103bec26d9d95e6) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove warning about Federation support being experimental.
+
+-   [#4133](https://github.com/neo4j/graphql/pull/4133) [`5bc958c9d`](https://github.com/neo4j/graphql/commit/5bc958c9d3b61dfa415bf09608b92c4768193cd2) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed a bug that prevents `@relayID` fields from being queried using the GraphQL alias and the Connection API. https://github.com/neo4j/graphql/issues/4158
+
+-   [#4218](https://github.com/neo4j/graphql/pull/4218) [`896b11ca5`](https://github.com/neo4j/graphql/commit/896b11ca5afc5cc4a6e5ae6e78fbe938875342aa) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix missing custom cypher on unions
+
+-   [#4177](https://github.com/neo4j/graphql/pull/4177) [`0ba4f434b`](https://github.com/neo4j/graphql/commit/0ba4f434b7a705fab70c4ce4aefcb8bc82b87e2e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Improve debug logging of incoming GraphQL query and context, and decoding of bearer tokens.
+
 ## 4.3.4
 
 ### Patch Changes

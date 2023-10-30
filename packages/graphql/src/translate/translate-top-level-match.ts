@@ -25,6 +25,7 @@ import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -75,11 +76,12 @@ export function createMatchClause({
     let whereOperators: Cypher.Predicate[] = [];
 
     // TODO: removed deprecated fulltext translation
-    if (Object.entries(fulltextInput).length) {
-        if (Object.entries(fulltextInput).length > 1) {
+    const entries = Object.entries(fulltextInput);
+    if (entries.length) {
+        if (entries.length > 1) {
             throw new Error("Can only call one search at any given time");
         }
-        const [indexName, indexInput] = Object.entries(fulltextInput)[0] as [string, { phrase: string }];
+        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
         const phraseParam = new Cypher.Param(indexInput.phrase);
 
         matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
@@ -112,26 +114,20 @@ export function createMatchClause({
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
     if (where) {
+        const entity = getEntityAdapterFromNode(node, context);
+
         const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
             targetElement: matchNode,
             whereInput: where,
             context,
-            element: node,
+            entity,
         });
+
         preComputedWhereFieldSubqueries = preComputedSubqueries;
 
         if (preComputedWhereFieldSubqueries && !preComputedWhereFieldSubqueries.empty) {
-            if (
-                preComputedWhereFieldSubqueries.children.length === 1 &&
-                preComputedWhereFieldSubqueries.children[0] instanceof Cypher.Match
-            ) {
-                whereClause = preComputedWhereFieldSubqueries.children[0];
-                preComputedWhereFieldSubqueries = undefined;
-            } else {
-                whereClause = new Cypher.With("*");
-            }
+            whereClause = new Cypher.With("*");
         }
-
         if (whereOp) whereClause.where(whereOp);
     }
 

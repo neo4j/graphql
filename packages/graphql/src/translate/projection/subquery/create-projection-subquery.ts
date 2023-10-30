@@ -26,6 +26,7 @@ import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
 import { compileCypher } from "../../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
 
 export function createProjectionSubquery({
     parentNode,
@@ -80,8 +81,9 @@ export function createProjectionSubquery({
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
 
     if (whereInput) {
+        const entity = getEntityAdapterFromNode(node, context);
         const { predicate: wherePredicate, preComputedSubqueries } = createWherePredicate({
-            element: node,
+            entity,
             context,
             whereInput,
             targetElement: targetNode,

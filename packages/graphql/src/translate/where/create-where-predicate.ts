@@ -26,9 +26,15 @@ import type { LogicalOperator } from "../utils/logical-operators";
 import { isLogicalOperator, getLogicalPredicate } from "../utils/logical-operators";
 import { asArray, filterTruthy } from "../../utils/utils";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
+import { FilterFactory } from "../queryAST/factory/FilterFactory";
+import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
+import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 
 /** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
-export function createWherePredicate({
+// TODO: Previous implementation of createPredicateWhere, remove it after the new implementation support useExistsExpr, checkParameterExistence
+export function createWherePredicateLegacy({
     targetElement,
     whereInput,
     context,
@@ -48,7 +54,7 @@ export function createWherePredicate({
     let subqueries: Cypher.CompositeClause | undefined;
     whereFields.forEach(([key, value]) => {
         if (isLogicalOperator(key)) {
-            const { predicate, preComputedSubqueries } = createNestedPredicate({
+            const { predicate, preComputedSubqueries } = createNestedPredicateLegacy({
                 key: key,
                 element,
                 targetElement,
@@ -87,7 +93,7 @@ export function createWherePredicate({
     };
 }
 
-function createNestedPredicate({
+function createNestedPredicateLegacy({
     key,
     element,
     targetElement,
@@ -108,7 +114,7 @@ function createNestedPredicate({
     let subqueries: Cypher.CompositeClause | undefined;
 
     value.forEach((v) => {
-        const { predicate, preComputedSubqueries } = createWherePredicate({
+        const { predicate, preComputedSubqueries } = createWherePredicateLegacy({
             whereInput: v,
             element,
             targetElement,
@@ -124,4 +130,52 @@ function createNestedPredicate({
     });
     const logicalPredicate = getLogicalPredicate(key, filterTruthy(nested));
     return { predicate: logicalPredicate, preComputedSubqueries: subqueries };
+}
+
+export function createWherePredicate({
+    targetElement,
+    whereInput,
+    context,
+    entity,
+    useExistExpr = true,
+    checkParameterExistence,
+}: {
+    targetElement: Cypher.Variable;
+    whereInput: GraphQLWhereArg;
+    context: Neo4jGraphQLTranslationContext;
+    entity: EntityAdapter;
+    useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    extraSelections?: (Cypher.Match | Cypher.With)[];
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+} {
+    if (!useExistExpr) {
+        throw new Error("Predicate without Exists is not supported yet using the new implementation");
+    }
+
+    if (checkParameterExistence) {
+        throw new Error("Parameter existence is not supported yet using the new implementation");
+    }
+    const factory = new QueryASTFactory(context.schemaModel);
+    const filterFactory = new FilterFactory(factory);
+    const queryASTEnv = new QueryASTEnv();
+
+    const queryASTContext = new QueryASTContext({
+        target: targetElement as Cypher.Node,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+    });
+
+    const filters = filterFactory.createNodeFilters(entity, whereInput);
+    const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
+    const predicates = filters.map((f) => f.getPredicate(queryASTContext));
+    const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
+
+    const preComputedSubqueries = [...extraSelections, ...subqueries];
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
+    };
 }

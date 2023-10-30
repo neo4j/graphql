@@ -20,7 +20,7 @@
 import type { GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
-import { createWherePredicate } from "../create-where-predicate";
+import { createWherePredicateLegacy } from "../create-where-predicate";
 import type { ListPredicate } from "../utils";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
@@ -159,7 +159,7 @@ export function createRelationPredicate({
               useExistExpr,
               checkParameterExistence,
           })
-        : createWherePredicate({
+        : createWherePredicateLegacy({
               whereInput,
               targetElement: targetNode,
               element: refNode,
@@ -338,7 +338,7 @@ function createRelationPredicateWithSubqueries({
                       edgeRef: targetRelationship,
                       checkParameterExistence,
                   })
-                : createWherePredicate({
+                : createWherePredicateLegacy({
                       whereInput,
                       targetElement: targetNode,
                       element: refNode,
