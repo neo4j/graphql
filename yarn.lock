@@ -3525,7 +3525,7 @@ __metadata:
     "@types/cors": 2.8.15
     "@types/debug": 4.1.10
     "@types/jest": 29.5.6
-    "@types/node": 18.18.7
+    "@types/node": 20.8.9
     amqplib: 0.10.3
     body-parser: ^1.20.2
     camelcase: 6.3.0
@@ -3554,7 +3554,7 @@ __metadata:
     "@graphql-tools/merge": ^9.0.0
     "@neo4j/graphql": ^4.4.0
     "@types/jest": 29.5.6
-    "@types/node": 18.18.7
+    "@types/node": 20.8.9
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.7.0
@@ -3661,7 +3661,7 @@ __metadata:
     "@types/is-uuid": 1.0.1
     "@types/jest": 29.5.6
     "@types/jsonwebtoken": 9.0.4
-    "@types/node": 18.18.7
+    "@types/node": 20.8.9
     "@types/pluralize": 0.0.32
     "@types/randomstring": 1.1.10
     "@types/semver": 7.5.4
@@ -3681,7 +3681,7 @@ __metadata:
     is-uuid: 1.0.2
     jest: 29.7.0
     jest-extended: 4.0.2
-    jose: ^4.13.1
+    jose: ^5.0.0
     jwks-rsa: 3.1.0
     koa: 2.14.2
     koa-jwt: 4.0.4
@@ -3719,7 +3719,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^4.0.0
     "@types/jest": 29.5.6
-    "@types/node": 18.18.7
+    "@types/node": 20.8.9
     "@types/pluralize": 0.0.32
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -7626,12 +7626,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.18.7":
-  version: 18.18.7
-  resolution: "@types/node@npm:18.18.7"
+"@types/node@npm:20.8.9":
+  version: 20.8.9
+  resolution: "@types/node@npm:20.8.9"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 972f8b214f961b6c8d99f84aab8bfadc656bb71fc7ad4a543ad3405286c95f27385ee0c3844f88d612f3cf225cd4d49ce8a7d9aea05a2aba9b2524ac525040aa
+  checksum: 0c05f3502a9507ff27e91dd6fd574fa6f391b3fafedcfe8e0c8d33351fb22d02c0121f854e5b6b3ecb9a8a468407ddf6e7ac0029fb236d4c7e1361ffc758a01f
   languageName: node
   linkType: hard
 
@@ -17355,17 +17355,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.13.1":
-  version: 4.14.6
-  resolution: "jose@npm:4.14.6"
-  checksum: eae81a234e7bf1446b1bd80722b3462b014e3835b155c3a7799c1c5043163a53a0dc28d347004151b031e6b7b863403aabf8814d9cc217ce21f8c2f3ebd4b335
-  languageName: node
-  linkType: hard
-
 "jose@npm:^4.14.6":
   version: 4.15.2
   resolution: "jose@npm:4.15.2"
   checksum: 8f0cab1eef31243abe14a935b2b330cd95f10f9b69808fd642088ae5000e50e566664934537d2c6413ab2f6b54acd8265a5033da05157aa1260c5f1d7e57fab0
+  languageName: node
+  linkType: hard
+
+"jose@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "jose@npm:5.0.1"
+  checksum: aee36762eda2838f7ca450d9a5bb00e3e609dd6c9c93a01c6cbd047b1019cb280062c3e42e831252754eb1591c9e615dbfd00d350f253c07b455e56f901b2a52
   languageName: node
   linkType: hard
 

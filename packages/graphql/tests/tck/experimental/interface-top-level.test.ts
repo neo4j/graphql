@@ -41,10 +41,10 @@ describe("Interface top level operations", () => {
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
             interface MyInterface {
-                id: ID! @id
+                id: ID!
             }
             interface MyOtherInterface implements MyInterface {
-                id: ID! @id
+                id: ID!
                 something: String
             }
 

@@ -21,6 +21,8 @@ import type {
     ASTVisitor,
     DirectiveNode,
     FieldDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    InterfaceTypeExtensionNode,
     ObjectTypeDefinitionNode,
     ObjectTypeExtensionNode,
 } from "graphql";
@@ -31,41 +33,44 @@ import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
+import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../constants";
 
-/** only the @cypher directive is valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
-export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): ASTVisitor {
-    return {
-        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-            const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-            if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
-                // this rule only checks field location
-                return;
-            }
-            if (!parentOfTraversedDef) {
-                console.error("No parent of last definition traversed");
-                return;
-            }
-            const shouldRunThisRule = isDirectiveValidAtLocation({
-                directiveNode,
-                traversedDef,
-                parentDef: parentOfTraversedDef,
-            });
+export function ValidDirectiveAtFieldLocation(experimental: boolean) {
+    return function (context: SDLValidationContext): ASTVisitor {
+        return {
+            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+                const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+                if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
+                    // this rule only checks field location
+                    return;
+                }
+                if (!parentOfTraversedDef) {
+                    console.error("No parent of last definition traversed");
+                    return;
+                }
+                const shouldRunThisRule = isDirectiveValidAtLocation({
+                    directiveNode,
+                    traversedDef,
+                    parentDef: parentOfTraversedDef,
+                    experimental,
+                });
 
-            if (!shouldRunThisRule) {
-                return;
-            }
+                if (!shouldRunThisRule) {
+                    return;
+                }
 
-            const { isValid, errorMsg, errorPath } = assertValid(shouldRunThisRule);
-            if (!isValid) {
-                context.reportError(
-                    createGraphQLError({
-                        nodes: [traversedDef],
-                        path: [...pathToNode, ...errorPath],
-                        errorMsg,
-                    })
-                );
-            }
-        },
+                const { isValid, errorMsg, errorPath } = assertValid(shouldRunThisRule);
+                if (!isValid) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [traversedDef],
+                            path: [...pathToNode, ...errorPath],
+                            errorMsg,
+                        })
+                    );
+                }
+            },
+        };
     };
 }
 
@@ -73,10 +78,12 @@ function isDirectiveValidAtLocation({
     directiveNode,
     traversedDef,
     parentDef,
+    experimental,
 }: {
     directiveNode: DirectiveNode;
     traversedDef: FieldDefinitionNode;
     parentDef: ObjectOrInterfaceWithExtensions;
+    experimental: boolean;
 }) {
     if (isLocationFieldOfRootType(parentDef)) {
         return () =>
@@ -85,6 +92,15 @@ function isDirectiveValidAtLocation({
                 traversedDef: traversedDef,
                 parentDef,
             });
+    }
+    if (experimental) {
+        if (isLocationFieldOfInterfaceType(parentDef)) {
+            return () =>
+                validFieldOfInterfaceTypeLocation({
+                    directiveNode,
+                    parentDef,
+                });
+        }
     }
 
     return;
@@ -97,6 +113,17 @@ function isLocationFieldOfRootType(
         parentDef &&
         (parentDef.kind === Kind.OBJECT_TYPE_DEFINITION || parentDef.kind === Kind.OBJECT_TYPE_EXTENSION) &&
         ["Query", "Mutation", "Subscription"].includes(parentDef.name.value)
+    );
+}
+
+function isLocationFieldOfInterfaceType(
+    parentDef: ObjectOrInterfaceWithExtensions
+): parentDef is InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode {
+    // relationshipProperties interfaces are different bc they are "creatable"
+    return (
+        parentDef &&
+        (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION || parentDef.kind === Kind.INTERFACE_TYPE_EXTENSION) &&
+        !parentDef.directives?.some((d) => d.name.value === "relationshipProperties")
     );
 }
 
@@ -119,6 +146,7 @@ function noDirectivesAllowedAtLocation({
     }
 }
 
+/** only the @cypher directive is valid on fields of Root types: Query, Mutation; no directives valid on fields of Subscription */
 function validFieldOfRootTypeLocation({
     directiveNode,
     traversedDef,
@@ -155,5 +183,28 @@ function validFieldOfRootTypeLocation({
             );
         }
     }
+    noDirectivesAllowedAtLocation({ directiveNode, parentDef });
+}
+
+/** only a subset of field directives are allowed on interface fields */
+function validFieldOfInterfaceTypeLocation({
+    directiveNode,
+    parentDef,
+}: {
+    directiveNode: DirectiveNode;
+    parentDef: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode;
+}) {
+    if (SCHEMA_CONFIGURATION_FIELD_DIRECTIVES.includes(directiveNode.name.value)) {
+        return;
+    }
+    if (directiveNode.name.value === "relationship") {
+        // allow @relationship until a different way of supporting relationship-like behavior on interfaces is implemented
+        return;
+    }
+    if (directiveNode.name.value === "private") {
+        // allow @private for now
+        return;
+    }
+
     noDirectivesAllowedAtLocation({ directiveNode, parentDef });
 }
