@@ -155,6 +155,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).not.toHaveBeenCalled();
@@ -175,6 +176,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -198,6 +200,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).not.toHaveBeenCalled();
@@ -218,12 +221,34 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
         expect(warn).toHaveBeenCalledOnce();
+    });
+
+    test("Max limit higher on interface than concrete should not trigger warning if experimental: false", () => {
+        const doc = gql`
+            interface Production @limit(max: 10) {
+                title: String
+            }
+
+            type Movie implements Production @limit(max: 2) {
+                title: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+            experimental: false,
+        });
+
+        expect(warn).not.toHaveBeenCalledOnce();
     });
 
     test("Max limit higher on interface than concrete should trigger warning - multiple implementing types", () => {
@@ -245,6 +270,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -272,6 +298,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -302,6 +329,7 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
+            experimental: true,
         });
 
         expect(warn).not.toHaveBeenCalledOnce();

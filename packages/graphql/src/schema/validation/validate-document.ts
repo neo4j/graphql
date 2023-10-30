@@ -210,7 +210,7 @@ function runValidationRulesOnFilteredDocument({
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
-            WarnIfAMaxLimitCanBeBypassedThroughInterface,
+            WarnIfAMaxLimitCanBeBypassedThroughInterface(experimental),
         ],
         schema
     );
