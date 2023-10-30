@@ -351,4 +351,3 @@ describe("Cypher sort tests", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });
-<<<<<<< HEAD

@@ -2432,7 +2432,8 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                const executeValidate = () =>
+                    validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
                 const errors = getError(executeValidate);
 
                 expect(errors).toHaveLength(1);
