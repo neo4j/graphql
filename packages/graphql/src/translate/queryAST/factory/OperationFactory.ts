@@ -233,6 +233,12 @@ export class OperationsFactory {
         const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
         const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+        const authValidate = this.authorizationFactory.createEntityAuthValidate(
+            entity,
+            ["AGGREGATE"],
+            context,
+            "BEFORE"
+        );
 
         const filters = this.filterFactory.createNodeFilters(relationship.target, whereArgs); // Aggregation filters only apply to target node
 
@@ -243,6 +249,10 @@ export class OperationsFactory {
 
         if (authFilters) {
             operation.addAuthFilters(authFilters);
+        }
+
+        if (authValidate) {
+            operation.addAuthFilters(authValidate);
         }
 
         // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
@@ -441,10 +451,18 @@ export class OperationsFactory {
             : this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
+        const authValidate = this.authorizationFactory.createEntityAuthValidate(target, ["READ"], context, "BEFORE");
         const authNodeAttributeFilters = this.createAttributeAuthFilters({
             entity: target,
             context,
             rawFields: resolveTreeNodeFields,
+        });
+
+        const authNodeAttributeValidate = this.createAttributeAuthValidate({
+            entity: target,
+            context,
+            rawFields: resolveTreeNodeFields,
+            when: "BEFORE",
         });
 
         const filters = this.filterFactory.createConnectionPredicates({
@@ -459,9 +477,14 @@ export class OperationsFactory {
         if (authFilters) {
             operation.addAuthFilters(authFilters);
         }
-
+        if (authValidate) {
+            operation.addAuthFilters(authValidate);
+        }
         if (authNodeAttributeFilters) {
             operation.addAuthFilters(...authNodeAttributeFilters);
+        }
+        if (authNodeAttributeValidate) {
+            operation.addAuthFilters(...authNodeAttributeValidate);
         }
 
         return operation;
@@ -519,10 +542,17 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
+        const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
         const authAttributeFilters = this.createAttributeAuthFilters({
             entity,
             context,
             rawFields: projectionFields,
+        });
+        const authAttributeValidate = this.createAttributeAuthValidate({
+            entity,
+            context,
+            rawFields: projectionFields,
+            when: "BEFORE",
         });
 
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
@@ -534,6 +564,12 @@ export class OperationsFactory {
         }
         if (authAttributeFilters) {
             operation.addAuthFilters(...authAttributeFilters);
+        }
+        if (authValidate) {
+            operation.addAuthFilters(authValidate);
+        }
+        if (authAttributeValidate) {
+            operation.addAuthFilters(...authAttributeValidate);
         }
         this.hydrateCompositeReadOperationWithPagination(entity, operation, resolveTree);
 
@@ -604,6 +640,35 @@ export class OperationsFactory {
                     entity,
                     ["READ"],
                     context
+                );
+
+                return result;
+            })
+        );
+    }
+
+    private createAttributeAuthValidate({
+        entity,
+        rawFields,
+        context,
+        when,
+    }: {
+        entity: ConcreteEntityAdapter;
+        rawFields: Record<string, ResolveTree>;
+        context: Neo4jGraphQLTranslationContext;
+        when: "BEFORE" | "AFTER";
+    }): AuthorizationFilters[] {
+        return filterTruthy(
+            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
+                const { fieldName } = parseSelectionSetField(field.name);
+                const attribute = entity.findAttribute(fieldName);
+                if (!attribute) return undefined;
+                const result = this.authorizationFactory.createAttributeAuthValidate(
+                    attribute,
+                    entity,
+                    ["READ"],
+                    context,
+                    when
                 );
 
                 return result;

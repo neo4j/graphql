@@ -24,10 +24,11 @@ import type { GraphQLWhereArg, PredicateReturn } from "../../../types";
 import { asArray } from "../../../utils/utils";
 import type { LogicalOperator } from "../../utils/logical-operators";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
-import { createWherePredicateLegacy } from "../../where/create-where-predicate";
+import { createWherePredicate } from "../../where/create-where-predicate";
 import { createJwtPayloadWherePredicate } from "./create-authorization-jwt-payload-predicate";
 import { populateWhereParams } from "../utils/populate-where-params";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
 
 export function createAuthorizationWherePredicate({
     where,
@@ -66,18 +67,14 @@ export function createAuthorizationWherePredicate({
         }
 
         if (key === "node") {
-            const useExistExpr = context.neo4jDatabaseInfo?.gte("5");
-
-            const { predicate, preComputedSubqueries } = createWherePredicateLegacy({
-                element: node,
+            const entity = getEntityAdapterFromNode(node, context);
+            const { predicate, preComputedSubqueries } = createWherePredicate({
+                entity,
                 context,
-                // This doesn't _have_ to be done like this, we could just populate with the actual values instead of this approach - to discuss with Andres!
                 whereInput: populateWhereParams({ where: value, context }),
                 targetElement: target,
-                useExistExpr: useExistExpr,
-                checkParameterExistence: true,
             });
-
+       
             if (predicate) {
                 predicates.push(predicate);
             }

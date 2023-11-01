@@ -20,7 +20,7 @@
 import type { GraphQLWhereArg, RelationField, PredicateReturn } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 
-import { createWherePredicateLegacy } from "../create-where-predicate";
+import { createWherePredicate, createWherePredicateLegacy, createWhereRelPredicate } from "../create-where-predicate";
 import type { ListPredicate } from "../utils";
 import { getListPredicate } from "../utils";
 import type { WhereOperator } from "../types";
@@ -28,6 +28,10 @@ import type { Node, Relationship } from "../../../classes";
 import { createConnectionWherePropertyOperation } from "./create-connection-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { node } from "prop-types";
+import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { isUnionEntity } from "../../queryAST/utils/is-union-entity";
 
 export function createRelationshipOperation({
     relationField,
@@ -148,25 +152,36 @@ export function createRelationPredicate({
         listPredicateStr = "single";
     }
 
-    const innerOperation = refEdge
-        ? createConnectionWherePropertyOperation({
-              context,
-              whereInput,
-              edge: refEdge,
-              node: refNode,
-              targetNode,
-              edgeRef: targetRelationship,
-              useExistExpr,
-              checkParameterExistence,
-          })
-        : createWherePredicateLegacy({
-              whereInput,
-              targetElement: targetNode,
-              element: refNode,
-              context,
-              useExistExpr,
-              checkParameterExistence,
-          });
+    let innerOperation: PredicateReturn;
+    if (refEdge) {
+        const entity = context.schemaModel.getConcreteEntityAdapter(refEdge.source);
+        if (!entity) {
+            throw new Error(`Transpilation error: entity not found: ${refEdge.source}`);
+        }
+        const relationshipAdapter = [...entity.relationships.values()].find(
+            (r: RelationshipAdapter): r is RelationshipAdapter =>
+                r.operations.relationshipFieldTypename === refEdge.name
+        );
+        if (!relationshipAdapter) {
+            throw new Error(`No relationship found for ${refEdge.name}`);
+        }
+
+        innerOperation = createWhereRelPredicate({
+            targetElement: targetNode,
+            relationshipVariable: targetRelationship,
+            rel: relationshipAdapter,
+            context,
+            whereInput,
+        });
+    } else {
+        const entity = getEntityAdapterFromNode(refNode, context);
+        innerOperation = createWherePredicate({
+            whereInput,
+            targetElement: targetNode,
+            entity,
+            context,
+        });
+    }
 
     if (orOperatorMultipleNodeLabels) {
         innerOperation.predicate = Cypher.and(innerOperation.predicate, orOperatorMultipleNodeLabels);
@@ -327,25 +342,26 @@ function createRelationPredicateWithSubqueries({
                     new Cypher.Return([Cypher.gt(Cypher.count(targetNode), new Cypher.Literal(0)), returnVar])
                 )
             );
-
-            const notNoneInnerPredicates = refEdge
-                ? createConnectionWherePropertyOperation({
-                      context,
-                      whereInput,
-                      edge: refEdge,
-                      node: refNode,
-                      targetNode,
-                      edgeRef: targetRelationship,
-                      checkParameterExistence,
-                  })
-                : createWherePredicateLegacy({
-                      whereInput,
-                      targetElement: targetNode,
-                      element: refNode,
-                      context,
-                      checkParameterExistence,
-                  });
-
+            let notNoneInnerPredicates: PredicateReturn;
+            if (refEdge) {
+                notNoneInnerPredicates = createConnectionWherePropertyOperation({
+                    context,
+                    whereInput,
+                    edge: refEdge,
+                    node: refNode,
+                    targetNode,
+                    edgeRef: targetRelationship,
+                    checkParameterExistence,
+                });
+            } else {
+                const entity = getEntityAdapterFromNode(refNode, context);
+                notNoneInnerPredicates = createWherePredicate({
+                    entity,
+                    context,
+                    whereInput,
+                    targetElement: targetNode,
+                });
+            }
             if (notNoneInnerPredicates.predicate && notNoneInnerPredicates.preComputedSubqueries) {
                 const { predicate: notExistsPredicate, preComputedSubqueries: notExistsSubquery } =
                     createRelationPredicateWithSubqueries({

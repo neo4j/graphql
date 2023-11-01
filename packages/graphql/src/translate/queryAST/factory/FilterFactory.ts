@@ -18,8 +18,10 @@
  */
 
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
@@ -79,7 +81,7 @@ export class FilterFactory {
     ): ConnectionFilter[] {
         if (isInterfaceEntity(relationship.target) && !where.node?._on) {
             // Optimization for interface entities, create a single connection filter for all the concrete entities, when no _on is specified.
-            const connectionFilter = new ConnectionFilter({
+            const connectionFilter = this.createConnectionFilterTreeNode({
                 relationship: relationship,
                 target: relationship.target,
                 isNot: filterOps.isNot,
@@ -92,7 +94,7 @@ export class FilterFactory {
             const filteredEntities = this.filterConcreteEntities(relationship.target, where);
             const connectionFilters: ConnectionFilter[] = [];
             for (const concreteEntity of filteredEntities) {
-                const connectionFilter = new ConnectionFilter({
+                const connectionFilter = this.createConnectionFilterTreeNode({
                     relationship: relationship,
                     target: concreteEntity,
                     isNot: filterOps.isNot,
@@ -225,6 +227,15 @@ export class FilterFactory {
     }): RelationshipFilter {
         return new RelationshipFilter(options);
     }
+    // This allow to override this creation in AuthorizationFilterFactory
+    protected createConnectionFilterTreeNode(options: {
+        relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        isNot: boolean;
+        operator: RelationshipWhereOperator | undefined;
+    }): ConnectionFilter {
+        return new ConnectionFilter(options);
+    }
 
     private getConcretePredicate(entity: EntityAdapter, where: Record<string, any>) {
         const concreteEntities = getConcreteEntities(entity);
@@ -331,7 +342,7 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
-    private createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
+    public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
         const filterASTs = Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
                 return this.createEdgeLogicalFilter(key, value, relationship);

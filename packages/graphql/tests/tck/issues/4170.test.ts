@@ -189,11 +189,11 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     OPTIONAL MATCH (authorization_0_3_this2)<-[:HAS_SETTINGS]-(authorization_0_3_this3:Tenant)
                     WITH *, count(authorization_0_3_this3) AS tenantCount
                     WITH *
-                    WHERE (tenantCount <> 0 AND size([(authorization_0_3_this3)<-[:ADMIN_IN]-(authorization_0_3_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_3_this4.userId = $jwt.id) | 1]) > 0)
-                    RETURN count(authorization_0_3_this2) = 1 AS authorization_0_3_var5
+                    WHERE (tenantCount <> 0 AND size([(authorization_0_3_this3)<-[:ADMIN_IN]-(authorization_0_3_this5:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_3_this5.userId = $jwt.id) | 1]) > 0)
+                    RETURN count(authorization_0_3_this2) = 1 AS authorization_0_3_var4
                 }
                 WITH *
-                WHERE authorization_0_3_var5 = true
+                WHERE authorization_0_3_var4 = true
                 RETURN count(authorization_0_3_this1) = 1 AS authorization_0_3_var0
             }
             CALL {

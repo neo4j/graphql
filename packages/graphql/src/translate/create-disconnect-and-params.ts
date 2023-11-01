@@ -25,7 +25,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { createAuthorizationAfterAndParamsNew } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
@@ -111,7 +111,8 @@ function createDisconnectAndParams({
                         aggregationWhere = true;
                     }
                 }
-            } catch {
+            } catch (err) {
+                console.error(err);
                 return { subquery: "", params: {} };
             }
         }
@@ -313,7 +314,7 @@ function createDisconnectAndParams({
             });
         }
 
-        const authorizationAfterAndParams = createAuthorizationAfterAndParams({
+        const authorizationAfterAndParams = createAuthorizationAfterAndParamsNew({
             context,
             nodes: [
                 { node: parentNode, variable: parentVar },

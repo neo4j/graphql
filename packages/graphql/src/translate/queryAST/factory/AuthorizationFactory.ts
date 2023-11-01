@@ -27,6 +27,7 @@ import { AuthorizationFilters } from "../ast/filters/authorization-filters/Autho
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import type { AuthorizationAnnotation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type Cypher from "@neo4j/cypher-builder";
 
 export class AuthorizationFactory {
     private filterFactory: AuthFilterFactory;
@@ -39,6 +40,7 @@ export class AuthorizationFactory {
         entity: ConcreteEntityAdapter,
         operations: AuthorizationOperation[],
         context: Neo4jGraphQLTranslationContext
+        // when: "BEFORE" | "AFTER"
     ): AuthorizationFilters | undefined {
         const authAnnotation = entity.annotations.authorization;
         if (!authAnnotation) return undefined;
@@ -47,6 +49,7 @@ export class AuthorizationFactory {
             operations,
             context,
             authAnnotation,
+            // when,
         });
     }
 
@@ -55,6 +58,8 @@ export class AuthorizationFactory {
         entity: ConcreteEntityAdapter,
         operations: AuthorizationOperation[],
         context: Neo4jGraphQLTranslationContext
+        //when: "BEFORE" | "AFTER",
+        //conditionForEvaluation?: Cypher.Predicate
     ): AuthorizationFilters | undefined {
         const authAnnotation = attribute.annotations.authorization;
         if (!authAnnotation) return undefined;
@@ -63,6 +68,45 @@ export class AuthorizationFactory {
             operations,
             context,
             authAnnotation,
+            //    when,
+            //    conditionForEvaluation,
+        });
+    }
+
+    public createEntityAuthValidate(
+        entity: ConcreteEntityAdapter,
+        operations: AuthorizationOperation[],
+        context: Neo4jGraphQLTranslationContext,
+        when: "BEFORE" | "AFTER"
+    ): AuthorizationFilters | undefined {
+        const authAnnotation = entity.annotations.authorization;
+        if (!authAnnotation) return undefined;
+        return this.createAuthValidateRule({
+            entity,
+            operations,
+            context,
+            authAnnotation,
+            when,
+        });
+    }
+
+    public createAttributeAuthValidate(
+        attribute: AttributeAdapter,
+        entity: ConcreteEntityAdapter,
+        operations: AuthorizationOperation[],
+        context: Neo4jGraphQLTranslationContext,
+        when: "BEFORE" | "AFTER",
+        conditionForEvaluation?: Cypher.Predicate
+    ): AuthorizationFilters | undefined {
+        const authAnnotation = attribute.annotations.authorization;
+        if (!authAnnotation) return undefined;
+        return this.createAuthValidateRule({
+            entity,
+            operations,
+            context,
+            authAnnotation,
+            when,
+            conditionForEvaluation,
         });
     }
 
@@ -71,16 +115,20 @@ export class AuthorizationFactory {
         authAnnotation,
         operations,
         context,
-    }: {
+    }: //when,
+    //conditionForEvaluation,
+    {
         entity: ConcreteEntityAdapter;
         authAnnotation: AuthorizationAnnotation;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
+        // when: "BEFORE" | "AFTER";
+        // conditionForEvaluation?: Cypher.Predicate;
     }): AuthorizationFilters {
-        const rulesMatchingOperations = findMatchingRules(authAnnotation.validate ?? [], operations);
+        // const rulesMatchingOperations = findMatchingRules(authAnnotation.validate ?? [], operations).filter((rule) => rule.when.includes(when));
         const rulesMatchingWhereOperations = findMatchingRules(authAnnotation.filter ?? [], operations);
 
-        const validationFilers = rulesMatchingOperations.flatMap((rule) => {
+        /*     const validationFilers = rulesMatchingOperations.flatMap((rule) => {
             const populatedWhere = populateWhereParams({ where: rule.where, context }); // TODO: move this to the filterFactory?
 
             const nestedFilters = this.filterFactory.createAuthFilters({
@@ -89,13 +137,12 @@ export class AuthorizationFactory {
                 context,
                 populatedWhere,
             });
-
             return new AuthorizationRuleFilter({
                 requireAuthentication: rule.requireAuthentication,
                 filters: nestedFilters,
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
-        });
+        }); */
         const whereFilters = rulesMatchingWhereOperations.flatMap((rule) => {
             const populatedWhere = populateWhereParams({ where: rule.where, context });
             const nestedFilters = this.filterFactory.createAuthFilters({
@@ -113,8 +160,51 @@ export class AuthorizationFactory {
         });
 
         return new AuthorizationFilters({
-            validationFilters: validationFilers,
+            validationFilters: [],
             whereFilters: whereFilters,
+            //conditionForEvaluation,
+        });
+    }
+
+    private createAuthValidateRule({
+        entity,
+        authAnnotation,
+        operations,
+        context,
+        when,
+        conditionForEvaluation,
+    }: {
+        entity: ConcreteEntityAdapter;
+        authAnnotation: AuthorizationAnnotation;
+        operations: AuthorizationOperation[];
+        context: Neo4jGraphQLTranslationContext;
+        when: "BEFORE" | "AFTER";
+        conditionForEvaluation?: Cypher.Predicate;
+    }): AuthorizationFilters {
+        const rulesMatchingOperations = findMatchingRules(authAnnotation.validate ?? [], operations).filter((rule) =>
+            rule.when.includes(when)
+        );
+
+        const validationFilers = rulesMatchingOperations.flatMap((rule) => {
+            const populatedWhere = populateWhereParams({ where: rule.where, context }); // TODO: move this to the filterFactory?
+
+            const nestedFilters = this.filterFactory.createAuthFilters({
+                entity,
+                operations,
+                context,
+                populatedWhere,
+            });
+            return new AuthorizationRuleFilter({
+                requireAuthentication: rule.requireAuthentication,
+                filters: nestedFilters,
+                isAuthenticatedParam: context.authorization.isAuthenticatedParam,
+            });
+        });
+
+        return new AuthorizationFilters({
+            validationFilters: validationFilers,
+            whereFilters: [],
+            conditionForEvaluation,
         });
     }
 }

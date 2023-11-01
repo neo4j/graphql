@@ -31,6 +31,8 @@ import { GraphElement } from "./GraphElement";
 export interface RelationshipConstructor {
     name: string;
     type: string;
+    source: string; // temporary addition to infer the source using the schema model
+    target: string; // temporary addition to infer the target using the schema model
     description?: string;
     properties?: string;
     cypherFields?: CypherField[];
@@ -44,6 +46,8 @@ export interface RelationshipConstructor {
 
 class Relationship extends GraphElement {
     public properties?: string;
+    public source: string;
+    public target: string;
 
     constructor(input: RelationshipConstructor) {
         super({
@@ -59,6 +63,8 @@ class Relationship extends GraphElement {
         });
 
         this.properties = input.properties;
+        this.source = input.source;
+        this.target = input.target;
     }
 }
 

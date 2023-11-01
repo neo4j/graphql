@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { BaseField, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
-import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { createAuthorizationBeforePredicateField } from "./authorization/create-authorization-before-predicate";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { compileCypher } from "../utils/compile-cypher";
@@ -50,7 +50,7 @@ function translateAggregate({
     Object.entries(selections).forEach((selection) => {
         const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
         if (authField) {
-            const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+            const authorizationPredicateReturn = createAuthorizationBeforePredicateField({
                 context,
                 nodes: [
                     {

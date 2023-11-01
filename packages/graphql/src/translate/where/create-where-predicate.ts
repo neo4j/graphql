@@ -26,14 +26,16 @@ import type { LogicalOperator } from "../utils/logical-operators";
 import { isLogicalOperator, getLogicalPredicate } from "../utils/logical-operators";
 import { asArray, filterTruthy } from "../../utils/utils";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
-import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
-import { FilterFactory } from "../queryAST/factory/FilterFactory";
-import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
-import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
-
+import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { FilterFactory } from "../queryAST/factory/FilterFactory";
+import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
+import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
+import type { QueryASTNode } from "../queryAST/ast/QueryASTNode";
+import { DEBUG_TRANSLATE } from "../../constants";
+import Debug from "debug";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 /** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
-// TODO: Previous implementation of createPredicateWhere, remove it after the new implementation support useExistsExpr, checkParameterExistence
 export function createWherePredicateLegacy({
     targetElement,
     whereInput,
@@ -131,6 +133,7 @@ function createNestedPredicateLegacy({
     const logicalPredicate = getLogicalPredicate(key, filterTruthy(nested));
     return { predicate: logicalPredicate, preComputedSubqueries: subqueries };
 }
+const debug = Debug(DEBUG_TRANSLATE);
 
 export function createWherePredicate({
     targetElement,
@@ -169,13 +172,99 @@ export function createWherePredicate({
     });
 
     const filters = filterFactory.createNodeFilters(entity, whereInput);
+
+    filters.forEach((f) => debug(print(f)));
+
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
     const predicates = filters.map((f) => f.getPredicate(queryASTContext));
     const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
 
     const preComputedSubqueries = [...extraSelections, ...subqueries];
+
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
     };
+}
+
+export function createWhereRelPredicate({
+    targetElement,
+    relationshipVariable,
+    whereInput,
+    context,
+    rel,
+    useExistExpr = true,
+    checkParameterExistence,
+}: {
+    targetElement: Cypher.Variable;
+    relationshipVariable: Cypher.Variable;
+    whereInput: GraphQLWhereArg;
+    context: Neo4jGraphQLTranslationContext;
+    rel: RelationshipAdapter;
+    useExistExpr?: boolean;
+    checkParameterExistence?: boolean;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    extraSelections?: (Cypher.Match | Cypher.With)[];
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+} {
+    if (!useExistExpr) {
+        throw new Error("Predicate without Exists is not supported yet using the new implementation");
+    }
+
+    if (checkParameterExistence) {
+        throw new Error("Parameter existence is not supported yet using the new implementation");
+    }
+    const factory = new QueryASTFactory(context.schemaModel);
+    const filterFactory = new FilterFactory(factory);
+    const queryASTEnv = new QueryASTEnv();
+
+    const queryASTContext = new QueryASTContext({
+        target: targetElement as Cypher.Node,
+        relationship: relationshipVariable as Cypher.Relationship,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+    });
+
+    const filters = filterFactory.createEdgeFilters(rel, whereInput);
+
+    filters.forEach((f) => debug(print(f)));
+
+    const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
+    const predicates = filters.map((f) => f.getPredicate(queryASTContext));
+    const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
+
+    const preComputedSubqueries = [...extraSelections, ...subqueries];
+
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
+    };
+}
+function print(node: QueryASTNode): string {
+    const resultLines = getTreeLines(node);
+    return resultLines.join("\n");
+}
+
+function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
+    const nodeName = treeNode.print();
+    const resultLines: string[] = [];
+
+    if (depth === 0) {
+        resultLines.push(`${nodeName}`);
+    } else if (depth === 1) {
+        resultLines.push(`|${"────".repeat(depth)} ${nodeName}`);
+    } else {
+        resultLines.push(`|${"    ".repeat(depth - 1)} |──── ${nodeName}`);
+    }
+
+    const children = treeNode.getChildren();
+    if (children.length > 0) {
+        children.forEach((curr) => {
+            const childLines = getTreeLines(curr, depth + 1);
+            resultLines.push(...childLines);
+        });
+    }
+
+    return resultLines;
 }

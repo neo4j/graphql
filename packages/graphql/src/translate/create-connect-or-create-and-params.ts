@@ -28,8 +28,8 @@ import { findConflictingProperties } from "../utils/is-property-clash";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
-import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
+import { createAuthorizationBeforePredicateNew } from "./authorization/create-authorization-before-predicate";
+import { createAuthorizationAfterPredicateNew } from "./authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -195,15 +195,22 @@ function createConnectOrCreatePartialStatement({
     });
 
     if (authorizationAfterPredicateReturn.predicate) {
-        if (authorizationAfterPredicateReturn.preComputedSubqueries) {
+        if (
+            authorizationAfterPredicateReturn.preComputedSubqueries &&
+            !authorizationAfterPredicateReturn.preComputedSubqueries.empty
+        ) {
             mergeQuery = Cypher.concat(
                 mergeQuery,
-                new Cypher.With("*"),
-                authorizationAfterPredicateReturn.preComputedSubqueries
+                new Cypher.With(new Cypher.NamedVariable("*")),
+                authorizationAfterPredicateReturn.preComputedSubqueries,
+                new Cypher.With(new Cypher.NamedVariable("*")).where(authorizationAfterPredicateReturn.predicate)
+            );
+        } else {
+            mergeQuery = Cypher.concat(
+                mergeQuery,
+                new Cypher.With("*").where(authorizationAfterPredicateReturn.predicate)
             );
         }
-
-        mergeQuery = Cypher.concat(mergeQuery, new Cypher.With("*").where(authorizationAfterPredicateReturn.predicate));
     }
 
     return mergeQuery;
@@ -328,7 +335,7 @@ function createAuthorizationBeforeConnectOrCreate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
 
-    const sourceAuthorizationBefore = createAuthorizationBeforePredicate({
+    const sourceAuthorizationBefore = createAuthorizationBeforePredicateNew({
         context,
         nodes: [
             {
@@ -373,7 +380,7 @@ function createAuthorizationAfterConnectOrCreate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
 
-    const sourceAuthorizationAfter = createAuthorizationAfterPredicate({
+    const sourceAuthorizationAfter = createAuthorizationAfterPredicateNew({
         context,
         nodes: [
             {
@@ -384,7 +391,7 @@ function createAuthorizationAfterConnectOrCreate({
         operations: ["CREATE_RELATIONSHIP"],
     });
 
-    const targetAuthorizationAfter = createAuthorizationAfterPredicate({
+    const targetAuthorizationAfter = createAuthorizationAfterPredicateNew({
         context,
         nodes: [
             {

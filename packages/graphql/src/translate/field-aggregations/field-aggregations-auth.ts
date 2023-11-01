@@ -20,7 +20,9 @@
 import type { PredicateReturn } from "../../types";
 import type { Node } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
-import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
+import {
+    createAuthorizationBeforePredicateField,
+} from "../authorization/create-authorization-before-predicate";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 export type AggregationAuth = {
@@ -40,7 +42,7 @@ export function createFieldAggregationAuth({
     const authPredicates: Cypher.Predicate[] = [];
     let preComputedSubqueries: Cypher.CompositeClause | undefined;
 
-    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+    const authorizationPredicateReturn = createAuthorizationBeforePredicateField({
         context,
         nodes: [
             {

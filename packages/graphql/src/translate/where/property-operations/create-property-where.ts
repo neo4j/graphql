@@ -96,10 +96,7 @@ export function createPropertyWhere({
 
                 propertyRef = Cypher.coalesce(propertyRef, list);
             } else {
-                propertyRef = Cypher.coalesce(
-                    propertyRef,
-                    new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
-                );
+                propertyRef = Cypher.coalesce(propertyRef, new Cypher.Literal(coalesceValue));
             }
         }
 
@@ -161,7 +158,6 @@ export function createPropertyWhere({
     const durationField = element.primitiveFields.find(
         (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
     );
-
     const param =
         value instanceof Cypher.Param || value instanceof Cypher.Property || value instanceof Cypher.Function
             ? value

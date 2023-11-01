@@ -29,7 +29,10 @@ import { createEventMeta } from "./subscriptions/create-event-meta";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import {
+    createAuthorizationAfterAndParamsField,
+    createAuthorizationAfterAndParamsNew,
+} from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
@@ -280,7 +283,7 @@ function createCreateAndParams({
             return res;
         }
 
-        const authorizationAndParams = createAuthorizationAfterAndParams({
+        const authorizationAndParams = createAuthorizationAfterAndParamsField({
             context,
             nodes: [
                 {
@@ -357,7 +360,7 @@ function createCreateAndParams({
     }
 
     const { authorizationPredicates, authorizationSubqueries } = meta;
-    const authorizationAndParams = createAuthorizationAfterAndParams({
+    const authorizationAndParams = createAuthorizationAfterAndParamsNew({
         context,
         nodes: [
             {

@@ -218,15 +218,14 @@ function createConnectionSubquery({
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[relatedNode.name] : whereInput || {};
-    if (unionInterfaceWhere) {
-        if (
-            !hasExplicitNodeInInterfaceWhere({
-                whereInput: unionInterfaceWhere,
-                node: relatedNode,
-            })
-        ) {
-            return undefined;
-        }
+    if (
+        unionInterfaceWhere &&
+        !hasExplicitNodeInInterfaceWhere({
+            whereInput: unionInterfaceWhere,
+            node: relatedNode,
+        })
+    ) {
+        return;
     }
 
     const edgeSubquery = createEdgeSubquery({

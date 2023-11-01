@@ -23,12 +23,15 @@ import type { Node, Relationship } from "../../../classes";
 import type { WhereOperator } from "../types";
 // Recursive function
 
-import { createWherePredicateLegacy } from "../create-where-predicate";
+import { createWherePredicate, createWhereRelPredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import { createRelationPredicate } from "./create-relationship-operation";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { isUnionEntity } from "../../queryAST/utils/is-union-entity";
 
 export function createConnectionOperation({
     connectionField,
@@ -161,19 +164,30 @@ export function createConnectionWherePropertyOperation({
         }
 
         if (key.startsWith("edge")) {
-            const nestedProperties: Record<string, any> = value;
-            const { predicate: result, preComputedSubqueries } = createWherePredicateLegacy({
-                targetElement: edgeRef,
-                whereInput: nestedProperties,
+            const entity = context.schemaModel.getConcreteEntityAdapter(edge.source);
+            if (!entity) {
+                throw new Error(`Transpilation error: entity not found: ${edge.source}`);
+            }
+            const relationshipAdapter = [...entity.relationships.values()].find(
+                (r: RelationshipAdapter): r is RelationshipAdapter =>
+                    r.operations.relationshipFieldTypename === edge.name
+            );
+            if (!relationshipAdapter) {
+                throw new Error(`No relationship found for ${edge.name}`);
+            }
+
+            const { predicate: result, preComputedSubqueries } = createWhereRelPredicate({
+                targetElement: targetNode,
+                relationshipVariable: edgeRef,
+                rel: relationshipAdapter,
                 context,
-                element: edge,
-                useExistExpr,
-                checkParameterExistence,
+                whereInput: value,
             });
 
             params.push(result);
-            if (preComputedSubqueries && !preComputedSubqueries.empty)
+            if (preComputedSubqueries && !preComputedSubqueries.empty) {
                 preComputedSubqueriesResult.push(preComputedSubqueries);
+            }
             return;
         }
 
@@ -190,14 +204,12 @@ export function createConnectionWherePropertyOperation({
             ) {
                 throw new Error("_on is used as the only argument and node is not present within");
             }
-
-            const { predicate: result, preComputedSubqueries } = createWherePredicateLegacy({
-                targetElement: targetNode,
-                whereInput: nestedProperties,
+            const entity = getEntityAdapterFromNode(node, context);
+            const { predicate: result, preComputedSubqueries } = createWherePredicate({
+                entity,
                 context,
-                element: node,
-                useExistExpr,
-                checkParameterExistence,
+                whereInput: nestedProperties,
+                targetElement: targetNode,
             });
 
             // NOTE: _NOT is handled by the size()=0

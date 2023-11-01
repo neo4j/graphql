@@ -34,7 +34,7 @@ import { createProjectionSubquery } from "./projection/subquery/create-projectio
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
-import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { createAuthorizationBeforePredicateField } from "./authorization/create-authorization-before-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -94,7 +94,19 @@ export default function createProjectionAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
-            const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+            /*        const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+                context,
+                nodes: [
+                    {
+                        variable: varName,
+                        node,
+                        fieldName: authableField.fieldName,
+                    },
+                ],
+                operations: ["READ"],
+            });
+ */
+            const authorizationPredicateReturn = createAuthorizationBeforePredicateField({
                 context,
                 nodes: [
                     {

@@ -28,7 +28,9 @@ import { createEdgeProjection } from "./connection-projection";
 import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
-import { createAuthorizationBeforePredicate } from "../authorization/create-authorization-before-predicate";
+import {
+    createAuthorizationBeforePredicateNew,
+} from "../authorization/create-authorization-before-predicate";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 
 /** Create the match, filtering and projection of the edge and the nested node */
@@ -89,7 +91,7 @@ export function createEdgeSubquery({
         preComputedSubqueries = tempPreComputedSubqueries;
     }
 
-    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+    const authorizationPredicateReturn = createAuthorizationBeforePredicateNew({
         context,
         nodes: [
             {

@@ -35,6 +35,10 @@ import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamProper
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import { FilterFactory } from "./FilterFactory";
 import { parseWhereField } from "./parsers/parse-where-field";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
+import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
+import { asArray } from "@graphql-tools/utils";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -82,10 +86,20 @@ export class AuthFilterFactory extends FilterFactory {
 
     private createJWTFilters(
         jwtPayload: Cypher.Param,
-        where: Record<string, unknown>,
+        where: GraphQLWhereArg,
         context: Neo4jGraphQLTranslationContext
     ): Filter[] {
         return Object.entries(where).map(([key, value]) => {
+            if (isLogicalOperator(key)) {
+                const nestedFilters = asArray(value).flatMap((v) => {
+                    return this.createJWTFilters(jwtPayload, v, context);
+                });
+
+                return new LogicalFilter({
+                    operation: key,
+                    filters: nestedFilters,
+                });
+            }
             const { fieldName, operator, isNot } = parseWhereField(key);
             if (!fieldName) {
                 throw new Error(`Failed to find field name in filter: ${key}`);
@@ -113,7 +127,7 @@ export class AuthFilterFactory extends FilterFactory {
         });
     }
 
-    protected createPropertyFilter({
+    public createPropertyFilter({
         attribute,
         comparisonValue,
         operator,
@@ -178,5 +192,14 @@ export class AuthFilterFactory extends FilterFactory {
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
         return new AuthRelationshipFilter(options);
+    }
+
+    protected createConnectionFilterTreeNode(options: {
+        relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        isNot: boolean;
+        operator: RelationshipWhereOperator | undefined;
+    }): ConnectionFilter {
+        return new AuthConnectionFilter(options);
     }
 }

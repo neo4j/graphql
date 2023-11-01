@@ -31,6 +31,8 @@ describe("createRelationshipPropertyElement", () => {
         relationship = new Relationship({
             name: "TestRelationship",
             type: "TEST_RELATIONSHIP",
+            source: "TestSource",
+            target: "TestTarget",
             primitiveFields: [
                 {
                     fieldName: "int",

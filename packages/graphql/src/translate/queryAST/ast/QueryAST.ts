@@ -21,10 +21,10 @@ import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTNode } from "./QueryASTNode";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
 import { ReadOperation } from "./operations/ReadOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 export class QueryAST {
     private operation: Operation;
@@ -33,7 +33,7 @@ export class QueryAST {
         this.operation = operation;
     }
 
-    public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
+    public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext);
         return Cypher.concat(...this.transpile(context).clauses);
     }
@@ -46,7 +46,7 @@ export class QueryAST {
         });
     }
 
-    public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLContext): QueryASTContext {
+    public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
         const returnVariable = new Cypher.NamedVariable("this");
         const node = this.getTargetFromOperation(neo4jGraphQLContext);
@@ -58,7 +58,7 @@ export class QueryAST {
         });
     }
 
-    public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Node | undefined {
+    public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
         if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
         }
