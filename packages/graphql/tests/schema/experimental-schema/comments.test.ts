@@ -1069,6 +1069,11 @@ describe("Comments", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -1131,6 +1136,7 @@ describe("Comments", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

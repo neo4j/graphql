@@ -251,6 +251,7 @@ function makeAugmentedSchema({
             userDefinedFieldDirectivesForNode,
             propagatedDirectivesForNode,
             experimental,
+            aggregationTypesMapper,
         });
         if (updatedRelationships) {
             relationships = updatedRelationships;
@@ -280,7 +281,12 @@ function makeAugmentedSchema({
         );
 
         withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-        withAggregateSelectionType({ concreteEntityAdapter, aggregationTypesMapper, propagatedDirectives, composer });
+        withAggregateSelectionType({
+            entityAdapter: concreteEntityAdapter,
+            aggregationTypesMapper,
+            propagatedDirectives,
+            composer,
+        });
         withWhereInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, features, composer });
         /**
          * TODO [translation-layer-compatibility]
@@ -458,6 +464,23 @@ function makeAugmentedSchema({
                     });
                     composer.Query.setFieldDirectives(
                         interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+                        graphqlDirectivesToCompose(propagatedDirectives)
+                    );
+                }
+                if (interfaceEntityAdapter.isAggregable) {
+                    withAggregateSelectionType({
+                        entityAdapter: interfaceEntityAdapter,
+                        aggregationTypesMapper,
+                        propagatedDirectives,
+                        composer,
+                    });
+                    composer.Query.addFields({
+                        [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                            concreteEntityAdapter: interfaceEntityAdapter,
+                        }),
+                    });
+                    composer.Query.setFieldDirectives(
+                        interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
                         graphqlDirectivesToCompose(propagatedDirectives)
                     );
                 }
@@ -673,6 +696,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     userDefinedFieldDirectivesForNode,
     propagatedDirectivesForNode,
     experimental,
+    aggregationTypesMapper,
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
@@ -683,6 +707,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
     experimental: boolean;
+    aggregationTypesMapper: AggregationTypesMapper;
 }) {
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
         string,
@@ -726,6 +751,25 @@ function doForInterfacesThatAreTargetOfARelationship({
                     entityAdapter: interfaceEntityAdapter,
                 }),
             });
+
+            if (interfaceEntityAdapter.isAggregable) {
+                withAggregateSelectionType({
+                    entityAdapter: interfaceEntityAdapter,
+                    aggregationTypesMapper,
+                    propagatedDirectives,
+                    composer,
+                });
+
+                composer.Query.addFields({
+                    [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                        concreteEntityAdapter: interfaceEntityAdapter,
+                    }),
+                });
+                composer.Query.setFieldDirectives(
+                    interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
+                    graphqlDirectivesToCompose(propagatedDirectives)
+                );
+            }
             composer.Query.setFieldDirectives(
                 interfaceEntityAdapter.operations.rootTypeFieldNames.read,
                 graphqlDirectivesToCompose(propagatedDirectives)

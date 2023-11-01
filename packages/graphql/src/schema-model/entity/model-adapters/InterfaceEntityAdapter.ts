@@ -90,6 +90,10 @@ export class InterfaceEntityAdapter {
         return this._operations;
     }
 
+    public get aggregableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
+    }
+
     public get singular(): string {
         if (!this._singular) {
             this._singular = singular(this.name);
@@ -114,6 +118,10 @@ export class InterfaceEntityAdapter {
 
     get isReadable(): boolean {
         return this.annotations.query === undefined || this.annotations.query.read === true;
+    }
+
+    get isAggregable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
     }
 
     /**

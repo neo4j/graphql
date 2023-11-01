@@ -1169,6 +1169,11 @@ describe("Plural option", () => {
               name: String
             }
 
+            type AnimalAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+            }
+
             input AnimalImplementationsWhere {
               Dog: DogWhere
             }
@@ -1392,6 +1397,7 @@ describe("Plural option", () => {
 
             type Query {
               animales(options: AnimalOptions, where: AnimalWhere): [Animal!]!
+              animalesAggregate(where: AnimalWhere): AnimalAggregateSelection!
               cats(options: CatOptions, where: CatWhere): [Cat!]!
               catsAggregate(where: CatWhere): CatAggregateSelection!
               catsConnection(after: String, first: Int, sort: [CatSort], where: CatWhere): CatsConnection!

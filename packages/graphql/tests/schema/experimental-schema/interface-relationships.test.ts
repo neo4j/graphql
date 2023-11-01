@@ -390,6 +390,11 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelectionNonNullable!
+            }
+
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -452,6 +457,7 @@ describe("Interface Relationships", () => {
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -1513,6 +1519,11 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelectionNonNullable!
+            }
+
             input ProductionConnectInput {
               _on: ProductionImplementationsConnectInput
               actors: [ProductionActorsConnectFieldInput!]
@@ -1638,6 +1649,7 @@ describe("Interface Relationships", () => {
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -2164,6 +2176,11 @@ describe("Interface Relationships", () => {
               interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
+            type Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelectionNonNullable!
+            }
+
             input Interface1ConnectInput {
               _on: Interface1ImplementationsConnectInput
               interface2: [Interface1Interface2ConnectFieldInput!]
@@ -2328,6 +2345,11 @@ describe("Interface Relationships", () => {
               field2: String
             }
 
+            type Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelectionNullable!
+            }
+
             input Interface2ConnectWhere {
               node: Interface2Where!
             }
@@ -2410,7 +2432,9 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
               interface2s(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
               type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
               type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1sConnection!
@@ -2439,6 +2463,11 @@ describe("Interface Relationships", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
             }
 
             type Type1 {
@@ -3372,6 +3401,12 @@ describe("Interface Relationships", () => {
               id: ID
             }
 
+            type ContentAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
             input ContentConnectInput {
               _on: ContentImplementationsConnectInput
               creator: ContentCreatorConnectFieldInput
@@ -3990,6 +4025,7 @@ describe("Interface Relationships", () => {
               commentsAggregate(where: CommentWhere): CommentAggregateSelection!
               commentsConnection(after: String, first: Int, sort: [CommentSort], where: CommentWhere): CommentsConnection!
               contents(options: ContentOptions, where: ContentWhere): [Content!]!
+              contentsAggregate(where: ContentWhere): ContentAggregateSelection!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!

@@ -8719,6 +8719,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonImplementationsWhere {
                   PersonOne: PersonOneWhere
                   PersonTwo: PersonTwoWhere
@@ -8888,6 +8893,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9150,6 +9156,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
@@ -9324,6 +9335,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9586,6 +9598,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -9759,6 +9776,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10012,6 +10030,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonImplementationsUpdateInput {
                   PersonOne: PersonOneUpdateInput
                   PersonTwo: PersonTwoUpdateInput
@@ -10191,6 +10214,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10448,6 +10472,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonImplementationsWhere {
                   PersonOne: PersonOneWhere
                   PersonTwo: PersonTwoWhere
@@ -10617,6 +10646,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10874,6 +10904,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonImplementationsWhere {
                   PersonOne: PersonOneWhere
                   PersonTwo: PersonTwoWhere
@@ -11043,6 +11078,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11393,6 +11429,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -11581,6 +11622,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11911,6 +11953,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
@@ -12085,6 +12132,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
