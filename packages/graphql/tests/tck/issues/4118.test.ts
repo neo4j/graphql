@@ -201,10 +201,10 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
             	RETURN c AS this0_host_Tenant_unique_ignored
             }
             WITH *
-            OPTIONAL MATCH (this0)-[:HOSTED_BY]->(authorization_0_0_this1:Tenant)
-            WITH *, count(authorization_0_0_this1) AS hostCount
+            OPTIONAL MATCH (this0)-[:HOSTED_BY]->(authorization_0_0_0_0_this1:Tenant)
+            WITH *, count(authorization_0_0_0_0_this1) AS hostCount
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (hostCount <> 0 AND size([(authorization_0_0_this1)<-[:ADMIN_IN]-(authorization_0_0_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (hostCount <> 0 AND size([(authorization_0_0_0_0_this1)<-[:ADMIN_IN]-(authorization_0_0_0_0_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
