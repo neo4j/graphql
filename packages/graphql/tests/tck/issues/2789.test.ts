@@ -56,10 +56,10 @@ describe("https://github.com/neo4j/graphql/issues/2789", () => {
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($param1 IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization_param1 IS NOT NULL AND this.id = $authorization_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__before_param1 IS NOT NULL AND this.id = $authorization__before_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.password = $this_update_password
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization_param1 IS NOT NULL AND this.id = $authorization_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization_param1 IS NOT NULL AND this.id = $authorization_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__after_param1 IS NOT NULL AND this.id = $authorization__after_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__after_param1 IS NOT NULL AND this.id = $authorization__after_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($update_param1 IS NOT NULL AND this.id = $update_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .password }) AS data"
@@ -71,7 +71,8 @@ describe("https://github.com/neo4j/graphql/issues/2789", () => {
                 \\"update_param1\\": \\"Bar\\",
                 \\"param1\\": \\"Foo\\",
                 \\"this_update_password\\": \\"123\\",
-                \\"authorization_param1\\": \\"Foo\\",
+                \\"authorization__before_param1\\": \\"Bar\\",
+                \\"authorization__after_param1\\": \\"Foo\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

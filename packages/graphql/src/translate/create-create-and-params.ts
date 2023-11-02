@@ -250,6 +250,7 @@ function createCreateAndParams({
                         labelOverride: unionTypeName,
                         parentNode: node,
                         source: "CREATE",
+                        indexPrefix: makeAuthorizationParamsPrefix(authorizationPrefix),
                     });
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
@@ -303,6 +304,7 @@ function createCreateAndParams({
                 },
             ],
             operations: ["CREATE"],
+            indexPrefix: makeAuthorizationParamsPrefix(authorizationPrefix),
         });
 
         if (authorizationAndParams) {
@@ -370,7 +372,6 @@ function createCreateAndParams({
     }
 
     const { authorizationPredicates, authorizationSubqueries } = meta;
-    const authorizationVariablesPrefix = `${authorizationPrefix.inputIndex}_${authorizationPrefix.reducerIndex}_${authorizationPrefix.refNodeIndex}_${authorizationPrefix.createIndex}_`;
     const authorizationAndParams = createAuthorizationAfterAndParams({
         context,
         nodes: [
@@ -380,7 +381,7 @@ function createCreateAndParams({
             },
         ],
         operations: ["CREATE"],
-        indexPrefix: authorizationVariablesPrefix,
+        indexPrefix: makeAuthorizationParamsPrefix(authorizationPrefix),
     });
 
     if (authorizationAndParams) {
@@ -402,6 +403,15 @@ function createCreateAndParams({
     }
 
     return { create: creates.join("\n"), params, authorizationPredicates, authorizationSubqueries };
+}
+
+function makeAuthorizationParamsPrefix(authorizationPrefix: {
+    inputIndex: number;
+    reducerIndex: number;
+    createIndex: number;
+    refNodeIndex: number;
+}): string {
+    return `${authorizationPrefix.inputIndex}_${authorizationPrefix.reducerIndex}_${authorizationPrefix.refNodeIndex}_${authorizationPrefix.createIndex}_`;
 }
 
 export default createCreateAndParams;

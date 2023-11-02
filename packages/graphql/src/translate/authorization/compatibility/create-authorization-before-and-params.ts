@@ -50,10 +50,12 @@ export function createAuthorizationBeforeAndParams({
     context,
     nodes,
     operations,
+    indexPrefix,
 }: {
     context: Neo4jGraphQLTranslationContext;
     nodes: StringNodeMap[];
     operations: AuthorizationOperation[];
+    indexPrefix?: string;
 }): AuthorizationBeforeAndParams | undefined {
     const nodeMap = stringNodeMapToNodeMap(nodes);
 
@@ -64,7 +66,7 @@ export function createAuthorizationBeforeAndParams({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn);
+        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}before_`);
     }
 
     return undefined;
