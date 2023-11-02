@@ -21,7 +21,7 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/4170", () => {
+describe("https://github.com/neo4j/graphql/issues/4223", () => {
     let neoSchema: Neo4jGraphQL;
 
     const typeDefs = gql`
@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
 
         type Tenant @authorization(validate: [{ where: { node: { admins: { userId: "$jwt.id" } } } }]) {
             id: ID! @id
-            settings: Settings! @relationship(type: "HAS_SETTINGS", direction: OUT)
+            settings: Settings! @relationship(type: "VEHICLECARD_OWNER", direction: IN)
             admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN)
         }
 
@@ -44,6 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             id: ID! @id
             tenant: Tenant! @relationship(type: "HAS_SETTINGS", direction: IN)
             openingDays: [OpeningDay!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
+            myWorkspace: MyWorkspace! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: OUT)
             name: String
         }
 
@@ -64,6 +65,15 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             ) {
             name: String
             openingDay: OpeningDay! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN)
+            updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
+        }
+
+        type MyWorkspace
+            @authorization(
+                validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
+            ) {
+            settings: Settings! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: IN)
+            workspace: String
             updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
         }
     `;
@@ -119,6 +129,13 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                                         },
                                     },
                                 },
+                                myWorkspace: {
+                                    create: {
+                                        node: {
+                                            workspace: "myWorkspace",
+                                        },
+                                    },
+                                },
                             },
                         },
                     },
@@ -158,7 +175,20 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDOpeningDay.settings must be less than or equal to one', [0])
             	RETURN c AS this0_settings0_node_openingDays0_node_settings_Settings_unique_ignored
             }
-            MERGE (this0)-[:HAS_SETTINGS]->(this0_settings0_node)
+            WITH *
+            CREATE (this0_settings0_node_myWorkspace0_node:MyWorkspace)
+            SET this0_settings0_node_myWorkspace0_node.updatedBy = $resolvedCallbacks.this0_settings0_node_myWorkspace0_node_updatedBy_getUserIDFromContext
+            SET this0_settings0_node_myWorkspace0_node.workspace = $this0_settings0_node_myWorkspace0_node_workspace
+            MERGE (this0_settings0_node)-[:HAS_WORKSPACE_SETTINGS]->(this0_settings0_node_myWorkspace0_node)
+            WITH *
+            CALL {
+            	WITH this0_settings0_node_myWorkspace0_node
+            	MATCH (this0_settings0_node_myWorkspace0_node)<-[this0_settings0_node_myWorkspace0_node_settings_Settings_unique:HAS_WORKSPACE_SETTINGS]-(:Settings)
+            	WITH count(this0_settings0_node_myWorkspace0_node_settings_Settings_unique) as c
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMyWorkspace.settings required exactly once', [0])
+            	RETURN c AS this0_settings0_node_myWorkspace0_node_settings_Settings_unique_ignored
+            }
+            MERGE (this0)<-[:VEHICLECARD_OWNER]-(this0_settings0_node)
             WITH *
             CALL {
             	WITH this0_settings0_node
@@ -167,6 +197,13 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSettings.tenant required exactly once', [0])
             	RETURN c AS this0_settings0_node_tenant_Tenant_unique_ignored
             }
+            CALL {
+            	WITH this0_settings0_node
+            	MATCH (this0_settings0_node)-[this0_settings0_node_myWorkspace_MyWorkspace_unique:HAS_WORKSPACE_SETTINGS]->(:MyWorkspace)
+            	WITH count(this0_settings0_node_myWorkspace_MyWorkspace_unique) as c
+            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSettings.myWorkspace required exactly once', [0])
+            	RETURN c AS this0_settings0_node_myWorkspace_MyWorkspace_unique_ignored
+            }
             WITH *
             CREATE (this0_admins0_node:User)
             SET this0_admins0_node.userId = $this0_admins0_node_userId
@@ -174,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             WITH *
             CALL {
             	WITH this0
-            	MATCH (this0)-[this0_settings_Settings_unique:HAS_SETTINGS]->(:Settings)
+            	MATCH (this0)<-[this0_settings_Settings_unique:VEHICLECARD_OWNER]-(:Settings)
             	WITH count(this0_settings_Settings_unique) as c
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDTenant.settings required exactly once', [0])
             	RETURN c AS this0_settings_Settings_unique_ignored
@@ -205,10 +242,19 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                 WHERE (tenantCount <> 0 AND size([(authorization_2_0_0_0_this2)<-[:ADMIN_IN]-(authorization_2_0_0_0_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_2_0_0_0_this3.userId = $jwt.id) | 1]) > 0)
                 RETURN count(authorization_2_0_0_0_this1) = 1 AS authorization_2_0_0_0_var0
             }
+            CALL {
+                WITH this0_settings0_node_myWorkspace0_node
+                MATCH (this0_settings0_node_myWorkspace0_node)<-[:HAS_WORKSPACE_SETTINGS]-(authorization_2_1_0_0_this1:Settings)
+                OPTIONAL MATCH (authorization_2_1_0_0_this1)<-[:HAS_SETTINGS]-(authorization_2_1_0_0_this2:Tenant)
+                WITH *, count(authorization_2_1_0_0_this2) AS tenantCount
+                WITH *
+                WHERE (tenantCount <> 0 AND size([(authorization_2_1_0_0_this2)<-[:ADMIN_IN]-(authorization_2_1_0_0_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_2_1_0_0_this3.userId = $jwt.id) | 1]) > 0)
+                RETURN count(authorization_2_1_0_0_this1) = 1 AS authorization_2_1_0_0_var0
+            }
             OPTIONAL MATCH (this0_settings0_node)<-[:HAS_SETTINGS]-(authorization_1_0_0_0_this1:Tenant)
             WITH *, count(authorization_1_0_0_0_this1) AS tenantCount
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_3_0_0_0_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_2_0_0_0_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (tenantCount <> 0 AND size([(authorization_1_0_0_0_this1)<-[:ADMIN_IN]-(authorization_1_0_0_0_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_1_0_0_0_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:ADMIN_IN]-(authorization_0_0_0_0_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_3_0_0_0_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_2_0_0_0_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_2_1_0_0_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (tenantCount <> 0 AND size([(authorization_1_0_0_0_this1)<-[:ADMIN_IN]-(authorization_1_0_0_0_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_1_0_0_0_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:ADMIN_IN]-(authorization_0_0_0_0_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -229,9 +275,11 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             "{
                 \\"isAuthenticated\\": true,
                 \\"this0_settings0_node_openingDays0_node_open0_node_name\\": \\"lambo\\",
+                \\"this0_settings0_node_myWorkspace0_node_workspace\\": \\"myWorkspace\\",
                 \\"this0_admins0_node_userId\\": \\"123\\",
                 \\"resolvedCallbacks\\": {
-                    \\"this0_settings0_node_openingDays0_node_open0_node_updatedBy_getUserIDFromContext\\": \\"hi\\"
+                    \\"this0_settings0_node_openingDays0_node_open0_node_updatedBy_getUserIDFromContext\\": \\"hi\\",
+                    \\"this0_settings0_node_myWorkspace0_node_updatedBy_getUserIDFromContext\\": \\"hi\\"
                 }
             }"
         `);
