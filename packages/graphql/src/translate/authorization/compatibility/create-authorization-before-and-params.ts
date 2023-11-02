@@ -66,7 +66,7 @@ export function createAuthorizationBeforeAndParams({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn, `${indexPrefix}before_`);
+        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}before_`);
     }
 
     return undefined;
