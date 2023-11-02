@@ -18,9 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AggregationField } from "./AggregationField";
 import type { Entity } from "../../../../../schema-model/entity/Entity";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { AggregationField } from "./AggregationField";
 
 export class CountField extends AggregationField {
     private entity: Entity;
@@ -38,11 +38,11 @@ export class CountField extends AggregationField {
         return { [this.alias]: variable };
     }
 
-    public getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
-        return Cypher.count(variable);
-    }
-
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
         return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
+    }
+
+    private getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
+        return Cypher.count(variable);
     }
 }

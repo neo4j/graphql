@@ -38,8 +38,29 @@ export class AggregationAttributeField extends AggregationField {
         return { [this.alias]: variable };
     }
 
-    public getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
-        return Cypher.count(variable);
+    private getAggregationExpr(variable: Cypher.Variable | Cypher.Property): Cypher.Expr {
+        if (this.attribute.typeHelper.isString()) {
+            return new Cypher.Map({
+                longest: Cypher.head(variable),
+                shortest: Cypher.last(variable),
+            });
+        }
+        if (this.attribute.typeHelper.isInt() || this.attribute.typeHelper.isFloat()) {
+            return new Cypher.Map({
+                min: Cypher.min(variable),
+                max: Cypher.max(variable),
+                average: Cypher.avg(variable),
+                sum: Cypher.sum(variable),
+            });
+        }
+
+        if (this.attribute.typeHelper.isDateTime()) {
+            return new Cypher.Map({
+                min: this.createDatetimeProjection(Cypher.min(variable)),
+                max: this.createDatetimeProjection(Cypher.max(variable)),
+            });
+        }
+        throw new Error(`Invalid aggregation type ${this.attribute.type.name}`);
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
@@ -49,45 +70,14 @@ export class AggregationAttributeField extends AggregationField {
             return new Cypher.With(target)
                 .orderBy([Cypher.size(aggrProp), "DESC"])
                 .with([Cypher.collect(aggrProp), listVar])
-                .return([
-                    new Cypher.Map({
-                        longest: Cypher.head(listVar),
-                        shortest: Cypher.last(listVar),
-                    }),
-                    returnVar,
-                ]);
-        }
-        if (this.attribute.typeHelper.isInt() || this.attribute.typeHelper.isFloat()) {
-            const aggrProp = target.property(this.attribute.databaseName);
-            return new Cypher.Return([
-                new Cypher.Map({
-                    min: Cypher.min(aggrProp),
-                    max: Cypher.max(aggrProp),
-                    average: Cypher.avg(aggrProp),
-                    sum: Cypher.sum(aggrProp),
-                }),
-                returnVar,
-            ]);
+                .return([this.getAggregationExpr(listVar), returnVar]);
         }
 
-        if (this.attribute.typeHelper.isDateTime()) {
-            const aggrProp = target.property(this.attribute.databaseName);
-            return new Cypher.Return([
-                new Cypher.Map({
-                    min: this.createDatetimeProjection(Cypher.min(aggrProp)),
-                    max: this.createDatetimeProjection(Cypher.max(aggrProp)),
-                }),
-                returnVar,
-            ]);
-        }
-        throw new Error(`Invalid aggregation type ${this.attribute.type.name}`);
+        const aggrProp = target.property(this.attribute.databaseName);
+        return new Cypher.Return([this.getAggregationExpr(aggrProp), returnVar]);
     }
 
     private createDatetimeProjection(expr: Cypher.Expr) {
-        return Cypher.apoc.date.convertFormat(
-            expr,
-            "iso_zoned_date_time",
-            "iso_offset_date_time"
-        );
+        return Cypher.apoc.date.convertFormat(expr, "iso_zoned_date_time", "iso_offset_date_time");
     }
 }
