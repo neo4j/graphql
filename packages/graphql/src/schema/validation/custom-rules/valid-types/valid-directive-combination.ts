@@ -113,10 +113,10 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
             typeToDirectivesPerFieldMap.set(parentOfTraversedDef.name.value, seenFields);
         }
     };
-    const getDirectives = function (
+    const getDirectiveCombinations = function (
         node: ASTNodeWithDirectives,
         parentOfTraversedDef: ObjectOrInterfaceWithExtensions | undefined
-    ): DirectiveNode[] {
+    ): DirectiveNode[][] {
         const directivesToCheck: DirectiveNode[] = [...(node.directives || [])];
         if (
             node.kind === Kind.OBJECT_TYPE_DEFINITION ||
@@ -126,21 +126,33 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
         ) {
             // might have been directives on extension
             directivesToCheck.push(...(typeToDirectivesMap.get(node.name.value) || []));
-            return getInheritedTypeNames(node, interfaceToImplementingTypes).reduce((acc, i) => {
-                const inheritedDirectives = typeToDirectivesMap.get(i) || [];
-                return acc.concat(inheritedDirectives);
-            }, directivesToCheck);
+            const inheritedTypeNames = getInheritedTypeNames(node, interfaceToImplementingTypes);
+            if (inheritedTypeNames.length) {
+                return inheritedTypeNames.reduce<DirectiveNode[][]>((acc, i) => {
+                    const inheritedDirectives = typeToDirectivesMap.get(i) || [];
+                    acc.push(directivesToCheck.concat(inheritedDirectives));
+                    return acc;
+                }, []);
+            } else {
+                return [directivesToCheck];
+            }
         }
         if (node.kind === Kind.FIELD_DEFINITION) {
             if (!parentOfTraversedDef) {
-                return [];
+                return [[]];
             }
-            return getInheritedTypeNames(parentOfTraversedDef, interfaceToImplementingTypes).reduce((acc, i) => {
-                const inheritedDirectives = typeToDirectivesPerFieldMap.get(i)?.get(node.name.value) || [];
-                return acc.concat(inheritedDirectives);
-            }, directivesToCheck);
+            const inheritedTypeNames = getInheritedTypeNames(parentOfTraversedDef, interfaceToImplementingTypes);
+            if (inheritedTypeNames.length) {
+                return inheritedTypeNames.reduce<DirectiveNode[][]>((acc, i) => {
+                    const inheritedDirectives = typeToDirectivesPerFieldMap.get(i)?.get(node.name.value) || [];
+                    acc.push(directivesToCheck.concat(inheritedDirectives));
+                    return acc;
+                }, []);
+            } else {
+                return [directivesToCheck];
+            }
         }
-        return directivesToCheck;
+        return [directivesToCheck];
     };
 
     return {
@@ -154,15 +166,10 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
 
             hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementingTypes);
             hydrateWithDirectives(node, parentOfTraversedDef);
-            const directivesToCheck = getDirectives(node, parentOfTraversedDef);
-
-            if (directivesToCheck.length < 2) {
-                // no combination to check
-                return;
-            }
+            const directiveCombinationsToCheck = getDirectiveCombinations(node, parentOfTraversedDef);
 
             const { isValid, errorMsg, errorPath } = assertValid(() =>
-                assertValidDirectives(directivesToCheck, node.kind)
+                assertValidDirectives(directiveCombinationsToCheck, node.kind)
             );
             if (!isValid) {
                 context.reportError(
@@ -194,24 +201,30 @@ function getInvalidCombinations(kind: ASTNode["kind"]): Record<PropertyKey, Read
     return {};
 }
 
-function assertValidDirectives(directives: DirectiveNode[], kind: ASTNode["kind"]) {
+function assertValidDirectives(directiveCombinationsToCheck: DirectiveNode[][], kind: ASTNode["kind"]) {
     const invalidCombinations = getInvalidCombinations(kind);
 
-    directives.forEach((directive) => {
-        if (invalidCombinations[directive.name.value]) {
-            directives.forEach((d) => {
-                if (d.name.value === directive.name.value) {
-                    return;
-                }
-                if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
-                    throw new DocumentValidationError(
-                        `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
-                        []
-                    );
-                }
-            });
+    for (const directives of directiveCombinationsToCheck) {
+        if (directives.length < 2) {
+            // no combination to check
+            continue;
         }
-    });
+        directives.forEach((directive) => {
+            if (invalidCombinations[directive.name.value]) {
+                directives.forEach((d) => {
+                    if (d.name.value === directive.name.value) {
+                        return;
+                    }
+                    if (invalidCombinations[directive.name.value]?.includes(d.name.value)) {
+                        throw new DocumentValidationError(
+                            `Invalid directive usage: Directive @${directive.name.value} cannot be used in combination with @${d.name.value}`,
+                            []
+                        );
+                    }
+                });
+            }
+        });
+    }
 }
 
 export function SchemaOrTypeDirectives(context: SDLValidationContext): ASTVisitor {
