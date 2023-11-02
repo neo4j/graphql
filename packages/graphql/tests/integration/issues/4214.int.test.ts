@@ -218,4 +218,45 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
 
         expect(result.errors).toBeUndefined();
     });
+
+    test("should throw forbidden because admin does not have create rights", async () => {
+        const query = /* GraphQL */ `
+            mutation SaveItems {
+                createTransactionItems(
+                    input: {
+                        name: "Milk"
+                        price: 5
+                        quantity: 1
+                        transaction: { connect: { where: { node: { id: "transactionid" } } } }
+                    }
+                ) {
+                    transactionItems {
+                        name
+                        transaction {
+                            id
+                            store {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {
+            id: "15cbd399-daaf-4579-ad2e-264bc956094c",
+            email: "a@a.com",
+            roles: ["admin"],
+            store: "8c8bb4bc-07dc-4808-bb20-f69d447a03b0",
+        });
+
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ token }),
+        });
+
+        expect(result.errors).toBeDefined();
+        expect(result.errors?.[0]?.message).toBe("Forbidden");
+    });
 });

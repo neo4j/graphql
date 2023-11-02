@@ -237,6 +237,7 @@ function createCreateAndParams({
                         labelOverride: unionTypeName,
                         parentNode: node,
                         source: "CREATE",
+                        indexPrefix: makeAuthorizationParamsPrefix({ refNodeIndex, idx }),
                     });
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
@@ -290,6 +291,7 @@ function createCreateAndParams({
                 },
             ],
             operations: ["CREATE"],
+            indexPrefix: makeAuthorizationParamsPrefix({ refNodeIndex, idx }),
         });
 
         if (authorizationAndParams) {
@@ -388,6 +390,10 @@ function createCreateAndParams({
     }
 
     return { create: creates.join("\n"), params, authorizationPredicates, authorizationSubqueries };
+}
+
+function makeAuthorizationParamsPrefix({ refNodeIndex, idx }: { refNodeIndex: number; idx: number }): string {
+    return `${refNodeIndex}_${idx}_`;
 }
 
 export default createCreateAndParams;
