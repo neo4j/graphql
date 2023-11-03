@@ -51,6 +51,7 @@ function createConnectAndParams({
     includeRelationshipValidation,
     isFirstLevel = true,
     source,
+    indexPrefix,
 }: {
     withVars: string[];
     value: any;
@@ -65,6 +66,7 @@ function createConnectAndParams({
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
     source: "CREATE" | "UPDATE" | "CONNECT";
+    indexPrefix?: string;
 }): [string, any] {
     checkAuthentication({ context, node: parentNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
@@ -181,6 +183,7 @@ function createConnectAndParams({
             context,
             nodes: authorizationNodes,
             operations: ["CREATE_RELATIONSHIP"],
+            indexPrefix,
         });
 
         if (authorizationBeforeAndParams) {
@@ -440,6 +443,7 @@ function createConnectAndParams({
                 { node: relatedNode, variable: nodeName },
             ],
             operations: ["CREATE_RELATIONSHIP"],
+            indexPrefix,
         });
 
         if (authorizationAfterAndParams) {
