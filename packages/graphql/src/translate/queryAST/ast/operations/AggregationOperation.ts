@@ -19,9 +19,10 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
@@ -31,7 +32,6 @@ import type { Pagination } from "../pagination/Pagination";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
@@ -91,7 +91,6 @@ export class AggregationOperation extends Operation {
     }
 
     private createSubquery(
-        entity: RelationshipAdapter,
         field: AggregationField,
         pattern: Cypher.Pattern,
         target: Cypher.Variable,
@@ -156,7 +155,7 @@ export class AggregationOperation extends Operation {
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, targetNode, returnVariable, nestedContext);
+            return this.createSubquery(f, pattern, targetNode, returnVariable, nestedContext);
         });
 
         const nodeMap = new Cypher.Map();
@@ -164,12 +163,12 @@ export class AggregationOperation extends Operation {
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, targetNode, returnVariable, nestedContext);
+            return this.createSubquery(f, pattern, targetNode, returnVariable, nestedContext);
         });
         const edgeFieldSubqueries = this.edgeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             edgeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, relVar, returnVariable, nestedContext);
+            return this.createSubquery(f, pattern, relVar, returnVariable, nestedContext);
         });
 
         if (nodeMap.size > 0) {
@@ -200,13 +199,38 @@ export class AggregationOperation extends Operation {
     }
 
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
-        const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, {
-            context,
-        });
-        return {
-            clauses,
-            projectionExpr: this.aggregationProjectionMap,
-        };
+        if (this.entity instanceof RelationshipAdapter) {
+            const clauses = this.transpileNestedRelationship(this.entity, {
+                context,
+            });
+            return {
+                clauses,
+                projectionExpr: this.aggregationProjectionMap,
+            };
+        } else {
+            const nodeVar = createNodeFromEntity(this.entity, context.neo4jGraphQLContext, this.nodeAlias);
+
+            if (!context.target) throw new Error("Context target not found!");
+            const projectionMap = new Cypher.Map();
+
+            this.fields.map((f) => {
+                const aggrExpr = f.getAggregationExpr(nodeVar);
+                projectionMap.set({ [f.alias]: aggrExpr });
+            });
+
+            const filterPredicates = this.getPredicates(context);
+
+            const clause = new Cypher.Match(nodeVar);
+            if (filterPredicates) {
+                clause.where(filterPredicates);
+            }
+
+            clause.return(projectionMap);
+            return {
+                clauses: [clause],
+                projectionExpr: context.returnVariable,
+            };
+        }
     }
 
     private addSortToClause(

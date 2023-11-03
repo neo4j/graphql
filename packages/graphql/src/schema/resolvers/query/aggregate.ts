@@ -38,13 +38,19 @@ export function aggregateResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const [aggregateCypher, aggregateParams] = translateAggregate({
+        const { cypher, params } = translateAggregate({
             context: context as Neo4jGraphQLTranslationContext,
             node,
+            entityAdapter: concreteEntityAdapter,
         });
+        // const [aggregateCypher, aggregateParams] = translateAggregate({
+        //     context: context as Neo4jGraphQLTranslationContext,
+        //     node,
+        //     entityAdapter: concreteEntityAdapter,
+        // });
 
-        const { cypher, params: builtParams } = aggregateCypher.build();
-        const params = { ...aggregateParams, ...builtParams };
+        // const { cypher, params: builtParams } = aggregateCypher.build();
+        // const params = { ...aggregateParams, ...builtParams };
 
         const executeResult = await execute({
             cypher,

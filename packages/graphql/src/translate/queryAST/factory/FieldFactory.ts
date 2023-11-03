@@ -37,11 +37,11 @@ import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/Cypher
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
+import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
-import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 
 export class FieldFactory {
     private queryASTFactory: QueryASTFactory;
@@ -131,7 +131,8 @@ export class FieldFactory {
 
     public createAggregationFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter,
-        rawFields: Record<string, ResolveTree>
+        rawFields: Record<string, ResolveTree>,
+        topLevel: boolean
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
@@ -143,9 +144,22 @@ export class FieldFactory {
                 } else {
                     const attribute = entity.findAttribute(field.name);
                     if (!attribute) throw new Error(`Attribute ${field.name} not found`);
+
+                    const aggregateFields =
+                        field.fieldsByTypeName[attribute.getAggregateSelectionTypeName(false)] ||
+                        field.fieldsByTypeName[attribute.getAggregateSelectionTypeName(true)] ||
+                        {};
+
+                    const aggregationProjection = Object.values(aggregateFields).reduce((acc, f) => {
+                        acc[f.name] = f.alias;
+                        return acc;
+                    }, {});
+
                     return new AggregationAttributeField({
                         attribute,
                         alias: field.alias,
+                        aggregationProjection,
+                        useReduce: topLevel,
                     });
                 }
             })

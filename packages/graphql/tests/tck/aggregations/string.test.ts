@@ -53,14 +53,10 @@ describe("Cypher Aggregations String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN { title: { shortest:
-                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
-                                            CASE
-                                            WHEN size(current) < size(aggVar) THEN current
-                                            ELSE aggVar
-                                            END
-                                        )
-                                     } }"
+            RETURN { title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
+                WHEN size(current) < size(aggVar) THEN current
+                ELSE aggVar
+            END) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -81,14 +77,10 @@ describe("Cypher Aggregations String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN { title: { longest:
-                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
-                                            CASE
-                                            WHEN size(current) > size(aggVar) THEN current
-                                            ELSE aggVar
-                                            END
-                                        )
-                                     } }"
+            RETURN { title: { longest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
+                WHEN size(current) > size(aggVar) THEN current
+                ELSE aggVar
+            END) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -110,21 +102,13 @@ describe("Cypher Aggregations String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN { title: { shortest:
-                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
-                                            CASE
-                                            WHEN size(current) < size(aggVar) THEN current
-                                            ELSE aggVar
-                                            END
-                                        )
-                                    , longest:
-                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
-                                            CASE
-                                            WHEN size(current) > size(aggVar) THEN current
-                                            ELSE aggVar
-                                            END
-                                        )
-                                     } }"
+            RETURN { title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
+                WHEN size(current) < size(aggVar) THEN current
+                ELSE aggVar
+            END), longest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
+                WHEN size(current) > size(aggVar) THEN current
+                ELSE aggVar
+            END) } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

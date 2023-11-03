@@ -42,7 +42,7 @@ export class CountField extends AggregationField {
         return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
     }
 
-    private getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
+    public getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
         return Cypher.count(variable);
     }
 }
