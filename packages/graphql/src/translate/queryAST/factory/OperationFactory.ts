@@ -251,12 +251,21 @@ export class OperationsFactory {
 
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+
+        const attributeFilters = this.createAggregationAttributeAuthFilters({
+            entity,
+            rawFields: projectionFields,
+            context,
+        });
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
         operation.setFilters(filters);
 
         if (authFilters) {
             operation.addAuthFilters(authFilters);
+        }
+        if (attributeFilters.length > 0) {
+            operation.addAuthFilters(...attributeFilters);
         }
 
         // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
@@ -617,6 +626,32 @@ export class OperationsFactory {
                     attribute,
                     entity,
                     ["READ"],
+                    context
+                );
+
+                return result;
+            })
+        );
+    }
+
+    private createAggregationAttributeAuthFilters({
+        entity,
+        rawFields,
+        context,
+    }: {
+        entity: ConcreteEntityAdapter;
+        rawFields: Record<string, ResolveTree>;
+        context: Neo4jGraphQLTranslationContext;
+    }): AuthorizationFilters[] {
+        return filterTruthy(
+            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
+                const { fieldName } = parseSelectionSetField(field.name);
+                const attribute = entity.findAttribute(fieldName);
+                if (!attribute) return undefined;
+                const result = this.authorizationFactory.createAttributeAuthFilters(
+                    attribute,
+                    entity,
+                    ["AGGREGATE"],
                     context
                 );
 

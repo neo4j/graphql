@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { AuthorizationRuleFilter } from "../ast/filters/authorization-filters/AuthorizationRuleFilter";
-import type { AuthorizationOperation } from "../../../types/authorization";
-import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
-import { populateWhereParams } from "../../authorization/utils/populate-where-params";
-import type { AuthFilterFactory } from "./AuthFilterFactory";
-import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import type { AuthorizationAnnotation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { AuthorizationOperation } from "../../../types/authorization";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
+import { populateWhereParams } from "../../authorization/utils/populate-where-params";
+import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import { AuthorizationRuleFilter } from "../ast/filters/authorization-filters/AuthorizationRuleFilter";
+import type { AuthFilterFactory } from "./AuthFilterFactory";
 
 export class AuthorizationFactory {
     private filterFactory: AuthFilterFactory;

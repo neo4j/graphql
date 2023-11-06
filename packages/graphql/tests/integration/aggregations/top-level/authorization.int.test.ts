@@ -92,7 +92,7 @@ describe("aggregations-top_level authorization", () => {
         }
     });
 
-    test.only("should append auth where to predicate and return post count for this user", async () => {
+    test("should append auth where to predicate and return post count for this user", async () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `

@@ -158,14 +158,25 @@ export class AggregationOperation extends Operation {
 
             const filterPredicates = this.getPredicates(context);
 
-            const clause = new Cypher.Match(nodeVar);
+            let extraSelection = this.getChildren().flatMap((c) => {
+                return c.getSelection(context);
+            });
+            const topLevelMatch = new Cypher.Match(nodeVar);
+            let clause: Cypher.With | Cypher.Match = topLevelMatch;
+
+            if (extraSelection.length > 0) {
+                clause = new Cypher.With("*");
+                extraSelection = [topLevelMatch, ...extraSelection];
+            }
+
             if (filterPredicates) {
                 clause.where(filterPredicates);
             }
 
             clause.return(projectionMap);
+
             return {
-                clauses: [clause],
+                clauses: [Cypher.concat(...extraSelection, clause)],
                 projectionExpr: context.returnVariable,
             };
         }
