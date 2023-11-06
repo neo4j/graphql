@@ -63,6 +63,8 @@ function translateAggregate({
         return translateQuery({ context, entityAdapter });
     }
 
+    // TODO: Move fulltext to new translation layer to remove the deprecated translation
+
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: Record<string, any> = {};
@@ -192,7 +194,6 @@ function translateAggregate({
 
     const retSt = new Cypher.Return(projections);
     cypherStrs.push(retSt);
-    // const result: [Cypher.Clause, Record<string, any>] = [Cypher.concat(...cypherStrs), cypherParams];
 
     return Cypher.concat(...cypherStrs).build(undefined, cypherParams);
 }
