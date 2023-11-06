@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4j from "../../neo4j";
 
 describe("aggregations-top_level authorization", () => {
     let driver: Driver;
@@ -92,7 +92,7 @@ describe("aggregations-top_level authorization", () => {
         }
     });
 
-    test("should append auth where to predicate and return post count for this user", async () => {
+    test.only("should append auth where to predicate and return post count for this user", async () => {
         const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `

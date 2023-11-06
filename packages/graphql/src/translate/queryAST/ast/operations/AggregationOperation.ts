@@ -135,6 +135,42 @@ export class AggregationOperation extends Operation {
         );
     }
 
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+        if (this.entity instanceof RelationshipAdapter) {
+            const clauses = this.transpileNestedRelationship(this.entity, {
+                context,
+            });
+            return {
+                clauses,
+                projectionExpr: this.aggregationProjectionMap,
+            };
+        } else {
+            const nodeVar = createNodeFromEntity(this.entity, context.neo4jGraphQLContext, this.nodeAlias);
+
+            if (!context.target) throw new Error("Context target not found!");
+
+            const projectionMap = new Cypher.Map();
+
+            this.fields.map((f) => {
+                const aggrExpr = f.getAggregationExpr(nodeVar);
+                projectionMap.set({ [f.alias]: aggrExpr });
+            });
+
+            const filterPredicates = this.getPredicates(context);
+
+            const clause = new Cypher.Match(nodeVar);
+            if (filterPredicates) {
+                clause.where(filterPredicates);
+            }
+
+            clause.return(projectionMap);
+            return {
+                clauses: [clause],
+                projectionExpr: context.returnVariable,
+            };
+        }
+    }
+
     private transpileNestedRelationship(
         // Create new Clause per field
         entity: RelationshipAdapter,
@@ -189,48 +225,13 @@ export class AggregationOperation extends Operation {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
-    }
-
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
-        if (this.entity instanceof RelationshipAdapter) {
-            const clauses = this.transpileNestedRelationship(this.entity, {
-                context,
-            });
-            return {
-                clauses,
-                projectionExpr: this.aggregationProjectionMap,
-            };
-        } else {
-            const nodeVar = createNodeFromEntity(this.entity, context.neo4jGraphQLContext, this.nodeAlias);
-
-            if (!context.target) throw new Error("Context target not found!");
-            const projectionMap = new Cypher.Map();
-
-            this.fields.map((f) => {
-                const aggrExpr = f.getAggregationExpr(nodeVar);
-                projectionMap.set({ [f.alias]: aggrExpr });
-            });
-
-            const filterPredicates = this.getPredicates(context);
-
-            const clause = new Cypher.Match(nodeVar);
-            if (filterPredicates) {
-                clause.where(filterPredicates);
-            }
-
-            clause.return(projectionMap);
-            return {
-                clauses: [clause],
-                projectionExpr: context.returnVariable,
-            };
-        }
+    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
     }
 
     private addSortToClause(
