@@ -27,7 +27,7 @@ export class AggregationAttributeField extends AggregationField {
     private attribute: AttributeAdapter;
 
     private aggregationProjection: Record<string, string>;
-    private useReduce: boolean; //Use reduce instead of subqueries
+    private useReduce: boolean; //Use Cypher reduce instead of subqueries, this option is to support top level aggregations until these are moved to subqueries
 
     constructor({
         alias,
@@ -72,66 +72,29 @@ export class AggregationAttributeField extends AggregationField {
         return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
     }
 
-    private createAggregationExpr(variable: Cypher.Variable | Cypher.Property): Cypher.Expr {
+    private createAggregationExpr(target: Cypher.Variable | Cypher.Property): Cypher.Expr {
         if (this.attribute.typeHelper.isString()) {
             if (this.useReduce) {
-                const aggVar = new Cypher.NamedVariable("aggVar");
-                const current = new Cypher.NamedVariable("current");
-                const collectIndex1 = new Cypher.Raw((env) => {
-                    const collect = Cypher.collect(variable);
-                    const result = env.compile(collect);
-                    return `${result}[0]`;
-                });
-                const collectIndex2 = new Cypher.Raw((env) => {
-                    const collect = Cypher.collect(variable);
-                    const result = env.compile(collect);
-                    return `${result}[0]`;
-                });
-
-                return new Cypher.Map(
-                    this.filterProjection({
-                        shortest: Cypher.reduce(
-                            aggVar,
-                            collectIndex1,
-                            current,
-                            Cypher.collect(variable),
-                            new Cypher.Case()
-                                .when(Cypher.lt(Cypher.size(current), Cypher.size(aggVar)))
-                                .then(current)
-                                .else(aggVar)
-                        ),
-                        longest: Cypher.reduce(
-                            aggVar,
-                            collectIndex2,
-                            current,
-                            Cypher.collect(variable),
-                            new Cypher.Case()
-                                .when(Cypher.gt(Cypher.size(current), Cypher.size(aggVar)))
-                                .then(current)
-                                .else(aggVar)
-                        ),
-                    })
-                );
+                // TODO: use subqueries for top level aggregations
+                return this.createAggregationExpressionForStringWithReduce(target);
             }
 
             return new Cypher.Map(
                 this.filterProjection({
-                    longest: Cypher.head(variable),
-                    shortest: Cypher.last(variable),
+                    longest: Cypher.head(target),
+                    shortest: Cypher.last(target),
                 })
             );
         }
-        if (
-            this.attribute.typeHelper.isInt() ||
-            this.attribute.typeHelper.isFloat() ||
-            this.attribute.typeHelper.isBigInt()
-        ) {
+
+        // NOTE: These are types that are treated as numeric by aggregation
+        if (this.attribute.typeHelper.isNumeric()) {
             return new Cypher.Map(
                 this.filterProjection({
-                    min: Cypher.min(variable),
-                    max: Cypher.max(variable),
-                    average: Cypher.avg(variable),
-                    sum: Cypher.sum(variable),
+                    min: Cypher.min(target),
+                    max: Cypher.max(target),
+                    average: Cypher.avg(target),
+                    sum: Cypher.sum(target),
                 })
             );
         }
@@ -139,16 +102,16 @@ export class AggregationAttributeField extends AggregationField {
         if (this.attribute.typeHelper.isDateTime()) {
             return new Cypher.Map(
                 this.filterProjection({
-                    min: this.createDatetimeProjection(Cypher.min(variable)),
-                    max: this.createDatetimeProjection(Cypher.max(variable)),
+                    min: this.createDatetimeProjection(Cypher.min(target)),
+                    max: this.createDatetimeProjection(Cypher.max(target)),
                 })
             );
         }
         if (this.attribute.typeHelper.isTemporal()) {
             return new Cypher.Map(
                 this.filterProjection({
-                    min: Cypher.min(variable),
-                    max: Cypher.max(variable),
+                    min: Cypher.min(target),
+                    max: Cypher.max(target),
                 })
             );
         }
@@ -156,14 +119,15 @@ export class AggregationAttributeField extends AggregationField {
         if (this.attribute.typeHelper.isID()) {
             return new Cypher.Map(
                 this.filterProjection({
-                    shortest: Cypher.min(variable),
-                    longest: Cypher.max(variable),
+                    shortest: Cypher.min(target),
+                    longest: Cypher.max(target),
                 })
             );
         }
         throw new Error(`Invalid aggregation type ${this.attribute.type.name}`);
     }
 
+    // Filters and apply aliases in the projection
     private filterProjection(projectionFields: Record<string, Cypher.Expr>): Record<string, Cypher.Expr> {
         const filteredFields = filterFields(projectionFields, Object.keys(this.aggregationProjection));
         return renameFields(filteredFields, this.aggregationProjection);
@@ -171,5 +135,55 @@ export class AggregationAttributeField extends AggregationField {
 
     private createDatetimeProjection(expr: Cypher.Expr) {
         return Cypher.apoc.date.convertFormat(expr, "iso_zoned_date_time", "iso_offset_date_time");
+    }
+
+    private createAggregationExpressionForStringWithReduce(target: Cypher.Variable | Cypher.Property): Cypher.Map {
+        const aggregationVar = new Cypher.NamedVariable("aggVar");
+        const iterationVar = new Cypher.NamedVariable("current");
+
+        return new Cypher.Map(
+            this.filterProjection({
+                shortest: this.createReduceExpression({
+                    target,
+                    aggregationVar,
+                    iterationVar,
+                    operator: Cypher.lt,
+                }),
+                longest: this.createReduceExpression({
+                    target,
+                    aggregationVar,
+                    iterationVar,
+                    operator: Cypher.gt,
+                }),
+            })
+        );
+    }
+
+    private createReduceExpression({
+        target,
+        aggregationVar,
+        iterationVar,
+        operator,
+    }: {
+        target: Cypher.Variable | Cypher.Property;
+        aggregationVar: Cypher.Variable;
+        iterationVar: Cypher.Variable;
+        operator: typeof Cypher.lt | typeof Cypher.gt;
+    }): Cypher.Expr {
+        const collectIndex1 = new Cypher.Raw((env) => {
+            const collect = Cypher.collect(target);
+            const result = env.compile(collect);
+            return `${result}[0]`;
+        });
+
+        const reduceOperation = operator(Cypher.size(iterationVar), Cypher.size(aggregationVar));
+
+        return Cypher.reduce(
+            aggregationVar,
+            collectIndex1,
+            iterationVar,
+            Cypher.collect(target),
+            new Cypher.Case().when(reduceOperation).then(iterationVar).else(aggregationVar)
+        );
     }
 }

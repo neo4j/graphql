@@ -43,14 +43,6 @@ export function aggregateResolver({
             node,
             entityAdapter: concreteEntityAdapter,
         });
-        // const [aggregateCypher, aggregateParams] = translateAggregate({
-        //     context: context as Neo4jGraphQLTranslationContext,
-        //     node,
-        //     entityAdapter: concreteEntityAdapter,
-        // });
-
-        // const { cypher, params: builtParams } = aggregateCypher.build();
-        // const params = { ...aggregateParams, ...builtParams };
 
         const executeResult = await execute({
             cypher,
