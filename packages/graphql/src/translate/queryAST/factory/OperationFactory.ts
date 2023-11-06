@@ -207,17 +207,12 @@ export class OperationsFactory {
         topLevel = false
     ): AggregationOperation {
         let entity: ConcreteEntityAdapter;
-        // if (!(entityOrRel instanceof RelationshipAdapter)) {
-        //     throw new Error("Not implemented");
-        // }
-
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter;
         } else {
             entity = entityOrRel;
         }
 
-        // const entity = entityOrRel.target as ConcreteEntityAdapter;
         if (isConcreteEntity(entity)) {
             checkEntityAuthentication({
                 entity: entity.entity,
@@ -229,6 +224,7 @@ export class OperationsFactory {
         const rawProjectionFields = {
             ...resolveTree.fieldsByTypeName[entityOrRel.operations.getAggregationFieldTypename()],
         };
+
         const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
         const projectionFields = parsedProjectionFields.fields;
         const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, topLevel);

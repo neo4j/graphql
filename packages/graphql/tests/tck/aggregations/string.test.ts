@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations String", () => {
     let typeDefs: DocumentNode;
@@ -29,7 +29,8 @@ describe("Cypher Aggregations String", () => {
     beforeAll(() => {
         typeDefs = gql`
             type Movie {
-                title: String!
+                title: String
+                testId: ID
             }
         `;
 
@@ -38,7 +39,7 @@ describe("Cypher Aggregations String", () => {
         });
     });
 
-    test("Min", async () => {
+    test("Shortest", async () => {
         const query = gql`
             {
                 moviesAggregate {
@@ -62,7 +63,7 @@ describe("Cypher Aggregations String", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("Max", async () => {
+    test("Longest", async () => {
         const query = gql`
             {
                 moviesAggregate {
@@ -86,7 +87,7 @@ describe("Cypher Aggregations String", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("Min and Max", async () => {
+    test("Shortest and longest", async () => {
         const query = gql`
             {
                 moviesAggregate {
@@ -112,5 +113,34 @@ describe("Cypher Aggregations String", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Shortest with filter", async () => {
+        const query = gql`
+            {
+                moviesAggregate(where: { testId: "10" }) {
+                    title {
+                        shortest
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.testId = $param0
+            RETURN { title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
+                WHEN size(current) < size(aggVar) THEN current
+                ELSE aggVar
+            END) } }"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"10\\"
+            }"
+        `);
     });
 });
