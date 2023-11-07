@@ -137,7 +137,7 @@ export class AggregationOperation extends Operation {
 
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
         if (this.entity instanceof RelationshipAdapter) {
-            const clauses = this.transpileNestedRelationship(this.entity, {
+            const clauses = this.transpileNestedAggregation(this.entity, {
                 context,
             });
             return {
@@ -145,44 +145,52 @@ export class AggregationOperation extends Operation {
                 projectionExpr: this.aggregationProjectionMap,
             };
         } else {
-            const nodeVar = createNodeFromEntity(this.entity, context.neo4jGraphQLContext, this.nodeAlias);
-
-            if (!context.target) throw new Error("Context target not found!");
-
-            const projectionMap = new Cypher.Map();
-
-            this.fields.map((f) => {
-                const aggrExpr = f.getAggregationExpr(nodeVar);
-                projectionMap.set({ [f.alias]: aggrExpr });
-            });
-
-            const filterPredicates = this.getPredicates(context);
-
-            let extraSelection = this.getChildren().flatMap((c) => {
-                return c.getSelection(context);
-            });
-            const topLevelMatch = new Cypher.Match(nodeVar);
-            let clause: Cypher.With | Cypher.Match = topLevelMatch;
-
-            if (extraSelection.length > 0) {
-                clause = new Cypher.With("*");
-                extraSelection = [topLevelMatch, ...extraSelection];
-            }
-
-            if (filterPredicates) {
-                clause.where(filterPredicates);
-            }
-
-            clause.return(projectionMap);
-
+            const clauses = this.transpileTopLevelAggregation(this.entity, { context });
             return {
-                clauses: [Cypher.concat(...extraSelection, clause)],
+                clauses,
                 projectionExpr: context.returnVariable,
             };
         }
     }
 
-    private transpileNestedRelationship(
+    private transpileTopLevelAggregation(
+        entity: ConcreteEntityAdapter,
+        { context }: OperationTranspileOptions
+    ): Cypher.Clause[] {
+        const nodeVar = createNodeFromEntity(entity, context.neo4jGraphQLContext, this.nodeAlias);
+
+        if (!context.target) throw new Error("Context target not found!");
+
+        const projectionMap = new Cypher.Map();
+
+        this.fields.forEach((f) => {
+            const aggrExpr = f.getAggregationExpr(nodeVar);
+            projectionMap.set({ [f.alias]: aggrExpr });
+        });
+
+        const filterPredicates = this.getPredicates(context);
+
+        const topLevelMatch = new Cypher.Match(nodeVar);
+        let clause: Cypher.With | Cypher.Match = topLevelMatch;
+
+        let extraSelection = this.getChildren().flatMap((c) => {
+            return c.getSelection(context);
+        });
+
+        if (extraSelection.length > 0) {
+            clause = new Cypher.With("*");
+            extraSelection = [topLevelMatch, ...extraSelection];
+        }
+
+        if (filterPredicates) {
+            clause.where(filterPredicates);
+        }
+
+        clause.return(projectionMap);
+        return [Cypher.concat(...extraSelection, clause)];
+    }
+
+    private transpileNestedAggregation(
         // Create new Clause per field
         entity: RelationshipAdapter,
         { context }: OperationTranspileOptions
