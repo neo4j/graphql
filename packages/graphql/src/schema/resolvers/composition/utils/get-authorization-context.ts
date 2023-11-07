@@ -39,11 +39,6 @@ export async function getAuthorizationContext(
     authorization?: Neo4jGraphQLAuthorization,
     jwtClaimsMap?: Map<string, string>
 ): Promise<AuthorizationContext> {
-    if (!authorization) {
-        debug("authorization settings not specified, request not authenticated");
-        return unauthorizedContext;
-    }
-
     if (context.jwt) {
         const isAuthenticated = true;
         const jwt = context.jwt;
@@ -56,6 +51,11 @@ export async function getAuthorizationContext(
             jwtParam: new Cypher.NamedParam("jwt", jwt),
             isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
         };
+    }
+
+    if (!authorization) {
+        debug("authorization settings not specified, request not authenticated");
+        return unauthorizedContext;
     }
 
     if (context.token) {

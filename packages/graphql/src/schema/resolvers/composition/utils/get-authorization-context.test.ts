@@ -24,14 +24,22 @@ import { getAuthorizationContext } from "./get-authorization-context";
 describe("getAuthorizationContext", () => {
     const secret = "secret";
 
-    test("no authorization settings returns unauthorized context", async () => {
-        const context = await getAuthorizationContext({}, undefined);
+    test("no authorization settings and token returns unauthorized context", async () => {
+        const context = await getAuthorizationContext({ token: createBearerToken(secret, { sub: "user" }) }, undefined);
         expect(context.isAuthenticated).toBe(false);
     });
+
+    test("no authorization settings and jwt returns authorized context", async () => {
+        const context = await getAuthorizationContext({ jwt: { sub: "user" } }, undefined);
+        expect(context.isAuthenticated).toBe(true);
+        expect(context.jwt?.sub).toBe("user");
+    });
+
     test("authorization settings but no jwt or token returns unauthorized context", async () => {
         const context = await getAuthorizationContext({}, new Neo4jGraphQLAuthorization({ key: secret }));
         expect(context.isAuthenticated).toBe(false);
     });
+
     test("decoded jwt returns authorized context", async () => {
         const context = await getAuthorizationContext(
             { jwt: { sub: "user" } },
@@ -40,6 +48,7 @@ describe("getAuthorizationContext", () => {
         expect(context.isAuthenticated).toBe(true);
         expect(context.jwt?.sub).toBe("user");
     });
+
     test("token returns authorized context", async () => {
         const context = await getAuthorizationContext(
             { token: createBearerToken(secret, { sub: "user" }) },
@@ -48,6 +57,7 @@ describe("getAuthorizationContext", () => {
         expect(context.isAuthenticated).toBe(true);
         expect(context.jwt?.sub).toBe("user");
     });
+
     test("decoded jwt and token returns authorized context using jwt", async () => {
         const context = await getAuthorizationContext(
             { jwt: { sub: "user1" }, token: createBearerToken(secret, { sub: "user2" }) },
