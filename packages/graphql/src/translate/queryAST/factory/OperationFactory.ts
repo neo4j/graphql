@@ -27,6 +27,7 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
+import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
@@ -221,6 +222,7 @@ export class OperationsFactory {
             });
         }
         const operation = new AggregationOperation(entityOrRel, Boolean(resolveTree.args?.directed ?? true));
+        //TODO: use a hydrate method here
         const rawProjectionFields = {
             ...resolveTree.fieldsByTypeName[entityOrRel.operations.getAggregationFieldTypename()],
         };
@@ -250,22 +252,23 @@ export class OperationsFactory {
         }
 
         const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+        const entityAuthFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
 
-        const attributeFilters = this.createAggregationAttributeAuthFilters({
+        const attributeAuthFilters = this.createAttributeAuthFilters({
             entity,
             rawFields: projectionFields,
             context,
+            operations: ["AGGREGATE"],
         });
+
+        const authFilters = filterTruthy([entityAuthFilters, ...attributeAuthFilters]);
+
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
         operation.setFilters(filters);
 
-        if (authFilters) {
-            operation.addAuthFilters(authFilters);
-        }
-        if (attributeFilters.length > 0) {
-            operation.addAuthFilters(...attributeFilters);
+        if (authFilters.length > 0) {
+            operation.addAuthFilters(...authFilters);
         }
 
         // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
@@ -612,10 +615,12 @@ export class OperationsFactory {
         entity,
         rawFields,
         context,
+        operations = ["READ"],
     }: {
         entity: ConcreteEntityAdapter;
         rawFields: Record<string, ResolveTree>;
         context: Neo4jGraphQLTranslationContext;
+        operations?: AuthorizationOperation[];
     }): AuthorizationFilters[] {
         return filterTruthy(
             Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
@@ -625,33 +630,7 @@ export class OperationsFactory {
                 const result = this.authorizationFactory.createAttributeAuthFilters(
                     attribute,
                     entity,
-                    ["READ"],
-                    context
-                );
-
-                return result;
-            })
-        );
-    }
-
-    private createAggregationAttributeAuthFilters({
-        entity,
-        rawFields,
-        context,
-    }: {
-        entity: ConcreteEntityAdapter;
-        rawFields: Record<string, ResolveTree>;
-        context: Neo4jGraphQLTranslationContext;
-    }): AuthorizationFilters[] {
-        return filterTruthy(
-            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
-                const { fieldName } = parseSelectionSetField(field.name);
-                const attribute = entity.findAttribute(fieldName);
-                if (!attribute) return undefined;
-                const result = this.authorizationFactory.createAttributeAuthFilters(
-                    attribute,
-                    entity,
-                    ["AGGREGATE"],
+                    operations,
                     context
                 );
 
