@@ -52,7 +52,13 @@ export class AggregationOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    constructor(entity: ConcreteEntityAdapter | RelationshipAdapter, directed = true) {
+    constructor({
+        entity,
+        directed = true,
+    }: {
+        entity: ConcreteEntityAdapter | RelationshipAdapter;
+        directed?: boolean;
+    }) {
         super();
         this.entity = entity;
         this.directed = directed;
@@ -244,16 +250,16 @@ export class AggregationOperation extends Operation {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
-        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
-    }
-
-    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const authPredicates = this.getAuthFilterPredicate(queryASTContext);
         return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
     }
 
-    private addSortToClause(
+    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    protected addSortToClause(
         context: QueryASTContext,
         node: Cypher.Variable,
         clause: Cypher.With | Cypher.Return

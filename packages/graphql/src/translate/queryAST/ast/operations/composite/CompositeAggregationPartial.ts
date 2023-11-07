@@ -1,0 +1,113 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
+import type { QueryASTContext } from "../../QueryASTContext";
+import { QueryASTNode } from "../../QueryASTNode";
+
+export class CompositeAggregationPartial extends QueryASTNode {
+    public readonly entity: RelationshipAdapter;
+    public readonly target: ConcreteEntityAdapter;
+    protected directed: boolean;
+    // private returnVariable: Cypher.Variable;
+
+    constructor({
+        target,
+        entity,
+        directed = true,
+    }: {
+        target: ConcreteEntityAdapter;
+        entity: RelationshipAdapter;
+        directed?: boolean;
+    }) {
+        super();
+        this.entity = entity;
+        this.target = target;
+        this.directed = directed;
+        // this.returnVariable = new Cypher.Variable();
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
+
+    // public setReturnVariable(variable: Cypher.Variable): void {
+    //     this.returnVariable = variable;
+    // }
+
+    public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        if (!context.target) throw new Error("No parent node found!");
+        const relVar = createRelationshipFromEntity(this.entity);
+        const relDirection = this.entity.getCypherDirection(this.directed);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
+
+        const pattern = new Cypher.Pattern(context.target)
+            .withoutLabels()
+            .related(relVar)
+            .withDirection(relDirection)
+            .to(targetNode);
+
+        const matchClause = new Cypher.Match(pattern);
+        // let extraSelectionWith: Cypher.With | undefined = undefined;
+
+        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [targetNode]);
+
+        // const filterPredicates = this.getPredicates(context);
+
+        // const selectionClauses = this.getChildren().flatMap((c) => {
+        //     return c.getSelection(context);
+        // });
+        // if (selectionClauses.length > 0 || nestedSubqueries.length > 0) {
+        //     extraSelectionWith = new Cypher.With("*");
+        // }
+
+        // if (filterPredicates) {
+        //     if (extraSelectionWith) {
+        //         extraSelectionWith.where(filterPredicates);
+        //     } else {
+        //         matchClause.where(filterPredicates);
+        //     }
+        // }
+
+        // let sortClause: Cypher.With | undefined;
+        // if (this.sortFields.length > 0 || this.pagination) {
+        //     sortClause = new Cypher.With("*");
+        //     this.addSortToClause(context, target, sortClause);
+        // }
+
+        return [
+            Cypher.concat(
+                matchClause,
+                // ...selectionClauses,
+                ...nestedSubqueries,
+                // extraSelectionWith,
+                // sortClause,
+                new Cypher.Return([targetNode, context.returnVariable])
+            ),
+        ];
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
+    }
+}

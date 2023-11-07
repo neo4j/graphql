@@ -22,6 +22,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../utils/utils";
@@ -91,6 +92,7 @@ export class FieldFactory {
 
                 const relationship = entity.findRelationship(fieldName);
                 if (!relationship) throw new Error("Relationship for aggregation not found");
+
                 return this.createRelationshipAggregationField(relationship, fieldName, field, context);
             }
 
@@ -130,7 +132,7 @@ export class FieldFactory {
     }
 
     public createAggregationFields(
-        entity: ConcreteEntityAdapter | RelationshipAdapter,
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         rawFields: Record<string, ResolveTree>,
         topLevel: boolean
     ): AggregationField[] {
@@ -318,7 +320,7 @@ export class FieldFactory {
         context: Neo4jGraphQLTranslationContext
     ): OperationField {
         const relationship = entity.findRelationship(fieldName);
-        if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
+        if (!relationship) throw new Error(`Relationship ${fieldName} not found in entity ${entity.name}`);
         const target = relationship.target;
         let connectionOp: ConnectionReadOperation | CompositeConnectionReadOperation;
         if (isConcreteEntity(target)) {

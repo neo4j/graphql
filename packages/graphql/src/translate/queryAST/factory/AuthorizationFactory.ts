@@ -20,6 +20,7 @@
 import type { AuthorizationAnnotation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { findMatchingRules } from "../../authorization/utils/find-matching-rules";
@@ -36,7 +37,7 @@ export class AuthorizationFactory {
     }
 
     public createEntityAuthFilters(
-        entity: ConcreteEntityAdapter,
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
         operations: AuthorizationOperation[],
         context: Neo4jGraphQLTranslationContext
     ): AuthorizationFilters | undefined {
@@ -72,7 +73,7 @@ export class AuthorizationFactory {
         operations,
         context,
     }: {
-        entity: ConcreteEntityAdapter;
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         authAnnotation: AuthorizationAnnotation;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
