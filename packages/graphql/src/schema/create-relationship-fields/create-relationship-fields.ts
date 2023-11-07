@@ -48,6 +48,7 @@ export function createRelationshipFields({
     // relationshipPropertyFields,
     subgraph,
     userDefinedFieldDirectives,
+    experimental,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
@@ -55,6 +56,7 @@ export function createRelationshipFields({
     // relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    experimental: boolean;
 }): void {
     if (!entityAdapter.relationships.size) {
         return;
@@ -83,6 +85,17 @@ export function createRelationshipFields({
             deprecatedDirectives = graphqlDirectivesToCompose(
                 userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
             );
+        }
+
+        if (!experimental && relationshipTarget instanceof InterfaceEntityAdapter) {
+            createRelationshipInterfaceFields({
+                relationship: relationshipAdapter,
+                composeNode,
+                schemaComposer,
+                userDefinedFieldDirectives,
+            });
+
+            return;
         }
 
         // TODO: new way
