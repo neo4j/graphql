@@ -223,7 +223,8 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": false,
+                \\"jwt\\": {},
                 \\"create_param2\\": \\"overlord\\",
                 \\"this0_host_connect0_node_param0\\": \\"userid\\",
                 \\"authorization_0_0_0_0_before_param2\\": \\"overlord\\",
