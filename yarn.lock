@@ -3530,7 +3530,7 @@ __metadata:
     "@apollo/server": 4.9.5
     "@neo4j/graphql": ^4.0.0
     "@types/amqplib": 0.10.3
-    "@types/body-parser": 1.19.4
+    "@types/body-parser": 1.19.5
     "@types/cors": 2.8.15
     "@types/debug": 4.1.10
     "@types/jest": 29.5.7
@@ -7225,13 +7225,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/body-parser@npm:1.19.4":
-  version: 1.19.4
-  resolution: "@types/body-parser@npm:1.19.4"
+"@types/body-parser@npm:1.19.5":
+  version: 1.19.5
+  resolution: "@types/body-parser@npm:1.19.5"
   dependencies:
     "@types/connect": "*"
     "@types/node": "*"
-  checksum: 10accc30773319bd49af7d12d2cd5faf9a0293ea4764345297f26ba6ef31d5caa7609da7619584d6c61279e09b89d3ab13d28c5cb644807c5d9c722ae1454778
+  checksum: 1e251118c4b2f61029cc43b0dc028495f2d1957fe8ee49a707fb940f86a9bd2f9754230805598278fe99958b49e9b7e66eec8ef6a50ab5c1f6b93e1ba2aaba82
   languageName: node
   linkType: hard
 
