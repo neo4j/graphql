@@ -43,16 +43,11 @@ export class CompositeAggregationPartial extends QueryASTNode {
         this.entity = entity;
         this.target = target;
         this.directed = directed;
-        // this.returnVariable = new Cypher.Variable();
     }
 
     public getChildren(): QueryASTNode[] {
         return [];
     }
-
-    // public setReturnVariable(variable: Cypher.Variable): void {
-    //     this.returnVariable = variable;
-    // }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!context.target) throw new Error("No parent node found!");
@@ -67,42 +62,11 @@ export class CompositeAggregationPartial extends QueryASTNode {
             .to(targetNode);
 
         const matchClause = new Cypher.Match(pattern);
-        // let extraSelectionWith: Cypher.With | undefined = undefined;
 
         const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [targetNode]);
 
-        // const filterPredicates = this.getPredicates(context);
-
-        // const selectionClauses = this.getChildren().flatMap((c) => {
-        //     return c.getSelection(context);
-        // });
-        // if (selectionClauses.length > 0 || nestedSubqueries.length > 0) {
-        //     extraSelectionWith = new Cypher.With("*");
-        // }
-
-        // if (filterPredicates) {
-        //     if (extraSelectionWith) {
-        //         extraSelectionWith.where(filterPredicates);
-        //     } else {
-        //         matchClause.where(filterPredicates);
-        //     }
-        // }
-
-        // let sortClause: Cypher.With | undefined;
-        // if (this.sortFields.length > 0 || this.pagination) {
-        //     sortClause = new Cypher.With("*");
-        //     this.addSortToClause(context, target, sortClause);
-        // }
-
         return [
-            Cypher.concat(
-                matchClause,
-                // ...selectionClauses,
-                ...nestedSubqueries,
-                // extraSelectionWith,
-                // sortClause,
-                new Cypher.Return([targetNode, context.returnVariable])
-            ),
+            Cypher.concat(matchClause, ...nestedSubqueries, new Cypher.Return([targetNode, context.returnVariable])),
         ];
     }
 

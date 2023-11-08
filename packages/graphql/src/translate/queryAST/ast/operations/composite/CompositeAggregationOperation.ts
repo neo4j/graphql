@@ -116,7 +116,6 @@ export class CompositeAggregationOperation extends Operation {
             const nestedContext = context.setReturn(returnVariable);
 
             const nestedSubqueries = this.children.flatMap((c) => {
-                // c.setReturnVariable(returnVariable);
                 const result = c.getSubqueries(nestedContext);
 
                 let clauses = result;
