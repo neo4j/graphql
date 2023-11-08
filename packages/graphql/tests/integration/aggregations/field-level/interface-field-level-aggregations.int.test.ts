@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4j from "../../neo4j";
 
-describe("Field Level Aggregations", () => {
+describe("Interface Field Level Aggregations", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
