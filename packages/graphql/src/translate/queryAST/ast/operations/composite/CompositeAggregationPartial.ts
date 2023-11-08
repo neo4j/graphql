@@ -29,7 +29,6 @@ export class CompositeAggregationPartial extends QueryASTNode {
     public readonly entity: RelationshipAdapter;
     public readonly target: ConcreteEntityAdapter;
     protected directed: boolean;
-    // private returnVariable: Cypher.Variable;
 
     constructor({
         target,
