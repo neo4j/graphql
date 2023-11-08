@@ -3533,7 +3533,7 @@ __metadata:
     "@types/body-parser": 1.19.5
     "@types/cors": 2.8.16
     "@types/debug": 4.1.11
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     amqplib: 0.10.3
     body-parser: ^1.20.2
@@ -3562,7 +3562,7 @@ __metadata:
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
     "@neo4j/graphql": ^4.4.1
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -3668,7 +3668,7 @@ __metadata:
     "@neo4j/cypher-builder": ^1.7.1
     "@types/deep-equal": 1.0.4
     "@types/is-uuid": 1.0.1
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/jsonwebtoken": 9.0.4
     "@types/node": 20.8.10
     "@types/pluralize": 0.0.32
@@ -3727,7 +3727,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^4.0.0
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     "@types/pluralize": 0.0.32
     camelcase: ^6.3.0
@@ -7474,13 +7474,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.7":
-  version: 29.5.7
-  resolution: "@types/jest@npm:29.5.7"
+"@types/jest@npm:29.5.8":
+  version: 29.5.8
+  resolution: "@types/jest@npm:29.5.8"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e28624ccb0ef1255a03fbbb4b5bc3e5cbcdc450d39e0739985ff679b124198f808c38c8c3e67859c6efc0e848196deeb8cfed028e12a821c511dfc1112a2d6e9
+  checksum: ca8438a5b4c098c8c023e9d5b279ea306494a1d0b5291cfb498100fa780377145f068b2a021d545b0398bbe0328dcc37044dd3aaf3c6c0fe9b0bef7b46a63453
   languageName: node
   linkType: hard
 
