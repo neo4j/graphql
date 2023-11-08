@@ -90,10 +90,6 @@ export class InterfaceEntityAdapter {
         return this._operations;
     }
 
-    public get aggregableFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
-    }
-
     public get singular(): string {
         if (!this._singular) {
             this._singular = singular(this.name);

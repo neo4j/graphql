@@ -553,6 +553,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: String!
             }
 
+            type ProfileAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
+            }
+
             input ProfileConnectInput {
               _on: ProfileImplementationsConnectInput
             }
@@ -641,6 +647,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
