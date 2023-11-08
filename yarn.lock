@@ -3666,7 +3666,7 @@ __metadata:
     "@graphql-tools/schema": 10.0.0
     "@graphql-tools/utils": ^10.0.0
     "@neo4j/cypher-builder": ^1.7.1
-    "@types/deep-equal": 1.0.3
+    "@types/deep-equal": 1.0.4
     "@types/is-uuid": 1.0.1
     "@types/jest": 29.5.7
     "@types/jsonwebtoken": 9.0.4
@@ -7327,10 +7327,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/deep-equal@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@types/deep-equal@npm:1.0.3"
-  checksum: eddd9a381dac9d2bb99846e8f42a5e568f54610485cdcb6dd08ae60e597d406331f25f3bb1e63d0ecf28b6376d304ac635106b9a86a25c43d496406c4f29f298
+"@types/deep-equal@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@types/deep-equal@npm:1.0.4"
+  checksum: db905bcb051bc9cf5dceb231a6b0b64ab2318073939a1769e043454e8c46b1eeaac1376338751d2ee7ca9294398dd62e03d4b120361b56f96f89dc87aec753e4
   languageName: node
   linkType: hard
 
