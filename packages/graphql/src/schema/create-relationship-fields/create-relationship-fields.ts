@@ -48,6 +48,7 @@ export function createRelationshipFields({
     // relationshipPropertyFields,
     subgraph,
     userDefinedFieldDirectives,
+    experimental,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
@@ -55,6 +56,7 @@ export function createRelationshipFields({
     // relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
+    experimental: boolean;
 }): void {
     if (!entityAdapter.relationships.size) {
         return;
@@ -65,17 +67,6 @@ export function createRelationshipFields({
             return;
         }
         const relationshipTarget = relationshipAdapter.target;
-
-        if (relationshipTarget instanceof InterfaceEntityAdapter) {
-            createRelationshipInterfaceFields({
-                relationship: relationshipAdapter,
-                composeNode,
-                schemaComposer,
-                userDefinedFieldDirectives,
-            });
-
-            return;
-        }
 
         if (relationshipTarget instanceof UnionEntityAdapter) {
             createRelationshipUnionFields({
@@ -96,8 +87,16 @@ export function createRelationshipFields({
             );
         }
 
-        // ======== only on relationships to concrete:
-        withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives });
+        if (!experimental && relationshipTarget instanceof InterfaceEntityAdapter) {
+            createRelationshipInterfaceFields({
+                relationship: relationshipAdapter,
+                composeNode,
+                schemaComposer,
+                userDefinedFieldDirectives,
+            });
+
+            return;
+        }
 
         // TODO: new way
         if (composeNode instanceof ObjectTypeComposer) {
@@ -121,6 +120,22 @@ export function createRelationshipFields({
                 });
             }
         }
+
+        // Specifically placed the check for InterfaceEntityAdapter here
+        // so that we exit the function at this point, after the aggregation fields have been added above
+        if (relationshipTarget instanceof InterfaceEntityAdapter) {
+            createRelationshipInterfaceFields({
+                relationship: relationshipAdapter,
+                composeNode,
+                schemaComposer,
+                userDefinedFieldDirectives,
+            });
+
+            return;
+        }
+
+        // ======== only on relationships to concrete entities:
+        withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives });
 
         // ======== only on relationships to concrete | unions:
         // TODO: refactor

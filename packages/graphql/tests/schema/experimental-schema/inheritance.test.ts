@@ -62,6 +62,7 @@ describe("inheritance", () => {
 
             type Actor implements Person @customDirectiveObj {
               friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
@@ -135,6 +136,20 @@ describe("inheritance", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorPersonFriendsAggregationSelection {
+              count: Int!
+              edge: ActorPersonFriendsEdgeAggregateSelection
+              node: ActorPersonFriendsNodeAggregateSelection
+            }
+
+            type ActorPersonFriendsEdgeAggregateSelection {
+              since: IntAggregateSelectionNullable!
+            }
+
+            type ActorPersonFriendsNodeAggregateSelection {
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorRelationInput {
@@ -246,6 +261,13 @@ describe("inheritance", () => {
               since_LTE: Int
               since_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type IntAggregateSelectionNullable {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
             }
 
             type Mutation {

@@ -770,6 +770,7 @@ describe("Comments", () => {
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -872,6 +873,20 @@ describe("Comments", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  edge: ActorProductionActedInEdgeAggregateSelection
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInEdgeAggregateSelection {
+                  screenTime: IntAggregateSelectionNonNullable!
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {

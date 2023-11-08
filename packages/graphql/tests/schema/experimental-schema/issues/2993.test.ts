@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2993", () => {
@@ -66,6 +66,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
+
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
+            }
 
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
@@ -254,6 +259,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type User implements Profile {
               following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              followingAggregate(directed: Boolean = true, where: ProfileWhere): UserProfileFollowingAggregationSelection
               followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
@@ -358,6 +364,21 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
+            }
+
+            type UserProfileFollowingAggregationSelection {
+              count: Int!
+              edge: UserProfileFollowingEdgeAggregateSelection
+              node: UserProfileFollowingNodeAggregateSelection
+            }
+
+            type UserProfileFollowingEdgeAggregateSelection {
+              since: DateTimeAggregateSelectionNonNullable!
+            }
+
+            type UserProfileFollowingNodeAggregateSelection {
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
             }
 
             input UserRelationInput {
@@ -472,6 +493,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -525,12 +551,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             interface Profile {
               id: ID!
               userName: String!
-            }
-
-            type ProfileAggregateSelection {
-              count: Int!
-              id: IDAggregateSelectionNonNullable!
-              userName: StringAggregateSelectionNonNullable!
             }
 
             input ProfileConnectInput {
@@ -621,7 +641,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
-              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -658,6 +677,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type User implements Profile {
               following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              followingAggregate(directed: Boolean = true, where: ProfileWhere): UserProfileFollowingAggregationSelection
               followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
@@ -762,6 +782,21 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
+            }
+
+            type UserProfileFollowingAggregationSelection {
+              count: Int!
+              edge: UserProfileFollowingEdgeAggregateSelection
+              node: UserProfileFollowingNodeAggregateSelection
+            }
+
+            type UserProfileFollowingEdgeAggregateSelection {
+              since: DateTimeAggregateSelectionNonNullable!
+            }
+
+            type UserProfileFollowingNodeAggregateSelection {
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
             }
 
             input UserRelationInput {

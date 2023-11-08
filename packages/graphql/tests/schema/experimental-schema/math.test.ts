@@ -1472,6 +1472,7 @@ describe("Algebraic", () => {
             type Person {
               name: String!
               worksInProduction(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              worksInProductionAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionWorksInProductionAggregationSelection
               worksInProductionConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
             }
 
@@ -1513,6 +1514,15 @@ describe("Algebraic", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
+            }
+
+            type PersonProductionWorksInProductionAggregationSelection {
+              count: Int!
+              node: PersonProductionWorksInProductionNodeAggregateSelection
+            }
+
+            type PersonProductionWorksInProductionNodeAggregateSelection {
+              viewers: IntAggregateSelectionNonNullable!
             }
 
             input PersonRelationInput {
