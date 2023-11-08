@@ -3532,8 +3532,8 @@ __metadata:
     "@types/amqplib": 0.10.4
     "@types/body-parser": 1.19.5
     "@types/cors": 2.8.16
-    "@types/debug": 4.1.10
-    "@types/jest": 29.5.7
+    "@types/debug": 4.1.11
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     amqplib: 0.10.3
     body-parser: ^1.20.2
@@ -3562,7 +3562,7 @@ __metadata:
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
     "@neo4j/graphql": ^4.4.1
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -3666,9 +3666,9 @@ __metadata:
     "@graphql-tools/schema": 10.0.0
     "@graphql-tools/utils": ^10.0.0
     "@neo4j/cypher-builder": ^1.7.1
-    "@types/deep-equal": 1.0.3
+    "@types/deep-equal": 1.0.4
     "@types/is-uuid": 1.0.1
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/jsonwebtoken": 9.0.4
     "@types/node": 20.8.10
     "@types/pluralize": 0.0.32
@@ -3727,7 +3727,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^4.0.0
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     "@types/pluralize": 0.0.32
     camelcase: ^6.3.0
@@ -7318,19 +7318,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:4.1.10":
-  version: 4.1.10
-  resolution: "@types/debug@npm:4.1.10"
+"@types/debug@npm:4.1.11":
+  version: 4.1.11
+  resolution: "@types/debug@npm:4.1.11"
   dependencies:
     "@types/ms": "*"
-  checksum: 938f79c5b610f851da9c67ecd8641a09b33ce9cb38fe4c9f4d20ee743d6bccb5d8e9a833a4cd23e0684a316622af67a0634fa706baea5a01f5219961d1976314
+  checksum: 6f666691f4706c4c1bbb3023026bc3acff7c98f181cbd4bd12bfc56caa9b4cd084e996358ab7b7748e7d9a59a00cdd15f0c6d4b60ff5a085eac98fa71f04784e
   languageName: node
   linkType: hard
 
-"@types/deep-equal@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@types/deep-equal@npm:1.0.3"
-  checksum: eddd9a381dac9d2bb99846e8f42a5e568f54610485cdcb6dd08ae60e597d406331f25f3bb1e63d0ecf28b6376d304ac635106b9a86a25c43d496406c4f29f298
+"@types/deep-equal@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@types/deep-equal@npm:1.0.4"
+  checksum: db905bcb051bc9cf5dceb231a6b0b64ab2318073939a1769e043454e8c46b1eeaac1376338751d2ee7ca9294398dd62e03d4b120361b56f96f89dc87aec753e4
   languageName: node
   linkType: hard
 
@@ -7474,13 +7474,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.7":
-  version: 29.5.7
-  resolution: "@types/jest@npm:29.5.7"
+"@types/jest@npm:29.5.8":
+  version: 29.5.8
+  resolution: "@types/jest@npm:29.5.8"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e28624ccb0ef1255a03fbbb4b5bc3e5cbcdc450d39e0739985ff679b124198f808c38c8c3e67859c6efc0e848196deeb8cfed028e12a821c511dfc1112a2d6e9
+  checksum: ca8438a5b4c098c8c023e9d5b279ea306494a1d0b5291cfb498100fa780377145f068b2a021d545b0398bbe0328dcc37044dd3aaf3c6c0fe9b0bef7b46a63453
   languageName: node
   linkType: hard
 

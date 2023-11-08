@@ -46,7 +46,7 @@
         "neo4j-driver": "^5.8.0"
     },
     "devDependencies": {
-        "@types/jest": "29.5.7",
+        "@types/jest": "29.5.8",
         "@types/node": "20.8.10",
         "camelcase": "6.3.0",
         "graphql-tag": "2.12.6",
