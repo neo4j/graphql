@@ -333,4 +333,83 @@ describe("Field Level Aggregations", () => {
             },
         ]);
     });
+
+    // Edge aggregation
+    test("Edge Count", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        count
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
+            {
+                actedInAggregate: {
+                    count: 4,
+                },
+            },
+            {
+                actedInAggregate: {
+                    count: 4,
+                },
+            },
+        ]);
+    });
+
+    test("Edge screenTime", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
+            {
+                actedInAggregate: {
+                    edge: {
+                        screenTime: {
+                            sum: 224,
+                        },
+                    },
+                },
+            },
+            {
+                actedInAggregate: {
+                    edge: {
+                        screenTime: {
+                            sum: 1784,
+                        },
+                    },
+                },
+            },
+        ]);
+    });
 });

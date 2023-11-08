@@ -353,4 +353,110 @@ describe("Cypher Interface Aggregations String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
+
+    test("Edge sum", async () => {
+        const query = gql`
+            {
+                actors {
+                    actedInAggregate {
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                    "MATCH (this:Actor)
+                    CALL {
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                            RETURN this1 AS var2
+                            UNION
+                            WITH this
+                            MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                            RETURN this4 AS var2
+                        }
+                        RETURN { sum: sum(var2.screenTime) } AS var2
+                    }
+                    RETURN this { actedInAggregate: { edge: { screenTime: var2 } } } AS this"
+            `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Edge and node sum with count", async () => {
+        const query = gql`
+            {
+                actors {
+                    actedInAggregate {
+                        count
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                        node {
+                            cost {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                    "MATCH (this:Actor)
+                    CALL {
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                            RETURN this1 AS var2
+                            UNION
+                            WITH this
+                            MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                            RETURN this4 AS var2
+                        }
+                        RETURN count(var2) AS var2
+                    }
+                    CALL {
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                            RETURN this6 AS var7
+                            UNION
+                            WITH this
+                            MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                            RETURN this9 AS var7
+                        }
+                        RETURN { sum: sum(var7.screenTime) } AS var7
+                    }
+                    CALL {
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this10:ACTED_IN]->(this11:Movie)
+                            RETURN this11 AS var12
+                            UNION
+                            WITH this
+                            MATCH (this)-[this13:ACTED_IN]->(this14:Series)
+                            RETURN this14 AS var12
+                        }
+                        RETURN { sum: sum(var12.cost) } AS var12
+                    }
+                    RETURN this { actedInAggregate: { count: var2, edge: { screenTime: var7 }, node: { cost: var12 } } } AS this"
+            `);
+    });
 });
