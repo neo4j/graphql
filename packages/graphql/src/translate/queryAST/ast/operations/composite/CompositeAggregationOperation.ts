@@ -139,9 +139,6 @@ export class CompositeAggregationOperation extends Operation {
         if (nodeMap.size > 0) {
             aggregationProjectionMap.set("node", nodeMap);
         }
-        // if (edgeMap.size > 0) {
-        //     aggregationProjectionMap.set("edge", edgeMap);
-        // }
 
         return {
             clauses: [...fieldSubqueries, ...nodeFieldSubqueries],
