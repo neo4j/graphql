@@ -655,6 +655,7 @@ describe("Union Interface Relationships", () => {
               directorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectorsConnectionSort!], where: MovieDirectorsConnectionWhere): MovieDirectorsConnection!
               imdbId: Int
               reviewers(directed: Boolean = true, options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
+              reviewersAggregate(directed: Boolean = true, where: ReviewerWhere): MovieReviewerReviewersAggregationSelection
               reviewersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieReviewersConnectionSort!], where: MovieReviewersConnectionWhere): MovieReviewersConnection!
               title: String!
             }
@@ -1115,6 +1116,21 @@ describe("Union Interface Relationships", () => {
               actors: [MovieActorsCreateFieldInput!]
               directors: MovieDirectorsCreateFieldInput
               reviewers: [MovieReviewersCreateFieldInput!]
+            }
+
+            type MovieReviewerReviewersAggregationSelection {
+              count: Int!
+              edge: MovieReviewerReviewersEdgeAggregateSelection
+              node: MovieReviewerReviewersNodeAggregateSelection
+            }
+
+            type MovieReviewerReviewersEdgeAggregateSelection {
+              score: IntAggregateSelectionNonNullable!
+            }
+
+            type MovieReviewerReviewersNodeAggregateSelection {
+              reputation: IntAggregateSelectionNonNullable!
+              reviewerId: IntAggregateSelectionNullable!
             }
 
             input MovieReviewersConnectFieldInput {

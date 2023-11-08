@@ -1677,6 +1677,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -1772,6 +1773,16 @@ describe("@relationship directive, aggregate argument", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      password: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelectionNonNullable!
                     }
 
                     input MovieRelationInput {

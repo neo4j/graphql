@@ -25,6 +25,7 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
+import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "../constants";
 import { nodeDirective, privateDirective, relationshipDirective } from "../graphql/directives";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { filterTruthy } from "../utils/utils";
@@ -46,7 +47,6 @@ import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribut
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
-import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "../constants";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -330,10 +330,14 @@ function generateRelationshipField(
     const relatedEntityName = fieldTypeMeta.name;
     const relatedToEntity = schema.getEntity(relatedEntityName);
     if (!relatedToEntity) throw new Error(`Entity ${relatedEntityName} Not Found`);
-    const { type, direction, properties, queryDirection, nestedOperations, aggregate } = parseArguments(
-        relationshipDirective,
-        relationshipUsage
-    );
+    const { type, direction, properties, queryDirection, nestedOperations, aggregate } = parseArguments<{
+        type: string;
+        direction: RelationshipDirection;
+        properties: unknown;
+        queryDirection: QueryDirection;
+        nestedOperations: NestedOperation[];
+        aggregate: boolean;
+    }>(relationshipDirective, relationshipUsage);
 
     let attributes: Attribute[] = [];
     let propertiesTypeName: string | undefined = undefined;
@@ -378,16 +382,16 @@ function generateRelationshipField(
 
     return new Relationship({
         name: fieldName,
-        type: type as string,
+        type,
         args,
         attributes,
         source,
         target: relatedToEntity,
-        direction: direction as RelationshipDirection,
+        direction,
         isList: Boolean(fieldTypeMeta.array),
-        queryDirection: queryDirection as QueryDirection,
-        nestedOperations: nestedOperations as NestedOperation[],
-        aggregate: aggregate as boolean,
+        queryDirection,
+        nestedOperations,
+        aggregate,
         isNullable: !fieldTypeMeta.required,
         description: field.description?.value,
         annotations: annotations,
