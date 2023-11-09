@@ -20,7 +20,7 @@
 import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
 import { Neo4jGraphQLError } from "../classes";
-import type { BaseField } from "../types";
+import type { BaseField, GraphQLWhereArg } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -53,6 +53,9 @@ import {
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
+import createWhereAndParams from "./where/create-where-and-params";
+import { createWherePredicate } from "./where/create-where-predicate";
+import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
 
 interface Res {
     strs: string[];
@@ -214,6 +217,7 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
+
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };

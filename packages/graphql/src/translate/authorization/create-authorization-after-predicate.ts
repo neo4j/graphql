@@ -32,7 +32,7 @@ import { AuthorizationFactory } from "../queryAST/factory/AuthorizationFactory";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
 
-export function createAuthorizationAfterPredicateNew({
+export function createAuthorizationAfterPredicate({
     context,
     nodes,
     operations,

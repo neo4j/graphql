@@ -21,8 +21,8 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
 import type { TemporalField, PointField, PrimitiveField } from "../../../types";
-import { createRelationshipPropertyElement } from "./create-relationship-property-element";
 import { compileCypher } from "../../../utils/compile-cypher";
+import { createRelationshipPropertyValue } from "./create-relationship-property-value";
 
 describe("createRelationshipPropertyElement", () => {
     let relationship: Relationship;
@@ -173,9 +173,13 @@ describe("createRelationshipPropertyElement", () => {
             fieldsByTypeName: {},
         };
 
-        const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
+        const element = createRelationshipPropertyValue({
+            resolveTree,
+            relationship,
+            relationshipVariable: new Cypher.Relationship(),
+        });
         new Cypher.RawCypher((env) => {
-            expect(compileCypher(element, env)).toBe("int: this.int");
+            expect(compileCypher(element, env)).toMatchInlineSnapshot(`"this0.int"`);
             return "";
         }).build();
     });
@@ -188,10 +192,14 @@ describe("createRelationshipPropertyElement", () => {
             fieldsByTypeName: {},
         };
 
-        const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
+        const element = createRelationshipPropertyValue({
+            resolveTree,
+            relationship,
+            relationshipVariable: new Cypher.Relationship(),
+        });
         new Cypher.RawCypher((env) => {
-            expect(compileCypher(element, env)).toBe(
-                'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
+            expect(compileCypher(element, env)).toMatchInlineSnapshot(
+                `"apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")"`
             );
             return "";
         }).build();
@@ -220,14 +228,18 @@ describe("createRelationshipPropertyElement", () => {
             },
         };
 
-        const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
+        const element = createRelationshipPropertyValue({
+            resolveTree,
+            relationship,
+            relationshipVariable: new Cypher.Relationship(),
+        });
         new Cypher.RawCypher((env) => {
             expect(compileCypher(element, env)).toMatchInlineSnapshot(`
-            "point: (CASE
-                WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
-                ELSE NULL
-            END)"
-        `);
+                "CASE
+                    WHEN this0.point IS NOT NULL THEN { point: this0.point, crs: this0.point.crs }
+                    ELSE NULL
+                END"
+            `);
             return "";
         }).build();
     });

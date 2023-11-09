@@ -23,7 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { CypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
-import { createAuthorizationBeforePredicateNew } from "../../authorization/create-authorization-before-predicate";
+import { createAuthorizationBeforePredicate } from "../../authorization/create-authorization-before-predicate";
 import { compileCypher } from "../../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
@@ -92,7 +92,7 @@ export function createProjectionSubquery({
         preComputedWhereFieldSubqueries = preComputedSubqueries;
     }
 
-    const authorizationPredicateReturn = createAuthorizationBeforePredicateNew({
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
         nodes: [
             {

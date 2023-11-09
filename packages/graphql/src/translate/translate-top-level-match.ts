@@ -22,9 +22,7 @@ import type { Node } from "../classes";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import {
-    createAuthorizationBeforePredicateNew,
-} from "./authorization/create-authorization-before-predicate";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
@@ -97,8 +95,8 @@ export function createMatchClause({
     }
 
     let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
-    
-    const authorizationPredicateReturn = createAuthorizationBeforePredicateNew({
+
+    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
         nodes: [
             {

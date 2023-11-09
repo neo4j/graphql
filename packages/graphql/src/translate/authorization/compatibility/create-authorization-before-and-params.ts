@@ -22,13 +22,13 @@ import type { Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import {
     createAuthorizationBeforePredicateField,
-    createAuthorizationBeforePredicateNew,
+    createAuthorizationBeforePredicate,
 } from "../create-authorization-before-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-export type AuthorizationBeforeAndParams = {
+type AuthorizationBeforeAndParams = {
     cypher: string;
     params: Record<string, any>;
     subqueries?: string;
@@ -60,7 +60,7 @@ export function createAuthorizationBeforeAndParams({
 }): AuthorizationBeforeAndParams | undefined {
     const nodeMap = stringNodeMapToNodeMap(nodes);
 
-    const predicateReturn = createAuthorizationBeforePredicateNew({
+    const predicateReturn = createAuthorizationBeforePredicate({
         context,
         nodes: nodeMap,
         operations,

@@ -32,7 +32,7 @@ import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
 import { filterTruthy } from "../../utils/utils";
 import type { PredicateReturn } from "../../types";
 
-export function createAuthorizationBeforePredicateNew({
+export function createAuthorizationBeforePredicate({
     context,
     nodes,
     operations,

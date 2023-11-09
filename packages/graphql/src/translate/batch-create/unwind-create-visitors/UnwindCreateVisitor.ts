@@ -36,7 +36,7 @@ import mapToDbProperty from "../../../utils/map-to-db-property";
 import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import {
     createAuthorizationAfterPredicateField,
-    createAuthorizationAfterPredicateNew,
+    createAuthorizationAfterPredicate,
 } from "../../authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "../../authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -276,7 +276,7 @@ export class UnwindCreateVisitor implements Visitor {
         context: Neo4jGraphQLTranslationContext,
         nodeRef: Cypher.Node
     ): Cypher.Clause | undefined {
-        const authorizationPredicateReturn = createAuthorizationAfterPredicateNew({
+        const authorizationPredicateReturn = createAuthorizationAfterPredicate({
             context,
             nodes: [
                 {

@@ -18,105 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, PredicateReturn } from "../../../types";
+import type { ConnectionWhereArg, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
-import type { WhereOperator } from "../types";
 // Recursive function
 
 import { createWherePredicate, createWhereRelPredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
-import { createRelationPredicate } from "./create-relationship-operation";
-import { getCypherRelationshipDirection } from "../../../utils/get-relationship-direction";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../../utils/get-entity-adapter-from-node";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { isUnionEntity } from "../../queryAST/utils/is-union-entity";
-
-export function createConnectionOperation({
-    connectionField,
-    value,
-    context,
-    parentNode,
-    operator,
-    useExistExpr = true,
-    checkParameterExistence,
-}: {
-    connectionField: ConnectionField;
-    value: any;
-    context: Neo4jGraphQLTranslationContext;
-    parentNode: Cypher.Node;
-    operator: string | undefined;
-    useExistExpr?: boolean;
-    checkParameterExistence?: boolean;
-}): PredicateReturn {
-    let nodeEntries: Record<string, any>;
-
-    if (!connectionField?.relationship.union) {
-        nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
-    } else {
-        nodeEntries = value;
-    }
-
-    let subqueries: Cypher.CompositeClause | undefined;
-    const operations: (Cypher.Predicate | undefined)[] = [];
-    const matchPatterns: Cypher.Pattern[] = [];
-
-    Object.entries(nodeEntries).forEach((entry) => {
-        let nodeOnValue: string | undefined = undefined;
-        const nodeOnObj = entry[1]?.node?._on;
-        if (nodeOnObj) {
-            nodeOnValue = Object.keys(nodeOnObj)[0];
-        }
-
-        let refNode = context.nodes.find((x) => x.name === nodeOnValue || x.name === entry[0]) as Node;
-        if (!refNode) {
-            refNode = context.nodes.find((x) => x.interfaces.some((i) => i.name.value === entry[0])) as Node;
-        }
-
-        const relationField = connectionField.relationship;
-
-        const childNode = new Cypher.Node();
-
-        const relationship = new Cypher.Relationship({ type: relationField.type });
-
-        const direction = getCypherRelationshipDirection(relationField);
-        const matchPattern = new Cypher.Pattern(parentNode)
-            .withoutLabels()
-            .related(relationship)
-            .withDirection(direction)
-            .to(childNode);
-
-        const contextRelationship = context.relationships.find(
-            (x) => x.name === connectionField.relationshipTypeName
-        ) as Relationship;
-
-        matchPatterns.push(matchPattern);
-
-        const { predicate, preComputedSubqueries } = createRelationPredicate({
-            targetNode: childNode,
-            targetPattern: matchPattern,
-            targetRelationship: relationship,
-            parentNode,
-            refNode,
-            context,
-            relationField,
-            whereInput: entry[1],
-            whereOperator: operator as WhereOperator,
-            refEdge: contextRelationship,
-            useExistExpr,
-            checkParameterExistence,
-        });
-
-        operations.push(predicate);
-        subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-    });
-
-    return {
-        predicate: Cypher.and(...operations),
-        preComputedSubqueries: subqueries,
-    };
-}
 
 export function createConnectionWherePropertyOperation({
     context,

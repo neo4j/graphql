@@ -23,6 +23,8 @@ import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 import { compileCypher } from "../../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
+import { createWherePredicate } from "./create-where-predicate";
 
 export default function createConnectionWhereAndParams({
     whereInput,
@@ -43,7 +45,13 @@ export default function createConnectionWhereAndParams({
 }): { cypher: string; subquery: string; params: Record<string, any> } {
     const nodeRef = new Cypher.NamedNode(nodeVariable);
     const edgeRef = new Cypher.NamedVariable(relationshipVariable);
-
+   /*  const entity = getEntityAdapterFromNode(node, context);
+    const { predicate, preComputedSubqueries } = createWherePredicate({
+        targetElement: new Cypher.NamedVariable(nodeVariable),
+        whereInput: whereInput,
+        context,
+        entity,
+    }); */
     const { predicate: andOp, preComputedSubqueries } = createConnectionWherePropertyOperation({
         context,
         whereInput,
@@ -52,7 +60,10 @@ export default function createConnectionWhereAndParams({
         node,
         edge: relationship,
     });
-
+    /*  // eslint-disable-next-line no-constant-condition
+    if ("som" === "som") {
+        throw new Error("Something");
+    } */
     let subquery = "";
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = (andOp as any)?.getCypher(env) || "";

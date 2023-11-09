@@ -112,7 +112,6 @@ function createDisconnectAndParams({
                     }
                 }
             } catch (err) {
-                console.error(err);
                 return { subquery: "", params: {} };
             }
         }

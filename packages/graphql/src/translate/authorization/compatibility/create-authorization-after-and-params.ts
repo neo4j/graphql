@@ -22,7 +22,7 @@ import type { Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import {
     createAuthorizationAfterPredicateField,
-    createAuthorizationAfterPredicateNew,
+    createAuthorizationAfterPredicate,
 } from "../create-authorization-after-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
@@ -61,7 +61,7 @@ export function createAuthorizationAfterAndParamsNew({
 }): AuthorizationAfterAndParams | undefined {
     const nodeMap = stringNodeMapToNodeMap(nodes);
 
-    const predicateReturn = createAuthorizationAfterPredicateNew({
+    const predicateReturn = createAuthorizationAfterPredicate({
         context,
         nodes: nodeMap,
         operations,

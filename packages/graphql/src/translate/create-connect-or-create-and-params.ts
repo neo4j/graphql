@@ -28,8 +28,8 @@ import { findConflictingProperties } from "../utils/is-property-clash";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { createAuthorizationBeforePredicateNew } from "./authorization/create-authorization-before-predicate";
-import { createAuthorizationAfterPredicateNew } from "./authorization/create-authorization-after-predicate";
+import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { createAuthorizationAfterPredicate } from "./authorization/create-authorization-after-predicate";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -335,7 +335,7 @@ function createAuthorizationBeforeConnectOrCreate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
 
-    const sourceAuthorizationBefore = createAuthorizationBeforePredicateNew({
+    const sourceAuthorizationBefore = createAuthorizationBeforePredicate({
         context,
         nodes: [
             {
@@ -380,7 +380,7 @@ function createAuthorizationAfterConnectOrCreate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
 
-    const sourceAuthorizationAfter = createAuthorizationAfterPredicateNew({
+    const sourceAuthorizationAfter = createAuthorizationAfterPredicate({
         context,
         nodes: [
             {
@@ -391,7 +391,7 @@ function createAuthorizationAfterConnectOrCreate({
         operations: ["CREATE_RELATIONSHIP"],
     });
 
-    const targetAuthorizationAfter = createAuthorizationAfterPredicateNew({
+    const targetAuthorizationAfter = createAuthorizationAfterPredicate({
         context,
         nodes: [
             {
