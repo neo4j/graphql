@@ -29,20 +29,24 @@ export class CompositeAggregationPartial extends QueryASTNode {
     public readonly entity: RelationshipAdapter;
     public readonly target: ConcreteEntityAdapter;
     protected directed: boolean;
+    protected attachedTo: "node" | "relationship";
 
     constructor({
         target,
         entity,
         directed = true,
+        attachedTo,
     }: {
         target: ConcreteEntityAdapter;
         entity: RelationshipAdapter;
         directed?: boolean;
+        attachedTo?: "node" | "relationship";
     }) {
         super();
         this.entity = entity;
         this.target = target;
         this.directed = directed;
+        this.attachedTo = attachedTo ?? "node";
     }
 
     public getChildren(): QueryASTNode[] {
@@ -51,9 +55,12 @@ export class CompositeAggregationPartial extends QueryASTNode {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!context.target) throw new Error("No parent node found!");
+
         const relVar = createRelationshipFromEntity(this.entity);
         const relDirection = this.entity.getCypherDirection(this.directed);
         const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
+
+        const target = this.attachedTo === "relationship" ? relVar : targetNode;
 
         const pattern = new Cypher.Pattern(context.target)
             .withoutLabels()
@@ -63,14 +70,16 @@ export class CompositeAggregationPartial extends QueryASTNode {
 
         const matchClause = new Cypher.Match(pattern);
 
-        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [targetNode]);
+        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 
-        return [
-            Cypher.concat(matchClause, ...nestedSubqueries, new Cypher.Return([targetNode, context.returnVariable])),
-        ];
+        return [Cypher.concat(matchClause, ...nestedSubqueries, new Cypher.Return([target, context.returnVariable]))];
     }
 
     public print(): string {
         return `${super.print()} <${this.target.name}>`;
+    }
+
+    public setAttachedTo(attachedTo: "node" | "relationship"): void {
+        this.attachedTo = attachedTo;
     }
 }
