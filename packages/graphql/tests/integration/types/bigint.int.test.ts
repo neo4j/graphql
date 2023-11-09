@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("BigInt", () => {
     let driver: Driver;
@@ -40,9 +40,10 @@ describe("BigInt", () => {
     describe("create", () => {
         test("should create an object with a BigInt specified inline in the mutation", async () => {
             const session = await neo4j.getSession();
+            const File = new UniqueType("File");
 
             const typeDefs = `
-                type File {
+                type ${File} {
                   name: String!
                   size: BigInt!
                 }
@@ -58,8 +59,8 @@ describe("BigInt", () => {
 
             const create = `
                 mutation {
-                    createFiles(input: [{ name: "${name}", size: 9223372036854775807 }]) {
-                        files {
+                    ${File.operations.create}(input: [{ name: "${name}", size: 9223372036854775807 }]) {
+                        ${File.plural} {
                             name
                             size
                         }
@@ -77,7 +78,7 @@ describe("BigInt", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 const result = await session.run(`
-                    MATCH (f:File {name: "${name}"})
+                    MATCH (f:${File} {name: "${name}"})
                     RETURN f {.name, .size} as f
                 `);
 
@@ -97,9 +98,10 @@ describe("BigInt", () => {
     describe("read", () => {
         test("should successfully query an node with a BigInt property", async () => {
             const session = await neo4j.getSession();
+            const File = new UniqueType("File");
 
             const typeDefs = `
-                type File {
+                type ${File} {
                   name: String!
                   size: BigInt!
                 }
@@ -115,7 +117,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    files(where: { name: "${name}" }) {
+                    ${File.plural}(where: { name: "${name}" }) {
                         name
                         size
                     }
@@ -124,7 +126,7 @@ describe("BigInt", () => {
 
             try {
                 await session.run(`
-                   CREATE (f:File)
+                   CREATE (f:${File})
                    SET f.name = "${name}"
                    SET f.size = 9223372036854775807
                `);
@@ -137,9 +139,13 @@ describe("BigInt", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any)?.files[0]).toEqual({
-                    name,
-                    size: "9223372036854775807",
+                expect(gqlResult?.data as any).toEqual({
+                    [File.plural]: [
+                        {
+                            name,
+                            size: "9223372036854775807",
+                        },
+                    ],
                 });
             } finally {
                 await session.close();
@@ -148,10 +154,10 @@ describe("BigInt", () => {
 
         test("should successfully query an node with a BigInt property using in where", async () => {
             const session = driver.session();
-            const fileType = new UniqueType("File");
+            const File = new UniqueType("File");
 
             const typeDefs = `
-                type ${fileType} {
+                type ${File} {
                   name: String!
                   size: BigInt!
                 }
@@ -167,7 +173,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    ${fileType.plural}(where: { size: 8323372036854775807 }) {
+                    ${File.plural}(where: { size: 8323372036854775807 }) {
                         name
                         size
                     }
@@ -176,7 +182,7 @@ describe("BigInt", () => {
 
             try {
                 await session.run(`
-                   CREATE (f:${fileType})
+                   CREATE (f:${File})
                    SET f.name = "${name}"
                    SET f.size = 8323372036854775807
                `);
@@ -190,7 +196,7 @@ describe("BigInt", () => {
                 expect(gqlResult.errors).toBeFalsy();
 
                 expect(gqlResult?.data as any).toEqual({
-                    [fileType.plural]: [
+                    [File.plural]: [
                         {
                             name,
                             size: "8323372036854775807",
@@ -206,13 +212,14 @@ describe("BigInt", () => {
     describe("@cypher directive", () => {
         test("should work returning a BigInt property", async () => {
             const session = await neo4j.getSession();
+            const File = new UniqueType("File");
 
             const name = generate({
                 charset: "alphabetic",
             });
 
             const typeDefs = `
-                type File {
+                type ${File} {
                   name: String!
                   size: BigInt! @cypher(statement: """
                       RETURN 9223372036854775807 as result
@@ -226,7 +233,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    files(where: { name: "${name}" }) {
+                    ${File.plural}(where: { name: "${name}" }) {
                         name
                         size
                     }
@@ -235,7 +242,7 @@ describe("BigInt", () => {
 
             try {
                 await session.run(`
-                   CREATE (f:File)
+                   CREATE (f:${File})
                    SET f.name = "${name}"
                `);
 
@@ -247,9 +254,13 @@ describe("BigInt", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any)?.files[0]).toEqual({
-                    name,
-                    size: "9223372036854775807",
+                expect(gqlResult?.data as any).toEqual({
+                    [File.plural]: [
+                        {
+                            name,
+                            size: "9223372036854775807",
+                        },
+                    ],
                 });
             } finally {
                 await session.close();
