@@ -82,9 +82,9 @@ export class CompositeAggregationOperation extends Operation {
     }
 
     private transpileNested(
-        parentNode: Cypher.Node,
+        parentNode: Cypher.Node | undefined,
         { context }: OperationTranspileOptions,
-        addReturn = true
+        addReturn = true //TODO: remove addReturn
     ): OperationTranspileResult {
         const aggregationProjectionMap = new Cypher.Map();
         const nodeMap = new Cypher.Map();
@@ -162,16 +162,19 @@ export class CompositeAggregationOperation extends Operation {
             if (!this.nodeAlias) {
                 throw new Error("Node alias missing on top level composite aggregation");
             }
-            const targetNode = new Cypher.NamedNode(this.nodeAlias);
             const newContext = new QueryASTContext({
                 // NOTE: hack for top level
                 target: new Cypher.NamedNode(this.nodeAlias),
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
-            const result = this.transpileNested(targetNode, { context: newContext }, false);
+            const result = this.transpileNested(undefined, { context: newContext }, true);
+
+            const subqueriesAggr = result.clauses.map((clause) => {
+                return new Cypher.Call(clause);
+            });
 
             return {
-                clauses: [...result.clauses, new Cypher.Return(result.projectionExpr)],
+                clauses: [...subqueriesAggr, new Cypher.Return(result.projectionExpr)],
                 projectionExpr: Cypher.true, // NOTE: dummy response, this should be handled by queryAST instead of embedded in clauses
             };
         }

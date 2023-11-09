@@ -74,15 +74,15 @@ describe("Top level aggregation interfaces", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                WITH this
-                MATCH (this0:Movie)
-                RETURN this0 AS var1
-                UNION
-                WITH this
-                MATCH (this2:Series)
-                RETURN this2 AS var1
+                CALL {
+                    MATCH (this0:Movie)
+                    RETURN this0 AS var1
+                    UNION
+                    MATCH (this2:Series)
+                    RETURN this2 AS var1
+                }
+                RETURN count(var1) AS var1
             }
-            WITH count(var1) AS var1
             RETURN { count: var1 }"
         `);
 
@@ -106,31 +106,31 @@ describe("Top level aggregation interfaces", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                WITH this
-                MATCH (this0:Movie)
-                RETURN this0 AS var1
-                UNION
-                WITH this
-                MATCH (this2:Series)
-                RETURN this2 AS var1
+                CALL {
+                    MATCH (this0:Movie)
+                    RETURN this0 AS var1
+                    UNION
+                    MATCH (this2:Series)
+                    RETURN this2 AS var1
+                }
+                RETURN count(var1) AS var1
             }
-            WITH count(var1) AS var1
             CALL {
-                WITH this
-                MATCH (this3:Movie)
-                RETURN this3 AS var4
-                UNION
-                WITH this
-                MATCH (this5:Series)
-                RETURN this5 AS var4
+                CALL {
+                    MATCH (this3:Movie)
+                    RETURN this3 AS var4
+                    UNION
+                    MATCH (this5:Series)
+                    RETURN this5 AS var4
+                }
+                RETURN { shortest: reduce(aggVar = collect(var4.title)[0], current IN collect(var4.title) | CASE
+                    WHEN size(current) < size(aggVar) THEN current
+                    ELSE aggVar
+                END), longest: reduce(aggVar = collect(var4.title)[0], current IN collect(var4.title) | CASE
+                    WHEN size(current) > size(aggVar) THEN current
+                    ELSE aggVar
+                END) } AS var4
             }
-            WITH { shortest: reduce(aggVar = collect(var4.title)[0], current IN collect(var4.title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END), longest: reduce(aggVar = collect(var4.title)[0], current IN collect(var4.title) | CASE
-                WHEN size(current) > size(aggVar) THEN current
-                ELSE aggVar
-            END) } AS var4
             RETURN { count: var1, title: var4 }"
         `);
 
