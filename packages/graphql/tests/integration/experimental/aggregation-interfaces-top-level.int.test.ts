@@ -85,11 +85,6 @@ describe("Top-level interface query fields", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            // features: {
-            //     authorization: {
-            //         key: secret,
-            //     },
-            // },
             experimental: true,
         });
         schema = await neoGraphql.getSchema();

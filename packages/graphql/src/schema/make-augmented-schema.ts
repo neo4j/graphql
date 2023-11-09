@@ -469,21 +469,12 @@ function makeAugmentedSchema({
                     );
                 }
                 if (interfaceEntityAdapter.isAggregable) {
-                    withAggregateSelectionType({
+                    addInterfaceAggregateSelectionStuff({
                         entityAdapter: interfaceEntityAdapter,
                         aggregationTypesMapper,
                         propagatedDirectives,
                         composer,
                     });
-                    composer.Query.addFields({
-                        [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                            concreteEntityAdapter: interfaceEntityAdapter,
-                        }),
-                    });
-                    composer.Query.setFieldDirectives(
-                        interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
-                        graphqlDirectivesToCompose(propagatedDirectives)
-                    );
                 }
             }
             return;
@@ -755,22 +746,12 @@ function doForInterfacesThatAreTargetOfARelationship({
             });
 
             if (interfaceEntityAdapter.isAggregable) {
-                withAggregateSelectionType({
+                addInterfaceAggregateSelectionStuff({
                     entityAdapter: interfaceEntityAdapter,
                     aggregationTypesMapper,
                     propagatedDirectives,
                     composer,
                 });
-
-                composer.Query.addFields({
-                    [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                        concreteEntityAdapter: interfaceEntityAdapter,
-                    }),
-                });
-                composer.Query.setFieldDirectives(
-                    interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
-                    graphqlDirectivesToCompose(propagatedDirectives)
-                );
             }
             composer.Query.setFieldDirectives(
                 interfaceEntityAdapter.operations.rootTypeFieldNames.read,
@@ -780,4 +761,33 @@ function doForInterfacesThatAreTargetOfARelationship({
     }
 
     return relationships;
+}
+
+function addInterfaceAggregateSelectionStuff({
+    entityAdapter,
+    aggregationTypesMapper,
+    propagatedDirectives,
+    composer,
+}: {
+    entityAdapter: InterfaceEntityAdapter;
+    aggregationTypesMapper: AggregationTypesMapper;
+    propagatedDirectives: DirectiveNode[];
+    composer: SchemaComposer;
+}) {
+    withAggregateSelectionType({
+        entityAdapter,
+        aggregationTypesMapper,
+        propagatedDirectives,
+        composer,
+    });
+
+    composer.Query.addFields({
+        [entityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+            concreteEntityAdapter: entityAdapter,
+        }),
+    });
+    composer.Query.setFieldDirectives(
+        entityAdapter.operations.rootTypeFieldNames.aggregate,
+        graphqlDirectivesToCompose(propagatedDirectives)
+    );
 }
