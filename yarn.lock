@@ -3669,7 +3669,7 @@ __metadata:
     "@types/deep-equal": 1.0.4
     "@types/is-uuid": 1.0.2
     "@types/jest": 29.5.8
-    "@types/jsonwebtoken": 9.0.4
+    "@types/jsonwebtoken": 9.0.5
     "@types/node": 20.8.10
     "@types/pluralize": 0.0.32
     "@types/randomstring": 1.1.10
@@ -7516,12 +7516,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.4":
-  version: 9.0.4
-  resolution: "@types/jsonwebtoken@npm:9.0.4"
+"@types/jsonwebtoken@npm:9.0.5":
+  version: 9.0.5
+  resolution: "@types/jsonwebtoken@npm:9.0.5"
   dependencies:
     "@types/node": "*"
-  checksum: 66323ca082008be98d1a1b2782e8c8895b9168bb4444362eaae56e4263728742b61c1b5c4d51276ee80eb592e4b339063425531168b529ca33fd0939cdb9eaa9
+  checksum: 07ab6fee602e5bd3fb5c6dfe4ec400769dc20f1d7fce901feecb4c3af5f5f08323b03ea55de3e49b1aa41e171a59008f6f4318738a735588c5268a63eba25337
   languageName: node
   linkType: hard
 
