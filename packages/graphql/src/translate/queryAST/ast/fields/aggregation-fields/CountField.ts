@@ -42,7 +42,11 @@ export class CountField extends AggregationField {
         return Cypher.count(variable);
     }
 
-    public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
+    public getAggregationProjection(
+        target: Cypher.Variable,
+        returnVar: Cypher.Variable,
+        ProjectionClause: typeof Cypher.With | typeof Cypher.Return = Cypher.Return
+    ): Cypher.Clause {
+        return new ProjectionClause([this.getAggregationExpr(target), returnVar]);
     }
 }

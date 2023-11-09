@@ -26,5 +26,9 @@ export abstract class AggregationField extends Field {
     }
 
     public abstract getAggregationExpr(variable: Cypher.Variable | Cypher.Property): Cypher.Expr;
-    public abstract getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause;
+    public abstract getAggregationProjection(
+        target: Cypher.Variable,
+        returnVar: Cypher.Variable,
+        ProjectionClause?: typeof Cypher.With | typeof Cypher.Return
+    ): Cypher.Clause;
 }

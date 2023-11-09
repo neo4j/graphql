@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { filterTruthy } from "../../../../../utils/utils";
-import type { QueryASTContext } from "../../QueryASTContext";
+import { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { AggregationField } from "../../fields/aggregation-fields/AggregationField";
 import type { Filter } from "../../filters/Filter";
@@ -81,9 +81,11 @@ export class CompositeAggregationOperation extends Operation {
         return this.sortFields.flatMap((sf) => sf.getSortFields(context, target, false));
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
-        const parentNode = context.target;
-
+    private transpileNested(
+        parentNode: Cypher.Node,
+        { context }: OperationTranspileOptions,
+        addReturn = true
+    ): OperationTranspileResult {
         const aggregationProjectionMap = new Cypher.Map();
         const nodeMap = new Cypher.Map();
         const fieldSubqueries: Cypher.Clause[] = this.fields.map((f) => {
@@ -105,14 +107,17 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries));
 
-            return nestedSubquery.return([
-                f.getAggregationExpr(nestedContext.returnVariable),
-                nestedContext.returnVariable,
-            ]);
+            const projectionClause = addReturn ? Cypher.Return : Cypher.With;
+
+            return Cypher.concat(
+                nestedSubquery,
+                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable, projectionClause)
+            );
         });
 
         const nodeFieldSubqueries: Cypher.Clause[] = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
+
             const nestedContext = context.setReturn(returnVariable);
 
             const nestedSubqueries = this.children.flatMap((c) => {
@@ -130,9 +135,11 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries));
 
+            const projectionClause = addReturn ? Cypher.Return : Cypher.With;
+
             return Cypher.concat(
                 nestedSubquery,
-                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
+                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable, projectionClause)
             );
         });
 
@@ -144,6 +151,30 @@ export class CompositeAggregationOperation extends Operation {
             clauses: [...fieldSubqueries, ...nodeFieldSubqueries],
             projectionExpr: aggregationProjectionMap,
         };
+    }
+
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+        const parentNode = context.target;
+
+        if (parentNode) {
+            return this.transpileNested(parentNode, { context });
+        } else {
+            if (!this.nodeAlias) {
+                throw new Error("Node alias missing on top level composite aggregation");
+            }
+            const targetNode = new Cypher.NamedNode(this.nodeAlias);
+            const newContext = new QueryASTContext({
+                // NOTE: hack for top level
+                target: new Cypher.NamedNode(this.nodeAlias),
+                neo4jGraphQLContext: context.neo4jGraphQLContext,
+            });
+            const result = this.transpileNested(targetNode, { context: newContext }, false);
+
+            return {
+                clauses: [...result.clauses, new Cypher.Return(result.projectionExpr)],
+                projectionExpr: Cypher.true, // NOTE: dummy response, this should be handled by queryAST instead of embedded in clauses
+            };
+        }
     }
 
     public setFields(fields: AggregationField[]) {

@@ -35,7 +35,6 @@ export function aggregateResolver({
     concreteEntityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }) {
     async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
-        if (!node) throw new Error("WIP");
         const resolveTree = getNeo4jResolveTree(info);
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;

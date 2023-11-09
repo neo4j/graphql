@@ -56,7 +56,7 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
-import { parseOperationField } from "./parsers/parse-operation-fields";
+import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 const TOP_LEVEL_NODE_NAME = "this";
@@ -103,6 +103,16 @@ export class OperationsFactory {
             }
             throw new Error(`Operation: ${resolveTree.name} is not yet supported by the QueryAST`);
         }
+
+        if (isInterfaceEntity(entity)) {
+            const operationMatch = parseInterfaceOperationField(resolveTree.name, entity);
+            if (operationMatch.isAggregation) {
+                const op = this.createAggregationOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
+        }
+
         return this.createReadOperation(entity, resolveTree, context);
     }
 
@@ -204,12 +214,12 @@ export class OperationsFactory {
 
     // TODO: dupe from read operation
     public createAggregationOperation(
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter,
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext,
         topLevel = false
     ): AggregationOperation | CompositeAggregationOperation {
-        let entity: ConcreteEntityAdapter;
+        let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter;
         } else {
@@ -275,72 +285,87 @@ export class OperationsFactory {
                 return compositeAggregationOp;
             }
         } else {
-            const operation = new AggregationOperation({
-                entity: entityOrRel,
-                directed: Boolean(resolveTree.args?.directed ?? true),
-            });
-            //TODO: use a hydrate method here
-            const rawProjectionFields = {
-                ...resolveTree.fieldsByTypeName[entityOrRel.operations.getAggregationFieldTypename()],
-            };
+            if (isConcreteEntity(entity)) {
+                const operation = new AggregationOperation({
+                    entity,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                });
+                //TODO: use a hydrate method here
+                const rawProjectionFields = {
+                    ...resolveTree.fieldsByTypeName[entity.operations.getAggregationFieldTypename()],
+                };
 
-            const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-            const projectionFields = parsedProjectionFields.fields;
-            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, topLevel);
+                const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
+                const projectionFields = parsedProjectionFields.fields;
+                const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, topLevel);
 
-            operation.setFields(fields);
+                operation.setFields(fields);
 
-            // if (entityOrRel instanceof RelationshipAdapter) {
-            //     const edgeRawFields = {
-            //         ...parsedProjectionFields.edge?.fieldsByTypeName[
-            //             entityOrRel.operations.getAggregationFieldTypename("edge")
-            //         ],
-            //     };
-            //     const nodeRawFields = {
-            //         ...parsedProjectionFields.node?.fieldsByTypeName[
-            //             entityOrRel.operations.getAggregationFieldTypename("node")
-            //         ],
-            //     };
-            //     const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields, topLevel);
-            //     const edgeFields = this.fieldFactory.createAggregationFields(entityOrRel, edgeRawFields, topLevel);
+                const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
+                const entityAuthFilters = this.authorizationFactory.createEntityAuthFilters(
+                    entity,
+                    ["AGGREGATE"],
+                    context
+                );
 
-            //     operation.setNodeFields(nodeFields);
-            //     operation.setEdgeFields(edgeFields);
-            // }
+                const attributeAuthFilters = this.createAttributeAuthFilters({
+                    entity,
+                    rawFields: projectionFields,
+                    context,
+                    operations: ["AGGREGATE"],
+                });
 
-            const whereArgs = (resolveTree.args.where || {}) as Record<string, unknown>;
-            const entityAuthFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+                const authFilters = filterTruthy([entityAuthFilters, ...attributeAuthFilters]);
 
-            const attributeAuthFilters = this.createAttributeAuthFilters({
-                entity,
-                rawFields: projectionFields,
-                context,
-                operations: ["AGGREGATE"],
-            });
+                const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
-            const authFilters = filterTruthy([entityAuthFilters, ...attributeAuthFilters]);
+                operation.setFilters(filters);
 
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
-
-            operation.setFilters(filters);
-
-            if (authFilters.length > 0) {
-                operation.addAuthFilters(...authFilters);
-            }
-
-            // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
-            const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
-            if (options) {
-                const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
-                operation.addSort(...sort);
-
-                const pagination = this.sortAndPaginationFactory.createPagination(options);
-                if (pagination) {
-                    operation.addPagination(pagination);
+                if (authFilters.length > 0) {
+                    operation.addAuthFilters(...authFilters);
                 }
-            }
 
-            return operation;
+                // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
+                const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);
+                if (options) {
+                    const sort = this.sortAndPaginationFactory.createSortFields(options, entity);
+                    operation.addSort(...sort);
+
+                    const pagination = this.sortAndPaginationFactory.createPagination(options);
+                    if (pagination) {
+                        operation.addPagination(pagination);
+                    }
+                }
+
+                return operation;
+            } else {
+                // TOP level interface
+                const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+
+                const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                    const aggregationPartial = new CompositeAggregationPartial({
+                        target: concreteEntity,
+                        directed: Boolean(resolveTree.args?.directed ?? true),
+                    });
+
+                    return aggregationPartial;
+                });
+
+                const compositeAggregationOp = new CompositeAggregationOperation({
+                    compositeEntity: entity,
+                    children: concreteAggregationOperations,
+                });
+
+                this.hydrateAggregationOperation({
+                    entity,
+                    resolveTree,
+                    context,
+                    operation: compositeAggregationOp,
+                    whereArgs: resolveTreeWhere,
+                });
+
+                return compositeAggregationOp;
+            }
         }
     }
 
@@ -632,45 +657,63 @@ export class OperationsFactory {
         context,
         whereArgs,
     }: {
-        relationship: RelationshipAdapter;
+        relationship?: RelationshipAdapter;
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operation: T;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
     }): T {
-        const rawProjectionFields = {
-            ...resolveTree.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()],
-        };
-        const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
-        const projectionFields = parsedProjectionFields.fields;
+        if (relationship) {
+            const rawProjectionFields = {
+                ...resolveTree.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()],
+            };
+            const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
+            const projectionFields = parsedProjectionFields.fields;
 
-        const edgeRawFields = {
-            ...parsedProjectionFields.edge?.fieldsByTypeName[
-                relationship.operations.getAggregationFieldTypename("edge")
-            ],
-        };
+            const edgeRawFields = {
+                ...parsedProjectionFields.edge?.fieldsByTypeName[
+                    relationship.operations.getAggregationFieldTypename("edge")
+                ],
+            };
 
-        const nodeRawFields = {
-            ...parsedProjectionFields.node?.fieldsByTypeName[
-                relationship.operations.getAggregationFieldTypename("node")
-            ],
-        };
+            const nodeRawFields = {
+                ...parsedProjectionFields.node?.fieldsByTypeName[
+                    relationship.operations.getAggregationFieldTypename("node")
+                ],
+            };
 
-        const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, false);
-        const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields, false);
-        const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields, false);
-        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, false);
+            const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields, false);
+            const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields, false);
+            const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
 
-        const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
-        operation.setFields(fields);
-        operation.setNodeFields(nodeFields);
-        operation.setEdgeFields(edgeFields);
-        operation.setFilters(filters);
+            operation.setFields(fields);
+            operation.setNodeFields(nodeFields);
+            operation.setEdgeFields(edgeFields);
+            operation.setFilters(filters);
 
-        if (authFilters) {
-            operation.addAuthFilters(authFilters);
+            if (authFilters) {
+                operation.addAuthFilters(authFilters);
+            }
+        } else {
+            const rawProjectionFields = {
+                ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
+            };
+
+            // TODO: node bs?
+
+            const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields, true);
+            const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+            operation.setFields(fields);
+            operation.setFilters(filters);
+
+            if (authFilters) {
+                operation.addAuthFilters(authFilters);
+            }
         }
 
         const options = this.getOptions(entity, (resolveTree.args.options ?? {}) as any);

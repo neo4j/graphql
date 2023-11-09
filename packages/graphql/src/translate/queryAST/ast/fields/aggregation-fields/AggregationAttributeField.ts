@@ -59,17 +59,26 @@ export class AggregationAttributeField extends AggregationField {
         return this.createAggregationExpr(variable);
     }
 
-    public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        if (this.attribute.typeHelper.isString()) {
+    public getAggregationProjection(
+        target: Cypher.Variable,
+        returnVar: Cypher.Variable,
+        ProjectionClause: typeof Cypher.With | typeof Cypher.Return = Cypher.Return
+    ): Cypher.Clause {
+        if (this.attribute.typeHelper.isString() && !this.useReduce) {
             const aggrProp = target.property(this.attribute.databaseName);
             const listVar = new Cypher.NamedVariable("list");
-            return new Cypher.With(target)
-                .orderBy([Cypher.size(aggrProp), "DESC"])
-                .with([Cypher.collect(aggrProp), listVar])
-                .return([this.createAggregationExpr(listVar), returnVar]);
+
+            const projection = new ProjectionClause([this.createAggregationExpr(listVar), returnVar]);
+
+            return Cypher.concat(
+                new Cypher.With(target)
+                    .orderBy([Cypher.size(aggrProp), "DESC"])
+                    .with([Cypher.collect(aggrProp), listVar]),
+                projection
+            );
         }
 
-        return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
+        return new ProjectionClause([this.getAggregationExpr(target), returnVar]);
     }
 
     private createAggregationExpr(target: Cypher.Variable | Cypher.Property): Cypher.Expr {
@@ -79,10 +88,11 @@ export class AggregationAttributeField extends AggregationField {
                 return this.createAggregationExpressionForStringWithReduce(target);
             }
 
+            const listVar = new Cypher.NamedVariable("list");
             return new Cypher.Map(
                 this.filterProjection({
-                    longest: Cypher.head(target),
-                    shortest: Cypher.last(target),
+                    longest: Cypher.head(listVar),
+                    shortest: Cypher.last(listVar),
                 })
             );
         }

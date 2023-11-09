@@ -19,14 +19,14 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { QueryASTNode } from "../../QueryASTNode";
 
 export class CompositeAggregationPartial extends QueryASTNode {
-    public readonly entity: RelationshipAdapter;
+    public readonly entity?: RelationshipAdapter; // TODO: rename to relationship
     public readonly target: ConcreteEntityAdapter;
     protected directed: boolean;
 
@@ -36,7 +36,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
         directed = true,
     }: {
         target: ConcreteEntityAdapter;
-        entity: RelationshipAdapter;
+        entity?: RelationshipAdapter;
         directed?: boolean;
     }) {
         super();
@@ -50,16 +50,22 @@ export class CompositeAggregationPartial extends QueryASTNode {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!context.target) throw new Error("No parent node found!");
-        const relVar = createRelationshipFromEntity(this.entity);
-        const relDirection = this.entity.getCypherDirection(this.directed);
-        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
+        if (!context.target) throw new Error("No target node found!");
 
-        const pattern = new Cypher.Pattern(context.target)
-            .withoutLabels()
-            .related(relVar)
-            .withDirection(relDirection)
-            .to(targetNode);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
+        let pattern: Cypher.Pattern;
+        if (this.entity instanceof RelationshipAdapter) {
+            const relVar = createRelationshipFromEntity(this.entity);
+            const relDirection = this.entity.getCypherDirection(this.directed);
+
+            pattern = new Cypher.Pattern(context.target)
+                .withoutLabels()
+                .related(relVar)
+                .withDirection(relDirection)
+                .to(targetNode);
+        } else {
+            pattern = new Cypher.Pattern(targetNode);
+        }
 
         const matchClause = new Cypher.Match(pattern);
 

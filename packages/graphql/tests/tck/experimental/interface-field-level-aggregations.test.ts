@@ -262,7 +262,6 @@ describe("Cypher Interface Aggregations String", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    // Test longest on title
     test("Longest", async () => {
         const query = gql`
             {
