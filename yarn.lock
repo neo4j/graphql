@@ -3532,7 +3532,7 @@ __metadata:
     "@types/amqplib": 0.10.4
     "@types/body-parser": 1.19.5
     "@types/cors": 2.8.16
-    "@types/debug": 4.1.11
+    "@types/debug": 4.1.12
     "@types/jest": 29.5.8
     "@types/node": 20.8.10
     amqplib: 0.10.3
@@ -7318,12 +7318,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:4.1.11":
-  version: 4.1.11
-  resolution: "@types/debug@npm:4.1.11"
+"@types/debug@npm:4.1.12":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
   dependencies:
     "@types/ms": "*"
-  checksum: 6f666691f4706c4c1bbb3023026bc3acff7c98f181cbd4bd12bfc56caa9b4cd084e996358ab7b7748e7d9a59a00cdd15f0c6d4b60ff5a085eac98fa71f04784e
+  checksum: 47876a852de8240bfdaf7481357af2b88cb660d30c72e73789abf00c499d6bc7cd5e52f41c915d1b9cd8ec9fef5b05688d7b7aef17f7f272c2d04679508d1053
   languageName: node
   linkType: hard
 
