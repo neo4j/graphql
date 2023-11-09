@@ -303,6 +303,7 @@ function makeAugmentedSchema({
             composeNode,
             subgraph,
             userDefinedFieldDirectives,
+            experimental,
         });
         relationships = [
             ...relationships,
@@ -705,6 +706,7 @@ function doForInterfacesThatAreTargetOfARelationship({
         composeNode: composeInterface,
         subgraph,
         userDefinedFieldDirectives,
+        experimental,
     });
 
     relationships = [

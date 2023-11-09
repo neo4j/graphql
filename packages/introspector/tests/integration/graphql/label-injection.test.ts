@@ -23,7 +23,7 @@ import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
 describe("GraphQL - Infer Schema on graphs", () => {
-    const dbName = "introspectToNeo4jGrahqlTypeDefsGraphITDb";
+    const dbName = "introspectToNeo4jGrahqlTypeDefsGraphITDbLabelInjection";
     let driver: neo4j.Driver;
     let MULTIDB_SUPPORT = true;
 

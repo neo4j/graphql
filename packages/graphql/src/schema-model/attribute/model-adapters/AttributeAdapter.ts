@@ -336,6 +336,11 @@ export class AttributeAdapter {
             },
         };
     }
+
+    public getAggregateSelectionTypeName(nullable: boolean): string {
+        const nullableStr = nullable ? "Nullable" : "NonNullable";
+        return `${this.getFieldTypeName()}AggregateSelection${nullableStr}`;
+    }
 }
 
 type InputTypeNames = Record<"where" | "create" | "update", { type: string; pretty: string }>;

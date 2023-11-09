@@ -6736,6 +6736,92 @@ describe("validation 2.0", () => {
             });
         });
 
+        describe("https://github.com/neo4j/graphql/issues/4232", () => {
+            test("interface at the end", () => {
+                const doc = gql`
+                    type Person {
+                        name: String!
+                    }
+
+                    type Episode implements IProduct {
+                        editorsInCharge: [Person!]!
+                            @relationship(
+                                type: "EDITORS_IN_CHARGE"
+                                direction: OUT
+                                nestedOperations: [CONNECT, DISCONNECT]
+                            )
+                    }
+
+                    type Series implements IProduct {
+                        editorsInCharge: [Person!]!
+                            @cypher(
+                                statement: """
+                                MATCH (this)-[:HAS_PART]->()-[:EDITORS_IN_CHARGE]->(n)
+                                RETURN distinct(n) as editorsInCharge
+                                """
+                                columnName: "editorsInCharge"
+                            )
+                    }
+
+                    interface IProduct {
+                        editorsInCharge: [Person!]!
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                        experimental: false,
+                    });
+
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("interface at the beginning", () => {
+                const doc = gql`
+                    type Person {
+                        name: String!
+                    }
+
+                    interface IProduct {
+                        editorsInCharge: [Person!]!
+                    }
+
+                    type Episode implements IProduct {
+                        editorsInCharge: [Person!]!
+                            @relationship(
+                                type: "EDITORS_IN_CHARGE"
+                                direction: OUT
+                                nestedOperations: [CONNECT, DISCONNECT]
+                            )
+                    }
+
+                    type Series implements IProduct {
+                        editorsInCharge: [Person!]!
+                            @cypher(
+                                statement: """
+                                MATCH (this)-[:HAS_PART]->()-[:EDITORS_IN_CHARGE]->(n)
+                                RETURN distinct(n) as editorsInCharge
+                                """
+                                columnName: "editorsInCharge"
+                            )
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        additionalDefinitions,
+                        features: {},
+                        experimental: false,
+                    });
+
+                expect(executeValidate).not.toThrow();
+            });
+        });
+
         describe("https://github.com/neo4j/graphql/issues/442", () => {
             test("should not throw error on validation of schema if MutationResponse used", () => {
                 const doc = gql`

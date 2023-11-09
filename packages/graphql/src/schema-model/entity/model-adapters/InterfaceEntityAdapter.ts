@@ -134,6 +134,10 @@ export class InterfaceEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
     }
 
+    public get aggregableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
+    }
+
     public get updateInputFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
     }
