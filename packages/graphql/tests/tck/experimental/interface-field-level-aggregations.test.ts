@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("Cypher Interface Aggregations String", () => {
+describe("Interface Field Level Aggregations", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -351,5 +351,111 @@ describe("Cypher Interface Aggregations String", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Edge sum", async () => {
+        const query = gql`
+            {
+                actors {
+                    actedInAggregate {
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    RETURN this0 AS var2
+                    UNION
+                    WITH this
+                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                    RETURN this3 AS var2
+                }
+                RETURN { sum: sum(var2.screenTime) } AS var2
+            }
+            RETURN this { actedInAggregate: { edge: { screenTime: var2 } } } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Edge and node sum with count", async () => {
+        const query = gql`
+            {
+                actors {
+                    actedInAggregate {
+                        count
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                        node {
+                            cost {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    RETURN this1 AS var2
+                    UNION
+                    WITH this
+                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                    RETURN this4 AS var2
+                }
+                RETURN count(var2) AS var2
+            }
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                    RETURN this6 AS var7
+                    UNION
+                    WITH this
+                    MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                    RETURN this9 AS var7
+                }
+                RETURN { sum: sum(var7.cost) } AS var7
+            }
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this10:ACTED_IN]->(this11:Movie)
+                    RETURN this10 AS var12
+                    UNION
+                    WITH this
+                    MATCH (this)-[this13:ACTED_IN]->(this14:Series)
+                    RETURN this13 AS var12
+                }
+                RETURN { sum: sum(var12.screenTime) } AS var12
+            }
+            RETURN this { actedInAggregate: { count: var2, node: { cost: var7 }, edge: { screenTime: var12 } } } AS this"
+        `);
     });
 });

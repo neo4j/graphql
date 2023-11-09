@@ -3532,7 +3532,7 @@ __metadata:
     "@types/amqplib": 0.10.4
     "@types/body-parser": 1.19.5
     "@types/cors": 2.8.16
-    "@types/debug": 4.1.11
+    "@types/debug": 4.1.12
     "@types/jest": 29.5.8
     "@types/node": 20.8.10
     amqplib: 0.10.3
@@ -3601,8 +3601,8 @@ __metadata:
     "@playwright/test": 1.39.0
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.13
-    "@types/lodash.debounce": 4.0.8
-    "@types/markdown-it": 13.0.5
+    "@types/lodash.debounce": 4.0.9
+    "@types/markdown-it": 13.0.6
     "@types/prettier": 2.7.3
     "@types/react-dom": 18.2.14
     "@types/webpack": 5.28.4
@@ -3669,7 +3669,7 @@ __metadata:
     "@types/deep-equal": 1.0.4
     "@types/is-uuid": 1.0.2
     "@types/jest": 29.5.8
-    "@types/jsonwebtoken": 9.0.4
+    "@types/jsonwebtoken": 9.0.5
     "@types/node": 20.8.10
     "@types/pluralize": 0.0.32
     "@types/randomstring": 1.1.10
@@ -7318,12 +7318,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:4.1.11":
-  version: 4.1.11
-  resolution: "@types/debug@npm:4.1.11"
+"@types/debug@npm:4.1.12":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
   dependencies:
     "@types/ms": "*"
-  checksum: 6f666691f4706c4c1bbb3023026bc3acff7c98f181cbd4bd12bfc56caa9b4cd084e996358ab7b7748e7d9a59a00cdd15f0c6d4b60ff5a085eac98fa71f04784e
+  checksum: 47876a852de8240bfdaf7481357af2b88cb660d30c72e73789abf00c499d6bc7cd5e52f41c915d1b9cd8ec9fef5b05688d7b7aef17f7f272c2d04679508d1053
   languageName: node
   linkType: hard
 
@@ -7516,12 +7516,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.4":
-  version: 9.0.4
-  resolution: "@types/jsonwebtoken@npm:9.0.4"
+"@types/jsonwebtoken@npm:9.0.5":
+  version: 9.0.5
+  resolution: "@types/jsonwebtoken@npm:9.0.5"
   dependencies:
     "@types/node": "*"
-  checksum: 66323ca082008be98d1a1b2782e8c8895b9168bb4444362eaae56e4263728742b61c1b5c4d51276ee80eb592e4b339063425531168b529ca33fd0939cdb9eaa9
+  checksum: 07ab6fee602e5bd3fb5c6dfe4ec400769dc20f1d7fce901feecb4c3af5f5f08323b03ea55de3e49b1aa41e171a59008f6f4318738a735588c5268a63eba25337
   languageName: node
   linkType: hard
 
@@ -7550,12 +7550,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:4.0.8":
-  version: 4.0.8
-  resolution: "@types/lodash.debounce@npm:4.0.8"
+"@types/lodash.debounce@npm:4.0.9":
+  version: 4.0.9
+  resolution: "@types/lodash.debounce@npm:4.0.9"
   dependencies:
     "@types/lodash": "*"
-  checksum: 63f195cb053ca390135a9aca62bb60fa149ca81838519871506b60760ff4113333709becb8e4147707eaa3d916dab7eff66b0588caf4ce508cabda9bee9c5b60
+  checksum: 8183a152e01928e3b97ca773f6ae6038b8695e76493ba8bf6b743ec143948a62294fbc9d49fa4a78b52265b3ba4892ef57534e0c13d04aa0f111671b5a944feb
   languageName: node
   linkType: hard
 
@@ -7573,13 +7573,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/markdown-it@npm:13.0.5":
-  version: 13.0.5
-  resolution: "@types/markdown-it@npm:13.0.5"
+"@types/markdown-it@npm:13.0.6":
+  version: 13.0.6
+  resolution: "@types/markdown-it@npm:13.0.6"
   dependencies:
     "@types/linkify-it": "*"
     "@types/mdurl": "*"
-  checksum: 3c87efe8e24f77dc9aa1962b8f18d37530b63e33ab363653e568816de6d5b6185a65690da729e2757ba370a3499635da6b4fc4d9a99df9d85959d8c64c7fe8e9
+  checksum: 2d840372f909d6c000c37c89f720f17a6c3cfecfa1c2f10ec51d5b63a301a5316a3d9ca6855f2922420c23961600af83385cca142c2f2169db3126ad37215341
   languageName: node
   linkType: hard
 

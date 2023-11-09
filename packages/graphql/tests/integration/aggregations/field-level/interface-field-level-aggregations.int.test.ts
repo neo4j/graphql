@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { UniqueType } from "../../../utils/graphql-types";
 import Neo4j from "../../neo4j";
 
-describe("Field Level Aggregations", () => {
+describe("Interface Field Level Aggregations", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
@@ -327,6 +327,85 @@ describe("Field Level Aggregations", () => {
                             max: 20000000,
                             min: 12000000,
                             sum: 72000000,
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    // Edge aggregation
+    test("Edge Count", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        count
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
+            {
+                actedInAggregate: {
+                    count: 4,
+                },
+            },
+            {
+                actedInAggregate: {
+                    count: 4,
+                },
+            },
+        ]);
+    });
+
+    test("Edge screenTime", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Actor.plural} {
+                    actedInAggregate {
+                        edge {
+                            screenTime {
+                                sum
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
+            {
+                actedInAggregate: {
+                    edge: {
+                        screenTime: {
+                            sum: 224,
+                        },
+                    },
+                },
+            },
+            {
+                actedInAggregate: {
+                    edge: {
+                        screenTime: {
+                            sum: 1784,
                         },
                     },
                 },
