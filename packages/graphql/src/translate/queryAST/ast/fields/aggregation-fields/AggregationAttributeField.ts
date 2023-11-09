@@ -59,16 +59,12 @@ export class AggregationAttributeField extends AggregationField {
         return this.createAggregationExpr(variable);
     }
 
-    public getAggregationProjection(
-        target: Cypher.Variable,
-        returnVar: Cypher.Variable,
-        ProjectionClause: typeof Cypher.With | typeof Cypher.Return = Cypher.Return
-    ): Cypher.Clause {
+    public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
         if (this.attribute.typeHelper.isString() && !this.useReduce) {
             const aggrProp = target.property(this.attribute.databaseName);
             const listVar = new Cypher.NamedVariable("list");
 
-            const projection = new ProjectionClause([this.createAggregationExpr(listVar), returnVar]);
+            const projection = new Cypher.Return([this.createAggregationExpr(listVar), returnVar]);
 
             return Cypher.concat(
                 new Cypher.With(target)
@@ -78,7 +74,7 @@ export class AggregationAttributeField extends AggregationField {
             );
         }
 
-        return new ProjectionClause([this.getAggregationExpr(target), returnVar]);
+        return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
     }
 
     private createAggregationExpr(target: Cypher.Variable | Cypher.Property): Cypher.Expr {

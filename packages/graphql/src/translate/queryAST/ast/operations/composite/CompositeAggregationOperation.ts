@@ -83,8 +83,7 @@ export class CompositeAggregationOperation extends Operation {
 
     private transpileNested(
         parentNode: Cypher.Node | undefined,
-        { context }: OperationTranspileOptions,
-        addReturn = true //TODO: remove addReturn
+        { context }: OperationTranspileOptions
     ): OperationTranspileResult {
         const aggregationProjectionMap = new Cypher.Map();
         const nodeMap = new Cypher.Map();
@@ -107,11 +106,9 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries));
 
-            const projectionClause = addReturn ? Cypher.Return : Cypher.With;
-
             return Cypher.concat(
                 nestedSubquery,
-                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable, projectionClause)
+                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
             );
         });
 
@@ -135,11 +132,9 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries));
 
-            const projectionClause = addReturn ? Cypher.Return : Cypher.With;
-
             return Cypher.concat(
                 nestedSubquery,
-                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable, projectionClause)
+                f.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
             );
         });
 
@@ -167,7 +162,7 @@ export class CompositeAggregationOperation extends Operation {
                 target: new Cypher.NamedNode(this.nodeAlias),
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
-            const result = this.transpileNested(undefined, { context: newContext }, true);
+            const result = this.transpileNested(undefined, { context: newContext });
 
             const subqueriesAggr = result.clauses.map((clause) => {
                 return new Cypher.Call(clause);
