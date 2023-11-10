@@ -721,6 +721,7 @@ export class OperationsFactory {
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields, false);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields, false);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+            const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["AGGREGATE"], context, "BEFORE");
 
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
@@ -732,6 +733,9 @@ export class OperationsFactory {
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
             }
+            if (authValidate) {
+                operation.addAuthFilters(authValidate);
+            }
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
@@ -739,12 +743,16 @@ export class OperationsFactory {
 
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields, true);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+            const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["AGGREGATE"], context, "BEFORE");
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
             operation.setFields(fields);
             operation.setFilters(filters);
 
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
+            }
+            if (authValidate) {
+                operation.addAuthFilters(authValidate);
             }
         }
 

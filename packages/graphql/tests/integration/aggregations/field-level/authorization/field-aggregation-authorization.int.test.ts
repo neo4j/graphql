@@ -200,7 +200,7 @@ describe("Field Level Aggregations Auth", () => {
             expect(gqlResult.errors).toBeUndefined();
         });
 
-        test.only("unauthenticated query", async () => {
+        test("unauthenticated query", async () => {
             const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
@@ -214,7 +214,6 @@ describe("Field Level Aggregations Auth", () => {
                 source: query,
                 contextValue: neo4j.getContextValues(),
             });
-            console.log(`the famous error: ${JSON.stringify(gqlResult.errors)}`);
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 

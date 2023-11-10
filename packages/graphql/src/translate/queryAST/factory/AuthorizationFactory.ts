@@ -69,7 +69,7 @@ export class AuthorizationFactory {
     }
 
     public createEntityAuthValidate(
-        entity: ConcreteEntityAdapter,
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
         operations: AuthorizationOperation[],
         context: Neo4jGraphQLTranslationContext,
         when: "BEFORE" | "AFTER"
@@ -148,7 +148,7 @@ export class AuthorizationFactory {
         when,
         conditionForEvaluation,
     }: {
-        entity: ConcreteEntityAdapter;
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         authAnnotation: AuthorizationAnnotation;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
