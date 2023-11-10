@@ -24,8 +24,6 @@ import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-t
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
-import { AuthFilterFactory } from "../queryAST/factory/AuthFilterFactory";
-import { AuthorizationFactory } from "../queryAST/factory/AuthorizationFactory";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { asArray } from "@graphql-tools/utils";
 import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
@@ -50,8 +48,6 @@ export function createAuthorizationBeforePredicate({
         const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
 
         const factory = new QueryASTFactory(context.schemaModel);
-        const authFilterFactory = new AuthFilterFactory(factory);
-        const authorizationFactory = new AuthorizationFactory(authFilterFactory);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -59,8 +55,8 @@ export function createAuthorizationBeforePredicate({
             env: queryASTEnv,
             neo4jGraphQLContext: context,
         });
-        const authorizationFilters = authorizationFactory.createEntityAuthFilters(entity, operations, context);
-        const authorizationValidate = authorizationFactory.createEntityAuthValidate(
+        const authorizationFilters = factory.authorizationFactory.createEntityAuthFilters(entity, operations, context);
+        const authorizationValidate = factory.authorizationFactory.createEntityAuthValidate(
             entity,
             operations,
             context,
@@ -112,8 +108,6 @@ export function createAuthorizationBeforePredicateField({
         const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
 
         const factory = new QueryASTFactory(context.schemaModel);
-        const authFilterFactory = new AuthFilterFactory(factory);
-        const authorizationFactory = new AuthorizationFactory(authFilterFactory);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -127,13 +121,13 @@ export function createAuthorizationBeforePredicateField({
             if (!attributeAdapter) {
                 throw new Error("Couldn't match attribute");
             }
-            const attributesFilters = authorizationFactory.createAttributeAuthFilters(
+            const attributesFilters = factory.authorizationFactory.createAttributeAuthFilters(
                 attributeAdapter,
                 entity,
                 operations,
                 context
             );
-            const attributesValidate = authorizationFactory.createAttributeAuthValidate(
+            const attributesValidate = factory.authorizationFactory.createAttributeAuthValidate(
                 attributeAdapter,
                 entity,
                 operations,

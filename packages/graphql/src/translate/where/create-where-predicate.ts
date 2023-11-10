@@ -22,7 +22,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
-import { FilterFactory } from "../queryAST/factory/FilterFactory";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -42,9 +41,7 @@ export function createWherePredicate({
     extraSelections?: (Cypher.Match | Cypher.With)[];
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-
     const factory = new QueryASTFactory(context.schemaModel);
-    const filterFactory = new FilterFactory(factory);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({
@@ -53,7 +50,7 @@ export function createWherePredicate({
         neo4jGraphQLContext: context,
     });
 
-    const filters = filterFactory.createNodeFilters(entity, whereInput);
+    const filters = factory.filterFactory.createNodeFilters(entity, whereInput);
 
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
     const predicates = filters.map((f) => f.getPredicate(queryASTContext));
@@ -84,9 +81,7 @@ export function createWhereRelPredicate({
     extraSelections?: (Cypher.Match | Cypher.With)[];
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-
     const factory = new QueryASTFactory(context.schemaModel);
-    const filterFactory = new FilterFactory(factory);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({
@@ -96,7 +91,7 @@ export function createWhereRelPredicate({
         neo4jGraphQLContext: context,
     });
 
-    const filters = filterFactory.createEdgeFilters(rel, whereInput);
+    const filters = factory.filterFactory.createEdgeFilters(rel, whereInput);
 
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
     const predicates = filters.map((f) => f.getPredicate(queryASTContext));

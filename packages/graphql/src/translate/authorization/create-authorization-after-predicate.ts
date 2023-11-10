@@ -27,8 +27,6 @@ import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adap
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 import { filterTruthy } from "../../utils/utils";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
-import { AuthFilterFactory } from "../queryAST/factory/AuthFilterFactory";
-import { AuthorizationFactory } from "../queryAST/factory/AuthorizationFactory";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
 
@@ -50,8 +48,6 @@ export function createAuthorizationAfterPredicate({
         const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
 
         const factory = new QueryASTFactory(context.schemaModel);
-        const authFilterFactory = new AuthFilterFactory(factory);
-        const authorizationFactory = new AuthorizationFactory(authFilterFactory);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -60,7 +56,7 @@ export function createAuthorizationAfterPredicate({
             neo4jGraphQLContext: context,
         });
 
-        const authorizationFilters = authorizationFactory.createEntityAuthValidate(
+        const authorizationFilters = factory.authorizationFactory.createEntityAuthValidate(
             entity,
             operations,
             context,
@@ -110,8 +106,6 @@ export function createAuthorizationAfterPredicateField({
         const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
 
         const factory = new QueryASTFactory(context.schemaModel);
-        const authFilterFactory = new AuthFilterFactory(factory);
-        const authorizationFactory = new AuthorizationFactory(authFilterFactory);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -125,7 +119,7 @@ export function createAuthorizationAfterPredicateField({
             if (!attributeAdapter) {
                 throw new Error("Couldn't match attribute");
             }
-            const attributesFilters = authorizationFactory.createAttributeAuthValidate(
+            const attributesFilters = factory.authorizationFactory.createAttributeAuthValidate(
                 attributeAdapter,
                 entity,
                 operations,

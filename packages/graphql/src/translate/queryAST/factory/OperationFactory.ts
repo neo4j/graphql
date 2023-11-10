@@ -44,17 +44,16 @@ import { getConcreteWhere } from "../utils/get-concrete-where";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
-import { AuthFilterFactory } from "./AuthFilterFactory";
-import { AuthorizationFactory } from "./AuthorizationFactory";
-import { FieldFactory } from "./FieldFactory";
-import { FilterFactory } from "./FilterFactory";
-import type { QueryASTFactory } from "./QueryASTFactory";
-import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
+import type { AuthorizationFactory } from "./AuthorizationFactory";
+import type { FieldFactory } from "./FieldFactory";
+import type { FilterFactory } from "./FilterFactory";
+import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import { parseOperationField } from "./parsers/parse-operation-fields";
 import type { Operation } from "../ast/operations/operations";
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
+import type { QueryASTFactory } from "./QueryASTFactory";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -64,11 +63,10 @@ export class OperationsFactory {
     private authorizationFactory: AuthorizationFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
-        this.filterFactory = new FilterFactory(queryASTFactory);
-        this.fieldFactory = new FieldFactory(queryASTFactory);
-        this.sortAndPaginationFactory = new SortAndPaginationFactory();
-        const authFilterFactory = new AuthFilterFactory(queryASTFactory);
-        this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
+        this.filterFactory = queryASTFactory.filterFactory;
+        this.fieldFactory = queryASTFactory.fieldFactory;
+        this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
+        this.authorizationFactory = queryASTFactory.authorizationFactory;
     }
 
     public createTopLevelOperation(

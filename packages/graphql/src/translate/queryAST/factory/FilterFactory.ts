@@ -18,7 +18,6 @@
  */
 
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
