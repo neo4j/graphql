@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
-import Cypher from "@neo4j/cypher-builder";
 
 export class OperationField extends Field {
     private operation: Operation;

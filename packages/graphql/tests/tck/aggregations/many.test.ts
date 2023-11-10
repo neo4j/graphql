@@ -69,14 +69,26 @@ describe("Cypher Aggregations Many", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { id: { shortest: min(this.id), longest: max(this.id) }, title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END), longest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) > size(aggVar) THEN current
-                ELSE aggVar
-            END) }, imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) }, createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { shortest: min(this.id), longest: max(this.id) } AS var0
+            }
+            CALL {
+                MATCH (this:Movie)
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var1
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) } AS var2
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
+            }
+            RETURN { id: var0, title: var1, imdbRating: var2, createdAt: var3 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

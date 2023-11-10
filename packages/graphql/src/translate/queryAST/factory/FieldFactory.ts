@@ -41,6 +41,7 @@ import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttribu
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
+import { isInterfaceEntity } from "../utils/is-interface-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
@@ -157,11 +158,12 @@ export class FieldFactory {
                         return acc;
                     }, {});
 
+                    const useReduce = topLevel && isInterfaceEntity(entity);
                     return new AggregationAttributeField({
                         attribute,
                         alias: field.alias,
                         aggregationProjection,
-                        useReduce: topLevel,
+                        useReduce,
                     });
                 }
             })

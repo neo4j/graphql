@@ -69,14 +69,26 @@ describe("Cypher Aggregations Many with Alias directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { id: { shortest: min(this._id), longest: max(this._id) }, title: { shortest: reduce(aggVar = collect(this._title)[0], current IN collect(this._title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END), longest: reduce(aggVar = collect(this._title)[0], current IN collect(this._title) | CASE
-                WHEN size(current) > size(aggVar) THEN current
-                ELSE aggVar
-            END) }, imdbRating: { min: min(this.\`_imdb Rating\`), max: max(this.\`_imdb Rating\`), average: avg(this.\`_imdb Rating\`) }, createdAt: { min: apoc.date.convertFormat(toString(min(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { shortest: min(this._id), longest: max(this._id) } AS var0
+            }
+            CALL {
+                MATCH (this:Movie)
+                WITH this
+                ORDER BY size(this._title) DESC
+                WITH collect(this._title) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var1
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.\`_imdb Rating\`), max: max(this.\`_imdb Rating\`), average: avg(this.\`_imdb Rating\`) } AS var2
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { min: apoc.date.convertFormat(toString(min(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
+            }
+            RETURN { id: var0, title: var1, imdbRating: var2, createdAt: var3 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

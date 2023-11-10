@@ -52,8 +52,11 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { imdbRating: { min: min(this.imdbRating) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.imdbRating) } AS var0
+            }
+            RETURN { imdbRating: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -73,8 +76,11 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { imdbRating: { max: max(this.imdbRating) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { max: max(this.imdbRating) } AS var0
+            }
+            RETURN { imdbRating: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -94,8 +100,11 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { imdbRating: { average: avg(this.imdbRating) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { average: avg(this.imdbRating) } AS var0
+            }
+            RETURN { imdbRating: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -115,8 +124,11 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { imdbRating: { sum: sum(this.imdbRating) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { sum: sum(this.imdbRating) } AS var0
+            }
+            RETURN { imdbRating: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -139,8 +151,11 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } AS var0
+            }
+            RETURN { imdbRating: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
