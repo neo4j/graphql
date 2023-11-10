@@ -25,15 +25,12 @@ import { AggregationField } from "./AggregationField";
 
 export class AggregationAttributeField extends AggregationField {
     private attribute: AttributeAdapter;
-
     private aggregationProjection: Record<string, string>;
-    private useReduce: boolean; //Use Cypher reduce instead of subqueries, this option is to support top level aggregations until these are moved to subqueries
 
     constructor({
         alias,
         attribute,
         aggregationProjection,
-        useReduce,
     }: {
         alias: string;
         attribute: AttributeAdapter;
@@ -43,7 +40,6 @@ export class AggregationAttributeField extends AggregationField {
         super(alias);
         this.attribute = attribute;
         this.aggregationProjection = aggregationProjection;
-        this.useReduce = useReduce;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -60,7 +56,7 @@ export class AggregationAttributeField extends AggregationField {
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        if (this.attribute.typeHelper.isString() && !this.useReduce) {
+        if (this.attribute.typeHelper.isString()) {
             const aggrProp = target.property(this.attribute.databaseName);
             const listVar = new Cypher.NamedVariable("list");
 
@@ -79,11 +75,6 @@ export class AggregationAttributeField extends AggregationField {
 
     private createAggregationExpr(target: Cypher.Variable | Cypher.Property): Cypher.Expr {
         if (this.attribute.typeHelper.isString()) {
-            if (this.useReduce) {
-                // TODO: use subqueries for top level aggregations
-                return this.createAggregationExpressionForStringWithReduce(target);
-            }
-
             const listVar = new Cypher.NamedVariable("list");
             return new Cypher.Map(
                 this.filterProjection({
@@ -141,55 +132,5 @@ export class AggregationAttributeField extends AggregationField {
 
     private createDatetimeProjection(expr: Cypher.Expr) {
         return Cypher.apoc.date.convertFormat(expr, "iso_zoned_date_time", "iso_offset_date_time");
-    }
-
-    private createAggregationExpressionForStringWithReduce(target: Cypher.Variable | Cypher.Property): Cypher.Map {
-        const aggregationVar = new Cypher.NamedVariable("aggVar");
-        const iterationVar = new Cypher.NamedVariable("current");
-
-        return new Cypher.Map(
-            this.filterProjection({
-                shortest: this.createReduceExpression({
-                    target,
-                    aggregationVar,
-                    iterationVar,
-                    operator: Cypher.lt,
-                }),
-                longest: this.createReduceExpression({
-                    target,
-                    aggregationVar,
-                    iterationVar,
-                    operator: Cypher.gt,
-                }),
-            })
-        );
-    }
-
-    private createReduceExpression({
-        target,
-        aggregationVar,
-        iterationVar,
-        operator,
-    }: {
-        target: Cypher.Variable | Cypher.Property;
-        aggregationVar: Cypher.Variable;
-        iterationVar: Cypher.Variable;
-        operator: typeof Cypher.lt | typeof Cypher.gt;
-    }): Cypher.Expr {
-        const collectIndex1 = new Cypher.Raw((env) => {
-            const collect = Cypher.collect(target);
-            const result = env.compile(collect);
-            return `${result}[0]`;
-        });
-
-        const reduceOperation = operator(Cypher.size(iterationVar), Cypher.size(aggregationVar));
-
-        return Cypher.reduce(
-            aggregationVar,
-            collectIndex1,
-            iterationVar,
-            Cypher.collect(target),
-            new Cypher.Case().when(reduceOperation).then(iterationVar).else(aggregationVar)
-        );
     }
 }

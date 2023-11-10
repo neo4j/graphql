@@ -96,7 +96,6 @@ export class CompositeAggregationOperation extends Operation {
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
             const result = this.transpileAggregationOperation({ context: newContext }, false);
-
             const subqueriesAggr = result.clauses.map((clause) => {
                 return new Cypher.Call(clause);
             });
@@ -183,10 +182,12 @@ export class CompositeAggregationOperation extends Operation {
             const nestedContext = context.setReturn(returnVariable);
 
             const nestedSubquery = this.createSubquery(field, nestedContext, aggregationProjectionMap, addWith);
-            return nestedSubquery.return([
-                field.getAggregationExpr(nestedContext.returnVariable),
+
+            const aggrProjection = field.getAggregationProjection(
                 nestedContext.returnVariable,
-            ]);
+                nestedContext.returnVariable
+            );
+            return Cypher.concat(nestedSubquery, aggrProjection);
         });
 
         const nodeFieldSubqueries = this.nodeFields.map((field) => {
@@ -249,8 +250,6 @@ export class CompositeAggregationOperation extends Operation {
 
         addToMap.set(field.getProjectionField(context.returnVariable));
 
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries));
-
-        return nestedSubquery;
+        return new Cypher.Call(new Cypher.Union(...nestedSubqueries));
     }
 }
