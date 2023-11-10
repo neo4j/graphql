@@ -28,7 +28,7 @@ import type {
 } from "../types";
 import { GraphElement } from "./GraphElement";
 
-export interface RelationshipConstructor {
+interface RelationshipConstructor {
     name: string;
     type: string;
     source: string; // temporary addition to infer the source using the schema model
