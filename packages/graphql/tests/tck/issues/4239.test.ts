@@ -23,6 +23,21 @@ import { formatCypher, translateQuery } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("https://github.com/neo4j/graphql/issues/4239", () => {
+    let verifyTCK;
+
+    beforeAll(() => {
+        if (process.env.VERIFY_TCK) {
+            verifyTCK = process.env.VERIFY_TCK;
+            delete process.env.VERIFY_TCK;
+        }
+    });
+
+    afterAll(() => {
+        if (verifyTCK) {
+            process.env.VERIFY_TCK = verifyTCK;
+        }
+    });
+
     test("should produce a predicate for apoc.util.validatePredicate for version 4.4", async () => {
         const typeDefs = gql`
             type Movie
