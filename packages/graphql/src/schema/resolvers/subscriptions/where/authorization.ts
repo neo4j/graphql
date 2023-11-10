@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import type { SubscriptionsAuthorizationFilterEvent } from "../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { SubscriptionsEvent } from "../../../../types";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { SubscriptionEventType } from "../types";
 import { filterByAuthorizationRules } from "./filters/filter-by-authorization-rules";
 import { multipleConditionsAggregationMap } from "./utils/multiple-conditions-aggregation-map";
 import { populateWhereParams } from "./utils/populate-where-params";
@@ -62,8 +64,8 @@ export function subscriptionAuthorization({
 }
 
 function authorizationEventMatchesEvent(
-    authorizationEvent: "CREATED" | "UPDATED" | "DELETED" | "RELATIONSHIP_CREATED" | "RELATIONSHIP_DELETED",
-    event: "create" | "update" | "delete" | "create_relationship" | "delete_relationship"
+    authorizationEvent: SubscriptionsAuthorizationFilterEvent,
+    event: SubscriptionEventType
 ): boolean {
     switch (authorizationEvent) {
         case "CREATED":
