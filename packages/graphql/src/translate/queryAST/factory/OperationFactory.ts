@@ -703,8 +703,6 @@ export class OperationsFactory {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
             };
 
-            // TODO: node bs?
-
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields, true);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node

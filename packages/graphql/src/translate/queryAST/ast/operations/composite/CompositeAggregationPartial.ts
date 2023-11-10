@@ -26,7 +26,7 @@ import type { QueryASTContext } from "../../QueryASTContext";
 import { QueryASTNode } from "../../QueryASTNode";
 
 export class CompositeAggregationPartial extends QueryASTNode {
-    public readonly entity?: RelationshipAdapter; // TODO: rename to relationship
+    public readonly entity?: RelationshipAdapter;
     public readonly target: ConcreteEntityAdapter;
     protected directed: boolean;
     protected attachedTo: "node" | "relationship";
