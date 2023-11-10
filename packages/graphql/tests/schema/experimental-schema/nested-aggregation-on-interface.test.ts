@@ -1,6 +1,6 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql";
-import { Neo4jGraphQL } from "../../src";
+import { Neo4jGraphQL } from "../../../src";
 
 describe("nested aggregation on interface", () => {
     test("should generate the correct schema", async () => {
