@@ -55,15 +55,18 @@ function translateAggregate({
     context,
     entityAdapter,
 }: {
-    node: Node;
+    node: Node | undefined;
     context: Neo4jGraphQLTranslationContext;
     entityAdapter: EntityAdapter;
 }): Cypher.CypherResult {
+    // TODO: Move fulltext to new translation layer to remove the deprecated translation
     if (!context.resolveTree.args.fulltext && !context.resolveTree.args.phrase) {
         return translateQuery({ context, entityAdapter });
     }
 
-    // TODO: Move fulltext to new translation layer to remove the deprecated translation
+    if (!node) {
+        throw new Error("Translating Read: Node cannot be on aggregation.");
+    }
 
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";

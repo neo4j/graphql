@@ -20,6 +20,7 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateAggregate } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
@@ -30,8 +31,8 @@ export function aggregateResolver({
     node,
     concreteEntityAdapter,
 }: {
-    node: Node;
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    node?: Node;
+    concreteEntityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }) {
     async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info);
