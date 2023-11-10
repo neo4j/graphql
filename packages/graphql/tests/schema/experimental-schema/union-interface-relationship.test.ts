@@ -1742,6 +1742,7 @@ describe("Union Interface Relationships", () => {
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               reviewers(options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
+              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -1785,6 +1786,12 @@ describe("Union Interface Relationships", () => {
             interface Reviewer {
               reputation: Int!
               reviewerId: Int
+            }
+
+            type ReviewerAggregateSelection {
+              count: Int!
+              reputation: IntAggregateSelectionNonNullable!
+              reviewerId: IntAggregateSelectionNullable!
             }
 
             input ReviewerConnectInput {

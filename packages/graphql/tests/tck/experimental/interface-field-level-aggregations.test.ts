@@ -262,7 +262,6 @@ describe("Interface Field Level Aggregations", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    // Test longest on title
     test("Longest", async () => {
         const query = gql`
             {

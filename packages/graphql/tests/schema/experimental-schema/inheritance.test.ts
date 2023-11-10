@@ -290,6 +290,11 @@ describe("inheritance", () => {
               name: String @customDirectiveField
             }
 
+            type PersonAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
+            }
+
             input PersonConnectInput {
               _on: PersonImplementationsConnectInput
               friends: [PersonFriendsConnectFieldInput!]
@@ -459,6 +464,7 @@ describe("inheritance", () => {
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

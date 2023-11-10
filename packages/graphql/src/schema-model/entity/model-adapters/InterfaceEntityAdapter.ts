@@ -116,6 +116,10 @@ export class InterfaceEntityAdapter {
         return this.annotations.query === undefined || this.annotations.query.read === true;
     }
 
+    get isAggregable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+    }
+
     /**
      * Categories
      * = a grouping of attributes

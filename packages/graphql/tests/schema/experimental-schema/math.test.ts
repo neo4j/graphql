@@ -1639,6 +1639,11 @@ describe("Algebraic", () => {
               viewers: Int!
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              viewers: IntAggregateSelectionNonNullable!
+            }
+
             input ProductionConnectInput {
               _on: ProductionImplementationsConnectInput
             }
@@ -1722,6 +1727,7 @@ describe("Algebraic", () => {
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

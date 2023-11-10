@@ -3052,6 +3052,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -3126,6 +3132,7 @@ describe("@selectable", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3582,6 +3589,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -3656,6 +3669,7 @@ describe("@selectable", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

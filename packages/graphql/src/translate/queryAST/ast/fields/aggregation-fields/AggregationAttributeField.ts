@@ -60,13 +60,18 @@ export class AggregationAttributeField extends AggregationField {
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        if (this.attribute.typeHelper.isString()) {
+        if (this.attribute.typeHelper.isString() && !this.useReduce) {
             const aggrProp = target.property(this.attribute.databaseName);
             const listVar = new Cypher.NamedVariable("list");
-            return new Cypher.With(target)
-                .orderBy([Cypher.size(aggrProp), "DESC"])
-                .with([Cypher.collect(aggrProp), listVar])
-                .return([this.createAggregationExpr(listVar), returnVar]);
+
+            const projection = new Cypher.Return([this.createAggregationExpr(listVar), returnVar]);
+
+            return Cypher.concat(
+                new Cypher.With(target)
+                    .orderBy([Cypher.size(aggrProp), "DESC"])
+                    .with([Cypher.collect(aggrProp), listVar]),
+                projection
+            );
         }
 
         return new Cypher.Return([this.getAggregationExpr(target), returnVar]);
@@ -79,10 +84,11 @@ export class AggregationAttributeField extends AggregationField {
                 return this.createAggregationExpressionForStringWithReduce(target);
             }
 
+            const listVar = new Cypher.NamedVariable("list");
             return new Cypher.Map(
                 this.filterProjection({
-                    longest: Cypher.head(target),
-                    shortest: Cypher.last(target),
+                    longest: Cypher.head(listVar),
+                    shortest: Cypher.last(listVar),
                 })
             );
         }
