@@ -24,112 +24,91 @@ import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
-import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-export function createWherePredicate({
+function createWherePredicate({
+    factory,
+    queryASTContext,
+    entityOrRel,
+    whereInput,
+    targetElement,
+}: {
+    factory: QueryASTFactory;
+    queryASTContext: QueryASTContext;
+    entityOrRel: EntityAdapter | RelationshipAdapter;
+    whereInput: GraphQLWhereArg;
+    targetElement: Cypher.Node | Cypher.Relationship;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+} {
+    const filters =
+        entityOrRel instanceof RelationshipAdapter
+            ? factory.filterFactory.createEdgeFilters(entityOrRel, whereInput)
+            : factory.filterFactory.createNodeFilters(entityOrRel, whereInput);
+
+    const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
+    const predicates = filters.map((f) => f.getPredicate(queryASTContext));
+    const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
+
+    const preComputedSubqueries = [...extraSelections, ...subqueries];
+
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
+    };
+}
+
+export function createWhereNodePredicate({
     targetElement,
     whereInput,
     context,
     entity,
 }: {
-    targetElement: Cypher.Variable;
+    targetElement: Cypher.Node;
     whereInput: GraphQLWhereArg;
     context: Neo4jGraphQLTranslationContext;
     entity: EntityAdapter;
 }): {
     predicate: Cypher.Predicate | undefined;
-    extraSelections?: (Cypher.Match | Cypher.With)[];
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
     const factory = new QueryASTFactory(context.schemaModel);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({
-        target: targetElement as Cypher.Node,
+        target: targetElement,
         env: queryASTEnv,
         neo4jGraphQLContext: context,
     });
-
-    const filters = factory.filterFactory.createNodeFilters(entity, whereInput);
-
-    const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
-    const predicates = filters.map((f) => f.getPredicate(queryASTContext));
-    const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
-
-    const preComputedSubqueries = [...extraSelections, ...subqueries];
-
-    return {
-        predicate: Cypher.and(...predicates),
-        preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
-    };
+    return createWherePredicate({ factory, queryASTContext, entityOrRel: entity, whereInput, targetElement });
 }
 
-export function createWhereRelPredicate({
+export function createWhereEdgePredicate({
     targetElement,
     relationshipVariable,
     whereInput,
     context,
-    rel,
+    relationship,
 }: {
-    targetElement: Cypher.Variable;
-    relationshipVariable: Cypher.Variable;
+    targetElement: Cypher.Node;
+    relationshipVariable: Cypher.Relationship;
     whereInput: GraphQLWhereArg;
     context: Neo4jGraphQLTranslationContext;
-    rel: RelationshipAdapter;
+    relationship: RelationshipAdapter;
 }): {
     predicate: Cypher.Predicate | undefined;
-    extraSelections?: (Cypher.Match | Cypher.With)[];
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
     const factory = new QueryASTFactory(context.schemaModel);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({
-        target: targetElement as Cypher.Node,
-        relationship: relationshipVariable as Cypher.Relationship,
+        target: targetElement,
+        relationship: relationshipVariable,
         env: queryASTEnv,
         neo4jGraphQLContext: context,
     });
 
-    const filters = factory.filterFactory.createEdgeFilters(rel, whereInput);
-
-    const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
-    const predicates = filters.map((f) => f.getPredicate(queryASTContext));
-    const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
-
-    const preComputedSubqueries = [...extraSelections, ...subqueries];
-
-    return {
-        predicate: Cypher.and(...predicates),
-        preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
-    };
+    return createWherePredicate({ factory, queryASTContext, entityOrRel: relationship, whereInput, targetElement });
 }
-/* 
-function print(node: QueryASTNode): string {
-    const resultLines = getTreeLines(node);
-    return resultLines.join("\n");
-}
-
-function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
-    const nodeName = treeNode.print();
-    const resultLines: string[] = [];
-
-    if (depth === 0) {
-        resultLines.push(`${nodeName}`);
-    } else if (depth === 1) {
-        resultLines.push(`|${"────".repeat(depth)} ${nodeName}`);
-    } else {
-        resultLines.push(`|${"    ".repeat(depth - 1)} |──── ${nodeName}`);
-    }
-
-    const children = treeNode.getChildren();
-    if (children.length > 0) {
-        children.forEach((curr) => {
-            const childLines = getTreeLines(curr, depth + 1);
-            resultLines.push(...childLines);
-        });
-    }
-
-    return resultLines;
-}
- */

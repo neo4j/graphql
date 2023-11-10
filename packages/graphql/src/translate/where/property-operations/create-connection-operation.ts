@@ -22,7 +22,7 @@ import type { ConnectionWhereArg, PredicateReturn } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 // Recursive function
 
-import { createWherePredicate, createWhereRelPredicate } from "../create-where-predicate";
+import { createWhereNodePredicate, createWhereEdgePredicate } from "../create-where-predicate";
 import { asArray, filterTruthy } from "../../../utils/utils";
 import { getLogicalPredicate, isLogicalOperator } from "../../utils/logical-operators";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -87,10 +87,10 @@ export function createConnectionWherePropertyOperation({
                 throw new Error(`No relationship found for ${edge.name}`);
             }
 
-            const { predicate: result, preComputedSubqueries } = createWhereRelPredicate({
+            const { predicate: result, preComputedSubqueries } = createWhereEdgePredicate({
                 targetElement: targetNode,
-                relationshipVariable: edgeRef,
-                rel: relationshipAdapter,
+                relationshipVariable: edgeRef as Cypher.Relationship,
+                relationship: relationshipAdapter,
                 context,
                 whereInput: value,
             });
@@ -116,7 +116,7 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
             const entity = getEntityAdapterFromNode(node, context);
-            const { predicate: result, preComputedSubqueries } = createWherePredicate({
+            const { predicate: result, preComputedSubqueries } = createWhereNodePredicate({
                 entity,
                 context,
                 whereInput: nestedProperties,
