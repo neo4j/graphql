@@ -157,6 +157,11 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            type MovieNodeAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
             input MovieNodeImplementationsWhere {
               Movie: MovieWhere
             }
@@ -347,6 +352,7 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -515,6 +521,11 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            type MovieNodeAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
             input MovieNodeImplementationsWhere {
               Movie: MovieWhere
             }
@@ -705,6 +716,7 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

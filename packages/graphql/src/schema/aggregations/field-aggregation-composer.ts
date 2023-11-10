@@ -21,6 +21,8 @@ import { GraphQLInt, GraphQLNonNull } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
@@ -58,9 +60,11 @@ export class FieldAggregationComposer {
     public createAggregationTypeObject(relationshipAdapter: RelationshipAdapter): ObjectTypeComposer {
         let aggregateSelectionEdge: ObjectTypeComposer | undefined;
 
-        const aggregateSelectionNodeFields = this.getAggregationFields(
-            relationshipAdapter.target as ConcreteEntityAdapter
-        ); // TODO: fix ts
+        if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+            throw new Error("UnionEntityAdapter not implemented");
+        }
+
+        const aggregateSelectionNodeFields = this.getAggregationFields(relationshipAdapter.target);
         const aggregateSelectionNodeName = relationshipAdapter.operations.getAggregationFieldTypename("node");
 
         const aggregateSelectionNode = this.createAggregationField(
@@ -93,7 +97,7 @@ export class FieldAggregationComposer {
     }
 
     private getAggregationFields(
-        entity: RelationshipAdapter | ConcreteEntityAdapter
+        entity: RelationshipAdapter | ConcreteEntityAdapter | InterfaceEntityAdapter
     ): Record<string, ObjectTypeComposer> {
         return entity.aggregableFields.reduce((res, field) => {
             const objectTypeComposer = this.aggregationTypesMapper.getAggregationType({

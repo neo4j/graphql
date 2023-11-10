@@ -1432,6 +1432,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type PersonAggregateSelection {
+                      count: Int!
+                      password: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelectionNonNullable!
+                    }
+
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -1503,6 +1509,7 @@ describe("@relationship directive, aggregate argument", () => {
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                       people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1677,6 +1684,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -1774,6 +1782,16 @@ describe("@relationship directive, aggregate argument", () => {
                       sort: [MovieSort!]
                     }
 
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      password: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelectionNonNullable!
+                    }
+
                     input MovieRelationInput {
                       actors: [MovieActorsCreateFieldInput!]
                     }
@@ -1852,6 +1870,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type PersonAggregateSelection {
+                      count: Int!
+                      password: StringAggregateSelectionNonNullable!
+                      username: StringAggregateSelectionNonNullable!
+                    }
+
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -1923,6 +1947,7 @@ describe("@relationship directive, aggregate argument", () => {
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                       people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

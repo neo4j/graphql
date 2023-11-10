@@ -25,6 +25,7 @@ import type { Operation, OperationTranspileResult } from "./operations/operation
 import { ReadOperation } from "./operations/ReadOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { AggregationOperation } from "./operations/AggregationOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -61,6 +62,9 @@ export class QueryAST {
     public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
         if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+        }
+        if (this.operation instanceof AggregationOperation) {
+            return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, this.operation.nodeAlias);
         }
     }
 

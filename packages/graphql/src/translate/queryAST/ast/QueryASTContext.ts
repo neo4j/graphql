@@ -112,4 +112,15 @@ export class QueryASTContext {
             returnVariable,
         });
     }
+
+    public setReturn(variable: Cypher.Variable): QueryASTContext {
+        return new QueryASTContext({
+            source: this.source,
+            relationship: this.relationship,
+            target: this.target,
+            env: this.env,
+            neo4jGraphQLContext: this.neo4jGraphQLContext,
+            returnVariable: variable,
+        });
+    }
 }

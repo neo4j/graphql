@@ -23,6 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
 import { graphql } from "graphql";
 import { UniqueType } from "../../utils/graphql-types";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/4268", () => {
     let driver: Driver;
@@ -70,12 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await session.run(
-                `
-                    MATCH (c)
-                    DELETE c;
-                `
-            );
+            await cleanNodes(session, [Movie.name]);
         } finally {
             await session.close();
         }

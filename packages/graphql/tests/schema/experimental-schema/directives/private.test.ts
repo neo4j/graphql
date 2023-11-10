@@ -89,6 +89,7 @@ describe("@private directive", () => {
 
             type Query {
               userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
+              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -138,6 +139,11 @@ describe("@private directive", () => {
 
             interface UserInterface {
               id: ID
+            }
+
+            type UserInterfaceAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
             }
 
             input UserInterfaceImplementationsWhere {

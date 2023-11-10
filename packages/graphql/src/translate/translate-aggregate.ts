@@ -18,21 +18,56 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import Debug from "debug";
 import type { Node } from "../classes";
+import { DEBUG_TRANSLATE } from "../constants";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { BaseField, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
 import { createAuthorizationBeforePredicateField } from "./authorization/create-authorization-before-predicate";
-import { createDatetimeElement } from "./projection/elements/create-datetime-element";
-import { translateTopLevelMatch } from "./translate-top-level-match";
-import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { compileCypher } from "../utils/compile-cypher";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { translateTopLevelMatch } from "./translate-top-level-match";
+
+const debug = Debug(DEBUG_TRANSLATE);
+
+function translateQuery({
+    context,
+    entityAdapter,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entityAdapter: EntityAdapter;
+}): Cypher.CypherResult {
+    const { resolveTree } = context;
+    // TODO: Rename QueryAST to OperationsTree
+    const queryASTFactory = new QueryASTFactory(context.schemaModel);
+
+    if (!entityAdapter) throw new Error("Entity not found");
+    const queryAST = queryASTFactory.createQueryAST(resolveTree, entityAdapter, context);
+    debug(queryAST.print());
+    const clause = queryAST.build(context);
+    return clause.build();
+}
 
 function translateAggregate({
     node,
     context,
+    entityAdapter,
 }: {
-    node: Node;
+    node: Node | undefined;
     context: Neo4jGraphQLTranslationContext;
-}): [Cypher.Clause, any] {
+    entityAdapter: EntityAdapter;
+}): Cypher.CypherResult {
+    // TODO: Move fulltext to new translation layer to remove the deprecated translation
+    if (!context.resolveTree.args.fulltext && !context.resolveTree.args.phrase) {
+        return translateQuery({ context, entityAdapter });
+    }
+
+    if (!node) {
+        throw new Error("Translating Read: Node cannot be on aggregation.");
+    }
+
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: Record<string, any> = {};
@@ -162,9 +197,8 @@ function translateAggregate({
 
     const retSt = new Cypher.Return(projections);
     cypherStrs.push(retSt);
-    const result: [Cypher.Clause, Record<string, any>] = [Cypher.concat(...cypherStrs), cypherParams];
 
-    return result;
+    return Cypher.concat(...cypherStrs).build(undefined, cypherParams);
 }
 
 export default translateAggregate;

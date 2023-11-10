@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLWhereArg } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
@@ -35,7 +36,6 @@ import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamProper
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import { FilterFactory } from "./FilterFactory";
 import { parseWhereField } from "./parsers/parse-where-field";
-import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
 import { asArray } from "@graphql-tools/utils";
@@ -48,7 +48,7 @@ export class AuthFilterFactory extends FilterFactory {
         context,
         populatedWhere,
     }: {
-        entity: ConcreteEntityAdapter;
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
         populatedWhere: GraphQLWhereArg;

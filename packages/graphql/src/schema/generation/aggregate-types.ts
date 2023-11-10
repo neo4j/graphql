@@ -28,6 +28,7 @@ import type {
 import { AGGREGATION_COMPARISON_OPERATORS } from "../../constants";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
 import { DEPRECATE_IMPLICIT_LENGTH_AGGREGATION_FILTERS, DEPRECATE_INVALID_AGGREGATION_FILTERS } from "../constants";
@@ -35,18 +36,18 @@ import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
 export function withAggregateSelectionType({
-    concreteEntityAdapter,
+    entityAdapter,
     aggregationTypesMapper,
     propagatedDirectives,
     composer,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     aggregationTypesMapper: AggregationTypesMapper;
     propagatedDirectives: DirectiveNode[];
     composer: SchemaComposer;
 }): ObjectTypeComposer {
     const aggregateSelection = composer.createObjectTC({
-        name: concreteEntityAdapter.operations.aggregateTypeNames.selection,
+        name: entityAdapter.operations.aggregateTypeNames.selection,
         fields: {
             count: {
                 type: new GraphQLNonNull(GraphQLInt),
@@ -56,19 +57,19 @@ export function withAggregateSelectionType({
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
-    aggregateSelection.addFields(makeAggregableFields({ concreteEntityAdapter, aggregationTypesMapper }));
+    aggregateSelection.addFields(makeAggregableFields({ entityAdapter, aggregationTypesMapper }));
     return aggregateSelection;
 }
 
 function makeAggregableFields({
-    concreteEntityAdapter,
+    entityAdapter,
     aggregationTypesMapper,
 }: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     aggregationTypesMapper: AggregationTypesMapper;
 }): ObjectTypeComposerFieldConfigMapDefinition<any, any> {
     const aggregableFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};
-    const aggregableAttributes = concreteEntityAdapter.aggregableFields;
+    const aggregableAttributes = entityAdapter.aggregableFields;
     for (const attribute of aggregableAttributes) {
         const objectTypeComposer = aggregationTypesMapper.getAggregationType({
             fieldName: attribute.getTypeName(),

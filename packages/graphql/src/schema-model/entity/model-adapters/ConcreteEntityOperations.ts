@@ -181,6 +181,12 @@ export class ConcreteEntityOperations {
         return `${this.concreteEntityAdapter.name}Edge`;
     }
 
+    /**Note: Required for now to infer the types without ResolveTree */
+
+    public getAggregationFieldTypename(): string {
+        return this.aggregateTypeNames.selection;
+    }
+
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             create: `create${this.pascalCasePlural}`,
