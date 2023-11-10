@@ -18,12 +18,12 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { hasTarget } from "../../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
 import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { hasTarget } from "../../../utils/context-has-target";
 
 export class CompositeReadPartial extends ReadOperation {
     public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
@@ -41,7 +41,7 @@ export class CompositeReadPartial extends ReadOperation {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(this.target);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(parentNode)
@@ -61,7 +61,9 @@ export class CompositeReadPartial extends ReadOperation {
             // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
             matchClause.where(wherePredicate);
         }
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
+
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(nestedContext))
             .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
@@ -84,10 +86,8 @@ export class CompositeReadPartial extends ReadOperation {
     }
 
     // dupe from transpileNestedCompositeRelationship
-    private transpileTopLevelCompositeEntity({
-        context,
-    }: OperationTranspileOptions): OperationTranspileResult {
-        const targetNode = createNodeFromEntity(this.target);
+    private transpileTopLevelCompositeEntity({ context }: OperationTranspileOptions): OperationTranspileResult {
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const nestedContext = new QueryASTContext({
             target: targetNode,
             env: context.env,
@@ -95,8 +95,9 @@ export class CompositeReadPartial extends ReadOperation {
         });
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
         const filterPredicates = this.getPredicates(nestedContext);
-        // TODO: impl auth
-        const authFiltersPredicate = [];
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             matchClause.where(wherePredicate);
@@ -104,7 +105,7 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
-        const clause = Cypher.concat(...preSelection, matchClause, subqueries, ret);
+        const clause = Cypher.concat(...preSelection, matchClause, ...authFilterSubqueries, subqueries, ret);
 
         return {
             clauses: [clause],

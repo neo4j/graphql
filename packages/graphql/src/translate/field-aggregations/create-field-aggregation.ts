@@ -32,6 +32,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
 import { checkAuthentication } from "../authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 
 type AggregationFields = {
     count?: ResolveTree;
@@ -93,12 +94,12 @@ export function createFieldAggregation({
             preComputedSubqueries = Cypher.concat(preComputedSubqueries, authorizationPreComputedSubqueries);
         }
     }
-
+    const entity = getEntityAdapterFromNode(referenceNode, context);
     const { predicate: wherePredicate, preComputedSubqueries: wherePreComputedSubqueries } = createWherePredicate({
         targetElement: targetRef,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         context,
-        element: referenceNode,
+        entity,
     });
 
     if (wherePredicate) {

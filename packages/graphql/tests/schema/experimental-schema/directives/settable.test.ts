@@ -5248,6 +5248,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -5337,6 +5338,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -5528,6 +5539,12 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -5602,6 +5619,7 @@ describe("@settable", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -5762,6 +5780,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -5844,6 +5863,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -6034,6 +6063,12 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -6097,6 +6132,7 @@ describe("@settable", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6258,6 +6294,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -6347,6 +6384,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -6768,6 +6815,12 @@ describe("@settable", () => {
                   where: ProductionActorsConnectionWhere
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectInput {
                   _on: ProductionImplementationsConnectInput
                   actors: [ProductionActorsConnectFieldInput!]
@@ -6890,6 +6943,7 @@ describe("@settable", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -7163,6 +7217,7 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -7259,6 +7314,16 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -7681,6 +7746,12 @@ describe("@settable", () => {
                   where: ProductionActorsConnectionWhere
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectInput {
                   _on: ProductionImplementationsConnectInput
                   actors: [ProductionActorsConnectFieldInput!]
@@ -7815,6 +7886,7 @@ describe("@settable", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

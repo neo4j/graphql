@@ -19,9 +19,10 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
@@ -51,7 +52,13 @@ export class AggregationOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    constructor(entity: ConcreteEntityAdapter | RelationshipAdapter, directed = true) {
+    constructor({
+        entity,
+        directed = true,
+    }: {
+        entity: ConcreteEntityAdapter | RelationshipAdapter;
+        directed?: boolean;
+    }) {
         super();
         this.entity = entity;
         this.directed = directed;
@@ -90,7 +97,6 @@ export class AggregationOperation extends Operation {
     }
 
     private createSubquery(
-        entity: RelationshipAdapter,
         field: AggregationField,
         pattern: Cypher.Pattern,
         target: Cypher.Variable,
@@ -99,12 +105,14 @@ export class AggregationOperation extends Operation {
     ): Cypher.Clause {
         const matchClause = new Cypher.Match(pattern);
         let extraSelectionWith: Cypher.With | undefined = undefined;
+
+        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
         const filterPredicates = this.getPredicates(context);
 
         const selectionClauses = this.getChildren().flatMap((c) => {
             return c.getSelection(context);
         });
-        if (selectionClauses.length > 0) {
+        if (selectionClauses.length > 0 || nestedSubqueries.length > 0) {
             extraSelectionWith = new Cypher.With("*");
         }
 
@@ -122,18 +130,80 @@ export class AggregationOperation extends Operation {
             sortClause = new Cypher.With("*");
             this.addSortToClause(context, target, sortClause);
         }
-        return Cypher.concat(matchClause, ...selectionClauses, extraSelectionWith, sortClause, ret);
+
+        return Cypher.concat(
+            matchClause,
+            ...selectionClauses,
+            ...nestedSubqueries,
+            extraSelectionWith,
+            sortClause,
+            ret
+        );
     }
 
-    private transpileNestedRelationship(
+    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+        if (this.entity instanceof RelationshipAdapter) {
+            const clauses = this.transpileNestedAggregation(this.entity, {
+                context,
+            });
+            return {
+                clauses,
+                projectionExpr: this.aggregationProjectionMap,
+            };
+        } else {
+            const clauses = this.transpileTopLevelAggregation(this.entity, { context });
+            return {
+                clauses,
+                projectionExpr: context.returnVariable,
+            };
+        }
+    }
+
+    private transpileTopLevelAggregation(
+        entity: ConcreteEntityAdapter,
+        { context }: OperationTranspileOptions
+    ): Cypher.Clause[] {
+        const nodeVar = createNodeFromEntity(entity, context.neo4jGraphQLContext, this.nodeAlias);
+
+        if (!context.target) throw new Error("Context target not found!");
+
+        const projectionMap = new Cypher.Map();
+
+        this.fields.forEach((f) => {
+            const aggrExpr = f.getAggregationExpr(nodeVar);
+            projectionMap.set({ [f.alias]: aggrExpr });
+        });
+
+        const filterPredicates = this.getPredicates(context);
+
+        const topLevelMatch = new Cypher.Match(nodeVar);
+        let clause: Cypher.With | Cypher.Match = topLevelMatch;
+
+        let extraSelection = this.getChildren().flatMap((c) => {
+            return c.getSelection(context);
+        });
+
+        if (extraSelection.length > 0) {
+            clause = new Cypher.With("*");
+            extraSelection = [topLevelMatch, ...extraSelection];
+        }
+
+        if (filterPredicates) {
+            clause.where(filterPredicates);
+        }
+
+        clause.return(projectionMap);
+        return [Cypher.concat(...extraSelection, clause)];
+    }
+
+    private transpileNestedAggregation(
         // Create new Clause per field
         entity: RelationshipAdapter,
         { context }: OperationTranspileOptions
     ): Cypher.Clause[] {
-        //TODO: dupe from transpile
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
+        const targetNode = createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)
@@ -146,7 +216,7 @@ export class AggregationOperation extends Operation {
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, targetNode, returnVariable, nestedContext);
+            return this.createSubquery(f, pattern, targetNode, returnVariable, nestedContext);
         });
 
         const nodeMap = new Cypher.Map();
@@ -154,12 +224,12 @@ export class AggregationOperation extends Operation {
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, targetNode, returnVariable, nestedContext);
+            return this.createSubquery(f, pattern, targetNode, returnVariable, nestedContext);
         });
         const edgeFieldSubqueries = this.edgeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             edgeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(entity, f, pattern, relVar, returnVariable, nestedContext);
+            return this.createSubquery(f, pattern, relVar, returnVariable, nestedContext);
         });
 
         if (nodeMap.size > 0) {
@@ -180,7 +250,7 @@ export class AggregationOperation extends Operation {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const authPredicates = this.getAuthFilterPredicate(queryASTContext);
         return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
     }
@@ -189,17 +259,7 @@ export class AggregationOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
-        const clauses = this.transpileNestedRelationship(this.entity as RelationshipAdapter, {
-            context,
-        });
-        return {
-            clauses,
-            projectionExpr: this.aggregationProjectionMap,
-        };
-    }
-
-    private addSortToClause(
+    protected addSortToClause(
         context: QueryASTContext,
         node: Cypher.Variable,
         clause: Cypher.With | Cypher.Return
@@ -209,10 +269,10 @@ export class AggregationOperation extends Operation {
         clause.orderBy(...orderByFields);
 
         if (pagination?.skip) {
-            clause.skip(pagination.skip as any);
+            clause.skip(pagination.skip);
         }
         if (pagination?.limit) {
-            clause.limit(pagination.limit as any);
+            clause.limit(pagination.limit);
         }
     }
 

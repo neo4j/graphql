@@ -18,9 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AggregationField } from "./AggregationField";
 import type { Entity } from "../../../../../schema-model/entity/Entity";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { AggregationField } from "./AggregationField";
 
 export class CountField extends AggregationField {
     private entity: Entity;

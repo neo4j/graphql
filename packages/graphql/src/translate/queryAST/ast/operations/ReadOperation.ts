@@ -23,6 +23,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Field } from "../fields/Field";
@@ -102,7 +103,7 @@ export class ReadOperation extends Operation {
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target as ConcreteEntityAdapter, context.neo4jGraphQLContext);
+        const targetNode = createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)
@@ -129,7 +130,8 @@ export class ReadOperation extends Operation {
         // This weird condition is just for cypher compatibility
         const shouldAddWithForAuth = authFiltersPredicate.length > 0;
         if (authFilterSubqueries.length > 0 || shouldAddWithForAuth) {
-            if (!isCreateSelection) {
+            if (!isCreateSelection || authFilterSubqueries.length) {
+                // for creates auth filters sometimes use variables from the subquery
                 filterSubqueryWith = new Cypher.With("*");
             }
         }
@@ -144,10 +146,7 @@ export class ReadOperation extends Operation {
 
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
-        const sortSubqueries = this.sortFields
-            .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
-
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
         const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
 
         const clause = Cypher.concat(
@@ -224,10 +223,7 @@ export class ReadOperation extends Operation {
         }
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
-
-        const filterSubqueries = this.filters
-            .flatMap((f) => f.getSubqueries(context))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
+        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [node]);
         const filterPredicates = this.getPredicates(context);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
@@ -235,15 +231,12 @@ export class ReadOperation extends Operation {
         );
         const fieldSubqueries = this.getFieldsSubqueries(context);
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
-        const sortSubqueries = this.sortFields
-            .flatMap((sq) => sq.getSubqueries(context))
-            .map((sq) => new Cypher.Call(sq).innerWith(node));
+        const sortSubqueries = wrapSubqueriesInCypherCalls(context, this.sortFields, [node]);
         const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(context);
         const ret: Cypher.Return = this.getReturnStatement(context, context.returnVariable);
         const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
-
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
@@ -280,7 +273,6 @@ export class ReadOperation extends Operation {
             : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
         let clause: Cypher.Clause;
-
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
         if (isCreateSelection) {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
@@ -326,28 +318,14 @@ export class ReadOperation extends Operation {
     }
 
     protected getFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        const nonCypherFields = this.fields.filter((f) => !(f instanceof CypherAttributeField));
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return filterTruthy(
-            this.fields.flatMap((f) => {
-                if (f instanceof CypherAttributeField) {
-                    return;
-                }
-                return f.getSubqueries(context);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(context.target);
-        });
+        return wrapSubqueriesInCypherCalls(context, nonCypherFields, [context.target]);
     }
 
     protected getCypherFieldsSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        return filterTruthy(
-            this.getCypherFields().flatMap((f) => {
-                return f.getSubqueries(context);
-            })
-        ).map((sq) => {
-            return new Cypher.Call(sq).innerWith(context.target);
-        });
+        return wrapSubqueriesInCypherCalls(context, this.getCypherFields(), [context.target]);
     }
 
     private getCypherFields(): Field[] {
@@ -383,10 +361,10 @@ export class ReadOperation extends Operation {
         clause.orderBy(...orderByFields);
 
         if (pagination?.skip) {
-            clause.skip(pagination.skip as any);
+            clause.skip(pagination.skip);
         }
         if (pagination?.limit) {
-            clause.limit(pagination.limit as any);
+            clause.limit(pagination.limit);
         }
     }
 }

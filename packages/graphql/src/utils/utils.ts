@@ -96,3 +96,23 @@ export function omitFields<T>(obj: Record<string, T>, fields: string[]): Record<
             return acc;
         }, {});
 }
+
+/** Keep only the provided fields from record */
+export function filterFields<T>(obj: Record<string, T>, fieldsToKeep: string[]): Record<string, T> {
+    return Object.entries(obj)
+        .filter((item) => fieldsToKeep.includes(item[0]))
+        .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+        }, {});
+}
+
+/** Rename the keys of given fields */
+export function renameFields<T>(obj: Record<string, T>, fieldNameMap: Record<string, string>): Record<string, T> {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+        const newKey = fieldNameMap[key] || key;
+
+        acc[newKey] = value;
+        return acc;
+    }, {});
+}

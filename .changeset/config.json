@@ -7,7 +7,7 @@
     "access": "public",
     "baseBranch": "dev",
     "updateInternalDependencies": "patch",
-    "ignore": ["apollo-federation-subgraph-compatibility", "migration"],
+    "ignore": ["apollo-federation-subgraph-compatibility"],
     "privatePackages": { "version": true, "tag": true },
     "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
         "onlyUpdatePeerDependentsWhenOutOfRange": true

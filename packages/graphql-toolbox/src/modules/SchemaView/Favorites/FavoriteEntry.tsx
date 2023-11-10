@@ -89,7 +89,7 @@ export const FavoriteEntry = ({ dragHandle, onSelectFavorite, favorite, updateNa
                         ref={inputRef}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
-                        size="extra-small"
+                        size="small"
                         aria-label="Input for new name for the favorite snippet"
                     />
                 ) : (

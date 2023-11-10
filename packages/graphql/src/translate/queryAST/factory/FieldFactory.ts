@@ -22,6 +22,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../utils/utils";
@@ -37,6 +38,8 @@ import { CypherUnionAttributeField } from "../ast/fields/attribute-fields/Cypher
 import { CypherUnionAttributePartial } from "../ast/fields/attribute-fields/CypherUnionAttributePartial";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 import { PointAttributeField } from "../ast/fields/attribute-fields/PointAttributeField";
+import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
@@ -89,6 +92,7 @@ export class FieldFactory {
 
                 const relationship = entity.findRelationship(fieldName);
                 if (!relationship) throw new Error("Relationship for aggregation not found");
+
                 return this.createRelationshipAggregationField(relationship, fieldName, field, context);
             }
 
@@ -128,8 +132,9 @@ export class FieldFactory {
     }
 
     public createAggregationFields(
-        entity: ConcreteEntityAdapter | RelationshipAdapter,
-        rawFields: Record<string, ResolveTree>
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
+        rawFields: Record<string, ResolveTree>,
+        topLevel: boolean
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
@@ -141,9 +146,22 @@ export class FieldFactory {
                 } else {
                     const attribute = entity.findAttribute(field.name);
                     if (!attribute) throw new Error(`Attribute ${field.name} not found`);
+
+                    const aggregateFields =
+                        field.fieldsByTypeName[attribute.getAggregateSelectionTypeName(false)] ||
+                        field.fieldsByTypeName[attribute.getAggregateSelectionTypeName(true)] ||
+                        {};
+
+                    const aggregationProjection = Object.values(aggregateFields).reduce((acc, f) => {
+                        acc[f.name] = f.alias;
+                        return acc;
+                    }, {});
+
                     return new AggregationAttributeField({
                         attribute,
                         alias: field.alias,
+                        aggregationProjection,
+                        useReduce: topLevel,
                     });
                 }
             })
@@ -185,9 +203,7 @@ export class FieldFactory {
         if (fieldName === "id" && !attribute && isConcreteEntity(entity)) {
             attribute = entity.globalIdField;
             if (!attribute) throw new Error(`attribute ${fieldName} not found`);
-
-            // NOTE: for some reason, the alias needs to be the same as the database name
-            return new AttributeField({ alias: attribute.databaseName, attribute });
+            return new AttributeField({ alias: attribute.name, attribute });
         }
 
         if (!attribute) throw new Error(`attribute ${fieldName} not found`);
@@ -304,12 +320,24 @@ export class FieldFactory {
         context: Neo4jGraphQLTranslationContext
     ): OperationField {
         const relationship = entity.findRelationship(fieldName);
-        if (!relationship) throw new Error(`Relationship  ${fieldName} not found in entity ${entity.name}`);
-        const connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST(
-            relationship,
-            field,
-            context
-        );
+        if (!relationship) throw new Error(`Relationship ${fieldName} not found in entity ${entity.name}`);
+        const target = relationship.target;
+        let connectionOp: ConnectionReadOperation | CompositeConnectionReadOperation;
+        if (isConcreteEntity(target)) {
+            connectionOp = this.queryASTFactory.operationsFactory.createConnectionOperationAST({
+                relationship,
+                target,
+                resolveTree: field,
+                context,
+            });
+        } else {
+            connectionOp = this.queryASTFactory.operationsFactory.createCompositeConnectionOperationAST({
+                relationship,
+                target,
+                resolveTree: field,
+                context,
+            });
+        }
 
         return new OperationField({
             operation: connectionOp,

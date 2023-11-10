@@ -51,6 +51,7 @@ function createConnectAndParams({
     includeRelationshipValidation,
     isFirstLevel = true,
     source,
+    indexPrefix,
 }: {
     withVars: string[];
     value: any;
@@ -65,6 +66,7 @@ function createConnectAndParams({
     includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
     source: "CREATE" | "UPDATE" | "CONNECT";
+    indexPrefix?: string;
 }): [string, any] {
     checkAuthentication({ context, node: parentNode, targetOperations: ["CREATE_RELATIONSHIP"] });
 
@@ -108,21 +110,21 @@ function createConnectAndParams({
             ) {
                 return { subquery: "", params: {} };
             }
-
-            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
-                whereInput: {
-                    ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                        if (k !== "_on") {
-                            // If this where key is also inside _on for this implementation, use the one in _on instead
-                            if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
-                                return args;
-                            }
-                            return { ...args, [k]: v };
+            const whereInput = {
+                ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                    if (k !== "_on") {
+                        // If this where key is also inside _on for this implementation, use the one in _on instead
+                        if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
+                            return args;
                         }
+                        return { ...args, [k]: v };
+                    }
 
-                        return args;
-                    }, {}),
-                },
+                    return args;
+                }, {}),
+            };
+            const [rootNodeWhereCypher, preComputedSubqueries, rootNodeWhereParams] = createWhereAndParams({
+                whereInput,
                 context,
                 node: relatedNode,
                 varName: nodeName,
@@ -181,6 +183,7 @@ function createConnectAndParams({
             context,
             nodes: authorizationNodes,
             operations: ["CREATE_RELATIONSHIP"],
+            indexPrefix,
         });
 
         if (authorizationBeforeAndParams) {
@@ -191,6 +194,10 @@ function createConnectAndParams({
 
             if (subqueries) {
                 subquery.push(subqueries);
+
+                if (whereStrs.length) {
+                    subquery.push("WITH *");
+                }
             }
         }
 
@@ -436,6 +443,7 @@ function createConnectAndParams({
                 { node: relatedNode, variable: nodeName },
             ],
             operations: ["CREATE_RELATIONSHIP"],
+            indexPrefix,
         });
 
         if (authorizationAfterAndParams) {

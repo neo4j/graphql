@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
             }
         `;
 
-        const token = createBearerToken(secret, { isAdmin: true });
+        const token = createBearerToken(secret);
 
         const result = await graphql({
             schema: await neoSchema.getSchema(),

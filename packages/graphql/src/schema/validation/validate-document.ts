@@ -63,6 +63,7 @@ import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
+import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -178,6 +179,7 @@ function runValidationRulesOnFilteredDocument({
     document,
     extra,
     features,
+    experimental,
 }: {
     schema: GraphQLSchema;
     document: DocumentNode;
@@ -188,13 +190,14 @@ function runValidationRulesOnFilteredDocument({
         objects?: ObjectTypeDefinitionNode[];
     };
     features: Neo4jFeaturesSettings | undefined;
+    experimental: boolean;
 }) {
     const errors = validateSDL(
         document,
         [
             ...specifiedSDLRules,
             directiveIsValid(extra, features?.populatedBy?.callbacks),
-            ValidDirectiveAtFieldLocation,
+            ValidDirectiveAtFieldLocation(experimental),
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,
@@ -207,6 +210,7 @@ function runValidationRulesOnFilteredDocument({
             DirectiveArgumentOfCorrectType(false),
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
+            WarnIfAMaxLimitCanBeBypassedThroughInterface(experimental),
         ],
         schema
     );
@@ -220,6 +224,7 @@ function validateDocument({
     document,
     features,
     additionalDefinitions,
+    experimental,
 }: {
     document: DocumentNode;
     features: Neo4jFeaturesSettings | undefined;
@@ -231,6 +236,7 @@ function validateDocument({
         unions?: UnionTypeDefinitionNode[];
         objects?: ObjectTypeDefinitionNode[];
     };
+    experimental: boolean;
 }): void {
     const filteredDocument = filterDocument(document);
     const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
@@ -259,6 +265,7 @@ function validateDocument({
         document: filteredDocument,
         extra,
         features,
+        experimental,
     });
 
     const schema = extendSchema(schemaToExtend, filteredDocument);

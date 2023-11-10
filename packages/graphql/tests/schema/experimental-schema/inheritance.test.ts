@@ -62,6 +62,7 @@ describe("inheritance", () => {
 
             type Actor implements Person @customDirectiveObj {
               friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
@@ -135,6 +136,20 @@ describe("inheritance", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorPersonFriendsAggregationSelection {
+              count: Int!
+              edge: ActorPersonFriendsEdgeAggregateSelection
+              node: ActorPersonFriendsNodeAggregateSelection
+            }
+
+            type ActorPersonFriendsEdgeAggregateSelection {
+              since: IntAggregateSelectionNullable!
+            }
+
+            type ActorPersonFriendsNodeAggregateSelection {
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorRelationInput {
@@ -248,6 +263,13 @@ describe("inheritance", () => {
               since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            type IntAggregateSelectionNullable {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
@@ -266,6 +288,11 @@ describe("inheritance", () => {
               friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
+            }
+
+            type PersonAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
             }
 
             input PersonConnectInput {
@@ -437,6 +464,7 @@ describe("inheritance", () => {
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

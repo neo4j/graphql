@@ -28,6 +28,7 @@ import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/mod
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { hasTarget } from "../../utils/context-has-target";
+import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 
 export class ConnectionFilter extends Filter {
     private innerFilters: Filter[] = [];
@@ -70,19 +71,17 @@ export class ConnectionFilter extends Filter {
         return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
-    private getTargetNode(): Cypher.Node {
+    private getTargetNode(context: QueryASTContext): Cypher.Node {
         // if the target is an interface entity, we need to use the label predicate optimization
         if (isInterfaceEntity(this.target)) {
             return new Cypher.Node();
         }
-        return new Cypher.Node({
-            labels: this.target.labels,
-        });
+        return createNodeFromEntity(this.target, context.neo4jGraphQLContext);
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        const targetNode = this.getTargetNode();
+        const targetNode = this.getTargetNode(context);
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
         });
@@ -110,7 +109,7 @@ export class ConnectionFilter extends Filter {
         if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
         if (this.subqueryPredicate) return this.subqueryPredicate;
         else {
-            const target = this.getTargetNode();
+            const target = this.getTargetNode(queryASTContext);
             const relationship = new Cypher.Relationship({
                 type: this.relationship.type,
             });

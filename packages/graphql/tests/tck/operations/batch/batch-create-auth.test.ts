@@ -88,7 +88,7 @@ describe("Batch Create, Auth", () => {
                 SET
                     create_this1.id = create_var0.id
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this1
                 CALL {
                 	WITH create_this1
@@ -113,11 +113,11 @@ describe("Batch Create, Auth", () => {
                     }
                 ],
                 \\"isAuthenticated\\": true,
-                \\"create_param2\\": \\"admin\\",
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
                 },
+                \\"create_param3\\": \\"admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -175,7 +175,7 @@ describe("Batch Create, Auth", () => {
                     RETURN collect(NULL) AS create_var7
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $create_param2 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH create_this1
                 CALL {
                 	WITH create_this1
@@ -237,11 +237,11 @@ describe("Batch Create, Auth", () => {
                     }
                 ],
                 \\"isAuthenticated\\": true,
-                \\"create_param2\\": \\"admin\\",
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
                 },
+                \\"create_param3\\": \\"admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -310,7 +310,7 @@ describe("Batch Create, Auth", () => {
             	RETURN c AS this0_website_Website_unique_ignored
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -339,7 +339,7 @@ describe("Batch Create, Auth", () => {
             	RETURN c AS this1_website_Website_unique_ignored
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1
             }
             CALL {
@@ -358,7 +358,7 @@ describe("Batch Create, Auth", () => {
             	RETURN c AS this2_website_Website_unique_ignored
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this2
             }
             CALL {
@@ -391,7 +391,7 @@ describe("Batch Create, Auth", () => {
             	RETURN c AS this3_website_Website_unique_ignored
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this3
             }
             CALL {
@@ -415,7 +415,7 @@ describe("Batch Create, Auth", () => {
             	RETURN c AS this4_website_Website_unique_ignored
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND $authorization_param1 IN $jwt.roles), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this4
             }
             CALL {
@@ -519,7 +519,7 @@ describe("Batch Create, Auth", () => {
                     \\"low\\": 2022,
                     \\"high\\": 0
                 },
-                \\"authorization_param1\\": \\"admin\\",
+                \\"authorization_0_0_0_0_after_param2\\": \\"admin\\",
                 \\"this1_id\\": \\"2\\",
                 \\"this1_actors0_node_name\\": \\"actor 2\\",
                 \\"this1_actors0_relationship_year\\": {

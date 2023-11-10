@@ -54,6 +54,7 @@ import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./t
 // GraphQL type imports
 import type { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import type { Subgraph } from "../classes/Subgraph";
+import { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { CreateInfo } from "../graphql/objects/CreateInfo";
 import { DeleteInfo } from "../graphql/objects/DeleteInfo";
 import { PageInfo } from "../graphql/objects/PageInfo";
@@ -73,6 +74,7 @@ import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
 import { deprecationMap } from "./deprecation-map";
+import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
 import { withInterfaceType } from "./generation/interface-type";
@@ -86,7 +88,6 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -250,6 +251,7 @@ function makeAugmentedSchema({
             userDefinedFieldDirectivesForNode,
             propagatedDirectivesForNode,
             experimental,
+            aggregationTypesMapper,
         });
         if (updatedRelationships) {
             relationships = updatedRelationships;
@@ -279,7 +281,12 @@ function makeAugmentedSchema({
         );
 
         withOptionsInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-        withAggregateSelectionType({ concreteEntityAdapter, aggregationTypesMapper, propagatedDirectives, composer });
+        withAggregateSelectionType({
+            entityAdapter: concreteEntityAdapter,
+            aggregationTypesMapper,
+            propagatedDirectives,
+            composer,
+        });
         withWhereInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, features, composer });
         /**
          * TODO [translation-layer-compatibility]
@@ -302,6 +309,7 @@ function makeAugmentedSchema({
             composeNode,
             subgraph,
             userDefinedFieldDirectives,
+            experimental,
         });
         relationships = [
             ...relationships,
@@ -460,17 +468,27 @@ function makeAugmentedSchema({
                         graphqlDirectivesToCompose(propagatedDirectives)
                     );
                 }
+                if (interfaceEntityAdapter.isAggregable) {
+                    addInterfaceAggregateSelectionStuff({
+                        entityAdapter: interfaceEntityAdapter,
+                        aggregationTypesMapper,
+                        propagatedDirectives,
+                        composer,
+                    });
+                }
             }
             return;
         }
         return;
     });
 
-    if (Boolean(features?.subscriptions) && nodes.length) {
+    if (features?.subscriptions && nodes.length) {
+        const isCDCEngine = features.subscriptions instanceof Neo4jGraphQLSubscriptionsCDCEngine;
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,
             userDefinedFieldDirectivesForNode,
+            generateRelationshipTypes: !isCDCEngine,
         });
     }
 
@@ -670,6 +688,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     userDefinedFieldDirectivesForNode,
     propagatedDirectivesForNode,
     experimental,
+    aggregationTypesMapper,
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
@@ -680,6 +699,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
     experimental: boolean;
+    aggregationTypesMapper: AggregationTypesMapper;
 }) {
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
         string,
@@ -702,6 +722,7 @@ function doForInterfacesThatAreTargetOfARelationship({
         composeNode: composeInterface,
         subgraph,
         userDefinedFieldDirectives,
+        experimental,
     });
 
     relationships = [
@@ -723,6 +744,15 @@ function doForInterfacesThatAreTargetOfARelationship({
                     entityAdapter: interfaceEntityAdapter,
                 }),
             });
+
+            if (interfaceEntityAdapter.isAggregable) {
+                addInterfaceAggregateSelectionStuff({
+                    entityAdapter: interfaceEntityAdapter,
+                    aggregationTypesMapper,
+                    propagatedDirectives,
+                    composer,
+                });
+            }
             composer.Query.setFieldDirectives(
                 interfaceEntityAdapter.operations.rootTypeFieldNames.read,
                 graphqlDirectivesToCompose(propagatedDirectives)
@@ -731,4 +761,33 @@ function doForInterfacesThatAreTargetOfARelationship({
     }
 
     return relationships;
+}
+
+function addInterfaceAggregateSelectionStuff({
+    entityAdapter,
+    aggregationTypesMapper,
+    propagatedDirectives,
+    composer,
+}: {
+    entityAdapter: InterfaceEntityAdapter;
+    aggregationTypesMapper: AggregationTypesMapper;
+    propagatedDirectives: DirectiveNode[];
+    composer: SchemaComposer;
+}) {
+    withAggregateSelectionType({
+        entityAdapter,
+        aggregationTypesMapper,
+        propagatedDirectives,
+        composer,
+    });
+
+    composer.Query.addFields({
+        [entityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+            concreteEntityAdapter: entityAdapter,
+        }),
+    });
+    composer.Query.setFieldDirectives(
+        entityAdapter.operations.rootTypeFieldNames.aggregate,
+        graphqlDirectivesToCompose(propagatedDirectives)
+    );
 }

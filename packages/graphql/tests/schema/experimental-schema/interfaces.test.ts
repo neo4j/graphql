@@ -29,13 +29,6 @@ describe("Interfaces", () => {
                 id: ID
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie)
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
             }
 
             type Movie implements MovieNode {
@@ -162,6 +155,11 @@ describe("Interfaces", () => {
               id: ID
               movies: [Movie!]!
               moviesConnection: MovieNodeMoviesConnection!
+            }
+
+            type MovieNodeAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieNodeImplementationsWhere {
@@ -354,6 +352,7 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -392,13 +391,6 @@ describe("Interfaces", () => {
                 id: ID
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie)
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
             }
 
             type Movie implements MovieNode {
@@ -529,6 +521,11 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            type MovieNodeAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
             input MovieNodeImplementationsWhere {
               Movie: MovieWhere
             }
@@ -719,6 +716,7 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

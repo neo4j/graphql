@@ -60,7 +60,8 @@ export class JWTFilter extends Filter {
             param: new Cypher.Param(this.comparisonValue),
         });
 
-        return this.wrapInNotIfNeeded(operation);
+        const predicate = this.wrapInNotIfNeeded(operation);
+        return Cypher.and(Cypher.isNotNull(this.JWTClaim), predicate);
     }
 
     public print(): string {

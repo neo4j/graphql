@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import { Field } from "../Field";
 import type Cypher from "@neo4j/cypher-builder";
+import { Field } from "../Field";
 
 export abstract class AggregationField extends Field {
-    public getProjectionField(_variable: Cypher.Variable): Record<string, Cypher.Expr> {
-        return {};
-    }
+    public abstract getProjectionField(_variable: Cypher.Variable): Record<string, Cypher.Expr>;
 
-    public abstract getAggregationExpr(variable: Cypher.Variable): Cypher.Expr;
+    public abstract getAggregationExpr(variable: Cypher.Variable | Cypher.Property): Cypher.Expr;
     public abstract getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause;
 }

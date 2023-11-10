@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations Many with Alias directive", () => {
     let typeDefs: DocumentNode;
@@ -70,21 +70,13 @@ describe("Cypher Aggregations Many with Alias directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN { id: { shortest: min(this._id), longest: max(this._id) }, title: { shortest:
-                                        reduce(aggVar = collect(this._title)[0], current IN collect(this._title) |
-                                            CASE
-                                            WHEN size(current) < size(aggVar) THEN current
-                                            ELSE aggVar
-                                            END
-                                        )
-                                    , longest:
-                                        reduce(aggVar = collect(this._title)[0], current IN collect(this._title) |
-                                            CASE
-                                            WHEN size(current) > size(aggVar) THEN current
-                                            ELSE aggVar
-                                            END
-                                        )
-                                     }, imdbRating: { min: min(this.\`_imdb Rating\`), max: max(this.\`_imdb Rating\`), average: avg(this.\`_imdb Rating\`) }, createdAt: { min: apoc.date.convertFormat(toString(min(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
+            RETURN { id: { shortest: min(this._id), longest: max(this._id) }, title: { shortest: reduce(aggVar = collect(this._title)[0], current IN collect(this._title) | CASE
+                WHEN size(current) < size(aggVar) THEN current
+                ELSE aggVar
+            END), longest: reduce(aggVar = collect(this._title)[0], current IN collect(this._title) | CASE
+                WHEN size(current) > size(aggVar) THEN current
+                ELSE aggVar
+            END) }, imdbRating: { min: min(this.\`_imdb Rating\`), max: max(this.\`_imdb Rating\`), average: avg(this.\`_imdb Rating\`) }, createdAt: { min: apoc.date.convertFormat(toString(min(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

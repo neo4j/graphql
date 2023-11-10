@@ -1,5 +1,41 @@
 # @neo4j/graphql-toolbox
 
+## 2.1.3
+
+### Patch Changes
+
+-   Updated dependencies [[`58ff087a1`](https://github.com/neo4j/graphql/commit/58ff087a113466b9b1b51c5708ff02193f8feccd), [`5aa9de932`](https://github.com/neo4j/graphql/commit/5aa9de93259d65ca6549221557aa71b9e04efe02), [`0a95366ba`](https://github.com/neo4j/graphql/commit/0a95366ba7177f726da8f577384eeead47e6378b)]:
+    -   @neo4j/graphql@4.4.1
+
+## 2.1.2
+
+### Patch Changes
+
+-   Updated dependencies [[`9324e6509`](https://github.com/neo4j/graphql/commit/9324e6509ed59825ee7c670923916d5a6f7e4c77), [`39749a381`](https://github.com/neo4j/graphql/commit/39749a38104b49895d993cd2f9a8401c38894564), [`3bbcefa54`](https://github.com/neo4j/graphql/commit/3bbcefa54bc23d39c10875aa06667ac0bd2b0cf0), [`1fd192632`](https://github.com/neo4j/graphql/commit/1fd1926320bf9355e77c045a3103bec26d9d95e6), [`5bc958c9d`](https://github.com/neo4j/graphql/commit/5bc958c9d3b61dfa415bf09608b92c4768193cd2), [`896b11ca5`](https://github.com/neo4j/graphql/commit/896b11ca5afc5cc4a6e5ae6e78fbe938875342aa), [`0ba4f434b`](https://github.com/neo4j/graphql/commit/0ba4f434b7a705fab70c4ce4aefcb8bc82b87e2e)]:
+    -   @neo4j/graphql@4.4.0
+
+## 2.1.1
+
+### Patch Changes
+
+-   [#4156](https://github.com/neo4j/graphql/pull/4156) [`d9c42fc50`](https://github.com/neo4j/graphql/commit/d9c42fc5062ffe3f7ebb403b3b33611f94c7dca5) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Update usage of neo4j-ndl components
+
+-   Updated dependencies [[`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e), [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6), [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6)]:
+    -   @neo4j/graphql@4.3.4
+
+## 2.1.0
+
+### Minor Changes
+
+-   [#4096](https://github.com/neo4j/graphql/pull/4096) [`b88809c11`](https://github.com/neo4j/graphql/commit/b88809c111dc0de62c833aa2cdd2addb5034c4b7) Thanks [@mjfwebb](https://github.com/mjfwebb)! - refactor: migrate components neo4j-ndl v2
+
+### Patch Changes
+
+-   [#4119](https://github.com/neo4j/graphql/pull/4119) [`6a8c31c60`](https://github.com/neo4j/graphql/commit/6a8c31c60be7f675cdc9f6c4106ef86d87dd6bc9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Show users when a valid directive is unsupported. Specifically the authorization directive in this case.
+
+-   Updated dependencies [[`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf), [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a)]:
+    -   @neo4j/graphql@4.3.3
+
 ## 2.0.14
 
 ### Patch Changes

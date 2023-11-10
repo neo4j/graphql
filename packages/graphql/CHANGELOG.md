@@ -1,5 +1,53 @@
 # @neo4j/graphql
 
+## 4.4.1
+
+### Patch Changes
+
+-   [#4235](https://github.com/neo4j/graphql/pull/4235) [`58ff087a1`](https://github.com/neo4j/graphql/commit/58ff087a113466b9b1b51c5708ff02193f8feccd) Thanks [@a-alle](https://github.com/a-alle)! - Fix directive combination logic for inherited field in the directive combination validation rule
+
+-   [#4237](https://github.com/neo4j/graphql/pull/4237) [`5aa9de932`](https://github.com/neo4j/graphql/commit/5aa9de93259d65ca6549221557aa71b9e04efe02) Thanks [@a-alle](https://github.com/a-alle)! - Fix authorization before and after parameter name clash
+
+-   [#4233](https://github.com/neo4j/graphql/pull/4233) [`0a95366ba`](https://github.com/neo4j/graphql/commit/0a95366ba7177f726da8f577384eeead47e6378b) Thanks [@a-alle](https://github.com/a-alle)! - Improve authorization variable prefix on create operations
+
+## 4.4.0
+
+### Minor Changes
+
+-   [#4194](https://github.com/neo4j/graphql/pull/4194) [`39749a381`](https://github.com/neo4j/graphql/commit/39749a38104b49895d993cd2f9a8401c38894564) Thanks [@angrykoala](https://github.com/angrykoala)! - Beta support for Neo4j Change Data Capture based subscriptions using `Neo4jGraphQLSubscriptionsCDCEngine`
+
+### Patch Changes
+
+-   [#4211](https://github.com/neo4j/graphql/pull/4211) [`9324e6509`](https://github.com/neo4j/graphql/commit/9324e6509ed59825ee7c670923916d5a6f7e4c77) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix label mapping for filters where the target node contains dynamic labels.
+
+-   [#4195](https://github.com/neo4j/graphql/pull/4195) [`3bbcefa54`](https://github.com/neo4j/graphql/commit/3bbcefa54bc23d39c10875aa06667ac0bd2b0cf0) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4170 - authorization variable name clash
+
+-   [#4197](https://github.com/neo4j/graphql/pull/4197) [`1fd192632`](https://github.com/neo4j/graphql/commit/1fd1926320bf9355e77c045a3103bec26d9d95e6) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove warning about Federation support being experimental.
+
+-   [#4133](https://github.com/neo4j/graphql/pull/4133) [`5bc958c9d`](https://github.com/neo4j/graphql/commit/5bc958c9d3b61dfa415bf09608b92c4768193cd2) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed a bug that prevents `@relayID` fields from being queried using the GraphQL alias and the Connection API. https://github.com/neo4j/graphql/issues/4158
+
+-   [#4218](https://github.com/neo4j/graphql/pull/4218) [`896b11ca5`](https://github.com/neo4j/graphql/commit/896b11ca5afc5cc4a6e5ae6e78fbe938875342aa) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix missing custom cypher on unions
+
+-   [#4177](https://github.com/neo4j/graphql/pull/4177) [`0ba4f434b`](https://github.com/neo4j/graphql/commit/0ba4f434b7a705fab70c4ce4aefcb8bc82b87e2e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Improve debug logging of incoming GraphQL query and context, and decoding of bearer tokens.
+
+## 4.3.4
+
+### Patch Changes
+
+-   [#4142](https://github.com/neo4j/graphql/pull/4142) [`a1bdd5851`](https://github.com/neo4j/graphql/commit/a1bdd585188c988b25c403f330f7f15c50b2f55e) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4118 - Invalid input WHERE on create with connect and auth
+
+-   [#4147](https://github.com/neo4j/graphql/pull/4147) [`755505021`](https://github.com/neo4j/graphql/commit/7555050217701073cb7786762863ffacd787f6c6) Thanks [@a-alle](https://github.com/a-alle)! - Fix #4113 - auth subqueries variable name clash
+
+-   [#4146](https://github.com/neo4j/graphql/pull/4146) [`0b3466568`](https://github.com/neo4j/graphql/commit/0b3466568707c943140ae35d79cda761f306b6a6) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested aggregation filters #4115
+
+## 4.3.3
+
+### Patch Changes
+
+-   [#4136](https://github.com/neo4j/graphql/pull/4136) [`4ee9f66b1`](https://github.com/neo4j/graphql/commit/4ee9f66b1d7926cabb90ac346a6a03bf83a7ecdf) Thanks [@a-alle](https://github.com/a-alle)! - Fix `@jwtClaim` not working in `@authentication` rules
+
+-   [#4141](https://github.com/neo4j/graphql/pull/4141) [`68ac63044`](https://github.com/neo4j/graphql/commit/68ac63044afdb19583c262cb565d4b634b02871a) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix Authorization filters along with subqueries #4110
+
 ## 4.3.2
 
 ### Patch Changes
