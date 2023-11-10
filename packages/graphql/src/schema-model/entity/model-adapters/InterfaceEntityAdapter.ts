@@ -116,6 +116,10 @@ export class InterfaceEntityAdapter {
         return this.annotations.query === undefined || this.annotations.query.read === true;
     }
 
+    get isAggregable(): boolean {
+        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+    }
+
     /**
      * Categories
      * = a grouping of attributes
@@ -132,6 +136,10 @@ export class InterfaceEntityAdapter {
 
     public get whereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
+    }
+
+    public get aggregableFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
     }
 
     public get updateInputFields(): AttributeAdapter[] {

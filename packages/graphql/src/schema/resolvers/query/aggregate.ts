@@ -20,6 +20,7 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateAggregate } from "../../../translate";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
@@ -30,21 +31,19 @@ export function aggregateResolver({
     node,
     concreteEntityAdapter,
 }: {
-    node: Node;
-    concreteEntityAdapter: ConcreteEntityAdapter;
+    node?: Node;
+    concreteEntityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }) {
     async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info);
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const [aggregateCypher, aggregateParams] = translateAggregate({
+        const { cypher, params } = translateAggregate({
             context: context as Neo4jGraphQLTranslationContext,
             node,
+            entityAdapter: concreteEntityAdapter,
         });
-
-        const { cypher, params: builtParams } = aggregateCypher.build();
-        const params = { ...aggregateParams, ...builtParams };
 
         const executeResult = await execute({
             cypher,

@@ -142,6 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type Query {
               resourceEntities(options: ResourceEntityOptions, where: ResourceEntityWhere): [ResourceEntity!]!
+              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
               resources(options: ResourceOptions, where: ResourceWhere): [Resource!]!
               resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort], where: ResourceWhere): ResourcesConnection!
@@ -379,6 +380,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               tags: [Tag!]
               \\"\\"\\"Allowed resource types (enums)\\"\\"\\"
               type: ResourceType!
+            }
+
+            type ResourceEntityAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNullable!
             }
 
             input ResourceEntityImplementationsWhere {

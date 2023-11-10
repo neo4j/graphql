@@ -3516,10 +3516,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@neo4j/cypher-builder@npm:1.4.0"
-  checksum: 83ee48b450e31784493c7d03a20d35bfe8dd478bf989e51f8b970ed514c50723bdb9f860053e6492141d0cbcf327d78fba53ca020ead5be07f9936d075c724f4
+"@neo4j/cypher-builder@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "@neo4j/cypher-builder@npm:1.7.1"
+  checksum: 545953bffec407c65ac3531868e8853376ecf254dfa15cfabb4e929417d643164147c0bfd3bb28fdb37521bfc8573842d441d947513bf58c516287da133bf2c2
   languageName: node
   linkType: hard
 
@@ -3532,8 +3532,8 @@ __metadata:
     "@types/amqplib": 0.10.4
     "@types/body-parser": 1.19.5
     "@types/cors": 2.8.16
-    "@types/debug": 4.1.10
-    "@types/jest": 29.5.7
+    "@types/debug": 4.1.12
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     amqplib: 0.10.3
     body-parser: ^1.20.2
@@ -3562,7 +3562,7 @@ __metadata:
     "@graphql-codegen/typescript": ^4.0.0
     "@graphql-tools/merge": ^9.0.0
     "@neo4j/graphql": ^4.4.1
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -3601,11 +3601,11 @@ __metadata:
     "@playwright/test": 1.39.0
     "@tsconfig/create-react-app": 2.0.1
     "@types/codemirror": 5.60.13
-    "@types/lodash.debounce": 4.0.8
-    "@types/markdown-it": 13.0.5
+    "@types/lodash.debounce": 4.0.9
+    "@types/markdown-it": 13.0.6
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.14
-    "@types/webpack": 5.28.4
+    "@types/react-dom": 18.2.15
+    "@types/webpack": 5.28.5
     autoprefixer: 10.4.16
     classnames: 2.3.2
     cm6-graphql: 0.0.10
@@ -3665,17 +3665,17 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^7.0.0
     "@graphql-tools/schema": 10.0.0
     "@graphql-tools/utils": ^10.0.0
-    "@neo4j/cypher-builder": ^1.4.0
-    "@types/deep-equal": 1.0.3
-    "@types/is-uuid": 1.0.1
-    "@types/jest": 29.5.7
-    "@types/jsonwebtoken": 9.0.4
+    "@neo4j/cypher-builder": ^1.7.1
+    "@types/deep-equal": 1.0.4
+    "@types/is-uuid": 1.0.2
+    "@types/jest": 29.5.8
+    "@types/jsonwebtoken": 9.0.5
     "@types/node": 20.8.10
-    "@types/pluralize": 0.0.32
-    "@types/randomstring": 1.1.10
-    "@types/semver": 7.5.4
-    "@types/supertest": 2.0.15
-    "@types/ws": 8.5.8
+    "@types/pluralize": 0.0.33
+    "@types/randomstring": 1.1.11
+    "@types/semver": 7.5.5
+    "@types/supertest": 2.0.16
+    "@types/ws": 8.5.9
     camelcase: ^6.3.0
     debug: ^4.3.4
     dedent: 1.5.1
@@ -3727,9 +3727,9 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^4.0.0
-    "@types/jest": 29.5.7
+    "@types/jest": 29.5.8
     "@types/node": 20.8.10
-    "@types/pluralize": 0.0.32
+    "@types/pluralize": 0.0.33
     camelcase: ^6.3.0
     debug: ^4.3.4
     jest: 29.7.0
@@ -7318,19 +7318,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:4.1.10":
-  version: 4.1.10
-  resolution: "@types/debug@npm:4.1.10"
+"@types/debug@npm:4.1.12":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
   dependencies:
     "@types/ms": "*"
-  checksum: 938f79c5b610f851da9c67ecd8641a09b33ce9cb38fe4c9f4d20ee743d6bccb5d8e9a833a4cd23e0684a316622af67a0634fa706baea5a01f5219961d1976314
+  checksum: 47876a852de8240bfdaf7481357af2b88cb660d30c72e73789abf00c499d6bc7cd5e52f41c915d1b9cd8ec9fef5b05688d7b7aef17f7f272c2d04679508d1053
   languageName: node
   linkType: hard
 
-"@types/deep-equal@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@types/deep-equal@npm:1.0.3"
-  checksum: eddd9a381dac9d2bb99846e8f42a5e568f54610485cdcb6dd08ae60e597d406331f25f3bb1e63d0ecf28b6376d304ac635106b9a86a25c43d496406c4f29f298
+"@types/deep-equal@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@types/deep-equal@npm:1.0.4"
+  checksum: db905bcb051bc9cf5dceb231a6b0b64ab2318073939a1769e043454e8c46b1eeaac1376338751d2ee7ca9294398dd62e03d4b120361b56f96f89dc87aec753e4
   languageName: node
   linkType: hard
 
@@ -7442,10 +7442,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/is-uuid@npm:1.0.1":
-  version: 1.0.1
-  resolution: "@types/is-uuid@npm:1.0.1"
-  checksum: 5249ace79f8987839c6939dd5b5b42ec7caf5ab27a037194eada0e36c02f389d1e4d334f336c5cd0c702f58dbe38cdfa46ca6a8d86979025b5867a919182304f
+"@types/is-uuid@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@types/is-uuid@npm:1.0.2"
+  checksum: 1589d8cc57f1532cbd4338b6d227b7a126f2d0a307c69b425cf0570874c131bc74d20fa4edd7c790b2ece56dc8e8b32d5ed27640684110331de50432bcd69e3c
   languageName: node
   linkType: hard
 
@@ -7474,13 +7474,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.7":
-  version: 29.5.7
-  resolution: "@types/jest@npm:29.5.7"
+"@types/jest@npm:29.5.8":
+  version: 29.5.8
+  resolution: "@types/jest@npm:29.5.8"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e28624ccb0ef1255a03fbbb4b5bc3e5cbcdc450d39e0739985ff679b124198f808c38c8c3e67859c6efc0e848196deeb8cfed028e12a821c511dfc1112a2d6e9
+  checksum: ca8438a5b4c098c8c023e9d5b279ea306494a1d0b5291cfb498100fa780377145f068b2a021d545b0398bbe0328dcc37044dd3aaf3c6c0fe9b0bef7b46a63453
   languageName: node
   linkType: hard
 
@@ -7516,12 +7516,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:9.0.4":
-  version: 9.0.4
-  resolution: "@types/jsonwebtoken@npm:9.0.4"
+"@types/jsonwebtoken@npm:9.0.5":
+  version: 9.0.5
+  resolution: "@types/jsonwebtoken@npm:9.0.5"
   dependencies:
     "@types/node": "*"
-  checksum: 66323ca082008be98d1a1b2782e8c8895b9168bb4444362eaae56e4263728742b61c1b5c4d51276ee80eb592e4b339063425531168b529ca33fd0939cdb9eaa9
+  checksum: 07ab6fee602e5bd3fb5c6dfe4ec400769dc20f1d7fce901feecb4c3af5f5f08323b03ea55de3e49b1aa41e171a59008f6f4318738a735588c5268a63eba25337
   languageName: node
   linkType: hard
 
@@ -7550,12 +7550,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:4.0.8":
-  version: 4.0.8
-  resolution: "@types/lodash.debounce@npm:4.0.8"
+"@types/lodash.debounce@npm:4.0.9":
+  version: 4.0.9
+  resolution: "@types/lodash.debounce@npm:4.0.9"
   dependencies:
     "@types/lodash": "*"
-  checksum: 63f195cb053ca390135a9aca62bb60fa149ca81838519871506b60760ff4113333709becb8e4147707eaa3d916dab7eff66b0588caf4ce508cabda9bee9c5b60
+  checksum: 8183a152e01928e3b97ca773f6ae6038b8695e76493ba8bf6b743ec143948a62294fbc9d49fa4a78b52265b3ba4892ef57534e0c13d04aa0f111671b5a944feb
   languageName: node
   linkType: hard
 
@@ -7573,13 +7573,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/markdown-it@npm:13.0.5":
-  version: 13.0.5
-  resolution: "@types/markdown-it@npm:13.0.5"
+"@types/markdown-it@npm:13.0.6":
+  version: 13.0.6
+  resolution: "@types/markdown-it@npm:13.0.6"
   dependencies:
     "@types/linkify-it": "*"
     "@types/mdurl": "*"
-  checksum: 3c87efe8e24f77dc9aa1962b8f18d37530b63e33ab363653e568816de6d5b6185a65690da729e2757ba370a3499635da6b4fc4d9a99df9d85959d8c64c7fe8e9
+  checksum: 2d840372f909d6c000c37c89f720f17a6c3cfecfa1c2f10ec51d5b63a301a5316a3d9ca6855f2922420c23961600af83385cca142c2f2169db3126ad37215341
   languageName: node
   linkType: hard
 
@@ -7672,10 +7672,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pluralize@npm:0.0.32":
-  version: 0.0.32
-  resolution: "@types/pluralize@npm:0.0.32"
-  checksum: 788aa2ad144a0e7b318d03bddfeefecd65e97793e0faad748c458538abd8d680bcc096fe1219567a7c19d41d23b74e45868d7d43a06a44135798eb8da09a1655
+"@types/pluralize@npm:0.0.33":
+  version: 0.0.33
+  resolution: "@types/pluralize@npm:0.0.33"
+  checksum: 282d42dc0187e5e0912f9f36ee0f5615bfd273a08d40afe5bf5881cb28daf1977abe10564543032aa0f42352ebba739ff3d86bf5562ac4691c6d1761fcc7cf39
   languageName: node
   linkType: hard
 
@@ -7700,10 +7700,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/randomstring@npm:1.1.10":
-  version: 1.1.10
-  resolution: "@types/randomstring@npm:1.1.10"
-  checksum: 13ce9002b89796d48da539601efe3b9b1cd2d7edd1528502d515bc3e5748bd96b2dbb21c20cfa1d10eb19256daddacee01149c0dbdf98c8db0813731fc8b217e
+"@types/randomstring@npm:1.1.11":
+  version: 1.1.11
+  resolution: "@types/randomstring@npm:1.1.11"
+  checksum: ddb9dc26dd04149268171a6351df001dc6f7a5e1c1567f760066e18432c9b05bd298cb60c1e238ad31e8107bac82b2fce48620940149014931482bc51c997d18
   languageName: node
   linkType: hard
 
@@ -7714,12 +7714,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.14":
-  version: 18.2.14
-  resolution: "@types/react-dom@npm:18.2.14"
+"@types/react-dom@npm:18.2.15":
+  version: 18.2.15
+  resolution: "@types/react-dom@npm:18.2.15"
   dependencies:
     "@types/react": "*"
-  checksum: 890289c70d1966c168037637c09cacefe6205bdd27a33252144a6b432595a2943775ac1a1accac0beddaeb67f8fdf721e076acb1adc990b08e51c3d9fd4e780c
+  checksum: 8e9631600c21ff561328e38a951d1991b3b3b20f538af4c0efbd1327c883a5573a63f50e1b945c34fa51b114b30e1ca5e62317bd54f21e063d6697b4be843a03
   languageName: node
   linkType: hard
 
@@ -7773,10 +7773,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.5.4":
-  version: 7.5.4
-  resolution: "@types/semver@npm:7.5.4"
-  checksum: 120c0189f6fec5f2d12d0d71ac8a4cfa952dc17fa3d842e8afddb82bba8828a4052f8799c1653e2b47ae1977435f38e8985658fde971905ce5afb8e23ee97ecf
+"@types/semver@npm:7.5.5":
+  version: 7.5.5
+  resolution: "@types/semver@npm:7.5.5"
+  checksum: 533e6c93d1262d65f449423d94a445f7f3db0672e7429f21b6a1636d6051dbab3a2989ddcda9b79c69bb37830931d09fc958a65305a891357f5cea3257c297f5
   languageName: node
   linkType: hard
 
@@ -7843,12 +7843,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:2.0.15":
-  version: 2.0.15
-  resolution: "@types/supertest@npm:2.0.15"
+"@types/supertest@npm:2.0.16":
+  version: 2.0.16
+  resolution: "@types/supertest@npm:2.0.16"
   dependencies:
     "@types/superagent": "*"
-  checksum: 89c1983662f0ab20969b3a6c44344397fd222d0f78b282619aabbe817f7c88a64210fd2b8b8f075ea22a27084e30ebc287bc5105619cbbf9af7f008e77f6eb93
+  checksum: 2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
   languageName: node
   linkType: hard
 
@@ -7889,23 +7889,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack@npm:5.28.4":
-  version: 5.28.4
-  resolution: "@types/webpack@npm:5.28.4"
+"@types/webpack@npm:5.28.5":
+  version: 5.28.5
+  resolution: "@types/webpack@npm:5.28.5"
   dependencies:
     "@types/node": "*"
     tapable: ^2.2.0
     webpack: ^5
-  checksum: 7a08e31096a05c77bb49b3830f85f2e340090fa2b19dbe4681c7eab92e49db85bdbbe7b374df7d7aa38549922ff3252f43a00d4c5c2f9fe0c2a198cdb5ddde7e
+  checksum: 14359d9ccecef7ef1ea271c00baec5337213c7fda63a34c61b9e519505b3928d0807cdbb5b1172d1994e1179920b89c57eaf2cbf64599958b67cd70720ac2a9b
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.8":
-  version: 8.5.8
-  resolution: "@types/ws@npm:8.5.8"
+"@types/ws@npm:8.5.9":
+  version: 8.5.9
+  resolution: "@types/ws@npm:8.5.9"
   dependencies:
     "@types/node": "*"
-  checksum: 4ad30de842834d4dd8e6e1476470752709d4165352a3a36780f23f4fdb686d4ac8ca5e16a0e0622940ddace910b856ff8a0baa2e24e41d204fb7a6a02ab2172b
+  checksum: 83f436b731d2cdc49a45ced31a0a65cdd2e39c24d7b882776c26efa190dad6553e266d624c7a7089f36ad3ed471e02e729f3219282c80689b435f665df4a2b0b
   languageName: node
   linkType: hard
 

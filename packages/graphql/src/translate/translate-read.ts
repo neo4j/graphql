@@ -19,22 +19,22 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
+import { SCORE_FIELD } from "../graphql/directives/fulltext";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { isConcreteEntity } from "./queryAST/utils/is-concrete-entity";
-import type { ResolveTree } from "graphql-parse-resolve-info";
-import { SCORE_FIELD } from "../graphql/directives/fulltext";
-import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { CypherFieldReferenceMap, GraphQLOptionsArg, GraphQLWhereArg } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
 import createProjectionAndParams from "./create-projection-and-params";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { isConcreteEntity } from "./queryAST/utils/is-concrete-entity";
 import { createMatchClause } from "./translate-top-level-match";
 
 const debug = Debug(DEBUG_TRANSLATE);

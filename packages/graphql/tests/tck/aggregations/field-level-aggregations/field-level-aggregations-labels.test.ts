@@ -74,7 +74,7 @@ describe("Field Level Aggregations Alias", () => {
                 WITH this1
                 ORDER BY size(this1.name) DESC
                 WITH collect(this1.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var2
+                RETURN { shortest: last(list) } AS var2
             }
             RETURN this { actorsAggregate: { node: { name: var2 } } } AS this"
         `);

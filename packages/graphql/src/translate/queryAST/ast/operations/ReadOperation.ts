@@ -23,6 +23,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Field } from "../fields/Field";
@@ -34,7 +35,6 @@ import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;

@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2993", () => {
@@ -66,6 +66,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
+
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
+            }
 
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
@@ -120,6 +125,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             interface Profile {
               id: ID!
               userName: String!
+            }
+
+            type ProfileAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
             }
 
             input ProfileConnectInput {
@@ -211,6 +222,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type Query {
               profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -247,6 +259,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type User implements Profile {
               following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              followingAggregate(directed: Boolean = true, where: ProfileWhere): UserProfileFollowingAggregationSelection
               followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
@@ -353,6 +366,21 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               sort: [UserSort!]
             }
 
+            type UserProfileFollowingAggregationSelection {
+              count: Int!
+              edge: UserProfileFollowingEdgeAggregateSelection
+              node: UserProfileFollowingNodeAggregateSelection
+            }
+
+            type UserProfileFollowingEdgeAggregateSelection {
+              since: DateTimeAggregateSelectionNonNullable!
+            }
+
+            type UserProfileFollowingNodeAggregateSelection {
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
+            }
+
             input UserRelationInput {
               following: [UserFollowingCreateFieldInput!]
             }
@@ -443,379 +471,407 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-                      "schema {
-                        query: Query
-                        mutation: Mutation
-                      }
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
 
-                      \\"\\"\\"
-                      Information about the number of nodes and relationships created during a create mutation
-                      \\"\\"\\"
-                      type CreateInfo {
-                        bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                        nodesCreated: Int!
-                        relationshipsCreated: Int!
-                      }
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
 
-                      type CreateUsersMutationResponse {
-                        info: CreateInfo!
-                        users: [User!]!
-                      }
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
 
-                      \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
-                      scalar DateTime
+            \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
+            scalar DateTime
 
-                      \\"\\"\\"
-                      Information about the number of nodes and relationships deleted during a delete mutation
-                      \\"\\"\\"
-                      type DeleteInfo {
-                        bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                        nodesDeleted: Int!
-                        relationshipsDeleted: Int!
-                      }
+            type DateTimeAggregateSelectionNonNullable {
+              max: DateTime!
+              min: DateTime!
+            }
 
-                      interface FOLLOWS {
-                        since: DateTime!
-                      }
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
 
-                      input FOLLOWSSort {
-                        since: SortDirection
-                      }
+            interface FOLLOWS {
+              since: DateTime!
+            }
 
-                      input FOLLOWSWhere {
-                        AND: [FOLLOWSWhere!]
-                        NOT: FOLLOWSWhere
-                        OR: [FOLLOWSWhere!]
-                        since: DateTime
-                        since_GT: DateTime
-                        since_GTE: DateTime
-                        since_IN: [DateTime!]
-                        since_LT: DateTime
-                        since_LTE: DateTime
-                        since_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        since_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      }
+            input FOLLOWSSort {
+              since: SortDirection
+            }
 
-                      type IDAggregateSelectionNonNullable {
-                        longest: ID!
-                        shortest: ID!
-                      }
+            input FOLLOWSWhere {
+              AND: [FOLLOWSWhere!]
+              NOT: FOLLOWSWhere
+              OR: [FOLLOWSWhere!]
+              since: DateTime
+              since_GT: DateTime
+              since_GTE: DateTime
+              since_IN: [DateTime!]
+              since_LT: DateTime
+              since_LTE: DateTime
+              since_NOT: DateTime @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              since_NOT_IN: [DateTime!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
 
-                      type Mutation {
-                        createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-                        deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
-                        updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-                      }
+            type IDAggregateSelectionNonNullable {
+              longest: ID!
+              shortest: ID!
+            }
 
-                      \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                      type PageInfo {
-                        endCursor: String
-                        hasNextPage: Boolean!
-                        hasPreviousPage: Boolean!
-                        startCursor: String
-                      }
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
 
-                      interface Profile {
-                        id: ID!
-                        userName: String!
-                      }
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
 
-                      input ProfileConnectInput {
-                        _on: ProfileImplementationsConnectInput
-                      }
+            interface Profile {
+              id: ID!
+              userName: String!
+            }
 
-                      input ProfileConnectWhere {
-                        node: ProfileWhere!
-                      }
+            type ProfileAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
+            }
 
-                      input ProfileCreateInput {
-                        User: UserCreateInput
-                      }
+            input ProfileConnectInput {
+              _on: ProfileImplementationsConnectInput
+            }
 
-                      input ProfileDeleteInput {
-                        _on: ProfileImplementationsDeleteInput
-                      }
+            input ProfileConnectWhere {
+              node: ProfileWhere!
+            }
 
-                      input ProfileDisconnectInput {
-                        _on: ProfileImplementationsDisconnectInput
-                      }
+            input ProfileCreateInput {
+              User: UserCreateInput
+            }
 
-                      input ProfileImplementationsConnectInput {
-                        User: [UserConnectInput!]
-                      }
+            input ProfileDeleteInput {
+              _on: ProfileImplementationsDeleteInput
+            }
 
-                      input ProfileImplementationsDeleteInput {
-                        User: [UserDeleteInput!]
-                      }
+            input ProfileDisconnectInput {
+              _on: ProfileImplementationsDisconnectInput
+            }
 
-                      input ProfileImplementationsDisconnectInput {
-                        User: [UserDisconnectInput!]
-                      }
+            input ProfileImplementationsConnectInput {
+              User: [UserConnectInput!]
+            }
 
-                      input ProfileImplementationsUpdateInput {
-                        User: UserUpdateInput
-                      }
+            input ProfileImplementationsDeleteInput {
+              User: [UserDeleteInput!]
+            }
 
-                      input ProfileImplementationsWhere {
-                        User: UserWhere
-                      }
+            input ProfileImplementationsDisconnectInput {
+              User: [UserDisconnectInput!]
+            }
 
-                      input ProfileOptions {
-                        limit: Int
-                        offset: Int
-                        \\"\\"\\"
-                        Specify one or more ProfileSort objects to sort Profiles by. The sorts will be applied in the order in which they are arranged in the array.
-                        \\"\\"\\"
-                        sort: [ProfileSort]
-                      }
+            input ProfileImplementationsUpdateInput {
+              User: UserUpdateInput
+            }
 
-                      \\"\\"\\"
-                      Fields to sort Profiles by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProfileSort object.
-                      \\"\\"\\"
-                      input ProfileSort {
-                        id: SortDirection
-                        userName: SortDirection
-                      }
+            input ProfileImplementationsWhere {
+              User: UserWhere
+            }
 
-                      input ProfileUpdateInput {
-                        _on: ProfileImplementationsUpdateInput
-                        userName: String
-                      }
+            input ProfileOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProfileSort objects to sort Profiles by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProfileSort]
+            }
 
-                      input ProfileWhere {
-                        _on: ProfileImplementationsWhere
-                        id: ID
-                        id_CONTAINS: ID
-                        id_ENDS_WITH: ID
-                        id_IN: [ID!]
-                        id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_STARTS_WITH: ID
-                        userName: String
-                        userName_CONTAINS: String
-                        userName_ENDS_WITH: String
-                        userName_IN: [String!]
-                        userName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_STARTS_WITH: String
-                      }
+            \\"\\"\\"
+            Fields to sort Profiles by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProfileSort object.
+            \\"\\"\\"
+            input ProfileSort {
+              id: SortDirection
+              userName: SortDirection
+            }
 
-                      type Query {
-                        profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
-                        users(options: UserOptions, where: UserWhere): [User!]!
-                        usersAggregate(where: UserWhere): UserAggregateSelection!
-                        usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
-                      }
+            input ProfileUpdateInput {
+              _on: ProfileImplementationsUpdateInput
+              userName: String
+            }
 
-                      \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                      enum SortDirection {
-                        \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                        ASC
-                        \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                        DESC
-                      }
+            input ProfileWhere {
+              _on: ProfileImplementationsWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              userName: String
+              userName_CONTAINS: String
+              userName_ENDS_WITH: String
+              userName_IN: [String!]
+              userName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_STARTS_WITH: String
+            }
 
-                      type StringAggregateSelectionNonNullable {
-                        longest: String!
-                        shortest: String!
-                      }
+            type Query {
+              profiles(options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
+            }
 
-                      \\"\\"\\"
-                      Information about the number of nodes and relationships created and deleted during an update mutation
-                      \\"\\"\\"
-                      type UpdateInfo {
-                        bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-                        nodesCreated: Int!
-                        nodesDeleted: Int!
-                        relationshipsCreated: Int!
-                        relationshipsDeleted: Int!
-                      }
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
 
-                      type UpdateUsersMutationResponse {
-                        info: UpdateInfo!
-                        users: [User!]!
-                      }
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
 
-                      type User implements Profile {
-                        following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
-                        followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
-                        id: ID!
-                        userName: String!
-                      }
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
 
-                      type UserAggregateSelection {
-                        count: Int!
-                        id: IDAggregateSelectionNonNullable!
-                        userName: StringAggregateSelectionNonNullable!
-                      }
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
 
-                      input UserConnectInput {
-                        following: [UserFollowingConnectFieldInput!]
-                      }
+            type User implements Profile {
+              following(directed: Boolean = true, options: ProfileOptions, where: ProfileWhere): [Profile!]!
+              followingAggregate(directed: Boolean = true, where: ProfileWhere): UserProfileFollowingAggregationSelection
+              followingConnection(after: String, directed: Boolean = true, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
+              id: ID!
+              userName: String!
+            }
 
-                      input UserCreateInput {
-                        following: UserFollowingFieldInput
-                        userName: String!
-                      }
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
+            }
 
-                      input UserDeleteInput {
-                        following: [UserFollowingDeleteFieldInput!]
-                      }
+            input UserConnectInput {
+              following: [UserFollowingConnectFieldInput!]
+            }
 
-                      input UserDisconnectInput {
-                        following: [UserFollowingDisconnectFieldInput!]
-                      }
+            input UserCreateInput {
+              following: UserFollowingFieldInput
+              userName: String!
+            }
 
-                      type UserEdge {
-                        cursor: String!
-                        node: User!
-                      }
+            input UserDeleteInput {
+              following: [UserFollowingDeleteFieldInput!]
+            }
 
-                      input UserFollowingConnectFieldInput {
-                        connect: ProfileConnectInput
-                        where: ProfileConnectWhere
-                      }
+            input UserDisconnectInput {
+              following: [UserFollowingDisconnectFieldInput!]
+            }
 
-                      type UserFollowingConnection {
-                        edges: [UserFollowingRelationship!]!
-                        pageInfo: PageInfo!
-                        totalCount: Int!
-                      }
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
 
-                      input UserFollowingConnectionSort {
-                        edge: FOLLOWSSort
-                        node: ProfileSort
-                      }
+            input UserFollowingConnectFieldInput {
+              connect: ProfileConnectInput
+              where: ProfileConnectWhere
+            }
 
-                      input UserFollowingConnectionWhere {
-                        AND: [UserFollowingConnectionWhere!]
-                        NOT: UserFollowingConnectionWhere
-                        OR: [UserFollowingConnectionWhere!]
-                        edge: FOLLOWSWhere
-                        edge_NOT: FOLLOWSWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        node: ProfileWhere
-                        node_NOT: ProfileWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                      }
+            type UserFollowingConnection {
+              edges: [UserFollowingRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
 
-                      input UserFollowingCreateFieldInput {
-                        node: ProfileCreateInput!
-                      }
+            input UserFollowingConnectionSort {
+              edge: FOLLOWSSort
+              node: ProfileSort
+            }
 
-                      input UserFollowingDeleteFieldInput {
-                        delete: ProfileDeleteInput
-                        where: UserFollowingConnectionWhere
-                      }
+            input UserFollowingConnectionWhere {
+              AND: [UserFollowingConnectionWhere!]
+              NOT: UserFollowingConnectionWhere
+              OR: [UserFollowingConnectionWhere!]
+              edge: FOLLOWSWhere
+              edge_NOT: FOLLOWSWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ProfileWhere
+              node_NOT: ProfileWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
 
-                      input UserFollowingDisconnectFieldInput {
-                        disconnect: ProfileDisconnectInput
-                        where: UserFollowingConnectionWhere
-                      }
+            input UserFollowingCreateFieldInput {
+              node: ProfileCreateInput!
+            }
 
-                      input UserFollowingFieldInput {
-                        connect: [UserFollowingConnectFieldInput!]
-                        create: [UserFollowingCreateFieldInput!]
-                      }
+            input UserFollowingDeleteFieldInput {
+              delete: ProfileDeleteInput
+              where: UserFollowingConnectionWhere
+            }
 
-                      type UserFollowingRelationship implements FOLLOWS {
-                        cursor: String!
-                        node: Profile!
-                        since: DateTime!
-                      }
+            input UserFollowingDisconnectFieldInput {
+              disconnect: ProfileDisconnectInput
+              where: UserFollowingConnectionWhere
+            }
 
-                      input UserFollowingUpdateConnectionInput {
-                        node: ProfileUpdateInput
-                      }
+            input UserFollowingFieldInput {
+              connect: [UserFollowingConnectFieldInput!]
+              create: [UserFollowingCreateFieldInput!]
+            }
 
-                      input UserFollowingUpdateFieldInput {
-                        connect: [UserFollowingConnectFieldInput!]
-                        create: [UserFollowingCreateFieldInput!]
-                        delete: [UserFollowingDeleteFieldInput!]
-                        disconnect: [UserFollowingDisconnectFieldInput!]
-                        update: UserFollowingUpdateConnectionInput
-                        where: UserFollowingConnectionWhere
-                      }
+            type UserFollowingRelationship implements FOLLOWS {
+              cursor: String!
+              node: Profile!
+              since: DateTime!
+            }
 
-                      input UserOptions {
-                        limit: Int
-                        offset: Int
-                        \\"\\"\\"
-                        Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-                        \\"\\"\\"
-                        sort: [UserSort!]
-                      }
+            input UserFollowingUpdateConnectionInput {
+              node: ProfileUpdateInput
+            }
 
-                      input UserRelationInput {
-                        following: [UserFollowingCreateFieldInput!]
-                      }
+            input UserFollowingUpdateFieldInput {
+              connect: [UserFollowingConnectFieldInput!]
+              create: [UserFollowingCreateFieldInput!]
+              delete: [UserFollowingDeleteFieldInput!]
+              disconnect: [UserFollowingDisconnectFieldInput!]
+              update: UserFollowingUpdateConnectionInput
+              where: UserFollowingConnectionWhere
+            }
 
-                      \\"\\"\\"
-                      Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-                      \\"\\"\\"
-                      input UserSort {
-                        id: SortDirection
-                        userName: SortDirection
-                      }
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
 
-                      input UserUpdateInput {
-                        following: [UserFollowingUpdateFieldInput!]
-                        userName: String
-                      }
+            type UserProfileFollowingAggregationSelection {
+              count: Int!
+              edge: UserProfileFollowingEdgeAggregateSelection
+              node: UserProfileFollowingNodeAggregateSelection
+            }
 
-                      input UserWhere {
-                        AND: [UserWhere!]
-                        NOT: UserWhere
-                        OR: [UserWhere!]
-                        followingConnection: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_SOME\` instead.\\")
-                        \\"\\"\\"
-                        Return Users where all of the related UserFollowingConnections match this filter
-                        \\"\\"\\"
-                        followingConnection_ALL: UserFollowingConnectionWhere
-                        \\"\\"\\"
-                        Return Users where none of the related UserFollowingConnections match this filter
-                        \\"\\"\\"
-                        followingConnection_NONE: UserFollowingConnectionWhere
-                        followingConnection_NOT: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_NONE\` instead.\\")
-                        \\"\\"\\"
-                        Return Users where one of the related UserFollowingConnections match this filter
-                        \\"\\"\\"
-                        followingConnection_SINGLE: UserFollowingConnectionWhere
-                        \\"\\"\\"
-                        Return Users where some of the related UserFollowingConnections match this filter
-                        \\"\\"\\"
-                        followingConnection_SOME: UserFollowingConnectionWhere
-                        id: ID
-                        id_CONTAINS: ID
-                        id_ENDS_WITH: ID
-                        id_IN: [ID!]
-                        id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        id_STARTS_WITH: ID
-                        userName: String
-                        userName_CONTAINS: String
-                        userName_ENDS_WITH: String
-                        userName_IN: [String!]
-                        userName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-                        userName_STARTS_WITH: String
-                      }
+            type UserProfileFollowingEdgeAggregateSelection {
+              since: DateTimeAggregateSelectionNonNullable!
+            }
 
-                      type UsersConnection {
-                        edges: [UserEdge!]!
-                        pageInfo: PageInfo!
-                        totalCount: Int!
-                      }"
-              `);
+            type UserProfileFollowingNodeAggregateSelection {
+              id: IDAggregateSelectionNonNullable!
+              userName: StringAggregateSelectionNonNullable!
+            }
+
+            input UserRelationInput {
+              following: [UserFollowingCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              id: SortDirection
+              userName: SortDirection
+            }
+
+            input UserUpdateInput {
+              following: [UserFollowingUpdateFieldInput!]
+              userName: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              followingConnection: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Users where all of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              followingConnection_ALL: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              followingConnection_NONE: UserFollowingConnectionWhere
+              followingConnection_NOT: UserFollowingConnectionWhere @deprecated(reason: \\"Use \`followingConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Users where one of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              followingConnection_SINGLE: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              followingConnection_SOME: UserFollowingConnectionWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID!]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              userName: String
+              userName_CONTAINS: String
+              userName_ENDS_WITH: String
+              userName_IN: [String!]
+              userName_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              userName_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
     });
 });

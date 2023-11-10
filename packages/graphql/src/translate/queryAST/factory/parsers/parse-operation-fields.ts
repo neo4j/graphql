@@ -18,6 +18,7 @@
  */
 
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export type OperationFieldMatch = {
     isRead: boolean;
@@ -31,6 +32,19 @@ export function parseOperationField(field: string, entityAdapter: ConcreteEntity
     return {
         isRead: field === rootTypeFieldNames.read,
         isConnection: field === rootTypeFieldNames.connection,
+        isAggregation: field === rootTypeFieldNames.aggregate,
+        isCreate: field === rootTypeFieldNames.create,
+    };
+}
+
+export function parseInterfaceOperationField(
+    field: string,
+    entityAdapter: InterfaceEntityAdapter
+): OperationFieldMatch {
+    const rootTypeFieldNames = entityAdapter.operations.rootTypeFieldNames;
+    return {
+        isRead: field === rootTypeFieldNames.read,
+        isConnection: false, //connection not supported as interface top-level operation
         isAggregation: field === rootTypeFieldNames.aggregate,
         isCreate: field === rootTypeFieldNames.create,
     };

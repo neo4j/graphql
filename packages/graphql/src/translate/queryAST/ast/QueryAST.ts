@@ -18,13 +18,14 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { QueryASTNode } from "./QueryASTNode";
-import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
-import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
-import type { Operation, OperationTranspileResult } from "./operations/operations";
-import { ReadOperation } from "./operations/ReadOperation";
+import { createNodeFromEntity } from "../utils/create-node-from-entity";
+import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
+import type { QueryASTNode } from "./QueryASTNode";
+import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
+import { ReadOperation } from "./operations/ReadOperation";
+import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
     private operation: Operation;
@@ -61,6 +62,9 @@ export class QueryAST {
     public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Node | undefined {
         if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+        }
+        if (this.operation instanceof AggregationOperation) {
+            return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, this.operation.nodeAlias);
         }
     }
 

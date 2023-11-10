@@ -129,6 +129,7 @@ describe("@default directive", () => {
 
             type Query {
               userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
+              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -206,6 +207,12 @@ describe("@default directive", () => {
             interface UserInterface {
               fromInterface: String!
               toBeOverridden: String!
+            }
+
+            type UserInterfaceAggregateSelection {
+              count: Int!
+              fromInterface: StringAggregateSelectionNonNullable!
+              toBeOverridden: StringAggregateSelectionNonNullable!
             }
 
             input UserInterfaceImplementationsWhere {

@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLWhereArg } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
@@ -44,7 +45,7 @@ export class AuthFilterFactory extends FilterFactory {
         context,
         populatedWhere,
     }: {
-        entity: ConcreteEntityAdapter;
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
         populatedWhere: GraphQLWhereArg;

@@ -8594,6 +8594,7 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -8642,6 +8643,15 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 \\"\\"\\"
@@ -8717,6 +8727,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonImplementationsWhere {
@@ -8888,6 +8903,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9006,6 +9022,7 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -9068,6 +9085,15 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input MovieRelationInput {
@@ -9148,6 +9174,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonCreateInput {
@@ -9324,6 +9355,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9442,6 +9474,7 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -9508,6 +9541,15 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 \\"\\"\\"
@@ -9584,6 +9626,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonConnectWhere {
@@ -9759,6 +9806,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -9877,6 +9925,7 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -9934,6 +9983,15 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 \\"\\"\\"
@@ -10010,6 +10068,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonImplementationsUpdateInput {
@@ -10191,6 +10254,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10309,6 +10373,7 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -10370,6 +10435,15 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 \\"\\"\\"
@@ -10446,6 +10520,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonImplementationsWhere {
@@ -10617,6 +10696,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -10735,6 +10815,7 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -10796,6 +10877,15 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 \\"\\"\\"
@@ -10872,6 +10962,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonImplementationsWhere {
@@ -11043,6 +11138,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11162,9 +11258,11 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -11260,6 +11358,24 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
+                }
+
+                type MoviePersonProducersAggregationSelection {
+                  count: Int!
+                  node: MoviePersonProducersNodeAggregateSelection
+                }
+
+                type MoviePersonProducersNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 type MovieProducersConnection {
@@ -11393,6 +11509,11 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
+                }
+
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -11581,6 +11702,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
@@ -11701,9 +11823,11 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                  producersAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -11778,6 +11902,24 @@ describe("Relationship nested operations", () => {
                   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [MovieSort!]
+                }
+
+                type MoviePersonActorsAggregationSelection {
+                  count: Int!
+                  node: MoviePersonActorsNodeAggregateSelection
+                }
+
+                type MoviePersonActorsNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
+                }
+
+                type MoviePersonProducersAggregationSelection {
+                  count: Int!
+                  node: MoviePersonProducersNodeAggregateSelection
+                }
+
+                type MoviePersonProducersNodeAggregateSelection {
+                  name: StringAggregateSelectionNullable!
                 }
 
                 type MovieProducersConnection {
@@ -11909,6 +12051,11 @@ describe("Relationship nested operations", () => {
 
                 interface Person {
                   name: String
+                }
+
+                type PersonAggregateSelection {
+                  count: Int!
+                  name: StringAggregateSelectionNullable!
                 }
 
                 input PersonCreateInput {
@@ -12085,6 +12232,7 @@ describe("Relationship nested operations", () => {
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                   people(options: PersonOptions, where: PersonWhere): [Person!]!
+                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   personOnes(options: PersonOneOptions, where: PersonOneWhere): [PersonOne!]!
                   personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort], where: PersonOneWhere): PersonOnesConnection!
