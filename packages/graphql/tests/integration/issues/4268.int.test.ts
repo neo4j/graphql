@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         await driver.close();
     });
 
-    test("OR operator should work correctly", async () => {
+    test("OR operator in JWT valid condition", async () => {
         const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
@@ -97,5 +97,24 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         expect(response.data?.[Movie.plural]).toStrictEqual(
             expect.arrayContaining([expect.objectContaining({ title: "SomeTitle" })])
         );
+    });
+
+    test("OR operator in JWT invalid condition", async () => {
+        const schema = await neo4jGraphql.getSchema();
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.plural} {
+                    title
+                }
+            }
+        `;
+
+        const response = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues({ jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] } }),
+        });
+        expect((response.errors as any[])[0].message).toBe("Forbidden");
+       
     });
 });
