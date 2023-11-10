@@ -114,10 +114,9 @@ export class AggregationOperation extends Operation {
         if (isTopLevel) {
             const clausesSubqueries = clauses.flatMap((sq) => new Cypher.Call(sq));
 
-            const returnClause = new Cypher.Return(this.aggregationProjectionMap);
             return {
-                clauses: [...clausesSubqueries, returnClause],
-                projectionExpr: Cypher.true,
+                clauses: clausesSubqueries,
+                projectionExpr: this.aggregationProjectionMap,
             };
         } else {
             return {

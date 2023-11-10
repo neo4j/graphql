@@ -101,8 +101,8 @@ export class CompositeAggregationOperation extends Operation {
             });
 
             return {
-                clauses: [...subqueriesAggr, new Cypher.Return(result.projectionExpr)],
-                projectionExpr: Cypher.true, // NOTE: dummy response, this should be handled by queryAST instead of embedded in clauses
+                clauses: subqueriesAggr,
+                projectionExpr: result.projectionExpr,
             };
         }
     }
