@@ -67,31 +67,14 @@ function authorizationEventMatchesEvent(
 ): boolean {
     switch (authorizationEvent) {
         case "CREATED":
-            if (event === "create") {
-                return true;
-            }
-            break;
+            return event === "create";
         case "UPDATED":
-            if (event === "update") {
-                return true;
-            }
-            break;
+            return event === "update";
         case "DELETED":
-            if (event === "delete") {
-                return true;
-            }
-            break;
+            return event === "delete";
         case "RELATIONSHIP_CREATED":
-            if (event === "create_relationship") {
-                return true;
-            }
-            break;
+            return event === "create_relationship";
         case "RELATIONSHIP_DELETED":
-            if (event === "delete_relationship") {
-                return true;
-            }
-            break;
+            return event === "delete_relationship";
     }
-
-    return false;
 }
