@@ -299,7 +299,6 @@ export class FilterFactory {
 
                 if (fieldName === "id" && !attr && !isUnionEntity(entity)) {
                     const relayAttribute = entity.globalIdField;
-                    //
                     if (relayAttribute) {
                         const relayIdData = fromGlobalId(value as string);
                         if (relayIdData) {
