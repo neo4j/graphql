@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { asArray, mergeDeep } from "@graphql-tools/utils";
+import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
@@ -721,7 +721,12 @@ export class OperationsFactory {
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields, false);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields, false);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
-            const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["AGGREGATE"], context, "BEFORE");
+            const authValidate = this.authorizationFactory.createEntityAuthValidate(
+                entity,
+                ["AGGREGATE"],
+                context,
+                "BEFORE"
+            );
 
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
@@ -743,7 +748,12 @@ export class OperationsFactory {
 
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields, true);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
-            const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["AGGREGATE"], context, "BEFORE");
+            const authValidate = this.authorizationFactory.createEntityAuthValidate(
+                entity,
+                ["AGGREGATE"],
+                context,
+                "BEFORE"
+            );
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
             operation.setFields(fields);
             operation.setFilters(filters);
