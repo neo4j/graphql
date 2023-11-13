@@ -20,19 +20,19 @@
 import type { Driver } from "neo4j-driver";
 import path from "path";
 
-import neo4j from "./databaseQuery/neo4j";
-import { setupDatabase, cleanDatabase } from "./databaseQuery/setup-database";
 import { Neo4jGraphQL } from "../../src";
-import { collectTests, collectCypherTests } from "./utils/collect-test-files";
-import { ResultsWriter } from "./utils/ResultsWriter";
 import { TestRunner } from "./databaseQuery/TestRunner";
-import type * as Performance from "./types";
+import neo4j from "./databaseQuery/neo4j";
+import { cleanDatabase, setupDatabase } from "./databaseQuery/setup-database";
 import { schemaPerformance } from "./schema/schema-performance";
-import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
-import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 import { subgraphSchemaPerformance } from "./schema/subgraph-schema-performance";
 import { runTranslationPerformance } from "./translation/translation-performance";
 import { typeDefs } from "./typedefs";
+import type * as Performance from "./types";
+import { ResultsWriter } from "./utils/ResultsWriter";
+import { collectCypherTests, collectTests } from "./utils/collect-test-files";
+import { MarkdownFormatter } from "./utils/formatters/MarkdownFormatter";
+import { TTYFormatter } from "./utils/formatters/TTYFormatter";
 import { getArgumentValue } from "./utils/get-argument-value";
 
 let driver: Driver;
@@ -43,6 +43,7 @@ async function beforeAll() {
     driver = await neo4j();
     neoSchema = new Neo4jGraphQL({
         typeDefs,
+        experimental: true,
     });
     await resetDb();
 }
