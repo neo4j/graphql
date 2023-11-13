@@ -23,7 +23,6 @@ import type { AuthorizationOperation } from "../../types/authorization";
 import type { NodeMap } from "./types/node-map";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { asArray } from "@graphql-tools/utils";
-import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
 import { filterTruthy } from "../../utils/utils";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
