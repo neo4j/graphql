@@ -94,7 +94,7 @@ export function createAuthorizationAfterAndParamsField({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn, indexPrefix);
+        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}after_`);
     }
 
     return undefined;

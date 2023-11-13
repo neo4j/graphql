@@ -93,7 +93,7 @@ export function createAuthorizationBeforeAndParamsField({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn);
+        return compilePredicateReturn(predicateReturn, "_before_");
     }
 
     return undefined;
