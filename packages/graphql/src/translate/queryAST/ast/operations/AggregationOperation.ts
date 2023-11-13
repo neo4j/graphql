@@ -30,7 +30,7 @@ import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
 import type { Sort } from "../sort/Sort";
-import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
+import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
 // TODO: somewhat dupe of readOperation
@@ -141,17 +141,15 @@ export class AggregationOperation extends Operation {
         );
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         if (this.entity instanceof RelationshipAdapter) {
-            const clauses = this.transpileNestedAggregation(this.entity, {
-                context,
-            });
+            const clauses = this.transpileNestedAggregation(this.entity, context);
             return {
                 clauses,
                 projectionExpr: this.aggregationProjectionMap,
             };
         } else {
-            const clauses = this.transpileTopLevelAggregation(this.entity, { context });
+            const clauses = this.transpileTopLevelAggregation(this.entity, context);
             return {
                 clauses,
                 projectionExpr: context.returnVariable,
@@ -159,10 +157,7 @@ export class AggregationOperation extends Operation {
         }
     }
 
-    private transpileTopLevelAggregation(
-        entity: ConcreteEntityAdapter,
-        { context }: OperationTranspileOptions
-    ): Cypher.Clause[] {
+    private transpileTopLevelAggregation(entity: ConcreteEntityAdapter, context: QueryASTContext): Cypher.Clause[] {
         const nodeVar = createNodeFromEntity(entity, context.neo4jGraphQLContext, this.nodeAlias);
 
         if (!context.target) throw new Error("Context target not found!");
@@ -199,7 +194,7 @@ export class AggregationOperation extends Operation {
     private transpileNestedAggregation(
         // Create new Clause per field
         entity: RelationshipAdapter,
-        { context }: OperationTranspileOptions
+        context: QueryASTContext
     ): Cypher.Clause[] {
         if (!context.target) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
