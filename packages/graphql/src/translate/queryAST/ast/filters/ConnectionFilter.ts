@@ -31,15 +31,15 @@ import { hasTarget } from "../../utils/context-has-target";
 import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 
 export class ConnectionFilter extends Filter {
-    private innerFilters: Filter[] = [];
-    private relationship: RelationshipAdapter;
-    private target: ConcreteEntityAdapter | InterfaceEntityAdapter; // target can be an interface entity, only with the label predicate optimization
-    private operator: RelationshipWhereOperator;
-    private isNot: boolean;
+    protected innerFilters: Filter[] = [];
+    protected relationship: RelationshipAdapter;
+    protected target: ConcreteEntityAdapter | InterfaceEntityAdapter; // target can be an interface entity, only with the label predicate optimization
+    protected operator: RelationshipWhereOperator;
+    protected isNot: boolean;
 
     // Predicate generation for subqueries cannot be done separately from subqueries, so we need to create the predicates at the same time
     // as subqueries and store them
-    private subqueryPredicate: Cypher.Predicate | undefined;
+    protected subqueryPredicate: Cypher.Predicate | undefined;
 
     constructor({
         relationship,
@@ -138,7 +138,7 @@ export class ConnectionFilter extends Filter {
      * }
      * RETURN this { .name } AS this
      **/
-    private getLabelPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
+    protected getLabelPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         if (isConcreteEntity(this.target)) return undefined;
         const labelPredicate = this.target.concreteEntities.map((e) => {
@@ -147,12 +147,12 @@ export class ConnectionFilter extends Filter {
         return Cypher.or(...labelPredicate);
     }
 
-    private createRelationshipOperation(
+    protected createRelationshipOperation(
         pattern: Cypher.Pattern,
-        nestedContext: QueryASTContext
+        queryASTContext: QueryASTContext
     ): Cypher.Predicate | undefined {
-        const connectionFilter = this.innerFilters.map((c) => c.getPredicate(nestedContext));
-        const labelPredicate = this.getLabelPredicate(nestedContext);
+        const connectionFilter = this.innerFilters.map((c) => c.getPredicate(queryASTContext));
+        const labelPredicate = this.getLabelPredicate(queryASTContext);
         const innerPredicate = Cypher.and(...connectionFilter, labelPredicate);
 
         if (!innerPredicate) return undefined;
@@ -165,11 +165,11 @@ export class ConnectionFilter extends Filter {
                 return Cypher.and(new Cypher.Exists(match), Cypher.not(new Cypher.Exists(negativeMatch)));
             }
             case "SINGLE": {
-                return this.createSingleRelationshipOperation(pattern, nestedContext, innerPredicate);
+                return this.createSingleRelationshipOperation(pattern, queryASTContext, innerPredicate);
             }
             default: {
                 if (!this.relationship.isList) {
-                    return this.createSingleRelationshipOperation(pattern, nestedContext, innerPredicate);
+                    return this.createSingleRelationshipOperation(pattern, queryASTContext, innerPredicate);
                 }
                 const match = new Cypher.Match(pattern).where(innerPredicate);
                 return new Cypher.Exists(match);
@@ -177,7 +177,7 @@ export class ConnectionFilter extends Filter {
         }
     }
 
-    private createSingleRelationshipOperation(
+    protected createSingleRelationshipOperation(
         pattern: Cypher.Pattern,
         context: QueryASTContext,
         innerPredicate: Cypher.Predicate

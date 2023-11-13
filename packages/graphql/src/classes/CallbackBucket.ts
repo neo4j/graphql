@@ -21,7 +21,7 @@ import type { Neo4jGraphQLCallbacks } from "../types";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 
-export interface Callback {
+interface Callback {
     functionName: string;
     paramName: string;
     parent?: Record<string, unknown>;

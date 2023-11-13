@@ -20,12 +20,15 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
-import { createAuthorizationBeforePredicate } from "../create-authorization-before-predicate";
+import {
+    createAuthorizationBeforePredicateField,
+    createAuthorizationBeforePredicate,
+} from "../create-authorization-before-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-export type AuthorizationBeforeAndParams = {
+type AuthorizationBeforeAndParams = {
     cypher: string;
     params: Record<string, any>;
     subqueries?: string;
@@ -67,6 +70,30 @@ export function createAuthorizationBeforeAndParams({
 
     if (predicateReturn) {
         return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}before_`);
+    }
+
+    return undefined;
+}
+
+export function createAuthorizationBeforeAndParamsField({
+    context,
+    nodes,
+    operations,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    nodes: StringNodeMap[];
+    operations: AuthorizationOperation[];
+}): AuthorizationBeforeAndParams | undefined {
+    const nodeMap = stringNodeMapToNodeMap(nodes);
+
+    const predicateReturn = createAuthorizationBeforePredicateField({
+        context,
+        nodes: nodeMap,
+        operations,
+    });
+
+    if (predicateReturn) {
+        return compilePredicateReturn(predicateReturn, "_before_");
     }
 
     return undefined;

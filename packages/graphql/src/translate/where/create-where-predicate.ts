@@ -17,165 +17,98 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, PredicateReturn } from "../../types";
-import type { GraphElement } from "../../classes";
+import type { GraphQLWhereArg } from "../../types";
 import Cypher from "@neo4j/cypher-builder";
-// Recursive function
-import { createPropertyWhere } from "./property-operations/create-property-where";
-import type { LogicalOperator } from "../utils/logical-operators";
-import { isLogicalOperator, getLogicalPredicate } from "../utils/logical-operators";
-import { asArray, filterTruthy } from "../../utils/utils";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
-import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
-import { FilterFactory } from "../queryAST/factory/FilterFactory";
-import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
-import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
+import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
+import { wrapSubqueriesInCypherCalls } from "../queryAST/utils/wrap-subquery-in-calls";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-/** Translate a target node and GraphQL input into a Cypher operation or valid where expression */
-// TODO: Previous implementation of createPredicateWhere, remove it after the new implementation support useExistsExpr, checkParameterExistence
-export function createWherePredicateLegacy({
-    targetElement,
+function createWherePredicate({
+    factory,
+    queryASTContext,
+    entityOrRel,
     whereInput,
-    context,
-    element,
-    useExistExpr = true,
-    checkParameterExistence,
-}: {
-    targetElement: Cypher.Variable;
-    whereInput: GraphQLWhereArg;
-    context: Neo4jGraphQLTranslationContext;
-    element: GraphElement;
-    useExistExpr?: boolean;
-    checkParameterExistence?: boolean;
-}): PredicateReturn {
-    const whereFields = Object.entries(whereInput);
-    const predicates: Cypher.Predicate[] = [];
-    let subqueries: Cypher.CompositeClause | undefined;
-    whereFields.forEach(([key, value]) => {
-        if (isLogicalOperator(key)) {
-            const { predicate, preComputedSubqueries } = createNestedPredicateLegacy({
-                key: key,
-                element,
-                targetElement,
-                context,
-                value: asArray(value),
-                useExistExpr,
-                checkParameterExistence,
-            });
-            if (predicate) {
-                predicates.push(predicate);
-                if (preComputedSubqueries && !preComputedSubqueries.empty)
-                    subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-            }
-            return;
-        }
-        const { predicate, preComputedSubqueries } = createPropertyWhere({
-            key,
-            value,
-            element,
-            targetElement,
-            context,
-            useExistExpr,
-            checkParameterExistence,
-        });
-        if (predicate) {
-            predicates.push(predicate);
-            if (preComputedSubqueries && !preComputedSubqueries.empty)
-                subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-            return;
-        }
-    });
-    // Implicit AND
-    return {
-        predicate: Cypher.and(...predicates),
-        preComputedSubqueries: subqueries,
-    };
-}
-
-function createNestedPredicateLegacy({
-    key,
-    element,
     targetElement,
-    context,
-    value,
-    useExistExpr,
-    checkParameterExistence,
 }: {
-    key: LogicalOperator;
-    element: GraphElement;
-    targetElement: Cypher.Variable;
-    context: Neo4jGraphQLTranslationContext;
-    value: Array<GraphQLWhereArg>;
-    useExistExpr?: boolean;
-    checkParameterExistence?: boolean;
-}): PredicateReturn {
-    const nested: Cypher.Predicate[] = [];
-    let subqueries: Cypher.CompositeClause | undefined;
-
-    value.forEach((v) => {
-        const { predicate, preComputedSubqueries } = createWherePredicateLegacy({
-            whereInput: v,
-            element,
-            targetElement,
-            context,
-            useExistExpr,
-            checkParameterExistence,
-        });
-        if (predicate) {
-            nested.push(predicate);
-        }
-        if (preComputedSubqueries && !preComputedSubqueries.empty)
-            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
-    });
-    const logicalPredicate = getLogicalPredicate(key, filterTruthy(nested));
-    return { predicate: logicalPredicate, preComputedSubqueries: subqueries };
-}
-
-export function createWherePredicate({
-    targetElement,
-    whereInput,
-    context,
-    entity,
-    useExistExpr = true,
-    checkParameterExistence,
-}: {
-    targetElement: Cypher.Variable;
+    factory: QueryASTFactory;
+    queryASTContext: QueryASTContext;
+    entityOrRel: EntityAdapter | RelationshipAdapter;
     whereInput: GraphQLWhereArg;
-    context: Neo4jGraphQLTranslationContext;
-    entity: EntityAdapter;
-    useExistExpr?: boolean;
-    checkParameterExistence?: boolean;
+    targetElement: Cypher.Node | Cypher.Relationship;
 }): {
     predicate: Cypher.Predicate | undefined;
-    extraSelections?: (Cypher.Match | Cypher.With)[];
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-    if (!useExistExpr) {
-        throw new Error("Predicate without Exists is not supported yet using the new implementation");
-    }
+    const filters =
+        entityOrRel instanceof RelationshipAdapter
+            ? factory.filterFactory.createEdgeFilters(entityOrRel, whereInput)
+            : factory.filterFactory.createNodeFilters(entityOrRel, whereInput);
 
-    if (checkParameterExistence) {
-        throw new Error("Parameter existence is not supported yet using the new implementation");
-    }
-    const factory = new QueryASTFactory(context.schemaModel);
-    const filterFactory = new FilterFactory(factory);
-    const queryASTEnv = new QueryASTEnv();
-
-    const queryASTContext = new QueryASTContext({
-        target: targetElement as Cypher.Node,
-        env: queryASTEnv,
-        neo4jGraphQLContext: context,
-    });
-
-    const filters = filterFactory.createNodeFilters(entity, whereInput);
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
     const predicates = filters.map((f) => f.getPredicate(queryASTContext));
     const extraSelections = filters.flatMap((f) => f.getSelection(queryASTContext));
 
     const preComputedSubqueries = [...extraSelections, ...subqueries];
+
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: Cypher.concat(...preComputedSubqueries),
     };
+}
+
+export function createWhereNodePredicate({
+    targetElement,
+    whereInput,
+    context,
+    entity,
+}: {
+    targetElement: Cypher.Node;
+    whereInput: GraphQLWhereArg;
+    context: Neo4jGraphQLTranslationContext;
+    entity: EntityAdapter;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+} {
+    const factory = new QueryASTFactory(context.schemaModel);
+    const queryASTEnv = new QueryASTEnv();
+
+    const queryASTContext = new QueryASTContext({
+        target: targetElement,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+    });
+    return createWherePredicate({ factory, queryASTContext, entityOrRel: entity, whereInput, targetElement });
+}
+
+export function createWhereEdgePredicate({
+    targetElement,
+    relationshipVariable,
+    whereInput,
+    context,
+    relationship,
+}: {
+    targetElement: Cypher.Node;
+    relationshipVariable: Cypher.Relationship;
+    whereInput: GraphQLWhereArg;
+    context: Neo4jGraphQLTranslationContext;
+    relationship: RelationshipAdapter;
+}): {
+    predicate: Cypher.Predicate | undefined;
+    preComputedSubqueries?: Cypher.CompositeClause | undefined;
+} {
+    const factory = new QueryASTFactory(context.schemaModel);
+    const queryASTEnv = new QueryASTEnv();
+
+    const queryASTContext = new QueryASTContext({
+        target: targetElement,
+        relationship: relationshipVariable,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+    });
+
+    return createWherePredicate({ factory, queryASTContext, entityOrRel: relationship, whereInput, targetElement });
 }
