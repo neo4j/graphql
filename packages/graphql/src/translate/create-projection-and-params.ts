@@ -94,18 +94,6 @@ export default function createProjectionAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
-            /*        const authorizationPredicateReturn = createAuthorizationBeforePredicate({
-                context,
-                nodes: [
-                    {
-                        variable: varName,
-                        node,
-                        fieldName: authableField.fieldName,
-                    },
-                ],
-                operations: ["READ"],
-            });
- */
             const authorizationPredicateReturn = createAuthorizationBeforePredicateField({
                 context,
                 nodes: [

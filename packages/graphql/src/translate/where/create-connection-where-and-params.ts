@@ -43,13 +43,7 @@ export default function createConnectionWhereAndParams({
 }): { cypher: string; subquery: string; params: Record<string, any> } {
     const nodeRef = new Cypher.NamedNode(nodeVariable);
     const edgeRef = new Cypher.NamedVariable(relationshipVariable);
-    /*  const entity = getEntityAdapterFromNode(node, context);
-    const { predicate, preComputedSubqueries } = createWhereNodePredicate({
-        targetElement: new Cypher.NamedVariable(nodeVariable),
-        whereInput: whereInput,
-        context,
-        entity,
-    }); */
+
     const { predicate: andOp, preComputedSubqueries } = createConnectionWherePropertyOperation({
         context,
         whereInput,
@@ -58,10 +52,7 @@ export default function createConnectionWhereAndParams({
         node,
         edge: relationship,
     });
-    /*  // eslint-disable-next-line no-constant-condition
-    if ("som" === "som") {
-        throw new Error("Something");
-    } */
+
     let subquery = "";
     const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = (andOp as any)?.getCypher(env) || "";

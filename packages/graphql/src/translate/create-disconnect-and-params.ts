@@ -111,7 +111,7 @@ function createDisconnectAndParams({
                         aggregationWhere = true;
                     }
                 }
-            } catch (err) {
+            } catch {
                 return { subquery: "", params: {} };
             }
         }
