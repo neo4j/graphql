@@ -29,6 +29,7 @@ import { asArray } from "@graphql-tools/utils";
 import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
 import { filterTruthy } from "../../utils/utils";
 import type { PredicateReturn } from "../../types";
+import { isConcreteEntity } from "../queryAST/utils/is-concrete-entity";
 
 export function createAuthorizationBeforePredicate({
     context,
@@ -45,8 +46,10 @@ export function createAuthorizationBeforePredicate({
         const node = nodeEntry.node;
         const matchNode = nodeEntry.variable;
 
-        const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
-
+        const entity = getEntityAdapterFromNode(node, context);
+        if (!isConcreteEntity(entity)) {
+            throw new Error("Expected authorization rule to be applied on a concrete entity");
+        }
         const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 
@@ -105,8 +108,10 @@ export function createAuthorizationBeforePredicateField({
         const matchNode = nodeEntry.variable;
         const fieldName = nodeEntry.fieldName;
 
-        const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
-
+        const entity = getEntityAdapterFromNode(node, context);
+        if (!isConcreteEntity(entity)) {
+            throw new Error("Expected authorization rule to be applied on a concrete entity");
+        }
         const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 

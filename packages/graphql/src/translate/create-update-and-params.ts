@@ -44,11 +44,11 @@ import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
 import {
     createAuthorizationBeforeAndParams,
-    createAuthorizationBeforeAndParamsFieldNew,
+    createAuthorizationBeforeAndParamsField,
 } from "./authorization/compatibility/create-authorization-before-and-params";
 import {
     createAuthorizationAfterAndParamsField,
-    createAuthorizationAfterAndParamsNew,
+    createAuthorizationAfterAndParams,
 } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -587,7 +587,7 @@ export default function createUpdateAndParams({
         }
 
         if (authableField) {
-            const authorizationBeforeAndParams = createAuthorizationBeforeAndParamsFieldNew({
+            const authorizationBeforeAndParams = createAuthorizationBeforeAndParamsField({
                 context,
                 nodes: [{ node: node, variable: varName, fieldName: authableField.fieldName }],
                 operations: ["UPDATE"],
@@ -697,7 +697,7 @@ export default function createUpdateAndParams({
 
     const withStr = `WITH ${withVars.join(", ")}`;
 
-    const authorizationAfterAndParams = createAuthorizationAfterAndParamsNew({
+    const authorizationAfterAndParams = createAuthorizationAfterAndParams({
         context,
         nodes: [{ node, variable: varName }],
         operations: ["UPDATE"],

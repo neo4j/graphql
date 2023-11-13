@@ -48,7 +48,7 @@ function stringNodeMapToNodeMap(stringNodeMap: StringNodeMap[]): NodeMap[] {
         };
     });
 }
-export function createAuthorizationAfterAndParamsNew({
+export function createAuthorizationAfterAndParams({
     context,
     nodes,
     operations,

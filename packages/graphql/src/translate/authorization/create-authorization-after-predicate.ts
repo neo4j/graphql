@@ -29,6 +29,7 @@ import { filterTruthy } from "../../utils/utils";
 import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
 import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
+import { isConcreteEntity } from "../queryAST/utils/is-concrete-entity";
 
 export function createAuthorizationAfterPredicate({
     context,
@@ -45,8 +46,10 @@ export function createAuthorizationAfterPredicate({
         const node = nodeEntry.node;
         const matchNode = nodeEntry.variable;
 
-        const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
-
+        const entity = getEntityAdapterFromNode(node, context);
+        if (!isConcreteEntity(entity)) {
+            throw new Error("Expected authorization rule to be applied on a concrete entity");
+        }
         const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 
@@ -103,8 +106,10 @@ export function createAuthorizationAfterPredicateField({
         const matchNode = nodeEntry.variable;
         const fieldName = nodeEntry.fieldName;
 
-        const entity = getEntityAdapterFromNode(node, context) as ConcreteEntityAdapter;
-
+        const entity = getEntityAdapterFromNode(node, context);
+        if (!isConcreteEntity(entity)) {
+            throw new Error("Expected authorization rule to be applied on a concrete entity");
+        }
         const factory = new QueryASTFactory(context.schemaModel);
         const queryASTEnv = new QueryASTEnv();
 

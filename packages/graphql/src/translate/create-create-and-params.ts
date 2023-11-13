@@ -31,7 +31,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import {
     createAuthorizationAfterAndParamsField,
-    createAuthorizationAfterAndParamsNew,
+    createAuthorizationAfterAndParams,
 } from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -375,7 +375,7 @@ function createCreateAndParams({
     }
 
     const { authorizationPredicates, authorizationSubqueries } = meta;
-    const authorizationAndParams = createAuthorizationAfterAndParamsNew({
+    const authorizationAndParams = createAuthorizationAfterAndParams({
         context,
         nodes: [
             {

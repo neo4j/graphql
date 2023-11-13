@@ -75,7 +75,7 @@ export function createAuthorizationBeforeAndParams({
     return undefined;
 }
 
-export function createAuthorizationBeforeAndParamsFieldNew({
+export function createAuthorizationBeforeAndParamsField({
     context,
     nodes,
     operations,
