@@ -25,6 +25,8 @@ import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import { Attribute } from "../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType, ScalarType } from "../schema-model/attribute/AttributeType";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
@@ -73,7 +75,20 @@ describe("createUpdateAndParams", () => {
 
         const context = new ContextBuilder({
             schemaModel: new Neo4jGraphQLSchemaModel({
-                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                concreteEntities: [
+                    new ConcreteEntity({
+                        name: "Movie",
+                        labels: ["Movie"],
+                        attributes: [
+                            new Attribute({
+                                name: "id",
+                                type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                                annotations: [],
+                                args: [],
+                            }),
+                        ],
+                    }),
+                ],
                 compositeEntities: [],
                 operations: {},
                 annotations: [],

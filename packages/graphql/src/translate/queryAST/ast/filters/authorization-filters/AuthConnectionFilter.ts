@@ -19,41 +19,21 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../../QueryASTContext";
-import { RelationshipFilter } from "../RelationshipFilter";
+import { ConnectionFilter } from "../ConnectionFilter";
 
-export class AuthRelationshipFilter extends RelationshipFilter {
-    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        if (this.subqueryPredicate) return this.subqueryPredicate;
-        const nestedContext = this.getNestedContext(queryASTContext);
-
-        if (this.shouldCreateOptionalMatch()) {
-            const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
-            const innerPredicate = Cypher.and(...predicates);
-            return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-        }
-
-        const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
-            .withoutLabels()
-            .related(nestedContext.relationship)
-            .withDirection(this.relationship.getCypherDirection())
-            .withoutVariable()
-            .to(nestedContext.target);
-
-        const predicate = this.createRelationshipOperation(pattern, nestedContext);
-
-        if (!predicate) return undefined;
-
-        return this.wrapInNotIfNeeded(predicate);
-    }
-
+export class AuthConnectionFilter extends ConnectionFilter {
     protected createRelationshipOperation(
         pattern: Cypher.Pattern,
         queryASTContext: QueryASTContext
     ): Cypher.Predicate | undefined {
-        const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
-        const innerPredicate = Cypher.and(...predicates);
-        if (!innerPredicate) return undefined;
+        
+        const connectionFilter = this.innerFilters.map((c) => c.getPredicate(queryASTContext));
+        const labelPredicate = this.getLabelPredicate(queryASTContext);
+        const innerPredicate = Cypher.and(...connectionFilter, labelPredicate);
         const useExist = queryASTContext.neo4jGraphQLContext.neo4jDatabaseInfo?.gte("5.0");
+
+        if (!innerPredicate) return undefined;
+
         switch (this.operator) {
             case "ALL": {
                 if (!useExist) {
@@ -67,29 +47,20 @@ export class AuthRelationshipFilter extends RelationshipFilter {
                 return Cypher.and(new Cypher.Exists(match), Cypher.not(new Cypher.Exists(negativeMatch)));
             }
             case "SINGLE": {
-                return this.getSingleRelationshipOperation({
-                    pattern,
-                    queryASTContext,
-                    innerPredicate,
-                });
+                return this.createSingleRelationshipOperation(pattern, queryASTContext, innerPredicate);
             }
-            case "NONE":
-            case "SOME": {
-                if (!this.relationship.isList && this.relationship.isNullable) {
-                    return this.getSingleRelationshipOperation({
-                        pattern,
-                        queryASTContext,
-                        innerPredicate,
-                    });
+            default: {
+                if (!this.relationship.isList) {
+                    return this.createSingleRelationshipOperation(pattern, queryASTContext, innerPredicate);
                 }
                 if (!useExist) {
                     const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
                     const sizeFunction = Cypher.size(patternComprehension.where(innerPredicate));
                     return Cypher.gt(sizeFunction, new Cypher.Literal(0));
                 }
-                const matchClause = new Cypher.Match(pattern).where(innerPredicate);
-                const existsPredicate = new Cypher.Exists(matchClause);
-                return existsPredicate;
+                
+                const match = new Cypher.Match(pattern).where(innerPredicate);
+                return new Cypher.Exists(match);
             }
         }
     }
