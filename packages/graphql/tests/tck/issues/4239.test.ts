@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             `);
     });
 
-    test("should produce a predicate for apoc.util.validatePredicate for version 4.4 (simple)", async () => {
+    test("should produce a predicate for apoc.util.validatePredicate for version 4.4 (simple API)", async () => {
         const typeDefs = gql`
             type Movie
                 @authorization(validate: [{ when: [BEFORE], where: { node: { director_SOME: { id: "$jwt.sub" } } } }]) {
