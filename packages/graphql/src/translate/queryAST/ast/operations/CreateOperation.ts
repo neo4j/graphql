@@ -19,11 +19,12 @@
 
 import { filterTruthy } from "../../../../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
+import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { ReadOperation } from "./ReadOperation";
+import type { QueryASTContext } from "../QueryASTContext";
 
 /**
  * This is currently just a dummy tree node,
@@ -48,17 +49,17 @@ export class CreateOperation extends Operation {
         this.projectionOperations.push(...operations);
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create
-        const clauses = this.getProjectionClause({ context });
+        const clauses = this.getProjectionClause(context);
         return { projectionExpr: context.returnVariable, clauses };
     }
 
-    private getProjectionClause({ context }: OperationTranspileOptions): Cypher.Clause[] {
+    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
         return this.projectionOperations.map((operationField) => {
-            return Cypher.concat(...operationField.transpile({ context }).clauses);
+            return Cypher.concat(...operationField.transpile(context).clauses);
         });
     }
 }

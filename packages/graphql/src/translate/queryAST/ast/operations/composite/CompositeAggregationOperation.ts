@@ -28,7 +28,7 @@ import type { Filter } from "../../filters/Filter";
 import type { AuthorizationFilters } from "../../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../../pagination/Pagination";
 import type { Sort, SortField } from "../../sort/Sort";
-import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
+import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 import type { CompositeAggregationPartial } from "./CompositeAggregationPartial";
 
@@ -81,11 +81,11 @@ export class CompositeAggregationOperation extends Operation {
         return this.sortFields.flatMap((sf) => sf.getSortFields(context, target, false));
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         const parentNode = context.target;
 
         if (parentNode) {
-            return this.transpileAggregationOperation({ context });
+            return this.transpileAggregationOperation(context);
         } else {
             if (!this.nodeAlias) {
                 throw new Error("Node alias missing on top level composite aggregation");
@@ -95,7 +95,7 @@ export class CompositeAggregationOperation extends Operation {
                 target: new Cypher.NamedNode(this.nodeAlias),
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
-            const result = this.transpileAggregationOperation({ context: newContext }, false);
+            const result = this.transpileAggregationOperation(newContext, false);
 
             const subqueriesAggr = result.clauses.map((clause) => {
                 return new Cypher.Call(clause);
@@ -170,10 +170,7 @@ export class CompositeAggregationOperation extends Operation {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    private transpileAggregationOperation(
-        { context }: OperationTranspileOptions,
-        addWith = true
-    ): OperationTranspileResult {
+    private transpileAggregationOperation(context, addWith = true): OperationTranspileResult {
         const aggregationProjectionMap: Cypher.Map = new Cypher.Map();
         const nodeMap = new Cypher.Map();
         const edgeMap = new Cypher.Map();

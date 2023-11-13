@@ -46,7 +46,7 @@ export class OperationField extends Field {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const subqueryContext = new QueryASTContext({ ...context, returnVariable: new Cypher.Variable() });
-        const result = this.operation.transpile({ context: subqueryContext });
+        const result = this.operation.transpile(subqueryContext);
         this.projectionExpr = result.projectionExpr;
         return result.clauses;
     }

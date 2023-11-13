@@ -42,9 +42,7 @@ export class QueryAST {
      * Transpile the QueryAST to a Cypher builder tree, this is used temporary to transpile incomplete trees, helpful to migrate the legacy code
      **/
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        return this.operation.transpile({
-            context,
-        });
+        return this.operation.transpile(context);
     }
 
     public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLContext): QueryASTContext {

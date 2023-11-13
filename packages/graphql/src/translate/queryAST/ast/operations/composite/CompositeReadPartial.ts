@@ -23,20 +23,20 @@ import { hasTarget } from "../../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
 import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
-import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
+import type { OperationTranspileResult } from "../operations";
 
 export class CompositeReadPartial extends ReadOperation {
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext) {
         if (this.relationship) {
-            return this.transpileNestedCompositeRelationship(this.relationship, { context });
+            return this.transpileNestedCompositeRelationship(this.relationship, context);
         } else {
-            return this.transpileTopLevelCompositeEntity({ context });
+            return this.transpileTopLevelCompositeEntity(context);
         }
     }
 
     private transpileNestedCompositeRelationship(
         entity: RelationshipAdapter,
-        { context }: OperationTranspileOptions
+        context: QueryASTContext
     ): OperationTranspileResult {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
@@ -86,7 +86,7 @@ export class CompositeReadPartial extends ReadOperation {
     }
 
     // dupe from transpileNestedCompositeRelationship
-    private transpileTopLevelCompositeEntity({ context }: OperationTranspileOptions): OperationTranspileResult {
+    private transpileTopLevelCompositeEntity(context: QueryASTContext): OperationTranspileResult {
         const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const nestedContext = new QueryASTContext({
             target: targetNode,
