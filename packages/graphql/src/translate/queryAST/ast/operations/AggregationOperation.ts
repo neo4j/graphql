@@ -32,7 +32,6 @@ import type { Pagination } from "../pagination/Pagination";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import { node } from "prop-types";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
