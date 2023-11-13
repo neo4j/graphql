@@ -40,13 +40,13 @@ export const AuthorizationValidateOperationRule = [
     "DELETE_RELATIONSHIP",
 ] as const;
 
-export type AuthorizationFilterOperation = (typeof AuthorizationFilterOperationRule)[number];
+type AuthorizationFilterOperation = (typeof AuthorizationFilterOperationRule)[number];
 
-export type AuthorizationValidateOperation = (typeof AuthorizationValidateOperationRule)[number];
+type AuthorizationValidateOperation = (typeof AuthorizationValidateOperationRule)[number];
 
-export type ValidateWhen = "BEFORE" | "AFTER";
+type ValidateWhen = "BEFORE" | "AFTER";
 
-export type AuthorizationWhere = {
+type AuthorizationWhere = {
     AND?: AuthorizationWhere[];
     OR?: AuthorizationWhere[];
     NOT?: AuthorizationWhere;

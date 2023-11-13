@@ -201,7 +201,7 @@ describe("tck/rfs/022 subquery projection", () => {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH *
-                    WHERE (this1.name = $param1 AND (($isAuthenticated = true AND ($param3 IS NOT NULL AND this1.name = $param3)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.test IS NOT NULL AND this1.name = $jwt.test) AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])))
+                    WHERE (this1.name = $param1 AND ($isAuthenticated = true AND ($param3 IS NOT NULL AND this1.name = $param3)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.test IS NOT NULL AND this1.name = $jwt.test) AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }

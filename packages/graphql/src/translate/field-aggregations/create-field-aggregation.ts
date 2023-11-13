@@ -29,7 +29,7 @@ import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-agg
 import { upperFirst } from "../../utils/upper-first";
 import { getCypherRelationshipDirection } from "../../utils/get-relationship-direction";
 import Cypher from "@neo4j/cypher-builder";
-import { createWherePredicate } from "../where/create-where-predicate";
+import { createWhereNodePredicate } from "../where/create-where-predicate";
 import { checkAuthentication } from "../authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
@@ -95,7 +95,7 @@ export function createFieldAggregation({
         }
     }
     const entity = getEntityAdapterFromNode(referenceNode, context);
-    const { predicate: wherePredicate, preComputedSubqueries: wherePreComputedSubqueries } = createWherePredicate({
+    const { predicate: wherePredicate, preComputedSubqueries: wherePreComputedSubqueries } = createWhereNodePredicate({
         targetElement: targetRef,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         context,

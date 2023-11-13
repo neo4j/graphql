@@ -236,6 +236,8 @@ export function createConnectionFields({
         const r = new Relationship({
             name: relationship.operations.relationshipFieldTypename,
             type: relationship.type,
+            source: relationship.source.name,
+            target: relationship.target.name,
             properties: relationship.propertiesTypeName,
             ...(relFields
                 ? {

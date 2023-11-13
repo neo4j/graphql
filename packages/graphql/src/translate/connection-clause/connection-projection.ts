@@ -24,7 +24,7 @@ import type { Node } from "../../classes";
 
 import createProjectionAndParams from "../create-projection-and-params";
 import type Relationship from "../../classes/Relationship";
-import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";
+import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-value";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 import Cypher from "@neo4j/cypher-builder";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";

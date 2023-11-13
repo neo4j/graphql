@@ -25,42 +25,6 @@ import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { withCreateInputType } from "../generation/create-input";
 import { concreteEntityToCreateInputFields } from "../to-compose";
 
-export function createConnectOrCreateField({
-    relationshipAdapter,
-    targetEntityAdapter, // TODO: take this from relationshipAdapter.target in the end, currently here bc unions call this function for reach refNode
-    schemaComposer,
-    userDefinedFieldDirectives,
-}: {
-    relationshipAdapter: RelationshipAdapter;
-    targetEntityAdapter: ConcreteEntityAdapter;
-    schemaComposer: SchemaComposer;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-}): string | undefined {
-    const hasUniqueFields = targetEntityAdapter.uniqueFields.length > 0;
-    if (hasUniqueFields !== true) {
-        return undefined;
-    }
-
-    const connectOrCreateName =
-        relationshipAdapter.operations.getConnectOrCreateFieldInputTypeName(targetEntityAdapter);
-
-    createOnCreateITC({
-        schemaComposer,
-        relationshipAdapter,
-        targetEntityAdapter,
-        userDefinedFieldDirectives,
-    });
-
-    schemaComposer.getOrCreateITC(targetEntityAdapter.operations.connectOrCreateWhereInputTypeName, (tc) => {
-        tc.addFields(targetEntityAdapter.operations.connectOrCreateWhereInputFieldNames);
-    });
-
-    schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
-        tc.addFields(relationshipAdapter.operations.getConnectOrCreateInputFields(targetEntityAdapter) || {});
-    });
-    return relationshipAdapter.isList ? `[${connectOrCreateName}!]` : connectOrCreateName;
-}
-
 export function createOnCreateITC({
     schemaComposer,
     relationshipAdapter,

@@ -42,8 +42,14 @@ import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { findConflictingProperties } from "../utils/is-property-clash";
 import Cypher from "@neo4j/cypher-builder";
 import { caseWhere } from "../utils/case-where";
-import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import {
+    createAuthorizationBeforeAndParams,
+    createAuthorizationBeforeAndParamsField,
+} from "./authorization/compatibility/create-authorization-before-and-params";
+import {
+    createAuthorizationAfterAndParamsField,
+    createAuthorizationAfterAndParams,
+} from "./authorization/compatibility/create-authorization-after-and-params";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
@@ -208,6 +214,7 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
+
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
                                     res.params = { ...res.params, ...whereParams };
@@ -580,7 +587,7 @@ export default function createUpdateAndParams({
         }
 
         if (authableField) {
-            const authorizationBeforeAndParams = createAuthorizationBeforeAndParams({
+            const authorizationBeforeAndParams = createAuthorizationBeforeAndParamsField({
                 context,
                 nodes: [{ node: node, variable: varName, fieldName: authableField.fieldName }],
                 operations: ["UPDATE"],
@@ -598,7 +605,7 @@ export default function createUpdateAndParams({
                 res.params = { ...res.params, ...authWhereParams };
             }
 
-            const authorizationAfterAndParams = createAuthorizationAfterAndParams({
+            const authorizationAfterAndParams = createAuthorizationAfterAndParamsField({
                 context,
                 nodes: [{ node: node, variable: varName, fieldName: authableField.fieldName }],
                 operations: ["UPDATE"],

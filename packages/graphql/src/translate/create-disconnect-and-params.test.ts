@@ -23,6 +23,8 @@ import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { defaultNestedOperations } from "../graphql/directives/relationship";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { Attribute } from "../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType, ScalarType } from "../schema-model/attribute/AttributeType";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import type { RelationField } from "../types";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -95,7 +97,20 @@ describe("createDisconnectAndParams", () => {
             relationships: [],
             neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
             schemaModel: new Neo4jGraphQLSchemaModel({
-                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                concreteEntities: [
+                    new ConcreteEntity({
+                        name: "Movie",
+                        labels: ["Movie"],
+                        attributes: [
+                            new Attribute({
+                                name: "title",
+                                type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                                annotations: [],
+                                args: [],
+                            }),
+                        ],
+                    }),
+                ],
                 compositeEntities: [],
                 operations: {},
                 annotations: [],

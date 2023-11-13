@@ -27,7 +27,7 @@ import type {
 } from "graphql";
 import { buildASTSchema, isTypeExtensionNode, isTypeDefinitionNode } from "graphql";
 
-export type DefinitionNodeMap = Record<
+type DefinitionNodeMap = Record<
     string,
     TypeDefinitionNode | DirectiveDefinitionNode | ObjectTypeExtensionNode[] | InterfaceTypeExtensionNode[]
 >;

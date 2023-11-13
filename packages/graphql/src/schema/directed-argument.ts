@@ -20,7 +20,7 @@
 import { RelationshipQueryDirectionOption } from "../constants";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 
-export type DirectedArgument = {
+type DirectedArgument = {
     type: "Boolean";
     defaultValue: boolean;
 };

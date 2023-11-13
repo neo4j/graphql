@@ -37,7 +37,7 @@ function mathOperatorToSymbol(mathOperator: string): string {
     throw new Error(`${mathOperator} is not a valid math operator`);
 }
 
-export const MATH_FIELD_REGX =
+const MATH_FIELD_REGX =
     /(?<propertyName>\w*)(?<operatorName>_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
 
 type MatchRegexMatchGroups = {

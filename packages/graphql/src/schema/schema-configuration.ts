@@ -37,7 +37,7 @@ export type SchemaConfiguration = {
     subscriptionDirective?: SubscriptionDirective;
 };
 
-export type SchemaConfigurationFlags = {
+type SchemaConfigurationFlags = {
     read: boolean;
     aggregate: boolean;
     create: boolean;

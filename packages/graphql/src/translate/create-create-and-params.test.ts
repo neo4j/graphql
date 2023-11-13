@@ -21,6 +21,8 @@ import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
+import { Attribute } from "../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType, ScalarType } from "../schema-model/attribute/AttributeType";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { trimmer } from "../utils";
 import createCreateAndParams from "./create-create-and-params";
@@ -84,7 +86,20 @@ describe("createCreateAndParams", () => {
 
         const context = new ContextBuilder({
             schemaModel: new Neo4jGraphQLSchemaModel({
-                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                concreteEntities: [
+                    new ConcreteEntity({
+                        name: "Movie",
+                        labels: ["Movie"],
+                        attributes: [
+                            new Attribute({
+                                name: "title",
+                                type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                                annotations: [],
+                                args: [],
+                            }),
+                        ],
+                    }),
+                ],
                 compositeEntities: [],
                 operations: {},
                 annotations: [],

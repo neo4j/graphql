@@ -19,7 +19,7 @@
 
 import { META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../../constants";
 
-export type SubscriptionsEventType = "create" | "update" | "delete";
+type SubscriptionsEventType = "create" | "update" | "delete";
 
 type EventMetaParameters = {
     event: SubscriptionsEventType;
