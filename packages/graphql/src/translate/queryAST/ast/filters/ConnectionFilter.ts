@@ -71,7 +71,7 @@ export class ConnectionFilter extends Filter {
         return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
-    protected getTargetNode(context: QueryASTContext): Cypher.Node {
+    private getTargetNode(context: QueryASTContext): Cypher.Node {
         // if the target is an interface entity, we need to use the label predicate optimization
         if (isInterfaceEntity(this.target)) {
             return new Cypher.Node();
@@ -189,7 +189,7 @@ export class ConnectionFilter extends Filter {
         return Cypher.single(context.target, patternComprehension, new Cypher.Literal(true));
     }
 
-    protected getSubqueriesForDefaultOperations(
+    private getSubqueriesForDefaultOperations(
         pattern: Cypher.Pattern,
         queryASTContext: QueryASTContext
     ): Cypher.Clause[] {
@@ -231,7 +231,7 @@ export class ConnectionFilter extends Filter {
     // This method has a big deal of complexity due to a couple of factors:
     // 1. "All" operations require 2 CALL subqueries
     // 2. Each subquery has its own return variable, that needs to be carried over to the predicate
-    protected getSubqueriesForOperationAll(pattern: Cypher.Pattern, queryASTContext: QueryASTContext): Cypher.Clause[] {
+    private getSubqueriesForOperationAll(pattern: Cypher.Pattern, queryASTContext: QueryASTContext): Cypher.Clause[] {
         if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
         const match = new Cypher.Match(pattern);
         const match2 = new Cypher.Match(pattern);
@@ -282,7 +282,7 @@ export class ConnectionFilter extends Filter {
         return [Cypher.concat(match, ...subqueries), Cypher.concat(match2, ...subqueries2)];
     }
 
-    protected wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
+    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
         if (this.isNot) return Cypher.not(predicate);
         else return predicate;
     }
