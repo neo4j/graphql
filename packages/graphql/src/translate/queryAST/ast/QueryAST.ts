@@ -18,14 +18,14 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { QueryASTNode } from "./QueryASTNode";
-import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
-import { createNodeFromEntity } from "../utils/create-node-from-entity";
-import type { Operation, OperationTranspileResult } from "./operations/operations";
-import { ReadOperation } from "./operations/ReadOperation";
-import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { createNodeFromEntity } from "../utils/create-node-from-entity";
+import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
+import type { QueryASTNode } from "./QueryASTNode";
 import { AggregationOperation } from "./operations/AggregationOperation";
+import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
+import { ReadOperation } from "./operations/ReadOperation";
+import type { Operation, OperationTranspileResult } from "./operations/operations";
 
 export class QueryAST {
     private operation: Operation;
@@ -36,8 +36,20 @@ export class QueryAST {
 
     public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext);
+
         return Cypher.concat(...this.transpile(context).clauses);
     }
+
+    // TODO: refactor other top level operations to use this method instead of build
+    public buildNew(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
+        const context = this.buildQueryASTContext(neo4jGraphQLContext);
+
+        const { clauses, projectionExpr } = this.transpile(context);
+        const returnClause = new Cypher.Return(projectionExpr);
+
+        return Cypher.concat(...clauses, returnClause);
+    }
+
     /**
      * Transpile the QueryAST to a Cypher builder tree, this is used temporary to transpile incomplete trees, helpful to migrate the legacy code
      **/

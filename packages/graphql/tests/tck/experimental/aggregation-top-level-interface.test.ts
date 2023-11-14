@@ -123,13 +123,10 @@ describe("Top level aggregation interfaces", () => {
                     MATCH (this5:Series)
                     RETURN this5 AS var4
                 }
-                RETURN { shortest: reduce(aggVar = collect(var4.title)[0], current IN collect(var4.title) | CASE
-                    WHEN size(current) < size(aggVar) THEN current
-                    ELSE aggVar
-                END), longest: reduce(aggVar = collect(var4.title)[0], current IN collect(var4.title) | CASE
-                    WHEN size(current) > size(aggVar) THEN current
-                    ELSE aggVar
-                END) } AS var4
+                WITH var4
+                ORDER BY size(var4.title) DESC
+                WITH collect(var4.title) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var4
             }
             RETURN { count: var1, title: var4 }"
         `);

@@ -84,3 +84,22 @@ WHERE EXISTS {
     }
 }
 RETURN this { .name } AS this
+
+# Test: AlternativeAggregationsTopLevel
+MATCH (this:Person)
+CALL {
+    WITH this
+    RETURN count(this) AS var0
+}
+CALL {
+    WITH this
+    WITH this
+    ORDER BY size(this.name) DESC
+    WITH collect(this.name) AS list
+    RETURN { shortest: last(list) } AS var1
+}
+CALL {
+    WITH this
+    RETURN { max: max(this.born) } AS var2
+}
+RETURN { count: var0, name: var1, born: var2 }

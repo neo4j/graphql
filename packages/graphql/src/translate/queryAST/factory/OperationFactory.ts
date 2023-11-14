@@ -289,7 +289,7 @@ export class OperationsFactory {
 
                 const parsedProjectionFields = this.splitConnectionFields(rawProjectionFields);
                 const projectionFields = parsedProjectionFields.fields;
-                const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, topLevel);
+                const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
 
                 operation.setFields(fields);
 
@@ -717,9 +717,9 @@ export class OperationsFactory {
                 ],
             };
 
-            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields, false);
-            const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields, false);
-            const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields, false);
+            const fields = this.fieldFactory.createAggregationFields(entity, projectionFields);
+            const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
+            const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
             const authValidate = this.authorizationFactory.createEntityAuthValidate(
                 entity,
@@ -746,7 +746,7 @@ export class OperationsFactory {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
             };
 
-            const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields, true);
+            const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
             const authValidate = this.authorizationFactory.createEntityAuthValidate(
                 entity,

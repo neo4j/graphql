@@ -23,7 +23,7 @@ import { RelationshipAdapter } from "../../../../schema-model/relationship/model
 import { filterTruthy } from "../../../../utils/utils";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
-import type { QueryASTContext } from "../QueryASTContext";
+import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
 import type { Filter } from "../filters/Filter";
@@ -96,6 +96,141 @@ export class AggregationOperation extends Operation {
         ]);
     }
 
+    public setNodeFields(fields: AggregationField[]) {
+        this.nodeFields = fields;
+    }
+
+    public setEdgeFields(fields: AggregationField[]) {
+        this.edgeFields = fields;
+    }
+
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
+        const clauses = this.transpileAggregation(context);
+
+        const isTopLevel = !(this.entity instanceof RelationshipAdapter);
+        if (isTopLevel) {
+            const clausesSubqueries = clauses.flatMap((sq) => new Cypher.Call(sq));
+
+            return {
+                clauses: clausesSubqueries,
+                projectionExpr: this.aggregationProjectionMap,
+            };
+        } else {
+            return {
+                clauses,
+                projectionExpr: this.aggregationProjectionMap,
+            };
+        }
+    }
+
+    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
+    }
+
+    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    protected addSortToClause(
+        context: QueryASTContext,
+        node: Cypher.Variable,
+        clause: Cypher.With | Cypher.Return
+    ): void {
+        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(context, node));
+        const pagination = this.pagination ? this.pagination.getPagination() : undefined;
+        clause.orderBy(...orderByFields);
+
+        if (pagination?.skip) {
+            clause.skip(pagination.skip);
+        }
+        if (pagination?.limit) {
+            clause.limit(pagination.limit);
+        }
+    }
+
+    protected getFieldProjectionClause(
+        target: Cypher.Variable,
+        returnVariable: Cypher.Variable,
+        field: AggregationField
+    ): Cypher.Clause {
+        return field.getAggregationProjection(target, returnVariable);
+    }
+
+    private getPattern(context: QueryASTContext): Cypher.Pattern {
+        if (!context.target) {
+            throw new Error("Not Target");
+        }
+        if (context.relationship) {
+            if (!context.direction || !context.source) {
+                throw new Error("No valid relationship");
+            }
+            return new Cypher.Pattern(context.source)
+                .withoutLabels()
+                .related(context.relationship)
+                .withDirection(context.direction)
+                .to(context.target);
+        } else {
+            return new Cypher.Pattern(context.target);
+        }
+    }
+
+    private createContext(parentContext: QueryASTContext) {
+        if (this.entity instanceof RelationshipAdapter) {
+            const relVar = createRelationshipFromEntity(this.entity);
+            const targetNode = createNodeFromEntity(this.entity.target, parentContext.neo4jGraphQLContext);
+            const relDirection = this.entity.getCypherDirection(this.directed);
+            return parentContext.push({ relationship: relVar, target: targetNode, direction: relDirection });
+        } else {
+            const targetNode = createNodeFromEntity(this.entity, parentContext.neo4jGraphQLContext, this.nodeAlias);
+            return new QueryASTContext({
+                target: targetNode,
+                neo4jGraphQLContext: parentContext.neo4jGraphQLContext,
+            });
+        }
+    }
+
+    private transpileAggregation(context: QueryASTContext<Cypher.Node>) {
+        const operationContext = this.createContext(context);
+        const pattern = this.getPattern(operationContext);
+
+        const fieldSubqueries = this.fields.map((f) => {
+            const returnVariable = new Cypher.Variable();
+            this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
+            return this.createSubquery(f, pattern, operationContext.target, returnVariable, operationContext);
+        });
+
+        const nodeMap = new Cypher.Map();
+        const nodeFieldSubqueries = this.nodeFields.map((f) => {
+            const returnVariable = new Cypher.Variable();
+            nodeMap.set(f.getProjectionField(returnVariable));
+            return this.createSubquery(f, pattern, operationContext.target, returnVariable, operationContext);
+        });
+
+        if (nodeMap.size > 0) {
+            this.aggregationProjectionMap.set("node", nodeMap);
+        }
+
+        let edgeFieldSubqueries: Cypher.Clause[] = [];
+        if (operationContext.relationship) {
+            const relVar = operationContext.relationship;
+            const edgeMap = new Cypher.Map();
+            edgeFieldSubqueries = this.edgeFields.map((f) => {
+                const returnVariable = new Cypher.Variable();
+                edgeMap.set(f.getProjectionField(returnVariable));
+                return this.createSubquery(f, pattern, relVar, returnVariable, operationContext);
+            });
+            if (edgeMap.size > 0) {
+                this.aggregationProjectionMap.set("edge", edgeMap);
+            }
+        }
+
+        return [...fieldSubqueries, ...nodeFieldSubqueries, ...edgeFieldSubqueries];
+    }
+
     private createSubquery(
         field: AggregationField,
         pattern: Cypher.Pattern,
@@ -139,143 +274,5 @@ export class AggregationOperation extends Operation {
             sortClause,
             ret
         );
-    }
-
-    public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (this.entity instanceof RelationshipAdapter) {
-            const clauses = this.transpileNestedAggregation(this.entity, context);
-            return {
-                clauses,
-                projectionExpr: this.aggregationProjectionMap,
-            };
-        } else {
-            const clauses = this.transpileTopLevelAggregation(this.entity, context);
-            return {
-                clauses,
-                projectionExpr: context.returnVariable,
-            };
-        }
-    }
-
-    private transpileTopLevelAggregation(entity: ConcreteEntityAdapter, context: QueryASTContext): Cypher.Clause[] {
-        const nodeVar = createNodeFromEntity(entity, context.neo4jGraphQLContext, this.nodeAlias);
-
-        if (!context.target) throw new Error("Context target not found!");
-
-        const projectionMap = new Cypher.Map();
-
-        this.fields.forEach((f) => {
-            const aggrExpr = f.getAggregationExpr(nodeVar);
-            projectionMap.set({ [f.alias]: aggrExpr });
-        });
-
-        const filterPredicates = this.getPredicates(context);
-
-        const topLevelMatch = new Cypher.Match(nodeVar);
-        let clause: Cypher.With | Cypher.Match = topLevelMatch;
-
-        let extraSelection = this.getChildren().flatMap((c) => {
-            return c.getSelection(context);
-        });
-
-        if (extraSelection.length > 0) {
-            clause = new Cypher.With("*");
-            extraSelection = [topLevelMatch, ...extraSelection];
-        }
-
-        if (filterPredicates) {
-            clause.where(filterPredicates);
-        }
-
-        clause.return(projectionMap);
-        return [Cypher.concat(...extraSelection, clause)];
-    }
-
-    private transpileNestedAggregation(
-        // Create new Clause per field
-        entity: RelationshipAdapter,
-        context: QueryASTContext
-    ): Cypher.Clause[] {
-        if (!context.target) throw new Error("No parent node found!");
-        const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
-        const relDirection = entity.getCypherDirection(this.directed);
-
-        const pattern = new Cypher.Pattern(context.target)
-            .withoutLabels()
-            .related(relVar)
-            .withDirection(relDirection)
-            .to(targetNode);
-
-        const nestedContext = context.push({ relationship: relVar, target: targetNode });
-        const fieldSubqueries = this.fields.map((f) => {
-            const returnVariable = new Cypher.Variable();
-            this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, targetNode, returnVariable, nestedContext);
-        });
-
-        const nodeMap = new Cypher.Map();
-        const edgeMap = new Cypher.Map();
-        const nodeFieldSubqueries = this.nodeFields.map((f) => {
-            const returnVariable = new Cypher.Variable();
-            nodeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, targetNode, returnVariable, nestedContext);
-        });
-        const edgeFieldSubqueries = this.edgeFields.map((f) => {
-            const returnVariable = new Cypher.Variable();
-            edgeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, relVar, returnVariable, nestedContext);
-        });
-
-        if (nodeMap.size > 0) {
-            this.aggregationProjectionMap.set("node", nodeMap);
-        }
-        if (edgeMap.size > 0) {
-            this.aggregationProjectionMap.set("edge", edgeMap);
-        }
-
-        return [...fieldSubqueries, ...nodeFieldSubqueries, ...edgeFieldSubqueries];
-    }
-
-    protected getFieldProjectionClause(
-        target: Cypher.Variable,
-        returnVariable: Cypher.Variable,
-        field: AggregationField
-    ): Cypher.Clause {
-        return field.getAggregationProjection(target, returnVariable);
-    }
-
-    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
-    }
-
-    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
-        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
-    }
-
-    protected addSortToClause(
-        context: QueryASTContext,
-        node: Cypher.Variable,
-        clause: Cypher.With | Cypher.Return
-    ): void {
-        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(context, node));
-        const pagination = this.pagination ? this.pagination.getPagination() : undefined;
-        clause.orderBy(...orderByFields);
-
-        if (pagination?.skip) {
-            clause.skip(pagination.skip);
-        }
-        if (pagination?.limit) {
-            clause.limit(pagination.limit);
-        }
-    }
-
-    public setNodeFields(fields: AggregationField[]) {
-        this.nodeFields = fields;
-    }
-
-    public setEdgeFields(fields: AggregationField[]) {
-        this.edgeFields = fields;
     }
 }

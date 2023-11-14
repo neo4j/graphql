@@ -133,8 +133,7 @@ export class FieldFactory {
 
     public createAggregationFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        rawFields: Record<string, ResolveTree>,
-        topLevel: boolean
+        rawFields: Record<string, ResolveTree>
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
@@ -161,7 +160,6 @@ export class FieldFactory {
                         attribute,
                         alias: field.alias,
                         aggregationProjection,
-                        useReduce: topLevel,
                     });
                 }
             })

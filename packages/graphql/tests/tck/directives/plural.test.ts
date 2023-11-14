@@ -69,8 +69,11 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
-            RETURN { count: count(this) }"
+            "CALL {
+                MATCH (this:Tech)
+                RETURN count(this) AS var0
+            }
+            RETURN { count: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
