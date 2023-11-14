@@ -35,7 +35,6 @@ export class AggregationAttributeField extends AggregationField {
         alias: string;
         attribute: AttributeAdapter;
         aggregationProjection: Record<string, string>;
-        useReduce: boolean;
     }) {
         super(alias);
         this.attribute = attribute;
