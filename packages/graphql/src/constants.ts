@@ -65,26 +65,10 @@ export function isSpatial(typeName: string) {
     return SPATIAL_TYPES.includes(typeName);
 }
 
-export const NODE_OR_EDGE_KEYS = ["node", "edge"];
-
 export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 
 // aggregation
 export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"] as const;
-export const AGGREGATION_AGGREGATE_COUNT_OPERATORS = ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"];
-
-export const WHERE_AGGREGATION_TYPES = [
-    "ID",
-    "String",
-    "Float",
-    "Int",
-    "BigInt",
-    "DateTime",
-    "LocalDateTime",
-    "LocalTime",
-    "Time",
-    "Duration",
-];
 
 export enum RelationshipQueryDirectionOption {
     DEFAULT_DIRECTED = "DEFAULT_DIRECTED",
@@ -151,7 +135,7 @@ export const INTERFACE_DIRECTIVES = ["relationshipProperties", "query", "plural"
 
 export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 
-export const UNION_DIRECTIVES = ["query", "plural"] as const;
+const UNION_DIRECTIVES = ["query", "plural"] as const;
 
 export type UnionDirective = (typeof UNION_DIRECTIVES)[number];
 

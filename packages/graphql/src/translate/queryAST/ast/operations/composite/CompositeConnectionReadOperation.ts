@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
+import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 
 import type { QueryASTNode } from "../../QueryASTNode";
@@ -40,16 +40,14 @@ export class CompositeConnectionReadOperation extends Operation {
         this.children = children;
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
 
         const nestedSubqueries = this.children.flatMap((c) => {
             const subQueryContext = new QueryASTContext({ ...context, returnVariable: edgeVar });
-            const result = c.transpile({
-                context: subQueryContext,
-            });
+            const result = c.transpile(subQueryContext);
             if (!hasTarget(context)) throw new Error("No parent node found!");
             const parentNode = context.target;
             return result.clauses.map((sq) => Cypher.concat(new Cypher.With(parentNode), sq));

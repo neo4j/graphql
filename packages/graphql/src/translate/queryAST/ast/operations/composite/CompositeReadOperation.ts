@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTNode } from "../../QueryASTNode";
-import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
+import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 import type { CompositeReadPartial } from "./CompositeReadPartial";
 import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -57,9 +57,7 @@ export class CompositeReadOperation extends Operation {
 
     private transpileTopLevelCompositeRead(context: QueryASTContext): OperationTranspileResult {
         const nestedSubqueries = this.children.flatMap((c) => {
-            const result = c.transpile({
-                context: context,
-            });
+            const result = c.transpile(context);
             return result.clauses;
         });
         const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(context.returnVariable);
@@ -83,16 +81,14 @@ export class CompositeReadOperation extends Operation {
         };
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!this.relationship) {
             return this.transpileTopLevelCompositeRead(context);
         }
 
         const parentNode = context.target;
         const nestedSubqueries = this.children.flatMap((c) => {
-            const result = c.transpile({
-                context: context,
-            });
+            const result = c.transpile(context);
 
             let clauses = result.clauses;
             if (parentNode) {

@@ -48,16 +48,15 @@ import { getConcreteWhere } from "../utils/get-concrete-where";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
-import { AuthFilterFactory } from "./AuthFilterFactory";
-import { AuthorizationFactory } from "./AuthorizationFactory";
-import { FieldFactory } from "./FieldFactory";
-import { FilterFactory } from "./FilterFactory";
-import type { QueryASTFactory } from "./QueryASTFactory";
-import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
-import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
-import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
-import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
+import type { AuthorizationFactory } from "./AuthorizationFactory";
+import type { FieldFactory } from "./FieldFactory";
+import type { FilterFactory } from "./FilterFactory";
+import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { parseOperationField, parseInterfaceOperationField } from "./parsers/parse-operation-fields";
+import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
+import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
+import type { QueryASTFactory } from "./QueryASTFactory";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -67,11 +66,10 @@ export class OperationsFactory {
     private authorizationFactory: AuthorizationFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
-        this.filterFactory = new FilterFactory(queryASTFactory);
-        this.fieldFactory = new FieldFactory(queryASTFactory);
-        this.sortAndPaginationFactory = new SortAndPaginationFactory();
-        const authFilterFactory = new AuthFilterFactory(queryASTFactory);
-        this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
+        this.filterFactory = queryASTFactory.filterFactory;
+        this.fieldFactory = queryASTFactory.fieldFactory;
+        this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
+        this.authorizationFactory = queryASTFactory.authorizationFactory;
     }
 
     public createTopLevelOperation(
@@ -226,12 +224,6 @@ export class OperationsFactory {
             entity = entityOrRel;
         }
 
-        // const entity = relationship.target;
-
-        // if (entity instanceof UnionEntityAdapter) {
-        //     throw new Error("Aggregation operations are not supported for Union types");
-        // }
-
         const resolveTreeWhere = (resolveTree.args.where || {}) as Record<string, unknown>;
 
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -307,6 +299,12 @@ export class OperationsFactory {
                     ["AGGREGATE"],
                     context
                 );
+                const entityAuthValidate = this.authorizationFactory.createEntityAuthValidate(
+                    entity,
+                    ["AGGREGATE"],
+                    context,
+                    "BEFORE"
+                );
 
                 const attributeAuthFilters = this.createAttributeAuthFilters({
                     entity,
@@ -315,14 +313,24 @@ export class OperationsFactory {
                     operations: ["AGGREGATE"],
                 });
 
+                const attributeAuthValidate = this.createAttributeAuthValidate({
+                    entity,
+                    rawFields: projectionFields,
+                    context,
+                    operations: ["AGGREGATE"],
+                    when: "BEFORE",
+                });
+
                 const authFilters = filterTruthy([entityAuthFilters, ...attributeAuthFilters]);
+                const authValidate = filterTruthy([entityAuthValidate, ...attributeAuthValidate]);
 
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
                 operation.setFilters(filters);
 
-                if (authFilters.length > 0) {
+                if (authFilters.length > 0 || authValidate.length > 0) {
                     operation.addAuthFilters(...authFilters);
+                    operation.addAuthFilters(...authValidate);
                 }
 
                 // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
@@ -550,10 +558,18 @@ export class OperationsFactory {
             : this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
+        const authValidate = this.authorizationFactory.createEntityAuthValidate(target, ["READ"], context, "BEFORE");
         const authNodeAttributeFilters = this.createAttributeAuthFilters({
             entity: target,
             context,
             rawFields: resolveTreeNodeFields,
+        });
+
+        const authNodeAttributeValidate = this.createAttributeAuthValidate({
+            entity: target,
+            context,
+            rawFields: resolveTreeNodeFields,
+            when: "BEFORE",
         });
 
         const filters = this.filterFactory.createConnectionPredicates({
@@ -568,9 +584,14 @@ export class OperationsFactory {
         if (authFilters) {
             operation.addAuthFilters(authFilters);
         }
-
+        if (authValidate) {
+            operation.addAuthFilters(authValidate);
+        }
         if (authNodeAttributeFilters) {
             operation.addAuthFilters(...authNodeAttributeFilters);
+        }
+        if (authNodeAttributeValidate) {
+            operation.addAuthFilters(...authNodeAttributeValidate);
         }
 
         return operation;
@@ -628,10 +649,17 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
+        const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
         const authAttributeFilters = this.createAttributeAuthFilters({
             entity,
             context,
             rawFields: projectionFields,
+        });
+        const authAttributeValidate = this.createAttributeAuthValidate({
+            entity,
+            context,
+            rawFields: projectionFields,
+            when: "BEFORE",
         });
 
         const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
@@ -643,6 +671,12 @@ export class OperationsFactory {
         }
         if (authAttributeFilters) {
             operation.addAuthFilters(...authAttributeFilters);
+        }
+        if (authValidate) {
+            operation.addAuthFilters(authValidate);
+        }
+        if (authAttributeValidate) {
+            operation.addAuthFilters(...authAttributeValidate);
         }
         this.hydrateCompositeReadOperationWithPagination(entity, operation, resolveTree);
 
@@ -687,6 +721,12 @@ export class OperationsFactory {
             const nodeFields = this.fieldFactory.createAggregationFields(entity, nodeRawFields);
             const edgeFields = this.fieldFactory.createAggregationFields(relationship, edgeRawFields);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+            const authValidate = this.authorizationFactory.createEntityAuthValidate(
+                entity,
+                ["AGGREGATE"],
+                context,
+                "BEFORE"
+            );
 
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
@@ -698,6 +738,9 @@ export class OperationsFactory {
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
             }
+            if (authValidate) {
+                operation.addAuthFilters(authValidate);
+            }
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
@@ -705,12 +748,21 @@ export class OperationsFactory {
 
             const fields = this.fieldFactory.createAggregationFields(entity, rawProjectionFields);
             const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["AGGREGATE"], context);
+            const authValidate = this.authorizationFactory.createEntityAuthValidate(
+                entity,
+                ["AGGREGATE"],
+                context,
+                "BEFORE"
+            );
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
             operation.setFields(fields);
             operation.setFilters(filters);
 
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
+            }
+            if (authValidate) {
+                operation.addAuthFilters(authValidate);
             }
         }
 
@@ -794,6 +846,37 @@ export class OperationsFactory {
                     entity,
                     operations,
                     context
+                );
+
+                return result;
+            })
+        );
+    }
+
+    private createAttributeAuthValidate({
+        entity,
+        rawFields,
+        context,
+        when,
+        operations = ["READ"],
+    }: {
+        entity: ConcreteEntityAdapter;
+        rawFields: Record<string, ResolveTree>;
+        context: Neo4jGraphQLTranslationContext;
+        when: "BEFORE" | "AFTER";
+        operations?: AuthorizationOperation[];
+    }): AuthorizationFilters[] {
+        return filterTruthy(
+            Object.values(rawFields).map((field: ResolveTree): AuthorizationFilters | undefined => {
+                const { fieldName } = parseSelectionSetField(field.name);
+                const attribute = entity.findAttribute(fieldName);
+                if (!attribute) return undefined;
+                const result = this.authorizationFactory.createAttributeAuthValidate(
+                    attribute,
+                    entity,
+                    operations,
+                    context,
+                    when
                 );
 
                 return result;

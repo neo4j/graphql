@@ -20,13 +20,14 @@
 import Cypher from "@neo4j/cypher-builder";
 import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
 import { ConnectionReadOperation } from "../ConnectionReadOperation";
-import type { OperationTranspileOptions, OperationTranspileResult } from "../operations";
+import type { OperationTranspileResult } from "../operations";
 import type { Sort } from "../../sort/Sort";
 import type { Pagination } from "../../pagination/Pagination";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
+import type { QueryASTContext } from "../../QueryASTContext";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error();
         if (!this.relationship) throw new Error("connection fields are not supported on top level interface");
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);

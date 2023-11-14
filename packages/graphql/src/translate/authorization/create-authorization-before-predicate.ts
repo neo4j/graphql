@@ -18,118 +18,17 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { AuthorizationAnnotation } from "../../schema-model/annotation/AuthorizationAnnotation";
-import type { Node, PredicateReturn } from "../../types";
 import type { AuthorizationOperation } from "../../types/authorization";
-import { createAuthorizationFilterPredicate } from "./rules/create-authorization-filter-predicate";
-import { createAuthorizationValidatePredicate } from "./rules/create-authorization-validate-predicate";
-import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type { NodeMap } from "./types/node-map";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
-
-function createNodePredicate({
-    context,
-    node,
-    variable,
-    operations,
-    fieldName,
-}: {
-    context: Neo4jGraphQLTranslationContext;
-    node: Node;
-    variable: Cypher.Node;
-    operations: AuthorizationOperation[];
-    fieldName?: string;
-}): PredicateReturn {
-    const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
-
-    if (concreteEntities.length !== 1) {
-        throw new Error("Couldn't match entity");
-    }
-
-    const concreteEntity = concreteEntities[0] as ConcreteEntity;
-
-    const { predicate: authorizationPredicate, preComputedSubqueries } = createNodeAuthorizationPredicate({
-        entity: concreteEntity,
-        node,
-        variable,
-        context,
-        operations,
-        fieldName,
-    });
-
-    return {
-        predicate: authorizationPredicate,
-        preComputedSubqueries,
-    };
-}
-
-function createNodeAuthorizationPredicate({
-    context,
-    node,
-    entity,
-    variable,
-    operations,
-    fieldName,
-}: {
-    context: Neo4jGraphQLTranslationContext;
-    node: Node;
-    entity: ConcreteEntity;
-    variable: Cypher.Node;
-    operations: AuthorizationOperation[];
-    fieldName?: string;
-}): PredicateReturn {
-    const predicates: Cypher.Predicate[] = [];
-    let subqueries: Cypher.CompositeClause | undefined;
-
-    const annotation: AuthorizationAnnotation | undefined = fieldName
-        ? entity.attributes.get(fieldName)?.annotations.authorization
-        : entity.annotations.authorization;
-
-    if (annotation) {
-        const { predicate: filterPredicate, preComputedSubqueries: filterSubqueries } =
-            createAuthorizationFilterPredicate({
-                context,
-                node: node,
-                rules: annotation.filter || [],
-                variable,
-                operations,
-            });
-
-        if (filterPredicate) {
-            predicates.push(filterPredicate);
-        }
-
-        if (filterSubqueries && !filterSubqueries.empty) {
-            subqueries = Cypher.concat(subqueries, filterSubqueries);
-        }
-
-        const validate = createAuthorizationValidatePredicate({
-            when: "BEFORE",
-            context,
-            node: node,
-            rules: annotation.validate || [],
-            variable,
-            operations,
-        });
-
-        if (validate) {
-            const { predicate: validatePredicate, preComputedSubqueries: validateSubqueries } = validate;
-
-            if (validatePredicate) {
-                predicates.push(validatePredicate);
-            }
-
-            if (validateSubqueries && !validateSubqueries.empty) {
-                subqueries = Cypher.concat(subqueries, validateSubqueries);
-            }
-        }
-    }
-
-    return {
-        predicate: Cypher.and(...predicates),
-        preComputedSubqueries: subqueries,
-    };
-}
+import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
+import { QueryASTEnv, QueryASTContext } from "../queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "../queryAST/factory/QueryASTFactory";
+import { asArray } from "@graphql-tools/utils";
+import { wrapSubqueryInCall } from "../queryAST/utils/wrap-subquery-in-call";
+import { filterTruthy } from "../../utils/utils";
+import type { PredicateReturn } from "../../types";
+import { isConcreteEntity } from "../queryAST/utils/is-concrete-entity";
 
 export function createAuthorizationBeforePredicate({
     context,
@@ -143,29 +42,118 @@ export function createAuthorizationBeforePredicate({
     const predicates: Cypher.Predicate[] = [];
     let subqueries: Cypher.CompositeClause | undefined;
     for (const nodeEntry of nodes) {
-        const { node, variable, fieldName } = nodeEntry;
+        const node = nodeEntry.node;
+        const matchNode = nodeEntry.variable;
 
-        const { predicate, preComputedSubqueries } = createNodePredicate({
-            context,
-            node,
-            variable,
-            fieldName,
+        const entity = getEntityAdapterFromNode(node, context);
+        if (!isConcreteEntity(entity)) {
+            throw new Error("Expected authorization rule to be applied on a concrete entity");
+        }
+        const factory = new QueryASTFactory(context.schemaModel);
+        const queryASTEnv = new QueryASTEnv();
+
+        const queryASTContext = new QueryASTContext({
+            target: matchNode,
+            env: queryASTEnv,
+            neo4jGraphQLContext: context,
+        });
+        const authorizationFilters = factory.authorizationFactory.createEntityAuthFilters(entity, operations, context);
+        const authorizationValidate = factory.authorizationFactory.createEntityAuthValidate(
+            entity,
             operations,
+            context,
+            "BEFORE"
+        );
+        filterTruthy([authorizationFilters, authorizationValidate]).forEach((filter) => {
+            const nodeRawSubqueries = filter?.getSubqueries(queryASTContext);
+            const nodeSubqueries = filterTruthy(asArray(nodeRawSubqueries)).map((sq) =>
+                wrapSubqueryInCall(sq, matchNode)
+            );
+            const nodePredicate = filter?.getPredicate(queryASTContext);
+
+            if (nodePredicate) {
+                predicates.push(nodePredicate);
+            }
+            const extraSelections = filter?.getSelection(queryASTContext);
+
+            const preComputedSubqueries = [...asArray(extraSelections), ...asArray(nodeSubqueries)];
+            if (preComputedSubqueries) {
+                subqueries = Cypher.concat(subqueries, ...preComputedSubqueries);
+            }
+        });
+    }
+    if (!predicates.length) {
+        return;
+    }
+    return {
+        predicate: Cypher.and(...predicates),
+        preComputedSubqueries: subqueries,
+    };
+}
+
+export function createAuthorizationBeforePredicateField({
+    context,
+    nodes,
+    operations,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    nodes: NodeMap[];
+    operations: AuthorizationOperation[];
+}): PredicateReturn | undefined {
+    const predicates: Cypher.Predicate[] = [];
+    let subqueries: Cypher.CompositeClause | undefined;
+    for (const nodeEntry of nodes) {
+        const node = nodeEntry.node;
+        const matchNode = nodeEntry.variable;
+        const fieldName = nodeEntry.fieldName;
+
+        const entity = getEntityAdapterFromNode(node, context);
+        if (!isConcreteEntity(entity)) {
+            throw new Error("Expected authorization rule to be applied on a concrete entity");
+        }
+        const factory = new QueryASTFactory(context.schemaModel);
+        const queryASTEnv = new QueryASTEnv();
+
+        const queryASTContext = new QueryASTContext({
+            target: matchNode,
+            env: queryASTEnv,
+            neo4jGraphQLContext: context,
         });
 
-        if (predicate) {
-            predicates.push(predicate);
-        }
+        if (fieldName) {
+            const attributeAdapter = entity.attributes.get(fieldName);
+            if (!attributeAdapter) {
+                throw new Error("Couldn't match attribute");
+            }
+            const attributesFilters = factory.authorizationFactory.createAttributeAuthFilters(
+                attributeAdapter,
+                entity,
+                operations,
+                context
+            );
+            const attributesValidate = factory.authorizationFactory.createAttributeAuthValidate(
+                attributeAdapter,
+                entity,
+                operations,
+                context,
+                "BEFORE"
+            );
+            filterTruthy([attributesFilters, attributesValidate]).forEach((filter) => {
+                const fieldPredicate = filter.getPredicate(queryASTContext);
+                const fieldSelection = filter.getSelection(queryASTContext);
+                const fieldSubqueries = filter.getSubqueries(queryASTContext);
 
-        if (preComputedSubqueries) {
-            subqueries = Cypher.concat(subqueries, preComputedSubqueries);
+                const preComputedSubqueries = [...asArray(fieldSelection), ...asArray(fieldSubqueries)];
+                if (preComputedSubqueries) {
+                    subqueries = Cypher.concat(subqueries, ...preComputedSubqueries);
+                }
+                if (fieldPredicate) predicates.push(fieldPredicate);
+            });
         }
     }
-
     if (!predicates.length) {
-        return undefined;
+        return;
     }
-
     return {
         predicate: Cypher.and(...predicates),
         preComputedSubqueries: subqueries,

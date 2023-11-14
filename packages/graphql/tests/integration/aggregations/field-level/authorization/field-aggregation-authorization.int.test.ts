@@ -214,7 +214,6 @@ describe("Field Level Aggregations Auth", () => {
                 source: query,
                 contextValue: neo4j.getContextValues(),
             });
-
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
 

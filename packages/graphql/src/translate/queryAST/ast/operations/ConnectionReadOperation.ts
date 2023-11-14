@@ -21,7 +21,7 @@ import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 import type { Field } from "../fields/Field";
 import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
-import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
+import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 import type { Pagination, PaginationField } from "../pagination/Pagination";
 import type { Sort, SortField } from "../sort/Sort";
@@ -250,7 +250,7 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         if (this.relationship) {
             return this.transpileNested(context);
         }
@@ -433,7 +433,6 @@ export class ConnectionReadOperation extends Operation {
             postPaginationSubqueries: postNodeSubqueries,
         };
     }
-
 
     protected getProjectionMap(context: QueryASTContext): Cypher.MapProjection {
         if (!hasTarget(context)) throw new Error("No parent node found!");

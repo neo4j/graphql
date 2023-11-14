@@ -20,7 +20,10 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
-import { createAuthorizationAfterPredicate } from "../create-authorization-after-predicate";
+import {
+    createAuthorizationAfterPredicateField,
+    createAuthorizationAfterPredicate,
+} from "../create-authorization-after-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -45,7 +48,6 @@ function stringNodeMapToNodeMap(stringNodeMap: StringNodeMap[]): NodeMap[] {
         };
     });
 }
-
 export function createAuthorizationAfterAndParams({
     context,
     nodes,
@@ -60,6 +62,32 @@ export function createAuthorizationAfterAndParams({
     const nodeMap = stringNodeMapToNodeMap(nodes);
 
     const predicateReturn = createAuthorizationAfterPredicate({
+        context,
+        nodes: nodeMap,
+        operations,
+    });
+
+    if (predicateReturn) {
+        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}after_`);
+    }
+
+    return undefined;
+}
+
+export function createAuthorizationAfterAndParamsField({
+    context,
+    nodes,
+    operations,
+    indexPrefix,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    nodes: StringNodeMap[];
+    operations: AuthorizationOperation[];
+    indexPrefix?: string;
+}): AuthorizationAfterAndParams | undefined {
+    const nodeMap = stringNodeMapToNodeMap(nodes);
+
+    const predicateReturn = createAuthorizationAfterPredicateField({
         context,
         nodes: nodeMap,
         operations,

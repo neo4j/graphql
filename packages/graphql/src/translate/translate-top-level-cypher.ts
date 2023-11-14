@@ -19,10 +19,8 @@
 
 import createProjectionAndParams from "./create-projection-and-params";
 import type { CypherField } from "../types";
-import { AUTH_FORBIDDEN_ERROR, AUTHORIZATION_UNAUTHENTICATED } from "../constants";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import Cypher from "@neo4j/cypher-builder";
-import { Neo4jGraphQLError } from "../classes";
-import { filterByValues } from "./authorization/utils/filter-by-values";
 import { compileCypher } from "../utils/compile-cypher";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";

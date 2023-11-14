@@ -195,15 +195,22 @@ function createConnectOrCreatePartialStatement({
     });
 
     if (authorizationAfterPredicateReturn.predicate) {
-        if (authorizationAfterPredicateReturn.preComputedSubqueries) {
+        if (
+            authorizationAfterPredicateReturn.preComputedSubqueries &&
+            !authorizationAfterPredicateReturn.preComputedSubqueries.empty
+        ) {
             mergeQuery = Cypher.concat(
                 mergeQuery,
-                new Cypher.With("*"),
-                authorizationAfterPredicateReturn.preComputedSubqueries
+                new Cypher.With(new Cypher.NamedVariable("*")),
+                authorizationAfterPredicateReturn.preComputedSubqueries,
+                new Cypher.With(new Cypher.NamedVariable("*")).where(authorizationAfterPredicateReturn.predicate)
+            );
+        } else {
+            mergeQuery = Cypher.concat(
+                mergeQuery,
+                new Cypher.With("*").where(authorizationAfterPredicateReturn.predicate)
             );
         }
-
-        mergeQuery = Cypher.concat(mergeQuery, new Cypher.With("*").where(authorizationAfterPredicateReturn.predicate));
     }
 
     return mergeQuery;

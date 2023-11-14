@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import { LOGICAL_OPERATORS } from "../../constants";
 
-export type LogicalOperator = (typeof LOGICAL_OPERATORS)[number];
+type LogicalOperator = (typeof LOGICAL_OPERATORS)[number];
 
 export function getLogicalPredicate(
     graphQLOperator: LogicalOperator,

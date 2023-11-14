@@ -23,9 +23,9 @@ import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { BaseField, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
+import { createAuthorizationBeforePredicateField } from "./authorization/create-authorization-before-predicate";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
-import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -85,7 +85,7 @@ function translateAggregate({
     Object.entries(selections).forEach((selection) => {
         const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
         if (authField) {
-            const authorizationPredicateReturn = createAuthorizationBeforePredicate({
+            const authorizationPredicateReturn = createAuthorizationBeforePredicateField({
                 context,
                 nodes: [
                     {

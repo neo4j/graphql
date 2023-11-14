@@ -173,7 +173,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             OPTIONAL MATCH (this0_transaction_connect0_node)-[:TRANSACTION]->(authorization_0_0_0_0_before_this1:Store)
             WITH *, count(authorization_0_0_0_0_before_this1) AS storeCount
             WITH *
-            	WHERE this0_transaction_connect0_node.id = $this0_transaction_connect0_node_param0 AND ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param4 IN $jwt.roles)) AND (storeCount <> 0 AND ($jwt.store IS NOT NULL AND authorization_0_0_0_0_before_this0.id = $jwt.store))))) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param5 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param6 IN $jwt.roles)) AND (storeCount <> 0 AND ($jwt.store IS NOT NULL AND authorization_0_0_0_0_before_this1.id = $jwt.store)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            	WHERE this0_transaction_connect0_node.id = $this0_transaction_connect0_node_param0 AND ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param4 IN $jwt.roles)) AND (storeCount <> 0 AND ($jwt.store IS NOT NULL AND authorization_0_0_0_0_before_this0.id = $jwt.store)))) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param5 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_before_param6 IN $jwt.roles)) AND (storeCount <> 0 AND ($jwt.store IS NOT NULL AND authorization_0_0_0_0_before_this1.id = $jwt.store))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	CALL {
             		WITH *
             		WITH collect(this0_transaction_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -198,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             OPTIONAL MATCH (this0_transaction_connect0_node)-[:TRANSACTION]->(authorization_0_0_0_0_after_this1:Store)
             WITH *, count(authorization_0_0_0_0_after_this1) AS storeCount
             WITH *
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param3 IN $jwt.roles)) AND authorization_0_0_0_0_after_var0 = true)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param4 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param5 IN $jwt.roles)) AND (storeCount <> 0 AND ($jwt.store IS NOT NULL AND authorization_0_0_0_0_after_this1.id = $jwt.store)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param3 IN $jwt.roles)) AND authorization_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param4 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param5 IN $jwt.roles)) AND (storeCount <> 0 AND ($jwt.store IS NOT NULL AND authorization_0_0_0_0_after_this1.id = $jwt.store))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this0_transaction_connect_Transaction0
             }
             WITH *
@@ -220,7 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                 RETURN count(authorization_0_0_0_0_after_this1) = 1 AS authorization_0_0_0_0_after_var0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param3 IN $jwt.roles)) AND authorization_0_0_0_0_after_var0 = true)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param2 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_0_0_0_after_param3 IN $jwt.roles)) AND authorization_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
