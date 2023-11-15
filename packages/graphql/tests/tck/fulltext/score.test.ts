@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("Cypher -> fulltext -> Match", () => {
+describe("Cypher -> fulltext -> Score", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -30,6 +30,7 @@ describe("Cypher -> fulltext -> Match", () => {
         typeDefs = gql`
             type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
                 title: String
+                released: Int
             }
         `;
 
@@ -38,11 +39,15 @@ describe("Cypher -> fulltext -> Match", () => {
         });
     });
 
-    test("simple match with single fulltext property", async () => {
+    test("simple match with single property and score", async () => {
         const query = gql`
             query {
-                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                    title
+                moviesFulltextMovieTitle(phrase: "a different name") {
+                    score
+                    movie {
+                        title
+                        released
+                    }
                 }
             }
         `;
@@ -50,27 +55,28 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
             WHERE $param1 IN labels(this)
-            RETURN this { .title } AS this"
+            RETURN this { .title, .released } AS movie, var0 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"something AND something\\",
+                \\"param0\\": \\"a different name\\",
                 \\"param1\\": \\"Movie\\"
             }"
         `);
     });
 
-    test("match with where and single fulltext property", async () => {
+    test("simple match with single property and score and filter", async () => {
         const query = gql`
             query {
-                movies(
-                    fulltext: { MovieTitle: { phrase: "something AND something" } }
-                    where: { title: "some-title" }
-                ) {
-                    title
+                moviesFulltextMovieTitle(phrase: "a different name", where: { movie: { released_GT: 2000 } }) {
+                    score
+                    movie {
+                        title
+                        released
+                    }
                 }
             }
         `;
@@ -78,16 +84,19 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE ($param1 IN labels(this) AND this.title = $param2)
-            RETURN this { .title } AS this"
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
+            WHERE ($param1 IN labels(this) AND this.released > $param2)
+            RETURN this { .title, .released } AS movie, var0 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"something AND something\\",
+                \\"param0\\": \\"a different name\\",
                 \\"param1\\": \\"Movie\\",
-                \\"param2\\": \\"some-title\\"
+                \\"param2\\": {
+                    \\"low\\": 2000,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

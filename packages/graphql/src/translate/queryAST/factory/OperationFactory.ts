@@ -18,6 +18,7 @@
  */
 
 import { mergeDeep } from "@graphql-tools/utils";
+import type * as Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
@@ -31,10 +32,13 @@ import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { CreateOperation } from "../ast/operations/CreateOperation";
+import type { FulltextOptions } from "../ast/operations/FulltextOperation";
+import { FulltextOperation } from "../ast/operations/FulltextOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import { CompositeAggregationPartial } from "../ast/operations/composite/CompositeAggregationPartial";
@@ -78,11 +82,33 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext
     ): Operation {
         if (isConcreteEntity(entity)) {
+            // Handles deprecated top level fulltext
+            if (context.resolveTree.args.phrase) {
+                if (!context.fulltext) {
+                    throw new Error("Failed to get context fulltext");
+                }
+                const indexName = context.fulltext.indexName || context.fulltext.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+
+                const op = this.createFulltextOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
+
             const operationMatch = parseOperationField(resolveTree.name, entity);
+
             if (operationMatch.isCreate) {
                 return this.createCreateOperation(entity, resolveTree, context); // TODO: move this to separate method?
             } else if (operationMatch.isRead) {
-                const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+                let op: ReadOperation;
+                if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    op = this.createFulltextOperation(entity, resolveTree, context);
+                } else {
+                    op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+                }
+
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isConnection) {
@@ -95,7 +121,7 @@ export class OperationsFactory {
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isAggregation) {
-                const op = this.createAggregationOperation(entity, resolveTree, context, true);
+                const op = this.createAggregationOperation(entity, resolveTree, context);
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
@@ -150,6 +176,102 @@ export class OperationsFactory {
 
         createOP.addProjectionOperations(projectionFields);
         return createOP;
+    }
+
+    private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
+        if (context.fulltext) {
+            const indexName = context.fulltext.indexName || context.fulltext.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            const phrase = context.resolveTree.args.phrase;
+            if (!phrase || typeof phrase !== "string") {
+                throw new Error("Invalid phrase");
+            }
+
+            return {
+                index: indexName,
+                phrase,
+                score: context.fulltext.scoreVariable,
+            };
+        }
+
+        const entries = Object.entries(context.resolveTree.args.fulltext || {});
+        if (entries.length > 1) {
+            throw new Error("Can only call one search at any given time");
+        }
+        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
+        return {
+            index: indexName,
+            phrase: indexInput.phrase,
+        };
+    }
+
+    private createFulltextScoreField(field: ResolveTree, scoreVar: Cypher.Variable): FulltextScoreField {
+        return new FulltextScoreField({
+            alias: field.alias,
+            score: scoreVar,
+        });
+    }
+
+    public createFulltextOperation(
+        entityOrRel: EntityAdapter | RelationshipAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): FulltextOperation {
+        const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
+        const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
+
+        let resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        if (isConcreteEntity(entity)) {
+            const fulltextOptions = this.getFulltextOptions(context);
+            let scoreField: FulltextScoreField | undefined;
+
+            // Compatibility of top level operations
+            const fulltextOperationDeprecatedFields =
+                resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
+
+            if (fulltextOperationDeprecatedFields) {
+                resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
+
+                const scoreRawField = fulltextOperationDeprecatedFields.score;
+                resolveTree = fulltextOperationDeprecatedFields[entity.singular]!;
+
+                if (scoreRawField) {
+                    if (!fulltextOptions.score) {
+                        throw new Error("Missing fulltext score variable");
+                    }
+                    scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
+                }
+            }
+
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["READ"],
+                context,
+            });
+            const operation = new FulltextOperation({
+                target: entity,
+                relationship,
+                directed: Boolean(resolveTree.args?.directed ?? true),
+                fulltext: fulltextOptions,
+                scoreField,
+            });
+
+            // const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where)
+            //     ? resolveTree.args.where
+            //     : {};
+
+            return this.hydrateReadOperation({
+                operation,
+                entity,
+                resolveTree,
+                context,
+                whereArgs: resolveTreeWhere,
+            });
+        } else {
+            throw new Error("Fulltext nor supported on interfaces");
+        }
     }
 
     public createReadOperation(
@@ -214,8 +336,7 @@ export class OperationsFactory {
     public createAggregationOperation(
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        topLevel = false
+        context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -630,7 +751,6 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
     }): T {
         let projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-
         // Get the abstract types of the interface
         const entityInterfaces = entity.compositeEntities;
 

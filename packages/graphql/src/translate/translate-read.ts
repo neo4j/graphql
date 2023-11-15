@@ -42,9 +42,11 @@ const debug = Debug(DEBUG_TRANSLATE);
 function translateQuery({
     context,
     entityAdapter,
+    resultVarName,
 }: {
     context: Neo4jGraphQLTranslationContext;
     entityAdapter: EntityAdapter;
+    resultVarName: string;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     // TODO: Rename QueryAST to OperationsTree
@@ -53,7 +55,7 @@ function translateQuery({
     if (!entityAdapter) throw new Error("Entity not found");
     const queryAST = queryASTFactory.createQueryAST(resolveTree, entityAdapter, context);
     debug(queryAST.print());
-    const clause = queryAST.build(context);
+    const clause = queryAST.build(context, resultVarName);
     return clause.build();
 }
 
@@ -96,7 +98,6 @@ export function translateRead(
     },
     varName = "this"
 ): Cypher.CypherResult {
-    
     if (!context.resolveTree.args.fulltext && !context.resolveTree.args.phrase) {
         return translateQuery({ context, entityAdapter });
     }

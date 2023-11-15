@@ -34,15 +34,15 @@ export class QueryAST {
         this.operation = operation;
     }
 
-    public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
-        const context = this.buildQueryASTContext(neo4jGraphQLContext);
+    public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
+        const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
 
         return Cypher.concat(...this.transpile(context).clauses);
     }
 
     // TODO: refactor other top level operations to use this method instead of build
-    public buildNew(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
-        const context = this.buildQueryASTContext(neo4jGraphQLContext);
+    public buildNew(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
+        const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
 
         const { clauses, projectionExpr } = this.transpile(context);
         const returnClause = new Cypher.Return(projectionExpr);
@@ -57,9 +57,12 @@ export class QueryAST {
         return this.operation.transpile(context);
     }
 
-    public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): QueryASTContext {
+    public buildQueryASTContext(
+        neo4jGraphQLContext: Neo4jGraphQLTranslationContext,
+        varName = "this"
+    ): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
-        const returnVariable = new Cypher.NamedVariable("this");
+        const returnVariable = new Cypher.NamedVariable(varName);
         const node = this.getTargetFromOperation(neo4jGraphQLContext);
         return new QueryASTContext({
             target: node,
