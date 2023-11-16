@@ -188,7 +188,7 @@ export class ReadOperation extends Operation {
     }
 
     protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        return Cypher.and(...[...this.filters].map((f) => f.getPredicate(queryASTContext)));
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
     }
 
     protected getSelectionClauses(
