@@ -279,6 +279,12 @@ function validateDocument({
     // TODO: how to improve this??
     // validates `@customResolver`
     validateSchemaCustomizations({ document, schema });
+
+    if (experimental === true) {
+        console.warn(
+            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+        );
+    }
 }
 
 export default validateDocument;
