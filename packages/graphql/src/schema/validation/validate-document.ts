@@ -64,6 +64,7 @@ import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-d
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
+import { WarnIfExperimentalMode } from "./custom-rules/warnings/experimental-mode";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -211,6 +212,7 @@ function runValidationRulesOnFilteredDocument({
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(experimental),
+            WarnIfExperimentalMode(experimental),
         ],
         schema
     );
@@ -279,12 +281,6 @@ function validateDocument({
     // TODO: how to improve this??
     // validates `@customResolver`
     validateSchemaCustomizations({ document, schema });
-
-    if (experimental === true) {
-        console.warn(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
-        );
-    }
 }
 
 export default validateDocument;
