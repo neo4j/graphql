@@ -20,11 +20,11 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src";
-import { cleanNodes } from "../../utils/clean-nodes";
-import { createBearerToken } from "../../utils/create-bearer-token";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../../src";
+import { cleanNodes } from "../../../utils/clean-nodes";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4j from "../../neo4j";
 
 describe("Top-level interface query fields", () => {
     const secret = "the-secret";

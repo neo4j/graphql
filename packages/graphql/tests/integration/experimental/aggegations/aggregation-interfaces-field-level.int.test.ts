@@ -19,9 +19,9 @@
 
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
-import Neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4j from "../../neo4j";
 
 describe("Interface Field Level Aggregations", () => {
     let driver: Driver;
