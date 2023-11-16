@@ -170,13 +170,13 @@ export class CompositeAggregationOperation extends Operation {
         return field.getAggregationProjection(target, returnVariable);
     }
 
-    private transpileAggregationOperation(context, addWith = true): OperationTranspileResult {
+    private transpileAggregationOperation(context: QueryASTContext, addWith = true): OperationTranspileResult {
         const aggregationProjectionMap: Cypher.Map = new Cypher.Map();
         const nodeMap = new Cypher.Map();
         const edgeMap = new Cypher.Map();
 
         const fieldSubqueries = this.fields.map((field) => {
-            const returnVariable = new Cypher.Variable();
+            const returnVariable = new Cypher.Node();
             const nestedContext = context.setReturn(returnVariable);
 
             const nestedSubquery = this.createSubquery(field, nestedContext, aggregationProjectionMap, addWith);
@@ -185,17 +185,24 @@ export class CompositeAggregationOperation extends Operation {
                 nestedContext.returnVariable,
                 nestedContext.returnVariable
             );
-            return Cypher.concat(nestedSubquery, aggrProjection);
+
+            const withClause: Cypher.With | undefined = this.createWithClause(context, returnVariable);
+
+            return Cypher.concat(nestedSubquery, withClause, aggrProjection);
         });
 
         const nodeFieldSubqueries = this.nodeFields.map((field) => {
-            const returnVariable = new Cypher.Variable();
+            const returnVariable = new Cypher.Node();
 
             const nestedContext = context.setReturn(returnVariable);
 
             const nestedSubquery = this.createSubquery(field, nestedContext, nodeMap, addWith);
+
+            const withClause: Cypher.With | undefined = this.createWithClause(context, returnVariable);
+
             return Cypher.concat(
                 nestedSubquery,
+                withClause,
                 field.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
             );
         });
@@ -205,12 +212,16 @@ export class CompositeAggregationOperation extends Operation {
         }
 
         const edgeFieldSubqueries = this.edgeFields.map((field) => {
-            const returnVariable = new Cypher.Variable();
+            const returnVariable = new Cypher.Node();
             const nestedContext = context.setReturn(returnVariable);
 
             const nestedSubquery = this.createSubquery(field, nestedContext, edgeMap, addWith, true);
+
+            const withClause: Cypher.With | undefined = this.createWithClause(context, returnVariable);
+
             return Cypher.concat(
                 nestedSubquery,
+                withClause,
                 field.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
             );
         });
@@ -218,11 +229,27 @@ export class CompositeAggregationOperation extends Operation {
         if (edgeMap.size > 0) {
             aggregationProjectionMap.set("edge", edgeMap);
         }
+        // console.log(fieldSubqueries);
 
         return {
             clauses: [...fieldSubqueries, ...nodeFieldSubqueries, ...edgeFieldSubqueries],
             projectionExpr: aggregationProjectionMap,
         };
+    }
+
+    private createWithClause(context: QueryASTContext, returnVariable: Cypher.Node) {
+        const filterContext = new QueryASTContext({
+            neo4jGraphQLContext: context.neo4jGraphQLContext,
+            target: returnVariable,
+        });
+        const filterPredicates = this.getPredicates(filterContext);
+
+        let withClause: Cypher.With | undefined;
+        if (filterPredicates) {
+            withClause = new Cypher.With("*");
+            withClause.where(filterPredicates);
+        }
+        return withClause;
     }
 
     private createSubquery(
