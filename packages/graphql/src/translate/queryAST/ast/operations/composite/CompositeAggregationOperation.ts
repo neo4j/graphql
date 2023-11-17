@@ -181,14 +181,15 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = this.createSubquery(field, nestedContext, aggregationProjectionMap, addWith);
 
-            const aggrProjection = field.getAggregationProjection(
-                nestedContext.returnVariable,
-                nestedContext.returnVariable
+            // This one uses node
+
+            const withClause: Cypher.With | undefined = this.createWithClause(context);
+
+            return Cypher.concat(
+                nestedSubquery,
+                withClause,
+                field.getAggregationProjection(new Cypher.NamedNode("node"), nestedContext.returnVariable)
             );
-
-            const withClause: Cypher.With | undefined = this.createWithClause(context, returnVariable);
-
-            return Cypher.concat(nestedSubquery, withClause, aggrProjection);
         });
 
         const nodeFieldSubqueries = this.nodeFields.map((field) => {
@@ -198,12 +199,14 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = this.createSubquery(field, nestedContext, nodeMap, addWith);
 
-            const withClause: Cypher.With | undefined = this.createWithClause(context, returnVariable);
+            // This one uses node
+
+            const withClause: Cypher.With | undefined = this.createWithClause(context);
 
             return Cypher.concat(
                 nestedSubquery,
                 withClause,
-                field.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
+                field.getAggregationProjection(new Cypher.NamedNode("node"), nestedContext.returnVariable)
             );
         });
 
@@ -217,19 +220,20 @@ export class CompositeAggregationOperation extends Operation {
 
             const nestedSubquery = this.createSubquery(field, nestedContext, edgeMap, addWith, true);
 
-            const withClause: Cypher.With | undefined = this.createWithClause(context, returnVariable);
+            // This one uses edge
+
+            const withClause: Cypher.With | undefined = this.createWithClause(context);
 
             return Cypher.concat(
                 nestedSubquery,
                 withClause,
-                field.getAggregationProjection(nestedContext.returnVariable, nestedContext.returnVariable)
+                field.getAggregationProjection(new Cypher.NamedNode("edge"), nestedContext.returnVariable)
             );
         });
 
         if (edgeMap.size > 0) {
             aggregationProjectionMap.set("edge", edgeMap);
         }
-        // console.log(fieldSubqueries);
 
         return {
             clauses: [...fieldSubqueries, ...nodeFieldSubqueries, ...edgeFieldSubqueries],
@@ -237,10 +241,11 @@ export class CompositeAggregationOperation extends Operation {
         };
     }
 
-    private createWithClause(context: QueryASTContext, returnVariable: Cypher.Node) {
+    private createWithClause(context: QueryASTContext) {
+        const node = new Cypher.NamedNode("node");
         const filterContext = new QueryASTContext({
             neo4jGraphQLContext: context.neo4jGraphQLContext,
-            target: returnVariable,
+            target: node,
         });
         const filterPredicates = this.getPredicates(filterContext);
 

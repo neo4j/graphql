@@ -76,16 +76,16 @@ describe("Top level filter on aggregation interfaces", () => {
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
-                    RETURN this0 AS this1
+                    RETURN this0 AS node
                     UNION
-                    MATCH (this2:Series)
-                    RETURN this2 AS this1
+                    MATCH (this1:Series)
+                    RETURN this1 AS node
                 }
                 WITH *
-                WHERE this1.title = $param0
-                RETURN count(this1) AS this1
+                WHERE node.title = $param0
+                RETURN count(node) AS this2
             }
-            RETURN { count: this1 }"
+            RETURN { count: this2 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -110,16 +110,16 @@ describe("Top level filter on aggregation interfaces", () => {
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
-                    RETURN this0 AS this1
+                    RETURN this0 AS node
                     UNION
-                    MATCH (this2:Series)
-                    RETURN this2 AS this1
+                    MATCH (this1:Series)
+                    RETURN this1 AS node
                 }
                 WITH *
-                WHERE this1.title = $param0
-                RETURN count(this1) AS this1
+                WHERE node.title = $param0
+                RETURN count(node) AS this2
             }
-            RETURN { count: this1 }"
+            RETURN { count: this2 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -82,15 +82,15 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this1 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this4 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                RETURN count(var2) AS var2
+                RETURN count(node) AS this4
             }
-            RETURN this { actedInAggregate: { count: var2 } } AS this"
+            RETURN this { actedInAggregate: { count: this4 } } AS this"
         `);
     });
 
@@ -116,15 +116,15 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this1 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this4 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                RETURN count(var2) AS var2
+                RETURN count(node) AS this4
             }
-            RETURN this { actedInAggregate: { count: var2 } } AS this"
+            RETURN this { actedInAggregate: { count: this4 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -158,15 +158,15 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this1 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this4 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                RETURN { min: min(var2.cost) } AS var2
+                RETURN { min: min(node.cost) } AS this4
             }
-            RETURN this { actedInAggregate: { node: { cost: var2 } } } AS this"
+            RETURN this { actedInAggregate: { node: { cost: this4 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -196,15 +196,15 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this1 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this4 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                RETURN { max: max(var2.cost) } AS var2
+                RETURN { max: max(node.cost) } AS this4
             }
-            RETURN this { actedInAggregate: { node: { cost: var2 } } } AS this"
+            RETURN this { actedInAggregate: { node: { cost: this4 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -229,35 +229,35 @@ describe("Interface Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
-                    CALL {
-                        WITH this
-                        CALL {
-                            WITH this
-                            MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            RETURN this1 AS var2
-                            UNION
-                            WITH this
-                            MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                            RETURN this4 AS var2
-                        }
-                        RETURN count(var2) AS var2
-                    }
-                    CALL {
-                        WITH this
-                        CALL {
-                            WITH this
-                            MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
-                            RETURN this6 AS var7
-                            UNION
-                            WITH this
-                            MATCH (this)-[this8:ACTED_IN]->(this9:Series)
-                            RETURN this9 AS var7
-                        }
-                        RETURN { max: max(var7.cost) } AS var7
-                    }
-                    RETURN this { actedInAggregate: { count: var2, node: { cost: var7 } } } AS this"
-            `);
+            "MATCH (this:Actor)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    RETURN this1 AS node, this0 AS edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
+                }
+                RETURN count(node) AS this4
+            }
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                    RETURN this6 AS node, this5 AS edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this7:ACTED_IN]->(this8:Series)
+                    RETURN this8 AS node, this7 AS edge
+                }
+                RETURN { max: max(node.cost) } AS this9
+            }
+            RETURN this { actedInAggregate: { count: this4, node: { cost: this9 } } } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -286,18 +286,18 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this1 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this4 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                WITH var2
-                ORDER BY size(var2.title) DESC
-                WITH collect(var2.title) AS list
-                RETURN { longest: head(list) } AS var2
+                WITH node
+                ORDER BY size(node.title) DESC
+                WITH collect(node.title) AS list
+                RETURN { longest: head(list) } AS this4
             }
-            RETURN this { actedInAggregate: { node: { title: var2 } } } AS this"
+            RETURN this { actedInAggregate: { node: { title: this4 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -333,18 +333,18 @@ describe("Interface Field Level Aggregations", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                        RETURN this3 AS var4
+                        RETURN this3 AS node, this2 AS edge
                         UNION
                         WITH this1
-                        MATCH (this1)-[this5:ACTED_IN]->(this6:Series)
-                        RETURN this6 AS var4
+                        MATCH (this1)-[this4:ACTED_IN]->(this5:Series)
+                        RETURN this5 AS node, this4 AS edge
                     }
-                    WITH var4
-                    ORDER BY size(var4.title) DESC
-                    WITH collect(var4.title) AS list
-                    RETURN { longest: head(list) } AS var4
+                    WITH node
+                    ORDER BY size(node.title) DESC
+                    WITH collect(node.title) AS list
+                    RETURN { longest: head(list) } AS this6
                 }
-                WITH this1 { actedInAggregate: { node: { title: var4 } } } AS this1
+                WITH this1 { actedInAggregate: { node: { title: this6 } } } AS this1
                 RETURN collect(this1) AS var7
             }
             RETURN this { actors: var7 } AS this"
@@ -377,15 +377,15 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this0 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this3 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                RETURN { sum: sum(var2.screenTime) } AS var2
+                RETURN { sum: sum(edge.screenTime) } AS this4
             }
-            RETURN this { actedInAggregate: { edge: { screenTime: var2 } } } AS this"
+            RETURN this { actedInAggregate: { edge: { screenTime: this4 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -421,41 +421,41 @@ describe("Interface Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    RETURN this1 AS var2
+                    RETURN this1 AS node, this0 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    RETURN this4 AS var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    RETURN this3 AS node, this2 AS edge
                 }
-                RETURN count(var2) AS var2
+                RETURN count(node) AS this4
             }
             CALL {
                 WITH this
                 CALL {
                     WITH this
                     MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
-                    RETURN this6 AS var7
+                    RETURN this6 AS node, this5 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this8:ACTED_IN]->(this9:Series)
-                    RETURN this9 AS var7
+                    MATCH (this)-[this7:ACTED_IN]->(this8:Series)
+                    RETURN this8 AS node, this7 AS edge
                 }
-                RETURN { sum: sum(var7.cost) } AS var7
+                RETURN { sum: sum(node.cost) } AS this9
             }
             CALL {
                 WITH this
                 CALL {
                     WITH this
                     MATCH (this)-[this10:ACTED_IN]->(this11:Movie)
-                    RETURN this10 AS var12
+                    RETURN this11 AS node, this10 AS edge
                     UNION
                     WITH this
-                    MATCH (this)-[this13:ACTED_IN]->(this14:Series)
-                    RETURN this13 AS var12
+                    MATCH (this)-[this12:ACTED_IN]->(this13:Series)
+                    RETURN this13 AS node, this12 AS edge
                 }
-                RETURN { sum: sum(var12.screenTime) } AS var12
+                RETURN { sum: sum(edge.screenTime) } AS this14
             }
-            RETURN this { actedInAggregate: { count: var2, node: { cost: var7 }, edge: { screenTime: var12 } } } AS this"
+            RETURN this { actedInAggregate: { count: this4, node: { cost: this9 }, edge: { screenTime: this14 } } } AS this"
         `);
     });
 });
