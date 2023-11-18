@@ -3608,7 +3608,7 @@ __metadata:
     "@types/webpack": 5.28.5
     autoprefixer: 10.4.16
     classnames: 2.3.2
-    cm6-graphql: 0.0.10
+    cm6-graphql: 0.0.11
     codemirror: 6.0.1
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
@@ -10701,9 +10701,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cm6-graphql@npm:0.0.10":
-  version: 0.0.10
-  resolution: "cm6-graphql@npm:0.0.10"
+"cm6-graphql@npm:0.0.11":
+  version: 0.0.11
+  resolution: "cm6-graphql@npm:0.0.11"
   dependencies:
     graphql-language-service: ^5.2.0
   peerDependencies:
@@ -10714,7 +10714,7 @@ __metadata:
     "@codemirror/view": 6.2.1
     "@lezer/highlight": ^1.0.0
     graphql: ^16.5.0
-  checksum: 764e3acc34bcf0e8c6d64afc03ec3a9c5cc7821151351343c435869f54dc41fd2ec62a1a7066997c6c7039f1d67add5f8710dcb20d0fedc1e7643a6c6a7432ca
+  checksum: f670750c04cc8a4486477577f8d5c45b6706256aed2d03898c983e61d7cf4856b47c700400ada785afd52f669f8a4e063aa9dc55f28d33d4debadcd35acc5fef
   languageName: node
   linkType: hard
 
