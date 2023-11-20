@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 4.4.2
+
+### Patch Changes
+
+-   [#4285](https://github.com/neo4j/graphql/pull/4285) [`1bba6d186`](https://github.com/neo4j/graphql/commit/1bba6d18681301e4ad9da5bfacf7b7e29ac77bc1) Thanks [@angrykoala](https://github.com/angrykoala)! - EXPERIMENTAL: Add support for top level aggregation operations on interfaces
+
+-   [#4285](https://github.com/neo4j/graphql/pull/4285) [`193bbc789`](https://github.com/neo4j/graphql/commit/193bbc7898573f54d1d5bf18b26857c42f294fc1) Thanks [@angrykoala](https://github.com/angrykoala)! - Updates top level aggregation Cypher, this may lead to small performance changes on top level aggregation operations
+
+-   [#4257](https://github.com/neo4j/graphql/pull/4257) [`b58812f8e`](https://github.com/neo4j/graphql/commit/b58812f8e0359c0b086d68c335041cbeb7666ceb) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Added nested aggregations on interfaces when the `experimental` flag is passed as `true` to the Neo4jGraphQL constructor.
+
 ## 4.4.1
 
 ### Patch Changes
