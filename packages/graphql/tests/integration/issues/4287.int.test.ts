@@ -29,13 +29,16 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neo4jGraphql: Neo4jGraphQL;
+
+    const Actor = new UniqueType("Actor");
     const Movie = new UniqueType("Movie");
+    const Series = new UniqueType("Series");
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = gql`
-            type Actor {
+            type ${Actor} {
                 name: String
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
             }
@@ -45,11 +48,11 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             interface Production {
                 title: String
             }
-            type Movie implements Production {
+            type ${Movie} implements Production {
                 title: String
                 runtime: Int
             }
-            type Series implements Production {
+            type ${Series} implements Production {
                 title: String
                 episodes: Int
             }
@@ -61,11 +64,12 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
 
         const session = await neo4j.getSession();
         try {
-            await session.run(`CREATE (a:Actor { name: "Someone" })
-            CREATE (a)-[:ACTED_IN]->(:Movie {title: "something"})
-            CREATE (a)-[:ACTED_IN]->(:Series {title: "whatever"})
-            CREATE (a)-[:ACTED_IN]->(:Movie {title: "whatever 2"})
-            CREATE (a)-[:ACTED_IN]->(:Series {title: "something 2"})
+            await session.run(`
+            CREATE (a:${Actor} { name: "Someone" })
+            CREATE (a)-[:ACTED_IN]->(:${Movie} {title: "something"})
+            CREATE (a)-[:ACTED_IN]->(:${Series} {title: "whatever"})
+            CREATE (a)-[:ACTED_IN]->(:${Movie} {title: "whatever 2"})
+            CREATE (a)-[:ACTED_IN]->(:${Series} {title: "something 2"})
             `);
         } finally {
             await session.close();
@@ -75,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
     afterAll(async () => {
         const session = await neo4j.getSession();
         try {
-            await cleanNodes(session, [Movie.name]);
+            await cleanNodes(session, [Movie, Actor, Series]);
         } finally {
             await session.close();
         }
@@ -86,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
         const schema = await neo4jGraphql.getSchema();
         const query = /* GraphQL */ `
             query {
-                actors {
+                ${Actor.plural} {
                     actedInConnection(
                         where: { OR: [{ node: { title: "something" } }, { node: { title: "whatever" } }] }
                     ) {
@@ -107,19 +111,19 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             contextValue: neo4j.getContextValues(),
         });
         expect(response.errors).toBeFalsy();
-        expect(response.data?.["actors"]).toIncludeSameMembers([
+        expect(response.data?.[Actor.plural]).toIncludeSameMembers([
             {
                 actedInConnection: {
                     edges: [
                         {
                             node: {
-                                __typename: "Movie",
+                                __typename: Movie.name,
                                 title: "something",
                             },
                         },
                         {
                             node: {
-                                __typename: "Series",
+                                __typename: Series.name,
                                 title: "whatever",
                             },
                         },

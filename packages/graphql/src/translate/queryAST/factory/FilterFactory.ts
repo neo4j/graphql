@@ -510,11 +510,13 @@ export class FilterFactory {
     private getConcreteFilter(entity: EntityAdapter, where: Record<string, any>): Filter | undefined {
         const concreteEntities = getConcreteEntities(entity);
         const nodeFilters: Filter[] = [];
+
         for (const concreteEntity of concreteEntities) {
             const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
-            if (!concreteEntityWhere) continue;
-            const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
-            nodeFilters.push(...concreteEntityFilters);
+            if (concreteEntityWhere) {
+                const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
+                nodeFilters.push(...concreteEntityFilters);
+            }
         }
         return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
     }
