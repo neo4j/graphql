@@ -24,7 +24,7 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
-import { asArray, filterTruthy, isObject } from "../../../utils/utils";
+import { asArray, filterTruthy, isObject, omitFields } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
@@ -236,28 +236,18 @@ export class FilterFactory {
         return new ConnectionFilter(options);
     }
 
-    private getConcretePredicate(entity: EntityAdapter, where: Record<string, any>) {
-        const concreteEntities = getConcreteEntities(entity);
-        const nodeFilters: Filter[] = [];
-        for (const concreteEntity of concreteEntities) {
-            const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
-            if (!concreteEntityWhere) continue;
-            const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
-            nodeFilters.push(...concreteEntityFilters);
-        }
-        return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
-    }
-
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
     public createNodeFilters(entity: EntityAdapter, where: Record<string, unknown>): Filter[] {
+        const whereFields = this.getConcreteFiltersWhere(entity, where);
+
         const filters = filterTruthy(
-            Object.entries(where).flatMap(([key, value]): Filter | undefined => {
+            Object.entries(whereFields).flatMap(([key, value]): Filter | undefined => {
                 if (key === "_on" && isObject(value)) {
-                    return this.getConcretePredicate(entity, value);
+                    return this.getConcreteFilter(entity, value);
                 }
 
                 if (isLogicalOperator(key)) {
-                    return this.createNodeLogicalFilter(key, value as any, entity);
+                    return this.createNodeLogicalFilter(key, value, entity);
                 }
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
@@ -482,10 +472,11 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
+    /** Returns an array of 0 or 1 elements with the filters wrapped using a logical operator if needed */
     private wrapMultipleFiltersInLogical<F extends Filter>(
         filters: F[],
         logicalOp: "AND" | "OR" = "AND"
-    ): Array<F | LogicalFilter> {
+    ): [F | LogicalFilter] | [] {
         if (filters.length > 1) {
             return [
                 new LogicalFilter({
@@ -494,7 +485,12 @@ export class FilterFactory {
                 }),
             ];
         }
-        return filters;
+
+        const singleFilter = filters[0];
+        if (singleFilter) {
+            return [singleFilter];
+        }
+        return [];
     }
 
     private createAggregateLogicalFilter(
@@ -509,5 +505,30 @@ export class FilterFactory {
             operation,
             filters,
         });
+    }
+
+    private getConcreteFilter(entity: EntityAdapter, where: Record<string, any>): Filter | undefined {
+        const concreteEntities = getConcreteEntities(entity);
+        const nodeFilters: Filter[] = [];
+        for (const concreteEntity of concreteEntities) {
+            const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
+            if (!concreteEntityWhere) continue;
+            const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
+            nodeFilters.push(...concreteEntityFilters);
+        }
+        return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
+    }
+
+    private getConcreteFiltersWhere(entity: EntityAdapter, where: Record<string, any>): Record<string, any> {
+        const concreteEntities = getConcreteEntities(entity);
+
+        const whereOn = where["_on"] || {};
+        const onFilters = concreteEntities.reduce((acc, concreteEntity) => {
+            const concreteEntityWhere: Record<string, any> = whereOn[concreteEntity.name];
+
+            return { ...acc, ...concreteEntityWhere };
+        }, {});
+
+        return omitFields({ ...where, ...onFilters }, ["_on"]);
     }
 }

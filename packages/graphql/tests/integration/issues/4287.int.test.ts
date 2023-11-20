@@ -1,0 +1,131 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { graphql } from "graphql";
+import gql from "graphql-tag";
+import { type Driver } from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
+
+describe("https://github.com/neo4j/graphql/issues/4287", () => {
+    let driver: Driver;
+    let neo4j: Neo4j;
+    let neo4jGraphql: Neo4jGraphQL;
+    const Movie = new UniqueType("Movie");
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
+            }
+            interface actedIn @relationshipProperties {
+                role: String
+            }
+            interface Production {
+                title: String
+            }
+            type Movie implements Production {
+                title: String
+                runtime: Int
+            }
+            type Series implements Production {
+                title: String
+                episodes: Int
+            }
+        `;
+        neo4jGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+
+        const session = await neo4j.getSession();
+        try {
+            await session.run(`CREATE (a:Actor { name: "Someone" })
+            CREATE (a)-[:ACTED_IN]->(:Movie {title: "something"})
+            CREATE (a)-[:ACTED_IN]->(:Series {title: "whatever"})
+            CREATE (a)-[:ACTED_IN]->(:Movie {title: "whatever 2"})
+            CREATE (a)-[:ACTED_IN]->(:Series {title: "something 2"})
+            `);
+        } finally {
+            await session.close();
+        }
+    });
+
+    afterAll(async () => {
+        const session = await neo4j.getSession();
+        try {
+            await cleanNodes(session, [Movie.name]);
+        } finally {
+            await session.close();
+        }
+        await driver.close();
+    });
+
+    test("filter by logical operator on interface connection", async () => {
+        const schema = await neo4jGraphql.getSchema();
+        const query = /* GraphQL */ `
+            query {
+                actors {
+                    actedInConnection(
+                        where: { OR: [{ node: { title: "something" } }, { node: { title: "whatever" } }] }
+                    ) {
+                        edges {
+                            node {
+                                __typename
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const response = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValues(),
+        });
+        expect(response.errors).toBeFalsy();
+        expect(response.data?.["actors"]).toIncludeSameMembers([
+            {
+                actedInConnection: {
+                    edges: [
+                        {
+                            node: {
+                                __typename: "Movie",
+                                title: "something",
+                            },
+                        },
+                        {
+                            node: {
+                                __typename: "Series",
+                                title: "whatever",
+                            },
+                        },
+                    ],
+                },
+            },
+        ]);
+    });
+});
