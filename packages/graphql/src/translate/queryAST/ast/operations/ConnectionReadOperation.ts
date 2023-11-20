@@ -137,7 +137,7 @@ export class ConnectionReadOperation extends Operation {
 
     private transpileNested(context: QueryASTContext): OperationTranspileResult {
         if (!context.target || !this.relationship) throw new Error();
-        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({ type: this.relationship.type });
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
@@ -145,26 +145,28 @@ export class ConnectionReadOperation extends Operation {
             .withoutLabels()
             .related(relationship)
             .withDirection(relDirection)
-            .to(node);
+            .to(targetNode);
 
-        const nestedContext = context.push({ target: node, relationship });
+        const nestedContext = context.push({ target: targetNode, relationship });
 
         const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.getAuthFilterPredicate(nestedContext);
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
+            new Cypher.Call(sq).innerWith(targetNode)
+        );
 
         const filters = Cypher.and(...predicates, ...authPredicate);
 
-        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [node]);
+        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [targetNode]);
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
-            .map((f) => f.getProjectionField(node))
+            .map((f) => f.getProjectionField(targetNode))
             .forEach((p) => {
                 if (typeof p === "string") {
-                    nodeProjectionMap.set(p, node.property(p));
+                    nodeProjectionMap.set(p, targetNode.property(p));
                 } else {
                     nodeProjectionMap.set(p);
                 }
@@ -174,7 +176,7 @@ export class ConnectionReadOperation extends Operation {
             const targetNodeName = this.target.name;
             nodeProjectionMap.set({
                 __resolveType: new Cypher.Literal(targetNodeName),
-                __id: Cypher.id(node),
+                __id: Cypher.id(targetNode),
             });
         }
 
@@ -216,9 +218,13 @@ export class ConnectionReadOperation extends Operation {
 
         let extraWithOrder: Cypher.Clause | undefined;
         if (this.sortFields.length > 0) {
-            const sortFields = this.getSortFields({ context: nestedContext, nodeVar: node, edgeVar: relationship });
+            const sortFields = this.getSortFields({
+                context: nestedContext,
+                nodeVar: targetNode,
+                edgeVar: relationship,
+            });
 
-            extraWithOrder = new Cypher.With(relationship, node).orderBy(...sortFields);
+            extraWithOrder = new Cypher.With(relationship, targetNode).orderBy(...sortFields);
         }
 
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
@@ -256,14 +262,16 @@ export class ConnectionReadOperation extends Operation {
         }
         if (!hasTarget(context)) throw new Error("No parent node found!");
 
-        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
+        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
 
-        const { preSelection, selectionClause } = this.getSelectionClauses(context, node);
+        const { preSelection, selectionClause } = this.getSelectionClauses(context, targetNode);
 
         const predicates = this.filters.map((f) => f.getPredicate(context));
         const authPredicate = this.getAuthFilterPredicate(context);
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(context);
+        const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
+            new Cypher.Call(sq).innerWith(targetNode)
+        );
 
         const filters = Cypher.and(...predicates, ...authPredicate);
         const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
@@ -286,12 +294,12 @@ export class ConnectionReadOperation extends Operation {
                 selectionClause.where(filters);
             }
         }
-        const withNodeAndTotalCount = new Cypher.With([Cypher.collect(node), edgesVar]).with(edgesVar, [
+        const withNodeAndTotalCount = new Cypher.With([Cypher.collect(targetNode), edgesVar]).with(edgesVar, [
             Cypher.size(edgesVar),
             totalCount,
         ]);
 
-        const unwindClause = new Cypher.Unwind([edgesVar, node]).with(node, totalCount);
+        const unwindClause = new Cypher.Unwind([edgesVar, targetNode]).with(targetNode, totalCount);
         let paginationWith: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             paginationWith = new Cypher.With("*");
@@ -303,12 +311,12 @@ export class ConnectionReadOperation extends Operation {
                 paginationWith.skip(paginationField.skip);
             }
             if (this.sortFields.length > 0) {
-                const sortFields = this.getSortFields({ context, nodeVar: node, aliased: true });
+                const sortFields = this.getSortFields({ context, nodeVar: targetNode, aliased: true });
                 paginationWith.orderBy(...sortFields);
             }
         }
 
-        const withProjection = new Cypher.With([edgeProjectionMap, edgeVar], totalCount, node).with(
+        const withProjection = new Cypher.With([edgeProjectionMap, edgeVar], totalCount, targetNode).with(
             [Cypher.collect(edgeVar), edgesVar],
             totalCount
         );
