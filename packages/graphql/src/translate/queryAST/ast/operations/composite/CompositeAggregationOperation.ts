@@ -178,11 +178,7 @@ export class CompositeAggregationOperation extends Operation {
         const fieldSubqueries = this.fields.map((field) => {
             const returnVariable = new Cypher.Node();
             const nestedContext = context.setReturn(returnVariable);
-
             const nestedSubquery = this.createSubquery(field, nestedContext, aggregationProjectionMap, addWith);
-
-            // This one uses node
-
             const withClause: Cypher.With | undefined = this.createWithClause(context);
 
             return Cypher.concat(
@@ -194,13 +190,8 @@ export class CompositeAggregationOperation extends Operation {
 
         const nodeFieldSubqueries = this.nodeFields.map((field) => {
             const returnVariable = new Cypher.Node();
-
             const nestedContext = context.setReturn(returnVariable);
-
             const nestedSubquery = this.createSubquery(field, nestedContext, nodeMap, addWith);
-
-            // This one uses node
-
             const withClause: Cypher.With | undefined = this.createWithClause(context);
 
             return Cypher.concat(
@@ -217,11 +208,7 @@ export class CompositeAggregationOperation extends Operation {
         const edgeFieldSubqueries = this.edgeFields.map((field) => {
             const returnVariable = new Cypher.Node();
             const nestedContext = context.setReturn(returnVariable);
-
             const nestedSubquery = this.createSubquery(field, nestedContext, edgeMap, addWith, true);
-
-            // This one uses edge
-
             const withClause: Cypher.With | undefined = this.createWithClause(context);
 
             return Cypher.concat(
