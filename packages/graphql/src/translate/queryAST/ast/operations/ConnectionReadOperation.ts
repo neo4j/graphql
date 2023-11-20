@@ -151,16 +151,16 @@ export class ConnectionReadOperation extends Operation {
 
         const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
 
-        const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-        const authPredicate = this.getAuthFilterPredicate(nestedContext);
-
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
             new Cypher.Call(sq).innerWith(targetNode)
         );
 
+        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [targetNode]);
+
+        const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+        const authPredicate = this.getAuthFilterPredicate(nestedContext);
         const filters = Cypher.and(...predicates, ...authPredicate);
 
-        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [targetNode]);
         const nodeProjectionMap = new Cypher.Map();
         this.nodeFields
             .map((f) => f.getProjectionField(targetNode))
@@ -266,15 +266,17 @@ export class ConnectionReadOperation extends Operation {
 
         const { preSelection, selectionClause } = this.getSelectionClauses(context, targetNode);
 
-        const predicates = this.filters.map((f) => f.getPredicate(context));
-        const authPredicate = this.getAuthFilterPredicate(context);
+        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
             new Cypher.Call(sq).innerWith(targetNode)
         );
 
+        const authPredicate = this.getAuthFilterPredicate(context);
+
+        const predicates = this.filters.map((f) => f.getPredicate(context));
         const filters = Cypher.and(...predicates, ...authPredicate);
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
+
         const nodeProjectionMap = this.getProjectionMap(context);
 
         const edgeVar = new Cypher.NamedVariable("edge");
