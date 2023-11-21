@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 4.4.3
+
+### Patch Changes
+
+-   [#4306](https://github.com/neo4j/graphql/pull/4306) [`3be44c864`](https://github.com/neo4j/graphql/commit/3be44c864564ee2f9437d104e25f9065d61415a8) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix logical operators on interface connection filtering
+
 ## 4.4.2
 
 ### Patch Changes
