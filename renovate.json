@@ -7,7 +7,11 @@
         "automerge": false
     },
     "timezone": "Europe/London",
-    "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+    "schedule": [
+        "after 10pm every weekday",
+        "before 5am every weekday",
+        "every weekend"
+    ],
     "ignorePaths": [
         "**/node_modules/**",
         "**/bower_components/**",
@@ -34,7 +38,9 @@
         },
         {
             "matchPackagePatterns": ["graphql"],
-            "matchFiles": ["packages/package-tests/graphql-15/package.json"],
+            "matchFileNames": [
+                "packages/package-tests/graphql-15/package.json"
+            ],
             "allowedVersions": "15"
         }
     ]
