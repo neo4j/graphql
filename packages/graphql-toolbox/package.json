@@ -75,7 +75,7 @@
         "@tsconfig/create-react-app": "2.0.1",
         "@types/codemirror": "5.60.14",
         "@types/lodash.debounce": "4.0.9",
-        "@types/markdown-it": "13.0.6",
+        "@types/markdown-it": "13.0.7",
         "@types/prettier": "2.7.3",
         "@types/react-dom": "18.2.15",
         "@types/webpack": "5.28.5",
