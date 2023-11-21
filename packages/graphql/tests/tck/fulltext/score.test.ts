@@ -100,4 +100,126 @@ describe("Cypher -> fulltext -> Score", () => {
             }"
         `);
     });
+
+    test("with score filtering", async () => {
+        const query = gql`
+            query {
+                moviesFulltextMovieTitle(phrase: "a different name", where: { score: { min: 0.5 } }) {
+                    score
+                    movie {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, {});
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
+            WHERE ($param1 IN labels(this) AND var0 >= $param2)
+            RETURN this { .title } AS movie, var0 AS score"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"a different name\\",
+                \\"param1\\": \\"Movie\\",
+                \\"param2\\": 0.5
+            }"
+        `);
+    });
+
+    test("with sorting", async () => {
+        const query = gql`
+            query {
+                moviesFulltextMovieTitle(phrase: "a different name", sort: { movie: { title: DESC } }) {
+                    score
+                    movie {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, {});
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
+            WHERE $param1 IN labels(this)
+            WITH *
+            ORDER BY this.title DESC
+            RETURN this { .title } AS movie, var0 AS score"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"a different name\\",
+                \\"param1\\": \\"Movie\\"
+            }"
+        `);
+    });
+
+    test("with score sorting", async () => {
+        const query = gql`
+            query {
+                moviesFulltextMovieTitle(phrase: "a different name", sort: { score: ASC }) {
+                    score
+                    movie {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, {});
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
+            WHERE $param1 IN labels(this)
+            WITH *
+            ORDER BY var0 ASC
+            RETURN this { .title } AS movie, var0 AS score"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"a different name\\",
+                \\"param1\\": \\"Movie\\"
+            }"
+        `);
+    });
+
+    test("with score and normal sorting", async () => {
+        const query = gql`
+            query {
+                moviesFulltextMovieTitle(
+                    phrase: "a different name"
+                    sort: [{ score: ASC }, { movie: { title: DESC } }]
+                ) {
+                    score
+                    movie {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, {});
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
+            WHERE $param1 IN labels(this)
+            WITH *
+            ORDER BY var0 ASC, this.title DESC
+            RETURN this { .title } AS movie, var0 AS score"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"a different name\\",
+                \\"param1\\": \\"Movie\\"
+            }"
+        `);
+    });
 });

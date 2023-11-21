@@ -30,13 +30,14 @@ import { ReadOperation } from "./ReadOperation";
 export type FulltextOptions = {
     index: string;
     phrase: string;
-    score?: Cypher.Variable;
+    score: Cypher.Variable;
 };
 
 export class FulltextOperation extends ReadOperation {
     private fulltext: FulltextOptions;
 
     private scoreField: FulltextScoreField | undefined;
+    private scoreVariable: Cypher.Variable;
 
     constructor({
         target,
@@ -44,12 +45,14 @@ export class FulltextOperation extends ReadOperation {
         directed,
         fulltext,
         scoreField,
+        scoreVariable,
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         directed?: boolean;
         fulltext: FulltextOptions;
         scoreField: FulltextScoreField | undefined;
+        scoreVariable: Cypher.Variable;
     }) {
         super({
             target,
@@ -59,6 +62,7 @@ export class FulltextOperation extends ReadOperation {
 
         this.fulltext = fulltext;
         this.scoreField = scoreField;
+        this.scoreVariable = scoreVariable;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -85,15 +89,7 @@ export class FulltextOperation extends ReadOperation {
 
         let fulltextClause: Cypher.Yield | Cypher.With = Cypher.db.index.fulltext
             .queryNodes(indexName, phraseParam)
-            .yield(["node", node]);
-
-        if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField(node);
-
-            fulltextClause = Cypher.db.index.fulltext
-                .queryNodes(indexName, phraseParam)
-                .yield(["node", node], ["score", scoreProjection.score]);
-        }
+            .yield(["node", node], ["score", this.scoreVariable]);
 
         const expectedLabels = mapLabelsWithContext(this.target.getLabels(), context.neo4jGraphQLContext);
 

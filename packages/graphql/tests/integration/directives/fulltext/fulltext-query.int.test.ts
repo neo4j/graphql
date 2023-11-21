@@ -37,7 +37,7 @@ function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): strin
             name: String!
             born: Int!
             actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-        }
+        } 
 
         type ${movieType.name} {
             title: String!
@@ -387,6 +387,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
+
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,

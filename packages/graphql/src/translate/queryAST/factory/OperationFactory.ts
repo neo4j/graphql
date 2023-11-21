@@ -18,8 +18,8 @@
  */
 
 import { mergeDeep } from "@graphql-tools/utils";
-import type * as Cypher from "@neo4j/cypher-builder";
-import type { ResolveTree } from "graphql-parse-resolve-info";
+import * as Cypher from "@neo4j/cypher-builder";
+import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
@@ -34,6 +34,7 @@ import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { CreateOperation } from "../ast/operations/CreateOperation";
@@ -204,6 +205,7 @@ export class OperationsFactory {
         return {
             index: indexName,
             phrase: indexInput.phrase,
+            score: new Cypher.Variable(),
         };
     }
 
@@ -223,25 +225,42 @@ export class OperationsFactory {
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
 
         let resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
+        let fieldsByTypeName = resolveTree.fieldsByTypeName;
+        let resolverArgs = resolveTree.args;
         if (isConcreteEntity(entity)) {
             const fulltextOptions = this.getFulltextOptions(context);
             let scoreField: FulltextScoreField | undefined;
+            let scoreFilter: FulltextScoreFilter | undefined;
 
             // Compatibility of top level operations
             const fulltextOperationDeprecatedFields =
                 resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
 
             if (fulltextOperationDeprecatedFields) {
+                const scoreWhere = resolveTreeWhere.score;
                 resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
 
                 const scoreRawField = fulltextOperationDeprecatedFields.score;
-                resolveTree = fulltextOperationDeprecatedFields[entity.singular]!;
 
+                const nestedResolveTree: Record<string, any> = fulltextOperationDeprecatedFields[entity.singular] || {};
+                resolverArgs = { ...(nestedResolveTree?.args || {}), ...resolveTree.args };
+
+                sortOptions = {
+                    limit: sortOptions.limit,
+                    offset: sortOptions.offset,
+                    sort: filterTruthy((sortOptions.sort || []).map((field) => field[entity.singular] || field)),
+                };
+                fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
                 if (scoreRawField) {
-                    if (!fulltextOptions.score) {
-                        throw new Error("Missing fulltext score variable");
-                    }
                     scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
+                }
+                if (scoreWhere) {
+                    scoreFilter = new FulltextScoreFilter({
+                        scoreVariable: fulltextOptions.score,
+                        min: scoreWhere.min,
+                        max: scoreWhere.max,
+                    });
                 }
             }
 
@@ -250,25 +269,45 @@ export class OperationsFactory {
                 targetOperations: ["READ"],
                 context,
             });
+
             const operation = new FulltextOperation({
                 target: entity,
                 relationship,
-                directed: Boolean(resolveTree.args?.directed ?? true),
+                directed: Boolean(resolverArgs.directed ?? true),
                 fulltext: fulltextOptions,
                 scoreField,
+                scoreVariable: fulltextOptions.score,
             });
 
-            // const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where)
-            //     ? resolveTree.args.where
-            //     : {};
-
-            return this.hydrateReadOperation({
+            this.hydrateOperation({
                 operation,
                 entity,
-                resolveTree,
+                fieldsByTypeName: fieldsByTypeName,
                 context,
                 whereArgs: resolveTreeWhere,
             });
+
+            if (scoreFilter) {
+                operation.addFilter(scoreFilter);
+            }
+            // Override sort to support score
+            const sortOptions2 = this.getOptions(entity, sortOptions);
+
+            if (sortOptions2) {
+                const sort = this.sortAndPaginationFactory.createSortFields(
+                    sortOptions2,
+                    entity,
+                    fulltextOptions.score
+                );
+                operation.addSort(...sort);
+
+                const pagination = this.sortAndPaginationFactory.createPagination(sortOptions2);
+                if (pagination) {
+                    operation.addPagination(pagination);
+                }
+            }
+
+            return operation;
         } else {
             throw new Error("Fulltext nor supported on interfaces");
         }
@@ -737,31 +776,38 @@ export class OperationsFactory {
         };
     }
 
-    private hydrateReadOperation<T extends ReadOperation>({
+    private hydrateOperation<T extends ReadOperation>({
         entity,
         operation,
-        resolveTree,
-        context,
         whereArgs,
+        context,
+        sortArgs,
+        fieldsByTypeName,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
-        resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
+        sortArgs?: Record<string, any>;
+        fieldsByTypeName: FieldsByTypeName;
     }): T {
-        let projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
+        const concreteProjectionFields = { ...fieldsByTypeName[entity.name] };
         // Get the abstract types of the interface
         const entityInterfaces = entity.compositeEntities;
 
-        const interfacesFields = filterTruthy(entityInterfaces.map((i) => resolveTree.fieldsByTypeName[i.name]));
+        const interfacesFields = filterTruthy(entityInterfaces.map((i) => fieldsByTypeName[i.name]));
 
-        projectionFields = mergeDeep<Record<string, ResolveTree>[]>([...interfacesFields, projectionFields]);
-
+        const projectionFields = mergeDeep<Record<string, ResolveTree>[]>([
+            ...interfacesFields,
+            concreteProjectionFields,
+        ]);
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
+
+        const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
+
         const authAttributeFilters = this.createAttributeAuthFilters({
             entity,
             context,
@@ -773,8 +819,6 @@ export class OperationsFactory {
             rawFields: projectionFields,
             when: "BEFORE",
         });
-
-        const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
 
         operation.setFields(fields);
         operation.setFilters(filters);
@@ -790,9 +834,44 @@ export class OperationsFactory {
         if (authAttributeValidate) {
             operation.addAuthFilters(...authAttributeValidate);
         }
-        this.hydrateCompositeReadOperationWithPagination(entity, operation, resolveTree);
 
+        if (sortArgs) {
+            const sortOptions = this.getOptions(entity, sortArgs);
+
+            if (sortOptions) {
+                const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity);
+                operation.addSort(...sort);
+
+                const pagination = this.sortAndPaginationFactory.createPagination(sortOptions);
+                if (pagination) {
+                    operation.addPagination(pagination);
+                }
+            }
+        }
         return operation;
+    }
+
+    private hydrateReadOperation<T extends ReadOperation>({
+        entity,
+        operation,
+        resolveTree,
+        context,
+        whereArgs,
+    }: {
+        entity: ConcreteEntityAdapter;
+        operation: T;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        whereArgs: Record<string, any>;
+    }): T {
+        return this.hydrateOperation({
+            entity,
+            operation,
+            context,
+            whereArgs,
+            fieldsByTypeName: resolveTree.fieldsByTypeName,
+            sortArgs: (resolveTree.args.options as Record<string, any>) || {},
+        });
     }
 
     private hydrateAggregationOperation<T extends AggregationOperation | CompositeAggregationOperation>({
@@ -892,7 +971,10 @@ export class OperationsFactory {
         return operation;
     }
 
-    private getOptions(entity: EntityAdapter, options: Record<string, any>): GraphQLOptionsArg | undefined {
+    private getOptions(entity: EntityAdapter, options?: Record<string, any>): GraphQLOptionsArg | undefined {
+        if (!options) {
+            return undefined;
+        }
         const limitDirective = isUnionEntity(entity) ? undefined : entity.annotations.limit;
 
         let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
