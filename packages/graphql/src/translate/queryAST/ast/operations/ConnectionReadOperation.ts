@@ -260,7 +260,9 @@ export class ConnectionReadOperation extends Operation {
         if (this.relationship) {
             return this.transpileNested(context);
         }
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
 
         const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
 
