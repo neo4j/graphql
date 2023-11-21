@@ -20,7 +20,6 @@
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import gql from "graphql-tag";
 import { graphql } from "graphql";
 import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
@@ -38,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 id: ID!
                 email: String!
@@ -193,7 +192,6 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
         } finally {
             await session.close();
         }
-
     });
 
     afterAll(async () => {
@@ -236,7 +234,13 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
         });
         expect(response.errors).toBeFalsy();
         expect(response.data?.[Group.plural]).toStrictEqual(
-            expect.arrayContaining([expect.objectContaining({ id: "family_id_1", name: "group-1", members: [expect.objectContaining({id: "person-1", name: "SomePerson"})] })])
+            expect.arrayContaining([
+                expect.objectContaining({
+                    id: "family_id_1",
+                    name: "group-1",
+                    members: [expect.objectContaining({ id: "person-1", name: "SomePerson" })],
+                }),
+            ])
         );
     });
 
@@ -269,6 +273,5 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             contextValue: neo4j.getContextValues({ jwt: { uid: "not-user-1", email: "some-email", roles: ["admin"] } }),
         });
         expect(response.errors?.[0]?.message).toContain("Forbidden");
-      
     });
 });
