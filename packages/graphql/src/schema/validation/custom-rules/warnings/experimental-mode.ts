@@ -27,7 +27,7 @@ export function WarnIfExperimentalMode(experimental: boolean) {
             Document() {
                 if (experimental === true && !warningAlreadyIssued) {
                     console.warn(
-                        "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+                        "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
                     );
 
                     warningAlreadyIssued = true;
