@@ -64,6 +64,7 @@ import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-d
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
+import { WarnIfExperimentalMode } from "./custom-rules/warnings/experimental-mode";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -211,6 +212,7 @@ function runValidationRulesOnFilteredDocument({
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfListOfListsFieldDefinition,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(experimental),
+            WarnIfExperimentalMode(experimental),
         ],
         schema
     );
