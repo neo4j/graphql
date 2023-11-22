@@ -70,14 +70,30 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { _count: count(this), _id: { _shortest: min(this.id), _longest: max(this.id) }, _title: { _shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END), _longest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) > size(aggVar) THEN current
-                ELSE aggVar
-            END) }, _imdbRating: { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) }, _createdAt: { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN count(this) AS var0
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var1
+            }
+            CALL {
+                MATCH (this:Movie)
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { _longest: head(list), _shortest: last(list) } AS var2
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var3
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var4
+            }
+            RETURN { _count: var0, _id: var1, _title: var2, _imdbRating: var3, _createdAt: var4 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

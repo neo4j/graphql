@@ -52,8 +52,11 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { screenTime: { min: min(this.screenTime) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.screenTime) } AS var0
+            }
+            RETURN { screenTime: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -73,8 +76,11 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { screenTime: { max: max(this.screenTime) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { max: max(this.screenTime) } AS var0
+            }
+            RETURN { screenTime: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -95,8 +101,11 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { screenTime: { min: min(this.screenTime), max: max(this.screenTime) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.screenTime), max: max(this.screenTime) } AS var0
+            }
+            RETURN { screenTime: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

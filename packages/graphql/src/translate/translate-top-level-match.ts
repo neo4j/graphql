@@ -20,7 +20,7 @@
 import type { GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import Cypher from "@neo4j/cypher-builder";
-import { createWherePredicate } from "./where/create-where-predicate";
+import { createWhereNodePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import type { AuthorizationOperation } from "../types/authorization";
@@ -95,6 +95,7 @@ export function createMatchClause({
     }
 
     let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
+
     const authorizationPredicateReturn = createAuthorizationBeforePredicate({
         context,
         nodes: [
@@ -105,7 +106,6 @@ export function createMatchClause({
         ],
         operations: [operation],
     });
-
     if (authorizationPredicateReturn?.predicate) {
         whereClause = new Cypher.With("*");
     } else {
@@ -116,7 +116,7 @@ export function createMatchClause({
     if (where) {
         const entity = getEntityAdapterFromNode(node, context);
 
-        const { predicate: whereOp, preComputedSubqueries } = createWherePredicate({
+        const { predicate: whereOp, preComputedSubqueries } = createWhereNodePredicate({
             targetElement: matchNode,
             whereInput: where,
             context,

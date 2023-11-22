@@ -50,8 +50,11 @@ describe("Cypher Aggregations Count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { count: count(this) }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN count(this) AS var0
+            }
+            RETURN { count: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -69,9 +72,12 @@ describe("Cypher Aggregations Count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $param0
-            RETURN { count: count(this) }"
+            "CALL {
+                MATCH (this:Movie)
+                WHERE this.title = $param0
+                RETURN count(this) AS var0
+            }
+            RETURN { count: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

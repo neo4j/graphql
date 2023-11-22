@@ -25,6 +25,8 @@ import Cypher from "@neo4j/cypher-builder";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { compileCypher } from "../utils/compile-cypher";
+import { Attribute } from "../schema-model/attribute/Attribute";
+import { GraphQLBuiltInScalarType, ScalarType } from "../schema-model/attribute/AttributeType";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -88,7 +90,20 @@ describe("createProjectionAndParams", () => {
 
         const context = new ContextBuilder({
             schemaModel: new Neo4jGraphQLSchemaModel({
-                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                concreteEntities: [
+                    new ConcreteEntity({
+                        name: "Movie",
+                        labels: ["Movie"],
+                        attributes: [
+                            new Attribute({
+                                name: "title",
+                                type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                                annotations: [],
+                                args: [],
+                            }),
+                        ],
+                    }),
+                ],
                 compositeEntities: [],
                 operations: {},
                 annotations: [],
@@ -170,7 +185,20 @@ describe("createProjectionAndParams", () => {
 
         const context = new ContextBuilder({
             schemaModel: new Neo4jGraphQLSchemaModel({
-                concreteEntities: [new ConcreteEntity({ name: "Movie", labels: ["Movie"] })],
+                concreteEntities: [
+                    new ConcreteEntity({
+                        name: "Movie",
+                        labels: ["Movie"],
+                        attributes: [
+                            new Attribute({
+                                name: "title",
+                                type: new ScalarType(GraphQLBuiltInScalarType.String, true),
+                                annotations: [],
+                                args: [],
+                            }),
+                        ],
+                    }),
+                ],
                 compositeEntities: [],
                 operations: {},
                 annotations: [],

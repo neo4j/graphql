@@ -53,11 +53,14 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END) } }"
+            "CALL {
+                MATCH (this:Movie)
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { shortest: last(list) } AS var0
+            }
+            RETURN { title: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -77,11 +80,14 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { title: { longest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) > size(aggVar) THEN current
-                ELSE aggVar
-            END) } }"
+            "CALL {
+                MATCH (this:Movie)
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { longest: head(list) } AS var0
+            }
+            RETURN { title: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -102,14 +108,14 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END), longest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) > size(aggVar) THEN current
-                ELSE aggVar
-            END) } }"
+            "CALL {
+                MATCH (this:Movie)
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var0
+            }
+            RETURN { title: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -129,12 +135,15 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.testId = $param0
-            RETURN { title: { shortest: reduce(aggVar = collect(this.title)[0], current IN collect(this.title) | CASE
-                WHEN size(current) < size(aggVar) THEN current
-                ELSE aggVar
-            END) } }"
+            "CALL {
+                MATCH (this:Movie)
+                WHERE this.testId = $param0
+                WITH this
+                ORDER BY size(this.title) DESC
+                WITH collect(this.title) AS list
+                RETURN { shortest: last(list) } AS var0
+            }
+            RETURN { title: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

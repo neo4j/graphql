@@ -21,15 +21,11 @@ import type Cypher from "@neo4j/cypher-builder";
 import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTContext } from "../QueryASTContext";
 
-export type OperationTranspileOptions = {
-    context: QueryASTContext;
-};
-
 export type OperationTranspileResult = {
     projectionExpr: Cypher.Expr;
     clauses: Cypher.Clause[];
 };
 
 export abstract class Operation extends QueryASTNode {
-    abstract transpile(options: OperationTranspileOptions): OperationTranspileResult;
+    abstract transpile(context: QueryASTContext): OperationTranspileResult;
 }

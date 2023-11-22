@@ -7,6 +7,18 @@ query TopLevelAggregate {
     }
 }
 
+query TopLevelAggregateWithMultipleFields {
+    peopleAggregate {
+        count
+        name {
+            shortest
+        }
+        born {
+            max
+        }
+    }
+}
+
 query NestedAggregation {
     people {
         name
@@ -33,7 +45,11 @@ query AggregationWhereWithinNestedRelationships {
 }
 
 query AggregationWhereWithinNestedConnections {
-    people(where: { moviesConnection_SOME: { node: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } } } } }) {
+    people(
+        where: {
+            moviesConnection_SOME: { node: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } } } }
+        }
+    ) {
         name
     }
 }
@@ -61,6 +77,28 @@ query DeeplyNestedCount {
                     count
                 }
             }
+        }
+    }
+}
+
+query InterfacesAggregations {
+    movieLikesAggregate {
+        title {
+            longest
+            shortest
+        }
+    }
+}
+
+query InterfacesAggregationsWithTwoFields {
+    movieLikesAggregate {
+        title {
+            longest
+            shortest
+        }
+        released {
+            max
+            min
         }
     }
 }

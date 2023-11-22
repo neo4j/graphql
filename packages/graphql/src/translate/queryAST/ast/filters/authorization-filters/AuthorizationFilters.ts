@@ -28,17 +28,21 @@ export class AuthorizationFilters extends Filter {
     // Maybe we can merge these into a single array
     private validationFilters: AuthorizationRuleFilter[] = [];
     private whereFilters: AuthorizationRuleFilter[] = [];
+    private conditionForEvaluation: Cypher.Predicate | undefined;
 
     constructor({
         validationFilters,
         whereFilters,
+        conditionForEvaluation,
     }: {
         validationFilters: AuthorizationRuleFilter[];
         whereFilters: AuthorizationRuleFilter[];
+        conditionForEvaluation?: Cypher.Predicate;
     }) {
         super();
         this.validationFilters = validationFilters;
         this.whereFilters = whereFilters;
+        this.conditionForEvaluation = conditionForEvaluation;
     }
 
     public getPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
@@ -47,10 +51,10 @@ export class AuthorizationFilters extends Filter {
 
         let validatePredicate: Cypher.Predicate | undefined;
         if (validateInnerPredicate) {
-            validatePredicate = Cypher.apoc.util.validatePredicate(
-                Cypher.not(validateInnerPredicate),
-                AUTH_FORBIDDEN_ERROR
-            );
+            const predicate = this.conditionForEvaluation
+                ? Cypher.and(this.conditionForEvaluation, Cypher.not(validateInnerPredicate))
+                : Cypher.not(validateInnerPredicate);
+            validatePredicate = Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR);
         }
 
         return Cypher.and(wherePredicate, validatePredicate);

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Operation } from "../operations/operations";
 import { Field } from "./Field";
-import Cypher from "@neo4j/cypher-builder";
 
 export class OperationField extends Field {
     private operation: Operation;
@@ -46,7 +46,7 @@ export class OperationField extends Field {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const subqueryContext = new QueryASTContext({ ...context, returnVariable: new Cypher.Variable() });
-        const result = this.operation.transpile({ context: subqueryContext });
+        const result = this.operation.transpile(subqueryContext);
         this.projectionExpr = result.projectionExpr;
         return result.clauses;
     }

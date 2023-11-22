@@ -20,6 +20,11 @@
 export const typeDefs = `#graphql
     union Likable = Person | Movie
 
+    interface MovieLike {
+        title: String!
+        released: Int
+    }
+
     type Person {
         name: String!
         born: Int!
@@ -30,7 +35,7 @@ export const typeDefs = `#graphql
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 
-    type Movie
+    type Movie implements MovieLike
         @fulltext(
             indexes: [
                 { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
@@ -57,8 +62,9 @@ export const typeDefs = `#graphql
         favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
-    type MovieClone {
+    type MovieClone implements MovieLike {
         title: String!
+        released: Int
         favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
     }
     type PersonClone {

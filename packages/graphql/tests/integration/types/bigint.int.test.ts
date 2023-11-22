@@ -153,7 +153,7 @@ describe("BigInt", () => {
         });
 
         test("should successfully query an node with a BigInt property using in where", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
             const File = new UniqueType("File");
 
             const typeDefs = `
@@ -190,7 +190,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { executionContext: driver, sessionConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
