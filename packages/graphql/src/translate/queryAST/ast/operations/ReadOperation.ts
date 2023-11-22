@@ -296,8 +296,13 @@ export class ReadOperation extends Operation {
     private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
         const projection = this.getProjectionMap(context);
         if (context.shouldCollect) {
-            return new Cypher.Return([Cypher.collect(projection), returnVariable]);
+            const collectProj = Cypher.collect(projection);
+            if (context.shouldCollect) {
+                collectProj.distinct();
+            }
+            return new Cypher.Return([collectProj, returnVariable]);
         }
+
         return new Cypher.Return([projection, returnVariable]);
     }
 

@@ -24,7 +24,7 @@ import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { META_CYPHER_VARIABLE } from "../constants";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -37,6 +37,11 @@ import { filterMetaVariable } from "../translate/subscriptions/filter-meta-varia
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
+import Debug from "debug";
+import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export default async function translateUpdate({
     node,
@@ -460,12 +465,59 @@ export default async function translateUpdate({
         }
     }
 
-    const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
+    const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!concreteEntityAdapter) {
+        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
+    }
+
+    let returnStatement;
+    if (nodeProjection?.fieldsByTypeName) {
+        const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
+            resolveTree,
+            concreteEntityAdapter,
+            context
+        );
+        const queryASTEnv = new QueryASTEnv();
+        const projectedVariables: Cypher.Node[] = [];
+        const cyVarName = new Cypher.NamedNode(varName);
+        //const varName = new Cypher.NamedNode("thisNamed");
+        /**
+         * Currently, the create projections are resolved separately for each input,
+         * the following block reuses the same ReadOperation for each of the variable names generated during the create operations.
+         **/
+        const queryASTContext = new QueryASTContext({
+            target: cyVarName,
+            env: queryASTEnv,
+            neo4jGraphQLContext: context,
+            returnVariable: new Cypher.NamedVariable("data"),
+            shouldCollect: true,
+            shouldDistinct: true,
+        });
+        debug(queryAST.print());
+        const queryASTResult = queryAST.transpile(queryASTContext);
+        //let callblock: Cypher.Clause;
+        if (queryASTResult.clauses.length) {
+            projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
+
+            const clause = Cypher.concat(...queryASTResult.clauses);
+            //callblock = new Cypher.Call(clause).innerWith(cyVarName);
+            //callblock = clause;
+            returnStatement = clause;
+
+            //console.log(callblock.build());
+        } else {
+            if (!returnStatement) {
+                returnStatement = new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
+            }
+        }
+    }
+
+    //const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
+        // const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
 
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
@@ -475,15 +527,15 @@ export default async function translateUpdate({
             updateStr,
             connectStrs.join("\n"),
             createStrs.join("\n"),
-            ...(deleteStr.length ||
+            /*       ...(deleteStr.length ||
             connectStrs.length ||
             disconnectStrs.length ||
             createStrs.length ||
             projectionSubqueryStr
                 ? [`WITH *`]
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-
-            projectionSubqueryStr,
+ */
+            // projectionSubqueryStr,
             ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [compileCypher(projAuth, env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
@@ -496,6 +548,7 @@ export default async function translateUpdate({
                   ]
                 : []),
             compileCypher(returnStatement, env),
+            ...(context.subscriptionsEnabled ? [`,\ncollect(DISTINCT m) as ${META_CYPHER_VARIABLE}`] : []),
         ]
             .filter(Boolean)
             .join("\n");

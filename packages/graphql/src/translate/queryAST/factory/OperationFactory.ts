@@ -80,7 +80,9 @@ export class OperationsFactory {
         if (isConcreteEntity(entity)) {
             const operationMatch = parseOperationField(resolveTree.name, entity);
             if (operationMatch.isCreate) {
-                return this.createCreateOperation(entity, resolveTree, context); // TODO: move this to separate method?
+                return this.createMutationOperation(entity, resolveTree, context); // TODO: move this to separate method?
+            } else if (operationMatch.isUpdate) {
+                return this.createMutationOperation(entity, resolveTree, context); // TODO: move this to separate method?
             } else if (operationMatch.isRead) {
                 const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -132,13 +134,18 @@ export class OperationsFactory {
         return topLevelConnectionResolveTree;
     }
 
-    private createCreateOperation(
+    /**
+     * Generate a dummy mutation Tree Node used to migrate the current mutation responses
+     */
+    private createMutationOperation(
         entity: ConcreteEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): CreateOperation {
         const responseFields = Object.values(
-            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ??
+                resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.update] ??
+                {}
         );
         const createOP = new CreateOperation({ target: entity });
         const projectionFields = responseFields
