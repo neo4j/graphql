@@ -142,101 +142,89 @@ export class OperationsFactory {
     }
 
     public createFulltextOperation(
-        entityOrRel: EntityAdapter | RelationshipAdapter,
+        entity: ConcreteEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): FulltextOperation {
-        const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
-        const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
-
         let resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
         let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
         let fieldsByTypeName = resolveTree.fieldsByTypeName;
         let resolverArgs = resolveTree.args;
-        if (isConcreteEntity(entity)) {
-            const fulltextOptions = this.getFulltextOptions(context);
-            let scoreField: FulltextScoreField | undefined;
-            let scoreFilter: FulltextScoreFilter | undefined;
+        const fulltextOptions = this.getFulltextOptions(context);
+        let scoreField: FulltextScoreField | undefined;
+        let scoreFilter: FulltextScoreFilter | undefined;
 
-            // Compatibility of top level operations
-            const fulltextOperationDeprecatedFields =
-                resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
+        // Compatibility of top level operations
+        const fulltextOperationDeprecatedFields =
+            resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
 
-            if (fulltextOperationDeprecatedFields) {
-                const scoreWhere = resolveTreeWhere.score;
-                resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
+        if (fulltextOperationDeprecatedFields) {
+            const scoreWhere = resolveTreeWhere.score;
+            resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
 
-                const scoreRawField = fulltextOperationDeprecatedFields.score;
+            const scoreRawField = fulltextOperationDeprecatedFields.score;
 
-                const nestedResolveTree: Record<string, any> = fulltextOperationDeprecatedFields[entity.singular] || {};
-                resolverArgs = { ...(nestedResolveTree?.args || {}), ...resolveTree.args };
+            const nestedResolveTree: Record<string, any> = fulltextOperationDeprecatedFields[entity.singular] || {};
+            resolverArgs = { ...(nestedResolveTree?.args || {}), ...resolveTree.args };
 
-                sortOptions = {
-                    limit: sortOptions.limit,
-                    offset: sortOptions.offset,
-                    sort: filterTruthy((sortOptions.sort || []).map((field) => field[entity.singular] || field)),
-                };
-                fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
-                if (scoreRawField) {
-                    scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
-                }
-                if (scoreWhere) {
-                    scoreFilter = new FulltextScoreFilter({
-                        scoreVariable: fulltextOptions.score,
-                        min: scoreWhere.min,
-                        max: scoreWhere.max,
-                    });
-                }
+            sortOptions = {
+                limit: sortOptions.limit,
+                offset: sortOptions.offset,
+                sort: filterTruthy((sortOptions.sort || []).map((field) => field[entity.singular] || field)),
+            };
+            fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
+            if (scoreRawField) {
+                scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
             }
-
-            checkEntityAuthentication({
-                entity: entity.entity,
-                targetOperations: ["READ"],
-                context,
-            });
-
-            const operation = new FulltextOperation({
-                target: entity,
-                relationship,
-                directed: Boolean(resolverArgs.directed ?? true),
-                fulltext: fulltextOptions,
-                scoreField,
-                scoreVariable: fulltextOptions.score,
-            });
-
-            if (scoreFilter) {
-                operation.addFilters(scoreFilter);
+            if (scoreWhere) {
+                scoreFilter = new FulltextScoreFilter({
+                    scoreVariable: fulltextOptions.score,
+                    min: scoreWhere.min,
+                    max: scoreWhere.max,
+                });
             }
-
-            this.hydrateOperation({
-                operation,
-                entity,
-                fieldsByTypeName: fieldsByTypeName,
-                context,
-                whereArgs: resolveTreeWhere,
-            });
-
-            // Override sort to support score
-            const sortOptions2 = this.getOptions(entity, sortOptions);
-
-            if (sortOptions2) {
-                const sort = this.sortAndPaginationFactory.createSortFields(
-                    sortOptions2,
-                    entity,
-                    fulltextOptions.score
-                );
-                operation.addSort(...sort);
-
-                const pagination = this.sortAndPaginationFactory.createPagination(sortOptions2);
-                if (pagination) {
-                    operation.addPagination(pagination);
-                }
-            }
-
-            return operation;
-        } else {
-            throw new Error("Fulltext nor supported on interfaces");
         }
+
+        checkEntityAuthentication({
+            entity: entity.entity,
+            targetOperations: ["READ"],
+            context,
+        });
+
+        const operation = new FulltextOperation({
+            target: entity,
+            directed: Boolean(resolverArgs.directed ?? true),
+            fulltext: fulltextOptions,
+            scoreField,
+            scoreVariable: fulltextOptions.score,
+        });
+
+        if (scoreFilter) {
+            operation.addFilters(scoreFilter);
+        }
+
+        this.hydrateOperation({
+            operation,
+            entity,
+            fieldsByTypeName: fieldsByTypeName,
+            context,
+            whereArgs: resolveTreeWhere,
+        });
+
+        // Override sort to support score
+        const sortOptions2 = this.getOptions(entity, sortOptions);
+
+        if (sortOptions2) {
+            const sort = this.sortAndPaginationFactory.createSortFields(sortOptions2, entity, fulltextOptions.score);
+            operation.addSort(...sort);
+
+            const pagination = this.sortAndPaginationFactory.createPagination(sortOptions2);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
+        return operation;
     }
 
     public createReadOperation(
