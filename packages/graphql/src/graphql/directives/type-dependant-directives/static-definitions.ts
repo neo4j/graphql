@@ -73,6 +73,17 @@ export const AUTHENTICATION_OPERATION = new GraphQLEnumType({
     },
 });
 
+export const SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT = new GraphQLEnumType({
+    name: "SubscriptionsAuthorizationFilterEvent",
+    values: {
+        CREATED: { value: "CREATED" },
+        UPDATED: { value: "UPDATED" },
+        DELETED: { value: "DELETED" },
+        RELATIONSHIP_CREATED: { value: "RELATIONSHIP_CREATED" },
+        RELATIONSHIP_DELETED: { value: "RELATIONSHIP_DELETED" },
+    },
+});
+
 export function getStaticAuthorizationDefinitions(
     JWTPayloadDefinition?: ObjectTypeDefinitionNode
 ): Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> {
@@ -81,11 +92,13 @@ export function getStaticAuthorizationDefinitions(
     const authorizationValidateOperation = astFromEnumType(AUTHORIZATION_VALIDATE_OPERATION, schema);
     const authorizationFilterOperation = astFromEnumType(AUTHORIZATION_FILTER_OPERATION, schema);
     const authenticationOperation = astFromEnumType(AUTHENTICATION_OPERATION, schema);
+    const subscriptionsAuthorizationFilterOperation = astFromEnumType(SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT, schema);
     const ASTs: Array<InputObjectTypeDefinitionNode | EnumTypeDefinitionNode> = [
         authorizationValidateStage,
         authorizationValidateOperation,
         authorizationFilterOperation,
         authenticationOperation,
+        subscriptionsAuthorizationFilterOperation,
     ];
 
     const JWTPayloadWhere = createJWTPayloadWhere(schema, JWTPayloadDefinition);

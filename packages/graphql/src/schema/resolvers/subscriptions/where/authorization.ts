@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import type { SubscriptionsAuthorizationFilterEvent } from "../../../../schema-model/annotation/SubscriptionsAuthorizationAnnotation";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { SubscriptionsEvent } from "../../../../types";
 import type { Neo4jGraphQLComposedSubscriptionsContext } from "../../composition/wrap-subscription";
+import type { SubscriptionEventType } from "../types";
 import { filterByAuthorizationRules } from "./filters/filter-by-authorization-rules";
 import { multipleConditionsAggregationMap } from "./utils/multiple-conditions-aggregation-map";
 import { populateWhereParams } from "./utils/populate-where-params";
@@ -36,7 +38,7 @@ export function subscriptionAuthorization({
     const subscriptionsAuthorization = entity.annotations.subscriptionsAuthorization;
 
     const matchedRules = (subscriptionsAuthorization?.filter || []).filter((rule) =>
-        rule.events.some((e) => e.toLowerCase() === event.event)
+        rule.events.some((e) => authorizationEventMatchesEvent(e, event.event))
     );
 
     if (!matchedRules.length) {
@@ -59,4 +61,22 @@ export function subscriptionAuthorization({
     });
 
     return multipleConditionsAggregationMap.OR(results);
+}
+
+function authorizationEventMatchesEvent(
+    authorizationEvent: SubscriptionsAuthorizationFilterEvent,
+    event: SubscriptionEventType
+): boolean {
+    switch (authorizationEvent) {
+        case "CREATED":
+            return event === "create";
+        case "UPDATED":
+            return event === "update";
+        case "DELETED":
+            return event === "delete";
+        case "RELATIONSHIP_CREATED":
+            return event === "create_relationship";
+        case "RELATIONSHIP_DELETED":
+            return event === "delete_relationship";
+    }
 }
