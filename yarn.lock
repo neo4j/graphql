@@ -3600,11 +3600,11 @@ __metadata:
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.40.0
     "@tsconfig/create-react-app": 2.0.1
-    "@types/codemirror": 5.60.14
+    "@types/codemirror": 5.60.15
     "@types/lodash.debounce": 4.0.9
     "@types/markdown-it": 13.0.7
     "@types/prettier": 2.7.3
-    "@types/react-dom": 18.2.15
+    "@types/react-dom": 18.2.16
     "@types/webpack": 5.28.5
     autoprefixer: 10.4.16
     classnames: 2.3.2
@@ -3673,9 +3673,9 @@ __metadata:
     "@types/node": 20.9.3
     "@types/pluralize": 0.0.33
     "@types/randomstring": 1.1.11
-    "@types/semver": 7.5.5
+    "@types/semver": 7.5.6
     "@types/supertest": 2.0.16
-    "@types/ws": 8.5.9
+    "@types/ws": 8.5.10
     camelcase: ^6.3.0
     debug: ^4.3.4
     dedent: 1.5.1
@@ -7256,12 +7256,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/codemirror@npm:5.60.14":
-  version: 5.60.14
-  resolution: "@types/codemirror@npm:5.60.14"
+"@types/codemirror@npm:5.60.15":
+  version: 5.60.15
+  resolution: "@types/codemirror@npm:5.60.15"
   dependencies:
     "@types/tern": "*"
-  checksum: b9d8e5fb62e5441b4842c1fcd85dab2d671aff56f6f636dd1c09ac43316f9a9ded3f83782b1f3ecd16e34f1169b1c2743e6b28ea95733925115839512332e3f6
+  checksum: cfad3f569de48fba3efa44fdfeba77933e231486a52cc80cff7ce6eeeed5b447a5bc2b11e2226bc00ccee332c661e53e35a15cf14eb835f434a6a402d9462f5f
   languageName: node
   linkType: hard
 
@@ -7714,12 +7714,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.15":
-  version: 18.2.15
-  resolution: "@types/react-dom@npm:18.2.15"
+"@types/react-dom@npm:18.2.16":
+  version: 18.2.16
+  resolution: "@types/react-dom@npm:18.2.16"
   dependencies:
     "@types/react": "*"
-  checksum: 8e9631600c21ff561328e38a951d1991b3b3b20f538af4c0efbd1327c883a5573a63f50e1b945c34fa51b114b30e1ca5e62317bd54f21e063d6697b4be843a03
+  checksum: 0d79f6e121155003840414e3cb1f5d70eef3a7f03450f7837c806b319b9e737880e368def615e2bf49159ed4041899e77b1002902e1285dd656783d2a836eb73
   languageName: node
   linkType: hard
 
@@ -7773,10 +7773,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.5.5":
-  version: 7.5.5
-  resolution: "@types/semver@npm:7.5.5"
-  checksum: 533e6c93d1262d65f449423d94a445f7f3db0672e7429f21b6a1636d6051dbab3a2989ddcda9b79c69bb37830931d09fc958a65305a891357f5cea3257c297f5
+"@types/semver@npm:7.5.6":
+  version: 7.5.6
+  resolution: "@types/semver@npm:7.5.6"
+  checksum: 563a0120ec0efcc326567db2ed920d5d98346f3638b6324ea6b50222b96f02a8add3c51a916b6897b51523aad8ac227d21d3dcf8913559f1bfc6c15b14d23037
   languageName: node
   linkType: hard
 
@@ -7900,12 +7900,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.9":
-  version: 8.5.9
-  resolution: "@types/ws@npm:8.5.9"
+"@types/ws@npm:8.5.10":
+  version: 8.5.10
+  resolution: "@types/ws@npm:8.5.10"
   dependencies:
     "@types/node": "*"
-  checksum: 83f436b731d2cdc49a45ced31a0a65cdd2e39c24d7b882776c26efa190dad6553e266d624c7a7089f36ad3ed471e02e729f3219282c80689b435f665df4a2b0b
+  checksum: 3ec416ea2be24042ebd677932a462cf16d2080393d8d7d0b1b3f5d6eaa4a7387aaf0eefb99193c0bfd29444857cf2e0c3ac89899e130550dc6c14ada8a46d25e
   languageName: node
   linkType: hard
 

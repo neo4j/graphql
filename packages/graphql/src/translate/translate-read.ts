@@ -87,18 +87,17 @@ export function translateRead(
         node,
         context,
         isRootConnectionField,
-        isGlobalNode,
         entityAdapter,
     }: {
         context: Neo4jGraphQLTranslationContext;
         node?: Node;
         isRootConnectionField?: boolean;
-        isGlobalNode?: boolean;
         entityAdapter: EntityAdapter;
     },
     varName = "this"
 ): Cypher.CypherResult {
-    if (!context.resolveTree.args.fulltext && !context.resolveTree.args.phrase && !isGlobalNode) {
+    
+    if (!context.resolveTree.args.fulltext && !context.resolveTree.args.phrase) {
         return translateQuery({ context, entityAdapter });
     }
     if (isRootConnectionField) {

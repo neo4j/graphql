@@ -47,8 +47,8 @@ jobs:
           - 7687:7687
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -63,7 +63,7 @@ jobs:
           NEO_USER: neo4j
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -84,8 +84,8 @@ jobs:
           - 7687:7687
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -95,7 +95,7 @@ jobs:
         run: yarn --cwd packages/graphql run test e2e --coverage
       - if: ${{ env.CODECOV_TOKEN != '' }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -106,8 +106,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -117,7 +117,7 @@ jobs:
         run: yarn --cwd packages/graphql run test:schema --coverage
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/graphql/coverage/
@@ -125,7 +125,7 @@ jobs:
           fail_ci_if_error: true
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload }}
         name: Archive coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: api-library-coverage-graphql
           path: packages/graphql/coverage/
