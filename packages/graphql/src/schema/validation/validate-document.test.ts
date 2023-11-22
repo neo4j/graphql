@@ -37,6 +37,68 @@ const additionalDefinitions = {
     objects: [] as ObjectTypeDefinitionNode[],
 };
 
+describe("experimental flag warning", () => {
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warn.mockReset();
+    });
+
+    test("experimental warning happens when flag is true", () => {
+        const doc = gql`
+            type Movie {
+                id: ID
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Actor {
+                name: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+            experimental: true,
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+
+    test("experimental warning does not happen when flag is false", () => {
+        const doc = gql`
+            type Movie {
+                id: ID
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Actor {
+                name: String
+            }
+        `;
+
+        validateDocument({
+            document: doc,
+            additionalDefinitions,
+            features: {},
+            experimental: true,
+        });
+
+        expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledOnce();
+    });
+});
+
 describe("authorization warning", () => {
     let warn: jest.SpyInstance;
 
@@ -158,7 +220,10 @@ describe("default max limit bypass warning", () => {
             experimental: true,
         });
 
-        expect(warn).not.toHaveBeenCalled();
+        expect(warn).toHaveBeenCalledOnce();
+        expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
     });
 
     test("max limit on concrete should trigger warning if no limit on interface", () => {
@@ -180,9 +245,12 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledOnce();
+        expect(warn).toHaveBeenCalledTimes(2);
     });
 
     test("max limit lower on interface than concrete does not trigger warning", () => {
@@ -203,7 +271,10 @@ describe("default max limit bypass warning", () => {
             experimental: true,
         });
 
-        expect(warn).not.toHaveBeenCalled();
+        expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledOnce();
     });
 
     test("Max limit higher on interface than concrete should trigger warning", () => {
@@ -225,9 +296,12 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledOnce();
+        expect(warn).toHaveBeenCalledTimes(2);
     });
 
     test("Max limit higher on interface than concrete should not trigger warning if experimental: false", () => {
@@ -248,7 +322,7 @@ describe("default max limit bypass warning", () => {
             experimental: false,
         });
 
-        expect(warn).not.toHaveBeenCalledOnce();
+        expect(warn).not.toHaveBeenCalled();
     });
 
     test("Max limit higher on interface than concrete should trigger warning - multiple implementing types", () => {
@@ -274,9 +348,12 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledOnce();
+        expect(warn).toHaveBeenCalledTimes(2);
     });
 
     test("Max limit higher on interface than concrete should trigger warning - on both implementing types", () => {
@@ -302,12 +379,15 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenLastCalledWith(
+        expect(warn).toHaveBeenCalledWith(
             "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
         );
-        expect(warn).toHaveBeenCalledTimes(2);
+        expect(warn).toHaveBeenCalledTimes(3);
     });
 
     test("Max limit on interface does not trigger warning if only default limit set on concrete", () => {
@@ -332,7 +412,10 @@ describe("default max limit bypass warning", () => {
             experimental: true,
         });
 
-        expect(warn).not.toHaveBeenCalledOnce();
+        expect(warn).toHaveBeenCalledWith(
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
+        );
+        expect(warn).toHaveBeenCalledOnce();
     });
 });
 
