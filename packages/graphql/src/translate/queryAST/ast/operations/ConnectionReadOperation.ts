@@ -17,24 +17,24 @@
  * limitations under the License.
  */
 
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
-import type { Field } from "../fields/Field";
-import type { Filter } from "../filters/Filter";
 import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { filterTruthy } from "../../../../utils/utils";
+import { hasTarget } from "../../utils/context-has-target";
+import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
+import type { Field } from "../fields/Field";
+import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
+import type { Filter } from "../filters/Filter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { Pagination, PaginationField } from "../pagination/Pagination";
+import { CypherPropertySort } from "../sort/CypherPropertySort";
+import type { Sort, SortField } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import type { Pagination, PaginationField } from "../pagination/Pagination";
-import type { Sort, SortField } from "../sort/Sort";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
-import { filterTruthy } from "../../../../utils/utils";
-import type { QueryASTNode } from "../QueryASTNode";
-import { hasTarget } from "../../utils/context-has-target";
-import { CypherAttributeField } from "../fields/attribute-fields/CypherAttributeField";
-import { CypherPropertySort } from "../sort/CypherPropertySort";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
@@ -68,8 +68,8 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
-    public setFilters(filters: Filter[]) {
-        this.filters = filters;
+    public addFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
     }
 
     public setEdgeFields(fields: Field[]) {

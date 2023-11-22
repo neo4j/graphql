@@ -19,8 +19,8 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Additional Labels", () => {
     test("simple match with single fulltext property and static additionalLabels", async () => {
@@ -47,7 +47,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
             WHERE ($param1 IN labels(this) AND $param2 IN labels(this))
             RETURN this { .title } AS this"
         `);
@@ -93,7 +93,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
             WHERE ($param1 IN labels(this) AND $param2 IN labels(this))
             RETURN this { .title } AS this"
         `);

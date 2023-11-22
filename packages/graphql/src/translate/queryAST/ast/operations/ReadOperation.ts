@@ -78,8 +78,8 @@ export class ReadOperation extends Operation {
         this.pagination = pagination;
     }
 
-    public setFilters(filters: Filter[]) {
-        this.filters = filters;
+    public addFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
@@ -195,8 +195,8 @@ export class ReadOperation extends Operation {
         context: QueryASTContext,
         node: Cypher.Node | Cypher.Pattern
     ): {
-        preSelection: Array<Cypher.Match | Cypher.With>;
-        selectionClause: Cypher.Match | Cypher.With;
+        preSelection: Array<Cypher.Match | Cypher.With | Cypher.Yield>;
+        selectionClause: Cypher.Match | Cypher.With | Cypher.Yield;
     } {
         let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
 
@@ -293,7 +293,7 @@ export class ReadOperation extends Operation {
         };
     }
 
-    private getReturnStatement(context: QueryASTContext, returnVariable): Cypher.Return {
+    protected getReturnStatement(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
         const projection = this.getProjectionMap(context);
         if (context.shouldCollect) {
             return new Cypher.Return([Cypher.collect(projection), returnVariable]);

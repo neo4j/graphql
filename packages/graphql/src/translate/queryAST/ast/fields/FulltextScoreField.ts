@@ -17,17 +17,26 @@
  * limitations under the License.
  */
 
-export type FullTextField = {
-    name?: string;
-    fields: string[];
-    queryName?: string;
-    indexName: string;
-};
+import type Cypher from "@neo4j/cypher-builder";
+import type { Variable } from "@neo4j/cypher-builder";
+import type { QueryASTNode } from "../QueryASTNode";
+import { Field } from "./Field";
 
-export class FullTextAnnotation {
-    public readonly indexes: FullTextField[];
+export class FulltextScoreField extends Field {
+    private score: Cypher.Variable;
 
-    constructor({ indexes }: { indexes: FullTextField[] }) {
-        this.indexes = indexes;
+    constructor({ alias, score }: { alias: string; score: Cypher.Variable }) {
+        super(alias);
+        this.score = score;
+    }
+
+    public getProjectionField(_variable: Variable): Record<"score", Cypher.Variable> {
+        return {
+            score: this.score,
+        };
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [];
     }
 }

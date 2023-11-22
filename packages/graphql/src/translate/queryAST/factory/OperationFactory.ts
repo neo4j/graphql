@@ -18,7 +18,8 @@
  */
 
 import { mergeDeep } from "@graphql-tools/utils";
-import type { ResolveTree } from "graphql-parse-resolve-info";
+import * as Cypher from "@neo4j/cypher-builder";
+import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { Integer } from "neo4j-driver";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
@@ -31,10 +32,14 @@ import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import { CreateOperation } from "../ast/operations/CreateOperation";
+import type { FulltextOptions } from "../ast/operations/FulltextOperation";
+import { FulltextOperation } from "../ast/operations/FulltextOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
 import { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import { CompositeAggregationPartial } from "../ast/operations/composite/CompositeAggregationPartial";
@@ -78,11 +83,33 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext
     ): Operation {
         if (isConcreteEntity(entity)) {
+            // Handles deprecated top level fulltext
+            if (context.resolveTree.args.phrase) {
+                if (!context.fulltext) {
+                    throw new Error("Failed to get context fulltext");
+                }
+                const indexName = context.fulltext.indexName || context.fulltext.name;
+                if (indexName === undefined) {
+                    throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+                }
+
+                const op = this.createFulltextOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
+            }
+
             const operationMatch = parseOperationField(resolveTree.name, entity);
+
             if (operationMatch.isCreate) {
                 return this.createCreateOperation(entity, resolveTree, context); // TODO: move this to separate method?
             } else if (operationMatch.isRead) {
-                const op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+                let op: ReadOperation;
+                if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    op = this.createFulltextOperation(entity, resolveTree, context);
+                } else {
+                    op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+                }
+
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isConnection) {
@@ -95,7 +122,7 @@ export class OperationsFactory {
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             } else if (operationMatch.isAggregation) {
-                const op = this.createAggregationOperation(entity, resolveTree, context, true);
+                const op = this.createAggregationOperation(entity, resolveTree, context);
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
                 return op;
             }
@@ -114,42 +141,90 @@ export class OperationsFactory {
         return this.createReadOperation(entity, resolveTree, context);
     }
 
-    // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
-    // This function temporary adjust some inconsistencies waiting for the new API.
-    // TODO: Remove it when the new API is ready.
-    private normalizeResolveTreeForTopLevelConnection(resolveTree: ResolveTree): ResolveTree {
-        const topLevelConnectionResolveTree = Object.assign({}, resolveTree);
-        // Move the sort arguments inside a "node" object.
-        if (topLevelConnectionResolveTree.args.sort) {
-            topLevelConnectionResolveTree.args.sort = (resolveTree.args.sort as any[]).map((sortField) => {
-                return { node: sortField };
-            });
-        }
-        // move the where arguments inside a "node" object.
-        if (topLevelConnectionResolveTree.args.where) {
-            topLevelConnectionResolveTree.args.where = { node: resolveTree.args.where };
-        }
-        return topLevelConnectionResolveTree;
-    }
-
-    private createCreateOperation(
+    public createFulltextOperation(
         entity: ConcreteEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
-    ): CreateOperation {
-        const responseFields = Object.values(
-            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
-        );
-        const createOP = new CreateOperation({ target: entity });
-        const projectionFields = responseFields
-            .filter((f) => f.name === entity.plural)
-            .map((field) => {
-                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
-                return readOP;
-            });
+    ): FulltextOperation {
+        let resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        let sortOptions: Record<string, any> = (resolveTree.args.options as Record<string, any>) || {};
+        let fieldsByTypeName = resolveTree.fieldsByTypeName;
+        let resolverArgs = resolveTree.args;
+        const fulltextOptions = this.getFulltextOptions(context);
+        let scoreField: FulltextScoreField | undefined;
+        let scoreFilter: FulltextScoreFilter | undefined;
 
-        createOP.addProjectionOperations(projectionFields);
-        return createOP;
+        // Compatibility of top level operations
+        const fulltextOperationDeprecatedFields =
+            resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
+
+        if (fulltextOperationDeprecatedFields) {
+            const scoreWhere = resolveTreeWhere.score;
+            resolveTreeWhere = resolveTreeWhere[entity.singular] || {};
+
+            const scoreRawField = fulltextOperationDeprecatedFields.score;
+
+            const nestedResolveTree: Record<string, any> = fulltextOperationDeprecatedFields[entity.singular] || {};
+            resolverArgs = { ...(nestedResolveTree?.args || {}), ...resolveTree.args };
+
+            sortOptions = {
+                limit: sortOptions.limit,
+                offset: sortOptions.offset,
+                sort: filterTruthy((sortOptions.sort || []).map((field) => field[entity.singular] || field)),
+            };
+            fieldsByTypeName = nestedResolveTree.fieldsByTypeName || {};
+            if (scoreRawField) {
+                scoreField = this.createFulltextScoreField(scoreRawField, fulltextOptions.score);
+            }
+            if (scoreWhere) {
+                scoreFilter = new FulltextScoreFilter({
+                    scoreVariable: fulltextOptions.score,
+                    min: scoreWhere.min,
+                    max: scoreWhere.max,
+                });
+            }
+        }
+
+        checkEntityAuthentication({
+            entity: entity.entity,
+            targetOperations: ["READ"],
+            context,
+        });
+
+        const operation = new FulltextOperation({
+            target: entity,
+            directed: Boolean(resolverArgs.directed ?? true),
+            fulltext: fulltextOptions,
+            scoreField,
+            scoreVariable: fulltextOptions.score,
+        });
+
+        if (scoreFilter) {
+            operation.addFilters(scoreFilter);
+        }
+
+        this.hydrateOperation({
+            operation,
+            entity,
+            fieldsByTypeName: fieldsByTypeName,
+            context,
+            whereArgs: resolveTreeWhere,
+        });
+
+        // Override sort to support score
+        const sortOptions2 = this.getOptions(entity, sortOptions);
+
+        if (sortOptions2) {
+            const sort = this.sortAndPaginationFactory.createSortFields(sortOptions2, entity, fulltextOptions.score);
+            operation.addSort(...sort);
+
+            const pagination = this.sortAndPaginationFactory.createPagination(sortOptions2);
+            if (pagination) {
+                operation.addPagination(pagination);
+            }
+        }
+
+        return operation;
     }
 
     public createReadOperation(
@@ -214,8 +289,7 @@ export class OperationsFactory {
     public createAggregationOperation(
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        topLevel = false
+        context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -326,7 +400,7 @@ export class OperationsFactory {
 
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
-                operation.setFilters(filters);
+                operation.addFilters(...filters);
 
                 if (authFilters.length > 0 || authValidate.length > 0) {
                     operation.addAuthFilters(...authFilters);
@@ -460,6 +534,81 @@ export class OperationsFactory {
         });
     }
 
+    // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
+    // This function temporary adjust some inconsistencies waiting for the new API.
+    // TODO: Remove it when the new API is ready.
+    private normalizeResolveTreeForTopLevelConnection(resolveTree: ResolveTree): ResolveTree {
+        const topLevelConnectionResolveTree = Object.assign({}, resolveTree);
+        // Move the sort arguments inside a "node" object.
+        if (topLevelConnectionResolveTree.args.sort) {
+            topLevelConnectionResolveTree.args.sort = (resolveTree.args.sort as any[]).map((sortField) => {
+                return { node: sortField };
+            });
+        }
+        // move the where arguments inside a "node" object.
+        if (topLevelConnectionResolveTree.args.where) {
+            topLevelConnectionResolveTree.args.where = { node: resolveTree.args.where };
+        }
+        return topLevelConnectionResolveTree;
+    }
+
+    private createCreateOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): CreateOperation {
+        const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
+        );
+        const createOP = new CreateOperation({ target: entity });
+        const projectionFields = responseFields
+            .filter((f) => f.name === entity.plural)
+            .map((field) => {
+                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                return readOP;
+            });
+
+        createOP.addProjectionOperations(projectionFields);
+        return createOP;
+    }
+
+    private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
+        if (context.fulltext) {
+            const indexName = context.fulltext.indexName || context.fulltext.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            const phrase = context.resolveTree.args.phrase;
+            if (!phrase || typeof phrase !== "string") {
+                throw new Error("Invalid phrase");
+            }
+
+            return {
+                index: indexName,
+                phrase,
+                score: context.fulltext.scoreVariable,
+            };
+        }
+
+        const entries = Object.entries(context.resolveTree.args.fulltext || {});
+        if (entries.length > 1) {
+            throw new Error("Can only call one search at any given time");
+        }
+        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
+        return {
+            index: indexName,
+            phrase: indexInput.phrase,
+            score: new Cypher.Variable(),
+        };
+    }
+
+    private createFulltextScoreField(field: ResolveTree, scoreVar: Cypher.Variable): FulltextScoreField {
+        return new FulltextScoreField({
+            alias: field.alias,
+            score: scoreVar,
+        });
+    }
+
     // eslint-disable-next-line @typescript-eslint/comma-dangle
     private hydrateConnectionOperationsASTWithSort<
         T extends ConnectionReadOperation | CompositeConnectionReadOperation
@@ -572,7 +721,7 @@ export class OperationsFactory {
 
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
-        operation.setFilters(filters);
+        operation.addFilters(...filters);
         if (authFilters) {
             operation.addAuthFilters(authFilters);
         }
@@ -616,6 +765,81 @@ export class OperationsFactory {
         };
     }
 
+    private hydrateOperation<T extends ReadOperation>({
+        entity,
+        operation,
+        whereArgs,
+        context,
+        sortArgs,
+        fieldsByTypeName,
+    }: {
+        entity: ConcreteEntityAdapter;
+        operation: T;
+        context: Neo4jGraphQLTranslationContext;
+        whereArgs: Record<string, any>;
+        sortArgs?: Record<string, any>;
+        fieldsByTypeName: FieldsByTypeName;
+    }): T {
+        const concreteProjectionFields = { ...fieldsByTypeName[entity.name] };
+        // Get the abstract types of the interface
+        const entityInterfaces = entity.compositeEntities;
+
+        const interfacesFields = filterTruthy(entityInterfaces.map((i) => fieldsByTypeName[i.name]));
+
+        const projectionFields = mergeDeep<Record<string, ResolveTree>[]>([
+            ...interfacesFields,
+            concreteProjectionFields,
+        ]);
+        const fields = this.fieldFactory.createFields(entity, projectionFields, context);
+
+        const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
+        const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
+
+        const authAttributeFilters = this.createAttributeAuthFilters({
+            entity,
+            context,
+            rawFields: projectionFields,
+        });
+        const authAttributeValidate = this.createAttributeAuthValidate({
+            entity,
+            context,
+            rawFields: projectionFields,
+            when: "BEFORE",
+        });
+
+        operation.setFields(fields);
+        operation.addFilters(...filters);
+        if (authFilters) {
+            operation.addAuthFilters(authFilters);
+        }
+        if (authAttributeFilters) {
+            operation.addAuthFilters(...authAttributeFilters);
+        }
+        if (authValidate) {
+            operation.addAuthFilters(authValidate);
+        }
+        if (authAttributeValidate) {
+            operation.addAuthFilters(...authAttributeValidate);
+        }
+
+        if (sortArgs) {
+            const sortOptions = this.getOptions(entity, sortArgs);
+
+            if (sortOptions) {
+                const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity);
+                operation.addSort(...sort);
+
+                const pagination = this.sortAndPaginationFactory.createPagination(sortOptions);
+                if (pagination) {
+                    operation.addPagination(pagination);
+                }
+            }
+        }
+        return operation;
+    }
+
     private hydrateReadOperation<T extends ReadOperation>({
         entity,
         operation,
@@ -629,50 +853,14 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
     }): T {
-        let projectionFields = { ...resolveTree.fieldsByTypeName[entity.name] };
-
-        // Get the abstract types of the interface
-        const entityInterfaces = entity.compositeEntities;
-
-        const interfacesFields = filterTruthy(entityInterfaces.map((i) => resolveTree.fieldsByTypeName[i.name]));
-
-        projectionFields = mergeDeep<Record<string, ResolveTree>[]>([...interfacesFields, projectionFields]);
-
-        const fields = this.fieldFactory.createFields(entity, projectionFields, context);
-
-        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
-        const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
-        const authAttributeFilters = this.createAttributeAuthFilters({
+        return this.hydrateOperation({
             entity,
+            operation,
             context,
-            rawFields: projectionFields,
+            whereArgs,
+            fieldsByTypeName: resolveTree.fieldsByTypeName,
+            sortArgs: (resolveTree.args.options as Record<string, any>) || {},
         });
-        const authAttributeValidate = this.createAttributeAuthValidate({
-            entity,
-            context,
-            rawFields: projectionFields,
-            when: "BEFORE",
-        });
-
-        const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
-
-        operation.setFields(fields);
-        operation.setFilters(filters);
-        if (authFilters) {
-            operation.addAuthFilters(authFilters);
-        }
-        if (authAttributeFilters) {
-            operation.addAuthFilters(...authAttributeFilters);
-        }
-        if (authValidate) {
-            operation.addAuthFilters(authValidate);
-        }
-        if (authAttributeValidate) {
-            operation.addAuthFilters(...authAttributeValidate);
-        }
-        this.hydrateCompositeReadOperationWithPagination(entity, operation, resolveTree);
-
-        return operation;
     }
 
     private hydrateAggregationOperation<T extends AggregationOperation | CompositeAggregationOperation>({
@@ -725,7 +913,7 @@ export class OperationsFactory {
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
-            operation.setFilters(filters);
+            operation.addFilters(...filters);
 
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
@@ -748,7 +936,7 @@ export class OperationsFactory {
             );
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
             operation.setFields(fields);
-            operation.setFilters(filters);
+            operation.addFilters(...filters);
 
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
@@ -772,7 +960,10 @@ export class OperationsFactory {
         return operation;
     }
 
-    private getOptions(entity: EntityAdapter, options: Record<string, any>): GraphQLOptionsArg | undefined {
+    private getOptions(entity: EntityAdapter, options?: Record<string, any>): GraphQLOptionsArg | undefined {
+        if (!options) {
+            return undefined;
+        }
         const limitDirective = isUnionEntity(entity) ? undefined : entity.annotations.limit;
 
         let limit: Integer | number | undefined = options?.limit ?? limitDirective?.default ?? limitDirective?.max;
