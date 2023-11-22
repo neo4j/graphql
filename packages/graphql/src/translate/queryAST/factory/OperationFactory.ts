@@ -141,81 +141,6 @@ export class OperationsFactory {
         return this.createReadOperation(entity, resolveTree, context);
     }
 
-    // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
-    // This function temporary adjust some inconsistencies waiting for the new API.
-    // TODO: Remove it when the new API is ready.
-    private normalizeResolveTreeForTopLevelConnection(resolveTree: ResolveTree): ResolveTree {
-        const topLevelConnectionResolveTree = Object.assign({}, resolveTree);
-        // Move the sort arguments inside a "node" object.
-        if (topLevelConnectionResolveTree.args.sort) {
-            topLevelConnectionResolveTree.args.sort = (resolveTree.args.sort as any[]).map((sortField) => {
-                return { node: sortField };
-            });
-        }
-        // move the where arguments inside a "node" object.
-        if (topLevelConnectionResolveTree.args.where) {
-            topLevelConnectionResolveTree.args.where = { node: resolveTree.args.where };
-        }
-        return topLevelConnectionResolveTree;
-    }
-
-    private createCreateOperation(
-        entity: ConcreteEntityAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
-    ): CreateOperation {
-        const responseFields = Object.values(
-            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
-        );
-        const createOP = new CreateOperation({ target: entity });
-        const projectionFields = responseFields
-            .filter((f) => f.name === entity.plural)
-            .map((field) => {
-                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
-                return readOP;
-            });
-
-        createOP.addProjectionOperations(projectionFields);
-        return createOP;
-    }
-
-    private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
-        if (context.fulltext) {
-            const indexName = context.fulltext.indexName || context.fulltext.name;
-            if (indexName === undefined) {
-                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-            }
-            const phrase = context.resolveTree.args.phrase;
-            if (!phrase || typeof phrase !== "string") {
-                throw new Error("Invalid phrase");
-            }
-
-            return {
-                index: indexName,
-                phrase,
-                score: context.fulltext.scoreVariable,
-            };
-        }
-
-        const entries = Object.entries(context.resolveTree.args.fulltext || {});
-        if (entries.length > 1) {
-            throw new Error("Can only call one search at any given time");
-        }
-        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
-        return {
-            index: indexName,
-            phrase: indexInput.phrase,
-            score: new Cypher.Variable(),
-        };
-    }
-
-    private createFulltextScoreField(field: ResolveTree, scoreVar: Cypher.Variable): FulltextScoreField {
-        return new FulltextScoreField({
-            alias: field.alias,
-            score: scoreVar,
-        });
-    }
-
     public createFulltextOperation(
         entityOrRel: EntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
@@ -618,6 +543,81 @@ export class OperationsFactory {
             context,
             operation,
             whereArgs: resolveTreeWhere,
+        });
+    }
+
+    // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
+    // This function temporary adjust some inconsistencies waiting for the new API.
+    // TODO: Remove it when the new API is ready.
+    private normalizeResolveTreeForTopLevelConnection(resolveTree: ResolveTree): ResolveTree {
+        const topLevelConnectionResolveTree = Object.assign({}, resolveTree);
+        // Move the sort arguments inside a "node" object.
+        if (topLevelConnectionResolveTree.args.sort) {
+            topLevelConnectionResolveTree.args.sort = (resolveTree.args.sort as any[]).map((sortField) => {
+                return { node: sortField };
+            });
+        }
+        // move the where arguments inside a "node" object.
+        if (topLevelConnectionResolveTree.args.where) {
+            topLevelConnectionResolveTree.args.where = { node: resolveTree.args.where };
+        }
+        return topLevelConnectionResolveTree;
+    }
+
+    private createCreateOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): CreateOperation {
+        const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
+        );
+        const createOP = new CreateOperation({ target: entity });
+        const projectionFields = responseFields
+            .filter((f) => f.name === entity.plural)
+            .map((field) => {
+                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                return readOP;
+            });
+
+        createOP.addProjectionOperations(projectionFields);
+        return createOP;
+    }
+
+    private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
+        if (context.fulltext) {
+            const indexName = context.fulltext.indexName || context.fulltext.name;
+            if (indexName === undefined) {
+                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
+            }
+            const phrase = context.resolveTree.args.phrase;
+            if (!phrase || typeof phrase !== "string") {
+                throw new Error("Invalid phrase");
+            }
+
+            return {
+                index: indexName,
+                phrase,
+                score: context.fulltext.scoreVariable,
+            };
+        }
+
+        const entries = Object.entries(context.resolveTree.args.fulltext || {});
+        if (entries.length > 1) {
+            throw new Error("Can only call one search at any given time");
+        }
+        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
+        return {
+            index: indexName,
+            phrase: indexInput.phrase,
+            score: new Cypher.Variable(),
+        };
+    }
+
+    private createFulltextScoreField(field: ResolveTree, scoreVar: Cypher.Variable): FulltextScoreField {
+        return new FulltextScoreField({
+            alias: field.alias,
+            score: scoreVar,
         });
     }
 
