@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNodeFromEntity } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
@@ -34,20 +34,30 @@ export class QueryAST {
         this.operation = operation;
     }
 
-    public build(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Clause {
+    public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext);
+
         return Cypher.concat(...this.transpile(context).clauses);
     }
+
+    // TODO: refactor other top level operations to use this method instead of build
+    public buildNew(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Clause {
+        const context = this.buildQueryASTContext(neo4jGraphQLContext);
+
+        const { clauses, projectionExpr } = this.transpile(context);
+        const returnClause = new Cypher.Return(projectionExpr);
+
+        return Cypher.concat(...clauses, returnClause);
+    }
+
     /**
      * Transpile the QueryAST to a Cypher builder tree, this is used temporary to transpile incomplete trees, helpful to migrate the legacy code
      **/
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        return this.operation.transpile({
-            context,
-        });
+        return this.operation.transpile(context);
     }
 
-    public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLContext): QueryASTContext {
+    public buildQueryASTContext(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): QueryASTContext {
         const queryASTEnv = new QueryASTEnv();
         const returnVariable = new Cypher.NamedVariable("this");
         const node = this.getTargetFromOperation(neo4jGraphQLContext);
@@ -59,7 +69,7 @@ export class QueryAST {
         });
     }
 
-    public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLContext): Cypher.Node | undefined {
+    public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
         if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
         }

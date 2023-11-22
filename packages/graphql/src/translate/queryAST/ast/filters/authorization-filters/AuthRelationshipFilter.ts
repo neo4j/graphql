@@ -52,18 +52,21 @@ export class AuthRelationshipFilter extends RelationshipFilter {
     ): Cypher.Predicate | undefined {
         const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
         const innerPredicate = Cypher.and(...predicates);
-
+        if (!innerPredicate) return undefined;
+        const useExist = queryASTContext.neo4jGraphQLContext.neo4jDatabaseInfo?.gte("5.0");
         switch (this.operator) {
             case "ALL": {
-                if (!innerPredicate) return undefined;
+                if (!useExist) {
+                    const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
+                    const sizeFunction = Cypher.size(patternComprehension.where(Cypher.not(innerPredicate)));
+                    return Cypher.eq(sizeFunction, new Cypher.Literal(0));
+                }
                 const match = new Cypher.Match(pattern).where(innerPredicate);
                 const negativeMatch = new Cypher.Match(pattern).where(Cypher.not(innerPredicate));
                 // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
                 return Cypher.and(new Cypher.Exists(match), Cypher.not(new Cypher.Exists(negativeMatch)));
             }
             case "SINGLE": {
-                if (!innerPredicate) return undefined;
-
                 return this.getSingleRelationshipOperation({
                     pattern,
                     queryASTContext,
@@ -73,20 +76,20 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             case "NONE":
             case "SOME": {
                 if (!this.relationship.isList && this.relationship.isNullable) {
-                    if (!innerPredicate) return undefined;
-
                     return this.getSingleRelationshipOperation({
                         pattern,
                         queryASTContext,
                         innerPredicate,
                     });
                 }
-
-                const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
-                if (innerPredicate) {
-                    patternComprehension.where(innerPredicate);
+                if (!useExist) {
+                    const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
+                    const sizeFunction = Cypher.size(patternComprehension.where(innerPredicate));
+                    return Cypher.gt(sizeFunction, new Cypher.Literal(0));
                 }
-                return Cypher.gt(Cypher.size(patternComprehension), new Cypher.Literal(0));
+                const matchClause = new Cypher.Match(pattern).where(innerPredicate);
+                const existsPredicate = new Cypher.Exists(matchClause);
+                return existsPredicate;
             }
         }
     }

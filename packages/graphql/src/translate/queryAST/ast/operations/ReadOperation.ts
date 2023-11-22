@@ -33,7 +33,7 @@ import type { AuthorizationFilters } from "../filters/authorization-filters/Auth
 import type { Pagination } from "../pagination/Pagination";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
-import type { OperationTranspileOptions, OperationTranspileResult } from "./operations";
+import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
 
 export class ReadOperation extends Operation {
@@ -96,7 +96,7 @@ export class ReadOperation extends Operation {
 
     private transpileNestedRelationship(
         entity: RelationshipAdapter,
-        { context }: OperationTranspileOptions
+        context: QueryASTContext
     ): OperationTranspileResult {
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
 
@@ -215,11 +215,9 @@ export class ReadOperation extends Operation {
         };
     }
 
-    public transpile({ context }: OperationTranspileOptions): OperationTranspileResult {
+    public transpile(context: QueryASTContext): OperationTranspileResult {
         if (this.relationship) {
-            return this.transpileNestedRelationship(this.relationship, {
-                context,
-            });
+            return this.transpileNestedRelationship(this.relationship, context);
         }
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);

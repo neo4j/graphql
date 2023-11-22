@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher Aggregations Float", () => {
     let typeDefs: DocumentNode;
@@ -52,8 +52,11 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { actorCount: { min: min(this.actorCount) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.actorCount) } AS var0
+            }
+            RETURN { actorCount: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -73,8 +76,11 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { actorCount: { max: max(this.actorCount) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { max: max(this.actorCount) } AS var0
+            }
+            RETURN { actorCount: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -94,8 +100,11 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { actorCount: { average: avg(this.actorCount) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { average: avg(this.actorCount) } AS var0
+            }
+            RETURN { actorCount: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -115,8 +124,11 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { actorCount: { sum: sum(this.actorCount) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { sum: sum(this.actorCount) } AS var0
+            }
+            RETURN { actorCount: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -139,8 +151,43 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
+            }
+            RETURN { actorCount: var0 }"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Min, Max, Sum and Average with count", async () => {
+        const query = gql`
+            {
+                moviesAggregate {
+                    count
+                    actorCount {
+                        min
+                        max
+                        average
+                        sum
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this:Movie)
+                RETURN count(this) AS var0
+            }
+            CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
+            }
+            RETURN { count: var0, actorCount: var1 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

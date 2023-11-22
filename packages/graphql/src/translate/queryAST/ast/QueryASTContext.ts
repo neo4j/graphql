@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 type Scope = Map<string, Cypher.Variable>;
 
@@ -37,30 +37,35 @@ export class QueryASTEnv {
     }
 }
 
-export class QueryASTContext {
-    public readonly target?: Cypher.Node;
+type ContextDirection = "left" | "right" | "undirected";
+
+export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | undefined> {
+    public readonly target: T;
     public readonly relationship?: Cypher.Relationship;
+    public readonly direction?: ContextDirection;
     public readonly source?: Cypher.Node;
     public readonly returnVariable: Cypher.Variable;
     public readonly shouldCollect: boolean; // temporary hack to describe if we should collect the return variable (used for unwind create)
 
     public env: QueryASTEnv;
-    public neo4jGraphQLContext: Neo4jGraphQLContext;
+    public neo4jGraphQLContext: Neo4jGraphQLTranslationContext;
 
     constructor({
         target,
         relationship,
+        direction,
         source,
         env,
         neo4jGraphQLContext,
         returnVariable,
         shouldCollect,
     }: {
-        target?: Cypher.Node;
+        target: T;
         relationship?: Cypher.Relationship;
+        direction?: ContextDirection;
         source?: Cypher.Node;
         env?: QueryASTEnv;
-        neo4jGraphQLContext: Neo4jGraphQLContext;
+        neo4jGraphQLContext: Neo4jGraphQLTranslationContext;
         returnVariable?: Cypher.Variable;
         shouldCollect?: boolean;
     }) {
@@ -71,6 +76,12 @@ export class QueryASTContext {
         this.neo4jGraphQLContext = neo4jGraphQLContext;
         this.returnVariable = returnVariable ?? new Cypher.Variable();
         this.shouldCollect = shouldCollect ?? false;
+        this.direction = direction;
+    }
+
+    // TODO: make target always defined
+    public hasTarget(): this is QueryASTContext<Cypher.Node> {
+        return Boolean(this.target);
     }
 
     public getRelationshipScope(): Scope {
@@ -96,16 +107,19 @@ export class QueryASTContext {
 
     public push({
         relationship,
+        direction,
         target,
         returnVariable,
     }: {
         relationship: Cypher.Relationship;
+        direction?: ContextDirection;
         target: Cypher.Node;
         returnVariable?: Cypher.Variable;
-    }): QueryASTContext {
+    }): QueryASTContext<Cypher.Node> {
         return new QueryASTContext({
             source: this.target,
             relationship: relationship,
+            direction,
             target: target,
             env: this.env,
             neo4jGraphQLContext: this.neo4jGraphQLContext,
@@ -113,7 +127,7 @@ export class QueryASTContext {
         });
     }
 
-    public setReturn(variable: Cypher.Variable): QueryASTContext {
+    public setReturn(variable: Cypher.Variable): QueryASTContext<T> {
         return new QueryASTContext({
             source: this.source,
             relationship: this.relationship,

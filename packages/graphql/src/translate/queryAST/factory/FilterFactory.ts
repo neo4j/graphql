@@ -20,10 +20,11 @@
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
-import { asArray, filterTruthy, isObject } from "../../../utils/utils";
+import { asArray, filterTruthy, isObject, omitFields } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
@@ -79,7 +80,7 @@ export class FilterFactory {
     ): ConnectionFilter[] {
         if (isInterfaceEntity(relationship.target) && !where.node?._on) {
             // Optimization for interface entities, create a single connection filter for all the concrete entities, when no _on is specified.
-            const connectionFilter = new ConnectionFilter({
+            const connectionFilter = this.createConnectionFilterTreeNode({
                 relationship: relationship,
                 target: relationship.target,
                 isNot: filterOps.isNot,
@@ -92,7 +93,7 @@ export class FilterFactory {
             const filteredEntities = this.filterConcreteEntities(relationship.target, where);
             const connectionFilters: ConnectionFilter[] = [];
             for (const concreteEntity of filteredEntities) {
-                const connectionFilter = new ConnectionFilter({
+                const connectionFilter = this.createConnectionFilterTreeNode({
                     relationship: relationship,
                     target: concreteEntity,
                     isNot: filterOps.isNot,
@@ -225,29 +226,28 @@ export class FilterFactory {
     }): RelationshipFilter {
         return new RelationshipFilter(options);
     }
-
-    private getConcretePredicate(entity: EntityAdapter, where: Record<string, any>) {
-        const concreteEntities = getConcreteEntities(entity);
-        const nodeFilters: Filter[] = [];
-        for (const concreteEntity of concreteEntities) {
-            const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
-            if (!concreteEntityWhere) continue;
-            const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
-            nodeFilters.push(...concreteEntityFilters);
-        }
-        return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
+    // This allow to override this creation in AuthorizationFilterFactory
+    protected createConnectionFilterTreeNode(options: {
+        relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        isNot: boolean;
+        operator: RelationshipWhereOperator | undefined;
+    }): ConnectionFilter {
+        return new ConnectionFilter(options);
     }
 
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
     public createNodeFilters(entity: EntityAdapter, where: Record<string, unknown>): Filter[] {
+        const whereFields = this.getConcreteFiltersWhere(entity, where);
+
         const filters = filterTruthy(
-            Object.entries(where).flatMap(([key, value]): Filter | undefined => {
+            Object.entries(whereFields).flatMap(([key, value]): Filter | undefined => {
                 if (key === "_on" && isObject(value)) {
-                    return this.getConcretePredicate(entity, value);
+                    return this.getConcreteFilter(entity, value);
                 }
 
                 if (isLogicalOperator(key)) {
-                    return this.createNodeLogicalFilter(key, value as any, entity);
+                    return this.createNodeLogicalFilter(key, value, entity);
                 }
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
@@ -289,7 +289,6 @@ export class FilterFactory {
 
                 if (fieldName === "id" && !attr && !isUnionEntity(entity)) {
                     const relayAttribute = entity.globalIdField;
-                    //
                     if (relayAttribute) {
                         const relayIdData = fromGlobalId(value as string);
                         if (relayIdData) {
@@ -331,7 +330,7 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
-    private createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
+    public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
         const filterASTs = Object.entries(where).map(([key, value]): Filter => {
             if (isLogicalOperator(key)) {
                 return this.createEdgeLogicalFilter(key, value, relationship);
@@ -473,10 +472,11 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
+    /** Returns an array of 0 or 1 elements with the filters wrapped using a logical operator if needed */
     private wrapMultipleFiltersInLogical<F extends Filter>(
         filters: F[],
         logicalOp: "AND" | "OR" = "AND"
-    ): Array<F | LogicalFilter> {
+    ): [F | LogicalFilter] | [] {
         if (filters.length > 1) {
             return [
                 new LogicalFilter({
@@ -485,7 +485,12 @@ export class FilterFactory {
                 }),
             ];
         }
-        return filters;
+
+        const singleFilter = filters[0];
+        if (singleFilter) {
+            return [singleFilter];
+        }
+        return [];
     }
 
     private createAggregateLogicalFilter(
@@ -500,5 +505,32 @@ export class FilterFactory {
             operation,
             filters,
         });
+    }
+
+    private getConcreteFilter(entity: EntityAdapter, where: Record<string, any>): Filter | undefined {
+        const concreteEntities = getConcreteEntities(entity);
+        const nodeFilters: Filter[] = [];
+
+        for (const concreteEntity of concreteEntities) {
+            const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
+            if (concreteEntityWhere) {
+                const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
+                nodeFilters.push(...concreteEntityFilters);
+            }
+        }
+        return this.wrapMultipleFiltersInLogical(nodeFilters)[0];
+    }
+
+    private getConcreteFiltersWhere(entity: EntityAdapter, where: Record<string, any>): Record<string, any> {
+        const concreteEntities = getConcreteEntities(entity);
+
+        const whereOn = where["_on"] || {};
+        const onFilters = concreteEntities.reduce((acc, concreteEntity) => {
+            const concreteEntityWhere: Record<string, any> = whereOn[concreteEntity.name];
+
+            return { ...acc, ...concreteEntityWhere };
+        }, {});
+
+        return omitFields({ ...where, ...onFilters }, ["_on"]);
     }
 }

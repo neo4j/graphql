@@ -23,8 +23,6 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { defaultNestedOperations } from "../graphql/directives/relationship";
-import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import type { RelationField } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import type { Node } from "../../src/classes";

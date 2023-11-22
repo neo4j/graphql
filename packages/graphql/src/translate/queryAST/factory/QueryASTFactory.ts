@@ -23,13 +23,28 @@ import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { QueryAST } from "../ast/QueryAST";
 import { OperationsFactory } from "./OperationFactory";
+import { AuthFilterFactory } from "./AuthFilterFactory";
+import { AuthorizationFactory } from "./AuthorizationFactory";
+import { FieldFactory } from "./FieldFactory";
+import { FilterFactory } from "./FilterFactory";
+import { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 
 export class QueryASTFactory {
     public schemaModel: Neo4jGraphQLSchemaModel;
+    // specialized factories are currently public to facilitate the migration to the new QueryASTFactory
     public operationsFactory: OperationsFactory;
+    public filterFactory: FilterFactory;
+    public fieldFactory: FieldFactory;
+    public sortAndPaginationFactory: SortAndPaginationFactory;
+    public authorizationFactory: AuthorizationFactory;
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel) {
         this.schemaModel = schemaModel;
+        this.filterFactory = new FilterFactory(this);
+        this.fieldFactory = new FieldFactory(this);
+        this.sortAndPaginationFactory = new SortAndPaginationFactory();
+        const authFilterFactory = new AuthFilterFactory(this);
+        this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
         this.operationsFactory = new OperationsFactory(this);
     }
 

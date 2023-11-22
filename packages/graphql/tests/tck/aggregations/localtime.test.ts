@@ -52,8 +52,11 @@ describe("Cypher Aggregations LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { createdAt: { min: min(this.createdAt) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.createdAt) } AS var0
+            }
+            RETURN { createdAt: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -73,8 +76,11 @@ describe("Cypher Aggregations LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { createdAt: { max: max(this.createdAt) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { max: max(this.createdAt) } AS var0
+            }
+            RETURN { createdAt: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -95,8 +101,11 @@ describe("Cypher Aggregations LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN { createdAt: { min: min(this.createdAt), max: max(this.createdAt) } }"
+            "CALL {
+                MATCH (this:Movie)
+                RETURN { min: min(this.createdAt), max: max(this.createdAt) } AS var0
+            }
+            RETURN { createdAt: var0 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
