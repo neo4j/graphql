@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Interfaces", () => {
     let typeDefs: DocumentNode;
@@ -510,5 +510,64 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
             });
         });
+    });
+
+    test("on node", async () => {
+        const query = gql`
+            query Actors {
+                actors {
+                    name
+                    actedInConnection(
+                        where: { node: { title: "Game of Thrones", _on: { Movie: { title: "Dune" } } } }
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on Movie {
+                                    runtime
+                                }
+                                ... on Series {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WHERE this1.title = $param0
+                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    WHERE this3.title = $param1
+                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var4
+            }
+            RETURN this { .name, actedInConnection: var4 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Dune\\",
+                \\"param1\\": \\"Game of Thrones\\"
+            }"
+        `);
     });
 });

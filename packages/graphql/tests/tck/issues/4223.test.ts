@@ -273,7 +273,8 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"isAuthenticated\\": true,
+                \\"isAuthenticated\\": false,
+                \\"jwt\\": {},
                 \\"this0_settings0_node_openingDays0_node_open0_node_name\\": \\"lambo\\",
                 \\"this0_settings0_node_myWorkspace0_node_workspace\\": \\"myWorkspace\\",
                 \\"this0_admins0_node_userId\\": \\"123\\",

@@ -51,12 +51,12 @@ import { isUnionEntity } from "../utils/is-union-entity";
 import type { AuthorizationFactory } from "./AuthorizationFactory";
 import type { FieldFactory } from "./FieldFactory";
 import type { FilterFactory } from "./FilterFactory";
-import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
-import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { parseOperationField, parseInterfaceOperationField } from "./parsers/parse-operation-fields";
-import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
-import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
 import type { QueryASTFactory } from "./QueryASTFactory";
+import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
+import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
+import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
+import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
+import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -393,7 +393,7 @@ export class OperationsFactory {
         }
         const directed = Boolean(resolveTree.args.directed) ?? true;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
-        let concreteConnectionOperations: ConnectionReadOperation[] = [];
+
         let nodeWhere: Record<string, any>;
         if (isInterfaceEntity(target)) {
             nodeWhere = isObject(resolveTreeWhere) ? resolveTreeWhere.node : {};
@@ -402,20 +402,12 @@ export class OperationsFactory {
         }
 
         const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
-        concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+        const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
             const connectionPartial = new CompositeConnectionPartial({
                 relationship,
                 directed,
                 target: concreteEntity,
             });
-            // nodeWhere with the shared filters applied
-            const concreteNodeWhere = getConcreteWhere(target, concreteEntity, nodeWhere);
-            let whereArgs: Record<string, any>;
-            if (isInterfaceEntity(target)) {
-                whereArgs = { edge: resolveTreeWhere.edge ?? {}, node: concreteNodeWhere };
-            } else {
-                whereArgs = concreteNodeWhere;
-            }
 
             return this.hydrateConnectionOperationAST({
                 relationship,
@@ -423,7 +415,7 @@ export class OperationsFactory {
                 resolveTree,
                 context,
                 operation: connectionPartial,
-                whereArgs: whereArgs,
+                whereArgs: resolveTreeWhere,
             });
         });
 

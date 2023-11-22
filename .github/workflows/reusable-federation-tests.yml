@@ -9,8 +9,8 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -37,7 +37,7 @@ jobs:
           mkdir prnumber
           echo "$PULL_REQUEST_NUMBER" > ./prnumber/prnumber
       - name: Archive PR number
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: prnumber
           path: prnumber/

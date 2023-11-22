@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2
         id: login-to-ecr
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -76,14 +76,14 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Setting up Node.js with version ${{ matrix.node }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version: ${{ matrix.node }}
           cache: yarn
       - name: Login to ECR
-        uses: docker/login-action@v3
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3
         with:
           registry: 535893049302.dkr.ecr.eu-west-1.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -116,7 +116,7 @@ jobs:
           NEO_URL: neo4j://localhost:7687
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.packages.package == 'graphql' }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.packages.package }}/coverage-nightly/
@@ -124,7 +124,7 @@ jobs:
           fail_ci_if_error: true
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: integration-nightly-coverage-${{ matrix.packages.package }}
           path: packages/${{ matrix.packages.package }}/coverage/

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { type Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import gql from "graphql-tag";
@@ -112,9 +112,10 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const response = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues({ jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] } }),
+            contextValue: neo4j.getContextValues({
+                jwt: { id: "some-id", email: "some-email", roles: ["not-an-admin"] },
+            }),
         });
         expect((response.errors as any[])[0].message).toBe("Forbidden");
-       
     });
 });
