@@ -279,6 +279,10 @@ export class OperationsFactory {
                 scoreVariable: fulltextOptions.score,
             });
 
+            if (scoreFilter) {
+                operation.addFilters(scoreFilter);
+            }
+
             this.hydrateOperation({
                 operation,
                 entity,
@@ -287,9 +291,6 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
 
-            if (scoreFilter) {
-                operation.addFilter(scoreFilter);
-            }
             // Override sort to support score
             const sortOptions2 = this.getOptions(entity, sortOptions);
 
@@ -486,7 +487,7 @@ export class OperationsFactory {
 
                 const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
 
-                operation.setFilters(filters);
+                operation.addFilters(...filters);
 
                 if (authFilters.length > 0 || authValidate.length > 0) {
                     operation.addAuthFilters(...authFilters);
@@ -732,7 +733,7 @@ export class OperationsFactory {
 
         operation.setNodeFields(nodeFields);
         operation.setEdgeFields(edgeFields);
-        operation.setFilters(filters);
+        operation.addFilters(...filters);
         if (authFilters) {
             operation.addAuthFilters(authFilters);
         }
@@ -821,7 +822,7 @@ export class OperationsFactory {
         });
 
         operation.setFields(fields);
-        operation.setFilters(filters);
+        operation.addFilters(...filters);
         if (authFilters) {
             operation.addAuthFilters(authFilters);
         }
@@ -924,7 +925,7 @@ export class OperationsFactory {
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
-            operation.setFilters(filters);
+            operation.addFilters(...filters);
 
             if (authFilters) {
                 operation.addAuthFilters(authFilters);
@@ -947,7 +948,7 @@ export class OperationsFactory {
             );
             const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
             operation.setFields(fields);
-            operation.setFilters(filters);
+            operation.addFilters(...filters);
 
             if (authFilters) {
                 operation.addAuthFilters(authFilters);

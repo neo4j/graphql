@@ -39,17 +39,6 @@ export class FulltextScoreFilter extends Filter {
         return [];
     }
 
-    // constructor(options: {
-    //     attribute: AttributeAdapter;
-    //     comparisonValue: CypherVariable;
-    //     operator: FilterOperator;
-    //     isNot: boolean;
-    //     attachedTo?: "node" | "relationship";
-    // }) {
-    //     super(options);
-    //     this.comparisonValue = options.comparisonValue;
-    // }
-
     public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate {
         const predicates: Cypher.Predicate[] = [];
 
@@ -63,42 +52,5 @@ export class FulltextScoreFilter extends Filter {
         }
 
         return Cypher.and(...predicates);
-
-        // const predicate = super.getPredicate(queryASTContext);
-
-        // // NOTE: Should this check be a different Filter?
-        // return Cypher.and(Cypher.isNotNull(this.comparisonValue), predicate);
     }
-
-    // protected getOperation(): Cypher.ComparisonOp {
-    // const comparisonParam = new Cypher.Param(this.comparisonValue);
-    // return createComparisonOperation({
-    //     operator: this.operator,
-    //     property: this.score,
-    //     param: comparisonParam,
-    // });
-    // if (whereInput?.[SCORE_FIELD]) {
-    //     if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
-    //         const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
-    //         if (scoreMinOp) whereOperators.push(scoreMinOp);
-    //     }
-    //     if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
-    //         const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
-    //         if (scoreMaxOp) whereOperators.push(scoreMaxOp);
-    //     }
-    // }
 }
-
-/** Returns the default operation for a given filter */
-// protected createBaseOperation({
-//     operator,
-//     property,
-//     param,
-// }: {
-//     operator: FilterOperator;
-//     property: Cypher.Expr;
-//     param: Cypher.Expr;
-// }): Cypher.ComparisonOp {
-
-//     return createComparisonOperation({ operator, property: coalesceProperty, param });
-// }

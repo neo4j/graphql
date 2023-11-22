@@ -76,8 +76,8 @@ export class AggregationOperation extends Operation {
         this.pagination = pagination;
     }
 
-    public setFilters(filters: Filter[]) {
-        this.filters = filters;
+    public addFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {

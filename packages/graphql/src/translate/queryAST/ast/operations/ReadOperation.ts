@@ -78,13 +78,8 @@ export class ReadOperation extends Operation {
         this.pagination = pagination;
     }
 
-    // TODO: avoid this filter override as it makes harder to compose in the factory
-    public setFilters(filters: Filter[]) {
-        this.filters = filters;
-    }
-
-    public addFilter(filter: Filter) {
-        this.filters.push(filter);
+    public addFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
