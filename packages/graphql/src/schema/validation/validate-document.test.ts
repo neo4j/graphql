@@ -68,7 +68,7 @@ describe("experimental flag warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledOnce();
     });
@@ -93,7 +93,7 @@ describe("experimental flag warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledOnce();
     });
@@ -222,7 +222,7 @@ describe("default max limit bypass warning", () => {
 
         expect(warn).toHaveBeenCalledOnce();
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
     });
 
@@ -245,7 +245,7 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
@@ -272,7 +272,7 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledOnce();
     });
@@ -296,7 +296,7 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
@@ -348,7 +348,7 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Series may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
@@ -379,7 +379,7 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledWith(
             "Max limit set on Movie may be bypassed by its interface Production. To fix this update the `@limit` max value on the interface type. Ignore this message if the behavior is intended!"
@@ -413,7 +413,7 @@ describe("default max limit bypass warning", () => {
         });
 
         expect(warn).toHaveBeenCalledWith(
-            "Neo4jGraphQL is running in Experimental mode. Be aware this comes with a risk, as behavior of features may be bugged and breaking changes may be introduced at any time."
+            "You have enabled experimental features of the Neo4j GraphQL Library. Be aware that experimental features may be incomplete and/or contain bugs, and that breaking changes may be introduced at any time."
         );
         expect(warn).toHaveBeenCalledOnce();
     });
