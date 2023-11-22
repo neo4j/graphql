@@ -35,9 +35,9 @@ import type { CompositeAggregationPartial } from "./CompositeAggregationPartial"
 export class CompositeAggregationOperation extends Operation {
     private children: CompositeAggregationPartial[];
     protected directed: boolean;
-    public fields: AggregationField[] = []; // Aggregation fields
-    public nodeFields: AggregationField[] = []; // Aggregation node fields
-    public edgeFields: AggregationField[] = []; // Aggregation node fields
+    public fields: AggregationField[] = [];
+    public nodeFields: AggregationField[] = [];
+    public edgeFields: AggregationField[] = [];
 
     private entity: InterfaceEntityAdapter | UnionEntityAdapter;
 
@@ -223,7 +223,7 @@ export class CompositeAggregationOperation extends Operation {
         });
     }
 
-    private createWithClause(context: QueryASTContext) {
+    private createWithClause(context: QueryASTContext): Cypher.With | undefined {
         const node = new Cypher.NamedNode("node");
         const filterContext = new QueryASTContext({
             neo4jGraphQLContext: context.neo4jGraphQLContext,
