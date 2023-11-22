@@ -19,10 +19,10 @@
 
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Top level aggregation interfaces", () => {
+describe("Top level filter on aggregation interfaces", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -64,7 +64,7 @@ describe("Top level aggregation interfaces", () => {
     test("top level count", async () => {
         const query = gql`
             {
-                productionsAggregate {
+                productionsAggregate(where: { title: "The Matrix" }) {
                     count
                 }
             }
@@ -76,28 +76,30 @@ describe("Top level aggregation interfaces", () => {
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
-                    RETURN this0 AS var1
+                    RETURN this0 AS node
                     UNION
-                    MATCH (this2:Series)
-                    RETURN this2 AS var1
+                    MATCH (this1:Series)
+                    RETURN this1 AS node
                 }
-                RETURN count(var1) AS var1
+                WITH *
+                WHERE node.title = $param0
+                RETURN count(node) AS this2
             }
-            RETURN { count: var1 }"
+            RETURN { count: this2 }"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Matrix\\"
+            }"
+        `);
     });
 
     test("top level count and string fields", async () => {
         const query = gql`
             {
-                productionsAggregate {
+                productionsAggregate(where: { title: "The Matrix" }) {
                     count
-                    title {
-                        longest
-                        shortest
-                    }
                 }
             }
         `;
@@ -108,29 +110,22 @@ describe("Top level aggregation interfaces", () => {
             "CALL {
                 CALL {
                     MATCH (this0:Movie)
-                    RETURN this0 AS var1
+                    RETURN this0 AS node
                     UNION
-                    MATCH (this2:Series)
-                    RETURN this2 AS var1
+                    MATCH (this1:Series)
+                    RETURN this1 AS node
                 }
-                RETURN count(var1) AS var1
+                WITH *
+                WHERE node.title = $param0
+                RETURN count(node) AS this2
             }
-            CALL {
-                CALL {
-                    MATCH (this3:Movie)
-                    RETURN this3 AS var4
-                    UNION
-                    MATCH (this5:Series)
-                    RETURN this5 AS var4
-                }
-                WITH var4
-                ORDER BY size(var4.title) DESC
-                WITH collect(var4.title) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var4
-            }
-            RETURN { count: var1, title: var4 }"
+            RETURN { count: this2 }"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Matrix\\"
+            }"
+        `);
     });
 });
