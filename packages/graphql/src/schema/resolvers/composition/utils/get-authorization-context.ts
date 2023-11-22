@@ -28,12 +28,37 @@ import { debugObject } from "../../../../debug/debug-object";
 
 const debug = Debug(DEBUG_AUTH);
 
+const unauthorizedContext = {
+    isAuthenticated: false,
+    jwtParam: new Cypher.NamedParam("jwt", {}),
+    isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", false),
+};
+
 export async function getAuthorizationContext(
     context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams,
     authorization?: Neo4jGraphQLAuthorization,
     jwtClaimsMap?: Map<string, string>
 ): Promise<AuthorizationContext> {
-    if (!context.jwt && authorization) {
+    if (context.jwt) {
+        const isAuthenticated = true;
+        const jwt = context.jwt;
+
+        debugObject(debug, "using JWT provided in context", jwt);
+
+        return {
+            isAuthenticated,
+            jwt,
+            jwtParam: new Cypher.NamedParam("jwt", jwt),
+            isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
+        };
+    }
+
+    if (!authorization) {
+        debug("authorization settings not specified, request not authenticated");
+        return unauthorizedContext;
+    }
+
+    if (context.token) {
         const jwt = await authorization.decode(context);
         if (jwt) {
             context.jwt = jwt;
@@ -48,28 +73,9 @@ export async function getAuthorizationContext(
                 isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
                 claims: jwtClaimsMap,
             };
-        } else {
-            const isAuthenticated = false;
-
-            debug("request not authenticated");
-
-            return {
-                isAuthenticated,
-                jwtParam: new Cypher.NamedParam("jwt", {}),
-                isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
-            };
         }
     }
 
-    const isAuthenticated = true;
-    const jwt = context.jwt;
-
-    debugObject(debug, "using JWT provided in context", jwt);
-
-    return {
-        isAuthenticated,
-        jwt,
-        jwtParam: new Cypher.NamedParam("jwt", jwt),
-        isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", isAuthenticated),
-    };
+    debug("request not authenticated");
+    return unauthorizedContext;
 }

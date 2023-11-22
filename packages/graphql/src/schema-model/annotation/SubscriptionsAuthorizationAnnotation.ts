@@ -22,11 +22,11 @@ import type { GraphQLWhereArg } from "../../types";
 export const SubscriptionsAuthorizationAnnotationArguments = ["filter"] as const;
 
 export const SubscriptionsAuthorizationFilterEventRule = [
-    "CREATE",
-    "UPDATE",
-    "DELETE",
-    "CREATE_RELATIONSHIP",
-    "DELETE_RELATIONSHIP",
+    "CREATED",
+    "UPDATED",
+    "DELETED",
+    "RELATIONSHIP_CREATED",
+    "RELATIONSHIP_DELETED",
 ] as const;
 
 export type SubscriptionsAuthorizationFilterEvent = (typeof SubscriptionsAuthorizationFilterEventRule)[number];
