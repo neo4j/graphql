@@ -148,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
         `);
     });
 
-    test("wrap authenticated subquery on nested read operation", async () => {
+    test.only("wrap authenticated subquery on nested read operation", async () => {
         const query = gql`
             query {
                 videos {

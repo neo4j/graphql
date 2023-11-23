@@ -22,7 +22,7 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
+import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -31,6 +31,9 @@ import { CypherAttributeField } from "../fields/attribute-fields/CypherAttribute
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
+import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
+import { NodeSelection } from "../selection/NodeSelection";
+import { RelationshipSelection } from "../selection/RelationshipSelection";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
@@ -51,19 +54,38 @@ export class ReadOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
+    private selection: EntitySelection;
+
     constructor({
         target,
         relationship,
         directed,
+        selection,
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         directed?: boolean;
+        selection?: EntitySelection;
     }) {
         super();
         this.target = target;
         this.directed = directed ?? true;
         this.relationship = relationship;
+
+        if (!selection) {
+            if (relationship) {
+                this.selection = new RelationshipSelection({
+                    target: relationship,
+                    directed,
+                });
+            } else {
+                this.selection = new NodeSelection({
+                    target,
+                });
+            }
+        } else {
+            this.selection = selection;
+        }
     }
 
     public setFields(fields: Field[]) {
@@ -102,25 +124,24 @@ export class ReadOperation extends Operation {
 
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
-        const relDirection = entity.getCypherDirection(this.directed);
 
-        const pattern = new Cypher.Pattern(context.target)
-            .withoutLabels()
-            .related(relVar)
-            .withDirection(relDirection)
-            .to(targetNode);
-
-        const nestedContext = context.push({ target: targetNode, relationship: relVar });
+        // eslint-disable-next-line prefer-const
+        let { selection: matchClause, nestedContext } = this.selection.apply(context);
         const filterPredicates = this.getPredicates(nestedContext);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).innerWith(targetNode)
+            new Cypher.Call(sq).innerWith(nestedContext.target)
         );
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
-        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
+        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
+            return f.getSelection(nestedContext);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
 
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         let withWhere: Cypher.With | undefined;
@@ -146,11 +167,11 @@ export class ReadOperation extends Operation {
 
         const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [targetNode]);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
         const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
 
         const clause = Cypher.concat(
-            ...preSelection,
+            ...extraMatches,
             matchClause,
             ...authFilterSubqueries,
             filterSubqueryWith,
@@ -219,6 +240,9 @@ export class ReadOperation extends Operation {
         if (this.relationship) {
             return this.transpileNestedRelationship(this.relationship, context);
         }
+
+        // const { selection: matchClause, nestedContext } = this.selection.apply(context);
+
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
         const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [node]);
@@ -307,6 +331,7 @@ export class ReadOperation extends Operation {
 
     public getChildren(): QueryASTNode[] {
         return filterTruthy([
+            this.selection,
             ...this.filters,
             ...this.authFilters,
             ...this.fields,

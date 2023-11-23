@@ -48,6 +48,9 @@ import { CompositeConnectionReadOperation } from "../ast/operations/composite/Co
 import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import type { Operation } from "../ast/operations/operations";
+import type { EntitySelection } from "../ast/selection/EntitySelection";
+import { NodeSelection } from "../ast/selection/NodeSelection";
+import { RelationshipSelection } from "../ast/selection/RelationshipSelection";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
 import { getConcreteWhere } from "../utils/get-concrete-where";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
@@ -242,10 +245,28 @@ export class OperationsFactory {
                 targetOperations: ["READ"],
                 context,
             });
+
+            let selection: EntitySelection;
+            if (relationship) {
+                selection = new RelationshipSelection({
+                    target: relationship,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                });
+            } else {
+                selection = new NodeSelection({
+                    target: entity,
+                });
+            }
+
+            // if(entityOrRel instanceof EntityAdapter){
+
+            // }
+
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
                 directed: Boolean(resolveTree.args?.directed ?? true),
+                selection,
             });
 
             return this.hydrateReadOperation({
