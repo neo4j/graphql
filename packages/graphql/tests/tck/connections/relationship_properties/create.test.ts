@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Relationship Properties Create Cypher", () => {
     let typeDefs: DocumentNode;
@@ -48,7 +48,7 @@ describe("Relationship Properties Create Cypher", () => {
         });
     });
 
-    test("Create movie with a relationship that has properties", async () => {
+    test.only("Create movie with a relationship that has properties", async () => {
         const query = gql`
             mutation {
                 createMovies(

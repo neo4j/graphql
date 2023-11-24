@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { filterTruthy } from "../../../../utils/utils";
 import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { filterTruthy } from "../../../../utils/utils";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
+import type { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { ReadOperation } from "./ReadOperation";
-import type { QueryASTContext } from "../QueryASTContext";
 
 /**
  * This is currently just a dummy tree node,
@@ -50,6 +50,7 @@ export class CreateOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
+        console.log("Transpile create");
         if (!context.target) throw new Error("No parent node found!");
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create

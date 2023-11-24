@@ -26,6 +26,8 @@ export class NodeSelection extends EntitySelection {
                 target: node,
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
                 returnVariable: context.returnVariable,
+                env: context.env,
+                shouldCollect: context.shouldCollect,
             }),
         };
     }

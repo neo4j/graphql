@@ -53,7 +53,7 @@ export class QueryASTFactory {
         entityAdapter: EntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): QueryAST {
-        const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context);
+        const operation = this.operationsFactory.createTopLevelOperation(entityAdapter, resolveTree, context, "this");
         return new QueryAST(operation);
     }
 }

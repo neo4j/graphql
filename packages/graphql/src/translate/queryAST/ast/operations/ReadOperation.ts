@@ -22,7 +22,6 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
-import { createNodeFromEntity } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -121,12 +120,12 @@ export class ReadOperation extends Operation {
         context: QueryASTContext
     ): OperationTranspileResult {
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
-
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
 
         // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
+
         const filterPredicates = this.getPredicates(nestedContext);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
@@ -241,24 +240,46 @@ export class ReadOperation extends Operation {
             return this.transpileNestedRelationship(this.relationship, context);
         }
 
-        // const { selection: matchClause, nestedContext } = this.selection.apply(context);
+        let { selection: matchClause, nestedContext } = this.selection.apply(context);
+        const isCreateSelection = nestedContext.env.topLevelOperationName === "CREATE";
+        if (isCreateSelection) {
+            if (!context.hasTarget()) {
+                throw new Error("Invalid target for create operation");
+            }
+            // Match is not applied on creation (last concat ignores the top level match) so we revert the context apply
+            nestedContext = context;
+        }
 
-        const isCreateSelection = context.env.topLevelOperationName === "CREATE";
-        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
-        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [node]);
-        const filterPredicates = this.getPredicates(context);
+        // const node = createNodeFromEntity(this.target, nestedContext.neo4jGraphQLContext, this.nodeAlias);
+        const preWith: Cypher.With | undefined =
+            isCreateSelection && context.target ? new Cypher.With([context.target, nestedContext.target]) : undefined;
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
-            new Cypher.Call(sq).innerWith(node)
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+        const filterPredicates = this.getPredicates(nestedContext);
+
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
+            new Cypher.Call(sq).innerWith(nestedContext.target)
         );
-        const fieldSubqueries = this.getFieldsSubqueries(context);
-        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(context);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(context, this.sortFields, [node]);
+        const fieldSubqueries = this.getFieldsSubqueries(nestedContext);
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
         const subqueries = Cypher.concat(...fieldSubqueries);
 
-        const authFiltersPredicate = this.getAuthFilterPredicate(context);
-        const ret: Cypher.Return = this.getReturnStatement(context, context.returnVariable);
-        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(context, node);
+        const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+        const ret: Cypher.Return = this.getReturnStatement(
+            isCreateSelection ? context : nestedContext,
+            nestedContext.returnVariable
+        );
+
+        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
+            return f.getSelection(nestedContext);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
+        // const { preSelection, selectionClause: _matchClause2 } = this.getSelectionClauses(nestedContext, node);
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
@@ -285,7 +306,7 @@ export class ReadOperation extends Operation {
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
-            this.addSortToClause(context, node, sortClause);
+            this.addSortToClause(nestedContext, nestedContext.target, sortClause);
         }
 
         const sortBlock = Cypher.concat(...sortSubqueries, sortClause);
@@ -300,7 +321,8 @@ export class ReadOperation extends Operation {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
         } else {
             clause = Cypher.concat(
-                ...preSelection,
+                preWith,
+                ...extraMatches,
                 matchClause,
                 ...authFilterSubqueries,
                 filterSubqueriesClause,

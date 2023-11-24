@@ -83,7 +83,8 @@ export class OperationsFactory {
     public createTopLevelOperation(
         entity: EntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        varName?: string
     ): Operation {
         if (isConcreteEntity(entity)) {
             // Handles deprecated top level fulltext
@@ -110,7 +111,7 @@ export class OperationsFactory {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
-                    op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+                    op = this.createReadOperation(entity, resolveTree, context, varName) as ReadOperation;
                 }
 
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -233,7 +234,8 @@ export class OperationsFactory {
     public createReadOperation(
         entityOrRel: EntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        varName?: string
     ): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
@@ -255,6 +257,7 @@ export class OperationsFactory {
             } else {
                 selection = new NodeSelection({
                     target: entity,
+                    alias: varName,
                 });
             }
 
@@ -279,10 +282,25 @@ export class OperationsFactory {
         } else {
             const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                // Duplicate from normal read
+                let selection: EntitySelection;
+                if (relationship) {
+                    selection = new RelationshipSelection({
+                        target: relationship,
+                        directed: Boolean(resolveTree.args?.directed ?? true),
+                    });
+                } else {
+                    selection = new NodeSelection({
+                        target: concreteEntity,
+                        alias: varName,
+                    });
+                }
+
                 const readPartial = new CompositeReadPartial({
                     target: concreteEntity,
                     relationship,
                     directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection,
                 });
 
                 const whereArgs = getConcreteWhere(entity, concreteEntity, resolveTreeWhere);
