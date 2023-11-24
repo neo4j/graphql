@@ -336,6 +336,7 @@ export class OperationsFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
+        console.log("createAggregationOperation");
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter;
@@ -353,13 +354,15 @@ export class OperationsFactory {
                     context,
                 });
 
+                const selection = new RelationshipSelection({
+                    relationship: entityOrRel,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                });
+
                 const operation = new AggregationOperation({
                     entity: entityOrRel,
                     directed: Boolean(resolveTree.args?.directed ?? true),
-                    selection: new RelationshipSelection({
-                        relationship: entityOrRel,
-                        directed: Boolean(resolveTree.args?.directed ?? true),
-                    }),
+                    selection,
                 });
 
                 return this.hydrateAggregationOperation({
@@ -401,13 +404,25 @@ export class OperationsFactory {
             }
         } else {
             if (isConcreteEntity(entity)) {
+                let selection: EntitySelection;
+                if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    const fulltextOptions = this.getFulltextOptions(context);
+                    selection = new FulltextSelection({
+                        target: entity,
+                        fulltext: fulltextOptions,
+                        scoreVariable: fulltextOptions.score,
+                    });
+                } else {
+                    selection = new NodeSelection({
+                        target: entity,
+                        alias: "this",
+                    });
+                }
+
                 const operation = new AggregationOperation({
                     entity,
                     directed: Boolean(resolveTree.args?.directed ?? true),
-                    selection: new NodeSelection({
-                        target: entity,
-                        alias: "this",
-                    }),
+                    selection,
                 });
                 //TODO: use a hydrate method here
                 const rawProjectionFields = {
