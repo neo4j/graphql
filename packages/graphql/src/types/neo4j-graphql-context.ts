@@ -17,11 +17,28 @@
  * limitations under the License.
  */
 
+import type { LabelExpr } from "@neo4j/cypher-builder";
 import type { CypherQueryOptions } from ".";
 import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Executor";
 import type { Neo4jGraphQLContextInterface } from "./neo4j-graphql-context-interface";
 
+type DataModelType = any; // TODO!
+
+interface LabelSelectorExpressionOptions {
+    restrict?: DataModelType;
+}
+
+export interface LabelManager {
+    getLabelSelectorExpressionObject: (
+        dataModelType: DataModelType,
+        options?: LabelSelectorExpressionOptions
+    ) => LabelExpr | string[];
+    getLabelSelectorExpression: (dataModelType: DataModelType, options?: LabelSelectorExpressionOptions) => string;
+}
+
 export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
+    labelManager?: LabelManager;
+
     /**
      * Parameters to be used when querying with Cypher.
      *

@@ -141,6 +141,10 @@ export class ConnectionFilter extends Filter {
     protected getLabelPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         if (isConcreteEntity(this.target)) return undefined;
+        if (context.neo4jGraphQLContext.labelManager) {
+            const filterExpr = context.neo4jGraphQLContext.labelManager.getLabelSelectorExpression(this.target.name);
+            return new Cypher.Raw((env) => `${context.target.getCypher(env)}:${filterExpr}`);
+        }
         const labelPredicate = this.target.concreteEntities.map((e) => {
             return context.target.hasLabels(...e.labels);
         });
