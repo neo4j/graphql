@@ -48,7 +48,7 @@ describe("Relationship Properties Create Cypher", () => {
         });
     });
 
-    test.only("Create movie with a relationship that has properties", async () => {
+    test("Create movie with a relationship that has properties", async () => {
         const query = gql`
             mutation {
                 createMovies(

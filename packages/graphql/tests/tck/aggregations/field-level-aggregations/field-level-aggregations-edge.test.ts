@@ -49,7 +49,7 @@ describe("Field Level Aggregations", () => {
         });
     });
 
-    test.only("Edge Int Aggregations", async () => {
+    test("Edge Int Aggregations", async () => {
         const query = gql`
             query {
                 movies {

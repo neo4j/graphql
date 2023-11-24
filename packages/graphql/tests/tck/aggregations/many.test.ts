@@ -41,7 +41,7 @@ describe("Cypher Aggregations Many", () => {
         });
     });
 
-    test.only("Min", async () => {
+    test("Min", async () => {
         const query = gql`
             {
                 moviesAggregate {
