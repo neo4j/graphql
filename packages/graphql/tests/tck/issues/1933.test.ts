@@ -94,10 +94,10 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
-                RETURN { min: min(this3.allocation), max: max(this3.allocation), average: avg(this3.allocation), sum: sum(this3.allocation) } AS var6
+                MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
+                RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
             }
-            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var6 } } } AS this"
+            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var8 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -147,10 +147,10 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[this4:PARTICIPATES]->(this5:Project)
-                RETURN { min: min(this4.allocation), max: max(this4.allocation), average: avg(this4.allocation), sum: sum(this4.allocation) } AS var7
+                MATCH (this)-[this7:PARTICIPATES]->(this8:Project)
+                RETURN { min: min(this7.allocation), max: max(this7.allocation), average: avg(this7.allocation), sum: sum(this7.allocation) } AS var9
             }
-            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var6, edge: { allocation: var7 } } } AS this"
+            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var6, edge: { allocation: var9 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

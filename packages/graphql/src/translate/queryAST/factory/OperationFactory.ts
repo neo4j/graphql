@@ -356,6 +356,10 @@ export class OperationsFactory {
                 const operation = new AggregationOperation({
                     entity: entityOrRel,
                     directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection: new RelationshipSelection({
+                        relationship: entityOrRel,
+                        directed: Boolean(resolveTree.args?.directed ?? true),
+                    }),
                 });
 
                 return this.hydrateAggregationOperation({
@@ -400,6 +404,10 @@ export class OperationsFactory {
                 const operation = new AggregationOperation({
                     entity,
                     directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection: new NodeSelection({
+                        target: entity,
+                        alias: "this",
+                    }),
                 });
                 //TODO: use a hydrate method here
                 const rawProjectionFields = {
