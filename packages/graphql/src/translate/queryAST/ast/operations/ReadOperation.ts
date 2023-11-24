@@ -31,8 +31,6 @@ import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
-import { NodeSelection } from "../selection/NodeSelection";
-import { RelationshipSelection } from "../selection/RelationshipSelection";
 import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
@@ -53,7 +51,7 @@ export class ReadOperation extends Operation {
 
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
 
-    private selection: EntitySelection;
+    protected selection: EntitySelection;
 
     constructor({
         target,
@@ -71,20 +69,7 @@ export class ReadOperation extends Operation {
         this.directed = directed ?? true;
         this.relationship = relationship;
 
-        if (!selection) {
-            if (relationship) {
-                this.selection = new RelationshipSelection({
-                    target: relationship,
-                    directed,
-                });
-            } else {
-                this.selection = new NodeSelection({
-                    target,
-                });
-            }
-        } else {
-            this.selection = selection;
-        }
+        this.selection = selection;
     }
 
     public setFields(fields: Field[]) {

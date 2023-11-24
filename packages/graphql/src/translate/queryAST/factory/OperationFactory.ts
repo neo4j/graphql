@@ -256,7 +256,7 @@ export class OperationsFactory {
             let selection: EntitySelection;
             if (relationship) {
                 selection = new RelationshipSelection({
-                    target: relationship,
+                    relationship,
                     directed: Boolean(resolveTree.args?.directed ?? true),
                 });
             } else {
@@ -291,8 +291,9 @@ export class OperationsFactory {
                 let selection: EntitySelection;
                 if (relationship) {
                     selection = new RelationshipSelection({
-                        target: relationship,
+                        relationship,
                         directed: Boolean(resolveTree.args?.directed ?? true),
+                        targetOverride: concreteEntity,
                     });
                 } else {
                     selection = new NodeSelection({

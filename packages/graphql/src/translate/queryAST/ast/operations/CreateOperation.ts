@@ -50,7 +50,6 @@ export class CreateOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        console.log("Transpile create");
         if (!context.target) throw new Error("No parent node found!");
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create

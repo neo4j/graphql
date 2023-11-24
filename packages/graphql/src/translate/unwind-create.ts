@@ -75,7 +75,6 @@ export default async function unwindCreate({
         shouldCollect: true,
     });
     const clauses = queryAST.transpile(queryASTContext).clauses;
-    console.log("Clauses", ...clauses);
     const projectionCypher = clauses.length
         ? Cypher.concat(...clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
