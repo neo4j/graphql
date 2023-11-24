@@ -64,7 +64,7 @@ export class ReadOperation extends Operation {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         directed?: boolean;
-        selection?: EntitySelection;
+        selection: EntitySelection;
     }) {
         super();
         this.target = target;

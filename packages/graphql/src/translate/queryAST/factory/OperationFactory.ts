@@ -49,6 +49,7 @@ import { CompositeReadOperation } from "../ast/operations/composite/CompositeRea
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import type { Operation } from "../ast/operations/operations";
 import type { EntitySelection } from "../ast/selection/EntitySelection";
+import { FulltextSelection } from "../ast/selection/FulltextSelection";
 import { NodeSelection } from "../ast/selection/NodeSelection";
 import { RelationshipSelection } from "../ast/selection/RelationshipSelection";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
@@ -195,12 +196,16 @@ export class OperationsFactory {
             context,
         });
 
+        const selection = new FulltextSelection({
+            target: entity,
+            fulltext: fulltextOptions,
+            scoreVariable: fulltextOptions.score,
+        });
         const operation = new FulltextOperation({
             target: entity,
             directed: Boolean(resolverArgs.directed ?? true),
-            fulltext: fulltextOptions,
             scoreField,
-            scoreVariable: fulltextOptions.score,
+            selection,
         });
 
         if (scoreFilter) {
