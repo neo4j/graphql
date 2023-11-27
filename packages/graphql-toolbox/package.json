@@ -51,7 +51,7 @@
         "@dnd-kit/sortable": "8.0.0",
         "@graphiql/react": "0.20.2",
         "@neo4j-ndl/base": "2.0.7",
-        "@neo4j-ndl/react": "2.0.12",
+        "@neo4j-ndl/react": "2.0.13",
         "@neo4j/graphql": "4.4.3",
         "@neo4j/introspector": "2.0.0",
         "classnames": "2.3.2",
