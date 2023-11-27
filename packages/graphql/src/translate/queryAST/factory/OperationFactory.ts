@@ -266,10 +266,6 @@ export class OperationsFactory {
                 });
             }
 
-            // if(entityOrRel instanceof EntityAdapter){
-
-            // }
-
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
