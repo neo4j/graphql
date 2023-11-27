@@ -1702,9 +1702,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/autocomplete@npm:6.11.0":
-  version: 6.11.0
-  resolution: "@codemirror/autocomplete@npm:6.11.0"
+"@codemirror/autocomplete@npm:6.11.1":
+  version: 6.11.1
+  resolution: "@codemirror/autocomplete@npm:6.11.1"
   dependencies:
     "@codemirror/language": ^6.0.0
     "@codemirror/state": ^6.0.0
@@ -1715,7 +1715,7 @@ __metadata:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.0.0
-  checksum: f80ac2c49b3736bdcce8d16776c09bfa3fe85a3ce486bfb96aa07157aff9e7afb3f96575a1d83cee96a97439c0ef0039325901afb811a9f37734ea0a1b965c82
+  checksum: 69cb77d51dbc4c76a990fb8e562075d6fa11b2aef00fce33d2a98dd701f6a89050b1b464ae8ee1e2cbe1a4210522b1a3c2260cdf5c933a062093acaf98a5eedc
   languageName: node
   linkType: hard
 
@@ -1736,15 +1736,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/commands@npm:6.3.0":
-  version: 6.3.0
-  resolution: "@codemirror/commands@npm:6.3.0"
+"@codemirror/commands@npm:6.3.1":
+  version: 6.3.1
+  resolution: "@codemirror/commands@npm:6.3.1"
   dependencies:
     "@codemirror/language": ^6.0.0
     "@codemirror/state": ^6.2.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.1.0
-  checksum: d6ade0ba7d4f80c2e44163935783d2f2f35c8b641a4b4f62452c0630211670abe5093786cf5a4af14147102d4284dae660a26f3ae58fd840e838685a81107d11
+  checksum: b0798b6cee0f37902ab4df80c9d28bfc999fa97bf9072b2972b83a036193e4dcb5db6da7fa8f71c4df98d629afff14e03153f5166617680cb917a3334417e932
   languageName: node
   linkType: hard
 
@@ -1775,9 +1775,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:6.9.2":
-  version: 6.9.2
-  resolution: "@codemirror/language@npm:6.9.2"
+"@codemirror/language@npm:6.9.3":
+  version: 6.9.3
+  resolution: "@codemirror/language@npm:6.9.3"
   dependencies:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
@@ -1785,7 +1785,7 @@ __metadata:
     "@lezer/highlight": ^1.0.0
     "@lezer/lr": ^1.0.0
     style-mod: ^4.0.0
-  checksum: eee7b861b5591114cac7502cd532d5b923639740081a4cd7e28696c252af8d759b14686aaf6d5eee7e0969ff647b7aaf03a5eea7235fb6d9858ee19433f1c74d
+  checksum: 774a40bc91c748d418a9a774161a5b083061124e4439bb753072bc657ec4c4784f595161c10c7c3935154b22291bf6dc74c9abe827033db32e217ac3963478f3
   languageName: node
   linkType: hard
 
@@ -3626,10 +3626,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@codemirror/autocomplete": 6.11.0
-    "@codemirror/commands": 6.3.0
+    "@codemirror/autocomplete": 6.11.1
+    "@codemirror/commands": 6.3.1
     "@codemirror/lang-javascript": 6.2.1
-    "@codemirror/language": 6.9.2
+    "@codemirror/language": 6.9.3
     "@dnd-kit/core": 6.1.0
     "@dnd-kit/modifiers": 7.0.0
     "@dnd-kit/sortable": 8.0.0
