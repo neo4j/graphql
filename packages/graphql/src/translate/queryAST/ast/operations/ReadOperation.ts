@@ -235,7 +235,6 @@ export class ReadOperation extends Operation {
             nestedContext = context;
         }
 
-        // const node = createNodeFromEntity(this.target, nestedContext.neo4jGraphQLContext, this.nodeAlias);
         const preWith: Cypher.With | undefined =
             isCreateSelection && context.target ? new Cypher.With([context.target, nestedContext.target]) : undefined;
 
@@ -264,7 +263,6 @@ export class ReadOperation extends Operation {
             extraMatches = [matchClause, ...extraMatches];
             matchClause = new Cypher.With("*");
         }
-        // const { preSelection, selectionClause: _matchClause2 } = this.getSelectionClauses(nestedContext, node);
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
