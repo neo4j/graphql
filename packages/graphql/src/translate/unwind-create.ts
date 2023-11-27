@@ -17,16 +17,20 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
+import Debug from "debug";
 import type { Node } from "../classes";
+import { CallbackBucket } from "../classes/CallbackBucket";
+import { DEBUG_TRANSLATE } from "../constants";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getTreeDescriptor, mergeTreeDescriptors, parseCreate } from "./batch-create/parser";
 import type { GraphQLCreateInput } from "./batch-create/types";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
-import { mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
 import { UnwindCreateVisitor } from "./batch-create/unwind-create-visitors/UnwindCreateVisitor";
-import { CallbackBucket } from "../classes/CallbackBucket";
-import Cypher from "@neo4j/cypher-builder";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export default async function unwindCreate({
     context,
@@ -61,6 +65,7 @@ export default async function unwindCreate({
         concreteEntityAdapter,
         context
     );
+    debug(queryAST.print());
     const queryASTEnv = new QueryASTEnv();
     const queryASTContext = new QueryASTContext({
         target: rootNodeVariable,
@@ -70,7 +75,6 @@ export default async function unwindCreate({
         shouldCollect: true,
     });
     const clauses = queryAST.transpile(queryASTContext).clauses;
-
     const projectionCypher = clauses.length
         ? Cypher.concat(...clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));

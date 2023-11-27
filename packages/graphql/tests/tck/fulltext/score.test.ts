@@ -55,9 +55,9 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
-            WHERE $param1 IN labels(this)
-            RETURN this { .title, .released } AS movie, var0 AS score"
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
+            RETURN this0 { .title, .released } AS movie, var1 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -84,9 +84,9 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
-            WHERE ($param1 IN labels(this) AND this.released > $param2)
-            RETURN this { .title, .released } AS movie, var0 AS score"
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND this0.released > $param2)
+            RETURN this0 { .title, .released } AS movie, var1 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -116,9 +116,9 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
-            WHERE ($param1 IN labels(this) AND var0 >= $param2)
-            RETURN this { .title } AS movie, var0 AS score"
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND var1 >= $param2)
+            RETURN this0 { .title } AS movie, var1 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -145,11 +145,11 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
-            WHERE $param1 IN labels(this)
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
             WITH *
-            ORDER BY this.title DESC
-            RETURN this { .title } AS movie, var0 AS score"
+            ORDER BY this0.title DESC
+            RETURN this0 { .title } AS movie, var1 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -175,11 +175,11 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
-            WHERE $param1 IN labels(this)
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
             WITH *
-            ORDER BY var0 ASC
-            RETURN this { .title } AS movie, var0 AS score"
+            ORDER BY var1 ASC
+            RETURN this0 { .title } AS movie, var1 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -208,11 +208,11 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this, score AS var0
-            WHERE $param1 IN labels(this)
+            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
             WITH *
-            ORDER BY var0 ASC, this.title DESC
-            RETURN this { .title } AS movie, var0 AS score"
+            ORDER BY var1 ASC, this0.title DESC
+            RETURN this0 { .title } AS movie, var1 AS score"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

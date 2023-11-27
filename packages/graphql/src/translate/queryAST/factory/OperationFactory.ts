@@ -48,6 +48,10 @@ import { CompositeConnectionReadOperation } from "../ast/operations/composite/Co
 import { CompositeReadOperation } from "../ast/operations/composite/CompositeReadOperation";
 import { CompositeReadPartial } from "../ast/operations/composite/CompositeReadPartial";
 import type { Operation } from "../ast/operations/operations";
+import type { EntitySelection } from "../ast/selection/EntitySelection";
+import { FulltextSelection } from "../ast/selection/FulltextSelection";
+import { NodeSelection } from "../ast/selection/NodeSelection";
+import { RelationshipSelection } from "../ast/selection/RelationshipSelection";
 import { getConcreteEntitiesInOnArgumentOfWhere } from "../utils/get-concrete-entities-in-on-argument-of-where";
 import { getConcreteWhere } from "../utils/get-concrete-where";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
@@ -80,7 +84,8 @@ export class OperationsFactory {
     public createTopLevelOperation(
         entity: EntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        varName?: string
     ): Operation {
         if (isConcreteEntity(entity)) {
             // Handles deprecated top level fulltext
@@ -107,7 +112,7 @@ export class OperationsFactory {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
-                    op = this.createReadOperation(entity, resolveTree, context) as ReadOperation;
+                    op = this.createReadOperation(entity, resolveTree, context, varName) as ReadOperation;
                 }
 
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -191,12 +196,16 @@ export class OperationsFactory {
             context,
         });
 
+        const selection = new FulltextSelection({
+            target: entity,
+            fulltext: fulltextOptions,
+            scoreVariable: fulltextOptions.score,
+        });
         const operation = new FulltextOperation({
             target: entity,
             directed: Boolean(resolverArgs.directed ?? true),
-            fulltext: fulltextOptions,
             scoreField,
-            scoreVariable: fulltextOptions.score,
+            selection,
         });
 
         if (scoreFilter) {
@@ -230,7 +239,8 @@ export class OperationsFactory {
     public createReadOperation(
         entityOrRel: EntityAdapter | RelationshipAdapter,
         resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        varName?: string
     ): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
@@ -242,10 +252,25 @@ export class OperationsFactory {
                 targetOperations: ["READ"],
                 context,
             });
+
+            let selection: EntitySelection;
+            if (relationship) {
+                selection = new RelationshipSelection({
+                    relationship,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                });
+            } else {
+                selection = new NodeSelection({
+                    target: entity,
+                    alias: varName,
+                });
+            }
+
             const operation = new ReadOperation({
                 target: entity,
                 relationship,
                 directed: Boolean(resolveTree.args?.directed ?? true),
+                selection,
             });
 
             return this.hydrateReadOperation({
@@ -258,10 +283,26 @@ export class OperationsFactory {
         } else {
             const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                // Duplicate from normal read
+                let selection: EntitySelection;
+                if (relationship) {
+                    selection = new RelationshipSelection({
+                        relationship,
+                        directed: Boolean(resolveTree.args?.directed ?? true),
+                        targetOverride: concreteEntity,
+                    });
+                } else {
+                    selection = new NodeSelection({
+                        target: concreteEntity,
+                        alias: varName,
+                    });
+                }
+
                 const readPartial = new CompositeReadPartial({
                     target: concreteEntity,
                     relationship,
                     directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection,
                 });
 
                 const whereArgs = getConcreteWhere(entity, concreteEntity, resolveTreeWhere);
@@ -291,6 +332,7 @@ export class OperationsFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
+        console.log("createAggregationOperation");
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter;
@@ -308,9 +350,15 @@ export class OperationsFactory {
                     context,
                 });
 
+                const selection = new RelationshipSelection({
+                    relationship: entityOrRel,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                });
+
                 const operation = new AggregationOperation({
                     entity: entityOrRel,
                     directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection,
                 });
 
                 return this.hydrateAggregationOperation({
@@ -352,9 +400,25 @@ export class OperationsFactory {
             }
         } else {
             if (isConcreteEntity(entity)) {
+                let selection: EntitySelection;
+                if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
+                    const fulltextOptions = this.getFulltextOptions(context);
+                    selection = new FulltextSelection({
+                        target: entity,
+                        fulltext: fulltextOptions,
+                        scoreVariable: fulltextOptions.score,
+                    });
+                } else {
+                    selection = new NodeSelection({
+                        target: entity,
+                        alias: "this",
+                    });
+                }
+
                 const operation = new AggregationOperation({
                     entity,
                     directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection,
                 });
                 //TODO: use a hydrate method here
                 const rawProjectionFields = {
