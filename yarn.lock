@@ -1737,15 +1737,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/commands@npm:6.3.1":
-  version: 6.3.1
-  resolution: "@codemirror/commands@npm:6.3.1"
+"@codemirror/commands@npm:6.3.2":
+  version: 6.3.2
+  resolution: "@codemirror/commands@npm:6.3.2"
   dependencies:
     "@codemirror/language": ^6.0.0
     "@codemirror/state": ^6.2.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.1.0
-  checksum: b0798b6cee0f37902ab4df80c9d28bfc999fa97bf9072b2972b83a036193e4dcb5db6da7fa8f71c4df98d629afff14e03153f5166617680cb917a3334417e932
+  checksum: 683c444d8e6ad889ab5efd0d742b0fa28b78c8cad63276ec60d298b13d4939c8bd7e1d6fd3535645b8d255147de0d3aef46d89a29c19d0af58a7f2914bdcb3ab
   languageName: node
   linkType: hard
 
@@ -3628,7 +3628,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@codemirror/autocomplete": 6.11.1
-    "@codemirror/commands": 6.3.1
+    "@codemirror/commands": 6.3.2
     "@codemirror/lang-javascript": 6.2.1
     "@codemirror/language": 6.9.3
     "@dnd-kit/core": 6.1.0
