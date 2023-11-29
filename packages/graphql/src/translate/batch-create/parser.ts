@@ -40,7 +40,10 @@ function getRelationshipFields(
         if (relationField.interface || relationField.union) {
             throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
         } else {
-            refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+            const node = context.nodes.find((x) => x.name === relationField.typeMeta.name);
+            if (node) {
+                refNodes.push(node);
+            }
         }
     }
     return [relationField, refNodes];
@@ -60,51 +63,41 @@ export function inputTreeToCypherMap(
             )
         );
     }
-    const properties = (Object.entries(input) as GraphQLCreateInput).reduce(
+    const properties = Object.entries(input).reduce(
         (obj: Record<string, Cypher.Expr>, [key, value]: [string, Record<string, any>]) => {
             const [relationField, relatedNodes] = getRelationshipFields(node, key, context);
             if (relationField && relationField.properties) {
-                relationship = context.relationships.find(
-                    (x) => x.properties === relationField.properties
-                ) as unknown as Relationship;
+                relationship = context.relationships.find((x) => x.properties === relationField.properties);
             }
             let scalarOrEnum = false;
             if (parentKey === "edge") {
-                scalarOrEnum = isScalarOrEnum(key, relationship as Relationship);
+                if (!relationship) {
+                    throw new Error("Transpile error: relationship expected to be defined");
+                }
+                scalarOrEnum = isScalarOrEnum(key, relationship);
             }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
                 scalarOrEnum = isScalarOrEnum(key, node);
             }
             if (typeof value === "object" && value !== null && (relationField || !scalarOrEnum)) {
+                const nodeInput = relationField ? (relatedNodes[0] as Node) : node;
                 if (Array.isArray(value)) {
                     obj[key] = new Cypher.List(
                         value.map((GraphQLCreateInput: GraphQLCreateInput) =>
-                            inputTreeToCypherMap(
-                                GraphQLCreateInput,
-                                relationField ? (relatedNodes[0] as Node) : node,
-                                context,
-                                key,
-                                relationship
-                            )
+                            inputTreeToCypherMap(GraphQLCreateInput, nodeInput, context, key, relationship)
                         )
                     );
                     return obj;
                 }
-                obj[key] = inputTreeToCypherMap(
-                    value as GraphQLCreateInput[] | GraphQLCreateInput,
-                    relationField ? (relatedNodes[0] as Node) : node,
-                    context,
-                    key,
-                    relationship
-                ) as Cypher.Map;
+                obj[key] = inputTreeToCypherMap(value, nodeInput, context, key, relationship);
                 return obj;
             }
             obj[key] = new Cypher.Param(value);
             return obj;
         },
-        {} as Record<string, Cypher.Expr>
-    ) as Record<string, Cypher.Expr>;
+        {}
+    );
     return new Cypher.Map(properties);
 }
 
@@ -127,18 +120,19 @@ export function getTreeDescriptor(
     parentKey?: string,
     relationship?: Relationship
 ): TreeDescriptor {
-    return Object.entries(input).reduce(
+    return Object.entries(input).reduce<TreeDescriptor>(
         (previous, [key, value]) => {
             const [relationField, relatedNodes] = getRelationshipFields(node, key, context);
             if (relationField && relationField.properties) {
-                relationship = context.relationships.find(
-                    (x) => x.properties === relationField.properties
-                ) as unknown as Relationship;
+                relationship = context.relationships.find((x) => x.properties === relationField.properties);
             }
 
             let scalarOrEnum = false;
             if (parentKey === "edge") {
-                scalarOrEnum = isScalarOrEnum(key, relationship as Relationship);
+                if (!relationship) {
+                    throw new Error("Transpile error: relationship expected to be defined");
+                }
+                scalarOrEnum = isScalarOrEnum(key, relationship);
             }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
@@ -150,25 +144,17 @@ export function getTreeDescriptor(
 
                 if (Array.isArray(value)) {
                     previous.children[key] = mergeTreeDescriptors(
-                        value.map((el) =>
-                            getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship)
-                        )
+                        value.map((el) => getTreeDescriptor(el, innerNode, context, key, relationship))
                     );
                     return previous;
                 }
-                previous.children[key] = getTreeDescriptor(
-                    value as GraphQLCreateInput,
-                    innerNode,
-                    context,
-                    key,
-                    relationship
-                );
+                previous.children[key] = getTreeDescriptor(value, innerNode, context, key, relationship);
                 return previous;
             }
             previous.properties.add(key);
             return previous;
         },
-        { properties: new Set(), children: {} } as TreeDescriptor
+        { properties: new Set<string>(), children: {} }
     );
 }
 
@@ -178,17 +164,21 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
             previous.properties = new Set([...previous.properties, ...node.properties]);
             const entries = [...new Set([...Object.keys(previous.children), ...Object.keys(node.children)])].map(
                 (childrenKey) => {
-                    const previousChildren: TreeDescriptor =
-                        previous.children[childrenKey] ?? ({ properties: new Set(), children: {} } as TreeDescriptor);
-                    const nodeChildren: TreeDescriptor =
-                        node.children[childrenKey] ?? ({ properties: new Set(), children: {} } as TreeDescriptor);
+                    const previousChildren: TreeDescriptor = previous.children[childrenKey] ?? {
+                        properties: new Set(),
+                        children: {},
+                    };
+                    const nodeChildren: TreeDescriptor = node.children[childrenKey] ?? {
+                        properties: new Set(),
+                        children: {},
+                    };
                     return [childrenKey, mergeTreeDescriptors([previousChildren, nodeChildren])];
                 }
             );
             previous.children = Object.fromEntries(entries);
             return previous;
         },
-        { properties: new Set(), children: {} } as TreeDescriptor
+        { properties: new Set<string>(), children: {} }
     );
 }
 
@@ -199,9 +189,10 @@ function parser(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslat
         if (relationField) {
             let edge;
             if (relationField.properties) {
-                edge = context.relationships.find(
-                    (x) => x.properties === relationField.properties
-                ) as unknown as Relationship;
+                edge = context.relationships.find((x) => x.properties === relationField.properties);
+                if (!edge) {
+                    throw new Error("Transpile error: relationship expected to be defined");
+                }
             }
             if (relationField.interface || relationField.union) {
                 throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
@@ -284,7 +275,10 @@ function parseNestedCreate(
     relationship: [RelationField | undefined, Node[]],
     edge?: Relationship
 ) {
-    const nodeProperties = (input.children.node as TreeDescriptor).properties;
+    if (!input.children.node) {
+        throw new Error("Transpile error: node expected to be defined");
+    }
+    const nodeProperties = input.children.node.properties;
     const edgeProperties = input.children.edge ? input.children.edge.properties : [];
     raiseOnNotSupportedProperty(node);
     raiseAttributeAmbiguity(nodeProperties, node);
