@@ -75,7 +75,7 @@ export class UnwindCreateVisitor implements Visitor {
                 .map((childrenRef) => {
                     const scope: UnwindCreateScopeDefinition | undefined = this.environment[childrenRef];
                     if (!scope) {
-                        throw new Error(`Transpile error: No scope found`);
+                        throw new Error("Transpile error: No scope found");
                     }
                     return scope.clause;
                 })
