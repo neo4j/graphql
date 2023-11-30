@@ -424,11 +424,6 @@ describe("Interface Relationships", () => {
               Series: SeriesUpdateInput
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -451,7 +446,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1598,11 +1592,6 @@ describe("Interface Relationships", () => {
               Series: SeriesUpdateInput
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -1626,7 +1615,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -2255,11 +2243,6 @@ describe("Interface Relationships", () => {
               Type2Interface1: Type2Interface1UpdateInput
             }
 
-            input Interface1ImplementationsWhere {
-              Type1Interface1: Type1Interface1Where
-              Type2Interface1: Type2Interface1Where
-            }
-
             input Interface1Interface2ConnectFieldInput {
               where: Interface2ConnectWhere
             }
@@ -2340,7 +2323,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Where {
-              _on: Interface1ImplementationsWhere
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
@@ -2394,11 +2376,6 @@ describe("Interface Relationships", () => {
               Type2Interface2: Type2Interface2UpdateInput
             }
 
-            input Interface2ImplementationsWhere {
-              Type1Interface2: Type1Interface2Where
-              Type2Interface2: Type2Interface2Where
-            }
-
             input Interface2Options {
               limit: Int
               offset: Int
@@ -2421,7 +2398,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2Where {
-              _on: Interface2ImplementationsWhere
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
@@ -3629,11 +3605,6 @@ describe("Interface Relationships", () => {
               Post: PostUpdateInput
             }
 
-            input ContentImplementationsWhere {
-              Comment: CommentWhere
-              Post: PostWhere
-            }
-
             input ContentOptions {
               limit: Int
               offset: Int
@@ -3659,7 +3630,6 @@ describe("Interface Relationships", () => {
             }
 
             input ContentWhere {
-              _on: ContentImplementationsWhere
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String

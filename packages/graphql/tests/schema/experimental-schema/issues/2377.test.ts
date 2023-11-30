@@ -388,10 +388,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name: StringAggregateSelectionNullable!
             }
 
-            input ResourceEntityImplementationsWhere {
-              Resource: ResourceWhere
-            }
-
             input ResourceEntityOptions {
               limit: Int
               offset: Int
@@ -411,7 +407,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceEntityWhere {
-              _on: ResourceEntityImplementationsWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

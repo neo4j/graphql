@@ -1174,10 +1174,6 @@ describe("Plural option", () => {
               name: StringAggregateSelectionNullable!
             }
 
-            input AnimalImplementationsWhere {
-              Dog: DogWhere
-            }
-
             input AnimalOptions {
               limit: Int
               offset: Int
@@ -1195,7 +1191,6 @@ describe("Plural option", () => {
             }
 
             input AnimalWhere {
-              _on: AnimalImplementationsWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

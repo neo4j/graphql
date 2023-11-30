@@ -162,10 +162,6 @@ describe("Interfaces", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            input MovieNodeImplementationsWhere {
-              Movie: MovieWhere
-            }
-
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -247,7 +243,6 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeWhere {
-              _on: MovieNodeImplementationsWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -526,10 +521,6 @@ describe("Interfaces", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            input MovieNodeImplementationsWhere {
-              Movie: MovieWhere
-            }
-
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -611,7 +602,6 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeWhere {
-              _on: MovieNodeImplementationsWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

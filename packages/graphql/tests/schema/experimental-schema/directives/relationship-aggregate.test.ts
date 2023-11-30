@@ -1450,10 +1450,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorUpdateInput
                     }
 
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -1478,7 +1474,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
@@ -1888,10 +1883,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorUpdateInput
                     }
 
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -1916,7 +1907,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String

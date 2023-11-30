@@ -1832,11 +1832,6 @@ describe("Union Interface Relationships", () => {
               Person: PersonUpdateInput
             }
 
-            input ReviewerImplementationsWhere {
-              Influencer: InfluencerWhere
-              Person: PersonWhere
-            }
-
             input ReviewerOptions {
               limit: Int
               offset: Int
@@ -1865,7 +1860,6 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerWhere {
-              _on: ReviewerImplementationsWhere
               reputation: Int
               reputation_GT: Int
               reputation_GTE: Int

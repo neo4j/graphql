@@ -1103,11 +1103,6 @@ describe("Comments", () => {
                   Series: SeriesUpdateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -1130,7 +1125,6 @@ describe("Comments", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String

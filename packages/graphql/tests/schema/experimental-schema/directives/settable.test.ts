@@ -5559,11 +5559,6 @@ describe("@settable", () => {
                   Series: SeriesUpdateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -5588,7 +5583,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -6078,11 +6072,6 @@ describe("@settable", () => {
                   Series: SeriesCreateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -6101,7 +6090,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -6860,11 +6848,6 @@ describe("@settable", () => {
                   Series: [SeriesDisconnectInput!]
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -6883,7 +6866,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -7796,11 +7778,6 @@ describe("@settable", () => {
                   Series: SeriesUpdateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -7826,7 +7803,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
