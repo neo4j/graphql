@@ -102,8 +102,7 @@
         "jose": "^5.0.0",
         "pluralize": "^8.0.0",
         "semver": "^7.5.4",
-        "typescript-memoize": "^1.1.1",
-        "uuid": "^9.0.0"
+        "typescript-memoize": "^1.1.1"
     },
     "peerDependencies": {
         "graphql": "^16.0.0",

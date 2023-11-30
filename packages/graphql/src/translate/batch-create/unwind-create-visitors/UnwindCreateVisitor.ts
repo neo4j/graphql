@@ -19,14 +19,7 @@
 
 import type { PredicateReturn } from "../../../types";
 import type { CallbackBucket } from "../../../classes/CallbackBucket";
-import type {
-    Visitor,
-    ICreateAST,
-    INestedCreateAST,
-    CreateAST,
-    NestedCreateAST,
-    IAST,
-} from "../GraphQLInputAST/GraphQLInputAST";
+import type { Visitor, CreateAST, NestedCreateAST, UnwindASTNode } from "../GraphQLInputAST/GraphQLInputAST";
 import type { Node, Relationship } from "../../../classes";
 import createRelationshipValidationString from "../../create-relationship-validation-string";
 import { filterTruthy } from "../../../utils/utils";
@@ -44,12 +37,11 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 type UnwindCreateScopeDefinition = {
     unwindVar: Cypher.Variable;
     parentVar: Cypher.Variable;
-    clause?: Cypher.Clause;
 };
 type GraphQLInputASTNodeRef = string;
 type UnwindCreateEnvironment = Record<GraphQLInputASTNodeRef, UnwindCreateScopeDefinition>;
 
-export class UnwindCreateVisitor implements Visitor {
+export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
     unwindVar: Cypher.Variable;
     callbackBucket: CallbackBucket;
     context: Neo4jGraphQLTranslationContext;
@@ -64,27 +56,23 @@ export class UnwindCreateVisitor implements Visitor {
         this.environment = {};
     }
 
-    visitChildren(currentASTNode: IAST, unwindVar: Cypher.Variable, parentVar: Cypher.Variable): Cypher.Clause[] {
+    visitChildren(
+        currentASTNode: UnwindASTNode,
+        unwindVar: Cypher.Variable,
+        parentVar: Cypher.Variable
+    ): Cypher.Clause[] {
         if (currentASTNode.children) {
+            const scope = { unwindVar, parentVar };
             const childrenRefs = currentASTNode.children.map((children) => {
-                this.environment[children.id] = { unwindVar, parentVar };
-                children.accept(this);
-                return children.id;
+                this.environment[children.id] = scope;
+                return children.accept(this);
             });
-            return childrenRefs
-                .map((childrenRef) => {
-                    const scope: UnwindCreateScopeDefinition | undefined = this.environment[childrenRef];
-                    if (!scope) {
-                        throw new Error("Transpile error: No scope found");
-                    }
-                    return scope.clause;
-                })
-                .filter((v): v is Cypher.Clause => !!v);
+            return childrenRefs;
         }
         return [];
     }
 
-    visitCreate(create: ICreateAST): void {
+    visitCreate(create: CreateAST): Cypher.Clause {
         const labels = create.node.getLabels(this.context);
         const currentNode = new Cypher.Node({
             labels,
@@ -152,9 +140,10 @@ export class UnwindCreateVisitor implements Visitor {
         );
         this.rootNode = currentNode;
         this.clause = new Cypher.Call(clause).innerWith(this.unwindVar);
+        return this.clause;
     }
 
-    visitNestedCreate(nestedCreate: INestedCreateAST): void {
+    visitNestedCreate(nestedCreate: NestedCreateAST): Cypher.Clause {
         const scope = this.getScope(nestedCreate.id);
 
         const parentVar = scope.parentVar;
@@ -281,7 +270,8 @@ export class UnwindCreateVisitor implements Visitor {
         const subQuery = Cypher.concat(...subQueryStatements);
         const callClause = new Cypher.Call(subQuery);
         const outsideWith = new Cypher.With(parentVar, unwindVar);
-        scope.clause = Cypher.concat(outsideWith, callClause);
+
+        return Cypher.concat(outsideWith, callClause);
     }
 
     private getAuthNodeClause(
@@ -371,10 +361,10 @@ export class UnwindCreateVisitor implements Visitor {
         };
     }
 
-    getScope(identifier: string): UnwindCreateScopeDefinition {
+    getScope(identifier: number): UnwindCreateScopeDefinition {
         const scope = this.environment[identifier];
         if (!scope) {
-            throw new Error(`Transpile error: No scope found`);
+            throw new Error("Transpile error: No scope found");
         }
         return scope;
     }

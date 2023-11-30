@@ -23,7 +23,7 @@ import { UnsupportedUnwindOptimization } from "./types";
 import type { GraphElement, Node, Relationship } from "../../classes";
 import { Neo4jGraphQLError } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
-import type { AST } from "./GraphQLInputAST/GraphQLInputAST";
+import type { UnwindASTNode } from "./GraphQLInputAST/GraphQLInputAST";
 import { CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
@@ -182,7 +182,13 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
     );
 }
 
-function parser(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslationContext, parentASTNode: AST): AST {
+function parser(
+    input: TreeDescriptor,
+    node: Node,
+    context: Neo4jGraphQLTranslationContext,
+    parentASTNode: UnwindASTNode,
+    counter: number
+): UnwindASTNode {
     Object.entries(input.children).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, context);
 
@@ -208,6 +214,7 @@ function parser(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslat
                                 node,
                                 key,
                                 [relationField, relatedNodes],
+                                counter++,
                                 edge
                             )
                         );
@@ -257,12 +264,12 @@ function raiseOnNotSupportedProperty(graphElement: GraphElement) {
     });
 }
 
-export function parseCreate(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslationContext) {
+export function parseCreate(input: TreeDescriptor, node: Node, context: Neo4jGraphQLTranslationContext, counter = 0) {
     const nodeProperties = input.properties;
     raiseOnNotSupportedProperty(node);
     raiseAttributeAmbiguity(input.properties, node);
-    const createAST = new CreateAST([...nodeProperties], node);
-    parser(input, node, context, createAST);
+    const createAST = new CreateAST(counter++, [...nodeProperties], node);
+    parser(input, node, context, createAST, counter);
     return createAST;
 }
 
@@ -273,8 +280,12 @@ function parseNestedCreate(
     parentNode: Node,
     relationshipPropertyPath: string,
     relationship: [RelationField | undefined, Node[]],
+    counter: number,
     edge?: Relationship
 ) {
+    if (!relationship[0]) {
+        throw new Error("what?");
+    }
     if (!input.children.node) {
         throw new Error("Transpile error: node expected to be defined");
     }
@@ -288,6 +299,7 @@ function parseNestedCreate(
     }
 
     const nestedCreateAST = new NestedCreateAST(
+        counter++,
         node,
         parentNode,
         [...nodeProperties],
@@ -297,7 +309,7 @@ function parseNestedCreate(
         edge
     );
     if (input.children.node) {
-        parser(input.children.node, node, context, nestedCreateAST);
+        parser(input.children.node, node, context, nestedCreateAST, counter);
     }
     return nestedCreateAST;
 }

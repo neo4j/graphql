@@ -332,7 +332,6 @@ export class OperationsFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
-        console.log("createAggregationOperation");
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter;
