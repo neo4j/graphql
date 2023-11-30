@@ -60,7 +60,7 @@ describe("createPointElement", () => {
             variable: new Cypher.NamedVariable("this"),
         });
 
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toMatchInlineSnapshot(`
             "point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
@@ -107,7 +107,7 @@ describe("createPointElement", () => {
             field,
             variable: new Cypher.NamedVariable("this"),
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toMatchInlineSnapshot(`
                 "points: (CASE
                     WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]

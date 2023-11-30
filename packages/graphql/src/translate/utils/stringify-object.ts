@@ -20,15 +20,13 @@
 import Cypher from "@neo4j/cypher-builder";
 
 /** Serializes object into a string for Cypher objects */
-export function stringifyObject(
-    fields: Record<string, Cypher.RawCypher | string | undefined | null>
-): Cypher.RawCypher {
-    return new Cypher.RawCypher(
+export function stringifyObject(fields: Record<string, Cypher.Raw | string | undefined | null>): Cypher.Raw {
+    return new Cypher.Raw(
         (env) =>
             `{ ${Object.entries(fields)
                 .filter(([, value]) => Boolean(value))
                 .map(([key, value]): string | undefined => {
-                    if (value instanceof Cypher.RawCypher) {
+                    if (value instanceof Cypher.Raw) {
                         return `${key}: ${value?.getCypher(env)}`;
                     } else {
                         return `${key}: ${value}`;

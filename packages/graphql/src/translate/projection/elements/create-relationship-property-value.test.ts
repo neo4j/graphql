@@ -178,7 +178,7 @@ describe("createRelationshipPropertyElement", () => {
             relationship,
             relationshipVariable: new Cypher.Relationship(),
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toMatchInlineSnapshot(`"this0.int"`);
             return "";
         }).build();
@@ -197,7 +197,7 @@ describe("createRelationshipPropertyElement", () => {
             relationship,
             relationshipVariable: new Cypher.Relationship(),
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toMatchInlineSnapshot(
                 `"apoc.date.convertFormat(toString(this0.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\")"`
             );
@@ -233,7 +233,7 @@ describe("createRelationshipPropertyElement", () => {
             relationship,
             relationshipVariable: new Cypher.Relationship(),
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toMatchInlineSnapshot(`
                 "CASE
                     WHEN this0.point IS NOT NULL THEN { point: this0.point, crs: this0.point.crs }
