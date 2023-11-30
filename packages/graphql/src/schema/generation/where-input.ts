@@ -60,11 +60,13 @@ export function withWhereInputType({
     userDefinedFieldDirectives,
     features,
     composer,
+    experimental,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
+    experimental: boolean;
 }): InputTypeComposer {
     if (composer.has(entityAdapter.operations.whereInputTypeName)) {
         return composer.getITC(entityAdapter.operations.whereInputTypeName);
@@ -91,12 +93,14 @@ export function withWhereInputType({
             NOT: whereInputType,
         });
     } else if (entityAdapter instanceof InterfaceEntityAdapter) {
-        const implementationsWhereInputType = makeImplementationsWhereInput({
-            interfaceEntityAdapter: entityAdapter,
-            composer,
-        });
-        // TODO: add interfaces that implement this interface here
-        whereInputType.addFields({ _on: implementationsWhereInputType });
+        if (!experimental) {
+            const implementationsWhereInputType = makeImplementationsWhereInput({
+                interfaceEntityAdapter: entityAdapter,
+                composer,
+            });
+            // TODO: add interfaces that implement this interface here
+            whereInputType.addFields({ _on: implementationsWhereInputType });
+        }
     }
     return whereInputType;
 }
