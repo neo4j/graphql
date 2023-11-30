@@ -172,7 +172,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
 
         const createClause = new Cypher.Create(currentNode);
         const relationField = relationship[0];
-        if (!relationField) throw new Error("Transpile error: No relation field found");
+        if (!relationField) throw new Error("Transpile error: No relationship found");
 
         const relationshipVar = new Cypher.Relationship({ type: relationField.type });
 
