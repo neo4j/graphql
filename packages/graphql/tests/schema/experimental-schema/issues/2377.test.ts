@@ -407,6 +407,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceEntityWhere {
+              AND: [ResourceEntityWhere!]
+              NOT: ResourceEntityWhere
+              OR: [ResourceEntityWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

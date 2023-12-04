@@ -424,6 +424,9 @@ describe("inheritance", () => {
             }
 
             input PersonWhere {
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter

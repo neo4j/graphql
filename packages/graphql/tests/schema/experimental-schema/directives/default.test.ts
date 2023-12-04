@@ -233,6 +233,9 @@ describe("@default directive", () => {
             }
 
             input UserInterfaceWhere {
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
               fromInterface: String
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String

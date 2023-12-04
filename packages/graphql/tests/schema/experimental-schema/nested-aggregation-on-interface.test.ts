@@ -463,6 +463,9 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               cost: Float
               cost_GT: Float
               cost_GTE: Float
@@ -1074,6 +1077,9 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               cost: Float
               cost_GT: Float
               cost_GTE: Float
