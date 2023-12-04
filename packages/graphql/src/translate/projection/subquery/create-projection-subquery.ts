@@ -73,7 +73,7 @@ export function createProjectionSubquery({
     const subqueryMatch = new Cypher.Match(pattern);
     const predicates = nestedPredicates;
 
-    const projection = new Cypher.RawCypher((env) => {
+    const projection = new Cypher.Raw((env) => {
         // TODO: use MapProjection
         return `${compileCypher(targetNode, env)} ${compileCypher(nestedProjection, env)}`;
     });

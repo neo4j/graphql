@@ -150,7 +150,7 @@ export default async function translateCreate({
     );
 
     const returnStatement = getReturnStatement(projectedVariables, context);
-    const createQuery = new Cypher.RawCypher((env) => {
+    const createQuery = new Cypher.Raw((env) => {
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",

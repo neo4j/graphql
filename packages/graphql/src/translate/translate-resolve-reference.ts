@@ -72,7 +72,7 @@ export function translateResolveReference({
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries, ...projection.subqueriesBeforeSort);
 
-    const projectionExpression = new Cypher.RawCypher((env) => {
+    const projectionExpression = new Cypher.Raw((env) => {
         return [`${varName} ${compileCypher(projection.projection, env)}`, projection.params];
     });
 

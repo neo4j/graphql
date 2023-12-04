@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import type { RelationField } from "../../../types";
-import type { Visitor, INestedCreateAST } from "./types";
+import type { Visitor } from "./types";
+import { UnwindASTNode } from "./UnwindASTNode";
 import type { Node, Relationship } from "../../../classes";
-import { AST } from "./AST";
-
-export class NestedCreateAST extends AST implements INestedCreateAST {
+import type { RelationField } from "../../../types";
+export class NestedCreateAST extends UnwindASTNode {
     node: Node;
     parent: Node;
     nodeProperties: string[];
@@ -32,6 +31,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
     edge: Relationship | undefined;
 
     constructor(
+        id: number,
         node: Node,
         parent: Node,
         nodeProperties: string[],
@@ -40,7 +40,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
         relationship: [RelationField | undefined, Node[]],
         edge?: Relationship
     ) {
-        super();
+        super(id);
         this.node = node;
         this.parent = parent;
         this.nodeProperties = nodeProperties;
@@ -50,7 +50,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
         this.edge = edge;
     }
 
-    accept(visitor: Visitor): void {
-        visitor.visitNestedCreate(this);
+    accept<T>(visitor: Visitor<T>): T {
+        return visitor.visitNestedCreate(this);
     }
 }
