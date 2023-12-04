@@ -498,6 +498,7 @@ function makeAugmentedSchema({
             schemaModel,
             userDefinedFieldDirectivesForNode,
             generateRelationshipTypes: !isCDCEngine,
+            experimental,
         });
     }
 
