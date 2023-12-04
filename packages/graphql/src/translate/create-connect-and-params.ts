@@ -205,7 +205,7 @@ function createConnectAndParams({
             const predicate = `${whereStrs.join(" AND ")}`;
             if (aggregationWhere) {
                 const columns = [new Cypher.NamedVariable(nodeName)];
-                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                 subquery.push(cypher);
             } else {

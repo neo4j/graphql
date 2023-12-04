@@ -81,7 +81,7 @@ export function translateDelete({
         deleteStr = findConnectedNodesCypherQuery(varName);
     }
 
-    const deleteQuery = new Cypher.RawCypher(() => {
+    const deleteQuery = new Cypher.Raw(() => {
         const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
