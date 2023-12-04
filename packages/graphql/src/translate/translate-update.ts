@@ -464,7 +464,7 @@ export default async function translateUpdate({
 
     const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
-    const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
+    const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
         const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
 
         const cypher = [
@@ -524,21 +524,19 @@ function generateUpdateReturnStatement(
 ): Cypher.Clause {
     let statements;
     if (varName && projStr) {
-        statements = new Cypher.RawCypher(
-            (env) => `collect(DISTINCT ${varName} ${compileCypher(projStr, env)}) AS data`
-        );
+        statements = new Cypher.Raw((env) => `collect(DISTINCT ${varName} ${compileCypher(projStr, env)}) AS data`);
     }
 
     if (subscriptionsEnabled) {
         statements = Cypher.concat(
             statements,
-            new Cypher.RawCypher(statements ? ", " : ""),
-            new Cypher.RawCypher(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
+            new Cypher.Raw(statements ? ", " : ""),
+            new Cypher.Raw(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
         );
     }
 
     if (!statements) {
-        statements = new Cypher.RawCypher("'Query cannot conclude with CALL'");
+        statements = new Cypher.Raw("'Query cannot conclude with CALL'");
     }
 
     return new Cypher.Return(statements);

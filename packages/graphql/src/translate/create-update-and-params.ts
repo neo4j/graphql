@@ -263,7 +263,7 @@ export default function createUpdateAndParams({
                                     new Cypher.NamedVariable(relationshipVariable),
                                     new Cypher.NamedVariable(variableName),
                                 ];
-                                const caseWhereClause = caseWhere(new Cypher.RawCypher(predicate), columns);
+                                const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
                                 const { cypher } = caseWhereClause.build("aggregateWhereFilter");
                                 innerUpdate.push(cypher);
                             } else {

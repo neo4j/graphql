@@ -35,7 +35,7 @@ export function createDatetimeElement({
     valueOverride?: string;
 }): Cypher.Expr {
     const dbFieldName = field.dbPropertyName || resolveTree.name;
-    return new Cypher.RawCypher((env) =>
+    return new Cypher.Raw((env) =>
         field.typeMeta.array
             ? `${resolveTree.alias}: [ dt in ${compileCypher(variable, env)}.${dbFieldName} | ${wrapApocConvertDate(
                   "dt"

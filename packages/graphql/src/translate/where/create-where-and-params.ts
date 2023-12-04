@@ -53,7 +53,7 @@ export default function createWhereAndParams({
 
     let preComputedWhereFieldsResult = "";
 
-    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
+    const whereCypher = new Cypher.Raw((env: Cypher.Environment) => {
         preComputedWhereFieldsResult = compileCypherIfExists(preComputedSubqueries, env);
         const cypher = (wherePredicate as any)?.getCypher(env) || "";
         return [cypher, {}];

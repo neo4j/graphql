@@ -118,7 +118,7 @@ describe("createProjectionAndParams", () => {
             varName: new Cypher.NamedNode("this"),
             cypherFieldAliasMap: {},
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();
@@ -213,7 +213,7 @@ describe("createProjectionAndParams", () => {
             varName: new Cypher.NamedNode("this"),
             cypherFieldAliasMap: {},
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(result.projection, env)).toBe(`{ .title }`);
             return "";
         }).build();

@@ -17,16 +17,18 @@
  * limitations under the License.
  */
 
-import type { IAST, Visitor } from "./types";
-import { v4 as uuidv4 } from "uuid";
+import type { Visitor } from "./types";
 
-export abstract class AST implements IAST {
-    id = uuidv4();
-    children: IAST[] = [];
+export abstract class UnwindASTNode {
+    public id: number;
+    public children: UnwindASTNode[] = [];
 
-    addChildren(node: IAST): void {
+    constructor(id: number) {
+        this.id = id;
+    }
+    addChildren(node: UnwindASTNode): void {
         this.children.push(node);
     }
 
-    abstract accept(visitor: Visitor): void;
+    abstract accept<T>(visitor: Visitor<T>): T;
 }
