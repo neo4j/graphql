@@ -3072,11 +3072,6 @@ describe("@selectable", () => {
                   Series: SeriesUpdateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -3101,7 +3096,6 @@ describe("@selectable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -3609,11 +3603,6 @@ describe("@selectable", () => {
                   Series: SeriesUpdateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -3638,7 +3627,6 @@ describe("@selectable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String

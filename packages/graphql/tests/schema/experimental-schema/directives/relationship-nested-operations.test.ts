@@ -8734,11 +8734,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -8885,7 +8880,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -9186,11 +9180,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoCreateInput
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -9337,7 +9326,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -9637,11 +9625,6 @@ describe("Relationship nested operations", () => {
                   node: PersonWhere!
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -9788,7 +9771,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -10080,11 +10062,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoUpdateInput
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -10236,7 +10213,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -10527,11 +10503,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -10678,7 +10649,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -10969,11 +10939,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -11120,7 +11085,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -11528,11 +11492,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoUpdateInput
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -11684,7 +11643,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -12063,11 +12021,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoCreateInput
                 }
 
-                input PersonImplementationsWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -12214,7 +12167,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
-                  _on: PersonImplementationsWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String

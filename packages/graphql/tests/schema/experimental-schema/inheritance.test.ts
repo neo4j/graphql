@@ -401,10 +401,6 @@ describe("inheritance", () => {
               Actor: ActorUpdateInput
             }
 
-            input PersonImplementationsWhere {
-              Actor: ActorWhere
-            }
-
             input PersonOptions {
               limit: Int
               offset: Int
@@ -428,7 +424,6 @@ describe("inheritance", () => {
             }
 
             input PersonWhere {
-              _on: PersonImplementationsWhere
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter

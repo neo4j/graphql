@@ -199,10 +199,6 @@ describe("Interface Top Level Aggregations", () => {
               title: StringAggregateSelectionNonNullable!
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -221,7 +217,6 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               cost: Float
               cost_GT: Float
               cost_GTE: Float
@@ -712,11 +707,6 @@ describe("Interface Top Level Aggregations", () => {
               Series: SeriesUpdateInput
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -745,7 +735,6 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               cost: Float
               cost_GT: Float
               cost_GTE: Float

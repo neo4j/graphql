@@ -1541,11 +1541,6 @@ describe("Directive-preserve", () => {
               Series: SeriesUpdateInput
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -1568,7 +1563,6 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2539,11 +2533,6 @@ describe("Directive-preserve", () => {
               Series: SeriesUpdateInput
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -2566,7 +2555,6 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String

@@ -146,10 +146,6 @@ describe("@private directive", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            input UserInterfaceImplementationsWhere {
-              User: UserWhere
-            }
-
             input UserInterfaceOptions {
               limit: Int
               offset: Int
@@ -167,7 +163,6 @@ describe("@private directive", () => {
             }
 
             input UserInterfaceWhere {
-              _on: UserInterfaceImplementationsWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

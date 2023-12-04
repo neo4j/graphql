@@ -215,10 +215,6 @@ describe("@default directive", () => {
               toBeOverridden: StringAggregateSelectionNonNullable!
             }
 
-            input UserInterfaceImplementationsWhere {
-              User: UserWhere
-            }
-
             input UserInterfaceOptions {
               limit: Int
               offset: Int
@@ -237,7 +233,6 @@ describe("@default directive", () => {
             }
 
             input UserInterfaceWhere {
-              _on: UserInterfaceImplementationsWhere
               fromInterface: String
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String

@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
@@ -49,6 +49,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -689,6 +690,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -1455,6 +1457,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -2208,6 +2211,7 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              actors(options: QueryOptions, where: ActorWhere): [Actor!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2593,6 +2597,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -3473,6 +3478,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -3997,6 +4003,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -4603,6 +4610,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -5356,6 +5364,7 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              actors(options: QueryOptions, where: ActorWhere): [Actor!]!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -5689,6 +5698,7 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
+            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -5729,6 +5739,10 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
+            type CreatureAggregateSelection {
+              count: Int!
+            }
+
             input CreatureConnectInput {
               _on: CreatureImplementationsConnectInput
               movies: CreatureMoviesConnectFieldInput
@@ -5766,10 +5780,6 @@ describe("Subscriptions", () => {
 
             input CreatureImplementationsUpdateInput {
               Person: PersonUpdateInput
-            }
-
-            input CreatureImplementationsWhere {
-              Person: PersonWhere
             }
 
             input CreatureMoviesConnectFieldInput {
@@ -5843,7 +5853,6 @@ describe("Subscriptions", () => {
             }
 
             input CreatureWhere {
-              _on: CreatureImplementationsWhere
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
@@ -5879,6 +5888,7 @@ describe("Subscriptions", () => {
 
             type Movie implements Production {
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorAggregate(directed: Boolean = true, where: CreatureWhere): MovieCreatureDirectorAggregationSelection
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
@@ -5898,6 +5908,10 @@ describe("Subscriptions", () => {
               director: ProductionDirectorFieldInput
               id: ID
               title: String!
+            }
+
+            type MovieCreatureDirectorAggregationSelection {
+              count: Int!
             }
 
             input MovieDeleteInput {
@@ -5964,32 +5978,6 @@ describe("Subscriptions", () => {
             input MovieSort {
               id: SortDirection
               title: SortDirection
-            }
-
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_STARTS_WITH: String
             }
 
             input MovieUpdateInput {
@@ -6060,6 +6048,7 @@ describe("Subscriptions", () => {
 
             type Person implements Creature {
               movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
+              moviesAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
@@ -6147,6 +6136,15 @@ describe("Subscriptions", () => {
               offset: Int
             }
 
+            type PersonProductionMoviesAggregationSelection {
+              count: Int!
+              node: PersonProductionMoviesNodeAggregateSelection
+            }
+
+            type PersonProductionMoviesNodeAggregateSelection {
+              id: IDAggregateSelectionNullable!
+            }
+
             input PersonRelationInput {
               movies: PersonMoviesCreateFieldInput
             }
@@ -6202,6 +6200,11 @@ describe("Subscriptions", () => {
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
+            }
+
+            type ProductionAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
             }
 
             input ProductionConnectInput {
@@ -6303,19 +6306,9 @@ describe("Subscriptions", () => {
               Series: [SeriesDisconnectInput!]
             }
 
-            input ProductionImplementationsSubscriptionWhere {
-              Movie: MovieSubscriptionWhere
-              Series: SeriesSubscriptionWhere
-            }
-
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -6338,7 +6331,6 @@ describe("Subscriptions", () => {
               AND: [ProductionSubscriptionWhere!]
               NOT: ProductionSubscriptionWhere
               OR: [ProductionSubscriptionWhere!]
-              _on: ProductionImplementationsSubscriptionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -6358,7 +6350,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               id: ID
@@ -6374,12 +6365,16 @@ describe("Subscriptions", () => {
             }
 
             type Query {
+              creatures(options: CreatureOptions, where: CreatureWhere): [Creature!]!
+              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -6387,6 +6382,7 @@ describe("Subscriptions", () => {
 
             type Series implements Production {
               director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              directorAggregate(directed: Boolean = true, where: CreatureWhere): SeriesCreatureDirectorAggregationSelection
               directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
@@ -6421,6 +6417,10 @@ describe("Subscriptions", () => {
               createdSeries: SeriesEventPayload!
               event: EventType!
               timestamp: Float!
+            }
+
+            type SeriesCreatureDirectorAggregationSelection {
+              count: Int!
             }
 
             input SeriesDeleteInput {
