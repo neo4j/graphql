@@ -56,7 +56,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
         this.environment = {};
     }
 
-    visitChildren(
+    public visitChildren(
         currentASTNode: UnwindASTNode,
         unwindVar: Cypher.Variable,
         parentVar: Cypher.Variable
@@ -72,7 +72,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
         return [];
     }
 
-    visitCreate(create: CreateAST): Cypher.Clause {
+    public visitCreate(create: CreateAST): Cypher.Clause {
         const labels = create.node.getLabels(this.context);
         const currentNode = new Cypher.Node({
             labels,
@@ -143,7 +143,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
         return this.clause;
     }
 
-    visitNestedCreate(nestedCreate: NestedCreateAST): Cypher.Clause {
+    public visitNestedCreate(nestedCreate: NestedCreateAST): Cypher.Clause {
         const scope = this.getScope(nestedCreate.id);
 
         const parentVar = scope.parentVar;
@@ -361,7 +361,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
         };
     }
 
-    getScope(identifier: number): UnwindCreateScopeDefinition {
+    public getScope(identifier: number): UnwindCreateScopeDefinition {
         const scope = this.environment[identifier];
         if (!scope) {
             throw new Error("Transpile error: No scope found");
@@ -372,7 +372,7 @@ export class UnwindCreateVisitor implements Visitor<Cypher.Clause> {
     /*
      * Returns the Cypher Reference of the root Nodes and the Cypher Clause generated
      */
-    build(): [Cypher.Node?, Cypher.Clause?] {
+    public build(): [Cypher.Node?, Cypher.Clause?] {
         return [this.rootNode, this.clause];
     }
 }
