@@ -1125,6 +1125,9 @@ describe("Comments", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String

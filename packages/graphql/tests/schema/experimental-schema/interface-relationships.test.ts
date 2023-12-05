@@ -446,6 +446,9 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1615,6 +1618,9 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -2323,6 +2329,9 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Where {
+              AND: [Interface1Where!]
+              NOT: Interface1Where
+              OR: [Interface1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
@@ -2398,6 +2407,9 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2Where {
+              AND: [Interface2Where!]
+              NOT: Interface2Where
+              OR: [Interface2Where!]
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
@@ -3630,6 +3642,9 @@ describe("Interface Relationships", () => {
             }
 
             input ContentWhere {
+              AND: [ContentWhere!]
+              NOT: ContentWhere
+              OR: [ContentWhere!]
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String

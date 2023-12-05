@@ -417,6 +417,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input INodeWhere {
+              AND: [INodeWhere!]
+              NOT: INodeWhere
+              OR: [INodeWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -537,6 +540,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductWhere {
+              AND: [IProductWhere!]
+              NOT: IProductWhere
+              OR: [IProductWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -1879,6 +1885,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductWhere {
+              AND: [IProductWhere!]
+              NOT: IProductWhere
+              OR: [IProductWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -2948,6 +2957,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductWhere {
+              AND: [IProductWhere!]
+              NOT: IProductWhere
+              OR: [IProductWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String

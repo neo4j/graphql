@@ -163,6 +163,9 @@ describe("@private directive", () => {
             }
 
             input UserInterfaceWhere {
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

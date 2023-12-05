@@ -7416,6 +7416,9 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonWhere {
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String

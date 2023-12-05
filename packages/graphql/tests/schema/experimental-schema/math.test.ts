@@ -1704,6 +1704,9 @@ describe("Algebraic", () => {
             }
 
             input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               viewers: Int
               viewers_GT: Int
               viewers_GTE: Int

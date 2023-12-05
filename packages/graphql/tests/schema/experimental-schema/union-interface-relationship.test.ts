@@ -1860,6 +1860,9 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerWhere {
+              AND: [ReviewerWhere!]
+              NOT: ReviewerWhere
+              OR: [ReviewerWhere!]
               reputation: Int
               reputation_GT: Int
               reputation_GTE: Int

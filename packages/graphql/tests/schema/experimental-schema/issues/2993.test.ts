@@ -193,6 +193,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileWhere {
+              AND: [ProfileWhere!]
+              NOT: ProfileWhere
+              OR: [ProfileWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -613,6 +616,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileWhere {
+              AND: [ProfileWhere!]
+              NOT: ProfileWhere
+              OR: [ProfileWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

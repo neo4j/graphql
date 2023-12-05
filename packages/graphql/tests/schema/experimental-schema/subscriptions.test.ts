@@ -5853,6 +5853,9 @@ describe("Subscriptions", () => {
             }
 
             input CreatureWhere {
+              AND: [CreatureWhere!]
+              NOT: CreatureWhere
+              OR: [CreatureWhere!]
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
@@ -6350,6 +6353,9 @@ describe("Subscriptions", () => {
             }
 
             input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               directorConnection: ProductionDirectorConnectionWhere
               directorConnection_NOT: ProductionDirectorConnectionWhere
               id: ID
