@@ -28,7 +28,8 @@ export abstract class EntitySelection extends QueryASTNode {
         return [];
     }
 
-    /** Apply selection over the given context, returns the updated context and the selection clause  */
+    /** Apply selection over the given context, returns the updated context and the selection clause
+     * TODO: Improve naming */
     public abstract apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
