@@ -8880,6 +8880,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -9326,6 +9329,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -9771,6 +9777,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -10213,6 +10222,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -10649,6 +10661,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -11085,6 +11100,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -11643,6 +11661,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -12167,6 +12188,9 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonWhere {
+                  AND: [PersonWhere!]
+                  NOT: PersonWhere
+                  OR: [PersonWhere!]
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String

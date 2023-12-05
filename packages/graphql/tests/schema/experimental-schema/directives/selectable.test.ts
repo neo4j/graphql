@@ -3096,6 +3096,9 @@ describe("@selectable", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -3627,6 +3630,9 @@ describe("@selectable", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String

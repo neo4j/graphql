@@ -93,7 +93,13 @@ export function withWhereInputType({
             NOT: whereInputType,
         });
     } else if (entityAdapter instanceof InterfaceEntityAdapter) {
-        if (!experimental) {
+        if (experimental) {
+            whereInputType.addFields({
+                OR: whereInputType.NonNull.List,
+                AND: whereInputType.NonNull.List,
+                NOT: whereInputType,
+            });
+        } else {
             const implementationsWhereInputType = makeImplementationsWhereInput({
                 interfaceEntityAdapter: entityAdapter,
                 composer,

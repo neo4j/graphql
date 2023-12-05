@@ -243,6 +243,9 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeWhere {
+              AND: [MovieNodeWhere!]
+              NOT: MovieNodeWhere
+              OR: [MovieNodeWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -602,6 +605,9 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeWhere {
+              AND: [MovieNodeWhere!]
+              NOT: MovieNodeWhere
+              OR: [MovieNodeWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID

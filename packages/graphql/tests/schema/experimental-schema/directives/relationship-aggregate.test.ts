@@ -1474,6 +1474,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonWhere {
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
@@ -1907,6 +1910,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonWhere {
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String

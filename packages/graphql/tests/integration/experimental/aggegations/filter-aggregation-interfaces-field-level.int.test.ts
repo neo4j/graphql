@@ -192,4 +192,68 @@ describe("Field-level filter interface query fields", () => {
             },
         ]);
     });
+
+    test("complex query on nested aggregation with logical operator", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Actor.plural} {
+                    actedInAggregate(where: { AND: [{title_STARTS_WITH: "The"}, {NOT: {title_CONTAINS: "Series"}}] }) {
+                        edge {
+                            screenTime {
+                                min
+                                max
+                            }
+                        }
+                        node {
+                            title {
+                                longest
+                                shortest
+                            }
+                        }
+                    }
+                    name,
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect((queryResult as any).data[Actor.plural]).toIncludeSameMembers([
+            {
+                actedInAggregate: {
+                    edge: {
+                        screenTime: {
+                            max: 100,
+                            min: 20,
+                        },
+                    },
+                    node: {
+                        title: {
+                            longest: "The Movie Three",
+                            shortest: "The Movie One",
+                        },
+                    },
+                },
+                name: "Actor One",
+            },
+            {
+                actedInAggregate: {
+                    edge: {
+                        screenTime: {
+                            max: 728,
+                            min: 240,
+                        },
+                    },
+                    node: {
+                        title: {
+                            longest: "The Movie Three",
+                            shortest: "The Movie Two",
+                        },
+                    },
+                },
+                name: "Actor Two",
+            },
+        ]);
+    });
 });

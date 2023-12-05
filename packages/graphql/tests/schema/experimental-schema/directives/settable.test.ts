@@ -5583,6 +5583,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -6090,6 +6093,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -6866,6 +6872,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -7803,6 +7812,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")

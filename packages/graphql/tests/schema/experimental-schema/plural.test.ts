@@ -75,6 +75,9 @@ describe("Experimental Plural option", () => {
             }
 
             input AnimalWhere {
+              AND: [AnimalWhere!]
+              NOT: AnimalWhere
+              OR: [AnimalWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

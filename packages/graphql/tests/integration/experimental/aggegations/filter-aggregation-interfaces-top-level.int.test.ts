@@ -116,6 +116,25 @@ describe("Top-level filter interface query fields", () => {
         });
     });
 
+    test("top level count with logical operator", async () => {
+        const query = `
+            query {
+                productionsAggregate(where: { OR: [{title: "The Show"}, {title: "A Movie"}] }) {
+                    count
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await graphqlQuery(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            productionsAggregate: {
+                count: 2,
+            },
+        });
+    });
+
     test("top level count and string fields", async () => {
         const query = `
             query {
