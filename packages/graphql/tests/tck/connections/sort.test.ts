@@ -93,7 +93,7 @@ describe("Relationship Properties Cypher", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            WITH { node: this0 { .title, actorsConnection: var3 } } AS edge, totalCount, this0
+            WITH { node: { title: this0.title, actorsConnection: var3 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -157,7 +157,7 @@ describe("Relationship Properties Cypher", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            WITH { node: this0 { .title, actorsConnection: var4, numberOfActors: this1 } } AS edge, totalCount, this0
+            WITH { node: { title: this0.title, actorsConnection: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

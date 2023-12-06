@@ -75,6 +75,9 @@ export class CompositeReadOperation extends Operation {
                 }
             }
         }
+
+        nestedSubquery.return([context.returnVariable, context.returnVariable]);
+
         return {
             clauses: [nestedSubquery],
             projectionExpr: context.returnVariable,

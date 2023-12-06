@@ -144,34 +144,47 @@ export class ConnectionReadOperation extends Operation {
         if (!context.target || !this.relationship) throw new Error();
 
         // eslint-disable-next-line prefer-const
-        let { selection: clause, nestedContext } = this.selection.apply(context);
-        const relationship = nestedContext.relationship;
-        if (!relationship) {
-            throw new Error("Relationship not available");
-        }
+        let { selection: selectionClause, nestedContext } = this.selection.apply(context);
 
         let extraMatches: Array<Cypher.Match | Cypher.With | Cypher.Yield> = this.getChildren().flatMap((f) => {
             return f.getSelection(nestedContext);
         });
 
         if (extraMatches.length > 0) {
-            extraMatches = [clause, ...extraMatches];
-            clause = new Cypher.With("*");
+            extraMatches = [selectionClause, ...extraMatches];
+            selectionClause = new Cypher.With("*");
         }
-
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
             new Cypher.Call(sq).innerWith(nestedContext.target)
         );
-
-        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [
-            nestedContext.target,
-        ]);
-
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
         const authPredicate = this.getAuthFilterPredicate(nestedContext);
         const filters = Cypher.and(...predicates, ...authPredicate);
 
+        // Specific but compatible
+
         const nodeProjectionMap = new Cypher.Map();
+
+        const edgeProjectionMap = new Cypher.Map();
+        const relationship = nestedContext.relationship;
+
+        if (relationship) {
+            this.edgeFields
+                .map((f) => f.getProjectionField(relationship))
+                .forEach((p) => {
+                    if (typeof p === "string") {
+                        edgeProjectionMap.set(p, relationship.property(p));
+                    } else {
+                        edgeProjectionMap.set(p);
+                    }
+                });
+        }
+
+        // NOT compatible
+        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [
+            nestedContext.target,
+        ]);
+
         this.nodeFields
             .map((f) => f.getProjectionField(nestedContext.target))
             .forEach((p) => {
@@ -189,24 +202,11 @@ export class ConnectionReadOperation extends Operation {
                 __id: Cypher.id(nestedContext.target),
             });
         }
+        edgeProjectionMap.set("node", nodeProjectionMap);
 
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
-
-        const edgeProjectionMap = new Cypher.Map();
-
-        this.edgeFields
-            .map((f) => f.getProjectionField(relationship))
-            .forEach((p) => {
-                if (typeof p === "string") {
-                    edgeProjectionMap.set(p, relationship.property(p));
-                } else {
-                    edgeProjectionMap.set(p);
-                }
-            });
-
-        edgeProjectionMap.set("node", nodeProjectionMap);
 
         let withWhere: Cypher.Clause | undefined;
         if (filters) {
@@ -214,10 +214,12 @@ export class ConnectionReadOperation extends Operation {
                 // This is to avoid unnecessary With *
                 withWhere = new Cypher.With("*").where(filters);
             } else {
-                clause.where(filters);
+                selectionClause.where(filters);
             }
         }
+        // Common transpile ends
 
+        // Pagination is different
         let sortSubquery: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();
@@ -234,13 +236,17 @@ export class ConnectionReadOperation extends Operation {
                 edgeVar: relationship,
             });
 
-            extraWithOrder = new Cypher.With(relationship, nestedContext.target).orderBy(...sortFields);
+            const orderWithItems = relationship ? [relationship, nestedContext.target] : [nestedContext.target];
+
+            extraWithOrder = new Cypher.With(...orderWithItems).orderBy(...sortFields);
         }
 
+        // Projection is different
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
             .with([Cypher.collect(edgeVar), edgesVar])
             .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
 
+        // Common Return
         const returnClause = new Cypher.Return([
             new Cypher.Map({
                 edges: edgesVar,
@@ -250,7 +256,7 @@ export class ConnectionReadOperation extends Operation {
         ]);
         const subClause = Cypher.concat(
             ...extraMatches,
-            clause,
+            selectionClause,
             ...authFilterSubqueries,
             withWhere,
             extraWithOrder,
@@ -273,10 +279,6 @@ export class ConnectionReadOperation extends Operation {
 
         // eslint-disable-next-line prefer-const
         let { selection: selectionClause, nestedContext } = this.selection.apply(context);
-        // const relationship = nestedContext.relationship;
-        // if (!relationship) {
-        //     throw new Error("Relationship not available");
-        // }
 
         let extraMatches: Array<Cypher.Match | Cypher.With | Cypher.Yield> = this.getChildren().flatMap((f) => {
             return f.getSelection(nestedContext);
@@ -286,31 +288,65 @@ export class ConnectionReadOperation extends Operation {
             extraMatches = [selectionClause, ...extraMatches];
             selectionClause = new Cypher.With("*");
         }
-
-        // const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.nodeAlias);
-
-        // const { preSelection, selectionClause } = this.getSelectionClauses(context, targetNode);
-
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
-
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
             new Cypher.Call(sq).innerWith(nestedContext.target)
         );
-
-        const authPredicate = this.getAuthFilterPredicate(nestedContext);
-
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+        const authPredicate = this.getAuthFilterPredicate(nestedContext);
         const filters = Cypher.and(...predicates, ...authPredicate);
+        // Specific but compatible
 
-        const nodeProjectionMap = this.getProjectionMap(nestedContext);
+        const nodeProjectionMap = new Cypher.Map();
+
+        // const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [
+        //     nestedContext.target,
+        // ]);
+
+        const edgeProjectionMap = new Cypher.Map();
+        const relationship = nestedContext.relationship;
+        if (relationship) {
+            this.edgeFields
+                .map((f) => f.getProjectionField(relationship))
+                .forEach((p) => {
+                    if (typeof p === "string") {
+                        edgeProjectionMap.set(p, relationship.property(p));
+                    } else {
+                        edgeProjectionMap.set(p);
+                    }
+                });
+        }
+
+        // // NOTE: this is not compatible, but required due to transpile being called before projectionField
+        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
+
+        //Nested version:
+        // const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [
+        //     nestedContext.target,
+        // ]);
+
+        this.nodeFields
+            .map((f) => f.getProjectionField(nestedContext.target))
+            .forEach((p) => {
+                if (typeof p === "string") {
+                    nodeProjectionMap.set(p, nestedContext.target.property(p));
+                } else {
+                    nodeProjectionMap.set(p);
+                }
+            });
+
+        if (nodeProjectionMap.size === 0) {
+            const targetNodeName = this.target.name;
+            nodeProjectionMap.set({
+                __resolveType: new Cypher.Literal(targetNodeName),
+                __id: Cypher.id(nestedContext.target),
+            });
+        }
+
+        edgeProjectionMap.set("node", nodeProjectionMap);
 
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
-
-        const edgeProjectionMap = new Cypher.Map();
-
-        edgeProjectionMap.set("node", nodeProjectionMap);
 
         let withWhere: Cypher.Clause | undefined;
         if (filters) {
@@ -325,8 +361,9 @@ export class ConnectionReadOperation extends Operation {
             Cypher.size(edgesVar),
             totalCount,
         ]);
+        // Common transpile ends
 
-        const unwindClause = new Cypher.Unwind([edgesVar, nestedContext.target]).with(nestedContext.target, totalCount);
+        // Pagination is different
         let paginationWith: Cypher.With | undefined;
         if (this.pagination || this.sortFields.length > 0) {
             paginationWith = new Cypher.With("*");
@@ -347,39 +384,39 @@ export class ConnectionReadOperation extends Operation {
             }
         }
 
+        // Projection is different
+        const unwindClause = new Cypher.Unwind([edgesVar, nestedContext.target]).with(nestedContext.target, totalCount);
         const withProjection = new Cypher.With([edgeProjectionMap, edgeVar], totalCount, nestedContext.target).with(
             [Cypher.collect(edgeVar), edgesVar],
             totalCount
         );
 
-        let extraWithOrder: Cypher.Clause | undefined;
+        // Common Return
+        const returnClause = new Cypher.Return([
+            new Cypher.Map({
+                edges: edgesVar,
+                totalCount: totalCount,
+            }),
+            context.returnVariable,
+        ]);
 
-        const connectionMatchAndAuthClause = Cypher.concat(
+        const clause = Cypher.concat(
             ...extraMatches,
             selectionClause,
             ...authFilterSubqueries,
             withWhere,
-            extraWithOrder,
             withNodeAndTotalCount,
-            unwindClause
-        );
-
-        const clause = Cypher.concat(
-            ...[
-                connectionMatchAndAuthClause,
-                ...prePaginationSubqueries,
-                paginationWith,
-                ...postPaginationSubqueries,
-                withProjection,
-            ]
+            unwindClause,
+            ...prePaginationSubqueries,
+            paginationWith,
+            ...postPaginationSubqueries,
+            withProjection,
+            returnClause
         );
 
         return {
             clauses: [clause],
-            projectionExpr: new Cypher.Map({
-                edges: edgesVar,
-                totalCount: totalCount,
-            }),
+            projectionExpr: context.returnVariable,
         };
     }
 

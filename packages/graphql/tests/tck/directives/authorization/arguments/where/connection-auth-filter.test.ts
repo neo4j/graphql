@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Connection auth filter", () => {
     const secret = "secret";
@@ -97,7 +97,7 @@ describe("Connection auth filter", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this0
             WITH this0, totalCount
-            WITH { node: this0 { .id } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -140,7 +140,7 @@ describe("Connection auth filter", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this0
             WITH this0, totalCount
-            WITH { node: this0 { .id } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -198,7 +198,7 @@ describe("Connection auth filter", () => {
                 WITH this2 { .content } AS this2
                 RETURN collect(this2) AS var4
             }
-            WITH { node: this0 { .id, posts: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, posts: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -260,7 +260,7 @@ describe("Connection auth filter", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            WITH { node: this0 { .id, postsConnection: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, postsConnection: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -322,7 +322,7 @@ describe("Connection auth filter", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            WITH { node: this0 { .id, postsConnection: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, postsConnection: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -380,7 +380,7 @@ describe("Connection auth filter", () => {
                 WITH this2 { .content } AS this2
                 RETURN collect(this2) AS var4
             }
-            WITH { node: this0 { .id, posts: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, posts: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -444,7 +444,7 @@ describe("Connection auth filter", () => {
                 WITH var4
                 RETURN collect(var4) AS var4
             }
-            WITH { node: this0 { .id, content: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, content: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -512,7 +512,7 @@ describe("Connection auth filter", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            WITH { node: this0 { .id, contentConnection: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, contentConnection: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -580,7 +580,7 @@ describe("Connection auth filter", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            WITH { node: this0 { .id, contentConnection: var4 } } AS edge, totalCount, this0
+            WITH { node: { id: this0.id, contentConnection: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

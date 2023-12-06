@@ -68,7 +68,7 @@ describe("Root Connection Query tests", () => {
             WITH edges, size(edges) AS totalCount
             UNWIND edges AS this0
             WITH this0, totalCount
-            WITH { node: this0 { .title } } AS edge, totalCount, this0
+            WITH { node: { title: this0.title } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -104,7 +104,7 @@ describe("Root Connection Query tests", () => {
             WITH *
             ORDER BY this0.title ASC
             LIMIT $param0
-            WITH { node: this0 { .title } } AS edge, totalCount, this0
+            WITH { node: { title: this0.title } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -141,7 +141,7 @@ describe("Root Connection Query tests", () => {
             WITH *
             ORDER BY this0.title ASC
             LIMIT $param1
-            WITH { node: this0 { .title } } AS edge, totalCount, this0
+            WITH { node: { title: this0.title } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -193,7 +193,7 @@ describe("Root Connection Query tests", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            WITH { node: this0 { .title, actorsConnection: var3 } } AS edge, totalCount, this0
+            WITH { node: { title: this0.title, actorsConnection: var3 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

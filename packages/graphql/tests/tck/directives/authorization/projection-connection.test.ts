@@ -252,7 +252,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            WITH { node: this0 { .name, postsConnection: var4 } } AS edge, totalCount, this0
+            WITH { node: { name: this0.name, postsConnection: var4 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -328,7 +328,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var7
             }
-            WITH { node: this0 { .name, postsConnection: var7 } } AS edge, totalCount, this0
+            WITH { node: { name: this0.name, postsConnection: var7 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

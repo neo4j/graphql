@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 WITH this0, totalCount
                 WITH *
                 ORDER BY this0.fg_item DESC
-                WITH { node: this0 { .description, id: this0.fg_item_id, partNumber: this0.fg_item } } AS edge, totalCount, this0
+                WITH { node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description } } AS edge, totalCount, this0
                 WITH collect(edge) AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this"
             `);

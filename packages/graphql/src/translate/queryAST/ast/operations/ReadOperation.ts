@@ -311,14 +311,14 @@ export class ReadOperation extends Operation {
                 filterSubqueriesClause,
                 filterSubqueryWith,
                 sortAndLimitBlock,
-                subqueries
-                // ret
+                subqueries,
+                ret
             );
         }
 
         return {
             clauses: [clause],
-            projectionExpr: this.getReturnExpression(nestedContext),
+            projectionExpr: context.returnVariable, // this.getReturnExpression(nestedContext),
         };
     }
 
