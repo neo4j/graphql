@@ -266,10 +266,7 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
-    public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (this.relationship) {
-            return this.transpileNested(context);
-        }
+    private transpileTopLevel(context: QueryASTContext): OperationTranspileResult {
         if (!hasTarget(context)) {
             throw new Error("No parent node found!");
         }
@@ -384,6 +381,14 @@ export class ConnectionReadOperation extends Operation {
                 totalCount: totalCount,
             }),
         };
+    }
+
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        if (this.relationship) {
+            return this.transpileNested(context);
+        } else {
+            return this.transpileTopLevel(context);
+        }
     }
 
     protected getPaginationSubquery(
