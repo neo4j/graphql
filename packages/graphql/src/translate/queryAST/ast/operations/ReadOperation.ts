@@ -311,14 +311,14 @@ export class ReadOperation extends Operation {
                 filterSubqueriesClause,
                 filterSubqueryWith,
                 sortAndLimitBlock,
-                subqueries,
-                ret
+                subqueries
+                // ret
             );
         }
 
         return {
             clauses: [clause],
-            projectionExpr: context.returnVariable,
+            projectionExpr: this.getReturnExpression(nestedContext),
         };
     }
 
@@ -328,6 +328,14 @@ export class ReadOperation extends Operation {
             return new Cypher.Return([Cypher.collect(projection), returnVariable]);
         }
         return new Cypher.Return([projection, returnVariable]);
+    }
+
+    protected getReturnExpression(context: QueryASTContext): Cypher.Expr {
+        const projection = this.getProjectionMap(context);
+        if (context.shouldCollect) {
+            return Cypher.collect(projection);
+        }
+        return projection;
     }
 
     private hasCypherSort(): boolean {

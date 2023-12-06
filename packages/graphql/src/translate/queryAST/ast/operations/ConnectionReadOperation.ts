@@ -327,13 +327,13 @@ export class ConnectionReadOperation extends Operation {
 
         let extraWithOrder: Cypher.Clause | undefined;
 
-        const returnClause = new Cypher.Return([
-            new Cypher.Map({
-                edges: edgesVar,
-                totalCount: totalCount,
-            }),
-            context.returnVariable,
-        ]);
+        // const returnClause = new Cypher.Return([
+        //     new Cypher.Map({
+        //         edges: edgesVar,
+        //         totalCount: totalCount,
+        //     }),
+        //     context.returnVariable,
+        // ]);
 
         const connectionMatchAndAuthClause = Cypher.concat(
             ...preSelection,
@@ -352,13 +352,16 @@ export class ConnectionReadOperation extends Operation {
                 paginationWith,
                 ...postPaginationSubqueries,
                 withProjection,
-                returnClause,
+                // returnClause,
             ]
         );
 
         return {
             clauses: [clause],
-            projectionExpr: context.returnVariable,
+            projectionExpr: new Cypher.Map({
+                edges: edgesVar,
+                totalCount: totalCount,
+            }),
         };
     }
 
