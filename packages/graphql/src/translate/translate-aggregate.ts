@@ -19,7 +19,6 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
-import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -27,7 +26,7 @@ import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
-function translateQuery({
+export function translateAggregate({
     context,
     entityAdapter,
 }: {
@@ -44,18 +43,3 @@ function translateQuery({
     const clause = queryAST.buildNew(context);
     return clause.build();
 }
-
-function translateAggregate({
-    node,
-    context,
-    entityAdapter,
-}: {
-    node: Node | undefined;
-    context: Neo4jGraphQLTranslationContext;
-    entityAdapter: EntityAdapter;
-}): Cypher.CypherResult {
-    // TODO: Move fulltext to new translation layer to remove the deprecated translation
-    return translateQuery({ context, entityAdapter });
-}
-
-export default translateAggregate;

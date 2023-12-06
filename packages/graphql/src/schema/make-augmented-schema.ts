@@ -335,7 +335,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isReadable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                    node,
                     entityAdapter: concreteEntityAdapter,
                 }),
             });
@@ -345,7 +344,6 @@ function makeAugmentedSchema({
             );
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                    node,
                     composer,
                     concreteEntityAdapter,
                     propagatedDirectives,
@@ -359,7 +357,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isAggregable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                    node,
                     concreteEntityAdapter,
                 }),
             });
