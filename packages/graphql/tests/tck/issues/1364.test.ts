@@ -93,25 +93,25 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this0.title ASC
             CALL {
-                WITH this
+                WITH this0
                 CALL {
-                    WITH this
-                    WITH this AS this
+                    WITH this0
+                    WITH this0 AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
                 }
-                UNWIND result AS this0
-                RETURN head(collect(this0)) AS this0
+                UNWIND result AS this1
+                RETURN head(collect(this1)) AS this1
             }
-            WITH { node: this { .title, totalGenres: this0 } } AS edge, totalCount, this
+            WITH { node: this0 { .title, totalGenres: this1 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -134,25 +134,25 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             CALL {
-                WITH this
+                WITH this0
                 CALL {
-                    WITH this
-                    WITH this AS this
+                    WITH this0
+                    WITH this0 AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
                 }
-                UNWIND result AS this0
-                RETURN head(collect(this0)) AS this0
+                UNWIND result AS this1
+                RETURN head(collect(this1)) AS this1
             }
             WITH *
-            ORDER BY this0 ASC
-            WITH { node: this { .title, totalGenres: this0 } } AS edge, totalCount, this
+            ORDER BY this1 ASC
+            WITH { node: this0 { .title, totalGenres: this1 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -176,36 +176,36 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             CALL {
-                WITH this
+                WITH this0
                 CALL {
-                    WITH this
-                    WITH this AS this
+                    WITH this0
+                    WITH this0 AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
-                }
-                UNWIND result AS this0
-                RETURN head(collect(this0)) AS this0
-            }
-            WITH *
-            ORDER BY this0 ASC
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN count(DISTINCT actor) as result
                 }
                 UNWIND result AS this1
                 RETURN head(collect(this1)) AS this1
             }
-            WITH { node: this { .title, totalGenres: this0, totalActors: this1 } } AS edge, totalCount, this
+            WITH *
+            ORDER BY this1 ASC
+            CALL {
+                WITH this0
+                CALL {
+                    WITH this0
+                    WITH this0 AS this
+                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                    RETURN count(DISTINCT actor) as result
+                }
+                UNWIND result AS this2
+                RETURN head(collect(this2)) AS this2
+            }
+            WITH { node: this0 { .title, totalGenres: this1, totalActors: this2 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);

@@ -90,35 +90,34 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ArtPiece)
-            WITH collect(this) AS edges
+            "MATCH (this0:ArtPiece)
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             CALL {
-                WITH this
-                MATCH (this)-[this0:SOLD_AT_AUCTION_AS]->(this1:AuctionItem)
+                WITH this0
+                MATCH (this0)-[this1:SOLD_AT_AUCTION_AS]->(this2:AuctionItem)
                 CALL {
-                    WITH this1
-                    MATCH (this1)<-[this2:BOUGHT_ITEM_AT_AUCTION]-(this3:Organization)
-                    WITH this3 { .name, dbId: this3.id } AS this3
-                    RETURN head(collect(this3)) AS var4
+                    WITH this2
+                    MATCH (this2)<-[this3:BOUGHT_ITEM_AT_AUCTION]-(this4:Organization)
+                    WITH this4 { .name, dbId: this4.id } AS this4
+                    RETURN head(collect(this4)) AS var5
                 }
-                WITH this1 { .auctionName, .lotNumber, dbId: this1.id, buyer: var4 } AS this1
-                RETURN head(collect(this1)) AS var5
+                WITH this2 { .auctionName, .lotNumber, dbId: this2.id, buyer: var5 } AS this2
+                RETURN head(collect(this2)) AS var6
             }
             CALL {
-                WITH this
-                MATCH (this)-[this6:OWNED_BY]->(this7:Organization)
-                WITH this7 { .name, dbId: this7.id } AS this7
-                RETURN head(collect(this7)) AS var8
+                WITH this0
+                MATCH (this0)-[this7:OWNED_BY]->(this8:Organization)
+                WITH this8 { .name, dbId: this8.id } AS this8
+                RETURN head(collect(this8)) AS var9
             }
-            WITH { node: this { .title, dbId: this.id, auction: var5, owner: var8 } } AS edge, totalCount, this
+            WITH { node: this0 { .title, dbId: this0.id, auction: var6, owner: var9 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
-
 });

@@ -113,14 +113,14 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Product)
-                WITH collect(this) AS edges
+                "MATCH (this0:Product)
+                WITH collect(this0) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS this
-                WITH this, totalCount
+                UNWIND edges AS this0
+                WITH this0, totalCount
                 WITH *
-                ORDER BY this.fg_item DESC
-                WITH { node: this { .description, id: this.fg_item_id, partNumber: this.fg_item } } AS edge, totalCount, this
+                ORDER BY this0.fg_item DESC
+                WITH { node: this0 { .description, id: this0.fg_item_id, partNumber: this0.fg_item } } AS edge, totalCount, this0
                 WITH collect(edge) AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this"
             `);

@@ -62,13 +62,13 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $param0
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WHERE this0.title = $param0
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
-            WITH { node: this { .title } } AS edge, totalCount, this
+            UNWIND edges AS this0
+            WITH this0, totalCount
+            WITH { node: this0 { .title } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -96,15 +96,15 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this0.title ASC
             LIMIT $param0
-            WITH { node: this { .title } } AS edge, totalCount, this
+            WITH { node: this0 { .title } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -132,16 +132,16 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title CONTAINS $param0
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WHERE this0.title CONTAINS $param0
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this0.title ASC
             LIMIT $param1
-            WITH { node: this { .title } } AS edge, totalCount, this
+            WITH { node: this0 { .title } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -177,23 +177,23 @@ describe("Root Connection Query tests", () => {
         `;
         const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect(this0) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
+            UNWIND edges AS this0
+            WITH this0, totalCount
             WITH *
-            ORDER BY this.title ASC
+            ORDER BY this0.title ASC
             LIMIT $param0
             CALL {
-                WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH { node: { name: this1.name } } AS edge
+                WITH this0
+                MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                WITH { node: { name: this2.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            WITH { node: this { .title, actorsConnection: var2 } } AS edge, totalCount, this
+            WITH { node: this0 { .title, actorsConnection: var3 } } AS edge, totalCount, this0
             WITH collect(edge) AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
