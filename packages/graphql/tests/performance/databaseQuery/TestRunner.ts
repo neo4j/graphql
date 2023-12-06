@@ -85,7 +85,6 @@ export class TestRunner {
         const session = this.driver.session();
         try {
             const profiledQuery = this.wrapQueryInProfile(cypher);
-
             const t1 = new Date().getTime();
             const result = await session.run(profiledQuery, params);
             const t2 = new Date().getTime();

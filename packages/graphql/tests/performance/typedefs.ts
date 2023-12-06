@@ -46,6 +46,9 @@ export const typeDefs = `#graphql
         title: String!
         tagline: String
         released: Int
+        floatScore: Float
+        intScore: Int
+        bigIntScore: BigInt
         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
         directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
         reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
