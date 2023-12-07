@@ -37,6 +37,7 @@ type QueryConfig = {
 
 type WorkloadConfig = {
     name: string;
+    dataset: string;
     queries: QueryConfig[];
 };
 
@@ -89,7 +90,7 @@ export class WorkloadGenerator {
             await Promise.all(promises);
             const workflowConfig = this.getWorkflowConfig(queryConfigs);
             const datasetConfig = this.getDatasetConfig();
-            await fs.writeFile(path.join(directoryPath, "query-config.json"), JSON.stringify(workflowConfig, null, 2));
+            await fs.writeFile(path.join(directoryPath, "config.json"), JSON.stringify(workflowConfig, null, 2));
             await fs.writeFile(path.join(directoryPath, "dataset.json"), JSON.stringify(datasetConfig, null, 2));
         } catch (err) {
             console.error("Error generating workflow");
@@ -130,7 +131,8 @@ export class WorkloadGenerator {
 
     private getWorkflowConfig(queries: QueryConfig[]): WorkloadConfig {
         return {
-            name: "graphql",
+            name: "benchmark-workload",
+            dataset: "dataset.json",
             queries,
         };
     }
