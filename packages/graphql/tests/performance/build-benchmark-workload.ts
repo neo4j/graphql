@@ -22,7 +22,7 @@ import path from "path";
 import { Neo4jGraphQL } from "../../src";
 import { typeDefs } from "./typedefs";
 import type * as Performance from "./types";
-import { WorkflowGenerator } from "./utils/WorkflowGenerator";
+import { WorkloadGenerator } from "./utils/WorkloadGenerator";
 import { collectTests } from "./utils/collect-test-files";
 async function main() {
     const neoSchema = new Neo4jGraphQL({
@@ -30,7 +30,7 @@ async function main() {
         experimental: true,
     });
     const gqltests: Performance.TestInfo[] = await collectTests(path.join(__dirname, "graphql"));
-    await new WorkflowGenerator(neoSchema).generateWorkflow(gqltests);
+    await new WorkloadGenerator(neoSchema).generateWorkload(gqltests);
 }
 
 main().catch((err) => console.error(err));

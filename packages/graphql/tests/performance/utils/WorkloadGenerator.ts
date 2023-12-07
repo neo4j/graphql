@@ -25,6 +25,7 @@ import * as path from "path";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import gql from "graphql-tag";
 
+// Initial configuration, add available configuration options here
 type QueryConfig = {
     name: string;
     description: string;
@@ -34,30 +35,38 @@ type QueryConfig = {
     };
 };
 
-type WorkflowConfig = {
+type WorkloadConfig = {
     name: string;
     queries: QueryConfig[];
 };
 
-type WorkflowFile = {
+type DatasetConfig = {
+    name: string;
+    format: "aligned";
+};
+
+type WorkloadFile = {
     name: string;
     path: string;
     content: string;
 };
 
-export class WorkflowGenerator {
+export class WorkloadGenerator {
     private schema: Neo4jGraphQL;
 
     constructor(schema: Neo4jGraphQL) {
         this.schema = schema;
     }
-    public async generateWorkflow(tests: Array<Performance.TestInfo>): Promise<void> {
-        const directoryPath = "./benchmark-workflow/";
+    public async generateWorkload(tests: Array<Performance.TestInfo>): Promise<void> {
+        const directoryPath = "./benchmark-workload/";
         const queryConfigs: QueryConfig[] = [];
-        const queryFiles: WorkflowFile[] = [];
-        const paramFiles: WorkflowFile[] = [];
+        const queryFiles: WorkloadFile[] = [];
+        const paramFiles: WorkloadFile[] = [];
         try {
             for (const test of tests) {
+                if (test.name !== "SimpleQuery") {
+                    continue;
+                }
                 const { cypher, params } = await this.getCypherAndParams(test);
 
                 const queryFile = this.getQueryFile(test, cypher);
@@ -74,19 +83,21 @@ export class WorkflowGenerator {
             await fs.mkdir(path.join(directoryPath, "queries"), { recursive: true });
             await fs.mkdir(path.join(directoryPath, "params"), { recursive: true });
 
-            const promises = [...queryFiles, ...paramFiles].map((file: WorkflowFile) => {
+            const promises = [...queryFiles, ...paramFiles].map((file: WorkloadFile) => {
                 return fs.writeFile(path.join(directoryPath, file.path), file.content);
             });
             await Promise.all(promises);
             const workflowConfig = this.getWorkflowConfig(queryConfigs);
+            const datasetConfig = this.getDatasetConfig();
             await fs.writeFile(path.join(directoryPath, "query-config.json"), JSON.stringify(workflowConfig, null, 2));
+            await fs.writeFile(path.join(directoryPath, "dataset.json"), JSON.stringify(datasetConfig, null, 2));
         } catch (err) {
             console.error("Error generating workflow");
             console.warn(err);
         }
     }
 
-    private getQueryFile(test: Performance.TestInfo, cypher: string): WorkflowFile {
+    private getQueryFile(test: Performance.TestInfo, cypher: string): WorkloadFile {
         const name = test.name;
         const fileName = `${name}.cypher`;
         return {
@@ -96,7 +107,7 @@ export class WorkflowGenerator {
         };
     }
 
-    private getParamFile(test: Performance.TestInfo, parameters: Record<string, any>): WorkflowFile {
+    private getParamFile(test: Performance.TestInfo, parameters: Record<string, any>): WorkloadFile {
         const name = test.name;
         const fileName = `${name}.txt`;
         return {
@@ -106,7 +117,7 @@ export class WorkflowGenerator {
         };
     }
 
-    private getQueryConfig(queryFile: WorkflowFile, paramFile: WorkflowFile, queryName: string): QueryConfig {
+    private getQueryConfig(queryFile: WorkloadFile, paramFile: WorkloadFile, queryName: string): QueryConfig {
         return {
             name: queryName,
             description: queryName,
@@ -117,10 +128,17 @@ export class WorkflowGenerator {
         };
     }
 
-    private getWorkflowConfig(queries: QueryConfig[]): WorkflowConfig {
+    private getWorkflowConfig(queries: QueryConfig[]): WorkloadConfig {
         return {
             name: "graphql",
             queries,
+        };
+    }
+
+    private getDatasetConfig(): DatasetConfig {
+        return {
+            name: "graphql-benchmark-dataset",
+            format: "aligned",
         };
     }
 
