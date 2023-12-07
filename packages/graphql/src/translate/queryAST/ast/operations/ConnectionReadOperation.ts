@@ -188,21 +188,6 @@ export class ConnectionReadOperation extends Operation {
             sortSubquery.addColumns(totalCount);
         }
 
-        let extraWithOrder: Cypher.Clause | undefined;
-        const relationship = nestedContext.relationship;
-
-        if (this.sortFields.length > 0) {
-            const sortFields = this.getSortFields({
-                context: nestedContext,
-                nodeVar: nestedContext.target,
-                edgeVar: relationship,
-            });
-
-            const orderWithItems = relationship ? [relationship, nestedContext.target] : [nestedContext.target];
-
-            extraWithOrder = new Cypher.With(...orderWithItems).orderBy(...sortFields);
-        }
-
         // Projection is different
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
             .with([Cypher.collect(edgeVar), edgesVar])
@@ -219,7 +204,6 @@ export class ConnectionReadOperation extends Operation {
             selectionClause,
             ...authFilterSubqueries,
             withWhere,
-            extraWithOrder,
             ...prePaginationSubqueries,
             ...postPaginationSubqueries,
             projectionClauses,

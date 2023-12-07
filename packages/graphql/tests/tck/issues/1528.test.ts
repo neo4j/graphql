@@ -74,8 +74,6 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
-                WITH this0, this1
-                ORDER BY this1.actorsCount DESC
                 CALL {
                     WITH this1
                     CALL {

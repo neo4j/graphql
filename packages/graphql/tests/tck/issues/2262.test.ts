@@ -79,8 +79,6 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)<-[this2:INPUT]-(this3:Component)
-                    WITH this2, this3
-                    ORDER BY this3.uuid DESC
                     WITH { node: { uuid: this3.uuid } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount

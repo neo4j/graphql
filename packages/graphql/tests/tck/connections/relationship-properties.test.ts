@@ -156,8 +156,6 @@ describe("Relationship Properties Cypher", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this0, this1
-                ORDER BY this0.screenTime DESC
                 WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -204,8 +202,6 @@ describe("Relationship Properties Cypher", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this0, this1
-                ORDER BY this0.year DESC, this1.name ASC
                 WITH { year: this0.year, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -247,8 +243,6 @@ describe("Relationship Properties Cypher", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this0, this1
-                ORDER BY this1.name ASC, this0.year DESC
                 WITH { year: this0.year, node: { name: this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

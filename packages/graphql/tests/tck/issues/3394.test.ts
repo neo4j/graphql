@@ -152,8 +152,6 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
-                    WITH this0, this1
-                    ORDER BY this1.partNumber DESC
                     WITH { node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
