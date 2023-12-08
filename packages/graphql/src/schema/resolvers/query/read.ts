@@ -18,7 +18,6 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import type { Node } from "../../../classes";
 import { QueryOptions } from "../../../graphql/input-objects/QueryOptions";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -29,7 +28,7 @@ import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({ node, entityAdapter }: { node?: Node; entityAdapter: EntityAdapter }) {
+export function findResolver({ entityAdapter }: { entityAdapter: EntityAdapter }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
@@ -37,7 +36,6 @@ export function findResolver({ node, entityAdapter }: { node?: Node; entityAdapt
 
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
-            node,
             entityAdapter,
         });
         const executeResult = await execute({

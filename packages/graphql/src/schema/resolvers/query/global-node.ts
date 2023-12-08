@@ -70,7 +70,6 @@ export function globalNodeResolver({ nodes, entities }: { nodes: Node[]; entitie
 
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
-            node,
             entityAdapter,
         });
         const executeResult = await execute({

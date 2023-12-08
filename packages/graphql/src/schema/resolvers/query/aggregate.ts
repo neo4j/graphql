@@ -28,7 +28,6 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function aggregateResolver({
-    node,
     concreteEntityAdapter,
 }: {
     node?: Node;
@@ -41,7 +40,6 @@ export function aggregateResolver({
 
         const { cypher, params } = translateAggregate({
             context: context as Neo4jGraphQLTranslationContext,
-            node,
             entityAdapter: concreteEntityAdapter,
         });
 
