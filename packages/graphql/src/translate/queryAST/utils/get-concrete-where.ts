@@ -48,7 +48,9 @@ export function getConcreteWhere(
         return whereArgs[concreteTarget.name] ?? {};
     } else {
         // interface may have shared filters, inject them as if they were present under _on
-        const sharedInterfaceFilters = Object.entries(whereArgs).filter(([key]) => key !== "_on");
+        const sharedInterfaceFilters = Object.entries(whereArgs).filter(
+            ([key]) => key !== "_on"// && key !== "typename_IN"
+        );
         const _on: Record<string, any> | undefined = isObject(whereArgs["_on"]) ? whereArgs["_on"] : undefined;
 
         // if concrete target is present in _on then merge its filters with the shared ones, if _on it's not defined then returns the shared filters

@@ -19,7 +19,6 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
-import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -29,20 +28,16 @@ const debug = Debug(DEBUG_TRANSLATE);
 
 export function translateRead(
     {
-        node,
         context,
-        isRootConnectionField,
         entityAdapter,
     }: {
         context: Neo4jGraphQLTranslationContext;
-        node?: Node;
-        isRootConnectionField?: boolean;
         entityAdapter: EntityAdapter;
     },
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
-    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
 
     if (!entityAdapter) throw new Error("Entity not found");
     const operationsTree = operationsTreeFactory.createQueryAST(resolveTree, entityAdapter, context);

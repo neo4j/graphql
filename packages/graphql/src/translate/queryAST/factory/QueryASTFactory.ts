@@ -37,8 +37,9 @@ export class QueryASTFactory {
     public fieldFactory: FieldFactory;
     public sortAndPaginationFactory: SortAndPaginationFactory;
     public authorizationFactory: AuthorizationFactory;
+    public experimental: boolean;
 
-    constructor(schemaModel: Neo4jGraphQLSchemaModel) {
+    constructor(schemaModel: Neo4jGraphQLSchemaModel, experimental: boolean) {
         this.schemaModel = schemaModel;
         this.filterFactory = new FilterFactory(this);
         this.fieldFactory = new FieldFactory(this);
@@ -46,6 +47,7 @@ export class QueryASTFactory {
         const authFilterFactory = new AuthFilterFactory(this);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
         this.operationsFactory = new OperationsFactory(this);
+        this.experimental = experimental;
     }
 
     public createQueryAST(

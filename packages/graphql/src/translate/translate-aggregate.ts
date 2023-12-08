@@ -19,7 +19,6 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
-import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -36,7 +35,7 @@ function translateQuery({
 }): Cypher.CypherResult {
     const { resolveTree } = context;
     // TODO: Rename QueryAST to OperationsTree
-    const queryASTFactory = new QueryASTFactory(context.schemaModel);
+    const queryASTFactory = new QueryASTFactory(context.schemaModel, context.experimental);
 
     if (!entityAdapter) throw new Error("Entity not found");
     const queryAST = queryASTFactory.createQueryAST(resolveTree, entityAdapter, context);
@@ -46,11 +45,9 @@ function translateQuery({
 }
 
 function translateAggregate({
-    node,
     context,
     entityAdapter,
 }: {
-    node: Node | undefined;
     context: Neo4jGraphQLTranslationContext;
     entityAdapter: EntityAdapter;
 }): Cypher.CypherResult {
