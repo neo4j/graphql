@@ -486,15 +486,13 @@ describe("Cypher sort tests", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var5
                     }
-                    WITH var5 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var6
+                    RETURN { edges: var5, totalCount: totalCount } AS var6
                 }
                 WITH { node: { title: this0.title, actorsConnection: var6 } } AS edge
                 WITH collect(edge) AS edges
                 RETURN edges AS var7
             }
-            WITH var7 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var7, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -585,15 +583,13 @@ describe("Cypher sort tests", () => {
                             WITH collect(edge) AS edges
                             RETURN edges AS var6
                         }
-                        WITH var6 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var7
+                        RETURN { edges: var6, totalCount: totalCount } AS var7
                     }
                     WITH { node: { title: this1.title, actorsConnection: var7 } } AS edge
                     WITH collect(edge) AS edges
                     RETURN edges AS var8
                 }
-                WITH var8 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var9
+                RETURN { edges: var8, totalCount: totalCount } AS var9
             }
             RETURN this { moviesConnection: var9 } AS this"
         `);

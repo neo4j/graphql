@@ -91,8 +91,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -156,8 +155,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -223,8 +221,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -292,8 +289,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -366,8 +362,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);

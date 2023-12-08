@@ -163,8 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var3
                 }
-                WITH var3 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
             CALL {
                 WITH this
@@ -190,15 +189,13 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                             WITH collect(edge) AS edges
                             RETURN edges AS var9
                         }
-                        WITH var9 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var10
+                        RETURN { edges: var9, totalCount: totalCount } AS var10
                     }
                     WITH { node: { nameDetailsConnection: var10 } } AS edge
                     WITH collect(edge) AS edges
                     RETURN edges AS var11
                 }
-                WITH var11 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var12
+                RETURN { edges: var11, totalCount: totalCount } AS var12
             }
             CALL {
                 WITH this
@@ -214,8 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var15
                 }
-                WITH var15 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var16
+                RETURN { edges: var15, totalCount: totalCount } AS var16
             }
             RETURN this { relatedId: this0, nameDetailsConnection: var4, marketsConnection: var12, baseObjectConnection: var16 } AS this"
         `);

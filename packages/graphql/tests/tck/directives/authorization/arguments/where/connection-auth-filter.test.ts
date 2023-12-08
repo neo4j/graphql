@@ -586,8 +586,7 @@ describe("Connection auth filter", () => {
                 WITH collect(edge) AS edges
                 RETURN edges AS var5
             }
-            WITH var5 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

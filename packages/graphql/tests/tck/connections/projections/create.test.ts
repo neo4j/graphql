@@ -91,8 +91,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS create_var4
                 }
-                WITH create_var4 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var5
+                RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var5 }) AS data"
         `);
@@ -152,8 +151,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS create_var4
                 }
-                WITH create_var4 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var5
+                RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var5 }) AS data"
         `);
@@ -217,8 +215,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS create_var4
                 }
-                WITH create_var4 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var5
+                RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var5 }) AS data"
         `);

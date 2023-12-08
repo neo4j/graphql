@@ -119,8 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 WITH collect(edge) AS edges
                 RETURN edges AS var10
             }
-            WITH var10 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var10, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -98,8 +98,7 @@ describe("Cypher Auth Projection On Connections", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var3
                 }
-                WITH var3 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
             RETURN this { .name, postsConnection: var4 } AS this"
         `);
@@ -174,15 +173,13 @@ describe("Cypher Auth Projection On Connections", () => {
                             WITH collect(edge) AS edges
                             RETURN edges AS var5
                         }
-                        WITH var5 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var6
+                        RETURN { edges: var5, totalCount: totalCount } AS var6
                     }
                     WITH { node: { content: this1.content, creatorConnection: var6 } } AS edge
                     WITH collect(edge) AS edges
                     RETURN edges AS var7
                 }
-                WITH var7 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var8
+                RETURN { edges: var7, totalCount: totalCount } AS var8
             }
             RETURN this { .name, postsConnection: var8 } AS this"
         `);
@@ -283,15 +280,13 @@ describe("Cypher Auth Projection On top-level connections", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var4
                     }
-                    WITH var4 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var5
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
                 WITH { node: { name: this0.name, postsConnection: var5 } } AS edge
                 WITH collect(edge) AS edges
                 RETURN edges AS var6
             }
-            WITH var6 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -373,22 +368,19 @@ describe("Cypher Auth Projection On top-level connections", () => {
                                 WITH collect(edge) AS edges
                                 RETURN edges AS var6
                             }
-                            WITH var6 AS edges, totalCount
-                            RETURN { edges: edges, totalCount: totalCount } AS var7
+                            RETURN { edges: var6, totalCount: totalCount } AS var7
                         }
                         WITH { node: { content: this2.content, creatorConnection: var7 } } AS edge
                         WITH collect(edge) AS edges
                         RETURN edges AS var8
                     }
-                    WITH var8 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var9
+                    RETURN { edges: var8, totalCount: totalCount } AS var9
                 }
                 WITH { node: { name: this0.name, postsConnection: var9 } } AS edge
                 WITH collect(edge) AS edges
                 RETURN edges AS var10
             }
-            WITH var10 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var10, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

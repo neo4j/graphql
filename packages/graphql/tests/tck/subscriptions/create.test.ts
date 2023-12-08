@@ -132,8 +132,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS create_var2
                     }
-                    WITH create_var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
                 RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
             }
@@ -223,8 +222,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS create_var2
                     }
-                    WITH create_var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
                 RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
             }
@@ -339,8 +337,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS create_var2
                     }
-                    WITH create_var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var3
+                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
                 RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
             }

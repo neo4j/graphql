@@ -117,8 +117,7 @@ describe("Cypher alias directive", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .name, city: this.cityPropInDb, actedInConnection: var3 } AS this"
         `);
@@ -211,8 +210,7 @@ describe("Cypher alias directive", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS create_var13
                 }
-                WITH create_var13 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var14
+                RETURN { edges: create_var13, totalCount: totalCount } AS create_var14
             }
             RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_var10, actedInConnection: create_var14 }) AS data"
         `);

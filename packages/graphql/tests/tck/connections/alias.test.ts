@@ -76,8 +76,7 @@ describe("Connections Alias", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { actors: var3 } AS this"
         `);
@@ -129,8 +128,7 @@ describe("Connections Alias", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             CALL {
                 WITH this
@@ -146,8 +144,7 @@ describe("Connections Alias", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var6
                 }
-                WITH var6 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var7
+                RETURN { edges: var6, totalCount: totalCount } AS var7
             }
             RETURN this { .title, hanks: var3, jenny: var7 } AS this"
         `);

@@ -91,8 +91,7 @@ describe("Cypher directive", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var3
                     }
-                    WITH var3 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var4
+                    RETURN { edges: var3, totalCount: totalCount } AS var4
                 }
                 RETURN collect(this0 { actorsConnection: var4 }) AS this0
             }

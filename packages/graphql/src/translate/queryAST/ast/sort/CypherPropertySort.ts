@@ -49,18 +49,9 @@ export class CypherPropertySort extends Sort {
 
     public getSortFields(
         context: QueryASTContext,
-        variable: Cypher.Variable | Cypher.Property,
-        sortByDatabaseName = true
+        _variable: Cypher.Variable | Cypher.Property,
+        _sortByDatabaseName = true
     ): SortField[] {
-        // const isNested = context.source; // TODO: avoid this, this should know if it is nested or not
-        const isNested = false; // TODO: avoid this, this should know if it is nested or not
-        if (isNested) {
-            const attributeName = sortByDatabaseName ? this.attribute.databaseName : this.attribute.name;
-
-            const nodeProperty = variable.property(attributeName);
-            return [[nodeProperty, this.direction]];
-        }
-
         const projectionVar = context.getScopeVariable(this.attribute.name);
         return [[projectionVar, this.direction]];
     }

@@ -100,15 +100,13 @@ describe("Relationship Properties Cypher", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var3
                     }
-                    WITH var3 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var4
+                    RETURN { edges: var3, totalCount: totalCount } AS var4
                 }
                 WITH { node: { title: this0.title, actorsConnection: var4 } } AS edge
                 WITH collect(edge) AS edges
                 RETURN edges AS var5
             }
-            WITH var5 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -177,15 +175,13 @@ describe("Relationship Properties Cypher", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var4
                     }
-                    WITH var4 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var5
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
                 WITH { node: { title: this0.title, actorsConnection: var5 } } AS edge
                 WITH collect(edge) AS edges
                 RETURN edges AS var6
             }
-            WITH var6 AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -427,8 +427,7 @@ describe("Cypher Create", () => {
                             WITH collect(edge) AS edges
                             RETURN edges AS create_var4
                         }
-                        WITH create_var4 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS create_var5
+                        RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
                     }
                     WITH create_this1 { actorsConnection: create_var5 } AS create_this1
                     RETURN collect(create_this1) AS create_var6

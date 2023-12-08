@@ -94,8 +94,7 @@ describe("Mixed nesting", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var5
                 }
-                WITH var5 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN { edges: var5, totalCount: totalCount } AS var6
             }
             RETURN this { .title, actorsConnection: var6 } AS this"
         `);
@@ -172,15 +171,13 @@ describe("Mixed nesting", () => {
                             WITH collect(edge) AS edges
                             RETURN edges AS var7
                         }
-                        WITH var7 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var8
+                        RETURN { edges: var7, totalCount: totalCount } AS var8
                     }
                     WITH { screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var8 } } AS edge
                     WITH collect(edge) AS edges
                     RETURN edges AS var9
                 }
-                WITH var9 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var10
+                RETURN { edges: var9, totalCount: totalCount } AS var10
             }
             RETURN this { .title, actorsConnection: var10 } AS this"
         `);
@@ -238,8 +235,7 @@ describe("Mixed nesting", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var4
                     }
-                    WITH var4 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var5
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
                 WITH this1 { .name, moviesConnection: var5 } AS this1
                 RETURN collect(this1) AS var6

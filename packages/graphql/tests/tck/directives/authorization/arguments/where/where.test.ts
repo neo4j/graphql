@@ -231,8 +231,7 @@ describe("Cypher Auth Where", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var3
                 }
-                WITH var3 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
             RETURN this { .id, postsConnection: var4 } AS this"
         `);
@@ -292,8 +291,7 @@ describe("Cypher Auth Where", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS var3
                 }
-                WITH var3 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
             RETURN this { .id, postsConnection: var4 } AS this"
         `);

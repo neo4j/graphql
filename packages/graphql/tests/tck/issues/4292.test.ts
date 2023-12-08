@@ -258,8 +258,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         WITH collect(edge) AS edges
                         RETURN edges AS var25
                     }
-                    WITH var25 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var26
+                    RETURN { edges: var25, totalCount: totalCount } AS var26
                 }
                 WITH this1 { .id, .name, partnersConnection: var26 } AS this1
                 RETURN collect(this1) AS var27

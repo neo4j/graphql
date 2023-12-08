@@ -111,15 +111,13 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                             WITH collect(edge) AS edges
                             RETURN edges AS var8
                         }
-                        WITH var8 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var9
+                        RETURN { edges: var8, totalCount: totalCount } AS var9
                     }
                     WITH { node: { nameDetailsConnection: var9 } } AS edge
                     WITH collect(edge) AS edges
                     RETURN edges AS var10
                 }
-                WITH var10 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var11
+                RETURN { edges: var10, totalCount: totalCount } AS var11
             }
             RETURN this { .id, architectureConnection: var11 } AS this"
         `);
@@ -248,22 +246,19 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                                     WITH collect(edge) AS edges
                                     RETURN edges AS var12
                                 }
-                                WITH var12 AS edges, totalCount
-                                RETURN { edges: edges, totalCount: totalCount } AS var13
+                                RETURN { edges: var12, totalCount: totalCount } AS var13
                             }
                             WITH { node: { nameDetailsConnection: var13 } } AS edge
                             WITH collect(edge) AS edges
                             RETURN edges AS var14
                         }
-                        WITH var14 AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var15
+                        RETURN { edges: var14, totalCount: totalCount } AS var15
                     }
                     WITH { node: { architectureConnection: var15 } } AS edge
                     WITH collect(edge) AS edges
                     RETURN edges AS var16
                 }
-                WITH var16 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var17
+                RETURN { edges: var16, totalCount: totalCount } AS var17
             }
             RETURN this { .id, mainConnection: var17 } AS this"
         `);

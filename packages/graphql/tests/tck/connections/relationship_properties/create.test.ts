@@ -111,8 +111,7 @@ describe("Relationship Properties Create Cypher", () => {
                     WITH collect(edge) AS edges
                     RETURN edges AS create_var10
                 }
-                WITH create_var10 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var11
+                RETURN { edges: create_var10, totalCount: totalCount } AS create_var11
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var11 }) AS data"
         `);
