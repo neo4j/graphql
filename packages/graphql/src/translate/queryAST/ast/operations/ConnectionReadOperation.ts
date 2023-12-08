@@ -140,160 +140,12 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
-    private transpileReturn({
-        context,
-        edgesVar,
-        totalCount,
-    }: {
-        context: QueryASTContext;
-        edgesVar: Cypher.Variable;
-        totalCount: Cypher.Variable;
-    }): Cypher.Return {
-        return new Cypher.Return([
-            new Cypher.Map({
-                edges: edgesVar,
-                totalCount: totalCount,
-            }),
-            context.returnVariable,
-        ]);
-    }
-
-    private transpileNested(context: QueryASTContext): OperationTranspileResult {
-        if (!context.target || !this.relationship) throw new Error();
-
-        const {
-            prePaginationSubqueries,
-            postPaginationSubqueries,
-            withWhere,
-            edgeProjectionMap,
-            nestedContext,
-            extraMatches,
-            selectionClause,
-            authFilterSubqueries,
-        } = this.transpileCommon({
-            context,
-        });
-
-        const edgeVar = new Cypher.NamedVariable("edge");
-        const edgesVar = new Cypher.NamedVariable("edges");
-        const totalCount = new Cypher.NamedVariable("totalCount");
-        // Common transpile ends
-
-        // Pagination is different
-        let sortSubquery: Cypher.With | undefined;
-        if (this.pagination || this.sortFields.length > 0) {
-            const paginationField = this.pagination && this.pagination.getPagination();
-
-            sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
-            sortSubquery.addColumns(totalCount);
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        if (this.relationship) {
+            return this.transpileNested(context);
+        } else {
+            return this.transpileTopLevel(context);
         }
-
-        // Projection is different
-        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
-            .with([Cypher.collect(edgeVar), edgesVar])
-            .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
-
-        // Common Return
-        const returnClause = this.transpileReturn({
-            context,
-            edgesVar,
-            totalCount,
-        });
-        const subClause = Cypher.concat(
-            ...extraMatches,
-            selectionClause,
-            ...authFilterSubqueries,
-            withWhere,
-            ...prePaginationSubqueries,
-            ...postPaginationSubqueries,
-            projectionClauses,
-            sortSubquery,
-            returnClause
-        );
-
-        return {
-            clauses: [subClause],
-            projectionExpr: context.returnVariable,
-        };
-    }
-
-    private transpileCommon({ context }: { context: QueryASTContext }) {
-        // eslint-disable-next-line prefer-const
-        let { selection: selectionClause, nestedContext } = this.selection.apply(context);
-
-        let extraMatches: Array<Cypher.Match | Cypher.With | Cypher.Yield> = this.getChildren().flatMap((f) => {
-            return f.getSelection(nestedContext);
-        });
-
-        if (extraMatches.length > 0) {
-            extraMatches = [selectionClause, ...extraMatches];
-            selectionClause = new Cypher.With("*");
-        }
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).innerWith(nestedContext.target)
-        );
-        const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
-        const authPredicate = this.getAuthFilterPredicate(nestedContext);
-        const filters = Cypher.and(...predicates, ...authPredicate);
-
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
-
-        const nodeProjectionMap = new Cypher.Map();
-
-        const edgeProjectionMap = new Cypher.Map();
-        const relationship = nestedContext.relationship;
-        if (relationship) {
-            this.edgeFields
-                .map((f) => f.getProjectionField(relationship))
-                .forEach((p) => {
-                    if (typeof p === "string") {
-                        edgeProjectionMap.set(p, relationship.property(p));
-                    } else {
-                        edgeProjectionMap.set(p);
-                    }
-                });
-        }
-
-        this.nodeFields
-            .map((f) => f.getProjectionField(nestedContext.target))
-            .forEach((p) => {
-                if (typeof p === "string") {
-                    nodeProjectionMap.set(p, nestedContext.target.property(p));
-                } else {
-                    nodeProjectionMap.set(p);
-                }
-            });
-
-        if (nodeProjectionMap.size === 0) {
-            const targetNodeName = this.target.name;
-            nodeProjectionMap.set({
-                __resolveType: new Cypher.Literal(targetNodeName),
-                __id: Cypher.id(nestedContext.target),
-            });
-        }
-
-        edgeProjectionMap.set("node", nodeProjectionMap);
-
-        let withWhere: Cypher.Clause | undefined;
-        if (filters) {
-            if (authFilterSubqueries.length > 0) {
-                // This is to avoid unnecessary With *
-                withWhere = new Cypher.With("*").where(filters);
-            } else {
-                selectionClause.where(filters);
-            }
-        }
-
-        return {
-            prePaginationSubqueries,
-            postPaginationSubqueries,
-            withWhere,
-            edgeProjectionMap,
-            nestedContext,
-            extraMatches,
-            selectionClause,
-            authFilterSubqueries,
-        };
     }
 
     private transpileTopLevel(context: QueryASTContext): OperationTranspileResult {
@@ -377,12 +229,160 @@ export class ConnectionReadOperation extends Operation {
         };
     }
 
-    public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (this.relationship) {
-            return this.transpileNested(context);
-        } else {
-            return this.transpileTopLevel(context);
+    private transpileNested(context: QueryASTContext): OperationTranspileResult {
+        if (!context.target || !this.relationship) throw new Error();
+
+        const {
+            prePaginationSubqueries,
+            postPaginationSubqueries,
+            withWhere,
+            edgeProjectionMap,
+            nestedContext,
+            extraMatches,
+            selectionClause,
+            authFilterSubqueries,
+        } = this.transpileCommon({
+            context,
+        });
+
+        const edgeVar = new Cypher.NamedVariable("edge");
+        const edgesVar = new Cypher.NamedVariable("edges");
+        const totalCount = new Cypher.NamedVariable("totalCount");
+        // Common transpile ends
+
+        // Pagination is different
+        let sortSubquery: Cypher.With | undefined;
+        if (this.pagination || this.sortFields.length > 0) {
+            const paginationField = this.pagination && this.pagination.getPagination();
+
+            sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
+            sortSubquery.addColumns(totalCount);
         }
+
+        // Projection is different
+        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
+            .with([Cypher.collect(edgeVar), edgesVar])
+            .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+
+        // Common Return
+        const returnClause = this.transpileReturn({
+            context,
+            edgesVar,
+            totalCount,
+        });
+        const subClause = Cypher.concat(
+            ...extraMatches,
+            selectionClause,
+            ...authFilterSubqueries,
+            withWhere,
+            ...prePaginationSubqueries,
+            ...postPaginationSubqueries,
+            projectionClauses,
+            sortSubquery,
+            returnClause
+        );
+
+        return {
+            clauses: [subClause],
+            projectionExpr: context.returnVariable,
+        };
+    }
+
+    private transpileReturn({
+        context,
+        edgesVar,
+        totalCount,
+    }: {
+        context: QueryASTContext;
+        edgesVar: Cypher.Variable;
+        totalCount: Cypher.Variable;
+    }): Cypher.Return {
+        return new Cypher.Return([
+            new Cypher.Map({
+                edges: edgesVar,
+                totalCount: totalCount,
+            }),
+            context.returnVariable,
+        ]);
+    }
+
+    private transpileCommon({ context }: { context: QueryASTContext }) {
+        // eslint-disable-next-line prefer-const
+        let { selection: selectionClause, nestedContext } = this.selection.apply(context);
+
+        let extraMatches: Array<Cypher.Match | Cypher.With | Cypher.Yield> = this.getChildren().flatMap((f) => {
+            return f.getSelection(nestedContext);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [selectionClause, ...extraMatches];
+            selectionClause = new Cypher.With("*");
+        }
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
+            new Cypher.Call(sq).innerWith(nestedContext.target)
+        );
+        const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
+        const authPredicate = this.getAuthFilterPredicate(nestedContext);
+        const filters = Cypher.and(...predicates, ...authPredicate);
+
+        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
+
+        const nodeProjectionMap = new Cypher.Map();
+
+        const edgeProjectionMap = new Cypher.Map();
+        const relationship = nestedContext.relationship;
+        if (relationship) {
+            this.edgeFields
+                .map((f) => f.getProjectionField(relationship))
+                .forEach((p) => {
+                    if (typeof p === "string") {
+                        edgeProjectionMap.set(p, relationship.property(p));
+                    } else {
+                        edgeProjectionMap.set(p);
+                    }
+                });
+        }
+
+        this.nodeFields
+            .map((f) => f.getProjectionField(nestedContext.target))
+            .forEach((p) => {
+                if (typeof p === "string") {
+                    nodeProjectionMap.set(p, nestedContext.target.property(p));
+                } else {
+                    nodeProjectionMap.set(p);
+                }
+            });
+
+        if (nodeProjectionMap.size === 0) {
+            const targetNodeName = this.target.name;
+            nodeProjectionMap.set({
+                __resolveType: new Cypher.Literal(targetNodeName),
+                __id: Cypher.id(nestedContext.target),
+            });
+        }
+
+        edgeProjectionMap.set("node", nodeProjectionMap);
+
+        let withWhere: Cypher.Clause | undefined;
+        if (filters) {
+            if (authFilterSubqueries.length > 0) {
+                // This is to avoid unnecessary With *
+                withWhere = new Cypher.With("*").where(filters);
+            } else {
+                selectionClause.where(filters);
+            }
+        }
+
+        return {
+            prePaginationSubqueries,
+            postPaginationSubqueries,
+            withWhere,
+            edgeProjectionMap,
+            nestedContext,
+            extraMatches,
+            selectionClause,
+            authFilterSubqueries,
+        };
     }
 
     protected getPaginationSubquery(
