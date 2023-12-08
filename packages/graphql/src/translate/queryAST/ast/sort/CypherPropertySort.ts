@@ -18,12 +18,12 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
+import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { CypherAnnotationSubqueryGenerator } from "../../cypher-generators/CypherAnnotationSubqueryGenerator";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
-import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTContext } from "../QueryASTContext";
-import { CypherAnnotationSubqueryGenerator } from "../../cypher-generators/CypherAnnotationSubqueryGenerator";
 
 export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
@@ -52,7 +52,8 @@ export class CypherPropertySort extends Sort {
         variable: Cypher.Variable | Cypher.Property,
         sortByDatabaseName = true
     ): SortField[] {
-        const isNested = context.source;
+        // const isNested = context.source; // TODO: avoid this, this should know if it is nested or not
+        const isNested = false; // TODO: avoid this, this should know if it is nested or not
         if (isNested) {
             const attributeName = sortByDatabaseName ? this.attribute.databaseName : this.attribute.name;
 

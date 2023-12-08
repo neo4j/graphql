@@ -144,7 +144,8 @@ export class ConnectionReadOperation extends Operation {
         if (this.relationship) {
             return this.transpileNested(context);
         } else {
-            return this.transpileTopLevel(context);
+            // return this.transpileTopLevel(context);
+            return this.transpileNested(context);
         }
     }
 
@@ -203,6 +204,18 @@ export class ConnectionReadOperation extends Operation {
             totalCount
         );
 
+        // let sortSubquery: Cypher.With | undefined;
+        // if (this.pagination || this.sortFields.length > 0) {
+        //     const paginationField = this.pagination && this.pagination.getPagination();
+
+        //     sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
+        //     sortSubquery.addColumns(totalCount);
+        // }
+        // // Projection is different
+        // const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
+        //     .with([Cypher.collect(edgeVar), edgesVar])
+        //     .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+
         // Common Return
         const returnClause = this.transpileReturn({
             context,
@@ -219,6 +232,8 @@ export class ConnectionReadOperation extends Operation {
             ...prePaginationSubqueries,
             paginationWith,
             ...postPaginationSubqueries,
+            // projectionClauses,
+            // sortSubquery,
             withProjection,
             returnClause
         );
@@ -230,7 +245,8 @@ export class ConnectionReadOperation extends Operation {
     }
 
     private transpileNested(context: QueryASTContext): OperationTranspileResult {
-        if (!context.target || !this.relationship) throw new Error();
+        // if (!context.target || !this.relationship) throw new Error();
+        if (!context.target) throw new Error();
 
         const {
             prePaginationSubqueries,
@@ -251,18 +267,68 @@ export class ConnectionReadOperation extends Operation {
         // Common transpile ends
 
         // Pagination is different
-        let sortSubquery: Cypher.With | undefined;
-        if (this.pagination || this.sortFields.length > 0) {
-            const paginationField = this.pagination && this.pagination.getPagination();
+        // let sortSubquery: Cypher.With | undefined;
+        // if (this.pagination || this.sortFields.length > 0) {
+        //     const paginationField = this.pagination && this.pagination.getPagination();
 
-            sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
-            sortSubquery.addColumns(totalCount);
+        //     sortSubquery = this.getPaginationSubquery(nestedContext, edgesVar, paginationField);
+        //     sortSubquery.addColumns(totalCount);
+        // }
+
+        // // Projection is different
+        // const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
+        //     .with([Cypher.collect(edgeVar), edgesVar])
+        //     .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+
+        const edgeMap1 = new Cypher.Map({
+            node: nestedContext.target,
+        });
+
+        if (nestedContext.relationship) {
+            edgeMap1.set("relationship", nestedContext.relationship);
         }
 
+        const withNodeAndTotalCount = new Cypher.With([Cypher.collect(edgeMap1), edgesVar]).with(edgesVar, [
+            Cypher.size(edgesVar),
+            totalCount,
+        ]);
+
+        let paginationWith: Cypher.With | undefined;
+        if (this.pagination || this.sortFields.length > 0) {
+            paginationWith = new Cypher.With("*");
+            const paginationField = this.pagination && this.pagination.getPagination();
+            if (paginationField?.limit) {
+                paginationWith.limit(paginationField.limit);
+            }
+            if (paginationField?.skip) {
+                paginationWith.skip(paginationField.skip);
+            }
+            if (this.sortFields.length > 0) {
+                const sortFields = this.getSortFields({
+                    context: nestedContext,
+                    nodeVar: nestedContext.target,
+                    edgeVar: nestedContext.relationship,
+                    aliased: true,
+                });
+                paginationWith.orderBy(...sortFields);
+            }
+        }
+
+        const edgesVar2 = new Cypher.Variable();
+        let unwindClause: Cypher.With;
         // Projection is different
-        const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar])
-            .with([Cypher.collect(edgeVar), edgesVar])
-            .with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+        if (nestedContext.relationship) {
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
+                [edgeVar.property("node"), nestedContext.target],
+                [edgeVar.property("relationship"), nestedContext.relationship]
+            );
+        } else {
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([
+                edgeVar.property("node"),
+                nestedContext.target,
+            ]);
+        }
+        const withProjection = new Cypher.With([edgeProjectionMap, edgeVar]).with([Cypher.collect(edgeVar), edgesVar]);
 
         // Common Return
         const returnClause = this.transpileReturn({
@@ -270,15 +336,36 @@ export class ConnectionReadOperation extends Operation {
             edgesVar,
             totalCount,
         });
+
+        const nestedThingy = new Cypher.Call(
+            Cypher.concat(
+                unwindClause,
+                ...prePaginationSubqueries,
+                paginationWith,
+                ...postPaginationSubqueries,
+                withProjection,
+                new Cypher.Return([edgesVar, edgesVar2])
+            )
+        )
+            .innerWith(edgesVar)
+            .with([edgesVar2, edgesVar], totalCount);
+
         const subClause = Cypher.concat(
             ...extraMatches,
             selectionClause,
             ...authFilterSubqueries,
             withWhere,
-            ...prePaginationSubqueries,
-            ...postPaginationSubqueries,
-            projectionClauses,
-            sortSubquery,
+            withNodeAndTotalCount,
+            nestedThingy,
+            // unwindClause,
+            // ...prePaginationSubqueries,
+            // paginationWith,
+            // ...postPaginationSubqueries,
+            // withProjection,
+
+            // projectionClauses,
+            // sortSubquery,
+
             returnClause
         );
 
@@ -423,6 +510,15 @@ export class ConnectionReadOperation extends Operation {
         aliased?: boolean;
     }): SortField[] {
         return this.sortFields.flatMap(({ node, edge }) => {
+            // Small hack to trick nested sortFields that the operation is always a nested operation
+            // const fakeNestedContext = new QueryASTContext({
+            //     source: context.source || context.target,
+            //     relationship: context.relationship,
+            //     target: context.target,
+            //     env: context.env,
+            //     neo4jGraphQLContext: context.neo4jGraphQLContext,
+            // });
+
             const nodeFields = node.flatMap((s) => s.getSortFields(context, nodeVar, aliased));
             if (edgeVar) {
                 const edgeFields = edge.flatMap((s) => s.getSortFields(context, edgeVar, aliased));

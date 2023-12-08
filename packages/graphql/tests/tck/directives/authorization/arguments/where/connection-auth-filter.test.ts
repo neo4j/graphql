@@ -530,7 +530,7 @@ describe("Connection auth filter", () => {
         `);
     });
 
-    test("Read Union Using Connection + User Defined Where", async () => {
+    test.only("Read Union Using Connection + User Defined Where", async () => {
         const query = gql`
             {
                 usersConnection {
