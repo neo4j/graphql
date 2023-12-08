@@ -58,7 +58,7 @@ type AggregateWhereInput = {
 };
 
 export class FilterFactory {
-    private experimental: boolean;
+    protected experimental: boolean;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.experimental = queryASTFactory.experimental;
@@ -139,11 +139,7 @@ export class FilterFactory {
                     return this.createEdgeFilters(rel, value);
                 }
                 if (connectionWhereField.fieldName === "node") {
-                    // if typename is allowed we can compute only the shared filter without recomputing the filters for each concrete entity
-                    const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
-                    return typenameFilterAllowed
-                        ? this.createInterfaceFilters(entity, value)
-                        : this.createNodeFilters(entity, value);
+                    return this.createNodeFilters(entity, value);
                 }
             });
         });
@@ -244,12 +240,12 @@ export class FilterFactory {
     /**
      * By removing the _on field is possible to create a single filter to be applied to all the concrete entities.
      * */
-    public createInterfaceFilters(entity: InterfaceEntityAdapter, where: Record<string, any>): Filter[] {
+    private createExperimentalInterfaceFilters(entity: InterfaceEntityAdapter, where: Record<string, any>): Filter[] {
         const filters = filterTruthy(
             Object.entries(where).flatMap(([key, value]): Filter | undefined => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                        return this.createInterfaceFilters(entity, nestedWhere);
+                        return this.createExperimentalInterfaceFilters(entity, nestedWhere);
                     });
                     return new LogicalFilter({
                         operation: key,
@@ -347,8 +343,15 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
+    // TODO: remove _on implementation logic from this method when _on will be completely deprecated.
     // TODO: rename and refactor this, createNodeFilters is misleading for non-connection operations
     public createNodeFilters(entity: EntityAdapter, where: Record<string, unknown>): Filter[] {
+        // if typename is allowed we can compute only the shared filter without recomputing the filters for each concrete entity
+        // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
+        const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
+        if (typenameFilterAllowed) {
+            return this.createExperimentalInterfaceFilters(entity, where);
+        }
         const whereFields = this.getConcreteFiltersWhere(entity, where);
 
         const filters = filterTruthy(
@@ -609,7 +612,8 @@ export class FilterFactory {
         for (const concreteEntity of concreteEntities) {
             const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
             if (concreteEntityWhere) {
-                const concreteEntityFilters = this.createNodeFilters(concreteEntity, concreteEntityWhere);
+           
+                const concreteEntityFilters = this.createNodeFilters(entity, concreteEntityWhere);
                 nodeFilters.push(...concreteEntityFilters);
             }
         }

@@ -41,13 +41,13 @@ export class QueryASTFactory {
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel, experimental: boolean) {
         this.schemaModel = schemaModel;
+        this.experimental = experimental;
         this.filterFactory = new FilterFactory(this);
         this.fieldFactory = new FieldFactory(this);
         this.sortAndPaginationFactory = new SortAndPaginationFactory();
         const authFilterFactory = new AuthFilterFactory(this);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
         this.operationsFactory = new OperationsFactory(this);
-        this.experimental = experimental;
     }
 
     public createQueryAST(

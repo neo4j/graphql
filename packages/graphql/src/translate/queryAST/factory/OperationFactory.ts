@@ -285,15 +285,17 @@ export class OperationsFactory {
             });
         } else {
             // if typename is allowed we can compute only the shared filter without recomputing the filters for each concrete entity
+            // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
             const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
-            // if typename filters are allowed we are getting of the _on and the implicit typename filter.
+
             const concreteEntities = typenameFilterAllowed
                 ? entity.concreteEntities
                 : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
 
             const sharedFilters = typenameFilterAllowed
-                ? this.filterFactory.createInterfaceFilters(entity, resolveTreeWhere)
+                ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
                 : undefined;
+
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 // Duplicate from normal read
                 let selection: EntitySelection;
@@ -988,8 +990,7 @@ export class OperationsFactory {
                 context,
                 "BEFORE"
             );
-
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
 
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);
