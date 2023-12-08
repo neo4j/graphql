@@ -128,4 +128,74 @@ describe("Top level filter on aggregation interfaces", () => {
             }"
         `);
     });
+
+    test("top level count and string fields with AND operation", async () => {
+        const query = gql`
+            {
+                productionsAggregate(where: { AND: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {
+                    count
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                CALL {
+                    MATCH (this0:Movie)
+                    RETURN this0 AS node
+                    UNION
+                    MATCH (this1:Series)
+                    RETURN this1 AS node
+                }
+                WITH *
+                WHERE (node.cost >= $param0 AND node.title = $param1)
+                RETURN count(node) AS this2
+            }
+            RETURN { count: this2 }"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 10,
+                \\"param1\\": \\"The Matrix\\"
+            }"
+        `);
+    });
+
+    test("top level count and string fields with OR operation", async () => {
+        const query = gql`
+            {
+                productionsAggregate(where: { OR: [{ cost_GTE: 10 }, { title: "The Matrix" }] }) {
+                    count
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                CALL {
+                    MATCH (this0:Movie)
+                    RETURN this0 AS node
+                    UNION
+                    MATCH (this1:Series)
+                    RETURN this1 AS node
+                }
+                WITH *
+                WHERE (node.cost >= $param0 OR node.title = $param1)
+                RETURN count(node) AS this2
+            }
+            RETURN { count: this2 }"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": 10,
+                \\"param1\\": \\"The Matrix\\"
+            }"
+        `);
+    });
 });
