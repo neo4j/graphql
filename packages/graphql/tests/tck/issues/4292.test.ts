@@ -248,15 +248,23 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     }
                     WITH *
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((creatorCount <> 0 AND ($jwt.uid IS NOT NULL AND this14.id = $jwt.uid)) OR (groupCount <> 0 AND size([(this15)<-[:ADMIN_OF]-(this22:Admin) WHERE single(this21 IN [(this22)-[:IS_USER]->(this21:User) WHERE ($jwt.uid IS NOT NULL AND this21.id = $jwt.uid) | 1] WHERE true) | 1]) > 0) OR (groupCount <> 0 AND size([(this16)<-[:CONTRIBUTOR_TO]-(this24:Contributor) WHERE single(this23 IN [(this24)-[:IS_USER]->(this23:User) WHERE ($jwt.uid IS NOT NULL AND this23.id = $jwt.uid) | 1] WHERE true) | 1]) > 0) OR var20 = true)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, node: { __resolveType: \\"Person\\", __id: id(this13) } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this13, relationship: this12 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var25
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this13, edge.relationship AS this12
+                        WITH { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, node: { __resolveType: \\"Person\\", __id: id(this13) } } AS edge
+                        WITH collect(edge) AS edges
+                        RETURN edges AS var25
+                    }
+                    WITH var25 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var26
                 }
-                WITH this1 { .id, .name, partnersConnection: var25 } AS this1
-                RETURN collect(this1) AS var26
+                WITH this1 { .id, .name, partnersConnection: var26 } AS this1
+                RETURN collect(this1) AS var27
             }
-            RETURN this { .id, .name, members: var26 } AS this"
+            RETURN this { .id, .name, members: var27 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

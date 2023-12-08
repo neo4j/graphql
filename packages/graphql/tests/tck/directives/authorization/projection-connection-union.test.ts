@@ -104,19 +104,27 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                         WITH this1
                         MATCH (this1)<-[this3:HAS_POST]-(this4:User)
                         WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH { node: { name: this4.name } } AS edge
-                        WITH collect(edge) AS edges
+                        WITH collect({ node: this4, relationship: this3 }) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS var5
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge.node AS this4, edge.relationship AS this3
+                            WITH { node: { name: this4.name } } AS edge
+                            WITH collect(edge) AS edges
+                            RETURN edges AS var5
+                        }
+                        WITH var5 AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS var6
                     }
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), content: this1.content, creatorConnection: var5 } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), content: this1.content, creatorConnection: var6 } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN { edges: edges, totalCount: totalCount } AS var7
             }
-            RETURN this { contentConnection: var6 } AS this"
+            RETURN this { contentConnection: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -560,28 +560,33 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                    WITH *, count(this3) AS creatorCount
-                    WITH *
-                    WHERE (this2.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this0
+                        MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                        OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                        WITH *, count(this3) AS creatorCount
+                        WITH *
+                        WHERE (this2.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
+                        RETURN edge
+                    }
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
+                WITH { node: { id: this0.id, contentConnection: var4 } } AS edge
                 WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN edges AS var5
             }
-            WITH { node: { id: this0.id, contentConnection: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
+            WITH var5 AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 

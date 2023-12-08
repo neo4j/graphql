@@ -153,39 +153,71 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH this
                 MATCH (this)-[this1:HAS_NAME]->(this2:NameDetails)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { fullName: this2.fullName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this2, relationship: this1 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
-            }
-            CALL {
-                WITH this
-                MATCH (this)-[this4:HAS_MARKETS]->(this5:Market)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
-                    WITH this5
-                    MATCH (this5)-[this6:HAS_NAME]->(this7:NameDetails)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { node: { fullName: this7.fullName } } AS edge
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this2, edge.relationship AS this1
+                    WITH { node: { fullName: this2.fullName } } AS edge
                     WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var8
+                    RETURN edges AS var3
                 }
-                WITH { node: { nameDetailsConnection: var8 } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var9
+                WITH var3 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this10:HAS_BASE]-(this11:BaseObject)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { id: this11.id } } AS edge
-                WITH collect(edge) AS edges
+                MATCH (this)-[this5:HAS_MARKETS]->(this6:Market)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH collect({ node: this6, relationship: this5 }) AS edges
                 WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this6, edge.relationship AS this5
+                    CALL {
+                        WITH this6
+                        MATCH (this6)-[this7:HAS_NAME]->(this8:NameDetails)
+                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WITH collect({ node: this8, relationship: this7 }) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge.node AS this8, edge.relationship AS this7
+                            WITH { node: { fullName: this8.fullName } } AS edge
+                            WITH collect(edge) AS edges
+                            RETURN edges AS var9
+                        }
+                        WITH var9 AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS var10
+                    }
+                    WITH { node: { nameDetailsConnection: var10 } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var11
+                }
+                WITH var11 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var12
             }
-            RETURN this { relatedId: this0, nameDetailsConnection: var3, marketsConnection: var9, baseObjectConnection: var12 } AS this"
+            CALL {
+                WITH this
+                MATCH (this)<-[this13:HAS_BASE]-(this14:BaseObject)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH collect({ node: this14, relationship: this13 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this14, edge.relationship AS this13
+                    WITH { node: { id: this14.id } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var15
+                }
+                WITH var15 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var16
+            }
+            RETURN this { relatedId: this0, nameDetailsConnection: var4, marketsConnection: var12, baseObjectConnection: var16 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

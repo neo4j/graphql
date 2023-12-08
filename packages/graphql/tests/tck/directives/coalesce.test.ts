@@ -215,12 +215,20 @@ describe("Cypher coalesce()", () => {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE coalesce(this1.status, \\"ACTIVE\\") = $param0
-                WITH { node: { id: this1.id, status: this1.status } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { id: this1.id, status: this1.status } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { moviesConnection: var2 } AS this"
+            RETURN this { moviesConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -273,12 +281,20 @@ describe("Cypher coalesce()", () => {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]) = $param0
-                WITH { node: { id: this1.id, statuses: this1.statuses } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { id: this1.id, statuses: this1.statuses } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { moviesConnection: var2 } AS this"
+            RETURN this { moviesConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

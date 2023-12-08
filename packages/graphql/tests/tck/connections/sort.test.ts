@@ -78,23 +78,36 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
-            WITH *
-            ORDER BY this0.title ASC
-            LIMIT $param0
             CALL {
-                WITH this0
-                MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                WITH { node: { name: this2.name } } AS edge
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                WITH *
+                ORDER BY this0.title ASC
+                LIMIT $param0
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        WITH { node: { name: this2.name } } AS edge
+                        WITH collect(edge) AS edges
+                        RETURN edges AS var3
+                    }
+                    WITH var3 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var4
+                }
+                WITH { node: { title: this0.title, actorsConnection: var4 } } AS edge
                 WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN edges AS var5
             }
-            WITH { node: { title: this0.title, actorsConnection: var3 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
+            WITH var5 AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 
@@ -132,33 +145,46 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:Movie)
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    WITH this0 AS this
-                    MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+                    }
+                    UNWIND count AS this1
+                    RETURN head(collect(this1)) AS this1
                 }
-                UNWIND count AS this1
-                RETURN head(collect(this1)) AS this1
-            }
-            WITH *
-            ORDER BY this0.title DESC, this1 ASC
-            LIMIT $param0
-            CALL {
-                WITH this0
-                MATCH (this0)<-[this2:ACTED_IN]-(this3:Actor)
-                WITH { node: { name: this3.name } } AS edge
+                WITH *
+                ORDER BY this0.title DESC, this1 ASC
+                LIMIT $param0
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[this2:ACTED_IN]-(this3:Actor)
+                    WITH collect({ node: this3, relationship: this2 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this3, edge.relationship AS this2
+                        WITH { node: { name: this3.name } } AS edge
+                        WITH collect(edge) AS edges
+                        RETURN edges AS var4
+                    }
+                    WITH var4 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var5
+                }
+                WITH { node: { title: this0.title, actorsConnection: var5 } } AS edge
                 WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN edges AS var6
             }
-            WITH { node: { title: this0.title, actorsConnection: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
+            WITH var6 AS edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 

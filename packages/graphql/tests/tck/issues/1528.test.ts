@@ -74,26 +74,28 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
-                CALL {
-                    WITH this1
-                    CALL {
-                        WITH this1
-                        WITH this1 AS this
-                        MATCH (this)<-[:ACTED_IN]-(ac:Person)
-                        RETURN count(ac) as res
-                    }
-                    UNWIND res AS this2
-                    RETURN head(collect(this2)) AS this2
-                }
-                WITH { node: { title: this1.title, actorsCount: this2 } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
                     WITH edges
                     UNWIND edges AS edge
-                    WITH edge
-                    ORDER BY edge.node.actorsCount DESC
-                    RETURN collect(edge) AS var3
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    CALL {
+                        WITH this1
+                        CALL {
+                            WITH this1
+                            WITH this1 AS this
+                            MATCH (this)<-[:ACTED_IN]-(ac:Person)
+                            RETURN count(ac) as res
+                        }
+                        UNWIND res AS this2
+                        RETURN head(collect(this2)) AS this2
+                    }
+                    WITH *
+                    ORDER BY this2 DESC
+                    WITH { node: { title: this1.title, actorsCount: this2 } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var3
                 }
                 WITH var3 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4

@@ -232,12 +232,20 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { content: this1.content } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var3
+                }
+                WITH var3 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -286,12 +294,20 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 WHERE (this1.id = $param4 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(this2 IN [(this1)<-[:HAS_POST]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1] WHERE true) AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { content: this1.content } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var3
+                }
+                WITH var3 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -75,12 +75,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.age < $param0
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -119,12 +127,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.age <= $param0
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -163,12 +179,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.age > $param0
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -207,12 +231,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.age >= $param0
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { screenTime: this0.screenTime, node: { name: this1.name, age: this1.age } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

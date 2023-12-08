@@ -81,12 +81,20 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
-                WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: create_this3, relationship: create_this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS create_this3, edge.relationship AS create_this2
+                    WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS create_var4
+                }
+                WITH create_var4 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS create_var5
             }
-            RETURN collect(create_this1 { .title, actorsConnection: create_var4 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var5 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -134,12 +142,20 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
-                WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: create_this3, relationship: create_this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS create_this3, edge.relationship AS create_this2
+                    WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS create_var4
+                }
+                WITH create_var4 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS create_var5
             }
-            RETURN collect(create_this1 { .title, actorsConnection: create_var4 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var5 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -191,12 +207,20 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
                 WHERE create_this3.name = $create_param1
-                WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: create_this3, relationship: create_this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var4
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS create_this3, edge.relationship AS create_this2
+                    WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS create_var4
+                }
+                WITH create_var4 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS create_var5
             }
-            RETURN collect(create_this1 { .title, actorsConnection: create_var4 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var5 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

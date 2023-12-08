@@ -76,28 +76,38 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:OUTPUT]-(this1:Process)
-                CALL {
-                    WITH this1
-                    MATCH (this1)<-[this2:INPUT]-(this3:Component)
-                    WITH { node: { uuid: this3.uuid } } AS edge
-                    WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge
-                        ORDER BY edge.node.uuid DESC
-                        RETURN collect(edge) AS var4
-                    }
-                    WITH var4 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var5
-                }
-                WITH { node: { uuid: this1.uuid, componentInputsConnection: var5 } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    CALL {
+                        WITH this1
+                        MATCH (this1)<-[this2:INPUT]-(this3:Component)
+                        WITH collect({ node: this3, relationship: this2 }) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge.node AS this3, edge.relationship AS this2
+                            WITH *
+                            ORDER BY this3.uuid DESC
+                            WITH { node: { uuid: this3.uuid } } AS edge
+                            WITH collect(edge) AS edges
+                            RETURN edges AS var4
+                        }
+                        WITH var4 AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS var5
+                    }
+                    WITH { node: { uuid: this1.uuid, componentInputsConnection: var5 } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var6
+                }
+                WITH var6 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var7
             }
-            RETURN this { .uuid, upstreamProcessConnection: var6 } AS this"
+            RETURN this { .uuid, upstreamProcessConnection: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

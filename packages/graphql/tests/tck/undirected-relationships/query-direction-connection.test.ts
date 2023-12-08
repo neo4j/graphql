@@ -55,12 +55,20 @@ describe("QueryDirection in relationships connection", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { friendsConnection: var2 } AS this"
+            RETURN this { friendsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -94,12 +102,20 @@ describe("QueryDirection in relationships connection", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { friendsConnection: var2 } AS this"
+            RETURN this { friendsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -132,12 +148,20 @@ describe("QueryDirection in relationships connection", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var2
+                }
+                WITH var2 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var3
             }
-            RETURN this { friendsConnection: var2 } AS this"
+            RETURN this { friendsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

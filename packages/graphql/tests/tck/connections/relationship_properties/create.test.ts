@@ -101,12 +101,20 @@ describe("Relationship Properties Create Cypher", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this8:ACTED_IN]-(create_this9:Actor)
-                WITH { screenTime: create_this8.screenTime, node: { name: create_this9.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: create_this9, relationship: create_this8 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var10
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS create_this9, edge.relationship AS create_this8
+                    WITH { screenTime: create_this8.screenTime, node: { name: create_this9.name } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS create_var10
+                }
+                WITH create_var10 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS create_var11
             }
-            RETURN collect(create_this1 { .title, actorsConnection: create_var10 }) AS data"
+            RETURN collect(create_this1 { .title, actorsConnection: create_var11 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

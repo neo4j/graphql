@@ -145,20 +145,36 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this6:MANUFACTURER]->(this7:Manufacturer)
-                WITH { current: this6.current, node: { name: this7.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this7, relationship: this6 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var8
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this7, edge.relationship AS this6
+                    WITH { current: this6.current, node: { name: this7.name } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var8
+                }
+                WITH var8 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var9
             }
             CALL {
                 WITH this
-                MATCH (this)-[this9:BRAND]->(this10:Brand)
-                WITH { current: this9.current, node: { name: this10.name } } AS edge
-                WITH collect(edge) AS edges
+                MATCH (this)-[this10:BRAND]->(this11:Brand)
+                WITH collect({ node: this11, relationship: this10 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var11
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this11, edge.relationship AS this10
+                    WITH { current: this10.current, node: { name: this11.name } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var12
+                }
+                WITH var12 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var13
             }
-            RETURN this { .name, .current, manufacturerConnection: var8, brandConnection: var11 } AS this"
+            RETURN this { .name, .current, manufacturerConnection: var9, brandConnection: var13 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

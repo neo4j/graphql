@@ -113,31 +113,39 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 WITH this
                 MATCH (this)-[this0:CONSISTS_OF]->(this1:DriveComposition)
                 WHERE this0.current = $param1
+                WITH collect({ node: this1, relationship: this0 }) AS edges
+                WITH edges, size(edges) AS totalCount
                 CALL {
-                    WITH this1
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
                     CALL {
                         WITH this1
-                        MATCH (this1)-[this2:HAS]->(this3:Battery)
-                        WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                        WITH { current: this2.current, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this1
-                        MATCH (this1)-[this4:HAS]->(this5:CombustionEngine)
-                        WHERE this4.current = $param6
-                        WITH { current: this4.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this5), id: this5.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this1
+                            MATCH (this1)-[this2:HAS]->(this3:Battery)
+                            WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                            WITH { current: this2.current, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
+                            RETURN edge
+                            UNION
+                            WITH this1
+                            MATCH (this1)-[this4:HAS]->(this5:CombustionEngine)
+                            WHERE this4.current = $param6
+                            WITH { current: this4.current, node: { __resolveType: \\"CombustionEngine\\", __id: id(this5), id: this5.id } } AS edge
+                            RETURN edge
+                        }
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS var6
                     }
+                    WITH { node: { driveComponentConnection: var6 } } AS edge
                     WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var6
+                    RETURN edges AS var7
                 }
-                WITH { node: { driveComponentConnection: var6 } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var7
+                WITH var7 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var8
             }
-            RETURN this { .current, driveCompositionsConnection: var7 } AS this"
+            RETURN this { .current, driveCompositionsConnection: var8 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

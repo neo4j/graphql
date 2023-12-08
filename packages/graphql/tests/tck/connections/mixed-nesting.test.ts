@@ -77,19 +77,27 @@ describe("Mixed nesting", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
-                CALL {
-                    WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE NOT (this3.title = $param2)
-                    WITH this3 { .title } AS this3
-                    RETURN collect(this3) AS var4
-                }
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var5
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    CALL {
+                        WITH this1
+                        MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
+                        WHERE NOT (this3.title = $param2)
+                        WITH this3 { .title } AS this3
+                        RETURN collect(this3) AS var4
+                    }
+                    WITH { screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var5
+                }
+                WITH var5 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var6
             }
-            RETURN this { .title, actorsConnection: var5 } AS this"
+            RETURN this { .title, actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -137,28 +145,44 @@ describe("Mixed nesting", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
-                CALL {
-                    WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE NOT (this3.title = $param2)
-                    CALL {
-                        WITH this3
-                        MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
-                        WHERE NOT (this5.name = $param3)
-                        WITH this5 { .name } AS this5
-                        RETURN collect(this5) AS var6
-                    }
-                    WITH { node: { title: this3.title, actors: var6 } } AS edge
-                    WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var7
-                }
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var7 } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var8
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    CALL {
+                        WITH this1
+                        MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
+                        WHERE NOT (this3.title = $param2)
+                        WITH collect({ node: this3, relationship: this2 }) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge.node AS this3, edge.relationship AS this2
+                            CALL {
+                                WITH this3
+                                MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
+                                WHERE NOT (this5.name = $param3)
+                                WITH this5 { .name } AS this5
+                                RETURN collect(this5) AS var6
+                            }
+                            WITH { node: { title: this3.title, actors: var6 } } AS edge
+                            WITH collect(edge) AS edges
+                            RETURN edges AS var7
+                        }
+                        WITH var7 AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS var8
+                    }
+                    WITH { screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var8 } } AS edge
+                    WITH collect(edge) AS edges
+                    RETURN edges AS var9
+                }
+                WITH var9 AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS var10
             }
-            RETURN this { .title, actorsConnection: var8 } AS this"
+            RETURN this { .title, actorsConnection: var10 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -204,15 +228,23 @@ describe("Mixed nesting", () => {
                     WITH this1
                     MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                     WHERE NOT (this3.title = $param2)
-                    WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this3, relationship: this2 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var4
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this3, edge.relationship AS this2
+                        WITH { screenTime: this2.screenTime, node: { title: this3.title } } AS edge
+                        WITH collect(edge) AS edges
+                        RETURN edges AS var4
+                    }
+                    WITH var4 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
-                WITH this1 { .name, moviesConnection: var4 } AS this1
-                RETURN collect(this1) AS var5
+                WITH this1 { .name, moviesConnection: var5 } AS this1
+                RETURN collect(this1) AS var6
             }
-            RETURN this { .title, actors: var5 } AS this"
+            RETURN this { .title, actors: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
