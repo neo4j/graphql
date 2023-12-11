@@ -33,6 +33,7 @@ import {
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { SCALAR_TYPES } from "../../../../constants";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
@@ -187,16 +188,21 @@ export function verifyRelationshipFieldType({
         // delegate
         return;
     }
-    const msg = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${getInnerTypeName(
+    const fieldTypeName = getInnerTypeName(traversedDef.type);
+    if (SCALAR_TYPES.includes(fieldTypeName)) {
+        const scalarTypesNotPermittedErrorMessage = `Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead.`;
+        throw new DocumentValidationError(scalarTypesNotPermittedErrorMessage, []);
+    }
+    const listTypesErrorMessage = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${getInnerTypeName(
         traversedDef.type
     )}!]!`;
     if (traversedDef.type.kind === Kind.NON_NULL_TYPE) {
         if (traversedDef.type.type.kind === Kind.LIST_TYPE) {
             if (traversedDef.type.type.type.kind !== Kind.NON_NULL_TYPE) {
-                throw new DocumentValidationError(msg, []);
+                throw new DocumentValidationError(listTypesErrorMessage, []);
             }
         }
     } else if (traversedDef.type.kind === Kind.LIST_TYPE) {
-        throw new DocumentValidationError(msg, []);
+        throw new DocumentValidationError(listTypesErrorMessage, []);
     }
 }

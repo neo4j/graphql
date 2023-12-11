@@ -6089,6 +6089,39 @@ describe("validation 2.0", () => {
                     );
                     expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
                 });
+
+                test("@relationship scalar", () => {
+                    const doc = gql`
+                        type User {
+                            name: String
+                            posts: Int! @relationship(type: "HAS_POST", direction: OUT)
+                            allPosts: [Int!] @relationship(type: "HAS_POST", direction: OUT)
+                        }
+                    `;
+
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: doc,
+                            additionalDefinitions,
+                            features: {},
+                            experimental: false,
+                        });
+
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(2);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        "Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead."
+                    );
+                    expect(errors[1]).toHaveProperty(
+                        "message",
+                        "Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead."
+                    );
+                    expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
+                    expect(errors[1]).toHaveProperty("path", ["User", "allPosts"]);
+                });
             });
 
             describe("valid", () => {
