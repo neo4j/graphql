@@ -159,8 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this2, edge.relationship AS this1
-                    WITH { node: { fullName: this2.fullName } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { fullName: this2.fullName } }) AS edges
                     RETURN edges AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4
@@ -185,14 +184,12 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this8, edge.relationship AS this7
-                            WITH { node: { fullName: this8.fullName } } AS edge
-                            WITH collect(edge) AS edges
+                            WITH collect({ node: { fullName: this8.fullName } }) AS edges
                             RETURN edges AS var9
                         }
                         RETURN { edges: var9, totalCount: totalCount } AS var10
                     }
-                    WITH { node: { nameDetailsConnection: var10 } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { nameDetailsConnection: var10 } }) AS edges
                     RETURN edges AS var11
                 }
                 RETURN { edges: var11, totalCount: totalCount } AS var12
@@ -207,8 +204,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this14, edge.relationship AS this13
-                    WITH { node: { id: this14.id } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { id: this14.id } }) AS edges
                     RETURN edges AS var15
                 }
                 RETURN { edges: var15, totalCount: totalCount } AS var16

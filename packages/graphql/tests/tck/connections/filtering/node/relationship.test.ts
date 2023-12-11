@@ -77,8 +77,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { node: { name: this1.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { name: this1.name } }) AS edges
                     RETURN edges AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4

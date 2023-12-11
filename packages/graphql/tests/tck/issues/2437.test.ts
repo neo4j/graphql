@@ -94,8 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     LIMIT $param2
-                    WITH { node: { uuid: this1.uuid } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { uuid: this1.uuid } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3

@@ -111,8 +111,7 @@ describe("#601", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        WITH { fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { __resolveType: \\"CustomerContact\\", __id: id(this3) } } AS edge
-                        WITH collect(edge) AS edges
+                        WITH collect({ fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { __resolveType: \\"CustomerContact\\", __id: id(this3) } }) AS edges
                         RETURN edges AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5

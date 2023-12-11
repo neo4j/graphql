@@ -104,8 +104,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
-                        WITH collect(edge) AS edges
+                        WITH collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS edges
                         RETURN edges AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
@@ -191,8 +190,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
-                        WITH collect(edge) AS edges
+                        WITH collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS edges
                         RETURN edges AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3

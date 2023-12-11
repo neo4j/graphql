@@ -87,8 +87,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ screenTime: create_this2.screenTime, node: { name: create_this3.name } }) AS edges
                     RETURN edges AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
@@ -147,8 +146,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ screenTime: create_this2.screenTime, node: { name: create_this3.name } }) AS edges
                     RETURN edges AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
@@ -211,8 +209,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    WITH { screenTime: create_this2.screenTime, node: { name: create_this3.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ screenTime: create_this2.screenTime, node: { name: create_this3.name } }) AS edges
                     RETURN edges AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5

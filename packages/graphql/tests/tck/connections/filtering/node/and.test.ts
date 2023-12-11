@@ -81,8 +81,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
@@ -130,8 +129,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3

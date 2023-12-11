@@ -70,8 +70,7 @@ describe("Root Connection Query tests", () => {
                 WITH edges
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                WITH { node: { title: this0.title } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: { title: this0.title } }) AS edges
                 RETURN edges AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
@@ -110,8 +109,7 @@ describe("Root Connection Query tests", () => {
                 WITH *
                 ORDER BY this0.title ASC
                 LIMIT $param0
-                WITH { node: { title: this0.title } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: { title: this0.title } }) AS edges
                 RETURN edges AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
@@ -151,8 +149,7 @@ describe("Root Connection Query tests", () => {
                 WITH *
                 ORDER BY this0.title ASC
                 LIMIT $param1
-                WITH { node: { title: this0.title } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: { title: this0.title } }) AS edges
                 RETURN edges AS var1
             }
             RETURN { edges: var1, totalCount: totalCount } AS this"
@@ -208,14 +205,12 @@ describe("Root Connection Query tests", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        WITH { node: { name: this2.name } } AS edge
-                        WITH collect(edge) AS edges
+                        WITH collect({ node: { name: this2.name } }) AS edges
                         RETURN edges AS var3
                     }
                     RETURN { edges: var3, totalCount: totalCount } AS var4
                 }
-                WITH { node: { title: this0.title, actorsConnection: var4 } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: { title: this0.title, actorsConnection: var4 } }) AS edges
                 RETURN edges AS var5
             }
             RETURN { edges: var5, totalCount: totalCount } AS this"

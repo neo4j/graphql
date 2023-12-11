@@ -90,8 +90,7 @@ describe("Cypher Auth Projection On Connections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { node: { content: this1.content } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { content: this1.content } }) AS edges
                     RETURN edges AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4

@@ -76,8 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/4015", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { node: { surname: this1.surname, name: this1.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { surname: this1.surname, name: this1.name } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3

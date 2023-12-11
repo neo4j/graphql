@@ -423,8 +423,7 @@ describe("Cypher Create", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS create_this3, edge.relationship AS create_this2
-                            WITH { node: { name: create_this3.name } } AS edge
-                            WITH collect(edge) AS edges
+                            WITH collect({ node: { name: create_this3.name } }) AS edges
                             RETURN edges AS create_var4
                         }
                         RETURN { edges: create_var4, totalCount: totalCount } AS create_var5

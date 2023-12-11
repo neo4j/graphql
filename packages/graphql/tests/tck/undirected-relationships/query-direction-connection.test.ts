@@ -61,8 +61,7 @@ describe("QueryDirection in relationships connection", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { __resolveType: \\"User\\", __id: id(this1) } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
@@ -107,8 +106,7 @@ describe("QueryDirection in relationships connection", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { __resolveType: \\"User\\", __id: id(this1) } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
@@ -152,8 +150,7 @@ describe("QueryDirection in relationships connection", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH { node: { __resolveType: \\"User\\", __id: id(this1) } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { __resolveType: \\"User\\", __id: id(this1) } }) AS edges
                     RETURN edges AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3

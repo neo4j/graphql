@@ -108,18 +108,6 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
-    private addFiltersToClause(
-        clause: Cypher.With | Cypher.Match | Cypher.Yield,
-        context: QueryASTContext<Cypher.Node>
-    ): void {
-        const predicates = this.filters.map((f) => f.getPredicate(context));
-        const authPredicate = this.getAuthFilterPredicate(context);
-        const predicate = Cypher.and(...predicates, ...authPredicate);
-        if (predicate) {
-            clause.where(predicate);
-        }
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error();
 
@@ -162,7 +150,7 @@ export class ConnectionReadOperation extends Operation {
             edgeMap1.set("relationship", nestedContext.relationship);
         }
 
-        const withNodeAndTotalCount = new Cypher.With([Cypher.collect(edgeMap1), edgesVar]).with(edgesVar, [
+        const withCollectEdgesAndTotalCount = new Cypher.With([Cypher.collect(edgeMap1), edgesVar]).with(edgesVar, [
             Cypher.size(edgesVar),
             totalCount,
         ]);
@@ -182,7 +170,7 @@ export class ConnectionReadOperation extends Operation {
         }
 
         const edgeProjectionMap = this.createProjectionMapForEdge(nestedContext);
-        const withProjection = new Cypher.With([edgeProjectionMap, edgeVar]).with([Cypher.collect(edgeVar), edgesVar]);
+        const withProjection = new Cypher.With([Cypher.collect(edgeProjectionMap), edgesVar]);
 
         const paginationWith = this.generateSortAndPaginationClause(nestedContext);
 
@@ -205,18 +193,18 @@ export class ConnectionReadOperation extends Operation {
             context.returnVariable,
         ]);
 
-        const subClause = Cypher.concat(
-            ...extraMatches,
-            selectionClause,
-            ...authFilterSubqueries,
-            withWhere,
-            withNodeAndTotalCount,
-            unwindAndProjectionSubquery,
-            returnClause
-        );
-
         return {
-            clauses: [subClause],
+            clauses: [
+                Cypher.concat(
+                    ...extraMatches,
+                    selectionClause,
+                    ...authFilterSubqueries,
+                    withWhere,
+                    withCollectEdgesAndTotalCount,
+                    unwindAndProjectionSubquery,
+                    returnClause
+                ),
+            ],
             projectionExpr: context.returnVariable,
         };
     }
@@ -294,6 +282,18 @@ export class ConnectionReadOperation extends Operation {
                 edgeVar: context.relationship,
             });
             clause.orderBy(...sortFields);
+        }
+    }
+
+    private addFiltersToClause(
+        clause: Cypher.With | Cypher.Match | Cypher.Yield,
+        context: QueryASTContext<Cypher.Node>
+    ): void {
+        const predicates = this.filters.map((f) => f.getPredicate(context));
+        const authPredicate = this.getAuthFilterPredicate(context);
+        const predicate = Cypher.and(...predicates, ...authPredicate);
+        if (predicate) {
+            clause.where(predicate);
         }
     }
 

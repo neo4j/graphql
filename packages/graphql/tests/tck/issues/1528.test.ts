@@ -93,8 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     }
                     WITH *
                     ORDER BY this2 DESC
-                    WITH { node: { title: this1.title, actorsCount: this2 } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { title: this1.title, actorsCount: this2 } }) AS edges
                     RETURN edges AS var3
                 }
                 RETURN { edges: var3, totalCount: totalCount } AS var4

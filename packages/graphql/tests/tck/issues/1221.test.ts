@@ -107,14 +107,12 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this7, edge.relationship AS this6
-                            WITH { node: { fullName: this7.fullName } } AS edge
-                            WITH collect(edge) AS edges
+                            WITH collect({ node: { fullName: this7.fullName } }) AS edges
                             RETURN edges AS var8
                         }
                         RETURN { edges: var8, totalCount: totalCount } AS var9
                     }
-                    WITH { node: { nameDetailsConnection: var9 } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { nameDetailsConnection: var9 } }) AS edges
                     RETURN edges AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS var11
@@ -242,20 +240,17 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                                     WITH edges
                                     UNWIND edges AS edge
                                     WITH edge.node AS this11, edge.relationship AS this10
-                                    WITH { node: { fullName: this11.fullName } } AS edge
-                                    WITH collect(edge) AS edges
+                                    WITH collect({ node: { fullName: this11.fullName } }) AS edges
                                     RETURN edges AS var12
                                 }
                                 RETURN { edges: var12, totalCount: totalCount } AS var13
                             }
-                            WITH { node: { nameDetailsConnection: var13 } } AS edge
-                            WITH collect(edge) AS edges
+                            WITH collect({ node: { nameDetailsConnection: var13 } }) AS edges
                             RETURN edges AS var14
                         }
                         RETURN { edges: var14, totalCount: totalCount } AS var15
                     }
-                    WITH { node: { architectureConnection: var15 } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: { architectureConnection: var15 } }) AS edges
                     RETURN edges AS var16
                 }
                 RETURN { edges: var16, totalCount: totalCount } AS var17
