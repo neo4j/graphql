@@ -56,7 +56,7 @@
         "@types/is-uuid": "1.0.2",
         "@types/jest": "29.5.11",
         "@types/jsonwebtoken": "9.0.5",
-        "@types/node": "20.10.3",
+        "@types/node": "20.10.4",
         "@types/pluralize": "0.0.33",
         "@types/randomstring": "1.1.11",
         "@types/semver": "7.5.6",
@@ -73,7 +73,7 @@
         "koa": "2.14.2",
         "koa-jwt": "4.0.4",
         "koa-router": "12.0.1",
-        "libnpmsearch": "7.0.0",
+        "libnpmsearch": "7.0.1",
         "mock-jwks": "1.0.10",
         "nock": "13.4.0",
         "npm-run-all": "4.1.5",
@@ -81,9 +81,9 @@
         "rimraf": "5.0.5",
         "supertest": "6.3.3",
         "ts-jest": "29.1.1",
-        "ts-node": "10.9.1",
+        "ts-node": "10.9.2",
         "typescript": "5.1.6",
-        "ws": "8.14.2"
+        "ws": "8.15.0"
     },
     "dependencies": {
         "@apollo/subgraph": "^2.2.3",
