@@ -65,31 +65,6 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
         await driver.close();
     });
 
-    // MATCH (this:oJzvmvwxSystem)
-    // CALL {
-    //     WITH this
-    //     MATCH (this)<-[this0:UPDATED_BY]-(this1:GuBXKcPnGovernedData)
-    //     WITH { node: { code: this1.code } } AS edge
-    //     WITH collect(edge) AS edges
-    //     WITH edges, size(edges) AS totalCount
-    //     RETURN { edges: edges, totalCount: totalCount } AS var2
-    // }
-    // RETURN this { .code, updatesDataConnection: var2 } AS this
-
-    // MATCH (this:bsCwrZgmSystem)
-    // CALL {
-    //     WITH this
-    //     MATCH (this)<-[this0:UPDATED_BY]-(this1:RqkfUGLmGovernedData)
-    //     WITH collect({ relationship: this0, node: this1 }) AS edges
-    //     WITH edges, size(edges) AS totalCount
-    //     UNWIND edges AS edge
-    //     WITH edge.node AS this1, edge.relationship AS this0, totalCount
-    //     WITH { node: { code: this1.code } } AS edge, totalCount
-    //     WITH collect(edge) AS edges, totalCount
-    //     RETURN { edges: edges, totalCount: totalCount } AS var2
-    // }
-    // RETURN this { .code, updatesDataConnection: var2 } AS this
-
     test("should return top level entity, even if no connections exist", async () => {
         const query = `
             {
