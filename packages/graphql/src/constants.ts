@@ -105,6 +105,7 @@ export const FIELD_DIRECTIVES = [
     "jwtClaim",
     "populatedBy",
     "relationship",
+    "declareRelationship",
     "relayId",
     "subscriptionsAuthorization",
     "timestamp",
