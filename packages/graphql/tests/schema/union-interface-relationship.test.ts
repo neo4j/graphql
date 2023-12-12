@@ -38,15 +38,15 @@ describe("Union Interface Relationships", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         

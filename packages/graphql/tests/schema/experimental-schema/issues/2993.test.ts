@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")
             }
 
-            interface FOLLOWS @relationshipProperties {
+            type FOLLOWS @relationshipProperties {
                 since: DateTime! @timestamp(operations: [CREATE])
             }
         `;
@@ -465,7 +465,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")
             }
 
-            interface FOLLOWS @relationshipProperties {
+            type FOLLOWS @relationshipProperties {
                 since: DateTime! @timestamp(operations: [CREATE])
             }
         `;

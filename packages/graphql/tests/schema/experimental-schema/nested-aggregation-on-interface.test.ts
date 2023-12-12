@@ -22,7 +22,7 @@ describe("nested aggregation on interface", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -658,7 +658,7 @@ describe("nested aggregation on interface", () => {
               episodes: Int!
           }
 
-          interface ActedIn @relationshipProperties {
+          type ActedIn @relationshipProperties {
               screenTime: Int!
           }
 
