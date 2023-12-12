@@ -601,10 +601,8 @@ export class OperationsFactory {
         } else {
             selection = new NodeSelection({
                 target,
-                // alias: varName,
             });
         }
-        // Add selection here
         const operation = new ConnectionReadOperation({ relationship, directed, target, selection });
 
         return this.hydrateConnectionOperationAST({

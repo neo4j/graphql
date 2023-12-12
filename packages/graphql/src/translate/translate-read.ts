@@ -44,6 +44,4 @@ export function translateRead(
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);
     return clause.build();
-    // const clause = operationsTree.buildNew(context, varName);
-    // return clause.build();
 }
