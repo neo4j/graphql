@@ -196,30 +196,6 @@ export class ReadOperation extends Operation {
         return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
     }
 
-    protected getSelectionClauses(
-        context: QueryASTContext,
-        node: Cypher.Node | Cypher.Pattern
-    ): {
-        preSelection: Array<Cypher.Match | Cypher.With | Cypher.Yield>;
-        selectionClause: Cypher.Match | Cypher.With | Cypher.Yield;
-    } {
-        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
-
-        let extraMatches = this.getChildren().flatMap((f) => {
-            return f.getSelection(context);
-        });
-
-        if (extraMatches.length > 0) {
-            extraMatches = [matchClause, ...extraMatches];
-            matchClause = new Cypher.With("*");
-        }
-
-        return {
-            preSelection: extraMatches,
-            selectionClause: matchClause,
-        };
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (this.relationship) {
             return this.transpileNestedRelationship(this.relationship, context);
@@ -318,7 +294,7 @@ export class ReadOperation extends Operation {
 
         return {
             clauses: [clause],
-            projectionExpr: context.returnVariable, // this.getReturnExpression(nestedContext),
+            projectionExpr: context.returnVariable,
         };
     }
 
@@ -328,14 +304,6 @@ export class ReadOperation extends Operation {
             return new Cypher.Return([Cypher.collect(projection), returnVariable]);
         }
         return new Cypher.Return([projection, returnVariable]);
-    }
-
-    protected getReturnExpression(context: QueryASTContext): Cypher.Expr {
-        const projection = this.getProjectionMap(context);
-        if (context.shouldCollect) {
-            return Cypher.collect(projection);
-        }
-        return projection;
     }
 
     private hasCypherSort(): boolean {

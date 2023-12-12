@@ -26,35 +26,7 @@ describe("Cypher sort tests", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
-        // type Movie {
-        //     id: ID
-        //     title: String
-        //     genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
-        // totalGenres: Int!
-        //     @cypher(
-        //         statement: """
-        //         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-        //         RETURN count(DISTINCT genre) as result
-        //         """
-        //         columnName: "result"
-        //     )
-        // }
-
-        // type Genre {
-        //     id: ID
-        //     name: String
-        //     totalMovies: Int!
-        //         @cypher(
-        //             statement: """
-        //             MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-        //             RETURN count(DISTINCT movie) as result
-        //             """
-        //             columnName: "result"
-        //         )
-        // }
         typeDefs = `
-
-
             interface Production {
                 id: ID!
                 title: String!
