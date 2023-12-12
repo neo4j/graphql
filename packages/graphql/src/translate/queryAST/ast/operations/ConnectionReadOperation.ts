@@ -128,9 +128,13 @@ export class ConnectionReadOperation extends Operation {
         );
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
-        const edgesVar2 = new Cypher.Variable();
+        const edgesProjectionVar = new Cypher.Variable();
 
-        const unwindSubquery = this.getUnwindSubquery(nestedContext, edgesVar, edgesVar2);
+        const unwindAndProjectionSubquery = this.createUnwindAndProjectionSubquery(
+            nestedContext,
+            edgesVar,
+            edgesProjectionVar
+        );
 
         let withWhere: Cypher.With | undefined;
 
@@ -141,22 +145,22 @@ export class ConnectionReadOperation extends Operation {
             this.addFiltersToClause(selectionClause, nestedContext);
         }
 
-        const edgeMap1 = new Cypher.Map({
+        const nodeAndRelationshipMap = new Cypher.Map({
             node: nestedContext.target,
         });
 
         if (nestedContext.relationship) {
-            edgeMap1.set("relationship", nestedContext.relationship);
+            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        const withCollectEdgesAndTotalCount = new Cypher.With([Cypher.collect(edgeMap1), edgesVar]).with(edgesVar, [
-            Cypher.size(edgesVar),
-            totalCount,
-        ]);
+        const withCollectEdgesAndTotalCount = new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(
+            edgesVar,
+            [Cypher.size(edgesVar), totalCount]
+        );
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
-                edges: edgesVar2,
+                edges: edgesProjectionVar,
                 totalCount: totalCount,
             }),
             context.returnVariable,
@@ -170,7 +174,7 @@ export class ConnectionReadOperation extends Operation {
                     ...authFilterSubqueries,
                     withWhere,
                     withCollectEdgesAndTotalCount,
-                    unwindSubquery,
+                    unwindAndProjectionSubquery,
                     returnClause
                 ),
             ],
@@ -186,7 +190,7 @@ export class ConnectionReadOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    private getUnwindSubquery(
+    private createUnwindAndProjectionSubquery(
         context: QueryASTContext<Cypher.Node>,
         edgesVar: Cypher.Variable,
         returnVar: Cypher.Variable

@@ -93,13 +93,15 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
-            WITH { node: { id: this0.id } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { id: this0.id } }) AS var1
+            }
+            RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -136,13 +138,15 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE (this0.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
-            WITH { node: { id: this0.id } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { id: this0.id } }) AS var1
+            }
+            RETURN { edges: var1, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -183,24 +187,26 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
-                MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                WITH *, count(this3) AS creatorCount
-                WITH *
-                WITH *
-                WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
-                WITH this2 { .content } AS this2
-                RETURN collect(this2) AS var4
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                    WITH *, count(this3) AS creatorCount
+                    WITH *
+                    WITH *
+                    WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
+                    WITH this2 { .content } AS this2
+                    RETURN collect(this2) AS var4
+                }
+                RETURN collect({ node: { id: this0.id, posts: var4 } }) AS var5
             }
-            WITH { node: { id: this0.id, posts: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -244,25 +250,32 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
-                MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                WITH *, count(this3) AS creatorCount
-                WITH *
-                WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
-                WITH { node: { content: this2.content } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                    WITH *, count(this3) AS creatorCount
+                    WITH *
+                    WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { content: this2.content } }) AS var4
+                    }
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                }
+                RETURN collect({ node: { id: this0.id, postsConnection: var5 } }) AS var6
             }
-            WITH { node: { id: this0.id, postsConnection: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -306,25 +319,32 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
-                MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                WITH *, count(this3) AS creatorCount
-                WITH *
-                WHERE (this2.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
-                WITH { node: { content: this2.content } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                    WITH *, count(this3) AS creatorCount
+                    WITH *
+                    WHERE (this2.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { content: this2.content } }) AS var4
+                    }
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                }
+                RETURN collect({ node: { id: this0.id, postsConnection: var5 } }) AS var6
             }
-            WITH { node: { id: this0.id, postsConnection: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -365,24 +385,26 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
-                MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                WITH *, count(this3) AS creatorCount
-                WITH *
-                WITH *
-                WHERE (this2.content = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
-                WITH this2 { .content } AS this2
-                RETURN collect(this2) AS var4
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                    WITH *, count(this3) AS creatorCount
+                    WITH *
+                    WITH *
+                    WHERE (this2.content = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))))
+                    WITH this2 { .content } AS this2
+                    RETURN collect(this2) AS var4
+                }
+                RETURN collect({ node: { id: this0.id, posts: var4 } }) AS var5
             }
-            WITH { node: { id: this0.id, posts: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -425,28 +447,30 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
                 CALL {
-                    WITH *
-                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                    WITH *, count(this3) AS creatorCount
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
-                    WITH this2 { .id, __resolveType: \\"Post\\", __id: id(this2) } AS this2
-                    RETURN this2 AS var4
+                    WITH this0
+                    CALL {
+                        WITH *
+                        MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                        OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                        WITH *, count(this3) AS creatorCount
+                        WITH *
+                        WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
+                        WITH this2 { .id, __resolveType: \\"Post\\", __id: id(this2) } AS this2
+                        RETURN this2 AS var4
+                    }
+                    WITH var4
+                    RETURN collect(var4) AS var4
                 }
-                WITH var4
-                RETURN collect(var4) AS var4
+                RETURN collect({ node: { id: this0.id, content: var4 } }) AS var5
             }
-            WITH { node: { id: this0.id, content: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -492,29 +516,31 @@ describe("Connection auth filter", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
-            WITH collect(this0) AS edges
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this0
-            WITH this0, totalCount
             CALL {
-                WITH this0
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
                 CALL {
                     WITH this0
-                    MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                    OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
-                    WITH *, count(this3) AS creatorCount
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this0
+                        MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                        OPTIONAL MATCH (this2)<-[:HAS_POST]-(this3:User)
+                        WITH *, count(this3) AS creatorCount
+                        WITH *
+                        WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)))
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
+                        RETURN edge
+                    }
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN collect({ node: { id: this0.id, contentConnection: var4 } }) AS var5
             }
-            WITH { node: { id: this0.id, contentConnection: var4 } } AS edge, totalCount, this0
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -530,7 +556,7 @@ describe("Connection auth filter", () => {
         `);
     });
 
-    test.only("Read Union Using Connection + User Defined Where", async () => {
+    test("Read Union Using Connection + User Defined Where", async () => {
         const query = gql`
             {
                 usersConnection {
