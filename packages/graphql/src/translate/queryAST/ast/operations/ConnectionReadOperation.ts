@@ -126,8 +126,11 @@ export class ConnectionReadOperation extends Operation {
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
             new Cypher.Call(sq).innerWith(nestedContext.target)
         );
+        const edgesVar = new Cypher.NamedVariable("edges");
+        const totalCount = new Cypher.NamedVariable("totalCount");
+        const edgesVar2 = new Cypher.Variable();
 
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
+        const unwindSubquery = this.getUnwindSubquery(nestedContext, edgesVar, edgesVar2);
 
         let withWhere: Cypher.With | undefined;
 
@@ -137,10 +140,6 @@ export class ConnectionReadOperation extends Operation {
         } else {
             this.addFiltersToClause(selectionClause, nestedContext);
         }
-
-        const edgeVar = new Cypher.NamedVariable("edge");
-        const edgesVar = new Cypher.NamedVariable("edges");
-        const totalCount = new Cypher.NamedVariable("totalCount");
 
         const edgeMap1 = new Cypher.Map({
             node: nestedContext.target,
@@ -154,36 +153,6 @@ export class ConnectionReadOperation extends Operation {
             Cypher.size(edgesVar),
             totalCount,
         ]);
-
-        const edgesVar2 = new Cypher.Variable();
-        let unwindClause: Cypher.With;
-        if (nestedContext.relationship) {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
-                [edgeVar.property("node"), nestedContext.target],
-                [edgeVar.property("relationship"), nestedContext.relationship]
-            );
-        } else {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([
-                edgeVar.property("node"),
-                nestedContext.target,
-            ]);
-        }
-
-        const edgeProjectionMap = this.createProjectionMapForEdge(nestedContext);
-        const withProjection = new Cypher.With([Cypher.collect(edgeProjectionMap), edgesVar]);
-
-        const paginationWith = this.generateSortAndPaginationClause(nestedContext);
-
-        const unwindAndProjectionSubquery = new Cypher.Call(
-            Cypher.concat(
-                unwindClause,
-                ...prePaginationSubqueries,
-                paginationWith,
-                ...postPaginationSubqueries,
-                withProjection,
-                new Cypher.Return([edgesVar, edgesVar2])
-            )
-        ).innerWith(edgesVar);
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
@@ -201,7 +170,7 @@ export class ConnectionReadOperation extends Operation {
                     ...authFilterSubqueries,
                     withWhere,
                     withCollectEdgesAndTotalCount,
-                    unwindAndProjectionSubquery,
+                    unwindSubquery,
                     returnClause
                 ),
             ],
@@ -215,6 +184,39 @@ export class ConnectionReadOperation extends Operation {
 
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    private getUnwindSubquery(
+        context: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        returnVar: Cypher.Variable
+    ) {
+        const edgeVar = new Cypher.NamedVariable("edge");
+        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
+
+        let unwindClause: Cypher.With;
+        if (context.relationship) {
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
+                [edgeVar.property("node"), context.target],
+                [edgeVar.property("relationship"), context.relationship]
+            );
+        } else {
+            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
+        }
+
+        const edgeProjectionMap = this.createProjectionMapForEdge(context);
+
+        const paginationWith = this.generateSortAndPaginationClause(context);
+
+        return new Cypher.Call(
+            Cypher.concat(
+                unwindClause,
+                ...prePaginationSubqueries,
+                paginationWith,
+                ...postPaginationSubqueries,
+                new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
+            )
+        ).innerWith(edgesVar);
     }
 
     private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {

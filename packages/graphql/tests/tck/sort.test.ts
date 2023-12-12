@@ -482,13 +482,11 @@ describe("Cypher sort tests", () => {
                             UNWIND sum AS this4
                             RETURN head(collect(this4)) AS this4
                         }
-                        WITH collect({ node: { name: this3.name, totalScreenTime: this4 } }) AS edges
-                        RETURN edges AS var5
+                        RETURN collect({ node: { name: this3.name, totalScreenTime: this4 } }) AS var5
                     }
                     RETURN { edges: var5, totalCount: totalCount } AS var6
                 }
-                WITH collect({ node: { title: this0.title, actorsConnection: var6 } }) AS edges
-                RETURN edges AS var7
+                RETURN collect({ node: { title: this0.title, actorsConnection: var6 } }) AS var7
             }
             RETURN { edges: var7, totalCount: totalCount } AS this"
         `);
@@ -577,13 +575,11 @@ describe("Cypher sort tests", () => {
                                 UNWIND sum AS this5
                                 RETURN head(collect(this5)) AS this5
                             }
-                            WITH collect({ node: { name: this4.name, totalScreenTime: this5 } }) AS edges
-                            RETURN edges AS var6
+                            RETURN collect({ node: { name: this4.name, totalScreenTime: this5 } }) AS var6
                         }
                         RETURN { edges: var6, totalCount: totalCount } AS var7
                     }
-                    WITH collect({ node: { title: this1.title, actorsConnection: var7 } }) AS edges
-                    RETURN edges AS var8
+                    RETURN collect({ node: { title: this1.title, actorsConnection: var7 } }) AS var8
                 }
                 RETURN { edges: var8, totalCount: totalCount } AS var9
             }

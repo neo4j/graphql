@@ -80,8 +80,7 @@ describe("Relationship Properties Cypher", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -127,8 +126,7 @@ describe("Relationship Properties Cypher", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -176,8 +174,7 @@ describe("Relationship Properties Cypher", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     ORDER BY this0.screenTime DESC
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -222,8 +219,7 @@ describe("Relationship Properties Cypher", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     ORDER BY this0.year DESC, this1.name ASC
-                    WITH collect({ year: this0.year, node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ year: this0.year, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -263,8 +259,7 @@ describe("Relationship Properties Cypher", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     ORDER BY this1.name ASC, this0.year DESC
-                    WITH collect({ year: this0.year, node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ year: this0.year, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -322,13 +317,11 @@ describe("Relationship Properties Cypher", () => {
                             WITH edges
                             UNWIND edges AS edge
                             WITH edge.node AS this3, edge.relationship AS this2
-                            WITH collect({ screenTime: this2.screenTime, node: { title: this3.title } }) AS edges
-                            RETURN edges AS var4
+                            RETURN collect({ screenTime: this2.screenTime, node: { title: this3.title } }) AS var4
                         }
                         RETURN { edges: var4, totalCount: totalCount } AS var5
                     }
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var5 } }) AS edges
-                    RETURN edges AS var6
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var5 } }) AS var6
                 }
                 RETURN { edges: var6, totalCount: totalCount } AS var7
             }
@@ -407,18 +400,15 @@ describe("Relationship Properties Cypher", () => {
                                     WITH edges
                                     UNWIND edges AS edge
                                     WITH edge.node AS this5, edge.relationship AS this4
-                                    WITH collect({ screenTime: this4.screenTime, node: { name: this5.name } }) AS edges
-                                    RETURN edges AS var6
+                                    RETURN collect({ screenTime: this4.screenTime, node: { name: this5.name } }) AS var6
                                 }
                                 RETURN { edges: var6, totalCount: totalCount } AS var7
                             }
-                            WITH collect({ screenTime: this2.screenTime, node: { title: this3.title, actorsConnection: var7 } }) AS edges
-                            RETURN edges AS var8
+                            RETURN collect({ screenTime: this2.screenTime, node: { title: this3.title, actorsConnection: var7 } }) AS var8
                         }
                         RETURN { edges: var8, totalCount: totalCount } AS var9
                     }
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var9 } }) AS edges
-                    RETURN edges AS var10
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var9 } }) AS var10
                 }
                 RETURN { edges: var10, totalCount: totalCount } AS var11
             }

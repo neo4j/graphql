@@ -113,8 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     UNWIND result AS this1
                     RETURN head(collect(this1)) AS this1
                 }
-                WITH collect({ node: { title: this0.title, totalGenres: this1 } }) AS edges
-                RETURN edges AS var2
+                RETURN collect({ node: { title: this0.title, totalGenres: this1 } }) AS var2
             }
             RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
@@ -157,8 +156,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 }
                 WITH *
                 ORDER BY this1 ASC
-                WITH collect({ node: { title: this0.title, totalGenres: this1 } }) AS edges
-                RETURN edges AS var2
+                RETURN collect({ node: { title: this0.title, totalGenres: this1 } }) AS var2
             }
             RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
@@ -213,8 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     UNWIND result AS this2
                     RETURN head(collect(this2)) AS this2
                 }
-                WITH collect({ node: { title: this0.title, totalGenres: this1, totalActors: this2 } }) AS edges
-                RETURN edges AS var3
+                RETURN collect({ node: { title: this0.title, totalGenres: this1, totalActors: this2 } }) AS var3
             }
             RETURN { edges: var3, totalCount: totalCount } AS this"
         `);

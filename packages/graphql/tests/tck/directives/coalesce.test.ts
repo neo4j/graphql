@@ -221,8 +221,7 @@ describe("Cypher coalesce()", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ node: { id: this1.id, status: this1.status } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { id: this1.id, status: this1.status } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -285,8 +284,7 @@ describe("Cypher coalesce()", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ node: { id: this1.id, statuses: this1.statuses } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { id: this1.id, statuses: this1.statuses } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

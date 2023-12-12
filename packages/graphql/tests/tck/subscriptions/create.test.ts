@@ -128,8 +128,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        WITH collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS edges
-                        RETURN edges AS create_var2
+                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -217,8 +216,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        WITH collect({ node: { name: create_this1.name } }) AS edges
-                        RETURN edges AS create_var2
+                        RETURN collect({ node: { name: create_this1.name } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -331,8 +329,7 @@ describe("Subscriptions metadata on create", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        WITH collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS edges
-                        RETURN edges AS create_var2
+                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }

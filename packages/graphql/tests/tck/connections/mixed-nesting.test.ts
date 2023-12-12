@@ -90,8 +90,7 @@ describe("Mixed nesting", () => {
                         WITH this3 { .title } AS this3
                         RETURN collect(this3) AS var4
                     }
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } }) AS edges
-                    RETURN edges AS var5
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, movies: var4 } }) AS var5
                 }
                 RETURN { edges: var5, totalCount: totalCount } AS var6
             }
@@ -166,13 +165,11 @@ describe("Mixed nesting", () => {
                                 WITH this5 { .name } AS this5
                                 RETURN collect(this5) AS var6
                             }
-                            WITH collect({ node: { title: this3.title, actors: var6 } }) AS edges
-                            RETURN edges AS var7
+                            RETURN collect({ node: { title: this3.title, actors: var6 } }) AS var7
                         }
                         RETURN { edges: var7, totalCount: totalCount } AS var8
                     }
-                    WITH collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var8 } }) AS edges
-                    RETURN edges AS var9
+                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, moviesConnection: var8 } }) AS var9
                 }
                 RETURN { edges: var9, totalCount: totalCount } AS var10
             }
@@ -228,8 +225,7 @@ describe("Mixed nesting", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
-                        WITH collect({ screenTime: this2.screenTime, node: { title: this3.title } }) AS edges
-                        RETURN edges AS var4
+                        RETURN collect({ screenTime: this2.screenTime, node: { title: this3.title } }) AS var4
                     }
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }

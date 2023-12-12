@@ -77,8 +77,7 @@ describe("Relay Cursor Connection projections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -123,8 +122,7 @@ describe("Relay Cursor Connection projections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -166,8 +164,7 @@ describe("Relay Cursor Connection projections", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     LIMIT $param1
-                    WITH collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -309,8 +306,7 @@ describe("Relay Cursor Connection projections", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    WITH collect({ node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -357,8 +353,7 @@ describe("Relay Cursor Connection projections", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
                     LIMIT $param1
-                    WITH collect({ node: { name: this1.name } }) AS edges
-                    RETURN edges AS var2
+                    RETURN collect({ node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

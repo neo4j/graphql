@@ -122,8 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                     WITH edge.node AS this0
                     WITH *
                     ORDER BY this0.fg_item DESC
-                    WITH collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description } }) AS edges
-                    RETURN edges AS var1
+                    RETURN collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description } }) AS var1
                 }
                 RETURN { edges: var1, totalCount: totalCount } AS this"
             `);
@@ -163,8 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         ORDER BY this1.fg_item DESC
-                        WITH collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } }) AS edges
-                        RETURN edges AS var2
+                        RETURN collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }

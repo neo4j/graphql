@@ -214,8 +214,7 @@ describe("tck/rfcs/query-limits", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         LIMIT $param1
-                        WITH collect({ node: { id: this1.id } }) AS edges
-                        RETURN edges AS var2
+                        RETURN collect({ node: { id: this1.id } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
@@ -269,8 +268,7 @@ describe("tck/rfcs/query-limits", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         LIMIT $param1
-                        WITH collect({ node: { id: this1.id } }) AS edges
-                        RETURN edges AS var2
+                        RETURN collect({ node: { id: this1.id } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
@@ -322,8 +320,7 @@ describe("tck/rfcs/query-limits", () => {
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
                         LIMIT $param0
-                        WITH collect({ node: { id: this1.id } }) AS edges
-                        RETURN edges AS var2
+                        RETURN collect({ node: { id: this1.id } }) AS var2
                     }
                     RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
