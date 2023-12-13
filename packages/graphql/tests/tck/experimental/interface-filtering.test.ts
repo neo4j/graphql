@@ -89,7 +89,8 @@ describe("Interface top level operations", () => {
                 WITH this1 { .title, __resolveType: \\"Series\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -66,17 +66,18 @@ describe("Union top level operations", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL {
-                    MATCH (this0:Genre)
-                    WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
-                    RETURN this0 AS this
-                    UNION
-                    MATCH (this1:Movie)
-                    WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
-                    RETURN this1 AS this
-                }
-                RETURN this"
-            `);
+            "CALL {
+                MATCH (this0:Genre)
+                WITH this0 { .name, __resolveType: \\"Genre\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:Movie)
+                WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
+            }
+            WITH this
+            RETURN this AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -129,7 +130,8 @@ describe("Union top level operations", () => {
                 WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -184,7 +186,8 @@ describe("Union top level operations", () => {
                 WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -239,7 +242,8 @@ describe("Union top level operations", () => {
                 WITH this0 { .title, search: var3, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -297,7 +301,8 @@ describe("Union top level operations", () => {
                 WITH this0 { .title, search: var5, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -363,9 +368,10 @@ describe("Union top level operations", () => {
                 WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this
+            WITH this
             SKIP $param3
-            LIMIT $param4"
+            LIMIT $param4
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

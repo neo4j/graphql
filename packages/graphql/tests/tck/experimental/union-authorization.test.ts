@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Union top level operations with authorization", () => {
     const secret = "secret";
@@ -81,7 +81,8 @@ describe("Union top level operations with authorization", () => {
                 WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -145,7 +146,8 @@ describe("Union top level operations with authorization", () => {
                 WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -210,7 +212,8 @@ describe("Union top level operations with authorization", () => {
                 WITH this1 { .title, search: var4, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -271,7 +274,8 @@ describe("Union top level operations with authorization", () => {
                 WITH this0 { .title, search: var3, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -335,7 +339,8 @@ describe("Union top level operations with authorization", () => {
                 WITH this0 { .title, search: var5, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

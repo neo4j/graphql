@@ -18,12 +18,12 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
+import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { CypherAnnotationSubqueryGenerator } from "../../cypher-generators/CypherAnnotationSubqueryGenerator";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
 import type { SortField } from "./Sort";
 import { Sort } from "./Sort";
-import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { QueryASTContext } from "../QueryASTContext";
-import { CypherAnnotationSubqueryGenerator } from "../../cypher-generators/CypherAnnotationSubqueryGenerator";
 
 export class CypherPropertySort extends Sort {
     private attribute: AttributeAdapter;
@@ -49,17 +49,9 @@ export class CypherPropertySort extends Sort {
 
     public getSortFields(
         context: QueryASTContext,
-        variable: Cypher.Variable | Cypher.Property,
-        sortByDatabaseName = true
+        _variable: Cypher.Variable | Cypher.Property,
+        _sortByDatabaseName = true
     ): SortField[] {
-        const isNested = context.source;
-        if (isNested) {
-            const attributeName = sortByDatabaseName ? this.attribute.databaseName : this.attribute.name;
-
-            const nodeProperty = variable.property(attributeName);
-            return [[nodeProperty, this.direction]];
-        }
-
         const projectionVar = context.getScopeVariable(this.attribute.name);
         return [[projectionVar, this.direction]];
     }
