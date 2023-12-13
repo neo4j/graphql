@@ -3518,21 +3518,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:2.0.9, @neo4j-ndl/base@npm:^2.0.9":
-  version: 2.0.9
-  resolution: "@neo4j-ndl/base@npm:2.0.9"
-  checksum: dd37b74d83f505cf4032a5f9cd745b2d2f9df72862cbbfcbcc0d91b6060c531df68268d3288c3e5d2447c577331971e6a76754a24c289ae4b06af6b1c5f5cd59
+"@neo4j-ndl/base@npm:2.1.0, @neo4j-ndl/base@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@neo4j-ndl/base@npm:2.1.0"
+  checksum: 9ca490e7af2738c782acc4f7ba4d2cc1627a20f622fbb617df7ef681b23ac5ddd4155c09185fd40b688b56b07c42ee5e73971764408026906786ba2980146ab1
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:2.0.18":
-  version: 2.0.18
-  resolution: "@neo4j-ndl/react@npm:2.0.18"
+"@neo4j-ndl/react@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@neo4j-ndl/react@npm:2.1.0"
   dependencies:
     "@floating-ui/react": 0.25.1
     "@heroicons/react": 2.0.13
     "@neo4j-cypher/react-codemirror": ^1.0.1
-    "@neo4j-ndl/base": ^2.0.9
+    "@neo4j-ndl/base": ^2.1.0
     "@table-nav/core": 0.0.7
     "@table-nav/react": 0.0.7
     "@tanstack/react-table": ^8.9.3
@@ -3549,10 +3549,11 @@ __metadata:
     react-table: ^7.7.0
     react-use: ^17.4.0
     tinycolor2: ^1.4.2
+    usehooks-ts: 2.9.1
   peerDependencies:
     "@heroicons/react": 2.0.13
     react: ">=16.8.0"
-  checksum: af5507f02c38c3fe28de9acc1fdba1c95f01190417823f7de6a0770bf93596e1ed032c4b5bfdf29659bc32d8081dc8de54401e9882dc0370f9979db92a5f06b8
+  checksum: 06ef1dd3e3e8fb83672293b4ba3df2c40a4496c282074a8fab46b1d080930e5de09f49defc2bc5bd4cd5592a96c5a9ee2dfa74d2d7009ba499b674a46af0a76d
   languageName: node
   linkType: hard
 
@@ -3634,8 +3635,8 @@ __metadata:
     "@dnd-kit/modifiers": 7.0.0
     "@dnd-kit/sortable": 8.0.0
     "@graphiql/react": 0.20.2
-    "@neo4j-ndl/base": 2.0.9
-    "@neo4j-ndl/react": 2.0.18
+    "@neo4j-ndl/base": 2.1.0
+    "@neo4j-ndl/react": 2.1.0
     "@neo4j/graphql": 4.4.4
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.40.1
@@ -26028,6 +26029,16 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 5c639e0f8da3521d605f59ce5be9e094ca772bd44a4ce7322b055a6f58eeed8dda3c94cabd90c7a41fb6fa852210092008afe48f7038792fd47501f33299116a
+  languageName: node
+  linkType: hard
+
+"usehooks-ts@npm:2.9.1":
+  version: 2.9.1
+  resolution: "usehooks-ts@npm:2.9.1"
+  peerDependencies:
+    react: ^16.8.0  || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0  || ^17.0.0 || ^18.0.0
+  checksum: 36f1e4142ce23bc019b81d2e93aefd7f2c350abcf255598c21627114a69a2f2f116b35dc3a353375f09c6e4c9b704a04f104e3d10e98280545c097feca66c30a
   languageName: node
   linkType: hard
 
