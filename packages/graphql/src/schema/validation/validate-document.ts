@@ -65,6 +65,7 @@ import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/auth
 import { WarnIfListOfListsFieldDefinition } from "./custom-rules/warnings/list-of-lists";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 import { WarnIfExperimentalMode } from "./custom-rules/warnings/experimental-mode";
+import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
@@ -204,6 +205,7 @@ function runValidationRulesOnFilteredDocument({
             ValidJwtDirectives,
             ValidRelayID,
             ValidRelationshipProperties,
+            ValidRelationshipDeclaration,
             ValidFieldTypes,
             ReservedTypeNames,
             ValidObjectType,
