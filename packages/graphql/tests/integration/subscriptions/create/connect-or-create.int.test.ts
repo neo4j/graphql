@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
 import type { Driver, Integer, Session } from "neo4j-driver";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src";
-import { getQuerySource } from "../../../utils/get-query-source";
-import { UniqueType } from "../../../utils/graphql-types";
 import type { Neo4jGraphQLSubscriptionsEngine } from "../../../../src/types";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
+import { getQuerySource } from "../../../utils/get-query-source";
+import { UniqueType } from "../../../utils/graphql-types";
+import Neo4j from "../../neo4j";
 
 describe("Create -> ConnectOrCreate", () => {
     let driver: Driver;
@@ -56,7 +56,7 @@ describe("Create -> ConnectOrCreate", () => {
             ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screentime: Int
         }
         `;

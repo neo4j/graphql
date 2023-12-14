@@ -89,6 +89,7 @@ export function verifyRelationshipArgumentValue(
             if (!extra) {
                 throw new Error("Missing data: Enums, Interfaces, Unions.");
             }
+
             const relationshipPropertiesInterface = extra.objects.filter(
                 (i) =>
                     i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
@@ -97,13 +98,13 @@ export function verifyRelationshipArgumentValue(
 
             if (relationshipPropertiesInterface.length > 1) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. Cannot have more than 1 interface represent the relationship properties.`,
+                    `@relationship.properties invalid. Cannot have more than 1 type represent the relationship properties.`,
                     ["properties"]
                 );
             }
             if (!relationshipPropertiesInterface.length) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. Cannot find interface to represent the relationship properties: ${propertiesValue}.`,
+                    `@relationship.properties invalid. Cannot find type to represent the relationship properties: ${propertiesValue}.`,
                     ["properties"]
                 );
             }
@@ -113,7 +114,7 @@ export function verifyRelationshipArgumentValue(
 
             if (!isRelationshipPropertiesInterfaceAnnotated) {
                 throw new DocumentValidationError(
-                    `@relationship.properties invalid. Properties interface ${propertiesValue} must use directive \`@relationshipProperties\`.`,
+                    `@relationship.properties invalid. Properties type ${propertiesValue} must use directive \`@relationshipProperties\`.`,
                     ["properties"]
                 );
             }

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("Enum Relationship Properties", () => {
     let driver: Driver;
@@ -60,7 +60,7 @@ describe("Enum Relationship Properties", () => {
                 SUPPORTING
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;

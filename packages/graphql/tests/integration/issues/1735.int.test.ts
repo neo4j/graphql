@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
         const typeDefs = `
-          interface MovieActorEdgeProperties @relationshipProperties {
+          type MovieActorEdgeProperties @relationshipProperties {
             isLead: Boolean
           }
 

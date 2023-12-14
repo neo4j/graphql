@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../../../../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../../../src/classes";
-import { UniqueType } from "../../../../../utils/graphql-types";
 import { cleanNodes } from "../../../../../utils/clean-nodes";
+import { UniqueType } from "../../../../../utils/graphql-types";
+import Neo4j from "../../../../neo4j";
 
 describe("Disconnect using aggregate where", () => {
     let driver: Driver;
@@ -63,7 +63,7 @@ describe("Disconnect using aggregate where", () => {
                 likes: [${userType.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} @relationshipProperties {
+            type ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;
@@ -315,7 +315,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                 likes: [${userUnion.name}!]! @relationship(type: "LIKES", direction: IN, properties: "${likeInterface.name}")
             }
 
-            interface ${likeInterface.name} @relationshipProperties {
+            type ${likeInterface.name} @relationshipProperties {
                 likedAt: DateTime
             }
         `;

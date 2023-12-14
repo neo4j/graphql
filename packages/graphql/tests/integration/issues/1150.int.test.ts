@@ -21,9 +21,9 @@ import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
             }
 
-            interface RelationProps @relationshipProperties {
+            type RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
