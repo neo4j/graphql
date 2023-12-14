@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2803", () => {
     let neoSchema: Neo4jGraphQL;
@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             name: String
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
             roles: [String!]!
         }

@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2249", () => {
     let typeDefs: DocumentNode;
@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
             }
 
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
 

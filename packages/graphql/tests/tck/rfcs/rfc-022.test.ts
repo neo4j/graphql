@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("tck/rfs/022 subquery projection", () => {
     let typeDefs: DocumentNode;
@@ -43,7 +43,7 @@ describe("tck/rfs/022 subquery projection", () => {
                     directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     year: Int
                 }
             `;
@@ -164,7 +164,7 @@ describe("tck/rfs/022 subquery projection", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     year: Int
                 }
             `;

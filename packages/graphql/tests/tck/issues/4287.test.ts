@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             name: String
             actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "actedIn", direction: OUT)
         }
-        interface actedIn @relationshipProperties {
+        type actedIn @relationshipProperties {
             role: String
         }
         interface Production {

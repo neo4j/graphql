@@ -19,8 +19,8 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 import { createBearerToken } from "../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Arrays Methods", () => {
     test("push", async () => {
@@ -454,7 +454,7 @@ describe("Arrays Methods", () => {
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -549,7 +549,7 @@ describe("Arrays Methods", () => {
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
