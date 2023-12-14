@@ -19,15 +19,12 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { driver, type Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 import { createBearerToken } from "../../utils/create-bearer-token";
-import { response } from "express";
-import { schema } from "../../e2e/federation/apollo-federation-subgraph-compatibility/subgraphs/inventory";
-import { typeDefs } from "../../performance/typedefs";
 
 describe("typename_IN with auth", () => {
     let schema: GraphQLSchema;
