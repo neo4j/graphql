@@ -260,45 +260,9 @@ export class FilterFactory {
                     return typenameFilter;
                 }
 
-                const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
+                const { fieldName, operator, isNot } = parseWhereField(key);
 
-                let relationship: RelationshipAdapter | undefined;
-               /*  if (isConcreteEntity(entity)) {
-                    // TODO: Check this path;
-                    throw new Error("Cannot query relationships on concrete entities");
-                    //relationship = entity.findRelationship(fieldName);
-                } */
-
-                if (isConnection) {
-                    if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
-                    if (operator && !isRelationshipOperator(operator)) {
-                        throw new Error(`Invalid operator ${operator} for relationship`);
-                    }
-
-                    const connectionFilters = this.createConnectionFilter(relationship, value as ConnectionWhereArg, {
-                        isNot,
-                        operator,
-                    });
-                    return this.wrapMultipleFiltersInLogical(connectionFilters)[0];
-                }
-                if (isAggregate) {
-                    if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
-
-                    return this.createAggregationFilter(value as AggregateWhereInput, relationship);
-                }
-
-                if (relationship) {
-                    if (operator && !isRelationshipOperator(operator)) {
-                        throw new Error(`Invalid operator ${operator} for relationship`);
-                    }
-
-                    return this.createRelationshipFilter(value as GraphQLWhereArg, relationship, {
-                        isNot,
-                        operator,
-                    });
-                }
-
-                const attr = !isUnionEntity(entity) ? entity.findAttribute(fieldName) : undefined;
+                const attr = entity.findAttribute(fieldName);
 
                 if (fieldName === "id" && !attr && !isUnionEntity(entity)) {
                     const relayAttribute = entity.globalIdField;
@@ -612,7 +576,6 @@ export class FilterFactory {
         for (const concreteEntity of concreteEntities) {
             const concreteEntityWhere: Record<string, any> = where[concreteEntity.name];
             if (concreteEntityWhere) {
-           
                 const concreteEntityFilters = this.createNodeFilters(entity, concreteEntityWhere);
                 nodeFilters.push(...concreteEntityFilters);
             }
