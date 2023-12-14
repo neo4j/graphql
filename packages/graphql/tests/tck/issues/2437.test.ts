@@ -86,18 +86,17 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
                 WITH this
                 MATCH (this)-[this0:IS_VALUATION_AGENT]->(this1:Valuation)
                 WHERE ($isAuthenticated = true AND this1.archivedAt IS NULL)
-                WITH { node: { uuid: this1.uuid } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
                     WITH edges
                     UNWIND edges AS edge
-                    WITH edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH *
                     LIMIT $param2
-                    RETURN collect(edge) AS var2
+                    RETURN collect({ node: { uuid: this1.uuid } }) AS var2
                 }
-                WITH var2 AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             RETURN this { .uuid, valuationsConnection: var3 } AS this"
         `);

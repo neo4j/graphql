@@ -77,25 +77,32 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
-            WITH *
-            ORDER BY this.title ASC
-            LIMIT $param0
             CALL {
-                WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH { node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                WITH *
+                ORDER BY this0.title ASC
+                LIMIT $param0
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH collect({ node: this2, relationship: this1 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this2, edge.relationship AS this1
+                        RETURN collect({ node: { name: this2.name } }) AS var3
+                    }
+                    RETURN { edges: var3, totalCount: totalCount } AS var4
+                }
+                RETURN collect({ node: { title: this0.title, actorsConnection: var4 } }) AS var5
             }
-            WITH { node: this { .title, actorsConnection: var2 } } AS edge, totalCount, this
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var5, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -131,35 +138,42 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WITH collect(this) AS edges
+            "MATCH (this0:Movie)
+            WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            UNWIND edges AS this
-            WITH this, totalCount
             CALL {
-                WITH this
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
                 CALL {
-                    WITH this
-                    WITH this AS this
-                    MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+                    WITH this0
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+                    }
+                    UNWIND count AS this1
+                    RETURN head(collect(this1)) AS this1
                 }
-                UNWIND count AS this0
-                RETURN head(collect(this0)) AS this0
+                WITH *
+                ORDER BY this0.title DESC, this1 ASC
+                LIMIT $param0
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[this2:ACTED_IN]-(this3:Actor)
+                    WITH collect({ node: this3, relationship: this2 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this3, edge.relationship AS this2
+                        RETURN collect({ node: { name: this3.name } }) AS var4
+                    }
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                }
+                RETURN collect({ node: { title: this0.title, actorsConnection: var5 } }) AS var6
             }
-            WITH *
-            ORDER BY this.title DESC, this0 ASC
-            LIMIT $param0
-            CALL {
-                WITH this
-                MATCH (this)<-[this1:ACTED_IN]-(this2:Actor)
-                WITH { node: { name: this2.name } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
-            }
-            WITH { node: this { .title, actorsConnection: var3, numberOfActors: this0 } } AS edge, totalCount, this
-            WITH collect(edge) AS edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN { edges: var6, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -18,7 +18,6 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateAggregate } from "../../../translate";
@@ -30,7 +29,6 @@ import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-
 export function aggregateResolver({
     concreteEntityAdapter,
 }: {
-    node?: Node;
     concreteEntityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }) {
     async function resolve(_root: any, _args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {

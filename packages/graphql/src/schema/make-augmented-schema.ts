@@ -357,7 +357,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isAggregable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                    node,
                     concreteEntityAdapter,
                 }),
             });

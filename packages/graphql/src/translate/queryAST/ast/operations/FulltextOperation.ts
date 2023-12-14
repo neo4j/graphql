@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
@@ -26,6 +26,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { FulltextScoreField } from "../fields/FulltextScoreField";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { ReadOperation } from "./ReadOperation";
+import type { OperationTranspileResult } from "./operations";
 
 export type FulltextOptions = {
     index: string;
@@ -57,6 +58,24 @@ export class FulltextOperation extends ReadOperation {
         });
 
         this.scoreField = scoreField;
+    }
+
+    public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
+        const { clauses, projectionExpr } = super.transpile(context);
+
+        const extraProjectionColumns: Array<[Cypher.Expr, Cypher.Variable]> = [];
+
+        if (this.scoreField) {
+            const scoreProjection = this.scoreField.getProjectionField(context.returnVariable);
+
+            extraProjectionColumns.push([scoreProjection.score, new Cypher.NamedVariable("score")]);
+        }
+
+        return {
+            clauses,
+            projectionExpr,
+            extraProjectionColumns,
+        };
     }
 
     public getChildren(): QueryASTNode[] {

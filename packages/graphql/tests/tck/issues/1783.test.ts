@@ -126,30 +126,45 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 WITH this
                 MATCH (this)-[this6:HAS_NAME]->(this7:NameDetails)
                 WHERE this6.current = $param6
-                WITH { node: { fullName: this7.fullName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this7, relationship: this6 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var8
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this7, edge.relationship AS this6
+                    RETURN collect({ node: { fullName: this7.fullName } }) AS var8
+                }
+                RETURN { edges: var8, totalCount: totalCount } AS var9
             }
             CALL {
                 WITH this
-                MATCH (this)-[this9:ARCHITECTURE]->(this10:MasterData)
-                WHERE this9.current = $param7
-                CALL {
-                    WITH this10
-                    MATCH (this10)-[this11:HAS_NAME]->(this12:NameDetails)
-                    WHERE this11.current = $param8
-                    WITH { node: { fullName: this12.fullName } } AS edge
-                    WITH collect(edge) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var13
-                }
-                WITH { node: { nameDetailsConnection: var13 } } AS edge
-                WITH collect(edge) AS edges
+                MATCH (this)-[this10:ARCHITECTURE]->(this11:MasterData)
+                WHERE this10.current = $param7
+                WITH collect({ node: this11, relationship: this10 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var14
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this11, edge.relationship AS this10
+                    CALL {
+                        WITH this11
+                        MATCH (this11)-[this12:HAS_NAME]->(this13:NameDetails)
+                        WHERE this12.current = $param8
+                        WITH collect({ node: this13, relationship: this12 }) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge.node AS this13, edge.relationship AS this12
+                            RETURN collect({ node: { fullName: this13.fullName } }) AS var14
+                        }
+                        RETURN { edges: var14, totalCount: totalCount } AS var15
+                    }
+                    RETURN collect({ node: { nameDetailsConnection: var15 } }) AS var16
+                }
+                RETURN { edges: var16, totalCount: totalCount } AS var17
             }
-            RETURN this { .id, nameDetailsConnection: var8, architectureConnection: var14 } AS this"
+            RETURN this { .id, nameDetailsConnection: var9, architectureConnection: var17 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

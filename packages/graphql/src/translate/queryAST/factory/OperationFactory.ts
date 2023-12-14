@@ -555,10 +555,16 @@ export class OperationsFactory {
 
         const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+            const selection = new RelationshipSelection({
+                relationship,
+                directed,
+            });
+
             const connectionPartial = new CompositeConnectionPartial({
                 relationship,
                 directed,
                 target: concreteEntity,
+                selection,
             });
 
             return this.hydrateConnectionOperationAST({
@@ -600,7 +606,19 @@ export class OperationsFactory {
             targetOperations: ["READ"],
             context,
         });
-        const operation = new ConnectionReadOperation({ relationship, directed, target });
+
+        let selection: EntitySelection;
+        if (relationship) {
+            selection = new RelationshipSelection({
+                relationship,
+                directed: Boolean(resolveTree.args?.directed ?? true),
+            });
+        } else {
+            selection = new NodeSelection({
+                target,
+            });
+        }
+        const operation = new ConnectionReadOperation({ relationship, directed, target, selection });
 
         return this.hydrateConnectionOperationAST({
             relationship: relationship,

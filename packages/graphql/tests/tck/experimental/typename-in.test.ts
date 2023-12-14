@@ -98,7 +98,8 @@ describe("typename_IN", () => {
                 WITH this2 { .title, __resolveType: \\"Cartoon\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

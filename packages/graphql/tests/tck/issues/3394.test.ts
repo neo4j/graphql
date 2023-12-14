@@ -113,16 +113,18 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Product)
-                WITH collect(this) AS edges
+                "MATCH (this0:Product)
+                WITH collect({ node: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS this
-                WITH this, totalCount
-                WITH *
-                ORDER BY this.fg_item DESC
-                WITH { node: this { .description, id: this.fg_item_id, partNumber: this.fg_item } } AS edge, totalCount, this
-                WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this"
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this0
+                    WITH *
+                    ORDER BY this0.fg_item DESC
+                    RETURN collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description } }) AS var1
+                }
+                RETURN { edges: var1, totalCount: totalCount } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -152,20 +154,17 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
-                    WITH this0, this1
-                    ORDER BY this1.partNumber DESC
-                    WITH { node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge
-                        ORDER BY edge.node.partNumber DESC
-                        RETURN collect(edge) AS var2
+                        WITH edge.node AS this1, edge.relationship AS this0
+                        WITH *
+                        ORDER BY this1.fg_item DESC
+                        RETURN collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description } }) AS var2
                     }
-                    WITH var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var3
+                    RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
                 RETURN this { productsConnection: var3 } AS this"
             `);
