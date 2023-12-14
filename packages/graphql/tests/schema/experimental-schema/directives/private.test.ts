@@ -146,6 +146,10 @@ describe("@private directive", () => {
               id: IDAggregateSelectionNullable!
             }
 
+            enum UserInterfaceImplementation {
+              User
+            }
+
             input UserInterfaceOptions {
               limit: Int
               offset: Int
@@ -176,6 +180,7 @@ describe("@private directive", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [UserInterfaceImplementation!]
             }
 
             input UserOptions {

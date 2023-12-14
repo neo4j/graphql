@@ -388,6 +388,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name: StringAggregateSelectionNullable!
             }
 
+            enum ResourceEntityImplementation {
+              Resource
+            }
+
             input ResourceEntityOptions {
               limit: Int
               offset: Int
@@ -442,6 +446,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               type_IN: [ResourceType!]
               type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              typename_IN: [ResourceEntityImplementation!]
             }
 
             input ResourceOnCreateInput {

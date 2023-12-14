@@ -419,6 +419,11 @@ describe("Interface Relationships", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
@@ -459,6 +464,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -1575,6 +1581,11 @@ describe("Interface Relationships", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -1660,6 +1671,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -2229,6 +2241,11 @@ describe("Interface Relationships", () => {
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
+            enum Interface1Implementation {
+              Type1Interface1
+              Type2Interface1
+            }
+
             input Interface1ImplementationsConnectInput {
               Type1Interface1: [Type1Interface1ConnectInput!]
               Type2Interface1: [Type2Interface1ConnectInput!]
@@ -2360,6 +2377,7 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              typename_IN: [Interface1Implementation!]
             }
 
             interface Interface2 {
@@ -2378,6 +2396,11 @@ describe("Interface Relationships", () => {
             input Interface2CreateInput {
               Type1Interface2: Type1Interface2CreateInput
               Type2Interface2: Type2Interface2CreateInput
+            }
+
+            enum Interface2Implementation {
+              Type1Interface2
+              Type2Interface2
             }
 
             input Interface2ImplementationsUpdateInput {
@@ -2420,6 +2443,7 @@ describe("Interface Relationships", () => {
               field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
+              typename_IN: [Interface2Implementation!]
             }
 
             type Mutation {
@@ -3597,6 +3621,11 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorDisconnectFieldInput
             }
 
+            enum ContentImplementation {
+              Comment
+              Post
+            }
+
             input ContentImplementationsConnectInput {
               Comment: [CommentConnectInput!]
               Post: [PostConnectInput!]
@@ -3670,6 +3699,7 @@ describe("Interface Relationships", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ContentImplementation!]
             }
 
             type CreateCommentsMutationResponse {

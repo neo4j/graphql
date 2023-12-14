@@ -1446,6 +1446,10 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorCreateInput
                     }
 
+                    enum PersonImplementation {
+                      Actor
+                    }
+
                     input PersonImplementationsUpdateInput {
                       Actor: ActorUpdateInput
                     }
@@ -1487,6 +1491,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -1882,6 +1887,10 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorCreateInput
                     }
 
+                    enum PersonImplementation {
+                      Actor
+                    }
+
                     input PersonImplementationsUpdateInput {
                       Actor: ActorUpdateInput
                     }
@@ -1923,6 +1932,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String

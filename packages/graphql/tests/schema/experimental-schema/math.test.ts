@@ -1664,6 +1664,10 @@ describe("Algebraic", () => {
               _on: ProductionImplementationsDisconnectInput
             }
 
+            enum ProductionImplementation {
+              Movie
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
             }
@@ -1707,6 +1711,7 @@ describe("Algebraic", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              typename_IN: [ProductionImplementation!]
               viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
