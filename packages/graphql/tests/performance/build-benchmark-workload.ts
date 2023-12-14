@@ -24,13 +24,14 @@ import { typeDefs } from "./typedefs";
 import type * as Performance from "./types";
 import { WorkloadGenerator } from "./utils/WorkloadGenerator";
 import { collectTests } from "./utils/collect-test-files";
+
 async function main() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
         experimental: true,
     });
-    const gqltests: Performance.TestInfo[] = await collectTests(path.join(__dirname, "graphql"));
-    await new WorkloadGenerator(neoSchema).generateWorkload(gqltests);
+    const gqlTests: Performance.TestInfo[] = await collectTests(path.join(__dirname, "graphql"));
+    await new WorkloadGenerator(neoSchema).generateWorkload(gqlTests);
 }
 
 main().catch((err) => console.error(err));

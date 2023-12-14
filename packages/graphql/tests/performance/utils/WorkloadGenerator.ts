@@ -54,20 +54,19 @@ type WorkloadFile = {
 
 export class WorkloadGenerator {
     private schema: Neo4jGraphQL;
+    private name: string;
 
     constructor(schema: Neo4jGraphQL) {
         this.schema = schema;
+        this.name = "graphql-workload";
     }
     public async generateWorkload(tests: Array<Performance.TestInfo>): Promise<void> {
-        const directoryPath = "./benchmark-workload/";
+        const directoryPath = `./${this.name}/`;
         const queryConfigs: QueryConfig[] = [];
         const queryFiles: WorkloadFile[] = [];
         const paramFiles: WorkloadFile[] = [];
         try {
             for (const test of tests) {
-                if (test.name !== "SimpleQuery") {
-                    continue;
-                }
                 const { cypher, params } = await this.getCypherAndParams(test);
 
                 const queryFile = this.getQueryFile(test, cypher);
@@ -92,6 +91,7 @@ export class WorkloadGenerator {
             const datasetConfig = this.getDatasetConfig();
             await fs.writeFile(path.join(directoryPath, "config.json"), JSON.stringify(workflowConfig, null, 2));
             await fs.writeFile(path.join(directoryPath, "dataset.json"), JSON.stringify(datasetConfig, null, 2));
+            await fs.writeFile(path.join(directoryPath, "schema.txt"), "");
         } catch (err) {
             console.error("Error generating workflow");
             console.warn(err);
@@ -131,7 +131,7 @@ export class WorkloadGenerator {
 
     private getWorkflowConfig(queries: QueryConfig[]): WorkloadConfig {
         return {
-            name: "benchmark-workload",
+            name: this.name,
             dataset: "dataset.json",
             queries,
         };
