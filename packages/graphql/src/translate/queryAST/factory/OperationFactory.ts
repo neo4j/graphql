@@ -284,7 +284,7 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            // if typename is allowed we can compute only the shared filter without recomputing the filters for each concrete entity
+            // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
             // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
             const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
 
@@ -919,6 +919,7 @@ export class OperationsFactory {
         }
         return operation;
     }
+
 
     private hydrateReadOperation<T extends ReadOperation>({
         entity,

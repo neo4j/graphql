@@ -49,7 +49,7 @@ export function getConcreteWhere(
     } else {
         // interface may have shared filters, inject them as if they were present under _on
         const sharedInterfaceFilters = Object.entries(whereArgs).filter(
-            ([key]) => key !== "_on"// && key !== "typename_IN"
+            ([key]) => key !== "_on" && key !== "typename_IN"
         );
         const _on: Record<string, any> | undefined = isObject(whereArgs["_on"]) ? whereArgs["_on"] : undefined;
 

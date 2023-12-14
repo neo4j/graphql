@@ -37,7 +37,8 @@ export class TypenameFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [typename_IN]`;
+        const acceptedEntities = this.acceptedEntities.map((e) => e.name);
+        return `${super.print()} [${acceptedEntities.join(", ")}]`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {

@@ -39,7 +39,6 @@ import { parseWhereField } from "./parsers/parse-where-field";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
 import { asArray } from "@graphql-tools/utils";
-import { isInterfaceEntity } from "../utils/is-interface-entity";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables

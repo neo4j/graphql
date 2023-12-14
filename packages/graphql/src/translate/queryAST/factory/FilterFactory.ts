@@ -263,11 +263,11 @@ export class FilterFactory {
                 const { fieldName, operator, isNot, isConnection, isAggregate } = parseWhereField(key);
 
                 let relationship: RelationshipAdapter | undefined;
-                if (isConcreteEntity(entity)) {
+               /*  if (isConcreteEntity(entity)) {
                     // TODO: Check this path;
                     throw new Error("Cannot query relationships on concrete entities");
                     //relationship = entity.findRelationship(fieldName);
-                }
+                } */
 
                 if (isConnection) {
                     if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
