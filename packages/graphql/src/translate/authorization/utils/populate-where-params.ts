@@ -32,11 +32,12 @@ export function populateWhereParams({
     const parsed: GraphQLWhereArg = {};
 
     Object.entries(where).forEach(([k, v]) => {
-        if (Array.isArray(v)) {
+        if (k == "AND" || k === "OR") {
             parsed[k] = v.map((w) => populateWhereParams({ where: w, context }));
+            /*  throw new Error("should not happen") */
         } else if (v === null) {
             parsed[k] = v;
-        } else if (typeof v === "object") {
+        } else if (typeof v === "object" && !Array.isArray(v)) {
             parsed[k] = populateWhereParams({ where: v, context });
         } else if (typeof v === "string") {
             parsed[k] = parseContextParamProperty(v, context);
