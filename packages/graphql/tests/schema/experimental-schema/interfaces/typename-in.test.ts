@@ -22,269 +22,8 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
-describe("Interface Top Level Aggregations", () => {
-    test("Interfaces", async () => {
-        const typeDefs = gql`
-            interface Production {
-                title: String!
-                cost: Float!
-            }
-
-            type Movie implements Production {
-                title: String!
-                cost: Float!
-                runtime: Int!
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type FloatAggregateSelectionNonNullable {
-              average: Float!
-              max: Float!
-              min: Float!
-              sum: Float!
-            }
-
-            type IntAggregateSelectionNonNullable {
-              average: Float!
-              max: Int!
-              min: Int!
-              sum: Int!
-            }
-
-            type Movie implements Production {
-              cost: Float!
-              runtime: Int!
-              title: String!
-            }
-
-            type MovieAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
-              count: Int!
-              runtime: IntAggregateSelectionNonNullable!
-              title: StringAggregateSelectionNonNullable!
-            }
-
-            input MovieCreateInput {
-              cost: Float!
-              runtime: Int!
-              title: String!
-            }
-
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              cost: SortDirection
-              runtime: SortDirection
-              title: SortDirection
-            }
-
-            input MovieUpdateInput {
-              cost: Float
-              cost_ADD: Float
-              cost_DIVIDE: Float
-              cost_MULTIPLY: Float
-              cost_SUBTRACT: Float
-              runtime: Int
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              title: String
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              cost: Float
-              cost_GT: Float
-              cost_GTE: Float
-              cost_IN: [Float!]
-              cost_LT: Float
-              cost_LTE: Float
-              cost_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              cost_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
-              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_STARTS_WITH: String
-            }
-
-            type MoviesConnection {
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            interface Production {
-              cost: Float!
-              title: String!
-            }
-
-            type ProductionAggregateSelection {
-              cost: FloatAggregateSelectionNonNullable!
-              count: Int!
-              title: StringAggregateSelectionNonNullable!
-            }
-
-            enum ProductionImplementation {
-              Movie
-            }
-
-            input ProductionOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ProductionSort]
-            }
-
-            \\"\\"\\"
-            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
-            \\"\\"\\"
-            input ProductionSort {
-              cost: SortDirection
-              title: SortDirection
-            }
-
-            input ProductionWhere {
-              AND: [ProductionWhere!]
-              NOT: ProductionWhere
-              OR: [ProductionWhere!]
-              cost: Float
-              cost_GT: Float
-              cost_GTE: Float
-              cost_IN: [Float!]
-              cost_LT: Float
-              cost_LTE: Float
-              cost_NOT: Float @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              cost_NOT_IN: [Float!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String!]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_STARTS_WITH: String
-              typename_IN: [ProductionImplementation!]
-            }
-
-            type Query {
-              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelectionNonNullable {
-              longest: String!
-              shortest: String!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }"
-        `);
-    });
-
-    test("Interfaces With Relationships", async () => {
+describe("typename_IN", () => {
+    test("typename_IN", async () => {
         const typeDefs = gql`
             interface Production {
                 title: String!
@@ -303,54 +42,17 @@ describe("Interface Top Level Aggregations", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
-                screenTime: Int!
-            }
-
             type Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
               mutation: Mutation
-            }
-
-            interface ActedIn {
-              screenTime: Int!
-            }
-
-            input ActedInCreateInput {
-              screenTime: Int!
-            }
-
-            input ActedInSort {
-              screenTime: SortDirection
-            }
-
-            input ActedInUpdateInput {
-              screenTime: Int
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-            }
-
-            input ActedInWhere {
-              AND: [ActedInWhere!]
-              NOT: ActedInWhere
-              OR: [ActedInWhere!]
-              screenTime: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
-              screenTime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              screenTime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             type Actor {
@@ -361,7 +63,6 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ActorActedInConnectFieldInput {
-              edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
 
@@ -372,7 +73,6 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ActorActedInConnectionSort {
-              edge: ActedInSort
               node: ProductionSort
             }
 
@@ -380,14 +80,11 @@ describe("Interface Top Level Aggregations", () => {
               AND: [ActorActedInConnectionWhere!]
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ProductionWhere
               node_NOT: ProductionWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ActorActedInCreateFieldInput {
-              edge: ActedInCreateInput!
               node: ProductionCreateInput!
             }
 
@@ -404,14 +101,12 @@ describe("Interface Top Level Aggregations", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
             }
 
             input ActorActedInUpdateConnectionInput {
-              edge: ActedInUpdateInput
               node: ProductionUpdateInput
             }
 
@@ -462,12 +157,7 @@ describe("Interface Top Level Aggregations", () => {
 
             type ActorProductionActedInAggregationSelection {
               count: Int!
-              edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
-            }
-
-            type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelectionNonNullable!
             }
 
             type ActorProductionActedInNodeAggregateSelection {

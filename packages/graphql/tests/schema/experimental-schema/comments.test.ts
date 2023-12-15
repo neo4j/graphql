@@ -1098,6 +1098,11 @@ describe("Comments", () => {
                   Series: SeriesCreateInput
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsUpdateInput {
                   Movie: MovieUpdateInput
                   Series: SeriesUpdateInput
@@ -1138,6 +1143,7 @@ describe("Comments", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {

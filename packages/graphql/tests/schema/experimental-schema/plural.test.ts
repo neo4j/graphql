@@ -58,6 +58,10 @@ describe("Experimental Plural option", () => {
               name: StringAggregateSelectionNullable!
             }
 
+            enum AnimalImplementation {
+              Dog
+            }
+
             input AnimalOptions {
               limit: Int
               offset: Int
@@ -88,6 +92,7 @@ describe("Experimental Plural option", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [AnimalImplementation!]
             }
 
             type Cat {

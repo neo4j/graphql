@@ -7362,6 +7362,10 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    enum PersonImplementation {
+                      Actor
+                    }
+
                     input PersonImplementationsConnectInput {
                       Actor: [ActorConnectInput!]
                     }
@@ -7419,6 +7423,7 @@ describe("@filterable directive", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
