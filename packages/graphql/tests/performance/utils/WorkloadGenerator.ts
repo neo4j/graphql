@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Integer, Date, LocalTime, Duration, Time } from "neo4j-driver";
+import { Integer, Date, LocalTime, Duration, Time, DateTime } from "neo4j-driver";
 import type { Neo4jGraphQL } from "../../../src";
 import type * as Performance from "../types";
 import * as fs from "fs/promises";
@@ -30,7 +30,7 @@ type QueryConfig = {
     name: string;
     description: string;
     queryFile: string;
-    parameters: {
+    parameters?: {
         file: string;
     };
 };
@@ -73,9 +73,11 @@ export class WorkloadGenerator {
                 queryFiles.push(queryFile);
 
                 const paramFile = this.getParamFile(test, params);
-                paramFiles.push(paramFile);
+                if (paramFile) {
+                    paramFiles.push(paramFile);
+                }
 
-                const queryConfig = this.getQueryConfig(queryFile, paramFile, test.name);
+                const queryConfig = this.getQueryConfig(test.name, queryFile, paramFile);
                 queryConfigs.push(queryConfig);
             }
 
@@ -108,7 +110,10 @@ export class WorkloadGenerator {
         };
     }
 
-    private getParamFile(test: Performance.TestInfo, parameters: Record<string, any>): WorkloadFile {
+    private getParamFile(test: Performance.TestInfo, parameters: Record<string, any>): WorkloadFile | undefined {
+        if (Object.keys(parameters).length === 0) {
+            return;
+        }
         const name = test.name;
         const fileName = `${name}.txt`;
         return {
@@ -118,14 +123,18 @@ export class WorkloadGenerator {
         };
     }
 
-    private getQueryConfig(queryFile: WorkloadFile, paramFile: WorkloadFile, queryName: string): QueryConfig {
+    private getQueryConfig(queryName: string, queryFile: WorkloadFile, paramFile?: WorkloadFile): QueryConfig {
         return {
             name: queryName,
             description: queryName,
             queryFile: queryFile.path,
-            parameters: {
-                file: paramFile.path,
-            },
+            ...(paramFile
+                ? {
+                      parameters: {
+                          file: paramFile.path,
+                      },
+                  }
+                : {}),
         };
     }
 
@@ -168,20 +177,96 @@ export class WorkloadGenerator {
             if (row.length) {
                 row += separator;
             }
-            header += key;
-            row += JSON.stringify(value, driverWrapperReplacer);
+            header += headerColumnRewriter(key, value);
+            row += valueColumnRewriter(value);
         });
         return `${header}\n${row}`;
     }
 }
 
-function driverWrapperReplacer(key: string, value: any) {
+/**
+ * Add columnType to header colum, see https://github.com/neo-technology/neo4j/blob/dev/private/benchmarks/macro/macro-common/src/main/java/com/neo4j/bench/macro/workload/parameters/FileParametersReader.java
+ **/
+function headerColumnRewriter(key: string, value: any) {
+    return `${key}:${getColumnType(value)}`;
+}
+
+function getColumnType(value: any) {
+    if (value instanceof Integer) {
+        return "Integer";
+    }
+
+    if (value instanceof Date) {
+        return "Date";
+    }
+
+    if (value instanceof DateTime) {
+        return "DateTime";
+    }
+
+    if (typeof value === "number") {
+        return "Float";
+    }
+    if (typeof value === "string") {
+        return "String";
+    }
+
+    if (value instanceof LocalTime || value instanceof Time || value instanceof Duration) {
+        throw new Error("LocalTime, Time, Duration are not supported by the benchmarking tool");
+    }
+
+    if (typeof value === "boolean") {
+        throw new Error("Boolean is not supported by the benchmarking tool");
+    }
+
+    if (Array.isArray(value)) {
+        return `${getColumnType(value[0])}[]`;
+    }
+
+    if (typeof value === "object" && value !== null) {
+        return "Map";
+    }
+
+    throw new Error(`Unknown type ${typeof value}`);
+}
+
+function valueColumnRewriter(value: any) {
     if (value instanceof Integer) {
         return value.toNumber();
     }
-    if (value instanceof Date || value instanceof LocalTime || value instanceof Duration || value instanceof Time) {
+
+    if (value instanceof Date || value instanceof DateTime) {
         return value.toString();
     }
 
-    return value;
+    if (typeof value === "number" || typeof value === "string") {
+        return value;
+    }
+
+    if (value instanceof LocalTime || value instanceof Time || value instanceof Duration) {
+        throw new Error("LocalTime, Time, Duration are not supported by the benchmarking tool");
+    }
+
+    if (typeof value === "boolean") {
+        throw new Error("Boolean is not supported by the benchmarking tool");
+    }
+
+    if (Array.isArray(value)) {
+        if (value.length === 0) {
+            return "";
+        }
+        return `[${value.map((v) => valueColumnRewriter(v)).join(", ")}]`;
+    }
+
+    if (typeof value === "object" && value !== null) {
+        const mapEntries = Object.entries(value).map(([key, value]) => {
+            return `${key}:${valueColumnRewriter(value)}`;
+        });
+        if (mapEntries.length === 0) {
+            return "";
+        }
+        return `{${mapEntries.join(", ")}}`;
+    }
+
+    throw new Error(`Unknown type ${typeof value}`);
 }
