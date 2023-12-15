@@ -50,7 +50,7 @@ export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4
                 isAuthenticated: true,
                 isAuthenticatedParam: new Cypher.Param(true),
             },
-            experimental: true,
+            experimental: false,
             ...newOptions,
         });
     }
