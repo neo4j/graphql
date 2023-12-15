@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { mergeTreeDescriptors, getTreeDescriptor } from "./parser";
-import { Neo4jGraphQL } from "../../../src";
 import { gql } from "graphql-tag";
-import type { GraphQLCreateInput } from "./types";
-import type Node from "../../classes/Node";
-import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 import { int } from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../src";
+import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
+import type Node from "../../classes/Node";
+import { getTreeDescriptor, mergeTreeDescriptors } from "./parser";
+import type { GraphQLCreateInput } from "./types";
 
 describe("TreeDescriptor Parser", () => {
     let typeDefs;
@@ -57,7 +57,7 @@ describe("TreeDescriptor Parser", () => {
                 address: String
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 year: Int
                 create: BigInt
                 edge: CartesianPoint
