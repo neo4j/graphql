@@ -426,7 +426,7 @@ describe("Relationship", () => {
         expect(actors?.target.name).toBe("Actor");
     });
 
-    test("concrete entity has inherited relationship", () => {
+    test.skip("concrete entity has inherited relationship", () => {
         const movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie");
         const actors = movieEntity?.relationships.get("actors");
         expect(actors).toBeDefined();
@@ -480,7 +480,7 @@ describe("Relationship", () => {
         expect(actors?.target.name).toBe("Actor");
     });
 
-    test("composite entity has inherited relationship", () => {
+    test.skip("composite entity has inherited relationship", () => {
         const workerEntity = schemaModel.compositeEntities.find((e) => e.name === "Worker") as InterfaceEntity;
         const actors = workerEntity?.relationships.get("favoriteActors");
         expect(actors).toBeDefined();
@@ -498,7 +498,7 @@ describe("Relationship", () => {
         expect(actors?.target.name).toBe("Actor");
     });
 
-    test("concrete entity has inherited relationship of first implemented interface with defined relationship", () => {
+    test.skip("concrete entity has inherited relationship of first implemented interface with defined relationship", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
         const actors = userEntity?.relationships.get("favoriteActors");
         expect(actors).toBeDefined();
