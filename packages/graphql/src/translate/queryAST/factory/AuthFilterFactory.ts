@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { asArray } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -27,18 +28,17 @@ import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { RelationshipWhereOperator, WhereOperator } from "../../where/types";
+import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import type { Filter } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
+import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
 import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamPropertyFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
 import { FilterFactory } from "./FilterFactory";
 import { parseWhereField } from "./parsers/parse-where-field";
-import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
-import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
-import { asArray } from "@graphql-tools/utils";
 
 export class AuthFilterFactory extends FilterFactory {
     // PopulatedWhere has the values as Cypher variables
@@ -188,6 +188,7 @@ export class AuthFilterFactory extends FilterFactory {
 
     protected createRelationshipFilterTreeNode(options: {
         relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         isNot: boolean;
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
