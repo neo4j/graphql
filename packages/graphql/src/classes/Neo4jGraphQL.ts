@@ -285,6 +285,7 @@ class Neo4jGraphQL {
             features: this.features,
             authorization: this.authorization,
             jwtPayloadFieldsMap: this.jwtFieldsMap,
+            experimental: this.experimental,
         };
 
         const resolversComposition = {
