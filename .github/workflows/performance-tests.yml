@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - master
+      - "*.*.*"
     paths:
       - "packages/graphql/tests/tck/**"
 
