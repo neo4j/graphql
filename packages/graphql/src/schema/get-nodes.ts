@@ -21,17 +21,17 @@ import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
 import type { Exclude } from "../classes";
 import { Node } from "../classes";
-import type { NodeDirective } from "../classes/NodeDirective";
 import type { LimitDirective } from "../classes/LimitDirective";
+import type { NodeDirective } from "../classes/NodeDirective";
 import type { FullText, Neo4jGraphQLCallbacks } from "../types";
-import { asArray } from "../utils/utils";
+import { asArray, haveSharedElement } from "../utils/utils";
 import type { DefinitionNodes } from "./get-definition-nodes";
 import getObjFieldMeta from "./get-obj-field-meta";
 import parseExcludeDirective from "./parse-exclude-directive";
 import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
-import parsePluralDirective from "./parse/parse-plural-directive";
 import { parseLimitDirective } from "./parse/parse-limit-directive";
+import parsePluralDirective from "./parse/parse-plural-directive";
 import { schemaConfigurationFromObjectTypeDefinition } from "./schema-configuration";
 
 type Nodes = {
@@ -57,146 +57,156 @@ function getNodes(
     const relationshipPropertyInterfaceNames = new Set<string>();
     const interfaceRelationshipNames = new Set<string>();
 
-    const nodes = definitionNodes.objectTypes.map((definition) => {
-        const otherDirectives = (definition.directives || []).filter(
-            (x) =>
-                ![
-                    "authorization",
-                    "authentication",
-                    "exclude",
-                    "node",
-                    "fulltext",
-                    "limit",
-                    "plural",
-                    "shareable",
-                    "subscriptionsAuthorization",
-                    "deprecated",
-                    "query",
-                    "mutation",
-                    "subscription",
-                    "jwt",
-                ].includes(x.name.value)
-        );
-        const propagatedDirectives = (definition.directives || []).filter((x) =>
-            ["deprecated", "shareable"].includes(x.name.value)
-        );
+    const nodes = definitionNodes.objectTypes
+        .filter((definition) => {
+            const directiveNames = (definition.directives || []).map((d) => d.name.value);
+            const excludeObjectFromNode = haveSharedElement(directiveNames, ["relationshipProperties"]);
+            return !excludeObjectFromNode;
+        })
+        .map((definition) => {
+            const otherDirectives = (definition.directives || []).filter(
+                (x) =>
+                    ![
+                        "authorization",
+                        "authentication",
+                        "exclude",
+                        "node",
+                        "fulltext",
+                        "limit",
+                        "plural",
+                        "shareable",
+                        "subscriptionsAuthorization",
+                        "deprecated",
+                        "query",
+                        "mutation",
+                        "subscription",
+                        "jwt",
+                    ].includes(x.name.value)
+            );
+            const propagatedDirectives = (definition.directives || []).filter((x) =>
+                ["deprecated", "shareable"].includes(x.name.value)
+            );
 
-        const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
-        const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
-        const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
-        const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
-        const limitDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "limit");
-        const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
+            const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
+            const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
+            const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
+            const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
+            const limitDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "limit");
+            const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
-        const { interfaceExcludeDirectives } = nodeInterfaces.reduce<{
-            interfaceAuthDirectives: DirectiveNode[];
-            interfaceExcludeDirectives: DirectiveNode[];
-        }>(
-            (res, interfaceName) => {
-                const iface = definitionNodes.interfaceTypes.find((i) => i.name.value === interfaceName.name.value);
+            const { interfaceExcludeDirectives } = nodeInterfaces.reduce<{
+                interfaceAuthDirectives: DirectiveNode[];
+                interfaceExcludeDirectives: DirectiveNode[];
+            }>(
+                (res, interfaceName) => {
+                    const iface = definitionNodes.interfaceTypes.find((i) => i.name.value === interfaceName.name.value);
 
-                if (iface) {
-                    const interfaceExcludeDirective = (iface.directives || []).find((x) => x.name.value === "exclude");
+                    if (iface) {
+                        const interfaceExcludeDirective = (iface.directives || []).find(
+                            (x) => x.name.value === "exclude"
+                        );
 
-                    if (interfaceExcludeDirective) {
-                        res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
+                        if (interfaceExcludeDirective) {
+                            res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
+                        }
                     }
+
+                    return res;
+                },
+                { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
+            );
+
+            let exclude: Exclude;
+            if (excludeDirective || interfaceExcludeDirectives.length) {
+                exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
+            }
+
+            const schemaConfiguration = schemaConfigurationFromObjectTypeDefinition(definition);
+
+            let nodeDirective: NodeDirective;
+            if (nodeDirectiveDefinition) {
+                nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
+            }
+
+            const userCustomResolvers = asArray(options.userCustomResolvers);
+            const customResolvers = userCustomResolvers.find((r) => !!r[definition.name.value])?.[
+                definition.name.value
+            ] as IResolvers;
+
+            const nodeFields = getObjFieldMeta({
+                obj: definition,
+                enums: definitionNodes.enumTypes,
+                interfaces: definitionNodes.interfaceTypes,
+                objects: definitionNodes.objectTypes,
+                scalars: definitionNodes.scalarTypes,
+                unions: definitionNodes.unionTypes,
+                callbacks: options.callbacks,
+                customResolvers,
+            });
+
+            let fulltextDirective: FullText;
+            if (fulltextDirectiveDefinition) {
+                fulltextDirective = parseFulltextDirective({
+                    directive: fulltextDirectiveDefinition,
+                    nodeFields,
+                    definition,
+                });
+                floatWhereInTypeDefs = true;
+            }
+
+            let limitDirective: LimitDirective | undefined;
+            if (limitDirectiveDefinition) {
+                limitDirective = parseLimitDirective({
+                    directive: limitDirectiveDefinition,
+                    definition,
+                });
+            }
+
+            nodeFields.relationFields.forEach((relationship) => {
+                if (relationship.properties) {
+                    relationshipPropertyInterfaceNames.add(relationship.properties);
                 }
-
-                return res;
-            },
-            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
-        );
-
-        let exclude: Exclude;
-        if (excludeDirective || interfaceExcludeDirectives.length) {
-            exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
-        }
-
-        const schemaConfiguration = schemaConfigurationFromObjectTypeDefinition(definition);
-
-        let nodeDirective: NodeDirective;
-        if (nodeDirectiveDefinition) {
-            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
-        }
-
-        const userCustomResolvers = asArray(options.userCustomResolvers);
-        const customResolvers = userCustomResolvers.find((r) => !!r[definition.name.value])?.[
-            definition.name.value
-        ] as IResolvers;
-
-        const nodeFields = getObjFieldMeta({
-            obj: definition,
-            enums: definitionNodes.enumTypes,
-            interfaces: definitionNodes.interfaceTypes,
-            objects: definitionNodes.objectTypes,
-            scalars: definitionNodes.scalarTypes,
-            unions: definitionNodes.unionTypes,
-            callbacks: options.callbacks,
-            customResolvers,
-        });
-
-        let fulltextDirective: FullText;
-        if (fulltextDirectiveDefinition) {
-            fulltextDirective = parseFulltextDirective({
-                directive: fulltextDirectiveDefinition,
-                nodeFields,
-                definition,
+                if (relationship.interface) {
+                    interfaceRelationshipNames.add(relationship.typeMeta.name);
+                }
             });
-            floatWhereInTypeDefs = true;
-        }
 
-        let limitDirective: LimitDirective | undefined;
-        if (limitDirectiveDefinition) {
-            limitDirective = parseLimitDirective({
-                directive: limitDirectiveDefinition,
-                definition,
+            if (!pointInTypeDefs) {
+                pointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "Point");
+            }
+            if (!cartesianPointInTypeDefs) {
+                cartesianPointInTypeDefs = nodeFields.pointFields.some(
+                    (field) => field.typeMeta.name === "CartesianPoint"
+                );
+            }
+
+            const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
+
+            const globalIdField = globalIdFields[0];
+
+            const node = new Node({
+                name: definition.name.value,
+                interfaces: nodeInterfaces,
+                otherDirectives,
+                propagatedDirectives,
+                ...nodeFields,
+                // @ts-ignore we can be sure it's defined
+                exclude,
+                schemaConfiguration,
+                // @ts-ignore we can be sure it's defined
+                nodeDirective,
+                // @ts-ignore we can be sure it's defined
+                fulltextDirective,
+                limitDirective,
+                description: definition.description?.value,
+                isGlobalNode: Boolean(globalIdField),
+                globalIdField: globalIdField?.fieldName,
+                globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
+                plural: parsePluralDirective(pluralDirectiveDefinition),
             });
-        }
 
-        nodeFields.relationFields.forEach((relationship) => {
-            if (relationship.properties) {
-                relationshipPropertyInterfaceNames.add(relationship.properties);
-            }
-            if (relationship.interface) {
-                interfaceRelationshipNames.add(relationship.typeMeta.name);
-            }
+            return node;
         });
-
-        if (!pointInTypeDefs) {
-            pointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "Point");
-        }
-        if (!cartesianPointInTypeDefs) {
-            cartesianPointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
-        }
-
-        const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
-
-        const globalIdField = globalIdFields[0];
-
-        const node = new Node({
-            name: definition.name.value,
-            interfaces: nodeInterfaces,
-            otherDirectives,
-            propagatedDirectives,
-            ...nodeFields,
-            // @ts-ignore we can be sure it's defined
-            exclude,
-            schemaConfiguration,
-            // @ts-ignore we can be sure it's defined
-            nodeDirective,
-            // @ts-ignore we can be sure it's defined
-            fulltextDirective,
-            limitDirective,
-            description: definition.description?.value,
-            isGlobalNode: Boolean(globalIdField),
-            globalIdField: globalIdField?.fieldName,
-            globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
-            plural: parsePluralDirective(pluralDirectiveDefinition),
-        });
-
-        return node;
-    });
     return {
         nodes,
         pointInTypeDefs,

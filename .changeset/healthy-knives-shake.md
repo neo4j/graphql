@@ -1,6 +1,7 @@
 ---
 "@neo4j/introspector": major
 "@neo4j/graphql": major
+"@neo4j/graphql-ogm": major
 ---
 
 Change @relationshipProperties to target types instead of interfaces:
