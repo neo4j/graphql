@@ -21,20 +21,20 @@ import type {
     ASTVisitor,
     DirectiveNode,
     FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    InterfaceTypeExtensionNode,
+    ObjectTypeDefinitionNode,
+    ObjectTypeExtensionNode,
 } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import { RESERVED_INTERFACE_FIELDS } from "../../../../constants";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
 export function ValidRelationshipProperties(context: SDLValidationContext): ASTVisitor {
     const relationshipPropertyTypeNames = new Set<string>();
-    const doOnInterface = {
-        leave(node: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode, _key, _parent, path, ancestors) {
+    const doOnObject = {
+        leave(node: ObjectTypeDefinitionNode | ObjectTypeExtensionNode, _key, _parent, path, ancestors) {
             if (relationshipPropertyTypeNames.has(node.name.value)) {
                 const { isValid, errorMsg, errorPath } = assertValid(() => assertRelationshipProperties(node));
                 const [pathToNode] = getPathToNode(path, ancestors);
@@ -74,13 +74,13 @@ export function ValidRelationshipProperties(context: SDLValidationContext): ASTV
                 }
             }
         },
-        InterfaceTypeDefinition: doOnInterface,
-        InterfaceTypeExtension: doOnInterface,
+        ObjectTypeDefinition: doOnObject,
+        ObjectTypeExtension: doOnObject,
     };
 }
 
 function assertRelationshipProperties(traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode) {
-    if (traversedDef.kind !== Kind.INTERFACE_TYPE_DEFINITION && traversedDef.kind !== Kind.INTERFACE_TYPE_EXTENSION) {
+    if (traversedDef.kind !== Kind.OBJECT_TYPE_DEFINITION && traversedDef.kind !== Kind.OBJECT_TYPE_EXTENSION) {
         // delegate
         return;
     }

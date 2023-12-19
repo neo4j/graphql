@@ -57,7 +57,7 @@ describe("interface relationships", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

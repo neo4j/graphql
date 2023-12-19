@@ -72,7 +72,7 @@ describe("typename_IN", () => {
             cartoonist: String!
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
 

@@ -63,7 +63,7 @@ describe("interface relationships", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

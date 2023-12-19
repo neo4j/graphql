@@ -20,10 +20,10 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1782", () => {
     let schema: GraphQLSchema;
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1782", () => {
             fullName: String!
         }
 
-        interface RelationProps @relationshipProperties {
+        type RelationProps @relationshipProperties {
             current: Boolean!
         }
 

@@ -303,7 +303,7 @@ describe("Interface Top Level Aggregations", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

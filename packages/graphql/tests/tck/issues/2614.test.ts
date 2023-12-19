@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2614", () => {
     let typeDefs: string;
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                 episodes: Int!
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
             }
             

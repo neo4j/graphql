@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { int } from "neo4j-driver";
 import type { GraphQLError } from "graphql";
 import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { UniqueType } from "../utils/graphql-types";
+import Neo4j from "./neo4j";
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
@@ -655,7 +655,7 @@ describe("Mathematical operations tests", () => {
             actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             pay: Float
         }
         `;
@@ -742,7 +742,7 @@ describe("Mathematical operations tests", () => {
             actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             pay: Float
         }
         `;

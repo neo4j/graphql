@@ -74,7 +74,7 @@ describe("Interface filtering", () => {
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;

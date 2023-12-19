@@ -68,7 +68,7 @@ describe.each([
                 knownBy: [${typePerson}!]! @relationship(type: "KNOWN_BY", direction: IN, properties: "Knows")
             }
 
-            interface Knows @relationshipProperties {
+            type Knows @relationshipProperties {
                 year: Int!
             }
             
@@ -76,7 +76,7 @@ describe.each([
                 title: String!
                 references: [${typeArticle}!]! @relationship(type: "REFERENCES", direction: OUT, properties: "Reference")
             }
-            interface Reference @relationshipProperties {
+            type Reference @relationshipProperties {
                 year: Int!
                 edition: Int!
             }

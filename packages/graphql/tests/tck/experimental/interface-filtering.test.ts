@@ -53,7 +53,7 @@ describe("Interface top level operations", () => {
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;

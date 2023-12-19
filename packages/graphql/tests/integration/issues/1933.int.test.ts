@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                     @relationship(type: "PARTICIPATES", direction: OUT, properties: "EmployeeParticipationProperties")
             }
         
-            interface EmployeeParticipationProperties @relationshipProperties {
+            type EmployeeParticipationProperties @relationshipProperties {
                 allocation: Float
             }
         

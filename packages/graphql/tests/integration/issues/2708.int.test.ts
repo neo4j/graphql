@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/2708", () => {
     let driver: Driver;
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
                 genres: [${genreType.name}!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "${inGenreInterface.name}")
             }
 
-            interface ${inGenreInterface.name} @relationshipProperties {
+            type ${inGenreInterface.name} @relationshipProperties {
                 intValue: Int!
             }
         `;

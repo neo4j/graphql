@@ -126,12 +126,13 @@ export const OBJECT_DIRECTIVES = [
     "jwt",
     "shareable",
     "deprecated",
+    "relationshipProperties",
     ...SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES,
 ] as const;
 
 export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
 
-export const INTERFACE_DIRECTIVES = ["relationshipProperties", "query", "plural", "limit"] as const;
+export const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const;
 
 export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 

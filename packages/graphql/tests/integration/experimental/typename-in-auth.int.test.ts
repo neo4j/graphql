@@ -22,9 +22,9 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
-import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("typename_IN with auth", () => {
     let schema: GraphQLSchema;
@@ -74,7 +74,7 @@ describe("typename_IN with auth", () => {
             cartoonist: String!
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
 

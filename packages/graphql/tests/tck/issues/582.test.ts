@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("#582", () => {
     let typeDefs: DocumentNode;
@@ -34,7 +34,7 @@ describe("#582", () => {
                 type: String!
             }
 
-            interface Edge @relationshipProperties {
+            type Edge @relationshipProperties {
                 type: String!
             }
         `;

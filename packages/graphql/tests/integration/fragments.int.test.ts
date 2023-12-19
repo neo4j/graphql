@@ -51,7 +51,7 @@ describe("fragments", () => {
             episodes: Int!
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
 
