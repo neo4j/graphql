@@ -182,7 +182,11 @@ describe("Union filtering", () => {
                     ${Actor.plural} {
                         name
                         actedIn {
+                            __typename
                             ... on ${Movie} {
+                                title
+                            }
+                            ... on ${Series} {
                                 title
                             }
                         }
@@ -209,7 +213,12 @@ describe("Union filtering", () => {
                         name: "Michael Scott",
                         actedIn: [
                             {
+                                __typename: Movie.name,
                                 title: "The Office",
+                            },
+                            {
+                                __typename: Series.name,
+                                title: "NOT The Office",
                             },
                         ],
                     },
