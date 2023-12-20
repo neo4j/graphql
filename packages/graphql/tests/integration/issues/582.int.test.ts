@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/582", () => {
                 type: String!
             }
 
-            interface Edge @relationshipProperties {
+            type Edge @relationshipProperties {
                 type: String!
             }
         `;

@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("369", () => {
     let driver: Driver;
@@ -47,7 +47,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende @relationshipProperties {
+            type Depende @relationshipProperties {
                 uuid: ID
             }
 
@@ -132,7 +132,7 @@ describe("369", () => {
                 dependeFrom: [Dato!]! @relationship(type: "DEPENDE", direction: IN, properties: "Depende")
             }
 
-            interface Depende @relationshipProperties {
+            type Depende @relationshipProperties {
                 uuid: ID
             }
 

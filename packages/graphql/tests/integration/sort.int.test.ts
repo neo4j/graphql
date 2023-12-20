@@ -70,7 +70,7 @@ describe("sort", () => {
                     columnName: "sum"
                 )
         }
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
     `;

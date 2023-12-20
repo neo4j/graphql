@@ -19,22 +19,22 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { gql } from "graphql-tag";
+import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { AnnotationsKey } from "./annotation/Annotation";
+import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
 import {
     AuthorizationFilterOperationRule,
     AuthorizationValidateOperationRule,
 } from "./annotation/AuthorizationAnnotation";
-import { generateModel } from "./generate-model";
-import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { SubscriptionsAuthorizationFilterEventRule } from "./annotation/SubscriptionsAuthorizationAnnotation";
-import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
-import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
+import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
+import type { AttributeTypeHelper } from "./attribute/AttributeTypeHelper";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
-import { GraphQLBuiltInScalarType, ListType, ObjectType } from "./attribute/AttributeType";
-import type { AttributeTypeHelper } from "./attribute/AttributeTypeHelper";
+import type { ConcreteEntityAdapter } from "./entity/model-adapters/ConcreteEntityAdapter";
+import { generateModel } from "./generate-model";
+import type { RelationshipAdapter } from "./relationship/model-adapters/RelationshipAdapter";
 
 describe("Schema model generation", () => {
     test("parses @authentication directive with no arguments", () => {
@@ -349,7 +349,7 @@ describe("Relationship", () => {
                 favoriteActors: [Actor!]!
             }
 
-            interface hasAccount @relationshipProperties {
+            type hasAccount @relationshipProperties {
                 creationTime: DateTime!
             }
 
@@ -841,7 +841,7 @@ describe("GraphQL adapters", () => {
                 accounts: [Account!]! @relationship(type: "HAS_ACCOUNT", properties: "hasAccount", direction: OUT)
             }
 
-            interface hasAccount @relationshipProperties {
+            type hasAccount @relationshipProperties {
                 creationTime: DateTime!
             }
 

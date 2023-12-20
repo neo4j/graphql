@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { generate as randomstring } from "randomstring";
 import * as fs from "fs";
+import gql from "graphql-tag";
 import * as path from "path";
+import { generate as randomstring } from "randomstring";
 import generate from "./generate";
 import { OGM } from "./index";
-import gql from "graphql-tag";
 
 describe("generate", () => {
     const filesToDelete: string[] = [];
@@ -943,7 +943,7 @@ describe("generate", () => {
             type Person {
                 name: String!
             }
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -1740,7 +1740,7 @@ describe("generate", () => {
                 inFAQs: [FAQ!]! @relationship(type: "FAQ_ENTRY_IN_FAQ", properties: "FaqEntryInFaq", direction: OUT)
             }
 
-            interface FaqEntryInFaq @relationshipProperties {
+            type FaqEntryInFaq @relationshipProperties {
                 position: Int
             }
         `;

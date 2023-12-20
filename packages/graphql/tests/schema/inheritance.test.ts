@@ -41,7 +41,7 @@ describe("inheritance", () => {
                 friends: [Person!]! @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
             }
 
-            interface FriendsWith @relationshipProperties {
+            type FriendsWith @relationshipProperties {
                 since: Int
             }
         `;

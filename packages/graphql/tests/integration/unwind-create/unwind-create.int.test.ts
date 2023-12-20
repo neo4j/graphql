@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { int } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("unwind-create", () => {
     let driver: Driver;
@@ -344,7 +344,7 @@ describe("unwind-create", () => {
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
         
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 year: Int
             }
         `;
@@ -458,7 +458,7 @@ describe("unwind-create", () => {
                 workers: [${Person}!]! @relationship(type: "${workedIn}", direction: IN, properties: "WorkedIn")
             }
         
-            interface WorkedIn @relationshipProperties {
+            type WorkedIn @relationshipProperties {
                 year: Int
             }
         `;
@@ -565,7 +565,7 @@ describe("unwind-create", () => {
                 actors: [${Actor}!]! @relationship(type: "${actedIn}", direction: IN, properties: "ActedIn")
             }
         
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 year: Int
                 pay: Int @alias(property: "salary")
             }

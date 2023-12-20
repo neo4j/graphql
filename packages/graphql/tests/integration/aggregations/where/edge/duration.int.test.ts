@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../../../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { UniqueType } from "../../../../utils/graphql-types";
+import Neo4j from "../../../neo4j";
 
 describe("aggregations-where-edge-duration", () => {
     let driver: Driver;
@@ -49,7 +49,7 @@ describe("aggregations-where-edge-duration", () => {
             likes: [${User}!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
         }
 
-        interface Likes @relationshipProperties {
+        type Likes @relationshipProperties {
             someDuration: Duration!
         }
     `;

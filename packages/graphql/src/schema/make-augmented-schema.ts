@@ -175,11 +175,14 @@ function makeAugmentedSchema({
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
 
-    const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
+    const { interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
         interfaceTypes,
-        relationshipPropertyInterfaceNames,
         interfaceRelationshipNames
     );
+
+    const relationshipProperties: ObjectTypeDefinitionNode[] = objectTypes.filter((objectType) => {
+        return relationshipPropertyInterfaceNames.has(objectType.name.value);
+    });
 
     const {
         userDefinedFieldDirectivesForNode,
@@ -746,7 +749,6 @@ function doForInterfacesThatAreTargetOfARelationship({
         userDefinedFieldDirectives,
         experimental,
     });
-
     relationships = [
         ...relationships,
         ...createConnectionFields({

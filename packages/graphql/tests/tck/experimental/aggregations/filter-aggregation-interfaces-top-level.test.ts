@@ -45,7 +45,7 @@ describe("Top level filter on aggregation interfaces", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

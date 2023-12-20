@@ -21,28 +21,21 @@ import type { InterfaceTypeDefinitionNode } from "graphql";
 
 export function filterInterfaceTypes(
     interfaceTypes: InterfaceTypeDefinitionNode[],
-    relationshipPropertyInterfaceNames: Set<string>,
     interfaceRelationshipNames: Set<string>
 ): {
-    relationshipProperties: InterfaceTypeDefinitionNode[];
     interfaceRelationships: InterfaceTypeDefinitionNode[];
     filteredInterfaceTypes: InterfaceTypeDefinitionNode[];
 } {
-    const relationshipProperties: InterfaceTypeDefinitionNode[] = [];
     const interfaceRelationships: InterfaceTypeDefinitionNode[] = [];
     const filteredInterfaceTypes: InterfaceTypeDefinitionNode[] = [];
     for (const interfaceType of interfaceTypes) {
-        if (relationshipPropertyInterfaceNames.has(interfaceType.name.value)) {
-            relationshipProperties.push(interfaceType);
-        } else if (interfaceRelationshipNames.has(interfaceType.name.value)) {
+        if (interfaceRelationshipNames.has(interfaceType.name.value)) {
             interfaceRelationships.push(interfaceType);
         } else {
             filteredInterfaceTypes.push(interfaceType);
         }
     }
-
     return {
-        relationshipProperties,
         interfaceRelationships,
         filteredInterfaceTypes,
     };

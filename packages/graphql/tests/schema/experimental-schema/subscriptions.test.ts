@@ -2583,7 +2583,7 @@ describe("Subscriptions", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -5766,6 +5766,10 @@ describe("Subscriptions", () => {
               movies: CreatureMoviesDisconnectFieldInput
             }
 
+            enum CreatureImplementation {
+              Person
+            }
+
             input CreatureImplementationsConnectInput {
               Person: [PersonConnectInput!]
             }
@@ -5858,6 +5862,7 @@ describe("Subscriptions", () => {
               OR: [CreatureWhere!]
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
+              typename_IN: [CreatureImplementation!]
             }
 
             \\"\\"\\"
@@ -6294,6 +6299,11 @@ describe("Subscriptions", () => {
               id: ID
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -6368,6 +6378,7 @@ describe("Subscriptions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {

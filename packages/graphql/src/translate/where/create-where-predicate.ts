@@ -73,7 +73,7 @@ export function createWhereNodePredicate({
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-    const factory = new QueryASTFactory(context.schemaModel);
+    const factory = new QueryASTFactory(context.schemaModel, context.experimental);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({
@@ -100,7 +100,7 @@ export function createWhereEdgePredicate({
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
-    const factory = new QueryASTFactory(context.schemaModel);
+    const factory = new QueryASTFactory(context.schemaModel, context.experimental);
     const queryASTEnv = new QueryASTEnv();
 
     const queryASTContext = new QueryASTContext({

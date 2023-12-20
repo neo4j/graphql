@@ -45,7 +45,7 @@ describe("579", () => {
              color: Color! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
            }
 
-           interface OfColorProperties @relationshipProperties {
+           type OfColorProperties @relationshipProperties {
                test: Boolean
            }
 

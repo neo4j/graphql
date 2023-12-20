@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("@populatedBy directive", () => {
     let driver: Driver;
@@ -851,7 +851,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [CREATE], callback: "callback")
                     }
@@ -964,7 +964,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
@@ -1095,7 +1095,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: String! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
@@ -1256,7 +1256,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
                     }
@@ -1372,7 +1372,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [UPDATE], callback: "callback")
                     }
@@ -1509,7 +1509,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback: Int! @populatedBy(operations: [CREATE, UPDATE], callback: "callback")
                     }
@@ -1663,7 +1663,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         title: String!
                         slug: String! @populatedBy(operations: [CREATE], callback: "callback")
@@ -1779,7 +1779,7 @@ describe("@populatedBy directive", () => {
                         )
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         title: String!
                         slug: String! @populatedBy(operations: [UPDATE], callback: "callback")

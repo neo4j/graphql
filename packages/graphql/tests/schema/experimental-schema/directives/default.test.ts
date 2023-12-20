@@ -215,6 +215,10 @@ describe("@default directive", () => {
               toBeOverridden: StringAggregateSelectionNonNullable!
             }
 
+            enum UserInterfaceImplementation {
+              User
+            }
+
             input UserInterfaceOptions {
               limit: Int
               offset: Int
@@ -256,6 +260,7 @@ describe("@default directive", () => {
               toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_STARTS_WITH: String
+              typename_IN: [UserInterfaceImplementation!]
             }
 
             input UserOptions {

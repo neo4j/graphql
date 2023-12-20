@@ -11,7 +11,7 @@ describe("nested aggregation on interface", () => {
                 runtime: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

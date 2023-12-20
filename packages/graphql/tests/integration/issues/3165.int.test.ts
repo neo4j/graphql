@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
-import { UniqueType } from "../../utils/graphql-types";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3165", () => {
     let driver: Driver;
@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
 
             union RelatedTarget = A | B
 
-            interface RelatedProperties @relationshipProperties {
+            type RelatedProperties @relationshipProperties {
                 prop: String!
             }
 

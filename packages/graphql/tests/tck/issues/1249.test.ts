@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                 supplierId: String!
             }
 
-            interface RelationMaterialSupplier @relationshipProperties {
+            type RelationMaterialSupplier @relationshipProperties {
                 supplierMaterialNumber: String!
             }
         `;

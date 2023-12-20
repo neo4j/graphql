@@ -49,7 +49,7 @@ export function createAuthorizationAfterPredicate({
         if (!isConcreteEntity(entity)) {
             throw new Error("Expected authorization rule to be applied on a concrete entity");
         }
-        const factory = new QueryASTFactory(context.schemaModel);
+        const factory = new QueryASTFactory(context.schemaModel, context.experimental);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({
@@ -109,7 +109,7 @@ export function createAuthorizationAfterPredicateField({
         if (!isConcreteEntity(entity)) {
             throw new Error("Expected authorization rule to be applied on a concrete entity");
         }
-        const factory = new QueryASTFactory(context.schemaModel);
+        const factory = new QueryASTFactory(context.schemaModel, context.experimental);
         const queryASTEnv = new QueryASTEnv();
 
         const queryASTContext = new QueryASTContext({

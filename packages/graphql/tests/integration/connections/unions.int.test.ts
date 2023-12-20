@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import Neo4j from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("Connections -> Unions", () => {
     let driver: Driver;
@@ -45,7 +45,7 @@ describe("Connections -> Unions", () => {
             author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
         }
 
-        interface Wrote @relationshipProperties {
+        type Wrote @relationshipProperties {
             words: Int!
         }
     `;

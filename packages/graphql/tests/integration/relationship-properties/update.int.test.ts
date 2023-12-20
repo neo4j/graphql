@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("Relationship properties - update", () => {
     let driver: Driver;
@@ -38,7 +38,7 @@ describe("Relationship properties - update", () => {
             movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
     `;

@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import type { Driver, Integer } from "neo4j-driver";
 import { isTime } from "neo4j-driver";
-import { graphql } from "graphql";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import Neo4j from "../../neo4j";
 
 describe("timestamp/time", () => {
     let driver: Driver;
@@ -99,7 +99,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp(operations: [CREATE])
                         screenTime: Int!
                     }
@@ -234,7 +234,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp(operations: [UPDATE])
                         screenTime: Int!
                     }
@@ -370,7 +370,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
@@ -448,7 +448,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
@@ -639,7 +639,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         createdAt: Time! @timestamp
                         screenTime: Int!
                     }
@@ -716,7 +716,7 @@ describe("timestamp/time", () => {
                         name: String!
                     }
 
-                    interface ActedIn @relationshipProperties {
+                    type ActedIn @relationshipProperties {
                         updatedAt: Time! @timestamp
                         screenTime: Int!
                     }
