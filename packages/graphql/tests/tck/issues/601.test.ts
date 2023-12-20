@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("#601", () => {
     let typeDefs: DocumentNode;
@@ -33,7 +33,7 @@ describe("#601", () => {
                 roles: [String!]!
             }
 
-            interface UploadedDocument @relationshipProperties {
+            type UploadedDocument @relationshipProperties {
                 fileId: ID!
                 uploadedAt: DateTime!
             }
@@ -105,15 +105,20 @@ describe("#601", () => {
                     WITH this1
                     MATCH (this1)<-[this2:UPLOADED]-(this3:CustomerContact)
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { __resolveType: \\"CustomerContact\\", __id: id(this3) } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this3, relationship: this2 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var4
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this3, edge.relationship AS this2
+                        RETURN collect({ fileId: this2.fileId, uploadedAt: apoc.date.convertFormat(toString(this2.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { __resolveType: \\"CustomerContact\\", __id: id(this3) } }) AS var4
+                    }
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                WITH this1 { customerContactConnection: var4 } AS this1
-                RETURN collect(this1) AS var5
+                WITH this1 { customerContactConnection: var5 } AS this1
+                RETURN collect(this1) AS var6
             }
-            RETURN this { documents: var5 } AS this"
+            RETURN this { documents: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

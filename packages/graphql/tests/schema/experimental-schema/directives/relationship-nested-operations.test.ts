@@ -8734,6 +8734,11 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -8893,6 +8898,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -9183,6 +9189,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoCreateInput
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -9342,6 +9353,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -9631,6 +9643,11 @@ describe("Relationship nested operations", () => {
                   node: PersonWhere!
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -9790,6 +9807,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -10066,6 +10084,11 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 input PersonImplementationsUpdateInput {
                   PersonOne: PersonOneUpdateInput
                   PersonTwo: PersonTwoUpdateInput
@@ -10235,6 +10258,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -10515,6 +10539,11 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -10674,6 +10703,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -10954,6 +10984,11 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelectionNullable!
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -11113,6 +11148,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -11505,6 +11541,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoCreateInput
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 input PersonImplementationsUpdateInput {
                   PersonOne: PersonOneUpdateInput
                   PersonTwo: PersonTwoUpdateInput
@@ -11674,6 +11715,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {
@@ -12042,6 +12084,11 @@ describe("Relationship nested operations", () => {
                   PersonTwo: PersonTwoCreateInput
                 }
 
+                enum PersonImplementation {
+                  PersonOne
+                  PersonTwo
+                }
+
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -12201,6 +12248,7 @@ describe("Relationship nested operations", () => {
                   name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   name_STARTS_WITH: String
+                  typename_IN: [PersonImplementation!]
                 }
 
                 type Query {

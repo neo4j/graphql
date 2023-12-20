@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { translateQuery, formatCypher, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/3765", () => {
     let typeDefs: DocumentNode;
@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 alternateContent: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "likesProperties")
             }
-            interface likesProperties @relationshipProperties {
+            type likesProperties @relationshipProperties {
                 someProp: String!
             }
         `;

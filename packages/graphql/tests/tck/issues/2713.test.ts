@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2713", () => {
     let neoSchema: Neo4jGraphQL;
@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "InGenre")
         }
 
-        interface InGenre @relationshipProperties {
+        type InGenre @relationshipProperties {
             intValue: Int!
         }
     `;

@@ -3043,7 +3043,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@relationship.properties invalid. Cannot find interface to represent the relationship properties: Poster."
+                    "@relationship.properties invalid. Cannot find type to represent the relationship properties: Poster."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
@@ -3073,54 +3073,14 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@relationship.properties invalid. Cannot find interface to represent the relationship properties: Poster."
-                );
-                expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
-            });
-
-            test("@relationship two relationshipProperties interface found", () => {
-                const interfaceDoc = gql`
-                    interface Poster @relationshipProperties {
-                        createdAt: String
-                    }
-                    interface Poster {
-                        updatedAt: String
-                    }
-                `;
-                const doc = gql`
-                    type User {
-                        name: String
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
-                    }
-                    type Post {
-                        title: String
-                    }
-                `;
-
-                const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@relationship.properties invalid. Cannot have more than 1 interface represent the relationship properties."
+                    "@relationship.properties invalid. Cannot find type to represent the relationship properties: Poster."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
             test("@relationship relationshipProperties interface not annotated with @relationshipProperties", () => {
-                const interfaceDoc = gql`
-                    interface Poster {
+                const relationshipProperties = gql`
+                    type Poster {
                         createdAt: String
                     }
                 `;
@@ -3135,9 +3095,9 @@ describe("validation 2.0", () => {
                 `;
 
                 const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+                const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
@@ -3150,14 +3110,14 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "@relationship.properties invalid. Properties interface Poster must use directive `@relationshipProperties`."
+                    "@relationship.properties invalid. Properties type Poster must use directive `@relationshipProperties`."
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "posts", "@relationship", "properties"]);
             });
 
             test("@relationship correct usage", () => {
-                const interfaceDoc = gql`
-                    interface Poster @relationshipProperties {
+                const relationshipProps = gql`
+                    type Poster @relationshipProperties {
                         createdAt: String
                     }
                 `;
@@ -3175,9 +3135,9 @@ describe("validation 2.0", () => {
                 `;
 
                 const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+                const objects = relationshipProps.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
@@ -5991,13 +5951,13 @@ describe("validation 2.0", () => {
         describe("@relationshipProperties", () => {
             describe("invalid", () => {
                 test("should throw error if @authorization is used on relationship property", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type ActedIn @relationshipProperties {
                             screenTime: Int @authorization(validate: [{ where: { id: "1" } }])
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
@@ -6008,9 +5968,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6031,16 +5991,16 @@ describe("validation 2.0", () => {
                 });
 
                 test("should throw error if @authorization is used on relationship property extension", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type ActedIn @relationshipProperties {
                             me: String
                         }
-                        extend interface ActedIn {
+                        extend type ActedIn {
                             screenTime: Int @authorization(validate: [{ where: { id: "1" } }])
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
@@ -6051,9 +6011,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6073,13 +6033,13 @@ describe("validation 2.0", () => {
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
                 });
                 test("should throw error if @authentication is used on relationship property", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type ActedIn @relationshipProperties {
                             screenTime: Int @authentication
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
@@ -6090,9 +6050,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6112,13 +6072,13 @@ describe("validation 2.0", () => {
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
                 });
                 test("should throw error if @subscriptionsAuthorization is used on relationship property", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type ActedIn @relationshipProperties {
                             screenTime: Int @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
@@ -6129,9 +6089,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6152,13 +6112,13 @@ describe("validation 2.0", () => {
                 });
 
                 test("should throw error if @relationship is used on relationship property", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type ActedIn @relationshipProperties {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
@@ -6169,9 +6129,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6192,14 +6152,14 @@ describe("validation 2.0", () => {
                 });
 
                 test("should throw error if @cypher is used on relationship property", () => {
-                    const interfaceTypes = gql`
-                        interface ActedIn @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type ActedIn @relationshipProperties {
                             id: ID @cypher(statement: "RETURN id(this) as id", columnName: "id")
                             roles: [String]
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type Movie {
                             actors: Actor! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                         }
@@ -6210,9 +6170,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6233,13 +6193,13 @@ describe("validation 2.0", () => {
                 });
 
                 test("@relationshipProperties reserved field name", () => {
-                    const interfaceTypes = gql`
-                        interface HasPost @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type HasPost @relationshipProperties {
                             cursor: Int
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type User {
                             name: String
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
@@ -6250,9 +6210,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6273,8 +6233,8 @@ describe("validation 2.0", () => {
                 });
 
                 test("@cypher forbidden on @relationshipProperties field", () => {
-                    const interfaceTypes = gql`
-                        interface HasPost @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type HasPost @relationshipProperties {
                             review: Float
                                 @cypher(
                                     statement: """
@@ -6285,7 +6245,7 @@ describe("validation 2.0", () => {
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type User {
                             name: String
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
@@ -6296,9 +6256,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6321,13 +6281,13 @@ describe("validation 2.0", () => {
 
             describe("valid", () => {
                 test("@relationshipProperties", () => {
-                    const interfaceTypes = gql`
-                        interface HasPost @relationshipProperties {
+                    const relationshipProperties = gql`
+                        type HasPost @relationshipProperties {
                             review: Float
                         }
                     `;
                     const doc = gql`
-                        ${interfaceTypes}
+                        ${relationshipProperties}
                         type User {
                             name: String
                             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
@@ -6338,9 +6298,9 @@ describe("validation 2.0", () => {
                     `;
 
                     const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                    const interfaces = [] as InterfaceTypeDefinitionNode[];
                     const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = [] as ObjectTypeDefinitionNode[];
+                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                     const executeValidate = () =>
                         validateDocument({
                             document: doc,
@@ -6516,13 +6476,13 @@ describe("validation 2.0", () => {
 
         describe("Reserved Type Name", () => {
             test("should throw when using 'node' as a relationship property", () => {
-                const interfaceTypes = gql`
-                    interface ActedIn @relationshipProperties {
+                const relationshipPropertiesTypes = gql`
+                    type ActedIn @relationshipProperties {
                         node: ID
                     }
                 `;
                 const doc = gql`
-                    ${interfaceTypes}
+                    ${relationshipPropertiesTypes}
                     type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -6534,9 +6494,9 @@ describe("validation 2.0", () => {
                 `;
 
                 const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+                const objects = relationshipPropertiesTypes.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
@@ -6545,7 +6505,6 @@ describe("validation 2.0", () => {
                         experimental: false,
                     });
                 const errors = getError(executeValidate);
-
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
@@ -6555,16 +6514,16 @@ describe("validation 2.0", () => {
             });
 
             test("should throw when using 'node' as a relationship property extension", () => {
-                const interfaceTypes = gql`
-                    interface ActedIn @relationshipProperties {
+                const relationshipPropertiesTypes = gql`
+                    type ActedIn @relationshipProperties {
                         me: String
                     }
-                    extend interface ActedIn {
+                    extend type ActedIn {
                         node: ID
                     }
                 `;
                 const doc = gql`
-                    ${interfaceTypes}
+                    ${relationshipPropertiesTypes}
                     type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -6576,9 +6535,9 @@ describe("validation 2.0", () => {
                 `;
 
                 const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+                const objects = relationshipPropertiesTypes.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
@@ -6597,13 +6556,13 @@ describe("validation 2.0", () => {
             });
 
             test("should throw when using 'cursor' as a relationship property", () => {
-                const interfaceTypes = gql`
-                    interface ActedIn @relationshipProperties {
+                const relationshipPropertiesTypes = gql`
+                    type ActedIn @relationshipProperties {
                         cursor: ID
                     }
                 `;
                 const doc = gql`
-                    ${interfaceTypes}
+                    ${relationshipPropertiesTypes}
                     type Movie {
                         id: ID
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -6615,9 +6574,9 @@ describe("validation 2.0", () => {
                 `;
 
                 const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+                const objects = relationshipPropertiesTypes.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
@@ -7039,13 +6998,13 @@ describe("validation 2.0", () => {
 
         describe("relationshipProperties directive", () => {
             test("should not throw when used correctly on an interface", () => {
-                const interfaceTypes = gql`
-                    interface ActedIn @relationshipProperties {
+                const relationshipProperties = gql`
+                    type ActedIn @relationshipProperties {
                         screenTime: Int!
                     }
                 `;
                 const doc = gql`
-                    ${interfaceTypes}
+                    ${relationshipProperties}
 
                     type Actor {
                         name: String!
@@ -7059,9 +7018,9 @@ describe("validation 2.0", () => {
                 `;
 
                 const enums = [] as EnumTypeDefinitionNode[];
-                const interfaces = interfaceTypes.definitions as InterfaceTypeDefinitionNode[];
+                const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
+                const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
@@ -7073,16 +7032,16 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("should throw if used on an object type", () => {
+            test("should throw if used on an interface type", () => {
                 const doc = gql`
-                    type ActedIn @relationshipProperties {
+                    interface ActedIn @relationshipProperties {
                         screenTime: Int!
                     }
                 `;
 
                 expect(() =>
                     validateDocument({ document: doc, features: undefined, additionalDefinitions, experimental: false })
-                ).toThrow('Directive "@relationshipProperties" may not be used on OBJECT.');
+                ).toThrow('Directive "@relationshipProperties" may not be used on INTERFACE.');
             });
 
             test("should throw if used on a field", () => {

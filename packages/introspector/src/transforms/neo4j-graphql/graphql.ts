@@ -18,15 +18,15 @@
  */
 
 import type { Neo4jStruct, NodeMap, RelationshipMap } from "../../types";
-import createNodeFields from "./utils/create-node-fields";
+import nodeKey from "../../utils/node-key";
 import uniqueString from "../../utils/unique-string";
-import { NodeDirective } from "./directives/Node";
 import { GraphQLNode } from "./GraphQLNode";
-import generateRelationshipPropsName from "./utils/generate-relationship-props-name";
+import { NodeDirective } from "./directives/Node";
 import { RelationshipPropertiesDirective } from "./directives/RelationshipProperties";
+import createNodeFields from "./utils/create-node-fields";
 import createRelationshipFields from "./utils/create-relationship-fields";
 import generateGraphQLSafeName from "./utils/generate-graphql-safe-name";
-import nodeKey from "../../utils/node-key";
+import generateRelationshipPropsName from "./utils/generate-relationship-props-name";
 
 type GraphQLNodeMap = {
     [key: string]: GraphQLNode;
@@ -88,11 +88,11 @@ function hydrateWithRelationships(nodes: GraphQLNodeMap, rels: RelationshipMap):
                 generateGraphQLSafeName(generateRelationshipPropsName(relType)),
                 Object.values(nodes).map((n) => n.typeName)
             );
-            const relInterfaceNode = new GraphQLNode("interface", relInterfaceName);
-            relInterfaceNode.addDirective(new RelationshipPropertiesDirective());
+            const relTypeNode = new GraphQLNode("type", relInterfaceName);
+            relTypeNode.addDirective(new RelationshipPropertiesDirective());
             const relTypePropertiesFields = createNodeFields(rel.properties, relType);
-            relTypePropertiesFields.forEach((f) => relInterfaceNode.addField(f));
-            nodes[relInterfaceName] = relInterfaceNode;
+            relTypePropertiesFields.forEach((f) => relTypeNode.addField(f));
+            nodes[relInterfaceName] = relTypeNode;
         }
         rel.paths.forEach((path) => {
             const { fromField, toField } = createRelationshipFields(

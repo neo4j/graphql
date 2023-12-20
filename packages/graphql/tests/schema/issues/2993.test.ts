@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2993", () => {
@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")
             }
 
-            interface FOLLOWS @relationshipProperties {
+            type FOLLOWS @relationshipProperties {
                 since: DateTime! @timestamp(operations: [CREATE])
             }
         `;

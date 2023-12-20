@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Unions", () => {
@@ -42,7 +42,7 @@ describe("Unions", () => {
                 author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
             }
 
-            interface Wrote @relationshipProperties {
+            type Wrote @relationshipProperties {
                 words: Int!
             }
         `;

@@ -53,7 +53,7 @@ describe("Interface top level operations", () => {
                 actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;
@@ -89,7 +89,8 @@ describe("Interface top level operations", () => {
                 WITH this1 { .title, __resolveType: \\"Series\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

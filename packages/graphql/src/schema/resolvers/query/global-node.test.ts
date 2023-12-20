@@ -18,17 +18,10 @@
  */
 
 import { globalNodeResolver } from "./global-node";
-import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
 describe("Global node resolver", () => {
     test("should return the correct type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-            primitiveFields: [],
-            isGlobalNode: true,
-        }).instance();
-
-        const result = globalNodeResolver({ nodes: [node], entities: [] });
+        const result = globalNodeResolver({ entities: [] });
         expect(result.type).toBe("Node");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

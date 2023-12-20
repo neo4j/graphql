@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import type { Driver, Session } from "neo4j-driver";
-import { generate } from "randomstring";
 import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
 import * as neo4jDriver from "neo4j-driver";
-import Neo4j from "../neo4j";
+import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -68,7 +68,7 @@ describe("@alias directive", () => {
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
-            interface AliasDirectiveTestLikesProps @relationshipProperties {
+            type AliasDirectiveTestLikesProps @relationshipProperties {
                 comment: String! @alias(property: "dbComment")
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }

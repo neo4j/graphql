@@ -27,7 +27,6 @@ import {
 } from "graphql";
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import type { PageInfo as PageInfoRelay } from "graphql-relay";
-import type { Node } from "../../../classes";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { translateRead } from "../../../translate";
@@ -40,12 +39,10 @@ import { graphqlDirectivesToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function rootConnectionResolver({
-    node,
     composer,
     concreteEntityAdapter,
     propagatedDirectives,
 }: {
-    node: Node;
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
@@ -56,9 +53,7 @@ export function rootConnectionResolver({
 
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
-            node,
             entityAdapter: concreteEntityAdapter,
-            isRootConnectionField: true,
         });
 
         const executeResult = await execute({

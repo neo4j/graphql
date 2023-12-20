@@ -99,6 +99,18 @@ export function withWhereInputType({
                 AND: whereInputType.NonNull.List,
                 NOT: whereInputType,
             });
+
+            const enumValues = Object.fromEntries(
+                entityAdapter.concreteEntities.map((concreteEntity) => [
+                    concreteEntity.name,
+                    { value: concreteEntity.name },
+                ])
+            );
+            const interfaceImplementation = composer.createEnumTC({
+                name: entityAdapter.operations.implementationEnumTypename,
+                values: enumValues,
+            });
+            whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
         } else {
             const implementationsWhereInputType = makeImplementationsWhereInput({
                 interfaceEntityAdapter: entityAdapter,

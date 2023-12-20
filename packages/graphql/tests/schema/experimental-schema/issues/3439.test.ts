@@ -400,6 +400,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: StringAggregateSelectionNonNullable!
             }
 
+            enum INodeImplementation {
+              Movie
+              Series
+            }
+
             input INodeOptions {
               limit: Int
               offset: Int
@@ -430,6 +435,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: String
+              typename_IN: [INodeImplementation!]
             }
 
             interface IProduct {
@@ -468,6 +474,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             interface IProductEventPayload {
               id: String!
               name: String!
+            }
+
+            enum IProductImplementation {
+              Movie
+              Series
             }
 
             input IProductImplementationsConnectInput {
@@ -563,6 +574,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             type Movie implements INode & IProduct {
@@ -1815,6 +1827,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               where: IProductGenreConnectionWhere
             }
 
+            enum IProductImplementation {
+              Movie
+              Series
+            }
+
             input IProductImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -1908,6 +1925,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             type Movie implements IProduct {
@@ -2902,6 +2920,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
+            enum IProductImplementation {
+              Movie
+              Series
+            }
+
             input IProductImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
@@ -2980,6 +3003,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             type Movie implements IProduct {

@@ -175,11 +175,14 @@ function makeAugmentedSchema({
 
     const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
 
-    const { relationshipProperties, interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
+    const { interfaceRelationships, filteredInterfaceTypes } = filterInterfaceTypes(
         interfaceTypes,
-        relationshipPropertyInterfaceNames,
         interfaceRelationshipNames
     );
+
+    const relationshipProperties: ObjectTypeDefinitionNode[] = objectTypes.filter((objectType) => {
+        return relationshipPropertyInterfaceNames.has(objectType.name.value);
+    });
 
     const {
         userDefinedFieldDirectivesForNode,
@@ -335,7 +338,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isReadable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                    node,
                     entityAdapter: concreteEntityAdapter,
                 }),
             });
@@ -345,7 +347,6 @@ function makeAugmentedSchema({
             );
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                    node,
                     composer,
                     concreteEntityAdapter,
                     propagatedDirectives,
@@ -359,7 +360,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isAggregable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                    node,
                     concreteEntityAdapter,
                 }),
             });
@@ -748,7 +748,6 @@ function doForInterfacesThatAreTargetOfARelationship({
         userDefinedFieldDirectives,
         experimental,
     });
-
     relationships = [
         ...relationships,
         ...createConnectionFields({

@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Create or Connect", () => {
     describe("Simple", () => {
@@ -39,7 +39,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screentime: Int!
                 }
             `;
@@ -188,7 +188,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screentime: Int!
                 }
             `;
@@ -461,7 +461,7 @@ describe("Create or Connect", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     id: ID! @id
                     createdAt: DateTime! @timestamp(operations: [CREATE])
                     updatedAt: DateTime! @timestamp(operations: [UPDATE])

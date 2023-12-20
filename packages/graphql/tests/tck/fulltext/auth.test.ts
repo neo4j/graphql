@@ -349,7 +349,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -410,7 +410,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -787,7 +787,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;
@@ -851,7 +851,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     id: ID
                 }
 
-                interface Directed @relationshipProperties {
+                type Directed @relationshipProperties {
                     year: Int
                 }
             `;

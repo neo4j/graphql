@@ -270,11 +270,11 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-        });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValues(),
+            });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -352,12 +352,12 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { inputValue },
-        });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValues(),
+                variableValues: { inputValue },
+            });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -433,12 +433,12 @@ describe("array-push", () => {
 
             await session.run(cypher, { movieTitle });
 
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValues(),
-            variableValues: { inputValue },
-        });
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: update,
+                contextValue: neo4j.getContextValues(),
+                variableValues: { inputValue },
+            });
 
             if (gqlResult.errors) {
                 console.log(JSON.stringify(gqlResult.errors, null, 2));
@@ -592,7 +592,7 @@ describe("array-push", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -676,7 +676,7 @@ describe("array-push", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 locations: [Point]
             }
         `;

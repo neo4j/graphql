@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import { offsetToCursor } from "graphql-relay";
-import type { Driver } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
 import { graphql } from "graphql";
+import { offsetToCursor } from "graphql-relay";
 import { gql } from "graphql-tag";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { cleanNodes } from "../../utils/clean-nodes";
 import { UniqueType } from "../../utils/graphql-types";
 import { runCypher } from "../../utils/run-cypher";
-import { cleanNodes } from "../../utils/clean-nodes";
+import Neo4j from "../neo4j";
 
 describe("Relationship properties - read", () => {
     let driver: Driver;
@@ -77,7 +77,7 @@ describe("Relationship properties - read", () => {
                 movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;

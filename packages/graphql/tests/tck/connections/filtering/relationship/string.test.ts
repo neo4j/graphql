@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
 import {
     formatCypher,
-    translateQuery,
     formatParams,
     setTestEnvVars,
+    translateQuery,
     unsetTestEnvVars,
 } from "../../../utils/tck-test-utils";
 
@@ -44,7 +44,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
                 screenTime: Int!
             }
@@ -91,12 +91,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role CONTAINS $param0
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -131,12 +136,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (this0.role CONTAINS $param0)
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -171,12 +181,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role STARTS WITH $param0
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -211,12 +226,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (this0.role STARTS WITH $param0)
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -251,12 +271,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role ENDS WITH $param0
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -291,12 +316,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (this0.role ENDS WITH $param0)
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -331,12 +361,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role =~ $param0
-                WITH { role: this0.role, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ role: this0.role, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -42,7 +42,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import Neo4j from "../../../neo4j";
 
 describe("aggregations-where-edge-bigint", () => {
     let driver: Driver;
@@ -51,7 +51,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -118,7 +118,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -188,7 +188,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -255,7 +255,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;
@@ -324,7 +324,7 @@ describe("aggregations-where-edge-bigint", () => {
               likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someBigInt: BigInt
             }
         `;

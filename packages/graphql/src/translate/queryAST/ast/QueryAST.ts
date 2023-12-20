@@ -43,8 +43,14 @@ export class QueryAST {
     public buildNew(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
 
-        const { clauses, projectionExpr } = this.transpile(context);
-        const returnClause = new Cypher.Return(projectionExpr);
+        const { clauses, projectionExpr, extraProjectionColumns } = this.transpile(context);
+        const returnClause = varName ? new Cypher.Return([projectionExpr, varName]) : new Cypher.Return(projectionExpr);
+
+        if (extraProjectionColumns) {
+            for (const projectionColumn of extraProjectionColumns) {
+                returnClause.addColumns(projectionColumn);
+            }
+        }
 
         return Cypher.concat(...clauses, returnClause);
     }

@@ -38,15 +38,15 @@ describe("Union Interface Relationships", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
             
-            interface Directed @relationshipProperties {
+            type Directed @relationshipProperties {
                 year: Int!
             }
             
-            interface Review @relationshipProperties {
+            type Review @relationshipProperties {
                 score: Int!
             }
         
@@ -1815,6 +1815,11 @@ describe("Union Interface Relationships", () => {
               _on: ReviewerImplementationsDisconnectInput
             }
 
+            enum ReviewerImplementation {
+              Influencer
+              Person
+            }
+
             input ReviewerImplementationsConnectInput {
               Person: [PersonConnectInput!]
             }
@@ -1879,6 +1884,7 @@ describe("Union Interface Relationships", () => {
               reviewerId_LTE: Int
               reviewerId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reviewerId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              typename_IN: [ReviewerImplementation!]
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
