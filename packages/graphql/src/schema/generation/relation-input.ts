@@ -224,7 +224,7 @@ function makeCreateFieldInputTypeFields({
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
-    const hasNonGeneratedProperties = relationshipAdapter.nonGeneratedProperties.length > 0;
+    const hasNonGeneratedProperties = relationshipAdapter.createInputFields.length > 0;
     if (hasNonGeneratedProperties) {
         fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
     }
