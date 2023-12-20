@@ -111,17 +111,17 @@ function makeDeclareRelationshipDirectiveVisitorFn(
             console.error("No last definition traversed");
             return;
         }
+        const isDirectiveOnInterfaceField = (
+            [Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION] as string[]
+        ).includes(parentDef.kind);
 
         // TODO: 2nd part of the if-check can be deleted once relationship directive is officially not supported on interfaces
-        if (
-            directiveNode.name.value === "relationship" &&
-            ![Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION].includes(parentDef.kind)
-        ) {
+        if (directiveNode.name.value === "relationship" && !isDirectiveOnInterfaceField) {
             addToRelationshipFieldsMap(parentDef.name.value, traversedDef.name.value);
             return;
         }
         if (directiveNode.name.value === "declareRelationship") {
-            if (![Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION].includes(parentDef.kind)) {
+            if (!isDirectiveOnInterfaceField) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [parentDef],
