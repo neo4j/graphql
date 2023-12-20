@@ -1061,13 +1061,10 @@ describe("@populatedBy tests", () => {
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
-                type MovieGenresRelationship implements RelProperties {
-                  callback1: String!
-                  callback2: String!
-                  callback3: String!
+                type MovieGenresRelationship {
                   cursor: String!
-                  id: ID!
                   node: Genre!
+                  properties: RelProperties!
                 }
 
                 input MovieGenresUpdateConnectionInput {
@@ -1186,7 +1183,7 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
-                interface RelProperties {
+                type RelProperties {
                   callback1: String!
                   callback2: String!
                   callback3: String!
@@ -1644,13 +1641,10 @@ describe("@populatedBy tests", () => {
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
-                type MovieGenresRelationship implements RelProperties {
-                  callback1: Int!
-                  callback2: Int!
-                  callback3: Int!
+                type MovieGenresRelationship {
                   cursor: String!
-                  id: ID!
                   node: Genre!
+                  properties: RelProperties!
                 }
 
                 input MovieGenresUpdateConnectionInput {
@@ -1769,7 +1763,7 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
-                interface RelProperties {
+                type RelProperties {
                   callback1: Int!
                   callback2: Int!
                   callback3: Int!

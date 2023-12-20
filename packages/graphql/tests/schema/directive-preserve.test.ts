@@ -909,7 +909,7 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               role: String!
             }
 
@@ -994,10 +994,10 @@ describe("Directive-preserve", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              role: String!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1460,10 +1460,10 @@ describe("Directive-preserve", () => {
               create: [ProductionActorsCreateFieldInput!]
             }
 
-            type ProductionActorsRelationship implements ActedIn {
+            type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              role: String!
+              properties: ActedIn!
             }
 
             input ProductionActorsUpdateConnectionInput {
@@ -1885,7 +1885,7 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               role: String!
             }
 
@@ -1970,10 +1970,10 @@ describe("Directive-preserve", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              role: String!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -2436,10 +2436,10 @@ describe("Directive-preserve", () => {
               create: [ProductionActorsCreateFieldInput!]
             }
 
-            type ProductionActorsRelationship implements ActedIn {
+            type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              role: String!
+              properties: ActedIn!
             }
 
             input ProductionActorsUpdateConnectionInput {

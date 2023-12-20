@@ -56,7 +56,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -87,7 +89,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    RETURN collect({ screenTime: create_this2.screenTime, node: { name: create_this3.name } }) AS create_var4
+                    RETURN collect({ properties: { screenTime: create_this2.screenTime }, node: { name: create_this3.name } }) AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
@@ -114,7 +116,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -145,7 +149,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    RETURN collect({ screenTime: create_this2.screenTime, node: { name: create_this3.name } }) AS create_var4
+                    RETURN collect({ properties: { screenTime: create_this2.screenTime }, node: { name: create_this3.name } }) AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }
@@ -175,7 +179,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                         title
                         actorsConnection(where: { node: { name: "Tom Hanks" } }) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -207,7 +213,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
-                    RETURN collect({ screenTime: create_this2.screenTime, node: { name: create_this3.name } }) AS create_var4
+                    RETURN collect({ properties: { screenTime: create_this2.screenTime }, node: { name: create_this3.name } }) AS create_var4
                 }
                 RETURN { edges: create_var4, totalCount: totalCount } AS create_var5
             }

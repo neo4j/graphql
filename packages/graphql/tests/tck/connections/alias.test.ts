@@ -89,7 +89,9 @@ describe("Connections Alias", () => {
                     title
                     hanks: actorsConnection(where: { node: { name: "Tom Hanks" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -97,7 +99,9 @@ describe("Connections Alias", () => {
                     }
                     jenny: actorsConnection(where: { node: { name: "Robin Wright" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -122,7 +126,7 @@ describe("Connections Alias", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -136,7 +140,7 @@ describe("Connections Alias", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this5, edge.relationship AS this4
-                    RETURN collect({ screenTime: this4.screenTime, node: { name: this5.name } }) AS var6
+                    RETURN collect({ properties: { screenTime: this4.screenTime }, node: { name: this5.name } }) AS var6
                 }
                 RETURN { edges: var6, totalCount: totalCount } AS var7
             }

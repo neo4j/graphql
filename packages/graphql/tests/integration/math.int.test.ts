@@ -686,7 +686,9 @@ describe("Mathematical operations tests", () => {
                 }
                 actedInConnection {
                   edges {
-                    pay
+                    properties {
+                        pay
+                    }
                   }
                 }
               }
@@ -774,7 +776,9 @@ describe("Mathematical operations tests", () => {
                 }
                 actedInConnection {
                   edges {
-                    pay
+                    properties { 
+                        pay
+                    }
                   }
                 }
               }

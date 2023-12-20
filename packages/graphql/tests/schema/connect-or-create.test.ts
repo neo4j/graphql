@@ -536,7 +536,7 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               characterName: String
               screentime: Int!
             }
@@ -850,11 +850,10 @@ describe("Connect Or Create", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
-              characterName: String
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              screentime: Int!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {

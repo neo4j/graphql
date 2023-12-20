@@ -213,8 +213,8 @@ describe("@id directive", () => {
             charset: "alphabetic",
         });
 
-        const create = `
-            mutation($title: String!, $name: String!) {
+        const create = /* GraphQL */ `
+            mutation ($title: String!, $name: String!) {
                 createMovies(
                     input: [
                         { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
@@ -223,7 +223,9 @@ describe("@id directive", () => {
                     movies {
                         actorsConnection {
                             edges {
-                                id
+                                properties {
+                                    id
+                                }
                             }
                         }
                     }
@@ -243,7 +245,9 @@ describe("@id directive", () => {
 
             const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](actorsConnection.edges[0].id))).toBe(true);
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](actorsConnection.edges[0].properties.id))).toBe(
+                true
+            );
         } finally {
             await session.close();
         }

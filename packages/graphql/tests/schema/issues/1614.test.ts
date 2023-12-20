@@ -213,10 +213,10 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type CrewMemberMoviesRelationship implements CrewPosition {
+            type CrewMemberMoviesRelationship {
               cursor: String!
               node: Movie!
-              position: CrewPositionType
+              properties: CrewPosition!
             }
 
             input CrewMemberMoviesUpdateConnectionInput {
@@ -263,7 +263,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               totalCount: Int!
             }
 
-            interface CrewPosition {
+            type CrewPosition {
               position: CrewPositionType
             }
 

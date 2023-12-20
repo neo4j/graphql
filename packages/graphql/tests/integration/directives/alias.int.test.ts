@@ -171,13 +171,15 @@ describe("@alias directive", () => {
         expect((gqlResult.data as any)[ProtectedUser.plural][0]).toEqual({ name: dbName });
     });
     test("Aliased fields on nodes through connections (incl. rel props)", async () => {
-        const usersQuery = `
+        const usersQuery = /* GraphQL */ `
             query UsersLikesMovies {
                 ${AliasDirectiveTestUser.plural} {
                     name
                     likesConnection {
                         edges {
-                            comment
+                            properties {
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -201,7 +203,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        comment: dbComment,
+                        properties: { comment: dbComment },
                         node: {
                             title: dbTitle,
                             year: year.toNumber(),
@@ -213,13 +215,15 @@ describe("@alias directive", () => {
     });
 
     test("Using GraphQL query alias with @alias (using CONTAINS filter)", async () => {
-        const usersQuery = `
+        const usersQuery = /* GraphQL */ `
             query UsersLikesMovies {
                 ${AliasDirectiveTestUser.plural}(where: {name_CONTAINS: "${dbName.substring(0, 6)}"}) {
                     myName: name
                     likesConnection {
                         edges {
-                            myComment: comment
+                           properties {
+                             myComment: comment 
+                            }
                         }
                     }
                 }
@@ -236,7 +240,7 @@ describe("@alias directive", () => {
 
         expect((gqlResult.data as any)[AliasDirectiveTestUser.plural][0]).toEqual({
             myName: dbName,
-            likesConnection: { edges: [{ myComment: dbComment }] },
+            likesConnection: { edges: [{ properties: { myComment: dbComment } }] },
         });
     });
 
@@ -259,8 +263,10 @@ describe("@alias directive", () => {
                     }
                     likesConnection {
                         edges {
-                            relationshipCreatedAt
-                            comment
+                            properties {
+                                relationshipCreatedAt
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -295,8 +301,10 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        relationshipCreatedAt: expect.any(String),
-                        comment,
+                        properties: {
+                            relationshipCreatedAt: expect.any(String),
+                            comment,
+                        },
                         node: {
                             title,
                             year: year.toNumber(),
@@ -327,7 +335,9 @@ describe("@alias directive", () => {
                     }
                     likesConnection {
                         edges {
-                            comment
+                            properties {
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -360,7 +370,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        comment,
+                        properties: { comment },
                         node: {
                             title,
                             year: year.toNumber(),
@@ -416,7 +426,9 @@ describe("@alias directive", () => {
                     }
                     likesConnection {
                         edges {
-                            comment
+                            properties {
+                                comment
+                            }
                             node {
                                 title
                                 year
@@ -449,7 +461,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
-                        comment: newComment,
+                        properties: { comment: newComment },
                         node: {
                             title: newTitle,
                             year: newYear.toNumber(),

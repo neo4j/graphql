@@ -1795,7 +1795,7 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               pay: Float
               roles: [String!]
             }
@@ -2017,11 +2017,10 @@ describe("Algebraic", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Person!
-              pay: Float
-              roles: [String!]
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -2325,11 +2324,10 @@ describe("Algebraic", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type PersonActedInMoviesRelationship implements ActedIn {
+            type PersonActedInMoviesRelationship {
               cursor: String!
               node: Movie!
-              pay: Float
-              roles: [String!]
+              properties: ActedIn!
             }
 
             input PersonActedInMoviesUpdateConnectionInput {

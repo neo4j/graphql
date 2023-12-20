@@ -214,7 +214,7 @@ function makeAugmentedSchema({
 
     // this is the new "functional" way for the above forEach
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
-    const seenRelationshipPropertiesInterfaces = new Set<string>();
+    const seenRelationshipPropertiesTypes = new Set<string>();
     schemaModel.concreteEntities.forEach((concreteEntity) => {
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
@@ -222,19 +222,19 @@ function makeAugmentedSchema({
             {
                 if (
                     !relationshipAdapter.propertiesTypeName ||
-                    seenRelationshipPropertiesInterfaces.has(relationshipAdapter.propertiesTypeName)
+                    seenRelationshipPropertiesTypes.has(relationshipAdapter.propertiesTypeName)
                 ) {
                     continue;
                 }
-                doForRelationshipPropertiesInterface({
+                doForRelationshipPropertiesType({
                     composer,
                     relationshipAdapter,
-                    userDefinedDirectivesForInterface,
+                    userDefinedDirectivesForNode,
                     userDefinedFieldDirectivesForNode,
                     features,
                     experimental,
                 });
-                seenRelationshipPropertiesInterfaces.add(relationshipAdapter.propertiesTypeName);
+                seenRelationshipPropertiesTypes.add(relationshipAdapter.propertiesTypeName);
             }
         }
     });
@@ -308,7 +308,7 @@ function makeAugmentedSchema({
         withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
         withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
         const composeNode = withObjectType({
-            concreteEntityAdapter,
+            entityAdapter: concreteEntityAdapter,
             userDefinedFieldDirectives,
             userDefinedObjectDirectives,
             composer,
@@ -447,7 +447,7 @@ function makeAugmentedSchema({
             const propagatedDirectives = propagatedDirectivesForNode.get(entity.name) || [];
             const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
             withInterfaceType({
-                entityAdapter: interfaceEntityAdapter,
+                interfaceEntityAdapter,
                 userDefinedFieldDirectives,
                 userDefinedInterfaceDirectives,
                 composer,
@@ -656,17 +656,17 @@ function makeAugmentedSchema({
 
 export default makeAugmentedSchema;
 
-function doForRelationshipPropertiesInterface({
+function doForRelationshipPropertiesType({
     composer,
     relationshipAdapter,
-    userDefinedDirectivesForInterface,
+    userDefinedDirectivesForNode,
     userDefinedFieldDirectivesForNode,
     features,
     experimental,
 }: {
     composer: SchemaComposer;
     relationshipAdapter: RelationshipAdapter;
-    userDefinedDirectivesForInterface: Map<string, DirectiveNode[]>;
+    userDefinedDirectivesForNode: Map<string, DirectiveNode[]>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     features?: Neo4jFeaturesSettings;
     experimental: boolean;
@@ -677,11 +677,11 @@ function doForRelationshipPropertiesInterface({
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(
         relationshipAdapter.propertiesTypeName
     ) as Map<string, DirectiveNode[]>;
-    const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(relationshipAdapter.name) || [];
-    withInterfaceType({
+    const userDefinedInterfaceDirectives = userDefinedDirectivesForNode.get(relationshipAdapter.name) || [];
+    withObjectType({
         entityAdapter: relationshipAdapter,
         userDefinedFieldDirectives,
-        userDefinedInterfaceDirectives,
+        userDefinedObjectDirectives: userDefinedInterfaceDirectives,
         composer,
     });
     withSortInputType({ relationshipAdapter, userDefinedFieldDirectives, composer });
@@ -735,7 +735,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     withUpdateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
 
     const composeInterface = withInterfaceType({
-        entityAdapter: interfaceEntityAdapter,
+        interfaceEntityAdapter,
         userDefinedFieldDirectives,
         userDefinedInterfaceDirectives: [],
         composer,

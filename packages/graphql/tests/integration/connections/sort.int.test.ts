@@ -512,7 +512,9 @@ describe("connections sort", () => {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
-                                        screenTime
+                                        properties {
+                                            screenTime
+                                        }
                                         node {
                                             id
                                             title
@@ -562,7 +564,9 @@ describe("connections sort", () => {
                                 id
                                 actedInConnection(sort: [{ edge: { screenTime: $direction } }]) {
                                     edges {
-                                        aliased: screenTime
+                                        properties {
+                                            aliased: screenTime
+                                        }
                                         node {
                                             id
                                             title

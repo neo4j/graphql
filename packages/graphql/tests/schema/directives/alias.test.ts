@@ -251,7 +251,7 @@ describe("Alias", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            interface ActorActedInProps {
+            type ActorActedInProps {
               character: String!
               screenTime: Int
             }
@@ -297,11 +297,10 @@ describe("Alias", () => {
               screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type ActorActedInRelationship implements ActorActedInProps {
-              character: String!
+            type ActorActedInRelationship {
               cursor: String!
               node: Movie!
-              screenTime: Int
+              properties: ActorActedInProps!
             }
 
             input ActorActedInUpdateConnectionInput {
