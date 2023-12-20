@@ -41,7 +41,7 @@ describe("inheritance", () => {
                 friends: [Person!]! @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
             }
 
-            interface FriendsWith @relationshipProperties {
+            type FriendsWith @relationshipProperties {
                 since: Int
             }
         `;
@@ -231,7 +231,7 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FriendsWith {
+            type FriendsWith {
               since: Int
             }
 
@@ -365,10 +365,10 @@ describe("inheritance", () => {
               create: [PersonFriendsCreateFieldInput!]
             }
 
-            type PersonFriendsRelationship implements FriendsWith {
+            type PersonFriendsRelationship {
               cursor: String!
               node: Person!
-              since: Int
+              properties: FriendsWith!
             }
 
             input PersonFriendsUpdateConnectionInput {
@@ -383,6 +383,10 @@ describe("inheritance", () => {
               disconnect: [PersonFriendsDisconnectFieldInput!]
               update: PersonFriendsUpdateConnectionInput
               where: PersonFriendsConnectionWhere
+            }
+
+            enum PersonImplementation {
+              Actor
             }
 
             input PersonImplementationsConnectInput {
@@ -455,6 +459,7 @@ describe("inheritance", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [PersonImplementation!]
             }
 
             type Query {

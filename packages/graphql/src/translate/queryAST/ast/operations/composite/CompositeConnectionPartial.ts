@@ -19,12 +19,12 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
-import { ConnectionReadOperation } from "../ConnectionReadOperation";
-import type { OperationTranspileResult } from "../operations";
-import type { Sort } from "../../sort/Sort";
-import type { Pagination } from "../../pagination/Pagination";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
+import type { Pagination } from "../../pagination/Pagination";
+import type { Sort } from "../../sort/Sort";
+import { ConnectionReadOperation } from "../ConnectionReadOperation";
+import type { OperationTranspileResult } from "../operations";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -87,14 +87,18 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         const uniqueEdgeProjectionFields = Array.from(new Set([...edgeProjectionFields, ...edgeSortProjectionFields]));
 
+        const propertiesProjectionMap = new Cypher.Map();
         uniqueEdgeProjectionFields.forEach((p) => {
             if (typeof p === "string") {
-                edgeProjectionMap.set(p, relationship.property(p));
+                propertiesProjectionMap.set(p, relationship.property(p));
             } else {
-                edgeProjectionMap.set(p);
+                propertiesProjectionMap.set(p);
             }
         });
 
+        if (propertiesProjectionMap.size) {
+            edgeProjectionMap.set("properties", propertiesProjectionMap);
+        }
         edgeProjectionMap.set("node", nodeProjectionMap);
 
         let withWhere: Cypher.Clause | undefined;
@@ -132,5 +136,29 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
     // Pagination is handled by CompositeConnectionReadOperation
     public addPagination(_pagination: Pagination): void {
         return undefined;
+    }
+
+    private getSelectionClauses(
+        context: QueryASTContext,
+        node: Cypher.Node | Cypher.Pattern
+    ): {
+        preSelection: Array<Cypher.Match | Cypher.With>;
+        selectionClause: Cypher.Match | Cypher.With;
+    } {
+        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
+
+        let extraMatches = this.getChildren().flatMap((f) => {
+            return f.getSelection(context);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
+
+        return {
+            preSelection: extraMatches,
+            selectionClause: matchClause,
+        };
     }
 }

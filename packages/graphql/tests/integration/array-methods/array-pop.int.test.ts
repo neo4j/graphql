@@ -739,7 +739,7 @@ describe("array-pop", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -770,7 +770,9 @@ describe("array-pop", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                               properties { 
+                                    pay
+                               }
                             }
                         }
                     }
@@ -823,7 +825,7 @@ describe("array-pop", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 locations: [Point]
             }
         `;
@@ -854,10 +856,12 @@ describe("array-pop", () => {
                         }
                         actedInConnection {
                             edges {
-                                locations {
-                                    latitude
-                                    longitude
-                                    height
+                                properties {
+                                    locations {
+                                        latitude
+                                        longitude
+                                        height
+                                    }
                                 }
                             }
                         }
@@ -890,7 +894,7 @@ describe("array-pop", () => {
                 {
                     name: "Keanu",
                     actedIn: [{ title: "The Matrix" }],
-                    actedInConnection: { edges: [{ locations: [] }] },
+                    actedInConnection: { edges: [{ properties: { locations: [] } }] },
                 },
             ])
         );

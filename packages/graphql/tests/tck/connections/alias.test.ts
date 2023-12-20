@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Connections Alias", () => {
     let typeDefs: DocumentNode;
@@ -38,7 +38,7 @@ describe("Connections Alias", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -66,12 +66,17 @@ describe("Connections Alias", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH { node: { __resolveType: \\"Actor\\", __id: id(this1) } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { __resolveType: \\"Actor\\", __id: id(this1) } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { actors: var2 } AS this"
+            RETURN this { actors: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -84,7 +89,9 @@ describe("Connections Alias", () => {
                     title
                     hanks: actorsConnection(where: { node: { name: "Tom Hanks" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -92,7 +99,9 @@ describe("Connections Alias", () => {
                     }
                     jenny: actorsConnection(where: { node: { name: "Robin Wright" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -111,21 +120,31 @@ describe("Connections Alias", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                WHERE this4.name = $param2
-                WITH { screenTime: this3.screenTime, node: { name: this4.name } } AS edge
-                WITH collect(edge) AS edges
+                MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
+                WHERE this5.name = $param2
+                WITH collect({ node: this5, relationship: this4 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var5
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this5, edge.relationship AS this4
+                    RETURN collect({ properties: { screenTime: this4.screenTime }, node: { name: this5.name } }) AS var6
+                }
+                RETURN { edges: var6, totalCount: totalCount } AS var7
             }
-            RETURN this { .title, hanks: var2, jenny: var5 } AS this"
+            RETURN this { .title, hanks: var3, jenny: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

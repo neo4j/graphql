@@ -39,7 +39,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -61,7 +61,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -81,12 +83,17 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE ((this1.firstName = $param1 AND this1.lastName = $param2) AND (this0.screenTime > $param3 AND this0.screenTime < $param4))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -118,7 +125,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -138,12 +147,17 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE (NOT (this1.firstName = $param1 AND this1.lastName = $param2) AND NOT (this0.screenTime < $param3 AND this0.screenTime > $param4))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -177,7 +191,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -197,12 +213,17 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE ((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -238,7 +259,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -258,12 +281,17 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT ((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -304,7 +332,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -324,12 +354,17 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4)) AND (this1.firstName = $param5 AND this1.lastName = $param6))
-                WITH { screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

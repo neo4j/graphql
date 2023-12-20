@@ -108,7 +108,7 @@ describe("Missing custom Cypher on unions", () => {
 
         union relatesToChildTarget = Expression | Work | Fragment | HierarchicalRoot
 
-        interface RelateProps @relationshipProperties {
+        type RelateProps @relationshipProperties {
             hasSortKey: String
             isIdentifiedBy: ID
         }

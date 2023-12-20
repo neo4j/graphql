@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Math operators", () => {
     let typeDefs: DocumentNode;
@@ -52,7 +52,7 @@ describe("Math operators", () => {
                 marriedWith: Wife @relationship(type: "MARRIED_WITH", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: Float
             }
         `;
@@ -196,7 +196,9 @@ describe("Math operators", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -231,7 +233,7 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
-                WITH { pay: update_this3.pay } AS edge
+                WITH { properties: { pay: update_this3.pay } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var5

@@ -158,9 +158,10 @@ export function createConnectionFields({
         });
 
         if (relationship.propertiesTypeName) {
-            const propertiesInterface = schemaComposer.getIFTC(relationship.propertiesTypeName);
-            relationshipObjectType.addInterface(propertiesInterface);
-            relationshipObjectType.addFields(propertiesInterface.getFields());
+            const propertiesObjectType = schemaComposer.getOTC(relationship.propertiesTypeName);
+            relationshipObjectType.addFields({
+                properties: propertiesObjectType.NonNull,
+            });
         }
 
         const fields = augmentWhereInputTypeWithConnectionFields(relationship, deprecatedDirectives);

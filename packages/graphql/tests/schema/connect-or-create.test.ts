@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Connect Or Create", () => {
@@ -522,7 +522,7 @@ describe("Connect Or Create", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screentime: Int!
                 characterName: String
             }
@@ -536,7 +536,7 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               characterName: String
               screentime: Int!
             }
@@ -850,11 +850,10 @@ describe("Connect Or Create", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
-              characterName: String
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              screentime: Int!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {

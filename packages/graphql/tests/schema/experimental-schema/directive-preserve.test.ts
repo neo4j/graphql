@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Directive-preserve", () => {
@@ -891,7 +891,7 @@ describe("Directive-preserve", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
             }
 
@@ -909,7 +909,7 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               role: String!
             }
 
@@ -995,10 +995,10 @@ describe("Directive-preserve", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              role: String!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1475,10 +1475,10 @@ describe("Directive-preserve", () => {
               create: [ProductionActorsCreateFieldInput!]
             }
 
-            type ProductionActorsRelationship implements ActedIn {
+            type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              role: String!
+              properties: ActedIn!
             }
 
             input ProductionActorsUpdateConnectionInput {
@@ -1519,6 +1519,11 @@ describe("Directive-preserve", () => {
 
             input ProductionDisconnectInput {
               _on: ProductionImplementationsDisconnectInput
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
             }
 
             input ProductionImplementationsConnectInput {
@@ -1576,6 +1581,7 @@ describe("Directive-preserve", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -1886,7 +1892,7 @@ describe("Directive-preserve", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 role: String!
             }
 
@@ -1904,7 +1910,7 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               role: String!
             }
 
@@ -1990,10 +1996,10 @@ describe("Directive-preserve", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              role: String!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -2470,10 +2476,10 @@ describe("Directive-preserve", () => {
               create: [ProductionActorsCreateFieldInput!]
             }
 
-            type ProductionActorsRelationship implements ActedIn {
+            type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              role: String!
+              properties: ActedIn!
             }
 
             input ProductionActorsUpdateConnectionInput {
@@ -2514,6 +2520,11 @@ describe("Directive-preserve", () => {
 
             input ProductionDisconnectInput {
               _on: ProductionImplementationsDisconnectInput
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
             }
 
             input ProductionImplementationsConnectInput {
@@ -2571,6 +2582,7 @@ describe("Directive-preserve", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {

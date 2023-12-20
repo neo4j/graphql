@@ -18,8 +18,7 @@
  */
 import type { DirectiveNode } from "graphql";
 import type { InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
-import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import {
     attributeAdapterToComposeFields,
     graphqlDirectivesToCompose,
@@ -27,7 +26,7 @@ import {
 } from "../to-compose";
 
 export function withInterfaceType({
-    entityAdapter,
+    interfaceEntityAdapter,
     userDefinedFieldDirectives,
     userDefinedInterfaceDirectives,
     composer,
@@ -35,7 +34,7 @@ export function withInterfaceType({
         includeRelationships: false,
     },
 }: {
-    entityAdapter: InterfaceEntityAdapter | RelationshipAdapter;
+    interfaceEntityAdapter: InterfaceEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     userDefinedInterfaceDirectives: DirectiveNode[];
     composer: SchemaComposer;
@@ -46,23 +45,20 @@ export function withInterfaceType({
     // TODO: maybe create interfaceEntity.interfaceFields() method abstraction even if it retrieves all attributes?
     // can also take includeRelationships as argument
     const objectComposeFields = attributeAdapterToComposeFields(
-        Array.from(entityAdapter.attributes.values()),
+        Array.from(interfaceEntityAdapter.attributes.values()),
         userDefinedFieldDirectives
     );
     let fields = objectComposeFields;
-    if (config.includeRelationships && entityAdapter instanceof InterfaceEntityAdapter) {
+    if (config.includeRelationships) {
         fields = {
             ...fields,
             ...relationshipAdapterToComposeFields(
-                Array.from(entityAdapter.relationships.values()),
+                Array.from(interfaceEntityAdapter.relationships.values()),
                 userDefinedFieldDirectives
             ),
         };
     }
-    const interfaceTypeName =
-        entityAdapter instanceof InterfaceEntityAdapter
-            ? entityAdapter.name
-            : (entityAdapter.propertiesTypeName as string); // this is checked one layer above in execution
+    const interfaceTypeName = interfaceEntityAdapter.name;
     const composeInterface = composer.createInterfaceTC({
         name: interfaceTypeName,
         fields: fields,

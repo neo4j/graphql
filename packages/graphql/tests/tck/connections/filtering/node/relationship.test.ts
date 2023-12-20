@@ -71,12 +71,17 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
                     MATCH (this1)-[:ACTED_IN]->(this2:Movie)
                     WHERE this2.title = $param0
                 }
-                WITH { node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { name: this1.name } }) AS var3
+                }
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
-            RETURN this { .title, actorsConnection: var3 } AS this"
+            RETURN this { .title, actorsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -206,18 +206,17 @@ describe("tck/rfcs/query-limits", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH { node: { id: this1.id } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge
+                        WITH edge.node AS this1, edge.relationship AS this0
+                        WITH *
                         LIMIT $param1
-                        RETURN collect(edge) AS var2
+                        RETURN collect({ node: { id: this1.id } }) AS var2
                     }
-                    WITH var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var3
+                    RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
                 RETURN this { .id, actorsConnection: var3 } AS this"
             `);
@@ -261,18 +260,17 @@ describe("tck/rfcs/query-limits", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH { node: { id: this1.id } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge
+                        WITH edge.node AS this1, edge.relationship AS this0
+                        WITH *
                         LIMIT $param1
-                        RETURN collect(edge) AS var2
+                        RETURN collect({ node: { id: this1.id } }) AS var2
                     }
-                    WITH var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var3
+                    RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
                 RETURN this { .id, actorsConnection: var3 } AS this"
             `);
@@ -314,18 +312,17 @@ describe("tck/rfcs/query-limits", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:PART_OF]-(this1:Show)
-                    WITH { node: { id: this1.id } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
                         WITH edges
                         UNWIND edges AS edge
-                        WITH edge
+                        WITH edge.node AS this1, edge.relationship AS this0
+                        WITH *
                         LIMIT $param0
-                        RETURN collect(edge) AS var2
+                        RETURN collect({ node: { id: this1.id } }) AS var2
                     }
-                    WITH var2 AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var3
+                    RETURN { edges: var2, totalCount: totalCount } AS var3
                 }
                 RETURN this { .name, showsConnection: var3 } AS this"
             `);

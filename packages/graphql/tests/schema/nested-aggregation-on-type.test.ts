@@ -11,7 +11,7 @@ describe("nested aggregation on interface", () => {
                 runtime: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -30,7 +30,7 @@ describe("nested aggregation on interface", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -252,10 +252,10 @@ describe("nested aggregation on interface", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Movie!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {

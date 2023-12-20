@@ -20,7 +20,7 @@
 import type { DocumentNode } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Batch Create", () => {
     let typeDefs: DocumentNode;
@@ -45,7 +45,7 @@ describe("Batch Create", () => {
                 address: String
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 year: Int
             }
         `;

@@ -18,10 +18,10 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { GraphQLError, lexicographicSortSchema } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { getErrorAsync, NoErrorThrownError } from "../../utils/get-error";
+import { NoErrorThrownError, getErrorAsync } from "../../utils/get-error";
 
 describe("@populatedBy tests", () => {
     describe("Node property tests", () => {
@@ -558,7 +558,7 @@ describe("@populatedBy tests", () => {
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback1: String!
                             @populatedBy(operations: [CREATE], callback: "callback4")
@@ -605,7 +605,7 @@ describe("@populatedBy tests", () => {
                         genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                     }
 
-                    interface RelProperties @relationshipProperties {
+                    type RelProperties @relationshipProperties {
                         id: ID!
                         callback1: ID! @populatedBy(operations: [CREATE], callback: "callback4") @id
                     }
@@ -651,7 +651,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties @relationshipProperties {
+                type RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback4")
                 }
@@ -695,7 +695,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties @relationshipProperties {
+                type RelProperties @relationshipProperties {
                     id: ID!
                     callback1: String! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: String! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -1061,13 +1061,10 @@ describe("@populatedBy tests", () => {
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
-                type MovieGenresRelationship implements RelProperties {
-                  callback1: String!
-                  callback2: String!
-                  callback3: String!
+                type MovieGenresRelationship {
                   cursor: String!
-                  id: ID!
                   node: Genre!
+                  properties: RelProperties!
                 }
 
                 input MovieGenresUpdateConnectionInput {
@@ -1186,7 +1183,7 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
-                interface RelProperties {
+                type RelProperties {
                   callback1: String!
                   callback2: String!
                   callback3: String!
@@ -1301,7 +1298,7 @@ describe("@populatedBy tests", () => {
                     genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT, properties: "RelProperties")
                 }
 
-                interface RelProperties @relationshipProperties {
+                type RelProperties @relationshipProperties {
                     id: ID!
                     callback1: Int! @populatedBy(operations: [CREATE], callback: "callback1")
                     callback2: Int! @populatedBy(operations: [UPDATE], callback: "callback2")
@@ -1644,13 +1641,10 @@ describe("@populatedBy tests", () => {
                   id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
                 }
 
-                type MovieGenresRelationship implements RelProperties {
-                  callback1: Int!
-                  callback2: Int!
-                  callback3: Int!
+                type MovieGenresRelationship {
                   cursor: String!
-                  id: ID!
                   node: Genre!
+                  properties: RelProperties!
                 }
 
                 input MovieGenresUpdateConnectionInput {
@@ -1769,7 +1763,7 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
-                interface RelProperties {
+                type RelProperties {
                   callback1: Int!
                   callback2: Int!
                   callback3: Int!

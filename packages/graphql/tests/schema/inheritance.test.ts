@@ -41,7 +41,7 @@ describe("inheritance", () => {
                 friends: [Person!]! @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
             }
 
-            interface FriendsWith @relationshipProperties {
+            type FriendsWith @relationshipProperties {
                 since: Int
             }
         `;
@@ -216,7 +216,7 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FriendsWith {
+            type FriendsWith {
               since: Int
             }
 
@@ -338,10 +338,10 @@ describe("inheritance", () => {
               create: [PersonFriendsCreateFieldInput!]
             }
 
-            type PersonFriendsRelationship implements FriendsWith {
+            type PersonFriendsRelationship {
               cursor: String!
               node: Person!
-              since: Int
+              properties: FriendsWith!
             }
 
             input PersonFriendsUpdateConnectionInput {

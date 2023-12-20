@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/2993", () => {
@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")
             }
 
-            interface FOLLOWS @relationshipProperties {
+            type FOLLOWS @relationshipProperties {
                 since: DateTime! @timestamp(operations: [CREATE])
             }
         `;
@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FOLLOWS {
+            type FOLLOWS {
               since: DateTime!
             }
 
@@ -323,10 +323,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               create: [UserFollowingCreateFieldInput!]
             }
 
-            type UserFollowingRelationship implements FOLLOWS {
+            type UserFollowingRelationship {
               cursor: String!
               node: Profile!
-              since: DateTime!
+              properties: FOLLOWS!
             }
 
             input UserFollowingUpdateConnectionInput {

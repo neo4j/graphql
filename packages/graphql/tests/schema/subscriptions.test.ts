@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 import { TestSubscriptionsEngine } from "../utils/TestSubscriptionsEngine";
 
@@ -2579,7 +2579,7 @@ describe("Subscriptions", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -2604,7 +2604,7 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -3118,10 +3118,10 @@ describe("Subscriptions", () => {
               create: [MovieActorsCreateFieldInput!]
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input MovieActorsRelationshipSubscriptionWhere {

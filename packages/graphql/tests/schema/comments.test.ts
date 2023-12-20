@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Comments", () => {
@@ -716,7 +716,7 @@ describe("Comments", () => {
                     episodes: Int!
                 }
 
-                interface ActedIn @relationshipProperties {
+                type ActedIn @relationshipProperties {
                     screenTime: Int!
                 }
 
@@ -735,7 +735,7 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
-                interface ActedIn {
+                type ActedIn {
                   screenTime: Int!
                 }
 
@@ -818,10 +818,10 @@ describe("Comments", () => {
                   create: [ActorActedInCreateFieldInput!]
                 }
 
-                type ActorActedInRelationship implements ActedIn {
+                type ActorActedInRelationship {
                   cursor: String!
                   node: Production!
-                  screenTime: Int!
+                  properties: ActedIn!
                 }
 
                 input ActorActedInUpdateConnectionInput {

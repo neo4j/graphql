@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Enums", () => {
@@ -40,7 +40,7 @@ describe("Enums", () => {
                 SUPPORTING
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 roleType: RoleType!
             }
         `;
@@ -53,7 +53,7 @@ describe("Enums", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               roleType: RoleType!
             }
 
@@ -230,10 +230,10 @@ describe("Enums", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              roleType: RoleType!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -474,10 +474,10 @@ describe("Enums", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              roleType: RoleType!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {

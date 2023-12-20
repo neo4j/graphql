@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { GraphQLError } from "graphql";
 import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
-import { generate } from "randomstring";
+import { gql } from "graphql-tag";
 import { IncomingMessage } from "http";
+import type { Driver, Session } from "neo4j-driver";
 import { Socket } from "net";
+import { generate } from "randomstring";
 
 import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4j from "../neo4j";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("array-push", () => {
     let driver: Driver;
@@ -264,7 +264,7 @@ describe("array-push", () => {
                 actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 pay: [Float]
             }
         `;
@@ -296,7 +296,9 @@ describe("array-push", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }

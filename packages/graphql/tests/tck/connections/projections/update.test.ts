@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Projections -> Update", () => {
     let typeDefs: DocumentNode;
@@ -38,7 +38,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -56,7 +56,9 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -76,7 +78,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
+                WITH { properties: { screenTime: update_this0.screenTime }, node: { name: update_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var2

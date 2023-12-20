@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
     let typeDefs: DocumentNode;
@@ -39,7 +39,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                 movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -56,7 +56,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { name_IN: ["Tom Hanks", "Robin Wright"] } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -74,12 +76,17 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name IN $param0
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -99,7 +106,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { name_NOT_IN: ["Tom Hanks", "Robin Wright"] } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -117,12 +126,17 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (this1.name IN $param0)
-                WITH { screenTime: this0.screenTime, node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -142,7 +156,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { favouriteColours_INCLUDES: "Blue" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 favouriteColours
@@ -161,12 +177,17 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE $param0 IN this1.favouriteColours
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, favouriteColours: this1.favouriteColours } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name, favouriteColours: this1.favouriteColours } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -183,7 +204,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { favouriteColours_NOT_INCLUDES: "Blue" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 favouriteColours
@@ -202,12 +225,17 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT ($param0 IN this1.favouriteColours)
-                WITH { screenTime: this0.screenTime, node: { name: this1.name, favouriteColours: this1.favouriteColours } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name, favouriteColours: this1.favouriteColours } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

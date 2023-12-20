@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 import { graphql } from "graphql";
-import { UniqueType } from "../../utils/graphql-types";
+import type { Driver } from "neo4j-driver";
+import { Neo4jGraphQL } from "../../../src/classes";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/4292", () => {
     let driver: Driver;
@@ -154,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }
 
-            interface PartnerOf @relationshipProperties {
+            type PartnerOf @relationshipProperties {
                 id: ID! @id
                 firstDay: Date
                 lastDay: Date
@@ -217,9 +217,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                               properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                               }
                             }
                         }
                     }
@@ -257,9 +259,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                               properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                               }
                             }
                         }
                     }

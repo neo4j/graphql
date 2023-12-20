@@ -62,8 +62,18 @@ export function createEdgeProjection({
             string,
             ResolveTree
         >;
-        const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
+
+        let relationshipProperties: ResolveTree[] = [];
+        const propertiesField = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "properties");
+        if (propertiesField) {
+            const propertiesTypeName = field.relationship.properties;
+            if (propertiesTypeName) {
+                relationshipProperties = Object.values(propertiesField.fieldsByTypeName[propertiesTypeName] || {});
+            }
+        }
+
         if (relationshipProperties.length || extraFields.length) {
+            const propertiesProjection = new Cypher.Map();
             const relationshipPropertyEntries = relationshipProperties.filter((p) => p.name !== "cursor");
 
             for (const property of relationshipPropertyEntries) {
@@ -73,13 +83,15 @@ export function createEdgeProjection({
                     relationshipVariable: relationshipRef,
                 });
 
-                edgeProjectionProperties.set(property.alias, prop);
+                propertiesProjection.set(property.alias, prop);
             }
 
             for (const extraField of extraFields) {
                 const prop = relationshipRef.property(extraField);
-                edgeProjectionProperties.set(extraField, prop);
+                propertiesProjection.set(extraField, prop);
             }
+
+            edgeProjectionProperties.set("properties", propertiesProjection);
         }
 
         const nodeField = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node");

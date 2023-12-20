@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Alias", () => {
@@ -36,7 +36,7 @@ describe("Alias", () => {
                 rating: Float @alias(property: "ratingPropInDb")
             }
 
-            interface ActorActedInProps @relationshipProperties {
+            type ActorActedInProps @relationshipProperties {
                 character: String! @alias(property: "characterPropInDb")
                 screenTime: Int
             }
@@ -251,7 +251,7 @@ describe("Alias", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            interface ActorActedInProps {
+            type ActorActedInProps {
               character: String!
               screenTime: Int
             }
@@ -297,11 +297,10 @@ describe("Alias", () => {
               screenTime_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            type ActorActedInRelationship implements ActorActedInProps {
-              character: String!
+            type ActorActedInRelationship {
               cursor: String!
               node: Movie!
-              screenTime: Int
+              properties: ActorActedInProps!
             }
 
             input ActorActedInUpdateConnectionInput {

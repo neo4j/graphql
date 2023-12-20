@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { generate as randomstring } from "randomstring";
 import * as fs from "fs";
+import gql from "graphql-tag";
 import * as path from "path";
+import { generate as randomstring } from "randomstring";
 import generate from "./generate";
 import { OGM } from "./index";
-import gql from "graphql-tag";
 
 describe("generate", () => {
     const filesToDelete: string[] = [];
@@ -943,7 +943,7 @@ describe("generate", () => {
             type Person {
                 name: String!
             }
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
         `;
@@ -1086,6 +1086,7 @@ describe("generate", () => {
             }
 
             export type ActedIn = {
+              __typename?: \\"ActedIn\\";
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
             };
 
@@ -1161,11 +1162,11 @@ describe("generate", () => {
               pageInfo: PageInfo;
             };
 
-            export type MovieActorsRelationship = ActedIn & {
+            export type MovieActorsRelationship = {
               __typename?: \\"MovieActorsRelationship\\";
               cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Person;
-              screenTime: Scalars[\\"Int\\"][\\"output\\"];
+              properties: ActedIn;
             };
 
             export type MovieAggregateSelection = {
@@ -1739,7 +1740,7 @@ describe("generate", () => {
                 inFAQs: [FAQ!]! @relationship(type: "FAQ_ENTRY_IN_FAQ", properties: "FaqEntryInFaq", direction: OUT)
             }
 
-            interface FaqEntryInFaq @relationshipProperties {
+            type FaqEntryInFaq @relationshipProperties {
                 position: Int
             }
         `;
@@ -1889,10 +1890,6 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
-            export type FaqEntryInFaq = {
-              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
-            };
-
             export type CreateFaqEntriesMutationResponse = {
               __typename?: \\"CreateFaqEntriesMutationResponse\\";
               info: CreateInfo;
@@ -1979,11 +1976,11 @@ describe("generate", () => {
               pageInfo: PageInfo;
             };
 
-            export type FaqEntriesRelationship = FaqEntryInFaq & {
+            export type FaqEntriesRelationship = {
               __typename?: \\"FAQEntriesRelationship\\";
               cursor: Scalars[\\"String\\"][\\"output\\"];
               node: FaqEntry;
-              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              properties: FaqEntryInFaq;
             };
 
             export type FaqEntry = {
@@ -2047,6 +2044,11 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            export type FaqEntryInFaq = {
+              __typename?: \\"FaqEntryInFaq\\";
+              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+            };
+
             export type FaqEntryInFaQsConnection = {
               __typename?: \\"FAQEntryInFAQsConnection\\";
               edges: Array<FaqEntryInFaQsRelationship>;
@@ -2054,11 +2056,11 @@ describe("generate", () => {
               pageInfo: PageInfo;
             };
 
-            export type FaqEntryInFaQsRelationship = FaqEntryInFaq & {
+            export type FaqEntryInFaQsRelationship = {
               __typename?: \\"FAQEntryInFAQsRelationship\\";
               cursor: Scalars[\\"String\\"][\\"output\\"];
               node: Faq;
-              position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;
+              properties: FaqEntryInFaq;
             };
 
             export type FaqfaqEntryEntriesAggregationSelection = {

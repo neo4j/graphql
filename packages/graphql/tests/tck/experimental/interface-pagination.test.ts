@@ -104,9 +104,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                 RETURN this5 AS this
             }
-            RETURN this
+            WITH this
             ORDER BY this.id ASC
-            LIMIT $param0"
+            LIMIT $param0
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -149,9 +150,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 WITH this2 { .someField, .id, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this
+            WITH this
             ORDER BY this.id ASC
-            LIMIT $param0"
+            LIMIT $param0
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -209,9 +211,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                 RETURN this5 AS this
             }
-            RETURN this
+            WITH this
             ORDER BY this.id ASC
-            LIMIT $param1"
+            LIMIT $param1
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -340,8 +343,9 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
-                LIMIT $param0"
+                WITH this
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -396,8 +400,9 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
-                LIMIT $param0"
+                WITH this
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -452,8 +457,9 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
-                LIMIT $param0"
+                WITH this
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -508,9 +514,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
+                WITH this
                 ORDER BY this.id ASC
-                LIMIT $param0"
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

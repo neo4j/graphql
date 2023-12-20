@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/988", () => {
     let typeDefs: DocumentNode;
@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 current: Boolean!
             }
 
-            interface RelationProps @relationshipProperties {
+            type RelationProps @relationshipProperties {
                 current: Boolean!
             }
         `;
@@ -64,7 +64,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     current
                     manufacturerConnection {
                         edges {
-                            current
+                            properties {
+                                current
+                            }
                             node {
                                 name
                             }
@@ -72,7 +74,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     }
                     brandConnection {
                         edges {
-                            current
+                            properties {
+                                current
+                            }
                             node {
                                 name
                             }
@@ -145,20 +149,30 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this6:MANUFACTURER]->(this7:Manufacturer)
-                WITH { current: this6.current, node: { name: this7.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this7, relationship: this6 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var8
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this7, edge.relationship AS this6
+                    RETURN collect({ properties: { current: this6.current }, node: { name: this7.name } }) AS var8
+                }
+                RETURN { edges: var8, totalCount: totalCount } AS var9
             }
             CALL {
                 WITH this
-                MATCH (this)-[this9:BRAND]->(this10:Brand)
-                WITH { current: this9.current, node: { name: this10.name } } AS edge
-                WITH collect(edge) AS edges
+                MATCH (this)-[this10:BRAND]->(this11:Brand)
+                WITH collect({ node: this11, relationship: this10 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var11
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this11, edge.relationship AS this10
+                    RETURN collect({ properties: { current: this10.current }, node: { name: this11.name } }) AS var12
+                }
+                RETURN { edges: var12, totalCount: totalCount } AS var13
             }
-            RETURN this { .name, .current, manufacturerConnection: var8, brandConnection: var11 } AS this"
+            RETURN this { .name, .current, manufacturerConnection: var9, brandConnection: var13 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

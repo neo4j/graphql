@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("String Comparators", () => {
@@ -508,7 +508,7 @@ describe("String Comparators", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: String
             }
 
@@ -539,7 +539,7 @@ describe("String Comparators", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: String
             }
 
@@ -728,10 +728,10 @@ describe("String Comparators", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Movie!
-              screenTime: String
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1068,10 +1068,10 @@ describe("String Comparators", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: String
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {

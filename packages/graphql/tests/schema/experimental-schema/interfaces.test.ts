@@ -162,6 +162,10 @@ describe("Interfaces", () => {
               id: IDAggregateSelectionNullable!
             }
 
+            enum MovieNodeImplementation {
+              Movie
+            }
+
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -256,6 +260,7 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [MovieNodeImplementation!]
             }
 
             input MovieOptions {
@@ -524,6 +529,10 @@ describe("Interfaces", () => {
               id: IDAggregateSelectionNullable!
             }
 
+            enum MovieNodeImplementation {
+              Movie
+            }
+
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -618,6 +627,7 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [MovieNodeImplementation!]
             }
 
             input MovieOptions {

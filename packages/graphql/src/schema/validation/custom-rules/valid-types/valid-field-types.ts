@@ -34,7 +34,7 @@ function verifyRelationshipFieldType({
     traversedDef,
 }: {
     traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-}) {
+}): void {
     if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
         // delegate
         return;
@@ -44,17 +44,21 @@ function verifyRelationshipFieldType({
         const scalarTypesNotPermittedErrorMessage = `Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead.`;
         throw new DocumentValidationError(scalarTypesNotPermittedErrorMessage, []);
     }
-    const listTypesErrorMessage = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${getInnerTypeName(
-        traversedDef.type
-    )}!]!`;
-    if (traversedDef.type.kind === Kind.NON_NULL_TYPE) {
-        if (traversedDef.type.type.kind === Kind.LIST_TYPE) {
-            if (traversedDef.type.type.type.kind !== Kind.NON_NULL_TYPE) {
-                throw new DocumentValidationError(listTypesErrorMessage, []);
-            }
-        }
-    } else if (traversedDef.type.kind === Kind.LIST_TYPE) {
+    const listTypesErrorMessage = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${fieldTypeName}!]!`;
+
+    const listIsNotNonNullable = traversedDef.type.kind === Kind.LIST_TYPE;
+    if (listIsNotNonNullable) {
         throw new DocumentValidationError(listTypesErrorMessage, []);
+    }
+
+    if (traversedDef.type.kind === Kind.NON_NULL_TYPE) {
+        const ifListThenHasNonNullableEntries =
+            traversedDef.type.type.kind === Kind.LIST_TYPE
+                ? traversedDef.type.type.type.kind === Kind.NON_NULL_TYPE
+                : true;
+        if (!ifListThenHasNonNullableEntries) {
+            throw new DocumentValidationError(listTypesErrorMessage, []);
+        }
     }
 }
 

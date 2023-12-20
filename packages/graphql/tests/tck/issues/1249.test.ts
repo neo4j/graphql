@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                 supplierId: String!
             }
 
-            interface RelationMaterialSupplier @relationshipProperties {
+            type RelationMaterialSupplier @relationshipProperties {
                 supplierMaterialNumber: String!
             }
         `;
@@ -67,7 +67,9 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                         id
                         suppliersConnection {
                             edges {
-                                supplierMaterialNumber
+                                properties {
+                                    supplierMaterialNumber
+                                }
                                 node {
                                     supplierId
                                 }
@@ -88,15 +90,20 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)
-                    WITH { supplierMaterialNumber: this2.supplierMaterialNumber, node: { supplierId: this3.supplierId } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: this3, relationship: this2 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var4
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this3, edge.relationship AS this2
+                        RETURN collect({ properties: { supplierMaterialNumber: this2.supplierMaterialNumber }, node: { supplierId: this3.supplierId } }) AS var4
+                    }
+                    RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
-                WITH this1 { .id, suppliersConnection: var4 } AS this1
-                RETURN head(collect(this1)) AS var5
+                WITH this1 { .id, suppliersConnection: var5 } AS this1
+                RETURN head(collect(this1)) AS var6
             }
-            RETURN this { .supplierMaterialNumber, material: var5 } AS this"
+            RETURN this { .supplierMaterialNumber, material: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

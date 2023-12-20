@@ -42,7 +42,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -64,7 +64,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     name
                     actedInConnection {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -89,12 +91,12 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -114,7 +116,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     name
                     actedInConnection(where: { node: { title_STARTS_WITH: "The " } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -140,13 +144,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.title STARTS WITH $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -173,7 +177,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         where: { node: { _on: { Movie: { runtime_GT: 90 }, Series: { episodes_GT: 50 } } } }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -199,13 +205,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.runtime > $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.episodes > $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -236,7 +242,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     name
                     actedInConnection(where: { edge: { screenTime_GT: 60 } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -262,13 +270,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this0.screenTime > $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this2.screenTime > $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -301,7 +309,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                             name
                             actedInConnection(sort: [{ edge: { screenTime: ASC } }]) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         title
                                         ... on Movie {
@@ -326,19 +336,19 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
                         UNWIND edges AS edge
                         WITH edge, totalCount
-                        ORDER BY edge.screenTime ASC
+                        ORDER BY edge.properties.screenTime ASC
                         WITH collect(edge) AS edges, totalCount
                         RETURN { edges: edges, totalCount: totalCount } AS var4
                     }
@@ -355,7 +365,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                             name
                             actedInConnection(sort: [{ node: { title: ASC } }]) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         title
                                         ... on Movie {
@@ -380,12 +392,12 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
@@ -435,19 +447,19 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
                         UNWIND edges AS edge
                         WITH edge, totalCount
-                        ORDER BY edge.screenTime ASC
+                        ORDER BY edge.properties.screenTime ASC
                         WITH collect(edge) AS edges, totalCount
                         RETURN { edges: edges, totalCount: totalCount } AS var4
                     }
@@ -464,7 +476,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                             name
                             actedInConnection(sort: [{ node: { title: ASC } }]) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         ... on Movie {
                                             runtime
@@ -488,12 +502,12 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                            WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                            WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                             RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                            WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                            WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                             RETURN edge
                         }
                         WITH collect(edge) AS edges
@@ -521,7 +535,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         where: { node: { title: "Game of Thrones", _on: { Movie: { title: "Dune" } } } }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -547,13 +563,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title = $param0
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.title = $param1
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

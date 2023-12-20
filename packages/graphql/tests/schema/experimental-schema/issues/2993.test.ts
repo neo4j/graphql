@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")
             }
 
-            interface FOLLOWS @relationshipProperties {
+            type FOLLOWS @relationshipProperties {
                 since: DateTime! @timestamp(operations: [CREATE])
             }
         `;
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FOLLOWS {
+            type FOLLOWS {
               since: DateTime!
             }
 
@@ -153,6 +153,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               _on: ProfileImplementationsDisconnectInput
             }
 
+            enum ProfileImplementation {
+              User
+            }
+
             input ProfileImplementationsConnectInput {
               User: [UserConnectInput!]
             }
@@ -206,6 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProfileImplementation!]
               userName: String
               userName_CONTAINS: String
               userName_ENDS_WITH: String
@@ -336,10 +341,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               create: [UserFollowingCreateFieldInput!]
             }
 
-            type UserFollowingRelationship implements FOLLOWS {
+            type UserFollowingRelationship {
               cursor: String!
               node: Profile!
-              since: DateTime!
+              properties: FOLLOWS!
             }
 
             input UserFollowingUpdateConnectionInput {
@@ -460,7 +465,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
                 following: [Profile!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "FOLLOWS")
             }
 
-            interface FOLLOWS @relationshipProperties {
+            type FOLLOWS @relationshipProperties {
                 since: DateTime! @timestamp(operations: [CREATE])
             }
         `;
@@ -505,7 +510,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FOLLOWS {
+            type FOLLOWS {
               since: DateTime!
             }
 
@@ -577,6 +582,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               _on: ProfileImplementationsDisconnectInput
             }
 
+            enum ProfileImplementation {
+              User
+            }
+
             input ProfileImplementationsConnectInput {
               User: [UserConnectInput!]
             }
@@ -629,6 +638,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProfileImplementation!]
               userName: String
               userName_CONTAINS: String
               userName_ENDS_WITH: String
@@ -759,10 +769,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               create: [UserFollowingCreateFieldInput!]
             }
 
-            type UserFollowingRelationship implements FOLLOWS {
+            type UserFollowingRelationship {
               cursor: String!
               node: Profile!
-              since: DateTime!
+              properties: FOLLOWS!
             }
 
             input UserFollowingUpdateConnectionInput {

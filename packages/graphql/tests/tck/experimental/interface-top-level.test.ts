@@ -90,7 +90,8 @@ describe("Interface top level operations", () => {
                 WITH this2 { .id, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -125,7 +126,8 @@ describe("Interface top level operations", () => {
                 WITH this2 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -163,7 +165,8 @@ describe("Interface top level operations", () => {
                 WITH this2 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -203,7 +206,8 @@ describe("Interface top level operations", () => {
                 WITH this2 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -239,7 +243,8 @@ describe("Interface top level operations", () => {
                 WITH this0 { .id, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -264,7 +269,8 @@ describe("Interface top level operations", () => {
                 WITH this0 { .id, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -296,7 +302,8 @@ describe("Interface top level operations", () => {
                 WITH this0 { .id, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
             }
-            RETURN this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

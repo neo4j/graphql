@@ -44,6 +44,7 @@ export type WrapResolverArguments = {
     dbInfo?: Neo4jDatabaseInfo;
     features: ContextFeatures;
     authorization?: Neo4jGraphQLAuthorization;
+    experimental: boolean;
 };
 
 /**
@@ -63,6 +64,7 @@ export interface Neo4jGraphQLComposedContext extends Neo4jGraphQLContext {
     subscriptionsEnabled: boolean;
     executor: Executor;
     authorization: AuthorizationContext;
+    experimental: boolean;
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     fulltext?: FulltextContext;
 }
@@ -79,6 +81,7 @@ export const wrapQueryAndMutation =
         dbInfo,
         authorization,
         features,
+        experimental,
     }: WrapResolverArguments) =>
     (next: GraphQLFieldResolver<any, Neo4jGraphQLComposedContext>) =>
     async (root, args, context: Neo4jGraphQLContext, info: GraphQLResolveInfo) => {
@@ -125,6 +128,7 @@ export const wrapQueryAndMutation =
             executor,
             neo4jDatabaseInfo,
             authorization: authorizationContext,
+            experimental,
             // Consider anything in here overrides
             ...context,
         };

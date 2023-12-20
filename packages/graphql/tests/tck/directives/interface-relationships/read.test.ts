@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
 describe("Interface Relationships", () => {
     let typeDefs: DocumentNode;
@@ -42,7 +42,7 @@ describe("Interface Relationships", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -297,7 +297,9 @@ describe("Interface Relationships", () => {
                 actors {
                     actedInConnection {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -322,12 +324,12 @@ describe("Interface Relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -346,7 +348,9 @@ describe("Interface Relationships", () => {
                 actors {
                     actedInConnection(where: { node: { title_STARTS_WITH: "The " }, edge: { screenTime_GT: 60 } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -372,13 +376,13 @@ describe("Interface Relationships", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE (this3.title STARTS WITH $param2 AND this2.screenTime > $param3)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -412,7 +416,9 @@ describe("Interface Relationships", () => {
                         where: { node: { _on: { Movie: { title_STARTS_WITH: "The " } } }, edge: { screenTime_GT: 60 } }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -435,7 +441,7 @@ describe("Interface Relationships", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -467,7 +473,9 @@ describe("Interface Relationships", () => {
                         }
                     ) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on Movie {
@@ -493,13 +501,13 @@ describe("Interface Relationships", () => {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE (this1.title STARTS WITH $param0 AND this0.screenTime > $param1)
-                    WITH { screenTime: this0.screenTime, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
+                    WITH { properties: { screenTime: this0.screenTime }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE (this3.title STARTS WITH $param2 AND this2.screenTime > $param3)
-                    WITH { screenTime: this2.screenTime, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
+                    WITH { properties: { screenTime: this2.screenTime }, node: { __resolveType: \\"Series\\", __id: id(this3), episodes: this3.episodes, title: this3.title } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges

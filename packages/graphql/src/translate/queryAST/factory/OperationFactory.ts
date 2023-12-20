@@ -66,6 +66,8 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import type { Field } from "../ast/fields/Field";
+import type { Filter } from "../ast/filters/Filter";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -73,12 +75,14 @@ export class OperationsFactory {
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
+    private experimental: boolean;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.filterFactory = queryASTFactory.filterFactory;
         this.fieldFactory = queryASTFactory.fieldFactory;
         this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
         this.authorizationFactory = queryASTFactory.authorizationFactory;
+        this.experimental = queryASTFactory.experimental;
     }
 
     public createTopLevelOperation(
@@ -281,7 +285,18 @@ export class OperationsFactory {
                 whereArgs: resolveTreeWhere,
             });
         } else {
-            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+            // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
+            // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
+            const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
+
+            const concreteEntities = typenameFilterAllowed
+                ? entity.concreteEntities
+                : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
+
+            const sharedFilters = typenameFilterAllowed
+                ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
+                : undefined;
+
             const concreteReadOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
                 // Duplicate from normal read
                 let selection: EntitySelection;
@@ -313,6 +328,7 @@ export class OperationsFactory {
                     resolveTree,
                     context,
                     whereArgs: whereArgs,
+                    sharedFilters,
                 });
             });
 
@@ -540,10 +556,16 @@ export class OperationsFactory {
 
         const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, nodeWhere);
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+            const selection = new RelationshipSelection({
+                relationship,
+                directed,
+            });
+
             const connectionPartial = new CompositeConnectionPartial({
                 relationship,
                 directed,
                 target: concreteEntity,
+                selection,
             });
 
             return this.hydrateConnectionOperationAST({
@@ -585,7 +607,19 @@ export class OperationsFactory {
             targetOperations: ["READ"],
             context,
         });
-        const operation = new ConnectionReadOperation({ relationship, directed, target });
+
+        let selection: EntitySelection;
+        if (relationship) {
+            selection = new RelationshipSelection({
+                relationship,
+                directed: Boolean(resolveTree.args?.directed ?? true),
+            });
+        } else {
+            selection = new NodeSelection({
+                target,
+            });
+        }
+        const operation = new ConnectionReadOperation({ relationship, directed, target, selection });
 
         return this.hydrateConnectionOperationAST({
             relationship: relationship,
@@ -746,6 +780,7 @@ export class OperationsFactory {
         );
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
+        const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
 
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
@@ -757,9 +792,14 @@ export class OperationsFactory {
 
         const resolveTreeNodeFields = getFieldsByTypeName(nodeFieldsRaw, resolveTreeNodeFieldsTypesNames);
         const nodeFields = this.fieldFactory.createFields(target, resolveTreeNodeFields, context);
-        const edgeFields = isTopLevel
-            ? []
-            : this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
+
+        let edgeFields: Field[] = [];
+        if (!isTopLevel && relationship.propertiesTypeName) {
+            const resolveTreePropertiesFields = getFieldsByTypeName(propertiesFieldsRaw, [
+                relationship.propertiesTypeName,
+            ]);
+            edgeFields = this.fieldFactory.createFields(relationship, resolveTreePropertiesFields, context);
+        }
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(target, ["READ"], context, "BEFORE");
@@ -835,6 +875,7 @@ export class OperationsFactory {
         context,
         sortArgs,
         fieldsByTypeName,
+        sharedFilters,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
@@ -842,6 +883,7 @@ export class OperationsFactory {
         whereArgs: Record<string, any>;
         sortArgs?: Record<string, any>;
         fieldsByTypeName: FieldsByTypeName;
+        sharedFilters?: Filter[];
     }): T {
         const concreteProjectionFields = { ...fieldsByTypeName[entity.name] };
         // Get the abstract types of the interface
@@ -855,7 +897,7 @@ export class OperationsFactory {
         ]);
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
-        const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+        const filters = sharedFilters ? sharedFilters : this.filterFactory.createNodeFilters(entity, whereArgs);
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
@@ -909,12 +951,14 @@ export class OperationsFactory {
         resolveTree,
         context,
         whereArgs,
+        sharedFilters,
     }: {
         entity: ConcreteEntityAdapter;
         operation: T;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-        whereArgs: Record<string, any>;
+        whereArgs: Record<string, any> | Filter[];
+        sharedFilters?: Filter[];
     }): T {
         return this.hydrateOperation({
             entity,
@@ -923,6 +967,7 @@ export class OperationsFactory {
             whereArgs,
             fieldsByTypeName: resolveTree.fieldsByTypeName,
             sortArgs: (resolveTree.args.options as Record<string, any>) || {},
+            sharedFilters,
         });
     }
 
@@ -970,8 +1015,7 @@ export class OperationsFactory {
                 context,
                 "BEFORE"
             );
-
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
 
             operation.setFields(fields);
             operation.setNodeFields(nodeFields);

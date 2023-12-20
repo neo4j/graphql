@@ -22,7 +22,7 @@ describe("nested aggregation on interface", () => {
                 episodes: Int!
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -41,7 +41,7 @@ describe("nested aggregation on interface", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -124,10 +124,10 @@ describe("nested aggregation on interface", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -430,6 +430,11 @@ describe("nested aggregation on interface", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
@@ -484,6 +489,7 @@ describe("nested aggregation on interface", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -652,7 +658,7 @@ describe("nested aggregation on interface", () => {
               episodes: Int!
           }
 
-          interface ActedIn @relationshipProperties {
+          type ActedIn @relationshipProperties {
               screenTime: Int!
           }
 
@@ -671,7 +677,7 @@ describe("nested aggregation on interface", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -753,10 +759,10 @@ describe("nested aggregation on interface", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1044,6 +1050,11 @@ describe("nested aggregation on interface", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
@@ -1098,6 +1109,7 @@ describe("nested aggregation on interface", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {

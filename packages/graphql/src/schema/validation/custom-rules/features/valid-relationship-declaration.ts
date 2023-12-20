@@ -43,59 +43,18 @@ export function ValidRelationshipDeclaration(context: SDLValidationContext): AST
     };
     const interfaceToImplementationsMap = new Map<string, Set<string>>();
 
-    const gatherRelationshipsAndDeclarations = function (directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-        const [pathToNode, traversedDef, parentDef] = getPathToNode(path, ancestors);
-        if (!parentDef) {
-            console.error("No parent definition traversed");
-            return;
-        }
-        if (!traversedDef) {
-            console.error("No last definition traversed");
-            return;
-        }
-
-        // TODO: 2nd part of the if-check can be deleted once relationship directive is officially not supported on interfaces
-        if (
-            directiveNode.name.value === "relationship" &&
-            ![Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION].includes(parentDef.kind)
-        ) {
-            addToRelationshipFieldsMap(parentDef.name.value, traversedDef.name.value);
-            return;
-        }
-        if (directiveNode.name.value === "declareRelationship") {
-            if (![Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION].includes(parentDef.kind)) {
-                context.reportError(
-                    createGraphQLError({
-                        nodes: [parentDef],
-                        path: [...pathToNode],
-                        errorMsg: `\`@declareRelationship\` is only available on Interface fields. Use \`@relationship\` if in an Object type.`,
-                    })
-                );
-            }
-            addToRelationshipFieldsMap(parentDef.name.value, traversedDef.name.value);
-            return;
-        }
-    };
-
-    const ValidRelationshipDeclarationOnExtension: ASTVisitor = {
-        // hydrate for extensions that only define interface implementations
-        ObjectTypeDefinition(node: ObjectTypeDefinitionNode) {
-            hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementationsMap);
-        },
-        ObjectTypeExtension(node: ObjectTypeExtensionNode) {
-            hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementationsMap);
-        },
-        // validate any new relationship declaration/definition on extensions
-        Directive: gatherRelationshipsAndDeclarations,
-    };
-
+    const gatherRelationshipsAndDeclarations = makeDeclareRelationshipDirectiveVisitorFn(
+        addToRelationshipFieldsMap,
+        context
+    );
     const validateInterfaceOrObject = {
         leave(node: InterfaceTypeDefinitionNode | ObjectTypeDefinitionNode, _key, _parent, path, ancestors) {
             // parse extensions as well
             visitExtensionsOf({
                 node,
                 context,
-                visitor: ValidRelationshipDeclarationOnExtension,
+                interfaceToImplementationsMap,
+                onDirectiveVisitor: gatherRelationshipsAndDeclarations,
             });
 
             if (node.kind === Kind.OBJECT_TYPE_DEFINITION) {
@@ -138,15 +97,68 @@ export function ValidRelationshipDeclaration(context: SDLValidationContext): AST
     };
 }
 
+function makeDeclareRelationshipDirectiveVisitorFn(
+    addToRelationshipFieldsMap: (typeName: string, relationshipFieldName: string) => void,
+    context: SDLValidationContext
+) {
+    return function (directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+        const [pathToNode, traversedDef, parentDef] = getPathToNode(path, ancestors);
+        if (!parentDef) {
+            console.error("No parent definition traversed");
+            return;
+        }
+        if (!traversedDef) {
+            console.error("No last definition traversed");
+            return;
+        }
+        const isDirectiveOnInterfaceField = (
+            [Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION] as string[]
+        ).includes(parentDef.kind);
+
+        // TODO: 2nd part of the if-check can be deleted once relationship directive is officially not supported on interfaces
+        if (directiveNode.name.value === "relationship" && !isDirectiveOnInterfaceField) {
+            addToRelationshipFieldsMap(parentDef.name.value, traversedDef.name.value);
+            return;
+        }
+        if (directiveNode.name.value === "declareRelationship") {
+            if (!isDirectiveOnInterfaceField) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [parentDef],
+                        path: [...pathToNode],
+                        errorMsg: `\`@declareRelationship\` is only available on Interface fields. Use \`@relationship\` if in an Object type.`,
+                    })
+                );
+            }
+            addToRelationshipFieldsMap(parentDef.name.value, traversedDef.name.value);
+            return;
+        }
+    };
+}
+
 function visitExtensionsOf({
     node,
     context,
-    visitor,
+    interfaceToImplementationsMap,
+    onDirectiveVisitor,
 }: {
     node: ObjectOrInterfaceDefinitionNode;
     context: ASTValidationContext;
-    visitor: ASTVisitor;
+    interfaceToImplementationsMap: Map<string, Set<string>>;
+    onDirectiveVisitor: (directiveNode: DirectiveNode, ...args: unknown[]) => unknown;
 }) {
+    const ExtensionDefinitionsVisitor: ASTVisitor = {
+        // hydrate for extensions that only define interface implementations
+        ObjectTypeDefinition(node: ObjectTypeDefinitionNode) {
+            hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementationsMap);
+        },
+        ObjectTypeExtension(node: ObjectTypeExtensionNode) {
+            hydrateInterfaceWithImplementedTypesMap(node, interfaceToImplementationsMap);
+        },
+        // check any new relationship declaration/definition on extensions
+        Directive: onDirectiveVisitor,
+    };
+
     const extensions = context
         .getDocument()
         .definitions.filter(
@@ -154,7 +166,7 @@ function visitExtensionsOf({
                 (definition.kind === Kind.INTERFACE_TYPE_EXTENSION || definition.kind === Kind.OBJECT_TYPE_EXTENSION) &&
                 definition.name.value === node.name.value
         );
-    extensions.forEach((ext) => visit(ext, visitor));
+    extensions.forEach((ext) => visit(ext, ExtensionDefinitionsVisitor));
 }
 
 function assertRelationshipDeclaration(args: {
@@ -188,8 +200,11 @@ function getRelationships({
     actualRelationshipFields: Set<string> | undefined;
 }[] {
     const inheritedTypeNames = getInheritedTypeNames(parentDef, interfaceToImplementationsMap);
+    const isDirectiveOnInterfaceField = (
+        [Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION] as string[]
+    ).includes(parentDef.kind);
     return inheritedTypeNames.map((typeName) => {
-        if ([Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION].includes(parentDef.kind)) {
+        if (isDirectiveOnInterfaceField) {
             return {
                 declaredRelationshipFields: typeNameToRelationshipFields.get(parentDef.name.value),
                 actualRelationshipFields: typeNameToRelationshipFields.get(typeName),

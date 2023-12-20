@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
-import Neo4j from "../neo4j";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let driver: Driver;
@@ -882,7 +882,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int
             }
         `;
@@ -898,7 +898,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                             title
                             actorsConnection(where: { node: { name: "${actorName}" } }) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }
@@ -954,7 +956,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }

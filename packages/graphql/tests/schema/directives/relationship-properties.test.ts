@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Relationship-properties", () => {
@@ -35,7 +35,7 @@ describe("Relationship-properties", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
                 startDate: Date!
                 leadRole: Boolean!
@@ -50,7 +50,7 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               leadRole: Boolean!
               screenTime: Int!
               startDate: Date!
@@ -288,12 +288,10 @@ describe("Relationship-properties", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
-              leadRole: Boolean!
               node: Movie!
-              screenTime: Int!
-              startDate: Date!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -581,12 +579,10 @@ describe("Relationship-properties", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
-              leadRole: Boolean!
               node: Actor!
-              screenTime: Int!
-              startDate: Date!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -784,7 +780,7 @@ describe("Relationship-properties", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 id: ID! @id
                 timestamp: DateTime! @timestamp
                 screenTime: Int!
@@ -799,7 +795,7 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               id: ID!
               screenTime: Int!
               timestamp: DateTime!
@@ -1059,12 +1055,10 @@ describe("Relationship-properties", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
-              id: ID!
               node: Movie!
-              screenTime: Int!
-              timestamp: DateTime!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -1380,12 +1374,10 @@ describe("Relationship-properties", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
-              id: ID!
               node: Actor!
-              screenTime: Int!
-              timestamp: DateTime!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1583,7 +1575,7 @@ describe("Relationship-properties", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 id: ID! @id
                 timestamp: DateTime! @timestamp
             }
@@ -1597,7 +1589,7 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               id: ID!
               timestamp: DateTime!
             }
@@ -1809,11 +1801,10 @@ describe("Relationship-properties", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
-              id: ID!
               node: Movie!
-              timestamp: DateTime!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -2093,11 +2084,10 @@ describe("Relationship-properties", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
-              id: ID!
               node: Actor!
-              timestamp: DateTime!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {

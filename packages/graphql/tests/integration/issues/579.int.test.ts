@@ -45,7 +45,7 @@ describe("579", () => {
              color: Color! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
            }
 
-           interface OfColorProperties @relationshipProperties {
+           type OfColorProperties @relationshipProperties {
                test: Boolean
            }
 
@@ -65,7 +65,7 @@ describe("579", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 updateProducts(
                   where: { id: "${productId}" }
@@ -83,7 +83,9 @@ describe("579", () => {
                         id
                         colorConnection {
                             edges {
-                                test
+                                properties { 
+                                    test
+                                }
                             }
                         }
                     }
@@ -118,7 +120,7 @@ describe("579", () => {
                 colorConnection: {
                     edges: [
                         {
-                            test: true,
+                            properties: { test: true },
                         },
                     ],
                 },

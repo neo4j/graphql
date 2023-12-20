@@ -47,7 +47,7 @@ describe("Connections -> Interfaces", () => {
             episodes: Int!
         }
 
-        interface ActedIn @relationshipProperties {
+        type ActedIn @relationshipProperties {
             screenTime: Int!
         }
 
@@ -139,7 +139,9 @@ describe("Connections -> Interfaces", () => {
                     name
                     actedInConnection {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on ${typeMovie.name} {
@@ -175,21 +177,21 @@ describe("Connections -> Interfaces", () => {
                     actedInConnection: {
                         edges: expect.toIncludeSameMembers([
                             {
-                                screenTime: movie1ScreenTime,
+                                properties: { screenTime: movie1ScreenTime },
                                 node: {
                                     title: movie1Title,
                                     runtime: movie1Runtime,
                                 },
                             },
                             {
-                                screenTime: movie2ScreenTime,
+                                properties: { screenTime: movie2ScreenTime },
                                 node: {
                                     title: movie2Title,
                                     runtime: movie2Runtime,
                                 },
                             },
                             {
-                                screenTime: seriesScreenTime,
+                                properties: { screenTime: seriesScreenTime },
                                 node: {
                                     title: seriesTitle,
                                     episodes: seriesEpisodes,
@@ -215,7 +217,9 @@ describe("Connections -> Interfaces", () => {
                     name
                     actedInConnection(where: { node: { title: "Game of Thrones" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on ${typeMovie.name} {
@@ -251,7 +255,7 @@ describe("Connections -> Interfaces", () => {
                     actedInConnection: {
                         edges: [
                             {
-                                screenTime: seriesScreenTime,
+                                properties: { screenTime: seriesScreenTime },
                                 node: {
                                     title: seriesTitle,
                                     episodes: seriesEpisodes,
@@ -277,7 +281,9 @@ describe("Connections -> Interfaces", () => {
                     name
                     actedInConnection(where: { node: { title: "Game of Thrones", _on: { ${typeMovie.name}: { title: "Dune" } } } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on ${typeMovie.name} {
@@ -313,14 +319,14 @@ describe("Connections -> Interfaces", () => {
                     actedInConnection: {
                         edges: [
                             {
-                                screenTime: movie1ScreenTime,
+                                properties: { screenTime: movie1ScreenTime },
                                 node: {
                                     title: movie1Title,
                                     runtime: movie1Runtime,
                                 },
                             },
                             {
-                                screenTime: seriesScreenTime,
+                                properties: { screenTime: seriesScreenTime },
                                 node: {
                                     title: seriesTitle,
                                     episodes: seriesEpisodes,
@@ -346,7 +352,9 @@ describe("Connections -> Interfaces", () => {
                     name
                     actedInConnection(sort: [{ edge: { screenTime: DESC } }]) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on ${typeMovie.name} {
@@ -382,21 +390,21 @@ describe("Connections -> Interfaces", () => {
                     actedInConnection: {
                         edges: [
                             {
-                                screenTime: seriesScreenTime,
+                                properties: { screenTime: seriesScreenTime },
                                 node: {
                                     title: seriesTitle,
                                     episodes: seriesEpisodes,
                                 },
                             },
                             {
-                                screenTime: movie2ScreenTime,
+                                properties: { screenTime: movie2ScreenTime },
                                 node: {
                                     title: movie2Title,
                                     runtime: movie2Runtime,
                                 },
                             },
                             {
-                                screenTime: movie1ScreenTime,
+                                properties: { screenTime: movie1ScreenTime },
                                 node: {
                                     title: movie1Title,
                                     runtime: movie1Runtime,
@@ -427,7 +435,9 @@ describe("Connections -> Interfaces", () => {
                             endCursor
                         }
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 title
                                 ... on ${typeMovie.name} {
@@ -468,14 +478,14 @@ describe("Connections -> Interfaces", () => {
                         },
                         edges: [
                             {
-                                screenTime: seriesScreenTime,
+                                properties: { screenTime: seriesScreenTime },
                                 node: {
                                     title: seriesTitle,
                                     episodes: seriesEpisodes,
                                 },
                             },
                             {
-                                screenTime: movie2ScreenTime,
+                                properties: { screenTime: movie2ScreenTime },
                                 node: {
                                     title: movie2Title,
                                     runtime: movie2Runtime,
@@ -509,7 +519,7 @@ describe("Connections -> Interfaces", () => {
                         },
                         edges: [
                             {
-                                screenTime: movie1ScreenTime,
+                                properties: { screenTime: movie1ScreenTime },
                                 node: {
                                     title: movie1Title,
                                     runtime: movie1Runtime,
@@ -535,7 +545,9 @@ describe("Connections -> Interfaces", () => {
                 name
                 actedInConnection(where: { node: { title: $title } }) {
                     edges {
-                        screenTime
+                        properties {
+                            screenTime
+                        }
                         node {
                             title
                             ... on ${typeMovie.name} {
@@ -572,7 +584,7 @@ describe("Connections -> Interfaces", () => {
                     actedInConnection: {
                         edges: [
                             {
-                                screenTime: movie1ScreenTime,
+                                properties: { screenTime: movie1ScreenTime },
                                 node: {
                                     title: movie1Title,
                                     runtime: movie1Runtime,

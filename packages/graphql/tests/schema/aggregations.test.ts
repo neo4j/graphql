@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Aggregations", () => {
@@ -422,7 +422,7 @@ describe("Aggregations", () => {
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
-            interface Likes @relationshipProperties {
+            type Likes @relationshipProperties {
                 someId: ID
                 someString: String
                 someFloat: Float
@@ -519,7 +519,7 @@ describe("Aggregations", () => {
               sum: Int
             }
 
-            interface Likes {
+            type Likes {
               someBigInt: BigInt
               someDateTime: DateTime
               someDuration: Duration
@@ -1193,19 +1193,10 @@ describe("Aggregations", () => {
               someTime_MIN_LTE: Time
             }
 
-            type PostLikesRelationship implements Likes {
+            type PostLikesRelationship {
               cursor: String!
               node: User!
-              someBigInt: BigInt
-              someDateTime: DateTime
-              someDuration: Duration
-              someFloat: Float
-              someId: ID
-              someInt: Int
-              someLocalDateTime: LocalDateTime
-              someLocalTime: LocalTime
-              someString: String
-              someTime: Time
+              properties: Likes!
             }
 
             input PostLikesUpdateConnectionInput {

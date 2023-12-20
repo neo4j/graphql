@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Cypher alias directive", () => {
     let typeDefs: DocumentNode;
@@ -39,7 +39,7 @@ describe("Cypher alias directive", () => {
                 rating: Float @alias(property: "ratingPropInDb")
             }
 
-            interface ActorActedInProps @relationshipProperties {
+            type ActorActedInProps @relationshipProperties {
                 character: String! @alias(property: "characterPropInDb")
                 screenTime: Int
             }
@@ -88,8 +88,10 @@ describe("Cypher alias directive", () => {
                     city
                     actedInConnection {
                         edges {
-                            character
-                            screenTime
+                            properties {
+                                character
+                                screenTime
+                            }
                             node {
                                 title
                                 rating
@@ -107,12 +109,17 @@ describe("Cypher alias directive", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH { character: this0.characterPropInDb, screenTime: this0.screenTime, node: { title: this1.title, rating: this1.ratingPropInDb } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { character: this0.characterPropInDb, screenTime: this0.screenTime }, node: { title: this1.title, rating: this1.ratingPropInDb } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .name, city: this.cityPropInDb, actedInConnection: var2 } AS this"
+            RETURN this { .name, city: this.cityPropInDb, actedInConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -144,8 +151,10 @@ describe("Cypher alias directive", () => {
                         }
                         actedInConnection {
                             edges {
-                                character
-                                screenTime
+                                properties {
+                                    character
+                                    screenTime
+                                }
                                 node {
                                     title
                                     rating
@@ -193,12 +202,17 @@ describe("Cypher alias directive", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)-[create_this11:ACTED_IN]->(create_this12:Movie)
-                WITH { character: create_this11.characterPropInDb, screenTime: create_this11.screenTime, node: { title: create_this12.title, rating: create_this12.ratingPropInDb } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: create_this12, relationship: create_this11 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS create_var13
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS create_this12, edge.relationship AS create_this11
+                    RETURN collect({ properties: { character: create_this11.characterPropInDb, screenTime: create_this11.screenTime }, node: { title: create_this12.title, rating: create_this12.ratingPropInDb } }) AS create_var13
+                }
+                RETURN { edges: create_var13, totalCount: totalCount } AS create_var14
             }
-            RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_var10, actedInConnection: create_var13 }) AS data"
+            RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_var10, actedInConnection: create_var14 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

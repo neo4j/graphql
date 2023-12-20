@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Connect Or Create", () => {
@@ -37,7 +37,7 @@ describe("Connect Or Create", () => {
 
             union Production = Movie | Series
 
-            interface ActedIn @relationshipProperties {
+            type ActedIn @relationshipProperties {
                 screenTime: Int!
             }
 
@@ -55,7 +55,7 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -197,10 +197,10 @@ describe("Connect Or Create", () => {
               where: ActorActedInMovieConnectionWhere
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInSeriesConnectFieldInput {
