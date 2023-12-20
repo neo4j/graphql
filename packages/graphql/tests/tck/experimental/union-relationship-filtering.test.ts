@@ -82,12 +82,12 @@ describe("Union relationship filtering operations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this0:Movie)
-                WHERE (this0.title = $param0 OR this0.title = $param1)
+                WHERE this0.title = $param0
                 WITH this0 { .title, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
                 UNION
                 MATCH (this1:Series)
-                WHERE (this1.title = $param2 OR this1.title = $param3)
+                WHERE this1.title = $param1
                 WITH this1 { .title, __resolveType: \\"Series\\", __id: id(this1) } AS this1
                 RETURN this1 AS this
             }
@@ -98,9 +98,7 @@ describe("Union relationship filtering operations", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Office\\",
-                \\"param1\\": \\"The Office 2\\",
-                \\"param2\\": \\"The Office\\",
-                \\"param3\\": \\"The Office 2\\"
+                \\"param1\\": \\"The Office 2\\"
             }"
         `);
     });
