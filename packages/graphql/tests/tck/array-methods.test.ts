@@ -473,7 +473,9 @@ describe("Arrays Methods", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -503,7 +505,7 @@ describe("Arrays Methods", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
-                WITH { pay: update_this3.pay } AS edge
+                WITH { properties: { pay: update_this3.pay } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var5
@@ -568,7 +570,9 @@ describe("Arrays Methods", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -598,7 +602,7 @@ describe("Arrays Methods", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
-                WITH { pay: update_this3.pay } AS edge
+                WITH { properties: { pay: update_this3.pay } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var5

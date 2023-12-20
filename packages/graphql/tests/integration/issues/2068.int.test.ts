@@ -898,7 +898,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                             title
                             actorsConnection(where: { node: { name: "${actorName}" } }) {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }
@@ -954,7 +956,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                             title
                             actorsConnection {
                                 edges {
-                                    screenTime
+                                    properties {
+                                        screenTime
+                                    }
                                     node {
                                         name
                                     }

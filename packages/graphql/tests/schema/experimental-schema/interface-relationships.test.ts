@@ -57,7 +57,7 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -140,10 +140,10 @@ describe("Interface Relationships", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -640,7 +640,7 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -726,10 +726,10 @@ describe("Interface Relationships", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -1532,10 +1532,10 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ProductionActorsRelationship implements ActedIn {
+            type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ProductionActorsUpdateConnectionInput {

@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     });
 
     test("should handle union types with auth and connection-where", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
                 drives(where: { current: true }) {
                     current
@@ -104,7 +104,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                                     }
                                 ) {
                                     edges {
-                                        current
+                                        properties {
+                                            current
+                                        }
                                         node {
                                             ... on Battery {
                                                 id

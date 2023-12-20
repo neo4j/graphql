@@ -233,10 +233,13 @@ export class ConnectionReadOperation extends Operation {
             });
         }
 
-        let edgeProjectionMap = new Cypher.Map();
+        const edgeProjectionMap = new Cypher.Map();
 
         if (context.relationship) {
-            edgeProjectionMap = this.generateProjectionMapForFields(this.edgeFields, context.relationship);
+            const propertiesProjectionMap = this.generateProjectionMapForFields(this.edgeFields, context.relationship);
+            if (propertiesProjectionMap.size) {
+                edgeProjectionMap.set("properties", propertiesProjectionMap);
+            }
         }
 
         edgeProjectionMap.set("node", nodeProjectionMap);

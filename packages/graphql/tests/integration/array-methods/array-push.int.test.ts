@@ -623,7 +623,9 @@ describe("array-push", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }
@@ -707,10 +709,12 @@ describe("array-push", () => {
                         }
                         actedInConnection {
                             edges {
-                                locations {
-                                    latitude
-                                    longitude
-                                    height
+                               properties {
+                                    locations {
+                                        latitude
+                                        longitude
+                                        height
+                                    }
                                 }
                             }
                         }
@@ -742,7 +746,7 @@ describe("array-push", () => {
                 {
                     name: "Keanu",
                     actedIn: [{ title: "The Matrix" }],
-                    actedInConnection: { edges: [{ locations: [point] }] },
+                    actedInConnection: { edges: [{ properties: { locations: [point] } }] },
                 },
             ])
         );

@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 bulks {
                     supplierMaterialNumber
@@ -80,7 +80,9 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                         id
                         suppliersConnection {
                             edges {
-                                supplierMaterialNumber
+                                properties {
+                                    supplierMaterialNumber
+                                }
                                 node {
                                     supplierId
                                 }

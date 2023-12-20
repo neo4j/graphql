@@ -66,6 +66,7 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import type { Field } from "../ast/fields/Field";
 import type { Filter } from "../ast/filters/Filter";
 
 const TOP_LEVEL_NODE_NAME = "this";
@@ -779,6 +780,7 @@ export class OperationsFactory {
         );
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
+        const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
 
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
@@ -790,9 +792,14 @@ export class OperationsFactory {
 
         const resolveTreeNodeFields = getFieldsByTypeName(nodeFieldsRaw, resolveTreeNodeFieldsTypesNames);
         const nodeFields = this.fieldFactory.createFields(target, resolveTreeNodeFields, context);
-        const edgeFields = isTopLevel
-            ? []
-            : this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
+
+        let edgeFields: Field[] = [];
+        if (!isTopLevel && relationship.propertiesTypeName) {
+            const resolveTreePropertiesFields = getFieldsByTypeName(propertiesFieldsRaw, [
+                relationship.propertiesTypeName,
+            ]);
+            edgeFields = this.fieldFactory.createFields(relationship, resolveTreePropertiesFields, context);
+        }
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(target, ["READ"], context, "BEFORE");
@@ -937,7 +944,6 @@ export class OperationsFactory {
         }
         return operation;
     }
-
 
     private hydrateReadOperation<T extends ReadOperation>({
         entity,

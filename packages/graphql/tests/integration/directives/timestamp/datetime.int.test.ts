@@ -129,7 +129,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    createdAt
+                                    properties {
+                                        createdAt
+                                    }
                                 }
                             }
                         }
@@ -149,7 +151,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].createdAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -252,7 +254,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    updatedAt
+                                    properties {
+                                        updatedAt
+                                    }
                                 }
                             }
                         }
@@ -279,7 +283,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).updateMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].updatedAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -379,7 +383,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    createdAt
+                                    properties {
+                                        createdAt
+                                    }
                                 }
                             }
                         }
@@ -399,7 +405,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].createdAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -442,7 +448,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    updatedAt
+                                    properties {
+                                        updatedAt
+                                    }
                                 }
                             }
                         }
@@ -469,7 +477,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).updateMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].updatedAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -627,7 +635,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    createdAt
+                                    properties {
+                                        createdAt
+                                    }
                                 }
                             }
                         }
@@ -647,7 +657,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).createMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].createdAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.createdAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -690,7 +700,9 @@ describe("timestamp/datetime", () => {
                         movies {
                             actorsConnection {
                                 edges {
-                                    updatedAt
+                                    properties {
+                                        updatedAt
+                                    }
                                 }
                             }
                         }
@@ -717,7 +729,7 @@ describe("timestamp/datetime", () => {
 
                 const { actorsConnection } = (result.data as any).updateMovies.movies[0];
 
-                expect(new Date(actorsConnection.edges[0].updatedAt as string)).toBeInstanceOf(Date);
+                expect(new Date(actorsConnection.edges[0].properties.updatedAt as string)).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }

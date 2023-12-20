@@ -78,28 +78,20 @@ describe("Enum Relationship Properties", () => {
             charset: "alphabetic",
         });
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateMovies($title: String!, $name: String!) {
                 createMovies(
                     input: [
-                        {
-                            title: $title
-                            actors: {
-                                create: [
-                                    {
-                                        edge: { roleType: LEADING }
-                                        node: { name: $name }
-                                    }
-                                ]
-                            }
-                        }
+                        { title: $title, actors: { create: [{ edge: { roleType: LEADING }, node: { name: $name } }] } }
                     ]
                 ) {
                     movies {
                         title
                         actorsConnection {
                             edges {
-                                roleType
+                                properties {
+                                    roleType
+                                }
                                 node {
                                     name
                                 }
@@ -122,7 +114,12 @@ describe("Enum Relationship Properties", () => {
 
             expect(gqlResult.data).toEqual({
                 createMovies: {
-                    movies: [{ title, actorsConnection: { edges: [{ roleType: "LEADING", node: { name } }] } }],
+                    movies: [
+                        {
+                            title,
+                            actorsConnection: { edges: [{ properties: { roleType: "LEADING" }, node: { name } }] },
+                        },
+                    ],
                 },
             });
 

@@ -69,7 +69,11 @@ export class CompositeConnectionReadOperation extends Operation {
                 neo4jGraphQLContext: context.neo4jGraphQLContext,
             });
 
-            const sortFields = this.getSortFields(nestedContext, edgeVar.property("node"), edgeVar);
+            const sortFields = this.getSortFields(
+                nestedContext,
+                edgeVar.property("node"),
+                edgeVar.property("properties")
+            );
             extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar, totalCount).orderBy(...sortFields);
 
             if (paginationField && paginationField.skip) {

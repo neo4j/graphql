@@ -296,7 +296,9 @@ describe("array-push", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                                properties {
+                                    pay
+                                }
                             }
                         }
                     }

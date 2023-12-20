@@ -131,7 +131,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        createdAt
+                                        properties {
+                                            createdAt
+                                        }
                                     }
                                 }
                             }
@@ -263,7 +265,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        updatedAt
+                                        properties {
+                                            updatedAt
+                                        }
                                     }
                                 }
                             }
@@ -398,7 +402,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        createdAt
+                                        properties {
+                                            createdAt
+                                        }
                                     }
                                 }
                             }
@@ -473,7 +479,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        updatedAt
+                                        properties {
+                                            updatedAt
+                                        }
                                     }
                                 }
                             }
@@ -662,7 +670,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        createdAt
+                                        properties {
+                                            createdAt
+                                        }
                                     }
                                 }
                             }
@@ -737,7 +747,9 @@ describe("timestamp/time", () => {
                             movies {
                                 actorsConnection {
                                     edges {
-                                        updatedAt
+                                        properties {
+                                            updatedAt
+                                        }
                                     }
                                 }
                             }

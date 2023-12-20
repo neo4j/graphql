@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
     });
 
     test("create and query by edge property over an union", async () => {
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation CreateA {
                 createAs(
                     input: {
@@ -99,7 +99,9 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
                         name
                         relatedConnection {
                             edges {
-                                prop
+                                properties {
+                                    prop
+                                }
                                 node {
                                     name
                                 }
@@ -110,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query Relateds {
                 relateds(
                     where: {

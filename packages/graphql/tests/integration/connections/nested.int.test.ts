@@ -83,7 +83,9 @@ describe("Connections Alias", () => {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
-                            screenTime
+                            properties { 
+                                screenTime
+                            }
                             node {
                                 name
                                 moviesConnection {
@@ -147,7 +149,9 @@ describe("Connections Alias", () => {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 moviesConnection(where: { node: { title: "${movieTitle}" } }) {
