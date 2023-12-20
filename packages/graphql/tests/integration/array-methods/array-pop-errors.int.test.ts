@@ -344,7 +344,9 @@ describe("array-pop-errors", () => {
                         }
                         actedInConnection {
                             edges {
-                                pay
+                               properties {
+                                 pay
+                                }
                             }
                         }
                     }

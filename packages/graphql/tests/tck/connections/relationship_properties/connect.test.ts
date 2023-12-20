@@ -56,7 +56,9 @@ describe("Relationship Properties Connect Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -104,7 +106,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime }, node: { name: create_this1.name } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -140,7 +142,9 @@ describe("Relationship Properties Connect Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -189,7 +193,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                        RETURN collect({ properties: { screenTime: create_this0.screenTime }, node: { name: create_this1.name } }) AS create_var2
                     }
                     RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
@@ -219,7 +223,9 @@ describe("Relationship Properties Connect Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -257,7 +263,7 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
+                WITH { properties: { screenTime: update_this0.screenTime }, node: { name: update_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var2
@@ -288,7 +294,9 @@ describe("Relationship Properties Connect Cypher", () => {
                         title
                         actorsConnection {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -327,7 +335,7 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
+                WITH { properties: { screenTime: update_this0.screenTime }, node: { name: update_this1.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS update_var2

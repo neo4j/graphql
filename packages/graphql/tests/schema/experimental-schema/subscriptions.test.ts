@@ -2609,7 +2609,7 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -3123,10 +3123,10 @@ describe("Subscriptions", () => {
               create: [MovieActorsCreateFieldInput!]
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input MovieActorsRelationshipSubscriptionWhere {

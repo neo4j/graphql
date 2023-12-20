@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FOLLOWS {
+            type FOLLOWS {
               since: DateTime!
             }
 
@@ -323,10 +323,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               create: [UserFollowingCreateFieldInput!]
             }
 
-            type UserFollowingRelationship implements FOLLOWS {
+            type UserFollowingRelationship {
               cursor: String!
               node: Profile!
-              since: DateTime!
+              properties: FOLLOWS!
             }
 
             input UserFollowingUpdateConnectionInput {

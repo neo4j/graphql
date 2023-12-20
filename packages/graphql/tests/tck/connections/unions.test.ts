@@ -62,7 +62,9 @@ describe("Cypher -> Connections -> Unions", () => {
                     name
                     publicationsConnection {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -86,12 +88,12 @@ describe("Cypher -> Connections -> Unions", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:WROTE]->(this1:Book)
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    WITH { properties: { words: this0.words }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:WROTE]->(this3:Journal)
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    WITH { properties: { words: this2.words }, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -116,7 +118,9 @@ describe("Cypher -> Connections -> Unions", () => {
                         }
                     ) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -141,13 +145,13 @@ describe("Cypher -> Connections -> Unions", () => {
                     WITH this
                     MATCH (this)-[this0:WROTE]->(this1:Book)
                     WHERE this1.title = $param0
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    WITH { properties: { words: this0.words }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:WROTE]->(this3:Journal)
                     WHERE this3.subject = $param1
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    WITH { properties: { words: this2.words }, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -174,7 +178,9 @@ describe("Cypher -> Connections -> Unions", () => {
                         where: { Book: { edge: { words: 1000 } }, Journal: { edge: { words: 2000 } } }
                     ) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -199,13 +205,13 @@ describe("Cypher -> Connections -> Unions", () => {
                     WITH this
                     MATCH (this)-[this0:WROTE]->(this1:Book)
                     WHERE this0.words = $param0
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    WITH { properties: { words: this0.words }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:WROTE]->(this3:Journal)
                     WHERE this2.words = $param1
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    WITH { properties: { words: this2.words }, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -241,7 +247,9 @@ describe("Cypher -> Connections -> Unions", () => {
                         }
                     ) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -266,13 +274,13 @@ describe("Cypher -> Connections -> Unions", () => {
                     WITH this
                     MATCH (this)-[this0:WROTE]->(this1:Book)
                     WHERE (this1.title = $param0 AND this0.words = $param1)
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    WITH { properties: { words: this0.words }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:WROTE]->(this3:Journal)
                     WHERE (this3.subject = $param2 AND this2.words = $param3)
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    WITH { properties: { words: this2.words }, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
@@ -305,7 +313,9 @@ describe("Cypher -> Connections -> Unions", () => {
                     name
                     publicationsConnection(sort: [{ edge: { words: ASC } }]) {
                         edges {
-                            words
+                            properties {
+                                words
+                            }
                             node {
                                 ... on Book {
                                     title
@@ -329,19 +339,19 @@ describe("Cypher -> Connections -> Unions", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:WROTE]->(this1:Book)
-                    WITH { words: this0.words, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
+                    WITH { properties: { words: this0.words }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
                     RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this2:WROTE]->(this3:Journal)
-                    WITH { words: this2.words, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
+                    WITH { properties: { words: this2.words }, node: { __resolveType: \\"Journal\\", __id: id(this3), subject: this3.subject } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 UNWIND edges AS edge
                 WITH edge, totalCount
-                ORDER BY edge.words ASC
+                ORDER BY edge.properties.words ASC
                 WITH collect(edge) AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }

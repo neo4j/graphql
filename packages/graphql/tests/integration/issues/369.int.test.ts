@@ -76,13 +76,13 @@ describe("369", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 getDato(uuid: "${datoUUID}" ){
                   uuid
                   dependeToConnection {
                     edges {
-                      uuid
+                     properties { uuid }
                       node {
                           uuid
                       }
@@ -114,7 +114,7 @@ describe("369", () => {
             expect(result.data as any).toEqual({
                 getDato: {
                     uuid: datoUUID,
-                    dependeToConnection: { edges: [{ uuid: relUUID, node: { uuid: datoToUUID } }] },
+                    dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
                 },
             });
         } finally {
@@ -161,13 +161,13 @@ describe("369", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 getDato(uuid: "${datoUUID}" ){
                   uuid
                   dependeToConnection(where: { node: { uuid: "${datoToUUID}" } }) {
                     edges {
-                      uuid
+                     properties{ uuid}
                       node {
                           uuid
                       }
@@ -201,7 +201,7 @@ describe("369", () => {
             expect(result.data as any).toEqual({
                 getDato: {
                     uuid: datoUUID,
-                    dependeToConnection: { edges: [{ uuid: relUUID, node: { uuid: datoToUUID } }] },
+                    dependeToConnection: { edges: [{ properties: { uuid: relUUID }, node: { uuid: datoToUUID } }] },
                 },
             });
         } finally {

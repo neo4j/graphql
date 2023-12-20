@@ -80,7 +80,7 @@ describe("Union Interface Relationships", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -348,10 +348,10 @@ describe("Union Interface Relationships", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type ActorMoviesRelationship implements ActedIn {
+            type ActorMoviesRelationship {
               cursor: String!
               node: Movie!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorMoviesUpdateConnectionInput {
@@ -504,7 +504,7 @@ describe("Union Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            interface Directed {
+            type Directed {
               year: Int!
             }
 
@@ -847,10 +847,10 @@ describe("Union Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1076,10 +1076,10 @@ describe("Union Interface Relationships", () => {
               where: MovieDirectorsPersonConnectionWhere
             }
 
-            type MovieDirectorsRelationship implements Directed {
+            type MovieDirectorsRelationship {
               cursor: String!
               node: Director!
-              year: Int!
+              properties: Directed!
             }
 
             input MovieDirectorsUpdateInput {
@@ -1180,10 +1180,10 @@ describe("Union Interface Relationships", () => {
               create: [MovieReviewersCreateFieldInput!]
             }
 
-            type MovieReviewersRelationship implements Review {
+            type MovieReviewersRelationship {
               cursor: String!
               node: Reviewer!
-              score: Int!
+              properties: Review!
             }
 
             input MovieReviewersUpdateConnectionInput {
@@ -1588,10 +1588,10 @@ describe("Union Interface Relationships", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type PersonMoviesRelationship implements Review {
+            type PersonMoviesRelationship {
               cursor: String!
               node: Movie!
-              score: Int!
+              properties: Review!
             }
 
             input PersonMoviesUpdateConnectionInput {
@@ -1751,7 +1751,7 @@ describe("Union Interface Relationships", () => {
               offset: Int
             }
 
-            interface Review {
+            type Review {
               score: Int!
             }
 

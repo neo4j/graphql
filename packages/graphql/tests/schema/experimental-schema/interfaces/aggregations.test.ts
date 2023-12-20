@@ -316,7 +316,7 @@ describe("Interface Top Level Aggregations", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -399,10 +399,10 @@ describe("Interface Top Level Aggregations", () => {
               create: [ActorActedInCreateFieldInput!]
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {

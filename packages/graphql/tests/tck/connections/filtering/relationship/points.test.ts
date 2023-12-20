@@ -67,10 +67,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                         }
                     ) {
                         edges {
-                            screenTime
-                            location {
-                                latitude
-                                longitude
+                            properties {
+                                screenTime
+                                location {
+                                    latitude
+                                    longitude
+                                }
                             }
                             node {
                                 name
@@ -95,10 +97,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, location: CASE
+                    RETURN collect({ properties: { screenTime: this0.screenTime, location: CASE
                         WHEN this0.location IS NOT NULL THEN { point: this0.location }
                         ELSE NULL
-                    END, node: { name: this1.name } }) AS var2
+                    END }, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

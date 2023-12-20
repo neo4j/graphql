@@ -64,7 +64,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     current
                     manufacturerConnection {
                         edges {
-                            current
+                            properties {
+                                current
+                            }
                             node {
                                 name
                             }
@@ -72,7 +74,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     }
                     brandConnection {
                         edges {
-                            current
+                            properties {
+                                current
+                            }
                             node {
                                 name
                             }
@@ -151,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this7, edge.relationship AS this6
-                    RETURN collect({ current: this6.current, node: { name: this7.name } }) AS var8
+                    RETURN collect({ properties: { current: this6.current }, node: { name: this7.name } }) AS var8
                 }
                 RETURN { edges: var8, totalCount: totalCount } AS var9
             }
@@ -164,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this11, edge.relationship AS this10
-                    RETURN collect({ current: this10.current, node: { name: this11.name } }) AS var12
+                    RETURN collect({ properties: { current: this10.current }, node: { name: this11.name } }) AS var12
                 }
                 RETURN { edges: var12, totalCount: totalCount } AS var13
             }

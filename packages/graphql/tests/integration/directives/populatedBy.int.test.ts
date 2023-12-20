@@ -905,7 +905,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -931,7 +932,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string1,
+                                            properties: { callback: string1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1013,7 +1014,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1049,7 +1051,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string1,
+                                            properties: { callback: string1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1147,7 +1149,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                      properties {  callback
+                                      }
                                         node {
                                             id
                                         }
@@ -1172,7 +1175,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1198,7 +1202,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string1,
+                                            properties: { callback: string1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1215,7 +1219,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: string2,
+                                            properties: { callback: string2 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1306,7 +1310,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1332,7 +1337,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int1,
+                                            properties: { callback: int1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1417,7 +1422,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                      properties { callback
+                                      }
                                         node {
                                             id
                                         }
@@ -1453,7 +1459,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int1,
+                                            properties: { callback: int1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1557,7 +1563,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1582,7 +1589,8 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        callback
+                                       properties { callback
+                                       }
                                         node {
                                             id
                                         }
@@ -1608,7 +1616,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int1,
+                                            properties: { callback: int1 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1625,7 +1633,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            callback: int2,
+                                            properties: { callback: int2 },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1714,8 +1722,10 @@ describe("@populatedBy directive", () => {
                                 id
                                 genresConnection {
                                     edges {
-                                        title
-                                        slug
+                                      properties { 
+                                         title
+                                         slug
+                                      }
                                         node {
                                             id
                                         }
@@ -1741,8 +1751,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            title: movieTitle,
-                                            slug: `${movieTitle}-slug`,
+                                            properties: { title: movieTitle, slug: `${movieTitle}-slug` },
                                             node: {
                                                 id: genreId,
                                             },
@@ -1824,8 +1833,10 @@ describe("@populatedBy directive", () => {
                             id
                             genresConnection {
                                 edges {
-                                    title
-                                    slug
+                                  properties { 
+                                     title
+                                     slug
+                                  }
                                     node {
                                         id
                                     }
@@ -1861,8 +1872,7 @@ describe("@populatedBy directive", () => {
                                 genresConnection: {
                                     edges: [
                                         {
-                                            title: movieTitle,
-                                            slug: `${movieTitle}-slug`,
+                                            properties: { title: movieTitle, slug: `${movieTitle}-slug` },
                                             node: {
                                                 id: genreId,
                                             },

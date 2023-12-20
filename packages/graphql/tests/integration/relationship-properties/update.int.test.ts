@@ -99,7 +99,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: DESC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -127,13 +129,13 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 100,
+                                properties: { screenTime: 100 },
                                 node: {
                                     name: actor2,
                                 },
                             },
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor1,
                                 },
@@ -172,7 +174,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -200,13 +204,13 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor3,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actor1,
                                 },
@@ -244,7 +248,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -272,19 +278,19 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor3,
                                 },
                             },
                             {
-                                screenTime: 100,
+                                properties: { screenTime: 100 },
                                 node: {
                                     name: actor2,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actor1,
                                 },
@@ -320,7 +326,9 @@ describe("Relationship properties - update", () => {
                         title
                         actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
-                                screenTime
+                                properties {
+                                    screenTime
+                                }
                                 node {
                                     name
                                 }
@@ -348,19 +356,19 @@ describe("Relationship properties - update", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 60,
+                                properties: { screenTime: 60 },
                                 node: {
                                     name: actor3,
                                 },
                             },
                             {
-                                screenTime: 100,
+                                properties: { screenTime: 100 },
                                 node: {
                                     name: actor2,
                                 },
                             },
                             {
-                                screenTime: 105,
+                                properties: { screenTime: 105 },
                                 node: {
                                     name: actor1,
                                 },

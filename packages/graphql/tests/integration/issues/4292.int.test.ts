@@ -217,9 +217,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                               properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                               }
                             }
                         }
                     }
@@ -257,9 +259,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         name
                         partnersConnection {
                             edges {
-                                active
-                                firstDay
-                                lastDay
+                               properties {
+                                    active
+                                    firstDay
+                                    lastDay
+                               }
                             }
                         }
                     }

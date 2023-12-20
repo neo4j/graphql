@@ -519,7 +519,7 @@ describe("Aggregations", () => {
               sum: Int
             }
 
-            interface Likes {
+            type Likes {
               someBigInt: BigInt
               someDateTime: DateTime
               someDuration: Duration
@@ -1193,19 +1193,10 @@ describe("Aggregations", () => {
               someTime_MIN_LTE: Time
             }
 
-            type PostLikesRelationship implements Likes {
+            type PostLikesRelationship {
               cursor: String!
               node: User!
-              someBigInt: BigInt
-              someDateTime: DateTime
-              someDuration: Duration
-              someFloat: Float
-              someId: ID
-              someInt: Int
-              someLocalDateTime: LocalDateTime
-              someLocalTime: LocalTime
-              someString: String
-              someTime: Time
+              properties: Likes!
             }
 
             input PostLikesUpdateConnectionInput {

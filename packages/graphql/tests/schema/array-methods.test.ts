@@ -50,7 +50,7 @@ describe("Arrays Methods", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               pay: [Float]
             }
 
@@ -180,10 +180,10 @@ describe("Arrays Methods", () => {
               id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Movie!
-              pay: [Float]
+              properties: ActedIn!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -479,10 +479,10 @@ describe("Arrays Methods", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type MovieActorsRelationship implements ActedIn {
+            type MovieActorsRelationship {
               cursor: String!
               node: Actor!
-              pay: [Float]
+              properties: ActedIn!
             }
 
             input MovieActorsUpdateConnectionInput {

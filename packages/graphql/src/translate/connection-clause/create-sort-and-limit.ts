@@ -71,7 +71,7 @@ export function createSortAndLimitProjection({
         const [nodeOrEdge, sortKeyAndValue] = sortFieldEntries[0];
         addSortAndLimitOptionsToClause({
             optionsInput: { sort: [sortKeyAndValue], limit: firstArg, offset },
-            target: nodeOrEdge === "node" ? nodeRef : relationshipRef,
+            target: nodeOrEdge === "node" ? nodeRef : relationshipRef.property("properties"),
             projectionClause: withStatement,
         });
     });

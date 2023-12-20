@@ -56,8 +56,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
                     title
                     actorsConnection(where: { edge: { OR: [{ role_ENDS_WITH: "Gump" }, { screenTime_LT: 60 }] } }) {
                         edges {
-                            role
-                            screenTime
+                            properties {
+                                role
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -81,7 +83,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ role: this0.role, screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { role: this0.role, screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

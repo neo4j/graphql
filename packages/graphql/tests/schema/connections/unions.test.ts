@@ -241,10 +241,10 @@ describe("Unions", () => {
               where: AuthorPublicationsJournalConnectionWhere
             }
 
-            type AuthorPublicationsRelationship implements Wrote {
+            type AuthorPublicationsRelationship {
               cursor: String!
               node: Publication!
-              words: Int!
+              properties: Wrote!
             }
 
             input AuthorPublicationsUpdateInput {
@@ -470,10 +470,10 @@ describe("Unions", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type BookAuthorRelationship implements Wrote {
+            type BookAuthorRelationship {
               cursor: String!
               node: Author!
-              words: Int!
+              properties: Wrote!
             }
 
             input BookAuthorUpdateConnectionInput {
@@ -794,10 +794,10 @@ describe("Unions", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
-            type JournalAuthorRelationship implements Wrote {
+            type JournalAuthorRelationship {
               cursor: String!
               node: Author!
-              words: Int!
+              properties: Wrote!
             }
 
             input JournalAuthorUpdateConnectionInput {
@@ -1000,7 +1000,7 @@ describe("Unions", () => {
               journals: [Journal!]!
             }
 
-            interface Wrote {
+            type Wrote {
               words: Int!
             }
 

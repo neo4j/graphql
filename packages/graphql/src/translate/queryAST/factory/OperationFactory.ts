@@ -66,6 +66,7 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import type { Field } from "../ast/fields/Field";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -758,12 +759,15 @@ export class OperationsFactory {
         };
 
         const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
+        // console.log("edgeFieldsRaw", edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
         const resolveTreeEdgeFields = getFieldsByTypeName(
             edgeFieldsRaw,
             entityOrRel.operations.relationshipFieldTypename
         );
+        // console.log("resolveTreeEdgeFields", JSON.stringify(resolveTreeEdgeFields, null, 2));
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
+        const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
 
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
@@ -775,9 +779,14 @@ export class OperationsFactory {
 
         const resolveTreeNodeFields = getFieldsByTypeName(nodeFieldsRaw, resolveTreeNodeFieldsTypesNames);
         const nodeFields = this.fieldFactory.createFields(target, resolveTreeNodeFields, context);
-        const edgeFields = isTopLevel
-            ? []
-            : this.fieldFactory.createFields(relationship, resolveTreeEdgeFields, context);
+
+        let edgeFields: Field[] = [];
+        if (!isTopLevel && relationship.propertiesTypeName) {
+            const resolveTreePropertiesFields = getFieldsByTypeName(propertiesFieldsRaw, [
+                relationship.propertiesTypeName,
+            ]);
+            edgeFields = this.fieldFactory.createFields(relationship, resolveTreePropertiesFields, context);
+        }
 
         const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(target, ["READ"], context, "BEFORE");

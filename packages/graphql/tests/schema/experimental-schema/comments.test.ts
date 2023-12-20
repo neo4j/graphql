@@ -735,7 +735,7 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
-                interface ActedIn {
+                type ActedIn {
                   screenTime: Int!
                 }
 
@@ -819,10 +819,10 @@ describe("Comments", () => {
                   create: [ActorActedInCreateFieldInput!]
                 }
 
-                type ActorActedInRelationship implements ActedIn {
+                type ActorActedInRelationship {
                   cursor: String!
                   node: Production!
-                  screenTime: Int!
+                  properties: ActedIn!
                 }
 
                 input ActorActedInUpdateConnectionInput {

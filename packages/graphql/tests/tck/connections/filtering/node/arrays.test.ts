@@ -56,7 +56,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { name_IN: ["Tom Hanks", "Robin Wright"] } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -80,7 +82,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -104,7 +106,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { name_NOT_IN: ["Tom Hanks", "Robin Wright"] } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                             }
@@ -128,7 +132,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -152,7 +156,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { favouriteColours_INCLUDES: "Blue" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 favouriteColours
@@ -177,7 +183,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, favouriteColours: this1.favouriteColours } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name, favouriteColours: this1.favouriteColours } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -198,7 +204,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     title
                     actorsConnection(where: { node: { favouriteColours_NOT_INCLUDES: "Blue" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 favouriteColours
@@ -223,7 +231,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { name: this1.name, favouriteColours: this1.favouriteColours } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name, favouriteColours: this1.favouriteColours } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

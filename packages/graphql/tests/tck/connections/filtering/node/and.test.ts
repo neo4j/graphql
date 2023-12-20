@@ -56,7 +56,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
                     title
                     actorsConnection(where: { node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -81,7 +83,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -103,7 +105,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
                     title
                     actorsConnection(where: { node: { NOT: { firstName: "Tom" } } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 firstName
                                 lastName
@@ -128,7 +132,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> AND", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ screenTime: this0.screenTime, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
+                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { firstName: this1.firstName, lastName: this1.lastName } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

@@ -739,7 +739,9 @@ describe("Connections Alias", () => {
                 ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     actorsConnection(first: 1) {
                         edges {
-                            r:roles
+                           r:properties {
+                             r:roles
+                           }
                         }
                     }
                 }
@@ -767,7 +769,7 @@ describe("Connections Alias", () => {
 
             expect(result.errors).toBeUndefined();
 
-            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].r).toBeDefined();
+            expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].r.r).toBeDefined();
         } finally {
             await session.close();
         }
@@ -815,7 +817,9 @@ describe("Connections Alias", () => {
                             n:node {
                                 n:name
                             }
-                            r:roles
+                           p:properties {
+                             r:roles
+                           }
                         }
                         page:pageInfo {
                             hNP:hasNextPage
@@ -852,7 +856,7 @@ describe("Connections Alias", () => {
                         title: movieTitle,
                         connection: {
                             tC: 1,
-                            edges: [{ n: { n: actorName }, r: roles }],
+                            edges: [{ n: { n: actorName }, p: { r: roles } }],
                             page: {
                                 hNP: false,
                             },
@@ -972,7 +976,9 @@ describe("Connections Alias", () => {
                     title
                     actorsConnection(where: { node: { name: "${actorName}" } }) {
                         edges {
-                            screenTime
+                            properties {
+                                screenTime
+                            }
                             node {
                                 name
                                 b: moviesConnection(where: { node: { title: "${movieTitle}"}}) {

@@ -305,7 +305,7 @@ function makeAugmentedSchema({
         withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
         withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
         const composeNode = withObjectType({
-            concreteEntityAdapter,
+            entityAdapter: concreteEntityAdapter,
             userDefinedFieldDirectives,
             userDefinedObjectDirectives,
             composer,
@@ -444,7 +444,7 @@ function makeAugmentedSchema({
             const propagatedDirectives = propagatedDirectivesForNode.get(entity.name) || [];
             const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
             withInterfaceType({
-                entityAdapter: interfaceEntityAdapter,
+                interfaceEntityAdapter,
                 userDefinedFieldDirectives,
                 userDefinedInterfaceDirectives,
                 composer,
@@ -674,11 +674,12 @@ function doForRelationshipPropertiesInterface({
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(
         relationshipAdapter.propertiesTypeName
     ) as Map<string, DirectiveNode[]>;
+    // TODO: update once this has been changed to a type
     const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(relationshipAdapter.name) || [];
-    withInterfaceType({
+    withObjectType({
         entityAdapter: relationshipAdapter,
         userDefinedFieldDirectives,
-        userDefinedInterfaceDirectives,
+        userDefinedObjectDirectives: userDefinedInterfaceDirectives,
         composer,
     });
     withSortInputType({ relationshipAdapter, userDefinedFieldDirectives, composer });
@@ -732,7 +733,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     withUpdateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
 
     const composeInterface = withInterfaceType({
-        entityAdapter: interfaceEntityAdapter,
+        interfaceEntityAdapter,
         userDefinedFieldDirectives,
         userDefinedInterfaceDirectives: [],
         composer,
