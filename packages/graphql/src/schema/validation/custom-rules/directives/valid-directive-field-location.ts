@@ -197,7 +197,7 @@ function validFieldOfInterfaceTypeLocation({
     if (SCHEMA_CONFIGURATION_FIELD_DIRECTIVES.includes(directiveNode.name.value)) {
         return;
     }
-    // TODO: remove
+    // TODO: remove when declareRelationship schema generation is finished
     if (directiveNode.name.value === "relationship") {
         // allow @relationship until a different way of supporting relationship-like behavior on interfaces is implemented
         return;

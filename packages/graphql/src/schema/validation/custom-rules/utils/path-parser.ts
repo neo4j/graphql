@@ -32,6 +32,15 @@ export type ObjectOrInterfaceWithExtensions =
     | ObjectTypeExtensionNode
     | InterfaceTypeExtensionNode;
 
+/**
+ * This function is called with the path and ancestors arguments from a GraphQL visitor.
+ * It parses the arguments to identify some information about the latest definitions traversed by the visitor.
+ *
+ * @returns [pathToHere, traversedDef, parentOfTraversedDef]
+ *  * pathToHere is a list of the names of all definitions that were traversed by the visitor to get to the node that is being visited (not inclusive)
+ *  * traversedDef is the last definition before the node that is being visited
+ *  * parentOfTraversedDef is the parent of traversedDef
+ */
 export function getPathToNode(
     path: readonly (number | string)[],
     ancestors: readonly (ASTNode | readonly ASTNode[])[]
@@ -40,12 +49,12 @@ export function getPathToNode(
     ObjectOrInterfaceWithExtensions | FieldDefinitionNode | undefined,
     ObjectOrInterfaceWithExtensions | undefined
 ] {
-    if (!ancestors || !ancestors[0]) {
+    if (!ancestors || !ancestors[0] || Array.isArray(ancestors[0])) {
         return [[], undefined, undefined];
     }
     let traversedDefinition, pathIdx;
-    // if visiting from the document level
-    if (!Array.isArray(ancestors[0]) && (ancestors[0] as ASTNode).kind === Kind.DOCUMENT) {
+    const visitStartedFromDocumentLevel = (ancestors[0] as ASTNode).kind === Kind.DOCUMENT;
+    if (visitStartedFromDocumentLevel) {
         const documentASTNodes = ancestors[1];
         if (!documentASTNodes || (Array.isArray(documentASTNodes) && !documentASTNodes.length)) {
             return [[], undefined, undefined];
@@ -53,12 +62,12 @@ export function getPathToNode(
         const [, definitionIdx] = path;
         traversedDefinition = documentASTNodes[definitionIdx as number];
         pathIdx = 2;
-    }
-    // if visiting from inside another visitor
-    if (!Array.isArray(ancestors[0]) && (ancestors[0] as ASTNode).kind !== Kind.DOCUMENT) {
+    } else {
+        // visit started from inside another visitor
         traversedDefinition = ancestors[0];
         pathIdx = 0;
     }
+
     const pathToHere: (ObjectOrInterfaceWithExtensions | FieldDefinitionNode)[] = [traversedDefinition];
     let lastSeenDefinition: ObjectOrInterfaceWithExtensions | FieldDefinitionNode = traversedDefinition;
     const getNextDefinition = parsePath(path, traversedDefinition, pathIdx);
