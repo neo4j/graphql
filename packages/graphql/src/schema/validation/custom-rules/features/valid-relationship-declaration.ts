@@ -200,8 +200,11 @@ function getRelationships({
     actualRelationshipFields: Set<string> | undefined;
 }[] {
     const inheritedTypeNames = getInheritedTypeNames(parentDef, interfaceToImplementationsMap);
+    const isDirectiveOnInterfaceField = (
+        [Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION] as string[]
+    ).includes(parentDef.kind);
     return inheritedTypeNames.map((typeName) => {
-        if ([Kind.INTERFACE_TYPE_DEFINITION, Kind.INTERFACE_TYPE_EXTENSION].includes(parentDef.kind)) {
+        if (isDirectiveOnInterfaceField) {
             return {
                 declaredRelationshipFields: typeNameToRelationshipFields.get(parentDef.name.value),
                 actualRelationshipFields: typeNameToRelationshipFields.get(typeName),
