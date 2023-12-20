@@ -774,12 +774,10 @@ export class OperationsFactory {
         };
 
         const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
-        // console.log("edgeFieldsRaw", edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
         const resolveTreeEdgeFields = getFieldsByTypeName(
             edgeFieldsRaw,
             entityOrRel.operations.relationshipFieldTypename
         );
-        // console.log("resolveTreeEdgeFields", JSON.stringify(resolveTreeEdgeFields, null, 2));
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
         const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
