@@ -245,26 +245,10 @@ function makeRelationshipToInterfaceTypeWhereType({
     edgeType: InputTypeComposer | undefined;
     experimental: boolean;
 }): { node?: InputTypeComposer; edge?: InputTypeComposer } | undefined {
-    let interfaceImplementationsType: InputTypeComposer | undefined = undefined;
     let interfaceNodeType: InputTypeComposer | undefined = undefined;
 
-    const implementationsFields = interfaceEntity.concreteEntities.reduce((acc, entity) => {
-        if (schemaComposer.has(entity.operations.subscriptionWhereInputTypeName)) {
-            acc[entity.name] = entity.operations.subscriptionWhereInputTypeName;
-        }
-        return acc;
-    }, {});
-    if (!isEmptyObject(implementationsFields)) {
-        interfaceImplementationsType = schemaComposer.getOrCreateITC(
-            interfaceEntity.operations.implementationsSubscriptionWhereInputTypeName,
-            (tc) => tc.addFields(implementationsFields)
-        );
-    }
     const interfaceFields: InputTypeComposerFieldConfigMapDefinition =
         attributesToSubscriptionsWhereInputFields(interfaceEntity);
-    if (interfaceImplementationsType && !experimental) {
-        interfaceFields["_on"] = interfaceImplementationsType;
-    }
     if (!isEmptyObject(interfaceFields)) {
         interfaceNodeType = schemaComposer.getOrCreateITC(
             interfaceEntity.operations.subscriptionWhereInputTypeName,

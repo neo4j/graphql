@@ -312,7 +312,7 @@ export class FilterFactory {
     public createNodeFilters(entity: EntityAdapter, where: Record<string, unknown>): Filter[] {
         // if typename is allowed we can compute only the shared filter without recomputing the filters for each concrete entity
         // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-        const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
+        const typenameFilterAllowed = isInterfaceEntity(entity);
         if (typenameFilterAllowed) {
             return this.createExperimentalInterfaceFilters(entity, where);
         }

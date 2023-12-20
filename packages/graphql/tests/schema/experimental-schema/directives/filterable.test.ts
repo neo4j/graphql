@@ -6656,7 +6656,6 @@ describe("@filterable directive", () => {
                     features: {
                         subscriptions: plugin,
                     },
-                    experimental: true,
                 });
                 const schema = await neoSchema.getSchema();
 

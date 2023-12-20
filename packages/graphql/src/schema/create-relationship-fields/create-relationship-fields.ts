@@ -87,17 +87,6 @@ export function createRelationshipFields({
             );
         }
 
-        if (!experimental && relationshipTarget instanceof InterfaceEntityAdapter) {
-            createRelationshipInterfaceFields({
-                relationship: relationshipAdapter,
-                composeNode,
-                schemaComposer,
-                userDefinedFieldDirectives,
-            });
-
-            return;
-        }
-
         // TODO: new way
         if (composeNode instanceof ObjectTypeComposer) {
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);

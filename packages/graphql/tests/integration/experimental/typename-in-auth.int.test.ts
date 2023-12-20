@@ -127,7 +127,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,
@@ -177,7 +177,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,
@@ -223,7 +223,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,
@@ -275,7 +275,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,
@@ -321,7 +321,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,
@@ -376,7 +376,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,
@@ -424,7 +424,7 @@ describe("typename_IN with auth", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs: authTypeDefs,
             driver,
-            experimental: true,
+
             features: {
                 authorization: {
                     key: secret,

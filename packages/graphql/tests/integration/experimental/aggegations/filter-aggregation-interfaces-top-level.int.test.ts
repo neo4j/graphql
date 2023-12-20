@@ -85,7 +85,6 @@ describe("Top-level filter interface query fields", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });

@@ -64,7 +64,6 @@ describe("experimental flag warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -89,7 +88,6 @@ describe("experimental flag warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -217,7 +215,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledOnce();
@@ -241,7 +238,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -268,7 +264,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -292,7 +287,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -344,7 +338,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -375,7 +368,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -409,7 +401,6 @@ describe("default max limit bypass warning", () => {
             document: doc,
             additionalDefinitions,
             features: {},
-            experimental: true,
         });
 
         expect(warn).toHaveBeenCalledWith(
@@ -4567,7 +4558,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             const errors = getError(executeValidate);
@@ -4598,7 +4588,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4622,7 +4611,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();
@@ -4644,7 +4632,6 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
                 });
 
             expect(executeValidate).not.toThrow();

@@ -98,7 +98,6 @@ describe("typename_IN", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });
