@@ -178,7 +178,7 @@ describe("Create or Connect", () => {
             typeDefs = gql`
                 type Movie {
                     id: ID! @id @unique
-                    createdAt: DateTime @timestamp(operations: [CREATE])
+                    createdAt: DateTime! @timestamp(operations: [CREATE])
                     title: String! @unique
                     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 }
@@ -463,7 +463,7 @@ describe("Create or Connect", () => {
 
                 interface ActedIn @relationshipProperties {
                     id: ID! @id
-                    createdAt: DateTime @timestamp(operations: [CREATE])
+                    createdAt: DateTime! @timestamp(operations: [CREATE])
                     updatedAt: DateTime @timestamp(operations: [UPDATE])
                     screentime: Int!
                 }
