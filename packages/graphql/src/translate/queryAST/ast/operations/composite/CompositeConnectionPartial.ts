@@ -18,11 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { createNodeFromEntity } from "../../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { Pagination } from "../../pagination/Pagination";
-import type { Sort } from "../../sort/Sort";
 import { ConnectionReadOperation } from "../ConnectionReadOperation";
 import type { OperationTranspileResult } from "../operations";
 
@@ -30,18 +28,18 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error();
         if (!this.relationship) throw new Error("connection fields are not supported on top level interface");
-        const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
-        const relationship = new Cypher.Relationship({ type: this.relationship.type });
-        const relDirection = this.relationship.getCypherDirection(this.directed);
 
-        const pattern = new Cypher.Pattern(context.target)
-            .withoutLabels()
-            .related(relationship)
-            .withDirection(relDirection)
-            .to(node);
+        // eslint-disable-next-line prefer-const
+        let { selection: clause, nestedContext } = this.selection.apply(context);
 
-        const nestedContext = context.push({ target: node, relationship });
-        const { preSelection, selectionClause: clause } = this.getSelectionClauses(nestedContext, pattern);
+        let extraMatches: Array<Cypher.Match | Cypher.With | Cypher.Yield> = this.getChildren().flatMap((f) => {
+            return f.getSelection(nestedContext);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [clause, ...extraMatches];
+            clause = new Cypher.With("*");
+        }
 
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
 
@@ -51,17 +49,19 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         const filters = Cypher.and(...predicates, ...authPredicate);
 
-        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [node]);
+        const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [
+            nestedContext.target,
+        ]);
         const nodeProjectionMap = new Cypher.Map();
 
         // This bit is different than normal connection ops
         const targetNodeName = this.target.name;
         nodeProjectionMap.set({
             __resolveType: new Cypher.Literal(targetNodeName),
-            __id: Cypher.id(node),
+            __id: Cypher.id(nestedContext.target),
         });
 
-        const nodeProjectionFields = this.nodeFields.map((f) => f.getProjectionField(node));
+        const nodeProjectionFields = this.nodeFields.map((f) => f.getProjectionField(nestedContext.target));
         const nodeSortProjectionFields = this.sortFields.flatMap((f) =>
             f.node.map((ef) => ef.getProjectionField(nestedContext))
         );
@@ -70,7 +70,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         uniqueNodeProjectionFields.forEach((p) => {
             if (typeof p === "string") {
-                nodeProjectionMap.set(p, node.property(p));
+                nodeProjectionMap.set(p, nestedContext.target.property(p));
             } else {
                 nodeProjectionMap.set(p);
             }
@@ -80,7 +80,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         const edgeProjectionMap = new Cypher.Map();
 
-        const edgeProjectionFields = this.edgeFields.map((f) => f.getProjectionField(relationship));
+        const edgeProjectionFields = this.edgeFields.map((f) => f.getProjectionField(nestedContext.relationship!));
         const edgeSortProjectionFields = this.sortFields.flatMap((f) =>
             f.edge.map((ef) => ef.getProjectionField(nestedContext))
         );
@@ -89,7 +89,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
 
         uniqueEdgeProjectionFields.forEach((p) => {
             if (typeof p === "string") {
-                edgeProjectionMap.set(p, relationship.property(p));
+                edgeProjectionMap.set(p, nestedContext.relationship!.property(p));
             } else {
                 edgeProjectionMap.set(p);
             }
@@ -110,7 +110,8 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         const projectionClauses = new Cypher.With([edgeProjectionMap, edgeVar]).return(context.returnVariable);
 
         const subClause = Cypher.concat(
-            ...preSelection,
+            // ...preSelection,
+            ...extraMatches,
             clause,
             ...authFilterSubqueries,
             withWhere,
@@ -124,37 +125,8 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         };
     }
 
-    // Sort is handled by CompositeConnectionReadOperation
-    public addSort(sortElement: { node: Sort[]; edge: Sort[] }): void {
-        this.sortFields.push(sortElement);
-    }
-
     // Pagination is handled by CompositeConnectionReadOperation
     public addPagination(_pagination: Pagination): void {
         return undefined;
-    }
-
-    private getSelectionClauses(
-        context: QueryASTContext,
-        node: Cypher.Node | Cypher.Pattern
-    ): {
-        preSelection: Array<Cypher.Match | Cypher.With>;
-        selectionClause: Cypher.Match | Cypher.With;
-    } {
-        let matchClause: Cypher.Match | Cypher.With = new Cypher.Match(node);
-
-        let extraMatches = this.getChildren().flatMap((f) => {
-            return f.getSelection(context);
-        });
-
-        if (extraMatches.length > 0) {
-            extraMatches = [matchClause, ...extraMatches];
-            matchClause = new Cypher.With("*");
-        }
-
-        return {
-            preSelection: extraMatches,
-            selectionClause: matchClause,
-        };
     }
 }

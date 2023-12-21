@@ -55,40 +55,7 @@ export class CompositeReadOperation extends Operation {
         return this.children;
     }
 
-    private transpileTopLevelCompositeRead(context: QueryASTContext): OperationTranspileResult {
-        const nestedSubqueries = this.children.flatMap((c) => {
-            const result = c.transpile(context);
-            return result.clauses;
-        });
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).with(context.returnVariable);
-        if (this.sortFields.length > 0) {
-            nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
-        }
-        if (this.pagination) {
-            const paginationField = this.pagination.getPagination();
-            if (paginationField) {
-                if (paginationField.skip) {
-                    nestedSubquery.skip(paginationField.skip);
-                }
-                if (paginationField.limit) {
-                    nestedSubquery.limit(paginationField.limit);
-                }
-            }
-        }
-
-        nestedSubquery.return([context.returnVariable, context.returnVariable]);
-
-        return {
-            clauses: [nestedSubquery],
-            projectionExpr: context.returnVariable,
-        };
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (!this.relationship) {
-            return this.transpileTopLevelCompositeRead(context);
-        }
-
         const parentNode = context.target;
         const nestedSubqueries = this.children.flatMap((c) => {
             const result = c.transpile(context);
@@ -101,6 +68,9 @@ export class CompositeReadOperation extends Operation {
         });
 
         let aggrExpr: Cypher.Expr = Cypher.collect(context.returnVariable);
+        if (!this.relationship) {
+            aggrExpr = context.returnVariable;
+        }
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }
