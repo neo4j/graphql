@@ -33,6 +33,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
+import type { Filter } from "../ast/filters/Filter";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
@@ -66,7 +67,6 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import type { Filter } from "../ast/filters/Filter";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -558,6 +558,7 @@ export class OperationsFactory {
             const selection = new RelationshipSelection({
                 relationship,
                 directed,
+                targetOverride: concreteEntity,
             });
 
             const connectionPartial = new CompositeConnectionPartial({
@@ -937,7 +938,6 @@ export class OperationsFactory {
         }
         return operation;
     }
-
 
     private hydrateReadOperation<T extends ReadOperation>({
         entity,
