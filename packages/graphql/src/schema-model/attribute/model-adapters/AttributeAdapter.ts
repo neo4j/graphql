@@ -160,6 +160,14 @@ export class AttributeAdapter {
             return false;
         }
 
+        if (this.annotations.settable?.onCreate === false) {
+            return false;
+        }
+
+        if (this.timestampCreateIsGenerated()) {
+            return false;
+        }
+
         return (
             this.typeHelper.isScalar() ||
             this.typeHelper.isSpatial() ||
