@@ -357,6 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               properties: [Property!]
               tags: [Tag!]
               type: ResourceType!
+              updatedAt: DateTime!
             }
 
             input ResourceDeleteInput {
@@ -450,12 +451,14 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceOnCreateInput {
+              createdAt: DateTime!
               externalIds: [ID!]
               id: ID!
               name: String
               properties: [Property!]
               tags: [Tag!]
               type: ResourceType!
+              updatedAt: DateTime!
             }
 
             input ResourceOptions {
@@ -506,6 +509,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceUpdateInput {
               containedBy: [ResourceContainedByUpdateFieldInput!]
+              createdAt: DateTime
               externalIds: [ID!]
               externalIds_POP: Int
               externalIds_PUSH: [ID!]

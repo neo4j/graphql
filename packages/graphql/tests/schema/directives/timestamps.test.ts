@@ -91,6 +91,7 @@ describe("Timestamps", () => {
 
             input MovieCreateInput {
               id: ID
+              updatedAt: DateTime!
             }
 
             type MovieEdge {
@@ -117,6 +118,7 @@ describe("Timestamps", () => {
             }
 
             input MovieUpdateInput {
+              createdAt: DateTime
               id: ID
             }
 
