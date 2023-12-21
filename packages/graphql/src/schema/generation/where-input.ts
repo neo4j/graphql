@@ -157,22 +157,25 @@ export function withSourceWhereInputType({
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
-    if (!(relationshipTarget instanceof ConcreteEntityAdapter)) {
-        throw new Error("Expected concrete target");
+    if (relationshipTarget instanceof InterfaceEntityAdapter) {
+        throw new Error("Unexpected interface target");
     }
     const relationshipSource = relationshipAdapter.source;
-    if (relationshipSource instanceof UnionEntityAdapter) {
-        throw new Error("Unexpected union source");
-    }
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
     const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
     whereInput.addFields(fields);
+
+    // TODO: Current unions are not supported as relationship targets beyond the above fields
+    if (relationshipTarget instanceof UnionEntityAdapter) {
+        return;
+    }
 
     const whereAggregateInput = withAggregateInputType({
         relationshipAdapter,
         entityAdapter: relationshipTarget,
         composer: composer,
     });
+
     if (relationshipAdapter.isFilterableByAggregate()) {
         whereInput.addFields({
             [relationshipAdapter.operations.aggregateTypeName]: {
