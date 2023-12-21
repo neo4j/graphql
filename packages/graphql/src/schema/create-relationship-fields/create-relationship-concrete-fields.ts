@@ -46,11 +46,8 @@ export function createRelationshipConcreteFields({
     deprecatedDirectives: Directive[];
     subgraph?: Subgraph;
 }) {
-    // ======== only on relationships to concrete | unions:
     withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives });
 
-    // ======== only on relationships to concrete | unions:
-    // TODO: refactor
     withConnectOrCreateInputType({
         relationshipAdapter,
         composer: schemaComposer,
@@ -58,7 +55,6 @@ export function createRelationshipConcreteFields({
         deprecatedDirectives,
     });
 
-    // ======== all relationships:
     composeNode.addFields(
         augmentObjectOrInterfaceTypeWithRelationshipField(relationshipAdapter, userDefinedFieldDirectives, subgraph)
     );
