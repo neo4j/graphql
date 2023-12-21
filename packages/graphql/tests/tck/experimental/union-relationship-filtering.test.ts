@@ -23,26 +23,23 @@ import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("Interface filtering operations", () => {
+describe("Union relationship filtering operations", () => {
     const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
     beforeEach(() => {
         typeDefs = gql`
-            interface Show {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
+            union Production = Movie | Series
 
-            type Movie implements Show @limit(default: 3, max: 10) {
+            type Movie {
                 title: String!
                 cost: Float
                 runtime: Int
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series implements Show {
+            type Series {
                 title: String!
                 episodes: Int
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -50,7 +47,7 @@ describe("Interface filtering operations", () => {
 
             type Actor {
                 name: String!
-                actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
@@ -65,49 +62,14 @@ describe("Interface filtering operations", () => {
         });
     });
 
-    test("Logical operator filter (top level)", async () => {
+    test("Union filter (top level)", async () => {
         const query = gql`
             query actedInWhere {
-                shows(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
-                    title
-                }
-            }
-        `;
-
-        const token = createBearerToken(secret);
-        const result = await translateQuery(neoSchema, query, { token });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (this0:Movie)
-                WHERE (this0.title = $param0 OR this0.title = $param1)
-                WITH this0 { .title, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                RETURN this0 AS this
-                UNION
-                MATCH (this1:Series)
-                WHERE (this1.title = $param2 OR this1.title = $param3)
-                WITH this1 { .title, __resolveType: \\"Series\\", __id: id(this1) } AS this1
-                RETURN this1 AS this
-            }
-            WITH this
-            RETURN this AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Office\\",
-                \\"param1\\": \\"The Office 2\\",
-                \\"param2\\": \\"The Office\\",
-                \\"param3\\": \\"The Office 2\\"
-            }"
-        `);
-    });
-
-    test("Logical operator filter on relationship", async () => {
-        const query = gql`
-            query actedInWhere {
-                actors {
-                    actedIn(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
+                productions(where: { Movie: { title: "The Office" }, Series: { title: "The Office 2" } }) {
+                    ... on Movie {
+                        title
+                    }
+                    ... on Series {
                         title
                     }
                 }
@@ -118,34 +80,61 @@ describe("Interface filtering operations", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title = $param0 OR this1.title = $param1)
-                    WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WHERE (this4.title = $param2 OR this4.title = $param3)
-                    WITH this4 { .title, __resolveType: \\"Series\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+            "CALL {
+                MATCH (this0:Movie)
+                WHERE this0.title = $param0
+                WITH this0 { .title, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this1:Series)
+                WHERE this1.title = $param1
+                WITH this1 { .title, __resolveType: \\"Series\\", __id: id(this1) } AS this1
+                RETURN this1 AS this
             }
-            RETURN this { actedIn: var2 } AS this"
+            WITH this
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Office\\",
-                \\"param1\\": \\"The Office 2\\",
-                \\"param2\\": \\"The Office\\",
-                \\"param3\\": \\"The Office 2\\"
+                \\"param1\\": \\"The Office 2\\"
+            }"
+        `);
+    });
+
+    test("Filtering on nested-level relationship unions", async () => {
+        const query = gql`
+            query actedInWhere {
+                actors(
+                    where: {
+                        actedIn_SOME: { Movie: { title_CONTAINS: "The Office" }, Series: { title_ENDS_WITH: "Office" } }
+                    }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret);
+        const result = await translateQuery(neoSchema, query, { token });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE (EXISTS {
+                MATCH (this)-[:ACTED_IN]->(this0:Movie)
+                WHERE this0.title CONTAINS $param0
+            } AND EXISTS {
+                MATCH (this)-[:ACTED_IN]->(this1:Series)
+                WHERE this1.title ENDS WITH $param1
+            })
+            RETURN this { .name } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"The Office\\",
+                \\"param1\\": \\"Office\\"
             }"
         `);
     });
