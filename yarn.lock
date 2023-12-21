@@ -3676,7 +3676,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     style-loader: 3.3.3
-    tailwindcss: 3.3.7
+    tailwindcss: 3.4.0
     terser-webpack-plugin: 5.3.9
     thememirror: 2.0.1
     ts-jest: 29.1.1
@@ -24790,9 +24790,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.3.7":
-  version: 3.3.7
-  resolution: "tailwindcss@npm:3.3.7"
+"tailwindcss@npm:3.4.0":
+  version: 3.4.0
+  resolution: "tailwindcss@npm:3.4.0"
   dependencies:
     "@alloc/quick-lru": ^5.2.0
     arg: ^5.0.2
@@ -24819,7 +24819,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 73728e03ac00bb90a09436895b663473336da4a539ca22df41c62948fd4e45c5feda71d6f33c03666045dbb1806ee36658caf604256d20196ebf580ec0987c2d
+  checksum: d7f05beb1cf98d169b9b65ef674a82dd16c97757194f9bacee4c536cf74f3852e0008a74f7af8578f4a1e9639fac262fd8ef89efe3e6e06667243640422f9462
   languageName: node
   linkType: hard
 
