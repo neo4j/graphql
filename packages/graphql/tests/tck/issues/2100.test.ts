@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             interface Church {
                 id: ID @id
                 name: String!
-                serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
+                serviceLogs: [ServiceLog!]! @declareRelationship
             }
 
             type Bacenta implements Church {
@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                         """
                         columnName: "markedAttendance"
                     )
-                serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
+                serviceDate: TimeGraph! @declareRelationship
             }
         `;
 

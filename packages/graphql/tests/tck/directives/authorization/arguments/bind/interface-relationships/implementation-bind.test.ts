@@ -32,12 +32,12 @@ describe("Cypher Auth Allow", () => {
         typeDefs = gql`
             interface Content {
                 id: ID
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @declareRelationship
             }
 
             type Comment implements Content {
                 id: ID
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Post implements Content
@@ -51,7 +51,7 @@ describe("Cypher Auth Allow", () => {
                     ]
                 ) {
                 id: ID
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type User {

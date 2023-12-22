@@ -33,13 +33,13 @@ describe("@auth allow on specific interface implementation", () => {
             interface Content {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @declareRelationship
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
@@ -55,7 +55,7 @@ describe("@auth allow on specific interface implementation", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 

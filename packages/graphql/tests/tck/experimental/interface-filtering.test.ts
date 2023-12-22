@@ -32,7 +32,7 @@ describe("Interface top level operations", () => {
         typeDefs = gql`
             interface Show {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Show @limit(default: 3, max: 10) {
