@@ -47,7 +47,7 @@ describe("interface relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
@@ -95,6 +95,7 @@ describe("interface relationships", () => {
         await driver.close();
     });
 
+    // TODO: fix types to remove ActedIn from edge
     test("should create create nested nodes using interface relationship fields", async () => {
         const name1 = generate({
             readable: true,
@@ -143,7 +144,7 @@ describe("interface relationships", () => {
                                                 runtime: $movieRuntime
                                                 actors: {
                                                     create: {
-                                                        edge: { screenTime: $screenTime }
+                                                        edge: { ActedIn: { screenTime: $screenTime } }
                                                         node: { name: $name2 }
                                                     }
                                                 }

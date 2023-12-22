@@ -125,32 +125,32 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 id: ID! @id
                 email: String!
                 name: String
-                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
-                group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: ${User.name}! @declareRelationship 
+                group: ${Group.name}! @declareRelationship 
                 status: InviteeStatus! @default(value: INVITED)
-                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
+                user: ${User.name} @declareRelationship 
                 role: InviteeRole!
             }
 
             type ${Admin.name} implements Invitee {
                 id: ID! @unique
-                group: ${Group.name}!
-                creator: ${User.name}!
+                group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
                 status: InviteeStatus!
-                user: ${User.name}
+                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type ${Contributor.name} implements Invitee {
                 id: ID! @unique
                 group: ${Group.name}! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
-                creator: ${User.name}!
+                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
                 status: InviteeStatus!
-                user: ${User.name}
+                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }
 

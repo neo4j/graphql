@@ -151,29 +151,29 @@ describe("update", () => {
             type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
-                director: [Creature!]!
+                director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
-                director: [Creature!]!
+                director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             interface Production {
                 id: ID
-                director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [Creature!]! @declareRelationship
             }
 
             type Person implements Creature {
                 id: ID
-                movies: Production!
+                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             interface Creature {
                 id: ID
-                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+                movies: Production! @declareRelationship
             }
         `;
 

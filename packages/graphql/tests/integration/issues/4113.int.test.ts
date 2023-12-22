@@ -289,7 +289,7 @@ describe("replicates the test for relationship to interface so that multiple ref
             }
 
             interface TransactionItemI {
-                transaction: ${Transaction.name} @relationship(type: "ITEM_TRANSACTED", direction: OUT)
+                transaction: ${Transaction.name} @declareRelationship
                 name: String
                 price: Float
                 quantity: Int

@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             interface ${contentType.name} {
                 id: ID
                 content: String
-                creator: ${userType.name}! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: ${userType.name}! @declareRelationship
             }
 
             type ${userType.name} {
@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             type ${commentType.name} implements ${contentType.name} {
                 id: ID
                 content: String
-                creator: ${userType.name}!
+                creator: ${userType.name}!  @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             extend type ${userType.name}

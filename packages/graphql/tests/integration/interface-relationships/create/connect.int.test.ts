@@ -42,7 +42,7 @@ describe("interface relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
@@ -106,7 +106,7 @@ describe("interface relationships", () => {
                                     edge: { screenTime: $screenTime }
                                     where: { node: { title: $title } }
                                     connect: {
-                                        actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
+                                        actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name: $name2 } } }
                                     }
                                 }
                             }
@@ -173,6 +173,7 @@ describe("interface relationships", () => {
         }
     });
 
+    // TODO: fix types to remove ActedIn from edge
     test("should nested create connect using interface relationship fields and only connect from one type", async () => {
         const session = await neo4j.getSession();
 
@@ -206,7 +207,7 @@ describe("interface relationships", () => {
                                         _on: {
                                             Movie: {
                                                 actors: {
-                                                    edge: { screenTime: $screenTime }
+                                                    edge: { ActedIn: { screenTime: $screenTime } }
                                                     where: { node: { name: $name2 } }
                                                 }
                                             }
