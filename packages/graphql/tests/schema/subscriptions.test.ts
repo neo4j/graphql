@@ -6475,6 +6475,8 @@ describe("Subscriptions", () => {
             }
 
             type SeriesEventPayload implements ProductionEventPayload {
+              director: Creature!
+              directorConnection: ProductionDirectorConnection!
               episode: Int!
               id: ID
               title: String!
