@@ -53,7 +53,7 @@ export function withInterfaceType({
         fields = {
             ...fields,
             ...relationshipAdapterToComposeFields(
-                Array.from(interfaceEntityAdapter.relationships.values()),
+                Array.from(interfaceEntityAdapter.relationshipDeclarations.values()),
                 userDefinedFieldDirectives
             ),
         };

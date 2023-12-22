@@ -4582,7 +4582,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher"]);
         });
 
-        test("@relationship ok to be used on the field of an interface type", () => {
+        test("@relationship cannot be used on the field of an interface type", () => {
             const doc = gql`
                 interface Person {
                     actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
@@ -4602,7 +4602,15 @@ describe("validation 2.0", () => {
                     experimental: true,
                 });
 
-            expect(executeValidate).not.toThrow();
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @relationship is not supported on fields of the Person type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "actor", "@relationship"]);
         });
 
         test("@private ok to be used on the field of an interface type", () => {

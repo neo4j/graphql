@@ -23,7 +23,8 @@ import type { Subgraph } from "../../classes/Subgraph";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
@@ -57,7 +58,9 @@ export class FieldAggregationComposer {
         return undefined;
     }
 
-    public createAggregationTypeObject(relationshipAdapter: RelationshipAdapter): ObjectTypeComposer {
+    public createAggregationTypeObject(
+        relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
+    ): ObjectTypeComposer {
         let aggregateSelectionEdge: ObjectTypeComposer | undefined;
 
         if (relationshipAdapter.target instanceof UnionEntityAdapter) {
@@ -72,7 +75,7 @@ export class FieldAggregationComposer {
             aggregateSelectionNodeFields
         );
 
-        if (relationshipAdapter.attributes.size > 0) {
+        if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.attributes.size > 0) {
             const aggregateSelectionEdgeFields = this.getAggregationFields(relationshipAdapter);
             const aggregateSelectionEdgeName = relationshipAdapter.operations.getAggregationFieldTypename("edge");
 

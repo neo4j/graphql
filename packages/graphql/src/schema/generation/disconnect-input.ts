@@ -32,6 +32,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { makeImplementationsDisconnectInput } from "./implementation-inputs";
 import { makeConnectionWhereInputType } from "./where-input";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export function withDisconnectInputType({
     entityAdapter,
@@ -63,7 +64,7 @@ export function augmentDisconnectInputTypeWithDisconnectFieldInput({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }) {
@@ -98,7 +99,7 @@ function makeDisconnectInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -112,7 +113,7 @@ function makeDisconnectInputTypeRelationshipField({
     disconnectFieldInput,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     disconnectFieldInput: InputTypeComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMap {
@@ -137,7 +138,7 @@ function withUnionDisconnectInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -164,7 +165,7 @@ function makeUnionDisconnectInputTypeFields({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMapDefinition {
@@ -193,7 +194,7 @@ export function withDisconnectFieldInputType({
     composer,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposer | undefined {
@@ -215,7 +216,7 @@ function makeDisconnectFieldInputTypeFields({
     composer,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposerFieldConfigMapDefinition {

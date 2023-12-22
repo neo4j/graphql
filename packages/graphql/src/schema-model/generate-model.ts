@@ -331,11 +331,15 @@ function hydrateRelationshipDeclarations(
         if (relationshipDeclarationsMap.has(fieldDefinition.name.value)) {
             continue;
         }
+        const mergedDirectives = mergedFields
+            .filter((f) => f.name.value === fieldDefinition.name.value)
+            .flatMap((f) => f.directives || []);
         const relationshipField = generateRelationshipDeclaration(
             fieldDefinition,
             schema,
             entity,
-            definitionCollection
+            definitionCollection,
+            mergedDirectives
         );
         if (relationshipField) {
             relationshipDeclarationsMap.set(fieldDefinition.name.value, relationshipField);
@@ -465,8 +469,9 @@ function generateRelationshipField(
 function generateRelationshipDeclaration(
     field: FieldDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
-    source: ConcreteEntity | InterfaceEntity,
-    definitionCollection: DefinitionCollection
+    source: InterfaceEntity,
+    definitionCollection: DefinitionCollection,
+    mergedDirectives: DirectiveNode[]
 ): RelationshipDeclaration | undefined {
     // TODO: remove reference to getFieldTypeMeta
     const fieldTypeMeta = getFieldTypeMeta(field.type);
@@ -485,6 +490,11 @@ function generateRelationshipDeclaration(
         aggregate: boolean;
     }>(declareRelationshipDirective, declareRelationshipUsage);
 
+    const annotations = parseAnnotations(mergedDirectives);
+    const relationshipImplementations = source.concreteEntities
+        .map((concreteEntity) => concreteEntity.findRelationship(fieldName))
+        .filter((x) => x) as Relationship[];
+
     return new RelationshipDeclaration({
         name: fieldName,
         source,
@@ -495,6 +505,8 @@ function generateRelationshipDeclaration(
         isNullable: !fieldTypeMeta.required,
         description: field.description?.value,
         args: parseAttributeArguments(field.arguments || [], definitionCollection),
+        annotations,
+        relationshipImplementations,
     });
 }
 

@@ -239,6 +239,69 @@ function makeAugmentedSchema({
         }
     });
 
+    // creates the type for the `edge` field that contains all possible implementations of a declared relationship
+    // an implementation being a relationship directive with different `properties` value
+    // TODO: figure out where to put this logic
+    schemaModel.compositeEntities.forEach((compositeEntity) => {
+        if (!(compositeEntity instanceof InterfaceEntity)) {
+            return;
+        }
+        const interfaceEntityAdapter = new InterfaceEntityAdapter(compositeEntity);
+        for (const relationshipDeclarationAdapter of interfaceEntityAdapter.relationshipDeclarations.values()) {
+            // this is a declaration, that has multiple implementations
+            const implementations = relationshipDeclarationAdapter.relationshipImplementations.reduce(
+                (acc, relationshipAdapter) => {
+                    if (!relationshipAdapter.propertiesTypeName) {
+                        return acc;
+                    }
+
+                    acc.where[relationshipAdapter.propertiesTypeName] =
+                        relationshipAdapter.operations.whereInputTypeName;
+
+                    const hasNonGeneratedProperties = relationshipAdapter.nonGeneratedProperties.length > 0;
+                    if (hasNonGeneratedProperties) {
+                        acc.create[relationshipAdapter.propertiesTypeName] =
+                            relationshipAdapter.operations.edgeCreateInputTypeName;
+                        acc.update[relationshipAdapter.propertiesTypeName] =
+                            relationshipAdapter.operations.edgeUpdateInputTypeName;
+                    }
+
+                    if (relationshipAdapter.aggregationWhereFields) {
+                        acc.aggregationWhere[relationshipAdapter.propertiesTypeName] =
+                            relationshipAdapter.operations.getAggregationWhereInputTypeName(`Edge`);
+                    }
+
+                    return acc;
+                },
+                { create: {}, update: {}, where: {}, aggregationWhere: {} }
+            );
+            if (Object.keys(implementations.create).length) {
+                composer.createInputTC({
+                    name: relationshipDeclarationAdapter.operations.edgeCreateInputTypeName,
+                    fields: implementations.create,
+                });
+            }
+            if (Object.keys(implementations.update).length) {
+                composer.createInputTC({
+                    name: relationshipDeclarationAdapter.operations.edgeUpdateInputTypeName,
+                    fields: implementations.update,
+                });
+            }
+            if (Object.keys(implementations.where).length) {
+                composer.createInputTC({
+                    name: relationshipDeclarationAdapter.operations.whereInputTypeName,
+                    fields: implementations.where,
+                });
+            }
+            if (Object.keys(implementations.aggregationWhere).length) {
+                composer.createInputTC({
+                    name: relationshipDeclarationAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
+                    fields: implementations.aggregationWhere,
+                });
+            }
+        }
+    });
+
     // temporary helper to keep track of which interface entities were already "visited"
     // currently generated schema depends on these types being created BEFORE the rest
     // ideally the dependency should be eradicated and these should be part of the schemaModel.compositeEntities.forEach

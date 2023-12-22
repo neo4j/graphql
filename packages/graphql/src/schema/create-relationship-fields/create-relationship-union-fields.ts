@@ -20,6 +20,7 @@
 import type { DirectiveNode } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer, InterfaceTypeComposer } from "graphql-compose";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
 import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
 import { withConnectOrCreateInputType } from "../generation/connect-or-create-input";
@@ -35,7 +36,7 @@ export function createRelationshipUnionFields({
     schemaComposer,
     userDefinedFieldDirectives,
 }: {
-    relationship: RelationshipAdapter;
+    relationship: RelationshipAdapter | RelationshipDeclarationAdapter;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     schemaComposer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;

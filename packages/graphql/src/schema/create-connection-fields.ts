@@ -32,7 +32,8 @@ import { PageInfo } from "../graphql/objects/PageInfo";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { ConnectionQueryArgs } from "../types";
 import { DEPRECATE_NOT } from "./constants";
 import { addDirectedArgument } from "./directed-argument";
@@ -47,7 +48,7 @@ function addConnectionSortField({
     composeNodeArgs,
 }: {
     schemaComposer: SchemaComposer;
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition;
 }): InputTypeComposer | undefined {
     // TODO: This probably just needs to be
@@ -69,7 +70,8 @@ function addConnectionSortField({
         We include all properties here to maintain existing behaviour.
         In future sorting by arrays should become an aggregation sort because it sorts by the length of the array.
     */
-    if (relationshipAdapter.propertiesTypeName) {
+    //    TODO
+    if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.propertiesTypeName) {
         // if (relationshipAdapter.sortableFields.length) {
         fields["edge"] = relationshipAdapter.operations.sortInputTypeName;
     }
@@ -91,7 +93,7 @@ function addConnectionWhereFields({
     targetEntity,
 }: {
     inputTypeComposer: InputTypeComposer;
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     targetEntity: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }): void {
     inputTypeComposer.addFields({
@@ -105,7 +107,8 @@ function addConnectionWhereFields({
         },
     });
 
-    if (relationshipAdapter.propertiesTypeName) {
+    // TODO
+    if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.propertiesTypeName) {
         inputTypeComposer.addFields({
             edge: relationshipAdapter.operations.whereInputTypeName,
             edge_NOT: {
@@ -131,7 +134,12 @@ export function createConnectionFields({
 }): Relationship[] {
     const relationships: Relationship[] = [];
 
-    entityAdapter.relationships.forEach((relationship) => {
+    const entityRelationships =
+        entityAdapter instanceof ConcreteEntityAdapter
+            ? entityAdapter.relationships
+            : entityAdapter.relationshipDeclarations;
+
+    entityRelationships.forEach((relationship: RelationshipAdapter | RelationshipDeclarationAdapter) => {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(relationship.name);
         const deprecatedDirectives = graphqlDirectivesToCompose(
             (userDefinedDirectivesOnField || []).filter((directive) => directive.name.value === DEPRECATED)
@@ -157,7 +165,8 @@ export function createConnectionFields({
             });
         });
 
-        if (relationship.propertiesTypeName) {
+        // TODO
+        if (relationship instanceof RelationshipAdapter && relationship.propertiesTypeName) {
             const propertiesObjectType = schemaComposer.getOTC(relationship.propertiesTypeName);
             relationshipObjectType.addFields({
                 properties: propertiesObjectType.NonNull,
@@ -230,16 +239,19 @@ export function createConnectionFields({
             });
         }
 
-        const relFields: ObjectFields | undefined = relationship.propertiesTypeName
-            ? relationshipFields.get(relationship.propertiesTypeName)
-            : undefined;
+        // TODO
+        const relFields: ObjectFields | undefined =
+            relationship instanceof RelationshipAdapter && relationship.propertiesTypeName
+                ? relationshipFields.get(relationship.propertiesTypeName)
+                : undefined;
 
         const r = new Relationship({
             name: relationship.operations.relationshipFieldTypename,
-            type: relationship.type,
+            type: relationship instanceof RelationshipAdapter ? relationship.type : "test_type",
             source: relationship.source.name,
             target: relationship.target.name,
-            properties: relationship.propertiesTypeName,
+            properties:
+                relationship instanceof RelationshipAdapter ? relationship.propertiesTypeName : "test_props_typename",
             ...(relFields
                 ? {
                       temporalFields: relFields.temporalFields,

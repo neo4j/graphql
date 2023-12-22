@@ -22,9 +22,11 @@ import type { Directive, InterfaceTypeComposer, SchemaComposer } from "graphql-c
 import { ObjectTypeComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
-import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { addDirectedArgument } from "../directed-argument";
 import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
@@ -58,11 +60,16 @@ export function createRelationshipFields({
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     experimental: boolean;
 }): void {
-    if (!entityAdapter.relationships.size) {
+    const relationships =
+        entityAdapter instanceof ConcreteEntityAdapter
+            ? entityAdapter.relationships
+            : entityAdapter.relationshipDeclarations;
+
+    if (!relationships.size) {
         return;
     }
 
-    entityAdapter.relationships.forEach((relationshipAdapter) => {
+    relationships.forEach((relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter) => {
         if (!relationshipAdapter) {
             return;
         }

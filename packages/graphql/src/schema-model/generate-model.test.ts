@@ -338,11 +338,11 @@ describe("Relationship", () => {
             }
 
             interface Person {
-                favoriteActors: [Actor!]! @relationship(type: "FAVORITE_ACTOR", direction: OUT)
+                favoriteActors: [Actor!]! @declareRelationship
             }
 
             interface Human implements Person {
-                favoriteActors: [Actor!]! @relationship(type: "LIKES", direction: OUT)
+                favoriteActors: [Actor!]! @declareRelationship
             }
 
             interface Worker implements Person {
@@ -360,12 +360,12 @@ describe("Relationship", () => {
             }
 
             interface Production {
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
                 name: String!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type TvShow implements Production {
@@ -381,7 +381,7 @@ describe("Relationship", () => {
 
             extend type User implements Worker & Human & Person {
                 password: String! @authorization(filter: [{ where: { node: { id: { equals: "$jwt.sub" } } } }])
-                favoriteActors: [Actor!]!
+                favoriteActors: [Actor!]! @relationship(type: "LIKES", direction: OUT)
             }
         `;
 
@@ -410,11 +410,8 @@ describe("Relationship", () => {
 
     test("composite interface entity has correct relationship", () => {
         const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
-        const actors = productionEntity?.relationships.get("actors");
+        const actors = productionEntity?.relationshipDeclarations.get("actors");
         expect(actors).toBeDefined();
-        expect(actors?.type).toBe("ACTED_IN");
-        expect(actors?.direction).toBe("OUT");
-        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
         expect(actors?.nestedOperations).toEqual([
             "CREATE",
             "UPDATE",
@@ -464,11 +461,8 @@ describe("Relationship", () => {
 
     test("composite entity has overwritten the inherited relationship", () => {
         const humanEntity = schemaModel.compositeEntities.find((e) => e.name === "Human") as InterfaceEntity;
-        const actors = humanEntity?.relationships.get("favoriteActors");
+        const actors = humanEntity?.relationshipDeclarations.get("favoriteActors");
         expect(actors).toBeDefined();
-        expect(actors?.type).toBe("LIKES");
-        expect(actors?.direction).toBe("OUT");
-        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
         expect(actors?.nestedOperations).toEqual([
             "CREATE",
             "UPDATE",

@@ -17,9 +17,13 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption } from "../../constants";
+import type { Annotation, Annotations } from "../annotation/Annotation";
+import { annotationToKey } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { Entity } from "../entity/Entity";
+import type { Relationship } from "./Relationship";
 
 export type NestedOperation = keyof typeof RelationshipNestedOperationsOption;
 // "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
@@ -35,7 +39,9 @@ export class RelationshipDeclaration {
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
     public readonly description?: string;
-    // public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations> = {};
+
+    public readonly relationshipImplementations: Relationship[];
 
     constructor({
         name,
@@ -47,8 +53,9 @@ export class RelationshipDeclaration {
         aggregate,
         isNullable,
         description,
-    }: // annotations = [],
-    {
+        annotations = [],
+        relationshipImplementations,
+    }: {
         name: string;
         args: Argument[];
         source: Entity;
@@ -58,7 +65,8 @@ export class RelationshipDeclaration {
         aggregate: boolean;
         isNullable: boolean;
         description?: string;
-        // annotations: Annotation[];
+        annotations: Annotation[];
+        relationshipImplementations: Relationship[];
     }) {
         this.name = name;
         this.source = source;
@@ -69,10 +77,11 @@ export class RelationshipDeclaration {
         this.aggregate = aggregate;
         this.isNullable = isNullable;
         this.description = description;
+        this.relationshipImplementations = relationshipImplementations;
 
-        // for (const annotation of annotations) {
-        //     this.addAnnotation(annotation);
-        // }
+        for (const annotation of annotations) {
+            this.addAnnotation(annotation);
+        }
     }
 
     public clone(): RelationshipDeclaration {
@@ -86,20 +95,21 @@ export class RelationshipDeclaration {
             aggregate: this.aggregate,
             isNullable: this.isNullable,
             description: this.description,
-            // annotations: Object.values(this.annotations),
+            annotations: Object.values(this.annotations),
+            relationshipImplementations: this.relationshipImplementations,
         });
     }
 
-    // private addAnnotation(annotation: Annotation): void {
-    //     const annotationKey = annotationToKey(annotation);
-    //     if (this.annotations[annotationKey]) {
-    //         throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ????`);
-    //     }
+    private addAnnotation(annotation: Annotation): void {
+        const annotationKey = annotationToKey(annotation);
+        if (this.annotations[annotationKey]) {
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ????`);
+        }
 
-    //     // We cast to any because we aren't narrowing the Annotation type here.
-    //     // There's no reason to narrow either, since we care more about performance.
-    //     this.annotations[annotationKey] = annotation as any;
-    // }
+        // We cast to any because we aren't narrowing the Annotation type here.
+        // There's no reason to narrow either, since we care more about performance.
+        this.annotations[annotationKey] = annotation as any;
+    }
 
     // // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
     // /**Note: Required for now to infer the types without ResolveTree */

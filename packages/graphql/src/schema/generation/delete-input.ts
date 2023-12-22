@@ -32,6 +32,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { makeImplementationsDeleteInput } from "./implementation-inputs";
 import { makeConnectionWhereInputType } from "./where-input";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export function withDeleteInputType({
     entityAdapter,
@@ -62,7 +63,7 @@ export function augmentDeleteInputTypeWithDeleteFieldInput({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }) {
@@ -96,7 +97,7 @@ function makeDeleteInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -110,7 +111,7 @@ function makeDeleteInputTypeRelationshipField({
     deleteFieldInput,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     deleteFieldInput: InputTypeComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMap {
@@ -135,7 +136,7 @@ export function withUnionDeleteInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -162,7 +163,7 @@ function makeUnionDeleteInputTypeFields({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMapDefinition {
@@ -191,7 +192,7 @@ export function withDeleteFieldInputType({
     composer,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposer | undefined {
@@ -213,7 +214,7 @@ function makeDeleteFieldInputTypeFields({
     composer,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposerFieldConfigMapDefinition {

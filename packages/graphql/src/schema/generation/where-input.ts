@@ -30,6 +30,7 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
@@ -152,7 +153,7 @@ export function withSourceWhereInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -191,7 +192,7 @@ export function makeConnectionWhereInputType({
     memberEntity,
     composer,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     memberEntity: ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -214,7 +215,9 @@ export function makeConnectionWhereInputType({
         OR: connectionWhereInputType.NonNull.List,
         NOT: connectionWhereInputType,
     });
-    if (relationshipAdapter.propertiesTypeName) {
+    // TODO:
+    // if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.propertiesTypeName) {
+    if (composer.has(relationshipAdapter.operations.whereInputTypeName)) {
         connectionWhereInputType.addFields({
             edge: relationshipAdapter.operations.whereInputTypeName,
             edge_NOT: {

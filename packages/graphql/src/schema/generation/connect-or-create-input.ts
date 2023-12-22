@@ -28,6 +28,7 @@ import { RelationshipNestedOperationsOption } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { createOnCreateITC } from "../create-relationship-fields/create-connect-or-create-field";
 
 // TODO: refactor this
@@ -37,7 +38,7 @@ export function withConnectOrCreateFieldInputType({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
@@ -97,7 +98,7 @@ export function withConnectOrCreateInputType({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -134,7 +135,7 @@ function makeConnectOrCreateInputType({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -154,7 +155,7 @@ function makeConnectOrCreateInputTypeRelationshipField({
     fieldInput,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     fieldInput: InputTypeComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposerFieldConfigMap {
@@ -180,7 +181,7 @@ function withRelationshipConnectOrCreateInputType({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -210,7 +211,7 @@ function makeUnionConnectOrCreateInputTypeFields({
     deprecatedDirectives,
     userDefinedFieldDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
