@@ -32,7 +32,6 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
     subgraph?: Subgraph | undefined
 ): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
-    console.log("augmenting with", relationshipAdapter.name);
     const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
         type: relationshipAdapter.operations.getTargetTypePrettyName(),
         description: relationshipAdapter.description,
