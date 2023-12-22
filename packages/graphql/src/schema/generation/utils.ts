@@ -18,12 +18,21 @@
  */
 
 import type { RelationshipNestedOperationsOption } from "../../constants";
-import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export function relationshipTargetHasRelationshipWithNestedOperation(
     target: ConcreteEntityAdapter | InterfaceEntityAdapter,
     nestedOperation: RelationshipNestedOperationsOption
 ): boolean {
-    return Array.from(target.relationships.values()).some((rel) => rel.nestedOperations.has(nestedOperation));
+    if (target instanceof ConcreteEntityAdapter) {
+        return Array.from(target.relationships.values()).some((rel: RelationshipAdapter) =>
+            rel.nestedOperations.has(nestedOperation)
+        );
+    }
+    return Array.from(target.relationshipDeclarations.values()).some((rel: RelationshipDeclarationAdapter) =>
+        rel.nestedOperations.has(nestedOperation)
+    );
 }

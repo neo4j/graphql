@@ -61,7 +61,7 @@ function buildRelationshipDestinationInterfaceNodeType({
         throw new Error("fix user directives for interface types in subscriptions.");
     }
     const interfaceConnectionComposeFields = relationshipAdapterToComposeFields(
-        Array.from(interfaceEntity.relationships.values()),
+        Array.from(interfaceEntity.relationshipDeclarations.values()),
         userDefinedFieldDirectives
     );
     const interfaceComposeFields = attributeAdapterToComposeFields(
