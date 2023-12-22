@@ -66,6 +66,7 @@ export const invalidFieldCombinations: InvalidFieldCombinations = {
     selectable: ["jwtClaim", "customResolver"],
     settable: ["jwtClaim", "customResolver"],
     filterable: ["jwtClaim", "customResolver"],
+    declareRelationship: ["jwtClaim"],
 };
 
 type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<InterfaceDirective>>;

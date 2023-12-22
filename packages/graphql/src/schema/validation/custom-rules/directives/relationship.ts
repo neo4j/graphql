@@ -33,7 +33,7 @@ import {
     hydrateInterfaceWithImplementedTypesMap,
 } from "../utils/interface-to-implementing-types";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
-import { getInnerTypeName, getPrettyName } from "../utils/utils";
+import { getPrettyName } from "../utils/utils";
 
 export function verifyRelationshipArgumentValue(
     objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
@@ -180,27 +180,4 @@ function verifyRelationshipFields(
     });
 
     hydrateInterfaceWithImplementedTypesMap(parentDef, interfaceToImplementationsMap);
-}
-
-export function verifyRelationshipFieldType({
-    traversedDef,
-}: {
-    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-}) {
-    if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-        // delegate
-        return;
-    }
-    const msg = `Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [${getInnerTypeName(
-        traversedDef.type
-    )}!]!`;
-    if (traversedDef.type.kind === Kind.NON_NULL_TYPE) {
-        if (traversedDef.type.type.kind === Kind.LIST_TYPE) {
-            if (traversedDef.type.type.type.kind !== Kind.NON_NULL_TYPE) {
-                throw new DocumentValidationError(msg, []);
-            }
-        }
-    } else if (traversedDef.type.kind === Kind.LIST_TYPE) {
-        throw new DocumentValidationError(msg, []);
-    }
 }
