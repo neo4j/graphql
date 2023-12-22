@@ -5660,27 +5660,27 @@ describe("Subscriptions", () => {
             type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
-                director: Creature!
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
-                director: Creature!
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
 
             interface Production {
                 id: ID
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+                director: Creature! @declareRelationship
             }
 
             type Person implements Creature {
-                movies: Production!
+                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             interface Creature {
-                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+                movies: Production! @declareRelationship
             }
         `;
 
@@ -5725,8 +5725,8 @@ describe("Subscriptions", () => {
             }
 
             interface Creature {
-              movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
-              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+              movies(options: ProductionOptions, where: ProductionWhere): Production!
+              moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             input CreatureConnectInput {
@@ -6199,8 +6199,8 @@ describe("Subscriptions", () => {
             }
 
             interface Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
-              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              director(options: CreatureOptions, where: CreatureWhere): Creature!
+              directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
 
@@ -6475,8 +6475,6 @@ describe("Subscriptions", () => {
             }
 
             type SeriesEventPayload implements ProductionEventPayload {
-              director: Creature!
-              directorConnection: ProductionDirectorConnection!
               episode: Int!
               id: ID
               title: String!

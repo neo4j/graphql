@@ -36,7 +36,7 @@ describe("3817", () => {
                     )
             }
 
-            interface FriendOf @relationshipProperties {
+            type FriendOf @relationshipProperties {
                 #  id: ID! @id
                 #  active: Boolean!
                 id: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE])
@@ -89,7 +89,7 @@ describe("3817", () => {
               relationshipsDeleted: Int!
             }
 
-            interface FriendOf {
+            type FriendOf {
               id: String
             }
 
@@ -303,10 +303,10 @@ describe("3817", () => {
               id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
-            type PersonFriendsRelationship implements FriendOf {
+            type PersonFriendsRelationship {
               cursor: String!
-              id: String
               node: Person!
+              properties: FriendOf!
             }
 
             input PersonFriendsUpdateConnectionInput {

@@ -103,16 +103,16 @@ describe("schema/rfc/003", () => {
         test("should not throw when using valid relationship", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
-                    targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
-                    target1: Target! @relationship(type: "HAS_TARGET", direction: OUT)
-                    target2: Target @relationship(type: "HAS_TARGET", direction: OUT)
+                    targets: [Target!]! @declareRelationship
+                    target1: Target! @declareRelationship
+                    target2: Target @declareRelationship
                 }
 
                 type Source implements SourceInterface {
                     id: ID @id @unique
-                    targets: [Target!]!
-                    target1: Target!
-                    target2: Target
+                    targets: [Target!]! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target1: Target! @relationship(type: "HAS_TARGET", direction: OUT)
+                    target2: Target @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -128,12 +128,12 @@ describe("schema/rfc/003", () => {
         test("If there are no relationships, then should always be empty array and not null", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
-                    targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
+                    targets: [Target!] @declareRelationship
                 }
 
                 type Source implements SourceInterface {
                     id: ID @id @unique
-                    targets: [Target!]
+                    targets: [Target!] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -143,18 +143,21 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError(msg),
+                new GraphQLError(msg),
+            ]);
         });
 
         test("This suggests a relationship with no target node", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
-                    targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
+                    targets: [Target]! @declareRelationship
                 }
 
                 type Source implements SourceInterface {
                     id: ID @id @unique
-                    targets: [Target]!
+                    targets: [Target]! @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -164,18 +167,21 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError(msg),
+                new GraphQLError(msg),
+            ]);
         });
 
         test("should throw when ListType and not NonNullNamedType inside it", async () => {
             const typeDefs = gql`
                 interface SourceInterface {
-                    targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
+                    targets: [Target] @declareRelationship
                 }
 
                 type Source implements SourceInterface {
                     id: ID @id @unique
-                    targets: [Target]
+                    targets: [Target] @relationship(type: "HAS_TARGET", direction: OUT)
                 }
 
                 type Target {
@@ -185,7 +191,10 @@ describe("schema/rfc/003", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([new GraphQLError(msg)]);
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
+                new GraphQLError(msg),
+                new GraphQLError(msg),
+            ]);
         });
     });
 });

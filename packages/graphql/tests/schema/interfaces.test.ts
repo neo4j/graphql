@@ -27,7 +27,7 @@ describe("Interfaces", () => {
         const typeDefs = gql`
             interface MovieNode {
                 id: ID
-                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @declareRelationship
                 customQuery: [Movie]
                     @cypher(
                         statement: """
@@ -355,7 +355,7 @@ describe("Interfaces", () => {
 
             interface MovieNode @something(something: "test") {
                 id: ID
-                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @declareRelationship
                 customQuery: [Movie]
                     @cypher(
                         statement: """

@@ -6222,7 +6222,7 @@ describe("@settable", () => {
                 interface Production {
                     title: String!
                     description: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @declareRelationship
                 }
 
                 type Movie implements Production @query(aggregate: true) {
@@ -6639,8 +6639,8 @@ describe("@settable", () => {
                 }
 
                 interface Production {
-                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
                 }
@@ -7126,7 +7126,7 @@ describe("@settable", () => {
                 interface Production {
                     title: String!
                     description: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @declareRelationship
                 }
 
                 type Movie implements Production @query(aggregate: true) {
@@ -7551,8 +7551,8 @@ describe("@settable", () => {
                 }
 
                 interface Production {
-                  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-                  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+                  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+                  actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
                 }

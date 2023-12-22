@@ -31,9 +31,7 @@ describe("inheritance", () => {
 
             interface Person @customDirectiveInter {
                 name: String @customDirectiveField
-                friends: [Person!]!
-                    @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
-                    @customDirectiveField
+                friends: [Person!]! @declareRelationship @customDirectiveField
             }
 
             type Actor implements Person @customDirectiveObj {
@@ -263,8 +261,8 @@ describe("inheritance", () => {
             }
 
             interface Person {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
-              friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
+              friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
 
@@ -293,7 +291,7 @@ describe("inheritance", () => {
 
             input PersonFriendsConnectFieldInput {
               connect: PersonConnectInput
-              edge: FriendsWithCreateInput
+              edge: PersonFriendsEdgeCreateInput
               where: PersonConnectWhere
             }
 
@@ -319,7 +317,7 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsCreateFieldInput {
-              edge: FriendsWithCreateInput
+              edge: PersonFriendsEdgeCreateInput
               node: PersonCreateInput!
             }
 
@@ -331,6 +329,14 @@ describe("inheritance", () => {
             input PersonFriendsDisconnectFieldInput {
               disconnect: PersonDisconnectInput
               where: PersonFriendsConnectionWhere
+            }
+
+            input PersonFriendsEdgeCreateInput {
+              FriendsWith: FriendsWithCreateInput
+            }
+
+            input PersonFriendsEdgeUpdateInput {
+              FriendsWith: FriendsWithUpdateInput
             }
 
             input PersonFriendsFieldInput {
@@ -345,7 +351,7 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsUpdateConnectionInput {
-              edge: FriendsWithUpdateInput
+              edge: PersonFriendsEdgeUpdateInput
               node: PersonUpdateInput
             }
 

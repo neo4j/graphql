@@ -606,7 +606,7 @@ describe("Interface Relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
@@ -1391,8 +1391,8 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
 
@@ -1411,7 +1411,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
+              edge: ProductionActorsEdgeCreateInput
               \\"\\"\\"
               Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
@@ -1441,7 +1441,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsCreateFieldInput {
-              edge: ActedInCreateInput!
+              edge: ProductionActorsEdgeCreateInput
               node: ActorCreateInput!
             }
 
@@ -1456,34 +1456,15 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsEdgeAggregationWhereInput {
-              AND: [ProductionActorsEdgeAggregationWhereInput!]
-              NOT: ProductionActorsEdgeAggregationWhereInput
-              OR: [ProductionActorsEdgeAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_EQUAL: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_GTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LT: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_LTE: Int @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              ActedIn: SeriesActorsEdgeAggregationWhereInput
+            }
+
+            input ProductionActorsEdgeCreateInput {
+              ActedIn: ActedInCreateInput!
+            }
+
+            input ProductionActorsEdgeUpdateInput {
+              ActedIn: ActedInUpdateInput
             }
 
             input ProductionActorsFieldInput {
@@ -1539,7 +1520,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsUpdateConnectionInput {
-              edge: ActedInUpdateInput
+              edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
             }
 
@@ -2123,7 +2104,7 @@ describe("Interface Relationships", () => {
         const typeDefs = gql`
             interface Interface1 {
                 field1: String!
-                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
+                interface2: [Interface2!]! @declareRelationship
             }
 
             interface Interface2 {
@@ -2208,8 +2189,8 @@ describe("Interface Relationships", () => {
 
             interface Interface1 {
               field1: String!
-              interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
-              interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+              interface2(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Connection(after: String, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
             type Interface1AggregateSelection {
@@ -3122,20 +3103,20 @@ describe("Interface Relationships", () => {
             interface Content {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @declareRelationship
             }
 
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
@@ -3468,8 +3449,8 @@ describe("Interface Relationships", () => {
 
             interface Content {
               content: String
-              creator(directed: Boolean = true, options: UserOptions, where: UserWhere): User!
-              creatorConnection(after: String, directed: Boolean = true, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              creator(options: UserOptions, where: UserWhere): User!
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
