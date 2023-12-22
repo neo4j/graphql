@@ -51,13 +51,13 @@ export function createOnCreateITC({
         const onCreateFields: InputTypeComposerFieldConfigMapDefinition = {
             node: onCreateInput.NonNull,
         };
-        if (relationshipAdapter.nonGeneratedProperties.length > 0) {
+        if (relationshipAdapter.createInputFields.length > 0) {
             const edgeFieldType = withCreateInputType({
                 entityAdapter: relationshipAdapter,
                 userDefinedFieldDirectives,
                 composer: schemaComposer,
             });
-            onCreateFields["edge"] = relationshipAdapter.hasNonNullNonGeneratedProperties
+            onCreateFields["edge"] = relationshipAdapter.hasNonNullCreateInputFields
                 ? edgeFieldType.NonNull
                 : edgeFieldType;
         }

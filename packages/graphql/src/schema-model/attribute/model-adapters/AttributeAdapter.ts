@@ -156,12 +156,23 @@ export class AttributeAdapter {
     }
 
     isOnCreateField(): boolean {
+        if (!this.isNonGeneratedField()) {
+            return false;
+        }
+
+        if (this.annotations.settable?.onCreate === false) {
+            return false;
+        }
+
+        if (this.timestampCreateIsGenerated()) {
+            return false;
+        }
+
         return (
-            this.isNonGeneratedField() &&
-            (this.typeHelper.isScalar() ||
-                this.typeHelper.isSpatial() ||
-                this.typeHelper.isEnum() ||
-                this.typeHelper.isAbstract())
+            this.typeHelper.isScalar() ||
+            this.typeHelper.isSpatial() ||
+            this.typeHelper.isEnum() ||
+            this.typeHelper.isAbstract()
         );
     }
 
@@ -192,22 +203,65 @@ export class AttributeAdapter {
     }
 
     isCreateInputField(): boolean {
-        return this.isNonGeneratedField() && this.annotations.settable?.onCreate !== false;
-    }
-
-    isNonGeneratedField(): boolean {
         return (
-            this.isCypher() === false &&
-            this.isCustomResolvable() === false &&
-            (this.typeHelper.isEnum() || this.typeHelper.isScalar() || this.typeHelper.isSpatial()) &&
-            !this.annotations.id &&
-            !this.annotations.populatedBy &&
-            !this.annotations.timestamp
+            this.isNonGeneratedField() &&
+            this.annotations.settable?.onCreate !== false &&
+            !this.timestampCreateIsGenerated()
         );
     }
 
     isUpdateInputField(): boolean {
-        return this.isNonGeneratedField() && this.annotations.settable?.onUpdate !== false;
+        return (
+            this.isNonGeneratedField() &&
+            this.annotations.settable?.onUpdate !== false &&
+            !this.timestampUpdateIsGenerated()
+        );
+    }
+
+    timestampCreateIsGenerated(): boolean {
+        if (!this.annotations.timestamp) {
+            // The timestamp directive is not set on the field
+            return false;
+        }
+
+        if (this.annotations.timestamp.operations.includes("CREATE")) {
+            // The timestamp directive is set to generate on create
+            return true;
+        }
+
+        // The timestamp directive is not set to generate on create
+        return false;
+    }
+
+    isNonGeneratedField(): boolean {
+        if (this.isCypher() || this.isCustomResolvable()) {
+            return false;
+        }
+
+        if (this.annotations.id || this.annotations.populatedBy) {
+            return false;
+        }
+
+        if (this.typeHelper.isEnum() || this.typeHelper.isScalar() || this.typeHelper.isSpatial()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    timestampUpdateIsGenerated(): boolean {
+        if (!this.annotations.timestamp) {
+            // The timestamp directive is not set on the field
+            return false;
+        }
+
+        if (this.annotations.timestamp.operations.includes("UPDATE")) {
+            // The timestamp directive is set to generate on update
+            return true;
+        }
+
+        // The timestamp directive is not set to generate on update
+        return false;
     }
 
     isArrayMethodField(): boolean {
