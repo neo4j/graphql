@@ -54,7 +54,7 @@
         "@neo4j-ndl/react": "2.2.0",
         "@neo4j/graphql": "4.4.4",
         "@neo4j/introspector": "2.0.0",
-        "classnames": "2.5.0",
+        "classnames": "2.5.1",
         "cm6-graphql": "0.0.12",
         "codemirror": "6.0.1",
         "dotenv-webpack": "8.0.1",
