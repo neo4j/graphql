@@ -3675,7 +3675,7 @@ __metadata:
     "@types/react-dom": 18.2.18
     "@types/webpack": 5.28.5
     autoprefixer: 10.4.16
-    classnames: 2.5.0
+    classnames: 2.5.1
     cm6-graphql: 0.0.12
     codemirror: 6.0.1
     compression-webpack-plugin: 10.0.0
@@ -10504,10 +10504,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:2.5.0":
-  version: 2.5.0
-  resolution: "classnames@npm:2.5.0"
-  checksum: 7805e0ed49790dd11da5da4d8509dbad2d9ed8ec817bfa01d3b69d40dc752ee4df757b9e845371a42547989863db76c463619c446aa24cdbd253d65ef927455e
+"classnames@npm:2.5.1":
+  version: 2.5.1
+  resolution: "classnames@npm:2.5.1"
+  checksum: da424a8a6f3a96a2e87d01a432ba19315503294ac7e025f9fece656db6b6a0f7b5003bb1fbb51cbb0d9624d964f1b9bb35a51c73af9b2434c7b292c42231c1e5
   languageName: node
   linkType: hard
 
