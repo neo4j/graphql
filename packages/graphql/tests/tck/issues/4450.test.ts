@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/4450", () => {
                 OPTIONAL MATCH (this1)-[:AT_LOCATION]->(this2:Location)
                 WITH *, count(this2) AS locationCount
                 WITH *
-                WHERE (this0.cut = $param0 AND (locationCount <> 0 AND this2.city = $param1))
+                WHERE ((locationCount <> 0 AND this2.city = $param0) AND this0.cut = $param1)
                 RETURN count(this1) > 0 AS var3
             }
             WITH *
