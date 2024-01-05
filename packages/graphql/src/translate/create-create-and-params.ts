@@ -63,12 +63,7 @@ function createCreateAndParams({
     withVars,
     includeRelationshipValidation,
     topLevelNodeVariable,
-    authorizationPrefix = {
-        inputIndex: 0,
-        reducerIndex: 0,
-        createIndex: 0,
-        refNodeIndex: 0,
-    },
+    authorizationPrefix = [0],
 }: {
     input: any;
     varName: string;
@@ -79,12 +74,7 @@ function createCreateAndParams({
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
     //used to build authorization variable in auth subqueries
-    authorizationPrefix?: {
-        inputIndex: number; // index of the input
-        reducerIndex: number; // index of the reducer in the context of the input
-        createIndex: number; // index of the create in the context of a run of the reducer
-        refNodeIndex: number; // when a relationship is to an abstract type, this is the index of the refNode in the context of a run of the reducer
-    };
+    authorizationPrefix?: number[];
 }): CreateAndParams {
     const conflictingProperties = findConflictingProperties({ node, input });
     if (conflictingProperties.length > 0) {
@@ -169,12 +159,7 @@ function createCreateAndParams({
                             withVars: [...withVars, nodeName],
                             includeRelationshipValidation: false,
                             topLevelNodeVariable,
-                            authorizationPrefix: {
-                                inputIndex: authorizationPrefix.inputIndex + 1,
-                                reducerIndex,
-                                createIndex,
-                                refNodeIndex,
-                            },
+                            authorizationPrefix: [...authorizationPrefix, reducerIndex, createIndex, refNodeIndex],
                         });
                         res.creates.push(nestedCreate);
                         res.params = { ...res.params, ...params };
@@ -408,13 +393,8 @@ function createCreateAndParams({
     return { create: creates.join("\n"), params, authorizationPredicates, authorizationSubqueries };
 }
 
-function makeAuthorizationParamsPrefix(authorizationPrefix: {
-    inputIndex: number;
-    reducerIndex: number;
-    createIndex: number;
-    refNodeIndex: number;
-}): string {
-    return `${authorizationPrefix.inputIndex}_${authorizationPrefix.reducerIndex}_${authorizationPrefix.refNodeIndex}_${authorizationPrefix.createIndex}_`;
+function makeAuthorizationParamsPrefix(authorizationPrefix: number[]): string {
+    return `${authorizationPrefix.join("_")}_`;
 }
 
 export default createCreateAndParams;

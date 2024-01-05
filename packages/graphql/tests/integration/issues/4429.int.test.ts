@@ -33,7 +33,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
     const Settings = new UniqueType("Settings");
     const OpeningDay = new UniqueType("OpeningDay");
     const OpeningHoursInterval = new UniqueType("OpeningHoursInterval");
-    const MyWorkspace = new UniqueType("MyWorkspace");
 
     const typeDefs = gql`
         type JWT @jwt {
@@ -54,7 +53,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
         type ${Settings.name} @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
             id: ID! @id
             openingDays: [${OpeningDay.name}!]!  @relationship(type: "VALID_GARAGES", direction: OUT)
-            myWorkspace: ${MyWorkspace.name}! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: OUT)
             tenant: ${Tenant.name}! @relationship(type: "VEHICLECARD_OWNER", direction: OUT)
         }
 
@@ -83,28 +81,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
                     operations: [CREATE, UPDATE]
                 )
         }
-        
-        type ${MyWorkspace.name}
-            @authorization(
-                validate: [
-                    {
-                        where: {
-                            node: {
-                                settings: { tenant: { admins: { userId: "$jwt.id" } } }
-                            }
-                        }
-                    }
-                ]
-            ) {
-            settings: ${Settings.name}!
-                @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: IN)
-            workspace: String
-            updatedBy: String
-                @populatedBy(
-                    callback: "getUserIDFromContext"
-                    operations: [CREATE, UPDATE]
-                )
-        }
     `;
 
     const ADD_TENANT = `
@@ -120,9 +96,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
                             open {
                                 name
                             }
-                        }
-                        myWorkspace {
-                            workspace
                         }
                     }
                 }
@@ -142,6 +115,13 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
         myUserId = Math.random().toString(36).slice(2, 7);
         tenantVariables = {
             input: {
+                admins: {
+                    create: {
+                        node: {
+                            userId: myUserId,
+                        },
+                    },
+                },
                 settings: {
                     create: {
                         node: {

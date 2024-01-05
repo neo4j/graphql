@@ -43,7 +43,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
         type Settings @authorization(validate: [{ where: { node: { tenant: { admins: { userId: "$jwt.id" } } } } }]) {
             id: ID! @id
             openingDays: [OpeningDay!]! @relationship(type: "VALID_GARAGES", direction: OUT)
-            myWorkspace: MyWorkspace! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: OUT)
             tenant: Tenant! @relationship(type: "VEHICLECARD_OWNER", direction: OUT) # <---  this line
         }
 
@@ -65,15 +64,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             openingDay: OpeningDay! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN)
             createdAt: DateTime! @timestamp(operations: [CREATE])
             updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
-            updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
-        }
-
-        type MyWorkspace
-            @authorization(
-                validate: [{ where: { node: { settings: { tenant: { admins: { userId: "$jwt.id" } } } } } }]
-            ) {
-            settings: Settings! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: IN)
-            workspace: String
             updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
         }
     `;
@@ -105,9 +95,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
                                 open {
                                     name
                                 }
-                            }
-                            myWorkspace {
-                                workspace
                             }
                         }
                     }
@@ -243,13 +230,6 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             WITH *
             CALL {
             	WITH this0_settings0_node
-            	MATCH (this0_settings0_node)-[this0_settings0_node_myWorkspace_MyWorkspace_unique:HAS_WORKSPACE_SETTINGS]->(:MyWorkspace)
-            	WITH count(this0_settings0_node_myWorkspace_MyWorkspace_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSettings.myWorkspace required exactly once', [0])
-            	RETURN c AS this0_settings0_node_myWorkspace_MyWorkspace_unique_ignored
-            }
-            CALL {
-            	WITH this0_settings0_node
             	MATCH (this0_settings0_node)-[this0_settings0_node_tenant_Tenant_unique:VEHICLECARD_OWNER]->(:Tenant)
             	WITH count(this0_settings0_node_tenant_Tenant_unique) as c
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDSettings.tenant required exactly once', [0])
@@ -266,74 +246,74 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
             WITH *
             CALL {
                 WITH this0_settings0_node_openingDays0_node_open0_node
-                MATCH (this0_settings0_node_openingDays0_node_open0_node)<-[:HAS_OPEN_INTERVALS]-(authorization_3_0_0_0_after_this1:OpeningDay)
+                MATCH (this0_settings0_node_openingDays0_node_open0_node)<-[:HAS_OPEN_INTERVALS]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this1:OpeningDay)
                 CALL {
-                    WITH authorization_3_0_0_0_after_this1
-                    MATCH (authorization_3_0_0_0_after_this1)<-[:VALID_GARAGES]-(authorization_3_0_0_0_after_this2:Settings)
-                    OPTIONAL MATCH (authorization_3_0_0_0_after_this2)-[:VEHICLECARD_OWNER]->(authorization_3_0_0_0_after_this3:Tenant)
-                    WITH *, count(authorization_3_0_0_0_after_this3) AS tenantCount
+                    WITH authorization_0_0_0_0_0_0_0_0_0_0_after_this1
+                    MATCH (authorization_0_0_0_0_0_0_0_0_0_0_after_this1)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this2:Settings)
+                    OPTIONAL MATCH (authorization_0_0_0_0_0_0_0_0_0_0_after_this2)-[:VEHICLECARD_OWNER]->(authorization_0_0_0_0_0_0_0_0_0_0_after_this3:Tenant)
+                    WITH *, count(authorization_0_0_0_0_0_0_0_0_0_0_after_this3) AS tenantCount
                     WITH *
-                    WHERE (tenantCount <> 0 AND size([(authorization_3_0_0_0_after_this3)<-[:ADMIN_IN]-(authorization_3_0_0_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_3_0_0_0_after_this4.userId = $jwt.id) | 1]) > 0)
-                    RETURN count(authorization_3_0_0_0_after_this2) = 1 AS authorization_3_0_0_0_after_var5
+                    WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_0_0_0_0_0_after_this3)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_0_0_0_0_0_after_this4.userId = $jwt.id) | 1]) > 0)
+                    RETURN count(authorization_0_0_0_0_0_0_0_0_0_0_after_this2) = 1 AS authorization_0_0_0_0_0_0_0_0_0_0_after_var5
                 }
                 WITH *
-                WHERE authorization_3_0_0_0_after_var5 = true
-                RETURN count(authorization_3_0_0_0_after_this1) = 1 AS authorization_3_0_0_0_after_var0
+                WHERE authorization_0_0_0_0_0_0_0_0_0_0_after_var5 = true
+                RETURN count(authorization_0_0_0_0_0_0_0_0_0_0_after_this1) = 1 AS authorization_0_0_0_0_0_0_0_0_0_0_after_var0
             }
             CALL {
                 WITH this0_settings0_node_openingDays0_node
-                MATCH (this0_settings0_node_openingDays0_node)<-[:VALID_GARAGES]-(authorization_2_0_0_0_after_this1:Settings)
-                OPTIONAL MATCH (authorization_2_0_0_0_after_this1)-[:VEHICLECARD_OWNER]->(authorization_2_0_0_0_after_this2:Tenant)
-                WITH *, count(authorization_2_0_0_0_after_this2) AS tenantCount
+                MATCH (this0_settings0_node_openingDays0_node)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_0_0_after_this1:Settings)
+                OPTIONAL MATCH (authorization_0_0_0_0_0_0_0_after_this1)-[:VEHICLECARD_OWNER]->(authorization_0_0_0_0_0_0_0_after_this2:Tenant)
+                WITH *, count(authorization_0_0_0_0_0_0_0_after_this2) AS tenantCount
                 WITH *
-                WHERE (tenantCount <> 0 AND size([(authorization_2_0_0_0_after_this2)<-[:ADMIN_IN]-(authorization_2_0_0_0_after_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_2_0_0_0_after_this3.userId = $jwt.id) | 1]) > 0)
-                RETURN count(authorization_2_0_0_0_after_this1) = 1 AS authorization_2_0_0_0_after_var0
+                WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_0_0_after_this2)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_0_0_after_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_0_0_after_this3.userId = $jwt.id) | 1]) > 0)
+                RETURN count(authorization_0_0_0_0_0_0_0_after_this1) = 1 AS authorization_0_0_0_0_0_0_0_after_var0
             }
             CALL {
                 WITH this0_settings0_node_openingDays1_node_open0_node
-                MATCH (this0_settings0_node_openingDays1_node_open0_node)<-[:HAS_OPEN_INTERVALS]-(authorization_3_0_0_0_after_this1:OpeningDay)
+                MATCH (this0_settings0_node_openingDays1_node_open0_node)<-[:HAS_OPEN_INTERVALS]-(authorization_0_0_0_0_0_1_0_0_0_0_after_this1:OpeningDay)
                 CALL {
-                    WITH authorization_3_0_0_0_after_this1
-                    MATCH (authorization_3_0_0_0_after_this1)<-[:VALID_GARAGES]-(authorization_3_0_0_0_after_this2:Settings)
-                    OPTIONAL MATCH (authorization_3_0_0_0_after_this2)-[:VEHICLECARD_OWNER]->(authorization_3_0_0_0_after_this3:Tenant)
-                    WITH *, count(authorization_3_0_0_0_after_this3) AS tenantCount
+                    WITH authorization_0_0_0_0_0_1_0_0_0_0_after_this1
+                    MATCH (authorization_0_0_0_0_0_1_0_0_0_0_after_this1)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_1_0_0_0_0_after_this2:Settings)
+                    OPTIONAL MATCH (authorization_0_0_0_0_0_1_0_0_0_0_after_this2)-[:VEHICLECARD_OWNER]->(authorization_0_0_0_0_0_1_0_0_0_0_after_this3:Tenant)
+                    WITH *, count(authorization_0_0_0_0_0_1_0_0_0_0_after_this3) AS tenantCount
                     WITH *
-                    WHERE (tenantCount <> 0 AND size([(authorization_3_0_0_0_after_this3)<-[:ADMIN_IN]-(authorization_3_0_0_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_3_0_0_0_after_this4.userId = $jwt.id) | 1]) > 0)
-                    RETURN count(authorization_3_0_0_0_after_this2) = 1 AS authorization_3_0_0_0_after_var5
+                    WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_1_0_0_0_0_after_this3)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_1_0_0_0_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_1_0_0_0_0_after_this4.userId = $jwt.id) | 1]) > 0)
+                    RETURN count(authorization_0_0_0_0_0_1_0_0_0_0_after_this2) = 1 AS authorization_0_0_0_0_0_1_0_0_0_0_after_var5
                 }
                 WITH *
-                WHERE authorization_3_0_0_0_after_var5 = true
-                RETURN count(authorization_3_0_0_0_after_this1) = 1 AS authorization_3_0_0_0_after_var0
+                WHERE authorization_0_0_0_0_0_1_0_0_0_0_after_var5 = true
+                RETURN count(authorization_0_0_0_0_0_1_0_0_0_0_after_this1) = 1 AS authorization_0_0_0_0_0_1_0_0_0_0_after_var0
             }
             CALL {
                 WITH this0_settings0_node_openingDays1_node_open1_node
-                MATCH (this0_settings0_node_openingDays1_node_open1_node)<-[:HAS_OPEN_INTERVALS]-(authorization_3_0_0_1_after_this1:OpeningDay)
+                MATCH (this0_settings0_node_openingDays1_node_open1_node)<-[:HAS_OPEN_INTERVALS]-(authorization_0_0_0_0_0_1_0_0_1_0_after_this1:OpeningDay)
                 CALL {
-                    WITH authorization_3_0_0_1_after_this1
-                    MATCH (authorization_3_0_0_1_after_this1)<-[:VALID_GARAGES]-(authorization_3_0_0_1_after_this2:Settings)
-                    OPTIONAL MATCH (authorization_3_0_0_1_after_this2)-[:VEHICLECARD_OWNER]->(authorization_3_0_0_1_after_this3:Tenant)
-                    WITH *, count(authorization_3_0_0_1_after_this3) AS tenantCount
+                    WITH authorization_0_0_0_0_0_1_0_0_1_0_after_this1
+                    MATCH (authorization_0_0_0_0_0_1_0_0_1_0_after_this1)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_1_0_0_1_0_after_this2:Settings)
+                    OPTIONAL MATCH (authorization_0_0_0_0_0_1_0_0_1_0_after_this2)-[:VEHICLECARD_OWNER]->(authorization_0_0_0_0_0_1_0_0_1_0_after_this3:Tenant)
+                    WITH *, count(authorization_0_0_0_0_0_1_0_0_1_0_after_this3) AS tenantCount
                     WITH *
-                    WHERE (tenantCount <> 0 AND size([(authorization_3_0_0_1_after_this3)<-[:ADMIN_IN]-(authorization_3_0_0_1_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_3_0_0_1_after_this4.userId = $jwt.id) | 1]) > 0)
-                    RETURN count(authorization_3_0_0_1_after_this2) = 1 AS authorization_3_0_0_1_after_var5
+                    WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_1_0_0_1_0_after_this3)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_1_0_0_1_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_1_0_0_1_0_after_this4.userId = $jwt.id) | 1]) > 0)
+                    RETURN count(authorization_0_0_0_0_0_1_0_0_1_0_after_this2) = 1 AS authorization_0_0_0_0_0_1_0_0_1_0_after_var5
                 }
                 WITH *
-                WHERE authorization_3_0_0_1_after_var5 = true
-                RETURN count(authorization_3_0_0_1_after_this1) = 1 AS authorization_3_0_0_1_after_var0
+                WHERE authorization_0_0_0_0_0_1_0_0_1_0_after_var5 = true
+                RETURN count(authorization_0_0_0_0_0_1_0_0_1_0_after_this1) = 1 AS authorization_0_0_0_0_0_1_0_0_1_0_after_var0
             }
             CALL {
                 WITH this0_settings0_node_openingDays1_node
-                MATCH (this0_settings0_node_openingDays1_node)<-[:VALID_GARAGES]-(authorization_2_0_0_1_after_this1:Settings)
-                OPTIONAL MATCH (authorization_2_0_0_1_after_this1)-[:VEHICLECARD_OWNER]->(authorization_2_0_0_1_after_this2:Tenant)
-                WITH *, count(authorization_2_0_0_1_after_this2) AS tenantCount
+                MATCH (this0_settings0_node_openingDays1_node)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_1_0_after_this1:Settings)
+                OPTIONAL MATCH (authorization_0_0_0_0_0_1_0_after_this1)-[:VEHICLECARD_OWNER]->(authorization_0_0_0_0_0_1_0_after_this2:Tenant)
+                WITH *, count(authorization_0_0_0_0_0_1_0_after_this2) AS tenantCount
                 WITH *
-                WHERE (tenantCount <> 0 AND size([(authorization_2_0_0_1_after_this2)<-[:ADMIN_IN]-(authorization_2_0_0_1_after_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_2_0_0_1_after_this3.userId = $jwt.id) | 1]) > 0)
-                RETURN count(authorization_2_0_0_1_after_this1) = 1 AS authorization_2_0_0_1_after_var0
+                WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_1_0_after_this2)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_1_0_after_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_1_0_after_this3.userId = $jwt.id) | 1]) > 0)
+                RETURN count(authorization_0_0_0_0_0_1_0_after_this1) = 1 AS authorization_0_0_0_0_0_1_0_after_var0
             }
-            OPTIONAL MATCH (this0_settings0_node)-[:VEHICLECARD_OWNER]->(authorization_1_0_0_0_after_this1:Tenant)
-            WITH *, count(authorization_1_0_0_0_after_this1) AS tenantCount
+            OPTIONAL MATCH (this0_settings0_node)-[:VEHICLECARD_OWNER]->(authorization_0_0_0_0_after_this1:Tenant)
+            WITH *, count(authorization_0_0_0_0_after_this1) AS tenantCount
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_3_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_2_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_3_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_3_0_0_1_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_2_0_0_1_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (tenantCount <> 0 AND size([(authorization_1_0_0_0_after_this1)<-[:ADMIN_IN]-(authorization_1_0_0_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_1_0_0_0_after_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:ADMIN_IN]-(authorization_0_0_0_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_after_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_0_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_1_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_1_0_0_1_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_1_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (tenantCount <> 0 AND size([(authorization_0_0_0_0_after_this1)<-[:ADMIN_IN]-(authorization_0_0_0_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_after_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:ADMIN_IN]-(authorization_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_after_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -393,29 +373,12 @@ describe("https://github.com/neo4j/graphql/issues/4429", () => {
                         WITH create_this8 { open: create_var21 } AS create_this8
                         RETURN collect(create_this8) AS create_var22
                     }
-                    CALL {
-                        WITH create_this4
-                        MATCH (create_this4)-[create_this23:HAS_WORKSPACE_SETTINGS]->(create_this24:MyWorkspace)
-                        CALL {
-                            WITH create_this24
-                            MATCH (create_this24)<-[:HAS_WORKSPACE_SETTINGS]-(create_this25:Settings)
-                            OPTIONAL MATCH (create_this25)-[:VEHICLECARD_OWNER]->(create_this26:Tenant)
-                            WITH *, count(create_this26) AS tenantCount
-                            WITH *
-                            WHERE (tenantCount <> 0 AND size([(create_this26)<-[:ADMIN_IN]-(create_this27:User) WHERE ($jwt.id IS NOT NULL AND create_this27.userId = $jwt.id) | 1]) > 0)
-                            RETURN count(create_this25) = 1 AS create_var28
-                        }
-                        WITH *
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND create_var28 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH create_this24 { .workspace } AS create_this24
-                        RETURN head(collect(create_this24)) AS create_var29
-                    }
-                    WITH create_this4 { openingDays: create_var22, myWorkspace: create_var29 } AS create_this4
-                    RETURN head(collect(create_this4)) AS create_var30
+                    WITH create_this4 { openingDays: create_var22 } AS create_this4
+                    RETURN head(collect(create_this4)) AS create_var23
                 }
-                RETURN this0 { .id, admins: create_var2, settings: create_var30 } AS create_var31
+                RETURN this0 { .id, admins: create_var2, settings: create_var23 } AS create_var24
             }
-            RETURN [create_var31] AS data"
+            RETURN [create_var24] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
