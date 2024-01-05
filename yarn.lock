@@ -1824,32 +1824,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.1.4, @codemirror/state@npm:^6.2.0":
-  version: 6.2.1
-  resolution: "@codemirror/state@npm:6.2.1"
-  checksum: d12a321d0471b264b9d3259042bff913a8b939e8d28d408ff452004538a71ca9d5329df3f8a1d8a9183f5b42a7ef5b200737bcab1065714f5ae8e0a5ba9d59d3
-  languageName: node
-  linkType: hard
-
-"@codemirror/state@npm:^6.4.0":
+"@codemirror/state@npm:6.4.0":
   version: 6.4.0
   resolution: "@codemirror/state@npm:6.4.0"
   checksum: c5236fe5786f1b85d17273a5c17fa8aeb063658c1404ab18caeb6e7591663ec96b65d453ab8162f75839c3801b04cd55ba4bc48f44cb61ebfeeee383f89553c7
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.9.0":
-  version: 6.20.2
-  resolution: "@codemirror/view@npm:6.20.2"
-  dependencies:
-    "@codemirror/state": ^6.1.4
-    style-mod: ^4.1.0
-    w3c-keyname: ^2.2.4
-  checksum: eaf47726bb94b40f12c6f1d3494b558addaa7cd98a4ff05bfea7439c03cca3967d73380346ea8b06021478c21ec336a74665c9acb44e2b0280d5e0da4714387b
-  languageName: node
-  linkType: hard
-
-"@codemirror/view@npm:^6.23.0":
+"@codemirror/view@npm:6.23.0":
   version: 6.23.0
   resolution: "@codemirror/view@npm:6.23.0"
   dependencies:
