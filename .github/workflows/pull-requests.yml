@@ -89,6 +89,7 @@ jobs:
     uses: ./.github/workflows/reusable-federation-tests.yml
 
   quality-gate:
+    if: ${{ !(failure() || cancelled()) }}
     needs:
       - reviewdog-eslint
       - code-scanning
