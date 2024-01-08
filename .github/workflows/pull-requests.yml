@@ -9,6 +9,7 @@ on:
     branches:
       - dev
       - master
+      - "*.*.*"
     paths-ignore:
       - "docs/**"
 
@@ -17,14 +18,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
           node-version: 18.13.0
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@10ca150f51dbbb963467c37a03c873ba1fa75f91 # v1.20.0
+      - uses: reviewdog/action-eslint@279acb08336462ec76183a2d9ef1dd43e4c6b391 # v1.21.0
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -44,7 +45,7 @@ jobs:
       typescript_files: ${{ steps.filter.outputs.typescript_files }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # tag=v2.11.1
         id: filter
         with:
@@ -60,8 +61,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5
         with:
           go-version: "^1.17.0"
       - name: Install addlicense

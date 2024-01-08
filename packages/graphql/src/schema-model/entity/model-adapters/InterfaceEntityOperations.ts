@@ -88,6 +88,10 @@ export class InterfaceEntityOperations {
         return `${this.InterfaceEntityAdapter.name}Where`;
     }
 
+    public get implementationEnumTypename(): string {
+        return `${this.InterfaceEntityAdapter.name}Implementation`;
+    }
+
     public get whereOnImplementationsWhereInputTypeName(): string {
         return `${this.InterfaceEntityAdapter.name}ImplementationsWhere`;
     }

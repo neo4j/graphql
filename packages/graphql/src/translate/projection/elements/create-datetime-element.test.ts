@@ -44,7 +44,7 @@ describe("createDatetimeElement", () => {
             field,
             variable: new Cypher.NamedVariable("this"),
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toBe(
                 'datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time")'
             );
@@ -73,7 +73,7 @@ describe("createDatetimeElement", () => {
             field,
             variable: new Cypher.NamedVariable("this"),
         });
-        new Cypher.RawCypher((env) => {
+        new Cypher.Raw((env) => {
             expect(compileCypher(element, env)).toBe(
                 'datetimes: [ dt in this.datetimes | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]'
             );

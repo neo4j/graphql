@@ -20,16 +20,15 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
-import { execute } from "../../../utils";
+import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { translateRead } from "../../../translate";
-import type { Node } from "../../../classes";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { execute } from "../../../utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { fromGlobalId } from "../../../utils/global-ids";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
-export function globalNodeResolver({ nodes, entities }: { nodes: Node[]; entities: ConcreteEntityAdapter[] }) {
+export function globalNodeResolver({ entities }: { entities: ConcreteEntityAdapter[] }) {
     async function resolve(
         _root: any,
         args: { id: string },
@@ -40,7 +39,6 @@ export function globalNodeResolver({ nodes, entities }: { nodes: Node[]; entitie
 
         if (!typeName || !field || !id) return null;
 
-        const node = nodes.find((n) => n.name === typeName);
         const entityAdapter = entities.find((n) => n.name === typeName);
 
         if (!entityAdapter) return null;
@@ -70,7 +68,6 @@ export function globalNodeResolver({ nodes, entities }: { nodes: Node[]; entitie
 
         const { cypher, params } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
-            node,
             entityAdapter,
         });
         const executeResult = await execute({

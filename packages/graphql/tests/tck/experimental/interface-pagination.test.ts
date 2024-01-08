@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("Top-level Interface query pagination (sort and limit)", () => {
     let typeDefs: string;
@@ -104,9 +104,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                 RETURN this5 AS this
             }
-            RETURN this
+            WITH this
             ORDER BY this.id ASC
-            LIMIT $param0"
+            LIMIT $param0
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -149,115 +150,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 WITH this2 { .someField, .id, __resolveType: \\"MyOtherImplementationType\\", __id: id(this2) } AS this2
                 RETURN this2 AS this
             }
-            RETURN this
+            WITH this
             ORDER BY this.id ASC
-            LIMIT $param0"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("Sort with filter on Interface top-level", async () => {
-        const query = gql`
-            query {
-                myInterfaces(
-                    where: { _on: { SomeNodeType: { somethingElse_NOT: "test" }, MyOtherImplementationType: {} } }
-                    options: { sort: [{ id: ASC }], limit: 10 }
-                ) {
-                    id
-                    ... on MyOtherImplementationType {
-                        someField
-                    }
-                    ... on MyOtherInterface {
-                        something
-                        ... on SomeNodeType {
-                            somethingElse
-                            other {
-                                id
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (this0:SomeNodeType)
-                WHERE NOT (this0.somethingElse = $param0)
-                CALL {
-                    WITH this0
-                    MATCH (this0)-[this1:HAS_OTHER_NODES]->(this2:OtherNodeType)
-                    WITH this2 { .id } AS this2
-                    RETURN collect(this2) AS var3
-                }
-                WITH this0 { .id, .something, .somethingElse, other: var3, __resolveType: \\"SomeNodeType\\", __id: id(this0) } AS this0
-                RETURN this0 AS this
-                UNION
-                MATCH (this4:MyOtherImplementationType)
-                WITH this4 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this4) } AS this4
-                RETURN this4 AS this
-            }
-            RETURN this
-            ORDER BY this.id ASC
-            LIMIT $param1"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"test\\",
-                \\"param1\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("Sort on Interfaces filtered by _on type", async () => {
-        const query = gql`
-            query {
-                myInterfaces(
-                    where: { _on: { MyOtherImplementationType: {} } }
-                    options: { sort: [{ id: ASC }], limit: 10 }
-                ) {
-                    id
-                    ... on MyOtherImplementationType {
-                        someField
-                    }
-                    ... on MyOtherInterface {
-                        something
-                        ... on SomeNodeType {
-                            somethingElse
-                            other {
-                                id
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (this0:MyOtherImplementationType)
-                WITH this0 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this0) } AS this0
-                RETURN this0 AS this
-            }
-            RETURN this
-            ORDER BY this.id ASC
-            LIMIT $param0"
+            LIMIT $param0
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -315,9 +211,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                 WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                 RETURN this5 AS this
             }
-            RETURN this
+            WITH this
             ORDER BY this.id ASC
-            LIMIT $param1"
+            LIMIT $param1
+            RETURN this AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -446,8 +343,9 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
-                LIMIT $param0"
+                WITH this
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -502,8 +400,9 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
-                LIMIT $param0"
+                WITH this
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -558,8 +457,9 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
-                LIMIT $param0"
+                WITH this
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -614,9 +514,10 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
                     WITH this5 { .id, .someField, __resolveType: \\"MyOtherImplementationType\\", __id: id(this5) } AS this5
                     RETURN this5 AS this
                 }
-                RETURN this
+                WITH this
                 ORDER BY this.id ASC
-                LIMIT $param0"
+                LIMIT $param0
+                RETURN this AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

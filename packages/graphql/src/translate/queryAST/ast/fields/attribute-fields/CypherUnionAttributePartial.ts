@@ -55,7 +55,7 @@ export class CypherUnionAttributePartial extends QueryASTNode {
 
         // TODO: Refactor when `.hasLabel` on variables is supported in CypherBuilder
         const predicates = labels.map((label) => {
-            return new Cypher.RawCypher((env) => {
+            return new Cypher.Raw((env) => {
                 const varName = env.compile(variable);
                 const labelStr = Cypher.utils.escapeLabel(label);
                 return `${varName}:${labelStr}`;

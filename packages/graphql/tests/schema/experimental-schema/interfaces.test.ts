@@ -162,8 +162,8 @@ describe("Interfaces", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            input MovieNodeImplementationsWhere {
-              Movie: MovieWhere
+            enum MovieNodeImplementation {
+              Movie
             }
 
             input MovieNodeMoviesConnectFieldInput {
@@ -247,7 +247,9 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeWhere {
-              _on: MovieNodeImplementationsWhere
+              AND: [MovieNodeWhere!]
+              NOT: MovieNodeWhere
+              OR: [MovieNodeWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -258,6 +260,7 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [MovieNodeImplementation!]
             }
 
             input MovieOptions {
@@ -526,8 +529,8 @@ describe("Interfaces", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            input MovieNodeImplementationsWhere {
-              Movie: MovieWhere
+            enum MovieNodeImplementation {
+              Movie
             }
 
             input MovieNodeMoviesConnectFieldInput {
@@ -611,7 +614,9 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeWhere {
-              _on: MovieNodeImplementationsWhere
+              AND: [MovieNodeWhere!]
+              NOT: MovieNodeWhere
+              OR: [MovieNodeWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -622,6 +627,7 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [MovieNodeImplementation!]
             }
 
             input MovieOptions {

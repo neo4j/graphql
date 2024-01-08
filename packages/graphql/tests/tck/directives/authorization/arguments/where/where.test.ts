@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Auth Where", () => {
     const secret = "secret";
@@ -221,12 +221,17 @@ describe("Cypher Auth Where", () => {
                 WITH *, count(this2) AS creatorCount
                 WITH *
                 WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { content: this1.content } }) AS var3
+                }
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -274,12 +279,17 @@ describe("Cypher Auth Where", () => {
                 WITH *, count(this2) AS creatorCount
                 WITH *
                 WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { content: this1.content } }) AS var3
+                }
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

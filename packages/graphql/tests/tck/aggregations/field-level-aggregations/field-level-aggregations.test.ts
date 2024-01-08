@@ -101,13 +101,13 @@ describe("Field Level Aggregations", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1
-                ORDER BY size(this1.name) DESC
-                WITH collect(this1.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var3
+                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                WITH this4
+                ORDER BY size(this4.name) DESC
+                WITH collect(this4.name) AS list
+                RETURN { longest: head(list), shortest: last(list) } AS var5
             }
-            RETURN this { actorsAggregate: { count: var2, node: { name: var3 } } } AS this"
+            RETURN this { actorsAggregate: { count: var2, node: { name: var5 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -247,10 +247,10 @@ describe("Field Level Aggregations", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var3
+                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
             }
-            RETURN this { actorsAggregate: { node: { name: var2, age: var3 } } } AS this"
+            RETURN this { actorsAggregate: { node: { name: var2, age: var5 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

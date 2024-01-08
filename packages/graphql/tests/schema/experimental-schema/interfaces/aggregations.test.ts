@@ -199,8 +199,8 @@ describe("Interface Top Level Aggregations", () => {
               title: StringAggregateSelectionNonNullable!
             }
 
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
+            enum ProductionImplementation {
+              Movie
             }
 
             input ProductionOptions {
@@ -221,7 +221,9 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               cost: Float
               cost_GT: Float
               cost_GTE: Float
@@ -240,6 +242,7 @@ describe("Interface Top Level Aggregations", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -707,14 +710,14 @@ describe("Interface Top Level Aggregations", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -745,7 +748,9 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               cost: Float
               cost_GT: Float
               cost_GTE: Float
@@ -764,6 +769,7 @@ describe("Interface Top Level Aggregations", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {

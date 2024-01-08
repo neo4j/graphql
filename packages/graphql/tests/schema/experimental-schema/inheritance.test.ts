@@ -385,6 +385,10 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
+            enum PersonImplementation {
+              Actor
+            }
+
             input PersonImplementationsConnectInput {
               Actor: [ActorConnectInput!]
             }
@@ -399,10 +403,6 @@ describe("inheritance", () => {
 
             input PersonImplementationsUpdateInput {
               Actor: ActorUpdateInput
-            }
-
-            input PersonImplementationsWhere {
-              Actor: ActorWhere
             }
 
             input PersonOptions {
@@ -428,7 +428,9 @@ describe("inheritance", () => {
             }
 
             input PersonWhere {
-              _on: PersonImplementationsWhere
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
@@ -457,6 +459,7 @@ describe("inheritance", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [PersonImplementation!]
             }
 
             type Query {

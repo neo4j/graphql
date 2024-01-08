@@ -18,9 +18,9 @@
  */
 
 export type FullTextField = {
-    name: string;
+    name?: string;
     fields: string[];
-    queryName: string;
+    queryName?: string;
     indexName: string;
 };
 

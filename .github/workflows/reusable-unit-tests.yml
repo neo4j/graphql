@@ -29,8 +29,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -41,7 +41,7 @@ jobs:
         working-directory: packages/${{ matrix.package }}
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.package == 'graphql' }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.package }}/coverage/
@@ -49,7 +49,7 @@ jobs:
           fail_ci_if_error: true
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: unit-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage/

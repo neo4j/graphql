@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import type { Driver, Session } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
+import { gql } from "graphql-tag";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
-import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { UniqueType } from "../../../utils/graphql-types";
+import { SCORE_FIELD } from "../../../../src/graphql/directives/fulltext";
 import { upperFirst } from "../../../../src/utils/upper-first";
 import { delay } from "../../../../src/utils/utils";
-import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
-import { SCORE_FIELD } from "../../../../src/graphql/directives/fulltext";
 import { createBearerToken } from "../../../utils/create-bearer-token";
+import { UniqueType } from "../../../utils/graphql-types";
+import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
+import Neo4j from "../../neo4j";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -37,7 +37,7 @@ function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): strin
             name: String!
             born: Int!
             actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-        }
+        } 
 
         type ${movieType.name} {
             title: String!
@@ -387,6 +387,7 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
+
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,

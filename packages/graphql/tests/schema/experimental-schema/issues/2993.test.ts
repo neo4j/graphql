@@ -89,6 +89,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since: SortDirection
             }
 
+            input FOLLOWSUpdateInput {
+              since: DateTime
+            }
+
             input FOLLOWSWhere {
               AND: [FOLLOWSWhere!]
               NOT: FOLLOWSWhere
@@ -153,6 +157,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               _on: ProfileImplementationsDisconnectInput
             }
 
+            enum ProfileImplementation {
+              User
+            }
+
             input ProfileImplementationsConnectInput {
               User: [UserConnectInput!]
             }
@@ -167,10 +175,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input ProfileImplementationsUpdateInput {
               User: UserUpdateInput
-            }
-
-            input ProfileImplementationsWhere {
-              User: UserWhere
             }
 
             input ProfileOptions {
@@ -197,7 +201,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileWhere {
-              _on: ProfileImplementationsWhere
+              AND: [ProfileWhere!]
+              NOT: ProfileWhere
+              OR: [ProfileWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -208,6 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProfileImplementation!]
               userName: String
               userName_CONTAINS: String
               userName_ENDS_WITH: String
@@ -345,6 +352,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingUpdateConnectionInput {
+              edge: FOLLOWSUpdateInput
               node: ProfileUpdateInput
             }
 
@@ -515,6 +523,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since: SortDirection
             }
 
+            input FOLLOWSUpdateInput {
+              since: DateTime
+            }
+
             input FOLLOWSWhere {
               AND: [FOLLOWSWhere!]
               NOT: FOLLOWSWhere
@@ -579,6 +591,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               _on: ProfileImplementationsDisconnectInput
             }
 
+            enum ProfileImplementation {
+              User
+            }
+
             input ProfileImplementationsConnectInput {
               User: [UserConnectInput!]
             }
@@ -593,10 +609,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input ProfileImplementationsUpdateInput {
               User: UserUpdateInput
-            }
-
-            input ProfileImplementationsWhere {
-              User: UserWhere
             }
 
             input ProfileOptions {
@@ -622,7 +634,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileWhere {
-              _on: ProfileImplementationsWhere
+              AND: [ProfileWhere!]
+              NOT: ProfileWhere
+              OR: [ProfileWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -633,6 +647,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_NOT_IN: [ID!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ProfileImplementation!]
               userName: String
               userName_CONTAINS: String
               userName_ENDS_WITH: String
@@ -770,6 +785,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingUpdateConnectionInput {
+              edge: FOLLOWSUpdateInput
               node: ProfileUpdateInput
             }
 

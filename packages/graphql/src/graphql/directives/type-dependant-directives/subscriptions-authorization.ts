@@ -29,6 +29,7 @@ import {
     GraphQLSchema,
     GraphQLString,
 } from "graphql";
+import { SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT } from "./static-definitions";
 
 function createSubscriptionsAuthorizationWhere(
     typeDefinitionName: string,
@@ -88,6 +89,10 @@ function createSubscriptionsAuthorizationFilterRule(
         name: `${typeDefinitionName}SubscriptionsAuthorizationFilterRule`,
         fields() {
             return {
+                events: {
+                    type: new GraphQLList(SUBSCRIPTIONS_AUTHORIZATION_FILTER_EVENT),
+                    defaultValue: ["CREATED", "UPDATED", "DELETED", "RELATIONSHIP_CREATED", "RELATIONSHIP_DELETED"],
+                },
                 requireAuthentication: {
                     type: GraphQLBoolean,
                     defaultValue: true,

@@ -44,7 +44,7 @@ export function stringAggregationQuery(
 ): Cypher.Clause {
     const fieldPath = targetAlias.property(fieldName);
 
-    return new Cypher.RawCypher((env) => {
+    return new Cypher.Raw((env) => {
         const targetAliasCypher = compileCypher(targetAlias, env);
         const fieldPathCypher = compileCypher(fieldPath, env);
 
@@ -61,9 +61,9 @@ export function numberAggregationQuery(
     fieldName: string,
     fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
-): Cypher.RawCypher {
+): Cypher.Raw {
     const fieldPath = targetAlias.property(fieldName);
-    return new Cypher.RawCypher((env) => {
+    return new Cypher.Raw((env) => {
         const fieldPathCypher = compileCypher(fieldPath, env);
 
         return dedent`${compileCypher(matchWherePattern, env)}
@@ -79,9 +79,9 @@ export function defaultAggregationQuery(
     fieldName: string,
     fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
-): Cypher.RawCypher {
+): Cypher.Raw {
     const fieldPath = targetAlias.property(fieldName);
-    return new Cypher.RawCypher((env) => {
+    return new Cypher.Raw((env) => {
         const fieldPathCypher = compileCypher(fieldPath, env);
 
         return dedent`${compileCypher(matchWherePattern, env)}
@@ -94,14 +94,14 @@ export function dateTimeAggregationQuery(
     fieldName: string,
     fieldRef: Cypher.Variable,
     targetAlias: Cypher.Node | Cypher.Relationship
-): Cypher.RawCypher {
+): Cypher.Raw {
     const fieldPath = targetAlias.property(fieldName);
-    return new Cypher.RawCypher((env) => {
+    return new Cypher.Raw((env) => {
         const fieldPathCypher = compileCypher(fieldPath, env);
         return dedent`${compileCypher(matchWherePattern, env)}
         RETURN ${stringifyObject({
-            min: new Cypher.RawCypher(wrapApocConvertDate(`min(${fieldPathCypher})`)),
-            max: new Cypher.RawCypher(wrapApocConvertDate(`max(${fieldPathCypher})`)),
+            min: new Cypher.Raw(wrapApocConvertDate(`min(${fieldPathCypher})`)),
+            max: new Cypher.Raw(wrapApocConvertDate(`max(${fieldPathCypher})`)),
         }).getCypher(env)} AS ${compileCypher(fieldRef, env)}`;
     });
 }

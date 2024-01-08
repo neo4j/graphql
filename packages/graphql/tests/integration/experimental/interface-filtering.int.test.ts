@@ -26,7 +26,7 @@ import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
-describe("Top-level interface query fields", () => {
+describe("Interface filtering", () => {
     const secret = "the-secret";
 
     let schema: GraphQLSchema;
@@ -36,6 +36,7 @@ describe("Top-level interface query fields", () => {
 
     const Movie = new UniqueType("Movie");
     const Series = new UniqueType("Series");
+    const Actor = new UniqueType("Actor");
 
     async function graphqlQuery(query: string, token: string) {
         return graphql({
@@ -50,21 +51,31 @@ describe("Top-level interface query fields", () => {
         driver = await neo4j.getDriver();
 
         typeDefs = `
-            interface Production {
+            interface Show {
                 title: String!
-                cost: Float!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Movie} implements Production {
+            type ${Movie} implements Show @limit(default: 3, max: 10) {
                 title: String!
-                cost: Float!
+                cost: Float
                 runtime: Int
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Production {
+            type ${Series} implements Show {
                 title: String!
-                cost: Float!
                 episodes: Int
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type ${Actor} {
+                name: String!
+                actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            interface ActedIn @relationshipProperties {
+                screenTime: Int
             }
         `;
 
@@ -72,11 +83,18 @@ describe("Top-level interface query fields", () => {
 
         try {
             await session.run(`
-            CREATE(m1:${Movie} {title: "The Matrix", cost: 10})
-            CREATE(m2:${Movie} {title: "The Matrix is a very interesting movie: The Documentary", cost: 20})
-            
-            CREATE(s1:${Series} {title: "The Show", cost: 1})
-            CREATE(s2:${Series} {title: "The Show 2", cost: 2})
+                CREATE(m:${Movie} { title: "The Office" })
+                CREATE(m2:${Movie}{ title: "The Office 2" })
+                CREATE(m3:${Movie}{ title: "NOT The Office 2" })
+                CREATE(s1:${Series}{ title: "The Office 2" })
+                CREATE(s2:${Series}{ title: "NOT The Office" })
+                CREATE(a:${Actor} {name: "Keanu"})
+                MERGE(a)-[:ACTED_IN]->(m)
+                MERGE(a)-[:ACTED_IN]->(m2)
+                MERGE(a)-[:ACTED_IN]->(m3)
+                MERGE(a)-[:ACTED_IN]->(s1)
+                MERGE(a)-[:ACTED_IN]->(s2)
+                
         `);
         } finally {
             await session.close();
@@ -85,6 +103,11 @@ describe("Top-level interface query fields", () => {
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
             experimental: true,
         });
         schema = await neoGraphql.getSchema();
@@ -92,20 +115,16 @@ describe("Top-level interface query fields", () => {
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-        await cleanNodes(session, [Movie, Series]);
+        await cleanNodes(session, [Movie, Series, Actor]);
         await session.close();
         await driver.close();
     });
 
-    test("top level count and string fields", async () => {
+    test("allow for logical filters on top-level interfaces", async () => {
         const query = `
-            query {
-                productionsAggregate {
-                    count
-                    title {
-                        longest
-                        shortest
-                    }
+            query actedInWhere {
+                shows(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
+                    title
                 }
             }
         `;
@@ -114,24 +133,26 @@ describe("Top-level interface query fields", () => {
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                count: 4,
-                title: {
-                    longest: "The Matrix is a very interesting movie: The Documentary",
-                    shortest: "The Show",
+            shows: expect.toIncludeSameMembers([
+                {
+                    title: "The Office",
                 },
-            },
+                {
+                    title: "The Office 2",
+                },
+                {
+                    title: "The Office 2",
+                },
+            ]),
         });
     });
 
-    test("top level number fields", async () => {
+    test("allow for logical filters on nested-level interfaces", async () => {
         const query = `
-            query {
-                productionsAggregate {
-                    cost {
-                        max
-                        min
-                        average
+            query actedInWhere {
+                ${Actor.plural} {
+                    actedIn(where: { OR: [{ title: "The Office" }, { title: "The Office 2" }] }) {
+                        title
                     }
                 }
             }
@@ -141,13 +162,21 @@ describe("Top-level interface query fields", () => {
         const queryResult = await graphqlQuery(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                cost: {
-                    min: 1,
-                    max: 20,
-                    average: 8.25,
+            [Actor.plural]: [
+                {
+                    actedIn: expect.toIncludeSameMembers([
+                        {
+                            title: "The Office",
+                        },
+                        {
+                            title: "The Office 2",
+                        },
+                        {
+                            title: "The Office 2",
+                        },
+                    ]),
                 },
-            },
+            ],
         });
     });
 });

@@ -123,7 +123,7 @@ export class CypherAnnotationSubqueryGenerator {
         const target = this.context.target;
         const aliasTargetToPublicTarget = new Cypher.With([target, CYPHER_TARGET_VARIABLE]);
 
-        const statementCypherQuery = new Cypher.RawCypher((env) => {
+        const statementCypherQuery = new Cypher.Raw((env) => {
             const statement = this.replaceArgumentsInStatement({
                 env,
                 rawArguments,

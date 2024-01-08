@@ -86,7 +86,7 @@ export function translateCypherDirectiveProjection({
             cypherFieldAliasMap,
         });
 
-        projectionExpr = new Cypher.RawCypher((env) => {
+        projectionExpr = new Cypher.Raw((env) => {
             return `${compileCypher(resultVariable, env)} ${compileCypher(str, env)}`;
         });
         res.params = { ...res.params, ...p };
@@ -137,7 +137,7 @@ export function translateCypherDirectiveProjection({
                         const withAndSubqueries = Cypher.concat(beforeCallWith, ...nestedSubqueries);
                         subqueries.push(withAndSubqueries);
                     }
-                    const projection = new Cypher.RawCypher(
+                    const projection = new Cypher.Raw(
                         (env) => `{ __resolveType: "${refNode.name}", ${compileCypher(str, env).replace("{", "")}`
                     );
                     unionProjections.push({
@@ -149,7 +149,7 @@ export function translateCypherDirectiveProjection({
 
                     res.params = { ...res.params, ...p };
                 } else {
-                    const projection = new Cypher.RawCypher(() => `{ __resolveType: "${refNode.name}" }`);
+                    const projection = new Cypher.Raw(() => `{ __resolveType: "${refNode.name}" }`);
                     unionProjections.push({
                         projection,
                         predicate: labelsSubPredicate,
@@ -164,9 +164,7 @@ export function translateCypherDirectiveProjection({
             projectionExpr
                 .when(predicate)
                 .then(
-                    new Cypher.RawCypher(
-                        (env) => `${compileCypher(resultVariable, env)} ${compileCypher(projection, env)}`
-                    )
+                    new Cypher.Raw((env) => `${compileCypher(resultVariable, env)} ${compileCypher(projection, env)}`)
                 );
         }
     }
@@ -212,7 +210,7 @@ export function translateCypherDirectiveProjection({
     }
     const aliasVar = new Cypher.NamedVariable(alias);
     res.projection.push(
-        new Cypher.RawCypher((env) => `${compileCypher(aliasVar, env)}: ${compileCypher(resultVariable, env)}`)
+        new Cypher.Raw((env) => `${compileCypher(aliasVar, env)}: ${compileCypher(resultVariable, env)}`)
     );
     return res;
 }
@@ -229,7 +227,7 @@ function createCypherDirectiveSubquery({
     extraArgs: Record<string, any>;
 }): Cypher.Clause {
     const innerWithAlias = new Cypher.With([nodeRef, new Cypher.NamedNode("this")]);
-    const rawCypher = new Cypher.RawCypher((env) => {
+    const rawCypher = new Cypher.Raw((env) => {
         let statement = cypherField.statement;
         for (const [key, value] of Object.entries(extraArgs)) {
             const param = new Cypher.Param(value);

@@ -84,12 +84,17 @@ describe("Cypher Auth Projection On Connections", () => {
                 WITH *, count(this2) AS creatorCount
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { content: this1.content } }) AS var3
+                }
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
-            RETURN this { .name, postsConnection: var3 } AS this"
+            RETURN this { .name, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

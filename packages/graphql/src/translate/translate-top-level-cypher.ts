@@ -114,7 +114,7 @@ export function translateTopLevelCypher({
                 const innerNodePartialProjection = `[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`;
                 if (!resolveTree.fieldsByTypeName[node.name]) {
                     headStrs.push(
-                        new Cypher.RawCypher(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`)
+                        new Cypher.Raw(`${innerNodePartialProjection}| this { __resolveType: "${node.name}" }]`)
                     );
                 } else {
                     const {
@@ -135,7 +135,7 @@ export function translateTopLevelCypher({
                         projectionValidatePredicates.push(...predicates);
                     }
                     headStrs.push(
-                        new Cypher.RawCypher((env) => {
+                        new Cypher.Raw((env) => {
                             return innerNodePartialProjection
                                 .concat(`| this { __resolveType: "${node.name}", `)
                                 .concat(compileCypher(str, env).replace("{", ""))
@@ -146,7 +146,7 @@ export function translateTopLevelCypher({
             }
         });
 
-        projectionStr = new Cypher.RawCypher(
+        projectionStr = new Cypher.Raw(
             (env) => `${headStrs.map((headStr) => compileCypher(headStr, env)).join(" + ")}`
         );
     }
@@ -192,7 +192,7 @@ export function translateTopLevelCypher({
 
     const projectionSubquery = Cypher.concat(...projectionSubqueries);
 
-    return new Cypher.RawCypher((env) => {
+    return new Cypher.Raw((env) => {
         const authPredicates: Cypher.Predicate[] = [];
 
         if (projectionValidatePredicates.length) {

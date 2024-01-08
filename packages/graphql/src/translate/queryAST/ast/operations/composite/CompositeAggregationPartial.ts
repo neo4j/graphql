@@ -72,14 +72,26 @@ export class CompositeAggregationPartial extends QueryASTNode {
                 .related(relVar)
                 .withDirection(relDirection)
                 .to(targetNode);
+
+            const matchClause = new Cypher.Match(pattern);
+
+            const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
+
+            return [
+                Cypher.concat(
+                    matchClause,
+                    ...nestedSubqueries,
+                    new Cypher.Return([targetNode, "node"], [relVar, "edge"])
+                ),
+            ];
         } else {
             pattern = new Cypher.Pattern(targetNode);
+            const matchClause = new Cypher.Match(pattern);
+
+            const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
+
+            return [Cypher.concat(matchClause, ...nestedSubqueries, new Cypher.Return([targetNode, "node"]))];
         }
-        const matchClause = new Cypher.Match(pattern);
-
-        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
-
-        return [Cypher.concat(matchClause, ...nestedSubqueries, new Cypher.Return([target, context.returnVariable]))];
     }
 
     public print(): string {

@@ -122,14 +122,19 @@ describe("Subscriptions metadata on create", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS create_this1, edge.relationship AS create_this0
+                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                    }
+                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
-                RETURN this0 { .title, actorsConnection: create_var2 } AS create_var3
+                RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
             }
-            RETURN [create_var3] AS data, meta"
+            RETURN [create_var4] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -205,14 +210,19 @@ describe("Subscriptions metadata on create", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH { node: { name: create_this1.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS create_this1, edge.relationship AS create_this0
+                        RETURN collect({ node: { name: create_this1.name } }) AS create_var2
+                    }
+                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
-                RETURN this0 { .title, actorsConnection: create_var2 } AS create_var3
+                RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
             }
-            RETURN [create_var3] AS data, meta"
+            RETURN [create_var4] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -313,14 +323,19 @@ describe("Subscriptions metadata on create", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH { screenTime: create_this0.screenTime, node: { name: create_this1.name } } AS edge
-                    WITH collect(edge) AS edges
+                    WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS create_var2
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS create_this1, edge.relationship AS create_this0
+                        RETURN collect({ screenTime: create_this0.screenTime, node: { name: create_this1.name } }) AS create_var2
+                    }
+                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
                 }
-                RETURN this0 { .title, actorsConnection: create_var2 } AS create_var3
+                RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
             }
-            RETURN [create_var3] AS data, meta"
+            RETURN [create_var4] AS data, meta"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

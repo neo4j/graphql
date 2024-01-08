@@ -357,6 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               properties: [Property!]
               tags: [Tag!]
               type: ResourceType!
+              updatedAt: DateTime!
             }
 
             input ResourceDeleteInput {
@@ -388,8 +389,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name: StringAggregateSelectionNullable!
             }
 
-            input ResourceEntityImplementationsWhere {
-              Resource: ResourceWhere
+            enum ResourceEntityImplementation {
+              Resource
             }
 
             input ResourceEntityOptions {
@@ -411,7 +412,9 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceEntityWhere {
-              _on: ResourceEntityImplementationsWhere
+              AND: [ResourceEntityWhere!]
+              NOT: ResourceEntityWhere
+              OR: [ResourceEntityWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -444,6 +447,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               type_IN: [ResourceType!]
               type_NOT: ResourceType @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               type_NOT_IN: [ResourceType!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              typename_IN: [ResourceEntityImplementation!]
             }
 
             input ResourceOnCreateInput {
@@ -453,6 +457,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               properties: [Property!]
               tags: [Tag!]
               type: ResourceType!
+              updatedAt: DateTime!
             }
 
             input ResourceOptions {
@@ -503,6 +508,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceUpdateInput {
               containedBy: [ResourceContainedByUpdateFieldInput!]
+              createdAt: DateTime
               externalIds: [ID!]
               externalIds_POP: Int
               externalIds_PUSH: [ID!]

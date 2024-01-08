@@ -165,7 +165,7 @@ export function createFieldAggregation({
 
     return {
         projectionCypher: projectionMap,
-        projectionSubqueryCypher: projectionSubqueries || new Cypher.RawCypher(""),
+        projectionSubqueryCypher: projectionSubqueries || new Cypher.Raw(""),
     };
 }
 
@@ -204,7 +204,7 @@ function getAggregationProjectionAndSubqueries({
         );
     });
     if (!innerProjectionSubqueries) {
-        innerProjectionSubqueries = new Cypher.RawCypher("");
+        innerProjectionSubqueries = new Cypher.Raw("");
     }
     return { innerProjectionMap, innerProjectionSubqueries };
 }

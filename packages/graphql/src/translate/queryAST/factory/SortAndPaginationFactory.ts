@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
+import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -24,6 +26,7 @@ import type { RelationshipAdapter } from "../../../schema-model/relationship/mod
 import type { ConnectionSortArg, GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import { Pagination } from "../ast/pagination/Pagination";
 import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
+import { FulltextScoreSort } from "../ast/sort/FulltextScoreSort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import type { Sort } from "../ast/sort/Sort";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
@@ -32,9 +35,12 @@ import { isUnionEntity } from "../utils/is-union-entity";
 export class SortAndPaginationFactory {
     public createSortFields(
         options: GraphQLOptionsArg,
-        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter
+        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        scoreVariable?: Cypher.Variable
     ): Sort[] {
-        return (options.sort || [])?.flatMap((s) => this.createPropertySort(s, entity));
+        return (options.sort || [])?.flatMap((s) => {
+            return this.createPropertySort(s, entity, scoreVariable);
+        });
     }
 
     public createConnectionSortFields(
@@ -67,13 +73,22 @@ export class SortAndPaginationFactory {
 
     private createPropertySort(
         optionArg: GraphQLSortArg,
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | RelationshipAdapter | UnionEntityAdapter,
+        scoreVariable?: Cypher.Variable
     ): Sort[] {
         if (isUnionEntity(entity)) {
             return [];
         }
 
         return Object.entries(optionArg).map(([fieldName, sortDir]) => {
+            // TODO: fix conflict with a a "score" fieldname
+            if (fieldName === SCORE_FIELD && scoreVariable) {
+                return new FulltextScoreSort({
+                    scoreVariable,
+                    direction: sortDir,
+                });
+            }
+
             const attribute = entity.findAttribute(fieldName);
             if (!attribute) throw new Error(`no filter attribute ${fieldName}`);
             if (attribute.annotations.cypher) {

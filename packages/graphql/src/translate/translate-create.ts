@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import type { Node } from "../classes";
-import Debug from "debug";
-import createCreateAndParams from "./create-create-and-params";
-import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
-import { filterTruthy } from "../utils/utils";
-import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
-import unwindCreate from "./unwind-create";
-import { UnsupportedUnwindOptimization } from "./batch-create/types";
-import { compileCypherIfExists } from "../utils/compile-cypher";
+import Debug from "debug";
+import type { Node } from "../classes";
+import { CallbackBucket } from "../classes/CallbackBucket";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { getAuthorizationStatements } from "./utils/get-authorization-statements";
-import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
+import { compileCypherIfExists } from "../utils/compile-cypher";
+import { filterTruthy } from "../utils/utils";
+import { UnsupportedUnwindOptimization } from "./batch-create/types";
+import createCreateAndParams from "./create-create-and-params";
+import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import unwindCreate from "./unwind-create";
+import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -119,7 +119,7 @@ export default async function translateCreate({
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
+    const queryAST = new QueryASTFactory(context.schemaModel, context.experimental).createQueryAST(
         resolveTree,
         concreteEntityAdapter,
         context
@@ -150,7 +150,7 @@ export default async function translateCreate({
     );
 
     const returnStatement = getReturnStatement(projectedVariables, context);
-    const createQuery = new Cypher.RawCypher((env) => {
+    const createQuery = new Cypher.Raw((env) => {
         const cypher = filterTruthy([
             `${createStrs.join("\n")}`,
             context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "",
