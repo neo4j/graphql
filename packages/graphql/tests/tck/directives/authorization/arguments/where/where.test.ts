@@ -824,10 +824,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
-            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_0_0_0_before_this0:User)
-            WITH *, count(authorization_0_0_0_0_before_this0) AS creatorCount
+            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_before_this0:User)
+            WITH *, count(authorization_0_before_this0) AS creatorCount
             WITH *
-            	WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_0_0_0_before_this0.id = $jwt.sub)))
+            	WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_before_this0.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -902,10 +902,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
-            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_0_0_0_before_this0:User)
-            WITH *, count(authorization_0_0_0_0_before_this0) AS creatorCount
+            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_before_this0:User)
+            WITH *, count(authorization_0_before_this0) AS creatorCount
             WITH *
-            	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_0_0_0_before_this0.id = $jwt.sub)))
+            	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_before_this0.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
