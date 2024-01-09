@@ -38,7 +38,7 @@ import type { AuthorizationFilters } from "../ast/filters/authorization-filters/
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
-import { CreateOperation } from "../ast/operations/CreateOperation";
+import { CreateOperation, UpdateOperation } from "../ast/operations/CreateOperation";
 import type { FulltextOptions } from "../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../ast/operations/FulltextOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
@@ -109,9 +109,11 @@ export class OperationsFactory {
             const operationMatch = parseOperationField(resolveTree.name, entity);
 
             if (operationMatch.isCreate) {
-                return this.createMutationOperation(entity, resolveTree, context); // TODO: move this to separate method?
+                return this.createCreateOperation(entity, resolveTree, context);
             } else if (operationMatch.isUpdate) {
-                return this.createMutationOperation(entity, resolveTree, context); // TODO: move this to separate method?
+                const op = this.createUpdateOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
             } else if (operationMatch.isRead) {
                 let op: ReadOperation;
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
@@ -669,6 +671,26 @@ export class OperationsFactory {
 
         createOP.addProjectionOperations(projectionFields);
         return createOP;
+    }
+
+    private createUpdateOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): UpdateOperation {
+        const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.update] ?? {}
+        );
+        const updateOp = new UpdateOperation({ target: entity });
+        const projectionFields = responseFields
+            .filter((f) => f.name === entity.plural)
+            .map((field) => {
+                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                return readOP;
+            });
+
+        updateOp.addProjectionOperations(projectionFields);
+        return updateOp;
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {

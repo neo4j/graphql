@@ -31,16 +31,16 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import Cypher from "@neo4j/cypher-builder";
+import Cypher, { Return, contains } from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
-import { compileCypher } from "../utils/compile-cypher";
+import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import Debug from "debug";
 import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-
+import { de } from "@faker-js/faker";
 const debug = Debug(DEBUG_TRANSLATE);
 
 export default async function translateUpdate({
@@ -59,7 +59,7 @@ export default async function translateUpdate({
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-    const cypherFieldAliasMap: CypherFieldReferenceMap = {};
+    // const cypherFieldAliasMap: CypherFieldReferenceMap = {};
     const withVars = [varName];
 
     if (context.subscriptionsEnabled) {
@@ -72,7 +72,7 @@ export default async function translateUpdate({
     const disconnectStrs: string[] = [];
     const createStrs: string[] = [];
     let deleteStr = "";
-    let projAuth: Cypher.Clause | undefined = undefined;
+    // let projAuth: Cypher.Clause | undefined = undefined;
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
@@ -84,9 +84,9 @@ export default async function translateUpdate({
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update] || {};
+    //const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update] || {};
 
-    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
+    //const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
     if (deleteInput) {
         const deleteAndParams = createDeleteAndParams({
@@ -443,9 +443,9 @@ export default async function translateUpdate({
         });
     }
 
-    let projectionSubquery: Cypher.Clause | undefined;
-    let projStr: Cypher.Expr | undefined;
-    if (nodeProjection?.fieldsByTypeName) {
+    /*     let projectionSubquery: Cypher.Clause | undefined;
+    let projStr: Cypher.Expr | undefined; */
+    /*     if (nodeProjection?.fieldsByTypeName) {
         const projection = createProjectionAndParams({
             node,
             context,
@@ -463,61 +463,48 @@ export default async function translateUpdate({
         if (predicates.length) {
             projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
         }
-    }
+    } */
 
     const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
     if (!concreteEntityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    let returnStatement;
-    if (nodeProjection?.fieldsByTypeName) {
-        const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST(
-            resolveTree,
-            concreteEntityAdapter,
-            context
-        );
-        const queryASTEnv = new QueryASTEnv();
-        const projectedVariables: Cypher.Node[] = [];
-        const cyVarName = new Cypher.NamedNode(varName);
-        //const varName = new Cypher.NamedNode("thisNamed");
-        /**
-         * Currently, the create projections are resolved separately for each input,
-         * the following block reuses the same ReadOperation for each of the variable names generated during the create operations.
-         **/
-        const queryASTContext = new QueryASTContext({
-            target: cyVarName,
-            env: queryASTEnv,
-            neo4jGraphQLContext: context,
-            returnVariable: new Cypher.NamedVariable("data"),
-            shouldCollect: true,
-            shouldDistinct: true,
-        });
-        debug(queryAST.print());
-        const queryASTResult = queryAST.transpile(queryASTContext);
-        //let callblock: Cypher.Clause;
-        if (queryASTResult.clauses.length) {
-            projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
+    //let returnStatement;
+    // if (nodeProjection?.fieldsByTypeName) {
+    const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST(
+        resolveTree,
+        concreteEntityAdapter,
+        context
+    );
+    const queryASTEnv = new QueryASTEnv();
 
-            const clause = Cypher.concat(...queryASTResult.clauses);
-            //callblock = new Cypher.Call(clause).innerWith(cyVarName);
-            //callblock = clause;
-            returnStatement = clause;
+    const cyVarName = new Cypher.NamedNode(varName);
 
-            //console.log(callblock.build());
-        } else {
-            if (!returnStatement) {
-                returnStatement = new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
-            }
-        }
-    }
+    const queryASTContext = new QueryASTContext({
+        target: cyVarName,
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+        returnVariable: new Cypher.NamedVariable("data"),
+        shouldCollect: true,
+        shouldDistinct: true,
+    });
+    debug(queryAST.print());
+    const queryASTResult = queryAST.transpile(queryASTContext);
+    //projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
+
+    const projectionStatements = queryASTResult.clauses.length
+        ? Cypher.concat(...queryASTResult.clauses)
+        : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
+
+    //}
 
     //const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
 
     const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
-        const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
+        // const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
 
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
@@ -527,17 +514,15 @@ export default async function translateUpdate({
             updateStr,
             connectStrs.join("\n"),
             createStrs.join("\n"),
-            /*       ...(deleteStr.length ||
+            ...(deleteStr.length ||
             connectStrs.length ||
             disconnectStrs.length ||
             createStrs.length ||
-            projectionSubqueryStr
+            connectionStrs.length ||
+            containsASubquery(projectionStatements as unknown as Composite)
                 ? [`WITH *`]
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
- */
-            // projectionSubqueryStr,
-            ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-            ...(projAuth ? [compileCypher(projAuth, env)] : []),
+
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
@@ -547,7 +532,7 @@ export default async function translateUpdate({
                       `UNWIND (CASE ${META_CYPHER_VARIABLE} WHEN [] then [null] else ${META_CYPHER_VARIABLE} end) AS m`,
                   ]
                 : []),
-            compileCypher(returnStatement, env),
+            compileCypher(projectionStatements, env),
             ...(context.subscriptionsEnabled ? [`,\ncollect(DISTINCT m) as ${META_CYPHER_VARIABLE}`] : []),
         ]
             .filter(Boolean)
@@ -570,7 +555,7 @@ export default async function translateUpdate({
     return result;
 }
 
-function generateUpdateReturnStatement(
+/* function generateUpdateReturnStatement(
     varName: string | undefined,
     projStr: Cypher.Expr | undefined,
     subscriptionsEnabled: boolean
@@ -593,4 +578,18 @@ function generateUpdateReturnStatement(
     }
 
     return new Cypher.Return(statements);
+} */
+
+type Composite = { children?: Composite[]};
+
+function containsASubquery(clause: Composite): boolean {
+    if (clause.children?.length) {
+        if (clause.children[0] instanceof Cypher.Call) {
+            return true;
+        }
+        if (clause.children[0]?.children?.length) {
+            return containsASubquery(clause.children[0]);
+        }
+    }
+    return false;
 }

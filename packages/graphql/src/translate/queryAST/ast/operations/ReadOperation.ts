@@ -203,7 +203,8 @@ export class ReadOperation extends Operation {
 
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
         const isCreateSelection = nestedContext.env.topLevelOperationName === "CREATE";
-        if (isCreateSelection) {
+        const isUpdateSelection = nestedContext.env.topLevelOperationName === "UPDATE";
+        if (isCreateSelection || isUpdateSelection) {
             if (!context.hasTarget()) {
                 throw new Error("Invalid target for create operation");
             }
@@ -278,6 +279,8 @@ export class ReadOperation extends Operation {
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
         if (isCreateSelection) {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
+        } else if (isUpdateSelection) {
+            clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
         } else {
             clause = Cypher.concat(
                 preWith,
@@ -302,7 +305,7 @@ export class ReadOperation extends Operation {
         const projection = this.getProjectionMap(context);
         if (context.shouldCollect) {
             const collectProj = Cypher.collect(projection);
-            if (context.shouldCollect) {
+            if (context.shouldDistinct) {
                 collectProj.distinct();
             }
             return new Cypher.Return([collectProj, returnVariable]);

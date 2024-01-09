@@ -63,3 +63,36 @@ export class CreateOperation extends Operation {
         });
     }
 }
+
+export class UpdateOperation extends Operation {
+    public readonly target: ConcreteEntityAdapter;
+    // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
+    public projectionOperations: ReadOperation[] = [];
+    public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
+
+    constructor({ target }: { target: ConcreteEntityAdapter }) {
+        super();
+        this.target = target;
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return filterTruthy(this.projectionOperations);
+    }
+
+    public addProjectionOperations(operations: ReadOperation[]) {
+        this.projectionOperations.push(...operations);
+    }
+
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        if (!context.target) throw new Error("No parent node found!");
+        context.env.topLevelOperationName = "UPDATE";
+        const clauses = this.getProjectionClause(context);
+        return { projectionExpr: context.returnVariable, clauses };
+    }
+
+    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
+        return this.projectionOperations.map((operationField) => {
+            return Cypher.concat(...operationField.transpile(context).clauses);
+        });
+    }
+}

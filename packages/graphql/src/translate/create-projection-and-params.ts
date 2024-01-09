@@ -76,9 +76,6 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
     cypherFieldAliasMap: CypherFieldReferenceMap;
 }): ProjectionResult {
-/*     // eslint-disable-next-line no-constant-condition
-    if (new Date()) throw new Error("sdf"); */
-
     checkAuthentication({ context, node, targetOperations: ["READ"] });
 
     function reducer(res: Res, field: ResolveTree): Res {
