@@ -1735,15 +1735,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/commands@npm:6.3.3":
-  version: 6.3.3
-  resolution: "@codemirror/commands@npm:6.3.3"
+"@codemirror/commands@npm:6.3.2":
+  version: 6.3.2
+  resolution: "@codemirror/commands@npm:6.3.2"
   dependencies:
     "@codemirror/language": ^6.0.0
-    "@codemirror/state": ^6.4.0
+    "@codemirror/state": ^6.2.0
     "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.1.0
-  checksum: 7d23aecc973823969434b839aefa9a98bb47212d2ce0e6869ae903adbb5233aad22a760788fb7bb6eb45b00b01a4932fb93ad43bacdcbc0215e7500cf54b17bb
+  checksum: 683c444d8e6ad889ab5efd0d742b0fa28b78c8cad63276ec60d298b13d4939c8bd7e1d6fd3535645b8d255147de0d3aef46d89a29c19d0af58a7f2914bdcb3ab
   languageName: node
   linkType: hard
 
@@ -1774,17 +1774,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@codemirror/language@npm:6.10.0"
+"@codemirror/language@npm:6.9.3":
+  version: 6.9.3
+  resolution: "@codemirror/language@npm:6.9.3"
   dependencies:
     "@codemirror/state": ^6.0.0
-    "@codemirror/view": ^6.23.0
+    "@codemirror/view": ^6.0.0
     "@lezer/common": ^1.1.0
     "@lezer/highlight": ^1.0.0
     "@lezer/lr": ^1.0.0
     style-mod: ^4.0.0
-  checksum: 3bfd9968f5a34ce22434489a5b226db5f3bc454a1ae7c4381587ff4270ac6af61b10f93df560cb73e9a77cc13d4843722a7a7b94dbed02a3ab1971dd329b9e81
+  checksum: 774a40bc91c748d418a9a774161a5b083061124e4439bb753072bc657ec4c4784f595161c10c7c3935154b22291bf6dc74c9abe827033db32e217ac3963478f3
   languageName: node
   linkType: hard
 
@@ -1824,14 +1824,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/state@npm:6.4.0":
+"@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.2.0, @codemirror/state@npm:^6.4.0":
   version: 6.4.0
   resolution: "@codemirror/state@npm:6.4.0"
   checksum: c5236fe5786f1b85d17273a5c17fa8aeb063658c1404ab18caeb6e7591663ec96b65d453ab8162f75839c3801b04cd55ba4bc48f44cb61ebfeeee383f89553c7
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:6.23.0":
+"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.9.0":
   version: 6.23.0
   resolution: "@codemirror/view@npm:6.23.0"
   dependencies:
@@ -3637,9 +3637,9 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@codemirror/autocomplete": 6.11.1
-    "@codemirror/commands": 6.3.3
+    "@codemirror/commands": 6.3.2
     "@codemirror/lang-javascript": 6.2.1
-    "@codemirror/language": 6.10.0
+    "@codemirror/language": 6.9.3
     "@dnd-kit/core": 6.1.0
     "@dnd-kit/modifiers": 7.0.0
     "@dnd-kit/sortable": 8.0.0
