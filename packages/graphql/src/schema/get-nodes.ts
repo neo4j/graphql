@@ -18,8 +18,7 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import type { DirectiveNode, NamedTypeNode } from "graphql";
-import type { Exclude } from "../classes";
+import type { NamedTypeNode } from "graphql";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
 import type { LimitDirective } from "../classes/LimitDirective";
@@ -27,12 +26,10 @@ import type { FullText, Neo4jGraphQLCallbacks } from "../types";
 import { asArray } from "../utils/utils";
 import type { DefinitionNodes } from "./get-definition-nodes";
 import getObjFieldMeta from "./get-obj-field-meta";
-import parseExcludeDirective from "./parse-exclude-directive";
 import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parsePluralDirective from "./parse/parse-plural-directive";
 import { parseLimitDirective } from "./parse/parse-limit-directive";
-import { schemaConfigurationFromObjectTypeDefinition } from "./schema-configuration";
 
 type Nodes = {
     nodes: Node[];
@@ -81,39 +78,11 @@ function getNodes(
             ["deprecated", "shareable"].includes(x.name.value)
         );
 
-        const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
         const limitDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "limit");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
-
-        const { interfaceExcludeDirectives } = nodeInterfaces.reduce<{
-            interfaceAuthDirectives: DirectiveNode[];
-            interfaceExcludeDirectives: DirectiveNode[];
-        }>(
-            (res, interfaceName) => {
-                const iface = definitionNodes.interfaceTypes.find((i) => i.name.value === interfaceName.name.value);
-
-                if (iface) {
-                    const interfaceExcludeDirective = (iface.directives || []).find((x) => x.name.value === "exclude");
-
-                    if (interfaceExcludeDirective) {
-                        res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
-                    }
-                }
-
-                return res;
-            },
-            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
-        );
-
-        let exclude: Exclude;
-        if (excludeDirective || interfaceExcludeDirectives.length) {
-            exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
-        }
-
-        const schemaConfiguration = schemaConfigurationFromObjectTypeDefinition(definition);
 
         let nodeDirective: NodeDirective;
         if (nodeDirectiveDefinition) {
@@ -180,9 +149,6 @@ function getNodes(
             otherDirectives,
             propagatedDirectives,
             ...nodeFields,
-            // @ts-ignore we can be sure it's defined
-            exclude,
-            schemaConfiguration,
             // @ts-ignore we can be sure it's defined
             nodeDirective,
             // @ts-ignore we can be sure it's defined
