@@ -75,8 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
                         (brand2)-[:HAS_SERVICE]->(service4),
                         (collection1)-[:HAS_SERVICE]->(service1),
                         (collection1)-[:HAS_SERVICE]->(service2),
-                        (collection2)-[:HAS_SERVICE]->(service3),
-                        (collection2)-[:HAS_SERVICE]->(service4)
+                        (collection2)-[:HAS_SERVICE]->(service3)
                 `,
                 {}
             );
@@ -102,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
             query {
                 ${Brand.plural} {
                     name
-                    services(where: { collectionAggregate: { count: 0 } }) {
+                    services(where: { collectionAggregate: { count: 1 } }) {
                         collectionAggregate {
                             count
                         }
@@ -121,10 +120,26 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
         expect(response.data).toEqual({
             [Brand.plural]: [
                 {
+                    name: "brand1",
                     services: [
                         {
                             collectionAggregate: {
-                                count: 0,
+                                count: 1,
+                            },
+                        },
+                        {
+                            collectionAggregate: {
+                                count: 1,
+                            },
+                        },
+                    ],
+                },
+                {
+                    name: "brand2",
+                    services: [
+                        {
+                            collectionAggregate: {
+                                count: 1,
                             },
                         },
                     ],

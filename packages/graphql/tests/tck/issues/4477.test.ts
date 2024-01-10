@@ -63,14 +63,28 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)<-[this2:HAS_SERVICE]-(this3:Collection)
-                    RETURN count(this3) AS var4
+                    RETURN count(this3) = $param0 AS var4
                 }
-                WITH this1 { collectionAggregate: { count: var4 } } AS this1
-                RETURN collect(this1) AS var5
+                WITH *
+                WHERE var4 = true
+                CALL {
+                    WITH this1
+                    MATCH (this1)<-[this5:HAS_SERVICE]-(this6:Collection)
+                    RETURN count(this6) AS var7
+                }
+                WITH this1 { collectionAggregate: { count: var7 } } AS this1
+                RETURN collect(this1) AS var8
             }
-            RETURN this { .name, services: var5 } AS this"
+            RETURN this { .name, services: var8 } AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 0,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
 });
