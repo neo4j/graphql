@@ -281,7 +281,7 @@ describe("@auth allow on specific interface implementation", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:HAS_CONTENT]->(update_this1:Comment)
-                    WITH update_this1 { __resolveType: \\"Comment\\", __id: id(this), .id } AS update_this1
+                    WITH update_this1 { .id, __resolveType: \\"Comment\\", __id: id(update_this1) } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
@@ -290,7 +290,7 @@ describe("@auth allow on specific interface implementation", () => {
                     WITH *, count(update_this5) AS creatorCount
                     WITH *
                     WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND update_this5.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH update_this4 { __resolveType: \\"Post\\", __id: id(this), .id } AS update_this4
+                    WITH update_this4 { .id, __resolveType: \\"Post\\", __id: id(update_this4) } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
                 WITH update_var2

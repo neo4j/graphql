@@ -111,10 +111,10 @@ describe("Connect or create with @alias", () => {
                 WITH this
                 MATCH (this)-[update_this0:isInPublication]->(update_this1:Concept:Resource)
                 WHERE update_this1.\`$_uri\` IN $update_param0
-                WITH update_this1 { iri: update_this1.\`$_uri\`, .prefLabel } AS update_this1
+                WITH update_this1 { .prefLabel, iri: update_this1.\`$_uri\` } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
-            RETURN collect(DISTINCT this { iri: this._uri, .prefLabel, isInPublication: update_var2 }) AS data"
+            RETURN collect(DISTINCT this { .prefLabel, iri: this._uri, isInPublication: update_var2 }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

@@ -208,12 +208,12 @@ export class ReadOperation extends Operation {
             if (!context.hasTarget()) {
                 throw new Error("Invalid target for create operation");
             }
-            // Match is not applied on creation (last concat ignores the top level match) so we revert the context apply
+            // Match is not applied on mutations (last concat ignores the top level match) so we revert the context apply
             nestedContext = context;
         }
 
-        const preWith: Cypher.With | undefined =
-            isCreateSelection && context.target ? new Cypher.With([context.target, nestedContext.target]) : undefined;
+        //const preWith: Cypher.With | undefined = undefined;
+            /* isCreateSelection && context.target ? new Cypher.With([context.target, nestedContext.target]) : undefined; */
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         const filterPredicates = this.getPredicates(nestedContext);
@@ -228,7 +228,7 @@ export class ReadOperation extends Operation {
 
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
         const ret: Cypher.Return = this.getReturnStatement(
-            isCreateSelection ? context : nestedContext,
+            isCreateSelection || isUpdateSelection ? context : nestedContext,
             nestedContext.returnVariable
         );
 
@@ -283,7 +283,7 @@ export class ReadOperation extends Operation {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
         } else {
             clause = Cypher.concat(
-                preWith,
+               // preWith,
                 ...extraMatches,
                 matchClause,
                 ...authFilterSubqueries,

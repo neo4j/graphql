@@ -243,7 +243,7 @@ describe("update", () => {
         }
     });
 
-    test.only("should update a movie when matching on relationship property", async () => {
+    test("should update a movie when matching on relationship property", async () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `

@@ -347,12 +347,13 @@ describe("Cypher Auth Roles", () => {
             SET this.id = $this_update_id
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -360,6 +361,8 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
+                \\"update_param2\\": \\"admin\\",
+                \\"param0\\": \\"1\\",
                 \\"param3\\": \\"admin\\",
                 \\"this_update_id\\": \\"id-1\\",
                 \\"authorization__after_param2\\": \\"admin\\",
@@ -393,12 +396,13 @@ describe("Cypher Auth Roles", () => {
             SET this.password = $this_update_password
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -406,6 +410,8 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
+                \\"update_param2\\": \\"admin\\",
+                \\"param0\\": \\"1\\",
                 \\"param3\\": \\"admin\\",
                 \\"this_update_password\\": \\"password\\",
                 \\"authorization__before_param2\\": \\"super-admin\\",
@@ -456,6 +462,8 @@ describe("Cypher Auth Roles", () => {
             	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -468,6 +476,7 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
+                \\"update_param2\\": \\"admin\\",
                 \\"param2\\": \\"admin\\",
                 \\"authorization__before_param2\\": \\"super-admin\\",
                 \\"authorization__before_param3\\": \\"admin\\",
@@ -600,6 +609,8 @@ describe("Cypher Auth Roles", () => {
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
+            WITH *
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -612,6 +623,7 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
+                \\"update_param2\\": \\"admin\\",
                 \\"param2\\": \\"admin\\",
                 \\"authorization__before_param2\\": \\"admin\\",
                 \\"authorization__before_param3\\": \\"super-admin\\",

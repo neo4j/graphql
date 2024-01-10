@@ -119,7 +119,12 @@ export class OperationsFactory {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
-                    op = this.createReadOperation(entity, resolveTree, context, varName) as ReadOperation;
+                    op = this.createReadOperation({
+                        entityOrRel: entity,
+                        resolveTree,
+                        context,
+                        varName,
+                    }) as ReadOperation;
                 }
 
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -150,7 +155,7 @@ export class OperationsFactory {
             }
         }
 
-        return this.createReadOperation(entity, resolveTree, context);
+        return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
 
     public createFulltextOperation(
@@ -243,12 +248,17 @@ export class OperationsFactory {
         return operation;
     }
 
-    public createReadOperation(
-        entityOrRel: EntityAdapter | RelationshipAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        varName?: string
-    ): ReadOperation | CompositeReadOperation {
+    public createReadOperation({
+        entityOrRel,
+        resolveTree,
+        context,
+        varName,
+    }: {
+        entityOrRel: EntityAdapter | RelationshipAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+    }): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
@@ -665,7 +675,11 @@ export class OperationsFactory {
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
-                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                const readOP = this.createReadOperation({
+                    entityOrRel: entity,
+                    resolveTree: field,
+                    context,
+                }) as ReadOperation;
                 return readOP;
             });
 
@@ -685,7 +699,11 @@ export class OperationsFactory {
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
-                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                const readOP = this.createReadOperation({
+                    entityOrRel: entity,
+                    resolveTree: field,
+                    context,
+                }) as ReadOperation;
                 return readOP;
             });
 
@@ -916,7 +934,7 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         const filters = sharedFilters ? sharedFilters : this.filterFactory.createNodeFilters(entity, whereArgs);
-
+       
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
 

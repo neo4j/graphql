@@ -352,7 +352,11 @@ export class FieldFactory {
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): OperationField {
-        const operation = this.queryASTFactory.operationsFactory.createReadOperation(relationship, field, context);
+        const operation = this.queryASTFactory.operationsFactory.createReadOperation({
+            entityOrRel: relationship,
+            resolveTree: field,
+            context,
+        });
 
         return new OperationField({
             operation,

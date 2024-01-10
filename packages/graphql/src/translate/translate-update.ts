@@ -18,8 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
-import createProjectionAndParams from "./create-projection-and-params";
+import type { GraphQLWhereArg, RelationField } from "../types";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
@@ -31,16 +30,16 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import Cypher, { Return, contains } from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
-import { compileCypher, compileCypherIfExists } from "../utils/compile-cypher";
+import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import Debug from "debug";
 import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import { de } from "@faker-js/faker";
+
 const debug = Debug(DEBUG_TRANSLATE);
 
 export default async function translateUpdate({
@@ -59,7 +58,6 @@ export default async function translateUpdate({
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-    // const cypherFieldAliasMap: CypherFieldReferenceMap = {};
     const withVars = [varName];
 
     if (context.subscriptionsEnabled) {
@@ -72,7 +70,6 @@ export default async function translateUpdate({
     const disconnectStrs: string[] = [];
     const createStrs: string[] = [];
     let deleteStr = "";
-    // let projAuth: Cypher.Clause | undefined = undefined;
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
@@ -442,36 +439,11 @@ export default async function translateUpdate({
             });
         });
     }
-
-    /*     let projectionSubquery: Cypher.Clause | undefined;
-    let projStr: Cypher.Expr | undefined; */
-    /*     if (nodeProjection?.fieldsByTypeName) {
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: new Cypher.NamedNode(varName),
-            cypherFieldAliasMap,
-        });
-        projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
-        projStr = projection.projection;
-        cypherParams = { ...cypherParams, ...projection.params };
-        const predicates: Cypher.Predicate[] = [];
-
-        predicates.push(...projection.predicates);
-
-        if (predicates.length) {
-            projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
-        }
-    } */
-
     const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
     if (!concreteEntityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    //let returnStatement;
-    // if (nodeProjection?.fieldsByTypeName) {
     const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST(
         resolveTree,
         concreteEntityAdapter,
@@ -479,10 +451,10 @@ export default async function translateUpdate({
     );
     const queryASTEnv = new QueryASTEnv();
 
-    const cyVarName = new Cypher.NamedNode(varName);
+    const targetNode = new Cypher.NamedNode(varName);
 
     const queryASTContext = new QueryASTContext({
-        target: cyVarName,
+        target: targetNode,
         env: queryASTEnv,
         neo4jGraphQLContext: context,
         returnVariable: new Cypher.NamedVariable("data"),
@@ -491,21 +463,14 @@ export default async function translateUpdate({
     });
     debug(queryAST.print());
     const queryASTResult = queryAST.transpile(queryASTContext);
-    //projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
 
     const projectionStatements = queryASTResult.clauses.length
         ? Cypher.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
-    //}
-
-    //const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
-
     const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
     const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
-        // const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
-
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
             matchAndWhereStr,
@@ -519,7 +484,7 @@ export default async function translateUpdate({
             disconnectStrs.length ||
             createStrs.length ||
             connectionStrs.length ||
-            containsASubquery(projectionStatements as unknown as Composite)
+            isFollowedByASubquery(projectionStatements)
                 ? [`WITH *`]
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
@@ -555,40 +520,17 @@ export default async function translateUpdate({
     return result;
 }
 
-/* function generateUpdateReturnStatement(
-    varName: string | undefined,
-    projStr: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
-): Cypher.Clause {
-    let statements;
-    if (varName && projStr) {
-        statements = new Cypher.Raw((env) => `collect(DISTINCT ${varName} ${compileCypher(projStr, env)}) AS data`);
-    }
-
-    if (subscriptionsEnabled) {
-        statements = Cypher.concat(
-            statements,
-            new Cypher.Raw(statements ? ", " : ""),
-            new Cypher.Raw(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
-        );
-    }
-
-    if (!statements) {
-        statements = new Cypher.Raw("'Query cannot conclude with CALL'");
-    }
-
-    return new Cypher.Return(statements);
-} */
-
-type Composite = { children?: Composite[]};
-
-function containsASubquery(clause: Composite): boolean {
+/**
+ * Temporary helper to keep consistency with the old code where if a subquery was present, it would be followed by a WITH *.
+ * The recursion is needed because the subquery can be wrapped inside a Cypher.Composite.
+ **/
+function isFollowedByASubquery(clause): boolean {
     if (clause.children?.length) {
         if (clause.children[0] instanceof Cypher.Call) {
             return true;
         }
         if (clause.children[0]?.children?.length) {
-            return containsASubquery(clause.children[0]);
+            return isFollowedByASubquery(clause.children[0]);
         }
     }
     return false;

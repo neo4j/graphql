@@ -115,7 +115,7 @@ export class AuthorizationFactory {
         authAnnotation: AuthorizationAnnotation;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
-    }): AuthorizationFilters {
+    }): AuthorizationFilters | undefined {
         const rulesMatchingWhereOperations = findMatchingRules(authAnnotation.filter ?? [], operations);
 
         const whereFilters = rulesMatchingWhereOperations.flatMap((rule) => {
@@ -133,7 +133,7 @@ export class AuthorizationFactory {
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
         });
-
+        if (whereFilters.length === 0) return undefined;
         return new AuthorizationFilters({
             validationFilters: [],
             whereFilters: whereFilters,
@@ -154,7 +154,7 @@ export class AuthorizationFactory {
         context: Neo4jGraphQLTranslationContext;
         when: "BEFORE" | "AFTER";
         conditionForEvaluation?: Cypher.Predicate;
-    }): AuthorizationFilters {
+    }): AuthorizationFilters | undefined {
         const rulesMatchingOperations = findMatchingRules(authAnnotation.validate ?? [], operations).filter((rule) =>
             rule.when.includes(when)
         );
@@ -174,7 +174,7 @@ export class AuthorizationFactory {
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
         });
-
+        if (validationFilers.length === 0) return;
         return new AuthorizationFilters({
             validationFilters: validationFilers,
             whereFilters: [],

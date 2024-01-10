@@ -99,7 +99,6 @@ describe("Math operators", () => {
         `);
     });
 
-
     test("Simple Float multiply", async () => {
         const query = gql`
             mutation {
@@ -165,6 +164,7 @@ describe("Math operators", () => {
             	}
             	RETURN count(*) AS update_this_actedIn0
             }
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
@@ -221,6 +221,7 @@ describe("Math operators", () => {
             	}
             	RETURN count(*) AS update_this_actedIn0
             }
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
@@ -309,6 +310,7 @@ describe("Math operators", () => {
             }
             RETURN count(*) AS update_this_Star
             }
+            WITH *
             CALL {
                 WITH this
                 CALL {
@@ -380,6 +382,7 @@ describe("Math operators", () => {
             }
             RETURN count(*) AS update_this_Star
             }
+            WITH *
             CALL {
                 WITH this
                 CALL {
