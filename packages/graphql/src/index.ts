@@ -19,7 +19,6 @@
 
 import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";
 import { Neo4jGraphQLContext } from "./types/neo4j-graphql-context";
-
 import * as directives from "./graphql/directives";
 import { CartesianPoint } from "./graphql/objects/CartesianPoint";
 import { Point } from "./graphql/objects/Point";

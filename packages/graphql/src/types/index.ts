@@ -113,8 +113,6 @@ export interface BaseField {
     arguments: InputValueDefinitionNode[];
     private?: boolean;
     description?: string;
-    readonly?: boolean;
-    writeonly?: boolean;
     dbPropertyName?: string;
     dbPropertyNameUnescaped?: string;
     unique?: Unique;
