@@ -23,13 +23,13 @@ import { filterDocument } from "./filter-document";
 describe("filterDocument", () => {
     test("should remove all directives", () => {
         const initial = `
-            type User @auth @exclude {
-                id: ID @auth @private @readonly @writeonly
-                name: String @auth @private @readonly @writeonly
-                email: String @auth @private @readonly @writeonly
-                password: String @auth @private @readonly @writeonly
+            type User @authentication @authorization {
+                id: ID @id @private @unique
+                name: String @authentication @authorization @private
+                email: String @cypher @private
+                password: String @private
                 cars: [Car!]! @relationship(type: "HAS_CAR", direction: OUT, aggregate: false)
-                bikes: [Car!]! @relationship(type: "HAS_CAR", direction: OUT)  
+                bikes: [Car!]! @relationship(type: "HAS_CAR", direction: OUT)
             }
 
             type Car @query(read: false, aggregate: false) @mutation(operations: []), @subscription(events: []) {
@@ -50,9 +50,9 @@ describe("filterDocument", () => {
 
         expect(print(filtered)).toMatchInlineSnapshot(`
             "type User {
-              id: ID
+              id: ID @id @unique
               name: String
-              email: String
+              email: String @cypher
               password: String
               cars: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true)
               bikes: [Car!]! @relationship(type: \\"HAS_CAR\\", direction: OUT, aggregate: true)

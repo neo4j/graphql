@@ -22,14 +22,10 @@ import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
 const excludedDirectives = [
-    "auth",
     "authentication",
     "authorization",
     "subscriptionsAuthorization",
-    "exclude",
     "private",
-    "readonly",
-    "writeonly",
     "query",
     "mutation",
     "subscription",
@@ -41,8 +37,8 @@ const excludedDirectives = [
 export function filterDocument(typeDefs: Neo4jGraphQLConstructor["typeDefs"]): DocumentNode {
     // hack to keep aggregation enabled for OGM
     const schemaExtension = `
-    extend schema @query(read: true, aggregate: true) 
-        @mutation(operations: [CREATE, UPDATE, DELETE]) 
+    extend schema @query(read: true, aggregate: true)
+        @mutation(operations: [CREATE, UPDATE, DELETE])
         @subscription(events: [CREATED, UPDATED, DELETED, RELATIONSHIP_CREATED, RELATIONSHIP_DELETED])`;
     const merged = mergeTypeDefs(
         Array.isArray(typeDefs) ? (typeDefs as string[]).concat(schemaExtension) : [typeDefs as string, schemaExtension]
