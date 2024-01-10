@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let typeDefs: DocumentNode;
@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
 
             interface Church {
-                id: ID @id
+                id: ID
                 name: String!
                 serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
             }
@@ -75,13 +75,6 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 id: ID!
                 attendance: Int
                 markedAttendance: Boolean!
-                    @cypher(
-                        statement: """
-                        MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
-                        RETURN COUNT(member) > 0 AS markedAttendance
-                        """
-                        columnName: "markedAttendance"
-                    )
                 serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
             }
         `;
