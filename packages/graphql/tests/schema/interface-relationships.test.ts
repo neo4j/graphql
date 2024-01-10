@@ -91,6 +91,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -193,6 +194,20 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregationSelection {
+              count: Int!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
+            }
+
+            type ActorProductionActedInEdgeAggregateSelection {
+              screenTime: IntAggregateSelectionNonNullable!
+            }
+
+            type ActorProductionActedInNodeAggregateSelection {
+              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorRelationInput {
@@ -390,6 +405,11 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelectionNonNullable!
+            }
+
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -399,14 +419,14 @@ describe("Interface Relationships", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -431,7 +451,9 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -442,6 +464,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -451,6 +474,8 @@ describe("Interface Relationships", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -649,6 +674,7 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -758,6 +784,20 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregationSelection {
+              count: Int!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
+            }
+
+            type ActorProductionActedInEdgeAggregateSelection {
+              screenTime: IntAggregateSelectionNonNullable!
+            }
+
+            type ActorProductionActedInNodeAggregateSelection {
+              title: StringAggregateSelectionNonNullable!
             }
 
             input ActorRelationInput {
@@ -1512,6 +1552,11 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              title: StringAggregateSelectionNonNullable!
+            }
+
             input ProductionConnectInput {
               _on: ProductionImplementationsConnectInput
               actors: [ProductionActorsConnectFieldInput!]
@@ -1536,6 +1581,11 @@ describe("Interface Relationships", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -1554,11 +1604,6 @@ describe("Interface Relationships", () => {
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -1584,7 +1629,9 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -1624,6 +1671,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -1636,6 +1684,8 @@ describe("Interface Relationships", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -2162,6 +2212,11 @@ describe("Interface Relationships", () => {
               interface2Connection(after: String, directed: Boolean = true, first: Int, where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
+            type Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelectionNonNullable!
+            }
+
             input Interface1ConnectInput {
               _on: Interface1ImplementationsConnectInput
               interface2: [Interface1Interface2ConnectFieldInput!]
@@ -2186,6 +2241,11 @@ describe("Interface Relationships", () => {
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
+            enum Interface1Implementation {
+              Type1Interface1
+              Type2Interface1
+            }
+
             input Interface1ImplementationsConnectInput {
               Type1Interface1: [Type1Interface1ConnectInput!]
               Type2Interface1: [Type2Interface1ConnectInput!]
@@ -2204,11 +2264,6 @@ describe("Interface Relationships", () => {
             input Interface1ImplementationsUpdateInput {
               Type1Interface1: Type1Interface1UpdateInput
               Type2Interface1: Type2Interface1UpdateInput
-            }
-
-            input Interface1ImplementationsWhere {
-              Type1Interface1: Type1Interface1Where
-              Type2Interface1: Type2Interface1Where
             }
 
             input Interface1Interface2ConnectFieldInput {
@@ -2291,7 +2346,9 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Where {
-              _on: Interface1ImplementationsWhere
+              AND: [Interface1Where!]
+              NOT: Interface1Where
+              OR: [Interface1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
@@ -2320,10 +2377,16 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              typename_IN: [Interface1Implementation!]
             }
 
             interface Interface2 {
               field2: String
+            }
+
+            type Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelectionNullable!
             }
 
             input Interface2ConnectWhere {
@@ -2335,14 +2398,14 @@ describe("Interface Relationships", () => {
               Type2Interface2: Type2Interface2CreateInput
             }
 
+            enum Interface2Implementation {
+              Type1Interface2
+              Type2Interface2
+            }
+
             input Interface2ImplementationsUpdateInput {
               Type1Interface2: Type1Interface2UpdateInput
               Type2Interface2: Type2Interface2UpdateInput
-            }
-
-            input Interface2ImplementationsWhere {
-              Type1Interface2: Type1Interface2Where
-              Type2Interface2: Type2Interface2Where
             }
 
             input Interface2Options {
@@ -2367,7 +2430,9 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2Where {
-              _on: Interface2ImplementationsWhere
+              AND: [Interface2Where!]
+              NOT: Interface2Where
+              OR: [Interface2Where!]
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
@@ -2378,6 +2443,7 @@ describe("Interface Relationships", () => {
               field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
+              typename_IN: [Interface2Implementation!]
             }
 
             type Mutation {
@@ -2407,6 +2473,10 @@ describe("Interface Relationships", () => {
             }
 
             type Query {
+              interface1s(options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface2s(options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
               type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
               type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort], where: Type1Interface1Where): Type1Interface1sConnection!
@@ -2437,9 +2507,15 @@ describe("Interface Relationships", () => {
               shortest: String!
             }
 
+            type StringAggregateSelectionNullable {
+              longest: String
+              shortest: String
+            }
+
             type Type1 {
               field1: String!
               interface1(directed: Boolean = true, options: Interface1Options, where: Interface1Where): [Interface1!]!
+              interface1Aggregate(directed: Boolean = true, where: Interface1Where): Type1Interface1Interface1AggregationSelection
               interface1Connection(after: String, directed: Boolean = true, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
@@ -2473,6 +2549,7 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -2545,6 +2622,15 @@ describe("Interface Relationships", () => {
               create: [Type1Interface1CreateFieldInput!]
             }
 
+            type Type1Interface1Interface1AggregationSelection {
+              count: Int!
+              node: Type1Interface1Interface1NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface1NodeAggregateSelection {
+              field1: StringAggregateSelectionNonNullable!
+            }
+
             input Type1Interface1Interface2ConnectFieldInput {
               where: Interface2ConnectWhere
             }
@@ -2559,6 +2645,15 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
+            }
+
+            type Type1Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              node: Type1Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type1Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelectionNullable!
             }
 
             input Type1Interface1Interface2UpdateConnectionInput {
@@ -2785,6 +2880,7 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(directed: Boolean = true, options: Interface2Options, where: Interface2Where): [Interface2!]!
+              interface2Aggregate(directed: Boolean = true, where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, directed: Boolean = true, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -2829,6 +2925,15 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
+            }
+
+            type Type2Interface1Interface2Interface2AggregationSelection {
+              count: Int!
+              node: Type2Interface1Interface2Interface2NodeAggregateSelection
+            }
+
+            type Type2Interface1Interface2Interface2NodeAggregateSelection {
+              field2: StringAggregateSelectionNullable!
             }
 
             input Type2Interface1Interface2UpdateConnectionInput {
@@ -3368,6 +3473,12 @@ describe("Interface Relationships", () => {
               id: ID
             }
 
+            type ContentAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
             input ContentConnectInput {
               _on: ContentImplementationsConnectInput
               creator: ContentCreatorConnectFieldInput
@@ -3510,6 +3621,11 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorDisconnectFieldInput
             }
 
+            enum ContentImplementation {
+              Comment
+              Post
+            }
+
             input ContentImplementationsConnectInput {
               Comment: [CommentConnectInput!]
               Post: [PostConnectInput!]
@@ -3528,11 +3644,6 @@ describe("Interface Relationships", () => {
             input ContentImplementationsUpdateInput {
               Comment: CommentUpdateInput
               Post: PostUpdateInput
-            }
-
-            input ContentImplementationsWhere {
-              Comment: CommentWhere
-              Post: PostWhere
             }
 
             input ContentOptions {
@@ -3560,7 +3671,9 @@ describe("Interface Relationships", () => {
             }
 
             input ContentWhere {
-              _on: ContentImplementationsWhere
+              AND: [ContentWhere!]
+              NOT: ContentWhere
+              OR: [ContentWhere!]
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
@@ -3586,6 +3699,7 @@ describe("Interface Relationships", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ContentImplementation!]
             }
 
             type CreateCommentsMutationResponse {
@@ -3985,6 +4099,8 @@ describe("Interface Relationships", () => {
               comments(options: CommentOptions, where: CommentWhere): [Comment!]!
               commentsAggregate(where: CommentWhere): CommentAggregateSelection!
               commentsConnection(after: String, first: Int, sort: [CommentSort], where: CommentWhere): CommentsConnection!
+              contents(options: ContentOptions, where: ContentWhere): [Content!]!
+              contentsAggregate(where: ContentWhere): ContentAggregateSelection!
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
@@ -4034,6 +4150,7 @@ describe("Interface Relationships", () => {
 
             type User {
               content(directed: Boolean = true, options: ContentOptions, where: ContentWhere): [Content!]!
+              contentAggregate(directed: Boolean = true, where: ContentWhere): UserContentContentAggregationSelection
               contentConnection(after: String, directed: Boolean = true, first: Int, sort: [UserContentConnectionSort!], where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
@@ -4074,6 +4191,16 @@ describe("Interface Relationships", () => {
               OR: [UserContentConnectionWhere!]
               node: ContentWhere
               node_NOT: ContentWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type UserContentContentAggregationSelection {
+              count: Int!
+              node: UserContentContentNodeAggregateSelection
+            }
+
+            type UserContentContentNodeAggregateSelection {
+              content: StringAggregateSelectionNullable!
+              id: IDAggregateSelectionNullable!
             }
 
             input UserContentCreateFieldInput {

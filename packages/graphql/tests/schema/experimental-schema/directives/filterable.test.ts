@@ -7922,6 +7922,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -8052,6 +8053,15 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      username: StringAggregateSelectionNonNullable!
                     }
 
                     input MovieRelationInput {
@@ -8190,6 +8200,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type PersonAggregateSelection {
+                      count: Int!
+                      username: StringAggregateSelectionNonNullable!
+                    }
+
                     input PersonConnectInput {
                       _on: PersonImplementationsConnectInput
                     }
@@ -8214,6 +8229,10 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    enum PersonImplementation {
+                      Actor
+                    }
+
                     input PersonImplementationsConnectInput {
                       Actor: [ActorConnectInput!]
                     }
@@ -8226,16 +8245,8 @@ describe("@filterable directive", () => {
                       Actor: [ActorDisconnectInput!]
                     }
 
-                    input PersonImplementationsSubscriptionWhere {
-                      Actor: ActorSubscriptionWhere
-                    }
-
                     input PersonImplementationsUpdateInput {
                       Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
                     }
 
                     input PersonOptions {
@@ -8258,7 +8269,6 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
-                      _on: PersonImplementationsSubscriptionWhere
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -8277,7 +8287,10 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -8297,6 +8310,8 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8775,6 +8790,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
+                      actorsAggregate(directed: Boolean = true, where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -8905,6 +8921,15 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregationSelection {
+                      count: Int!
+                      node: MoviePersonActorsNodeAggregateSelection
+                    }
+
+                    type MoviePersonActorsNodeAggregateSelection {
+                      username: StringAggregateSelectionNonNullable!
                     }
 
                     input MovieRelationInput {
@@ -9043,6 +9068,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type PersonAggregateSelection {
+                      count: Int!
+                      username: StringAggregateSelectionNonNullable!
+                    }
+
                     input PersonConnectInput {
                       _on: PersonImplementationsConnectInput
                     }
@@ -9067,6 +9097,10 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    enum PersonImplementation {
+                      Actor
+                    }
+
                     input PersonImplementationsConnectInput {
                       Actor: [ActorConnectInput!]
                     }
@@ -9079,16 +9113,8 @@ describe("@filterable directive", () => {
                       Actor: [ActorDisconnectInput!]
                     }
 
-                    input PersonImplementationsSubscriptionWhere {
-                      Actor: ActorSubscriptionWhere
-                    }
-
                     input PersonImplementationsUpdateInput {
                       Actor: ActorUpdateInput
-                    }
-
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
                     }
 
                     input PersonOptions {
@@ -9111,7 +9137,6 @@ describe("@filterable directive", () => {
                       AND: [PersonSubscriptionWhere!]
                       NOT: PersonSubscriptionWhere
                       OR: [PersonSubscriptionWhere!]
-                      _on: PersonImplementationsSubscriptionWhere
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -9130,7 +9155,10 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -9150,6 +9178,8 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: PersonOptions, where: PersonWhere): [Person!]!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                     }
 
                     \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -10365,6 +10395,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: QueryOptions, where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -11596,6 +11627,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: QueryOptions, where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -12827,6 +12859,7 @@ describe("@filterable directive", () => {
                       movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                       moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                      people(options: QueryOptions, where: PersonWhere): [Person!]!
                     }
 
                     \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"

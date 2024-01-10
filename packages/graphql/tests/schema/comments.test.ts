@@ -770,6 +770,7 @@ describe("Comments", () => {
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -872,6 +873,20 @@ describe("Comments", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  edge: ActorProductionActedInEdgeAggregateSelection
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInEdgeAggregateSelection {
+                  screenTime: IntAggregateSelectionNonNullable!
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -1069,6 +1084,11 @@ describe("Comments", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -1078,14 +1098,14 @@ describe("Comments", () => {
                   Series: SeriesCreateInput
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsUpdateInput {
                   Movie: MovieUpdateInput
                   Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
                 }
 
                 input ProductionOptions {
@@ -1110,7 +1130,9 @@ describe("Comments", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   title: String
                   title_CONTAINS: String
                   title_ENDS_WITH: String
@@ -1121,6 +1143,7 @@ describe("Comments", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -1130,6 +1153,8 @@ describe("Comments", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -1631,6 +1656,7 @@ describe("Comments", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  searches(options: QueryOptions, where: SearchWhere): [Search!]!
                 }
 
                 \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
