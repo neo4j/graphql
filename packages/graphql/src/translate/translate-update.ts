@@ -451,10 +451,8 @@ export default async function translateUpdate({
     );
     const queryASTEnv = new QueryASTEnv();
 
-    const targetNode = new Cypher.NamedNode(varName);
-
     const queryASTContext = new QueryASTContext({
-        target: targetNode,
+        target: new Cypher.NamedNode(varName),
         env: queryASTEnv,
         neo4jGraphQLContext: context,
         returnVariable: new Cypher.NamedVariable("data"),
