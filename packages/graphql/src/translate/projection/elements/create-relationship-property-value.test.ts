@@ -72,8 +72,6 @@ describe("createRelationshipPropertyElement", () => {
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
-                    readonly: false,
-                    writeonly: false,
                 } as PrimitiveField,
             ],
             pointFields: [
@@ -115,8 +113,6 @@ describe("createRelationshipPropertyElement", () => {
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
-                    readonly: false,
-                    writeonly: false,
                 } as PointField,
             ],
             temporalFields: [
@@ -158,8 +154,6 @@ describe("createRelationshipPropertyElement", () => {
                     otherDirectives: [],
                     arguments: [],
                     description: undefined,
-                    readonly: false,
-                    writeonly: false,
                 } as TemporalField,
             ],
         });

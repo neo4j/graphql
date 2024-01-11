@@ -170,8 +170,6 @@ function getObjFieldMeta({
                             "id",
                             "authorization",
                             "authentication",
-                            "readonly",
-                            "writeonly",
                             "customResolver",
                             "default",
                             "coalesce",
@@ -190,12 +188,6 @@ function getObjFieldMeta({
                 ),
                 arguments: [...(field.arguments || [])],
                 description: field.description?.value,
-                readonly:
-                    directives.some((d) => d.name.value === "readonly") ||
-                    interfaceField?.directives?.some((x) => x.name.value === "readonly"),
-                writeonly:
-                    directives.some((d) => d.name.value === "writeonly") ||
-                    interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
                 ...(unique ? { unique } : {}),
             };
 
