@@ -98,17 +98,20 @@ export function withWhereInputType({
             NOT: whereInputType,
         });
 
-        const enumValues = Object.fromEntries(
-            entityAdapter.concreteEntities.map((concreteEntity) => [
-                concreteEntity.name,
-                { value: concreteEntity.name },
-            ])
-        );
-        const interfaceImplementation = composer.createEnumTC({
-            name: entityAdapter.operations.implementationEnumTypename,
-            values: enumValues,
-        });
-        whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
+        if (entityAdapter.concreteEntities.length > 0) {
+            const enumValues = Object.fromEntries(
+                entityAdapter.concreteEntities.map((concreteEntity) => [
+                    concreteEntity.name,
+                    { value: concreteEntity.name },
+                ])
+            );
+
+            const interfaceImplementation = composer.createEnumTC({
+                name: entityAdapter.operations.implementationEnumTypename,
+                values: enumValues,
+            });
+            whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
+        }
     }
     return whereInputType;
 }

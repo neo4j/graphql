@@ -697,16 +697,7 @@ subscription SubscriptionPerson {
                                     reviewers:  [
                                         {
                                           where: {
-                                                node: {
-                                                    _on: {
-                                                        ${typePerson}: {
-                                                            name: "Ana"
-                                                        },
-                                                        ${typeInfluencer}: {
-                                                            reputation: 1
-                                                        }
-                                                    }
-                                                }
+                                  
                                             }
                                         }
                                     ]
