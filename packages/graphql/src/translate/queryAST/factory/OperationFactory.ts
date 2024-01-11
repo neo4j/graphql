@@ -38,7 +38,7 @@ import type { AuthorizationFilters } from "../ast/filters/authorization-filters/
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
 import { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
-import { CreateOperation, UpdateOperation } from "../ast/operations/CreateOperation";
+import { CreateOperation } from "../ast/operations/CreateOperation";
 import type { FulltextOptions } from "../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../ast/operations/FulltextOperation";
 import { ReadOperation } from "../ast/operations/ReadOperation";
@@ -67,6 +67,7 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { UpdateOperation } from "../ast/operations/UpdateOperation";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -934,7 +935,7 @@ export class OperationsFactory {
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         const filters = sharedFilters ? sharedFilters : this.filterFactory.createNodeFilters(entity, whereArgs);
-       
+
         const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["READ"], context);
         const authValidate = this.authorizationFactory.createEntityAuthValidate(entity, ["READ"], context, "BEFORE");
 

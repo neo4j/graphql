@@ -212,9 +212,6 @@ export class ReadOperation extends Operation {
             nestedContext = context;
         }
 
-        //const preWith: Cypher.With | undefined = undefined;
-            /* isCreateSelection && context.target ? new Cypher.With([context.target, nestedContext.target]) : undefined; */
-
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         const filterPredicates = this.getPredicates(nestedContext);
 
@@ -277,13 +274,10 @@ export class ReadOperation extends Operation {
 
         let clause: Cypher.Clause;
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
-        if (isCreateSelection) {
-            clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
-        } else if (isUpdateSelection) {
+        if (isCreateSelection || isUpdateSelection) {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
         } else {
             clause = Cypher.concat(
-               // preWith,
                 ...extraMatches,
                 matchClause,
                 ...authFilterSubqueries,
