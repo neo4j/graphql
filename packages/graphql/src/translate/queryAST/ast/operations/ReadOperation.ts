@@ -201,6 +201,7 @@ export class ReadOperation extends Operation {
             return this.transpileNestedRelationship(this.relationship, context);
         }
 
+        // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
         const isCreateSelection = nestedContext.env.topLevelOperationName === "CREATE";
         const isUpdateSelection = nestedContext.env.topLevelOperationName === "UPDATE";
@@ -229,14 +230,10 @@ export class ReadOperation extends Operation {
             nestedContext.returnVariable
         );
 
-        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
+        const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
             return f.getSelection(nestedContext);
         });
 
-        if (extraMatches.length > 0) {
-            extraMatches = [matchClause, ...extraMatches];
-            matchClause = new Cypher.With("*");
-        }
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
 
@@ -252,9 +249,14 @@ export class ReadOperation extends Operation {
         const wherePredicate = isCreateSelection
             ? filterPredicates
             : Cypher.and(filterPredicates, ...authFiltersPredicate);
+
+        let extraMatchesWith: Cypher.With | undefined;
         if (wherePredicate) {
             if (filterSubqueryWith) {
                 filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
+            } else if (extraMatches.length) {
+                extraMatchesWith = new Cypher.With("*");
+                extraMatchesWith.where(wherePredicate);
             } else {
                 matchClause.where(wherePredicate);
             }
@@ -274,12 +276,24 @@ export class ReadOperation extends Operation {
 
         let clause: Cypher.Clause;
         // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
-        if (isCreateSelection || isUpdateSelection) {
+        if (isCreateSelection) {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
-        } else {
+        } else if (isUpdateSelection) {
+            const matchBlock = extraMatches.length > 0 ? [...extraMatches, extraMatchesWith] : [];
             clause = Cypher.concat(
-                ...extraMatches,
-                matchClause,
+                ...matchBlock,
+                ...authFilterSubqueries,
+                filterSubqueriesClause,
+                filterSubqueryWith,
+                sortAndLimitBlock,
+                subqueries,
+                ret
+            );
+        } else {
+            const matchBlock =
+                extraMatches.length > 0 ? [matchClause, ...extraMatches, extraMatchesWith] : [matchClause];
+            clause = Cypher.concat(
+                ...matchBlock,
                 ...authFilterSubqueries,
                 filterSubqueriesClause,
                 filterSubqueryWith,

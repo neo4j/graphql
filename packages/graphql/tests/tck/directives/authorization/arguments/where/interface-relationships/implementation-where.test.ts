@@ -109,7 +109,6 @@ describe("Cypher Auth Where", () => {
             OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
             WITH *, count(this0) AS creatorCount
             WITH *
-            WITH *
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
             RETURN this { .id } AS this"
         `);
@@ -143,7 +142,6 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:Post)
             OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
             WITH *, count(this0) AS creatorCount
-            WITH *
             WITH *
             WHERE (this.content = $param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
             RETURN this { .id } AS this"
@@ -376,6 +374,8 @@ describe("Cypher Auth Where", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
+            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
+            WITH *, count(update_this0) AS creatorCount
             WITH *
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)))
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -425,6 +425,8 @@ describe("Cypher Auth Where", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
+            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
+            WITH *, count(update_this0) AS creatorCount
             WITH *
             WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)))
             RETURN collect(DISTINCT this { .id }) AS data"
