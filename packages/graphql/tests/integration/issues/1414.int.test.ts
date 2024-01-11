@@ -20,9 +20,9 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1414", () => {
     const testProduct = new UniqueType("Product");
@@ -48,12 +48,12 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
 
         const typeDefs = `
             interface ${testProduct.name} {
-                id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
+                id: ID!
                 productTitle: String!
             }
 
             type ${testProgrammeItem.name} implements ${testProduct.name} {
-                id: ID!
+                id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
                 productTitle: String!
             }
         `;

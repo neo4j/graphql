@@ -21,7 +21,7 @@ import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src";
 import { cleanNodes } from "../../utils/clean-nodes";
-import { UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/3165", () => {
@@ -41,10 +41,6 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
 
     beforeEach(async () => {
         session = await neo4j.getSession();
-
-        Book = new UniqueType("Book");
-        BookTitle_SV = new UniqueType("BookTitle_SV");
-        BookTitle_EN = new UniqueType("BookTitle_EN");
 
         const typeDefs = `
             type A {

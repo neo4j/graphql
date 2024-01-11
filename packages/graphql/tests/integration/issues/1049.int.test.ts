@@ -20,9 +20,9 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1049", () => {
     let schema: GraphQLSchema;
@@ -49,33 +49,39 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
 
         const typeDefs = `
             interface ${Media.name} {
-                id: ID! @id
+                id: ID!
                 title: String!
                 likedBy: [${Person.name}!]! @relationship(type: "LIKES", direction: IN)
                 similar: [${Media.name}!]!
-                    @cypher(
-                        statement: """
-                        MATCH (this)<-[:LIKES]-(:${Person.name})-[:LIKES]->(other:${Media.name})
-                        RETURN COLLECT(other { .*, __resolveType: apoc.coll.subtract(labels(other), ['Meda'])[0] }) as x
-                        """,
-                        columnName: "x"
-                    )
+
             }
 
             type ${Book.name} implements ${Media.name} @node(labels: ["${Book.name}", "${Media.name}"]) {
-                id: ID!
+                id: ID! @id
                 title: String!
                 likedBy: [${Person.name}!]!
-                similar: [${Media.name}!]!
+                similar: [${Media.name}!]! @cypher(
+                    statement: """
+                    MATCH (this)<-[:LIKES]-(:${Person.name})-[:LIKES]->(other:${Media.name})
+                    RETURN COLLECT(other { .*, __resolveType: apoc.coll.subtract(labels(other), ['Meda'])[0] }) as x
+                    """,
+                    columnName: "x"
+                )
 
                 pageCount: Int!
             }
 
             type ${Film.name} implements ${Media.name} @node(labels: ["${Film.name}", "${Media.name}"]) {
-                id: ID!
+                id: ID! @id
                 title: String!
                 likedBy: [${Person.name}!]!
-                similar: [${Media.name}!]!
+                similar: [${Media.name}!]! @cypher(
+                    statement: """
+                    MATCH (this)<-[:LIKES]-(:${Person.name})-[:LIKES]->(other:${Media.name})
+                    RETURN COLLECT(other { .*, __resolveType: apoc.coll.subtract(labels(other), ['Meda'])[0] }) as x
+                    """,
+                    columnName: "x"
+                )
 
                 runTime: Int!
             }

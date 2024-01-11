@@ -50,12 +50,12 @@ describe("@alias directive", () => {
             }
 
             interface AliasInterface {
-                id: ID! @alias(property: "dbId")
-                name: String! @alias(property: "toBeOverridden")
+                id: ID!
+                name: String! 
             }
 
             type ${AliasDirectiveTestUser} implements AliasInterface {
-                id: ID! @id @unique
+                id: ID! @id @unique  @alias(property: "dbId")
                 name: String! @alias(property: "dbName")
                 likes: [${AliasDirectiveTestMovie}!]! @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
