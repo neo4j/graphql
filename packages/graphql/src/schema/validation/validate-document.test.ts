@@ -191,6 +191,7 @@ describe("list of lists warning", () => {
         expect(warn).toHaveBeenCalledOnce();
     });
 });
+
 describe("default max limit bypass warning", () => {
     let warn: jest.SpyInstance;
 
@@ -4051,6 +4052,359 @@ describe("validation 2.0", () => {
             expect(executeValidate).not.toThrow();
         });
     });
+
+    describe("@declareRelationship", () => {
+        test("@declareRelationship cannot be used on the field of an object type", () => {
+            const doc = gql`
+                type Person {
+                    name: String
+                }
+
+                type Actor {
+                    name: Person @declareRelationship
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "`@declareRelationship` is only available on Interface fields. Use `@relationship` if in an Object type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Actor", "name"]);
+        });
+
+        test("@declareRelationship can be used on the field of an interface type", () => {
+            const doc = gql`
+                interface Person {
+                    name: Actor @declareRelationship
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@declareRelationship cannot have scalar type", () => {
+            const doc = gql`
+                interface Person {
+                    name: String @declareRelationship
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "name"]);
+        });
+
+        test("@declareRelationship correct usage", () => {
+            const doc = gql`
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@declareRelationship correct usage - reverse definitions", () => {
+            const doc = gql`
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
+                }
+
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@declareRelationship does not have a corresponding @relationship", () => {
+            const doc = gql`
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]!
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Field was declared as a relationship but the `@relationship` directive is missing from the implementation."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Actor", "actor"]);
+        });
+
+        test("@declareRelationship does not have a corresponding @relationship - reverse definitions", () => {
+            const doc = gql`
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]!
+                }
+
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Field was declared as a relationship but the `@relationship` directive is missing from the implementation."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "actor"]);
+        });
+
+        test("@declareRelationship on extension, does not have a corresponding @relationship", () => {
+            const doc = gql`
+                interface Person {
+                    name: String
+                }
+
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]!
+                }
+
+                extend interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Field was declared as a relationship but the `@relationship` directive is missing from the implementation."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Actor", "actor"]);
+        });
+
+        test("@declareRelationship correct usage on extension", () => {
+            const doc = gql`
+                type Actor implements Person {
+                    name: String
+                }
+
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+
+                extend type Actor {
+                    actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@declareRelationship does not have corresponding @relationship, implements on extension", () => {
+            const doc = gql`
+                type Actor {
+                    name: String
+                    actor: [Actor!]!
+                }
+
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+
+                extend type Actor implements Person
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Field was declared as a relationship but the `@relationship` directive is missing from the implementation."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "actor"]);
+        });
+
+        test("@declareRelationship correct usage on extension, relationship on extension", () => {
+            const doc = gql`
+                type Actor {
+                    name: String
+                }
+
+                interface Person {
+                    name: String
+                }
+
+                extend type Actor implements Person {
+                    actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
+                }
+
+                extend interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("@declareRelationship on extension, does not have a corresponding @relationship, one of 2", () => {
+            const doc = gql`
+                interface Person {
+                    actor: [Actor!]! @declareRelationship
+                }
+
+                type Actor implements Person {
+                    name: String
+                    actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
+                    director: [Actor!]!
+                }
+
+                extend interface Person {
+                    director: [Actor!]! @declareRelationship
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                    experimental: true,
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Field was declared as a relationship but the `@relationship` directive is missing from the implementation."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Actor", "director"]);
+        });
+    });
+
     describe("JWT directives", () => {
         describe("invalid", () => {
             test("@jwt cannot combined", () => {
@@ -5278,6 +5632,39 @@ describe("validation 2.0", () => {
                         "Invalid field type: List type relationship fields must be non-nullable and have non-nullable entries, please change type to [Post!]!"
                     );
                     expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
+                });
+
+                test("@relationship scalar", () => {
+                    const doc = gql`
+                        type User {
+                            name: String
+                            posts: Int! @relationship(type: "HAS_POST", direction: OUT)
+                            allPosts: [Int!] @relationship(type: "HAS_POST", direction: OUT)
+                        }
+                    `;
+
+                    const executeValidate = () =>
+                        validateDocument({
+                            document: doc,
+                            additionalDefinitions,
+                            features: {},
+                            experimental: false,
+                        });
+
+                    const errors = getError(executeValidate);
+                    expect(errors).toHaveLength(2);
+                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+                    expect(errors[0]).toHaveProperty(
+                        "message",
+                        "Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead."
+                    );
+                    expect(errors[1]).toHaveProperty(
+                        "message",
+                        "Invalid field type: Scalar types cannot be relationship targets. Please use an Object type instead."
+                    );
+                    expect(errors[0]).toHaveProperty("path", ["User", "posts"]);
+                    expect(errors[1]).toHaveProperty("path", ["User", "allPosts"]);
                 });
             });
 
