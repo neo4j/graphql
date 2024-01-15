@@ -4,6 +4,9 @@ const neo4j = require("neo4j-driver");
 const TZ = "Etc/UTC";
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 
+const cypherDropData = `MATCH (n) DETACH DELETE n`;
+const cypherDropIndexes = `CALL apoc.schema.assert({},{},true) YIELD label, key RETURN *`;
+
 module.exports = async function globalSetup() {
     process.env.NODE_ENV = "test";
 
@@ -16,7 +19,6 @@ module.exports = async function globalSetup() {
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
     const cypherCreateDb = `CREATE OR REPLACE DATABASE ${INT_TEST_DB_NAME} WAIT`;
-    const cypherDropData = `MATCH (n) DETACH DELETE n`;
     let session = null;
 
     try {
@@ -24,7 +26,7 @@ module.exports = async function globalSetup() {
         const hasMultiDbSupport = await driver.supportsMultiDb();
         if (process.env.USE_DEFAULT_DB || !hasMultiDbSupport) {
             // If we know at this stage that we need to drop data only, then do so
-            await session.run(cypherDropData);
+            await dropDataAndIndexes(session);
             return;
         }
         await session.run(cypherCreateDb);
@@ -43,10 +45,15 @@ module.exports = async function globalSetup() {
             console.log(
                 `\nJest /packages/graphql setup: Failure to create test DB on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}. Falling back to drop data.`
             );
-            await session.run(cypherDropData);
+            await dropDataAndIndexes(session);
         }
     } finally {
         if (session) await session.close();
         if (driver) await driver.close();
     }
 };
+
+async function dropDataAndIndexes(session) {
+    await session.run(cypherDropData);
+    await session.run(cypherDropIndexes);
+}
