@@ -16,15 +16,17 @@ module.exports = async function globalSetup() {
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
     const cypherCreateDb = `CREATE OR REPLACE DATABASE ${INT_TEST_DB_NAME} WAIT`;
+    const cypherDropData = `MATCH (n) DETACH DELETE n`;
     let session = null;
 
     try {
+        session = driver.session();
         const hasMultiDbSupport = await driver.supportsMultiDb();
         if (process.env.USE_DEFAULT_DB || !hasMultiDbSupport) {
-            // INFO: We do nothing in case the dbms has no multi-db support.
+            // If we know at this stage that we need to drop data only, then do so
+            await session.run(cypherDropData);
             return;
         }
-        session = driver.session();
         await session.run(cypherCreateDb);
     } catch (error) {
         if (
@@ -39,8 +41,9 @@ module.exports = async function globalSetup() {
             );
         } else {
             console.log(
-                `\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`
+                `\nJest /packages/graphql setup: Failure to create test DB on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}. Falling back to drop data.`
             );
+            await session.run(cypherDropData);
         }
     } finally {
         if (session) await session.close();
