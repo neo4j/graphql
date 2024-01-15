@@ -78,12 +78,13 @@ export class QueryAST {
     }
 
     public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
-        if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
-            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
-        }
         if (this.operation instanceof AggregationOperation) {
             return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, this.operation.nodeAlias);
         }
+        if (this.operation.target) {
+            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+        }
+        throw new Error("I guess at some point we need this target");
     }
 
     public print(): string {
@@ -96,12 +97,20 @@ function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
     const nodeName = treeNode.print();
     const resultLines: string[] = [];
 
+    const line = "────";
     if (depth === 0) {
         resultLines.push(`${nodeName}`);
     } else if (depth === 1) {
-        resultLines.push(`|${"────".repeat(depth)} ${nodeName}`);
+        resultLines.push(`|${line} ${nodeName}`);
     } else {
-        resultLines.push(`|${"    ".repeat(depth - 1)} |──── ${nodeName}`);
+        // fillerLength is the line length repeated by the depth (minus 1 for the first line),
+        // in case of depth > 2 there are two pipes rather than one.
+        let fillerLength = (line.length + 1) * (depth - 1);
+        if (depth > 2) {
+            fillerLength += 1;
+        }
+
+        resultLines.push(`|${" ".repeat(fillerLength)}|${line} ${nodeName}`);
     }
 
     const children = treeNode.getChildren();
