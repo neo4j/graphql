@@ -42,6 +42,7 @@ export class RelationshipSelection extends EntitySelection {
         alias?: string;
         directed?: boolean;
         targetOverride?: ConcreteEntityAdapter;
+        optional?: boolean;
     }) {
         super();
         this.relationship = relationship;

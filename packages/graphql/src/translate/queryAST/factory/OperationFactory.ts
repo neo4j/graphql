@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { mergeDeep } from "@graphql-tools/utils";
+import { asArray, mergeDeep } from "@graphql-tools/utils";
 import * as Cypher from "@neo4j/cypher-builder";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
@@ -30,7 +30,7 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import type { ConnectionQueryArgs, GraphQLOptionsArg } from "../../../types";
 import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
-import { filterTruthy, isObject, isString } from "../../../utils/utils";
+import { filterTruthy, isObject, isRecord, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
 import type { Filter } from "../ast/filters/Filter";
@@ -67,6 +67,7 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { DeleteOperation } from "../ast/operations/DeleteOperation";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -110,6 +111,14 @@ export class OperationsFactory {
 
             if (operationMatch.isCreate) {
                 return this.createCreateOperation(entity, resolveTree, context); // TODO: move this to separate method?
+            } else if (operationMatch.isDelete) {
+                // const topLevelConnectionResolveTree = this.normalizeResolveTreeForTopLevelConnection(resolveTree);
+                return this.createTopLevelDeleteOperation({
+                    entity,
+                    resolveTree,
+                    context,
+                    varName,
+                });
             } else if (operationMatch.isRead) {
                 let op: ReadOperation;
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
@@ -647,6 +656,116 @@ export class OperationsFactory {
             topLevelConnectionResolveTree.args.where = { node: resolveTree.args.where };
         }
         return topLevelConnectionResolveTree;
+    }
+
+    /**
+     * useNodeAndEdge is used to determine if the where argument should be split into node and edge. Top level does not contains node.
+     *
+     */
+    private parseDeleteArgs(
+        args: Record<string, any>,
+        useNodeAndEdge: boolean
+    ): {
+        whereArg: { node: Record<string, any>; edge: Record<string, any> };
+        deleteArg: Record<string, any>;
+    } {
+        let whereArg;
+        const rawWhere = isRecord(args.where) ? args.where : {};
+        if (useNodeAndEdge) {
+            whereArg = { node: rawWhere.node ?? {}, edge: rawWhere.edge ?? {} };
+        } else {
+            whereArg = { node: rawWhere, edge: {} };
+        }
+        const deleteArg = isRecord(args.delete) ? args.delete : {};
+        return { whereArg, deleteArg };
+    }
+
+    private createTopLevelDeleteOperation({
+        entity,
+        resolveTree,
+        context,
+        varName,
+    }: {
+        entity: ConcreteEntityAdapter;
+        resolveTree: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+    }): DeleteOperation {
+        console.log(JSON.stringify(resolveTree.args, null, 2));
+        const deleteOP = this.createDeleteOperation({ entityOrRel: entity, args: resolveTree.args, context, varName });
+        /*    if (!deleteOP) {
+            throw new Error("Failed to create delete operation");
+        } */
+        return deleteOP;
+    }
+
+    private createDeleteOperation({
+        entityOrRel,
+        args,
+        context,
+        varName,
+    }: {
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter;
+        args: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+    }): DeleteOperation {
+        /*   const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
+        ); */
+        const { whereArg, deleteArg } = this.parseDeleteArgs(args, !isConcreteEntity(entityOrRel));
+        const selection = isConcreteEntity(entityOrRel)
+            ? new NodeSelection({
+                  target: entityOrRel,
+                  alias: varName,
+              })
+            : new RelationshipSelection({
+                  relationship: entityOrRel,
+                  directed: true,
+              });
+        // const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
+        // const resolveTreeDelete: Record<string, any> = isObject(resolveTree.args.delete) ? resolveTree.args.delete : {};
+
+        const nodeFilters = isConcreteEntity(entityOrRel)
+            ? this.filterFactory.createNodeFilters(entityOrRel, whereArg.node)
+            : this.filterFactory.createNodeFilters(entityOrRel.target, whereArg.node);
+        const edgeFilters = isConcreteEntity(entityOrRel)
+            ? []
+            : this.filterFactory.createEdgeFilters(entityOrRel, whereArg.edge);
+        const filters = [...nodeFilters, ...edgeFilters];
+        const target = isConcreteEntity(entityOrRel) ? entityOrRel : (entityOrRel.target as ConcreteEntityAdapter);
+
+        //const { whereArg, deleteArg } = this.parseDeleteArgs(deleteArg[entityOrRel.target.name]);
+
+        const nestedDeleteOperations = Object.entries(deleteArg).flatMap(([key, value]) => {
+            if (isConcreteEntity(entityOrRel)) {
+                const nestedTarget = entityOrRel.findRelationship(key);
+                if (!nestedTarget) {
+                    throw new Error(`Failed to find relationship ${key}`);
+                }
+                return asArray(value).map((v) => {
+                    return this.createDeleteOperation({
+                        entityOrRel: nestedTarget,
+                        args: v,
+                        context,
+                    });
+                });
+            }
+            // TODO: are only concrete entities allowed in nested delete?
+            const nestedTarget = (entityOrRel.target as ConcreteEntityAdapter).findRelationship(key);
+            if (!nestedTarget) {
+                throw new Error(`Failed to find relationship ${key}`);
+            }
+            return asArray(value).map((v) => {
+                return this.createDeleteOperation({
+                    entityOrRel: nestedTarget,
+                    args: v,
+                    context,
+                });
+            });
+        });
+
+        return new DeleteOperation({ target, selection, filters, nestedDeleteOperations });
     }
 
     private createCreateOperation(

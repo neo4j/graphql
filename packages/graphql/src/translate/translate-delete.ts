@@ -19,25 +19,41 @@
 
 import type { Node } from "../classes";
 import type { GraphQLWhereArg } from "../types";
-import { META_CYPHER_VARIABLE } from "../constants";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
-import Cypher from "@neo4j/cypher-builder";
+import type Cypher from "@neo4j/cypher-builder";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { checkAuthentication } from "./authorization/check-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import Debug from "debug";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export function translateDelete({
     context,
     node,
+    entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
     node: Node;
+    entityAdapter: EntityAdapter;
 }): Cypher.CypherResult {
     const { resolveTree } = context;
-    const deleteInput = resolveTree.args.delete;
     const varName = "this";
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
+
+    if (!entityAdapter) throw new Error("Entity not found");
+    const operationsTree = operationsTreeFactory.createQueryAST(resolveTree, entityAdapter, context);
+    debug(operationsTree.print());
+    const clause = operationsTree.build(context, varName);
+    return clause.build();
+
+    /* const deleteInput = resolveTree.args.delete;
+    
     let matchAndWhereStr = "";
     let deleteStr = "";
     let cypherParams: Record<string, any> = {};
@@ -96,7 +112,7 @@ export function translateDelete({
     });
 
     const result = deleteQuery.build(varName);
-    return result;
+    return result; */
 }
 
 function getDeleteReturn(context: Neo4jGraphQLTranslationContext): Array<string> {
