@@ -287,13 +287,13 @@ export class OperationsFactory {
         } else {
             // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
             // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-            const typenameFilterAllowed = isInterfaceEntity(entity);
+            const isInterface = isInterfaceEntity(entity);
 
-            const concreteEntities = typenameFilterAllowed
+            const concreteEntities = isInterface
                 ? entity.concreteEntities
                 : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
 
-            const sharedFilters = typenameFilterAllowed
+            const sharedFilters = isInterface
                 ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
                 : undefined;
 

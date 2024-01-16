@@ -48,7 +48,6 @@ export function createRelationshipFields({
     // relationshipPropertyFields,
     subgraph,
     userDefinedFieldDirectives,
-    experimental,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
@@ -56,7 +55,6 @@ export function createRelationshipFields({
     // relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-    experimental: boolean;
 }): void {
     if (!entityAdapter.relationships.size) {
         return;

@@ -32,7 +32,7 @@ import {
 import { getPathToNode } from "../utils/path-parser";
 import { parseArgumentToInt } from "../utils/utils";
 
-export function WarnIfAMaxLimitCanBeBypassedThroughInterface(_experimental: boolean) {
+export function WarnIfAMaxLimitCanBeBypassedThroughInterface() {
     return function (): ASTVisitor {
         const entityToMaxLimitMap = new Map<string, Integer>();
         const interfaceToImplementingTypes = new Map<string, Set<string>>();
