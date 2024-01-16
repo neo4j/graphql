@@ -262,7 +262,7 @@ describe("inheritance", () => {
               startCursor: String
             }
 
-            interface Person {
+            interface Person @customDirectiveInter {
               friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
