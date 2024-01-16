@@ -18,8 +18,10 @@
  */
 
 import type { SubscriptionEvent } from "../../graphql/directives/subscription";
+import type { Annotation } from "./Annotation";
 
-export class SubscriptionAnnotation {
+export class SubscriptionAnnotation implements Annotation {
+    readonly name = "subscription";
     public readonly events: Set<SubscriptionEvent>;
 
     constructor({ events }: { events: Set<SubscriptionEvent> }) {

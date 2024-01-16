@@ -19,8 +19,7 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { Operation } from "./Operation";
-import type { Annotations, Annotation } from "./annotation/Annotation";
-import { annotationToKey } from "./annotation/Annotation";
+import type { Annotation, Annotations } from "./annotation/Annotation";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
@@ -82,7 +81,7 @@ export class Neo4jGraphQLSchemaModel {
     }
 
     private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
+        const annotationKey = annotation.name;
         const existingAnnotation = this.annotations[annotationKey];
 
         if (existingAnnotation) {

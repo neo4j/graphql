@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class PopulatedByAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class PopulatedByAnnotation implements Annotation {
+    readonly name = "populatedBy";
     public readonly callback: string;
     public readonly operations: string[];
 

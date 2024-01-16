@@ -18,6 +18,7 @@
  */
 
 import type { GraphQLWhereArg } from "../../types";
+import type { Annotation } from "./Annotation";
 
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
@@ -54,7 +55,9 @@ type AuthorizationWhere = {
     node?: GraphQLWhereArg;
 };
 
-export class AuthorizationAnnotation {
+export class AuthorizationAnnotation implements Annotation {
+    readonly name = "authorization";
+
     public filter?: AuthorizationFilterRule[];
     public validate?: AuthorizationValidateRule[];
 

@@ -33,7 +33,7 @@ import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
-import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../constants";
+import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../schema-model/library-directives";
 
 export function ValidDirectiveAtFieldLocation(experimental: boolean) {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -194,7 +194,7 @@ function validFieldOfInterfaceTypeLocation({
     directiveNode: DirectiveNode;
     parentDef: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode;
 }) {
-    if (SCHEMA_CONFIGURATION_FIELD_DIRECTIVES.includes(directiveNode.name.value)) {
+    if (SCHEMA_CONFIGURATION_FIELD_DIRECTIVES.includes(directiveNode.name.value as any)) {
         return;
     }
     if (directiveNode.name.value === "relationship") {

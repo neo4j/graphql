@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes/Error";
-import { annotationToKey, type Annotation, type Annotations } from "../annotation/Annotation";
+import { type Annotation, type Annotations } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { AttributeType } from "./AttributeType";
 
@@ -68,7 +68,7 @@ export class Attribute {
     }
 
     private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
+        const annotationKey = annotation.name;
         if (this.annotations[annotationKey]) {
             throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }

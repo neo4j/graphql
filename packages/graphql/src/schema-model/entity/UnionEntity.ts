@@ -20,7 +20,6 @@
 import type { ConcreteEntity } from "./ConcreteEntity";
 import type { CompositeEntity } from "./CompositeEntity";
 import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 
 export class UnionEntity implements CompositeEntity {
@@ -47,7 +46,7 @@ export class UnionEntity implements CompositeEntity {
     }
 
     private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
+        const annotationKey = annotation.name;
         const existingAnnotation = this.annotations[annotationKey];
 
         if (existingAnnotation) {

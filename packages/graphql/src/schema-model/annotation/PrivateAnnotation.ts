@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export class PrivateAnnotation {}
+import type { Annotation } from "./Annotation";
+
+export class PrivateAnnotation implements Annotation {
+    readonly name = "private";
+}

@@ -18,6 +18,7 @@
  */
 
 import type { GraphQLWhereArg } from "../../types";
+import type { Annotation } from "./Annotation";
 
 export const SubscriptionsAuthorizationAnnotationArguments = ["filter"] as const;
 
@@ -40,7 +41,8 @@ export type SubscriptionsAuthorizationWhere = {
     relationship?: GraphQLWhereArg;
 };
 
-export class SubscriptionsAuthorizationAnnotation {
+export class SubscriptionsAuthorizationAnnotation implements Annotation {
+    readonly name = "subscriptionsAuthorization";
     public filter?: SubscriptionsAuthorizationFilterRule[];
 
     constructor({ filter }: { filter?: SubscriptionsAuthorizationFilterRule[] }) {

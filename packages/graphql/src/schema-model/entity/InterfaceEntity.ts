@@ -19,7 +19,6 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
 import type { CompositeEntity } from "./CompositeEntity";
@@ -80,7 +79,7 @@ export class InterfaceEntity implements CompositeEntity {
     }
 
     private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
+        const annotationKey = annotation.name;
         const existingAnnotation = this.annotations[annotationKey];
 
         if (existingAnnotation) {

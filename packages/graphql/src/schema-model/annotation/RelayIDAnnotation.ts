@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export class RelayIDAnnotation {}
+import type { Annotation } from "./Annotation";
+
+export class RelayIDAnnotation implements Annotation {
+    readonly name = "relayId";
+}

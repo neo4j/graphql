@@ -60,7 +60,7 @@ const tests = [
 describe("parseKeyAnnotation", () => {
     tests.forEach((test) => {
         it(`${test.name}`, () => {
-            const keyAnnotation = parseKeyAnnotation(test.directives);
+            const keyAnnotation = parseKeyAnnotation(test.directives[0]!, test.directives);
             expect(keyAnnotation.resolvable).toBe(test.expected.resolvable);
         });
     });

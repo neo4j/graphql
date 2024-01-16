@@ -17,9 +17,13 @@
  * limitations under the License.
  */
 
+import type { Annotation } from "./Annotation";
+
 export type CoalesceAnnotationValue = string | number | boolean;
 
-export class CoalesceAnnotation {
+export class CoalesceAnnotation implements Annotation {
+    readonly name = "coalesce";
+
     public readonly value: CoalesceAnnotationValue;
 
     constructor({ value }: { value: CoalesceAnnotationValue }) {

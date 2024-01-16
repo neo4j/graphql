@@ -21,7 +21,6 @@ import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
 import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "../entity/Entity";
@@ -131,7 +130,7 @@ export class Relationship {
     }
 
     private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
+        const annotationKey = annotation.name;
         if (this.annotations[annotationKey]) {
             throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
