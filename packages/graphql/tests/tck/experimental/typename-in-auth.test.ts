@@ -85,7 +85,6 @@ describe("typename_IN with auth", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs: authTypeDefs,
-                experimental: true,
             });
         });
 
@@ -222,7 +221,6 @@ describe("typename_IN with auth", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs: authTypeDefs,
-                experimental: true,
             });
         });
 

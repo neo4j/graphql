@@ -106,7 +106,6 @@ describe("Top-level interface query fields", () => {
                     key: secret,
                 },
             },
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });
@@ -305,7 +304,6 @@ describe("Top-level interface query fields", () => {
                         key: secret,
                     },
                 },
-                experimental: true,
             });
             schema = await neoGraphql.getSchema();
         });
@@ -442,7 +440,6 @@ describe("Top-level interface query fields", () => {
                         key: secret,
                     },
                 },
-                experimental: true,
             });
             schema = await neoGraphql.getSchema();
         });
@@ -552,7 +549,6 @@ describe("Top-level interface query fields", () => {
                         key: secret,
                     },
                 },
-                experimental: true,
             });
             schema = await neoGraphql.getSchema();
         });

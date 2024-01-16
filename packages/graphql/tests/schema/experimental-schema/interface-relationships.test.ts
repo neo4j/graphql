@@ -48,7 +48,7 @@ describe("Interface Relationships", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -631,7 +631,7 @@ describe("Interface Relationships", () => {
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -2154,7 +2154,7 @@ describe("Interface Relationships", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
@@ -3113,7 +3113,7 @@ describe("Interface Relationships", () => {
 
         // expect(() => {
         //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        //     const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
         // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
     });
 
@@ -3146,7 +3146,7 @@ describe("Interface Relationships", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

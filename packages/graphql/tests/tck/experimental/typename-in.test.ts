@@ -62,7 +62,6 @@ describe("typename_IN", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            experimental: true,
         });
     });
 

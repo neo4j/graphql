@@ -703,14 +703,14 @@ describe("Subscription authentication", () => {
         
             type ${typePerson} implements Reviewer  {
                 name: String! 
-                reputation: Int!
+                reputation: Int! @authentication(operations: [READ])
                 id: Int @unique 
                 reviewerId: Int @unique @authentication(operations: [READ])
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
             type ${typeInfluencer} implements Reviewer @authentication(operations: [READ]) {
-                reputation: Int!
+                reputation: Int! @authentication(operations: [READ])
                 url: String!
                 reviewerId: Int
             }
@@ -718,7 +718,7 @@ describe("Subscription authentication", () => {
             union Director = ${typePerson} | ${typeActor}
             
             interface Reviewer {
-                reputation: Int! @authentication(operations: [READ])
+                reputation: Int! 
                 reviewerId: Int
 
             }
@@ -4363,100 +4363,6 @@ describe("Subscription authentication", () => {
                     },
                 ]);
                 expect(wsClient.errors).toEqual([]);
-            });
-            test("unauthenticated subscription does not send events if authenticated implemented type is selected - delete_relationship", async () => {
-                await supertest(server.path)
-                    .post("")
-                    .send({
-                        query: `
-                            mutation {
-                                ${typeMovie.operations.create}(
-                                    input: [
-                                        {
-                                            reviewers: {
-                                                create: [
-                                                    {
-                                                        node: {
-                                                            ${typeInfluencer.name}: {
-                                                                url: "/bob",
-                                                                reputation: 1,
-                                                            }
-                                                        },
-                                                        edge: {
-                                                            score: 10
-                                                        }
-                                                    }
-                                                ]
-                                            },
-                                            title: "Matrix",
-                                        }
-                                    ]
-                                ) {
-                                    ${typeMovie.plural} {
-                                        title
-                                    }
-                                }
-                            }
-                        `,
-                    })
-                    .expect(200);
-
-                wsClient = new WebSocketTestClient(server.wsPath);
-                await wsClient.subscribe(`
-                subscription SubscriptionMovie {
-                    ${typeMovie.operations.subscribe.relationship_deleted} {
-                        relationshipFieldName
-                        event
-                        deletedRelationship {
-                            reviewers {
-                                score
-                                node {
-                                    ... on ${typeInfluencer.name}EventPayload {
-                                        url
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }`);
-
-                const result = await supertest(server.path)
-                    .post("")
-                    .send({
-                        query: `
-                    mutation {
-                        ${typeMovie.operations.update}(
-                            where: {
-                                title: "Matrix"
-                            },
-                            disconnect: {
-                              reviewers: {
-                                where: {
-                                  node: {
-                                    _on: {
-                                        ${typeInfluencer.name}: {
-                                            url: "/bob",
-                                        }
-                                    } 
-                                  }
-                                }
-                              }
-                            }
-                        ) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-                    })
-                    .expect(200);
-
-                expect(result.body.errors).toBeUndefined();
-                await wsClient.waitForEvents(1);
-
-                expect(wsClient.events).toEqual([]);
-                expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
             });
         });
 

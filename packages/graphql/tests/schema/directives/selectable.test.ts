@@ -2046,6 +2046,13 @@ describe("@selectable", () => {
                   startCursor: String
                 }
 
+                union Production = Movie | Series
+
+                input ProductionWhere {
+                  Movie: MovieWhere
+                  Series: SeriesWhere
+                }
+
                 type Query {
                   actors(options: ActorOptions, where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): ActorAggregateSelection!
@@ -2053,9 +2060,16 @@ describe("@selectable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+                }
+
+                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
+                input QueryOptions {
+                  limit: Int
+                  offset: Int
                 }
 
                 type Series {
@@ -2585,6 +2599,7 @@ describe("@selectable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -2756,6 +2771,7 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   name: String!
                 }
 
@@ -2835,6 +2851,16 @@ describe("@selectable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -3026,6 +3052,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -3035,14 +3067,31 @@ describe("@selectable", () => {
                   Series: SeriesCreateInput
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsUpdateInput {
                   Movie: MovieUpdateInput
                   Series: SeriesUpdateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                input ProductionOptions {
+                  limit: Int
+                  offset: Int
+                  \\"\\"\\"
+                  Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [ProductionSort]
+                }
+
+                \\"\\"\\"
+                Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+                \\"\\"\\"
+                input ProductionSort {
+                  description: SortDirection
+                  title: SortDirection
                 }
 
                 input ProductionUpdateInput {
@@ -3052,7 +3101,9 @@ describe("@selectable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -3073,6 +3124,7 @@ describe("@selectable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -3082,6 +3134,8 @@ describe("@selectable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
@@ -3241,6 +3295,7 @@ describe("@selectable", () => {
 
                 type Actor {
                   actedIn(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  actedInAggregate(directed: Boolean = true, where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -3336,6 +3391,16 @@ describe("@selectable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregationSelection {
+                  count: Int!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
                 }
 
                 input ActorRelationInput {
@@ -3527,6 +3592,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
+                type ProductionAggregateSelection {
+                  count: Int!
+                  description: StringAggregateSelectionNullable!
+                  title: StringAggregateSelectionNonNullable!
+                }
+
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -3536,14 +3607,14 @@ describe("@selectable", () => {
                   Series: SeriesCreateInput
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsUpdateInput {
                   Movie: MovieUpdateInput
                   Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
                 }
 
                 input ProductionOptions {
@@ -3570,7 +3641,9 @@ describe("@selectable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -3591,6 +3664,7 @@ describe("@selectable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -3600,6 +3674,8 @@ describe("@selectable", () => {
                   movies(options: MovieOptions, where: MovieWhere): [Movie!]!
                   moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+                  productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   series(options: SeriesOptions, where: SeriesWhere): [Series!]!
                   seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!

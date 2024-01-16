@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
         const query = gql`
             query GetProductionsMovie {
                 actors {
-                    actedIn(where: { _on: { Movie: { title: "Test Movie" } } }) {
+                    actedIn(where: { title: "Test Movie" }) {
                         title
                     }
                 }
@@ -81,6 +81,12 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
                     WHERE this1.title = $param0
                     WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                    WHERE this4.title = $param1
+                    WITH this4 { .title, __resolveType: \\"Series\\", __id: id(this4) } AS this4
+                    RETURN this4 AS var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2
@@ -90,7 +96,8 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Test Movie\\"
+                \\"param0\\": \\"Test Movie\\",
+                \\"param1\\": \\"Test Movie\\"
             }"
         `);
     });

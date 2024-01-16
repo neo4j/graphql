@@ -28,12 +28,12 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { createGraphQLError, assertValid, DocumentValidationError } from "../utils/document-validation-error";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
-import { getPathToNode } from "../utils/path-parser";
+import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../constants";
 import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
-import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../constants";
+import { DocumentValidationError, assertValid, createGraphQLError } from "../utils/document-validation-error";
+import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { getPathToNode } from "../utils/path-parser";
 
 export function ValidDirectiveAtFieldLocation(experimental: boolean) {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -93,14 +93,12 @@ function isDirectiveValidAtLocation({
                 parentDef,
             });
     }
-    if (experimental) {
-        if (isLocationFieldOfInterfaceType(parentDef)) {
-            return () =>
-                validFieldOfInterfaceTypeLocation({
-                    directiveNode,
-                    parentDef,
-                });
-        }
+    if (isLocationFieldOfInterfaceType(parentDef)) {
+        return () =>
+            validFieldOfInterfaceTypeLocation({
+                directiveNode,
+                parentDef,
+            });
     }
 
     return;

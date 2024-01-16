@@ -88,6 +88,8 @@ describe("@private directive", () => {
             }
 
             type Query {
+              userInterfaces(options: UserInterfaceOptions, where: UserInterfaceWhere): [UserInterface!]!
+              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
@@ -137,6 +139,48 @@ describe("@private directive", () => {
 
             interface UserInterface {
               id: ID
+            }
+
+            type UserInterfaceAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
+            enum UserInterfaceImplementation {
+              User
+            }
+
+            input UserInterfaceOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserInterfaceSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort UserInterfaces by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserInterfaceSort object.
+            \\"\\"\\"
+            input UserInterfaceSort {
+              id: SortDirection
+            }
+
+            input UserInterfaceWhere {
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              typename_IN: [UserInterfaceImplementation!]
             }
 
             input UserOptions {

@@ -62,7 +62,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { subscriptions: subscriptionsEngine },
-            experimental: true,
         });
 
         const schema = await neoSchema.getSchema();
@@ -1385,7 +1384,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { subscriptions: subscriptionsEngine },
-            experimental: true,
         });
 
         const schema = await neoSchema.getSchema();
@@ -2584,7 +2582,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { subscriptions: subscriptionsEngine },
-            experimental: true,
         });
 
         const schema = await neoSchema.getSchema();

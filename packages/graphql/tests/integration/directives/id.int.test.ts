@@ -83,11 +83,11 @@ describe("@id directive", () => {
 
         const typeDefs = `
             interface MovieInterface {
-                id: ID! @id
+                id: ID!
             }
 
             type Movie implements MovieInterface {
-              id: ID!
+              id: ID! @id
               name: String
             }
         `;

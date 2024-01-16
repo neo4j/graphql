@@ -57,7 +57,6 @@ describe("Top level aggregation interfaces", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            experimental: true,
         });
     });
 

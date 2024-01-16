@@ -127,60 +127,6 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         await driver.close();
     });
 
-    test("should query only DistributionHouses with the label Netflix", async () => {
-        const query = `
-            query {
-                ${Movie.plural}(
-                    where: { OR: [{ distributionConnection_SOME: { node: { _on: { ${Netflix}: {} }, name: "Netflix" } } }] }
-                ) {
-                    title
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(result.errors).toBeFalsy();
-        expect(result.data as any).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "A Netflix movie",
-                },
-            ],
-        });
-    });
-
-    test("should query only DistributionHouses with the label Dishney", async () => {
-        const query = `
-            query {
-                ${Movie.plural}(
-                    where: { OR: [{ distributionConnection_SOME: { node: { _on: { ${Dishney}: {} }, name: "Dishney" } } }] }
-                ) {
-                    title
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-
-        expect(result.errors).toBeFalsy();
-        expect(result.data as any).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "A Dishney movie",
-                },
-            ],
-        });
-    });
-
     test("should query the correct DistributionHouses when no _on present - Netflix", async () => {
         const query = `
             query {

@@ -20,9 +20,9 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1430", () => {
     const testAbce = new UniqueType("ABCE");
@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             }
             
             interface InterfaceMom {
-                id:ID @id 
+                id:ID 
                 name:String
             }
             

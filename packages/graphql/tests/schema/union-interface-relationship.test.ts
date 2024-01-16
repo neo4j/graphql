@@ -655,6 +655,7 @@ describe("Union Interface Relationships", () => {
               directorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieDirectorsConnectionSort!], where: MovieDirectorsConnectionWhere): MovieDirectorsConnection!
               imdbId: Int
               reviewers(directed: Boolean = true, options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
+              reviewersAggregate(directed: Boolean = true, where: ReviewerWhere): MovieReviewerReviewersAggregationSelection
               reviewersConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieReviewersConnectionSort!], where: MovieReviewersConnectionWhere): MovieReviewersConnection!
               title: String!
             }
@@ -1115,6 +1116,21 @@ describe("Union Interface Relationships", () => {
               actors: [MovieActorsCreateFieldInput!]
               directors: MovieDirectorsCreateFieldInput
               reviewers: [MovieReviewersCreateFieldInput!]
+            }
+
+            type MovieReviewerReviewersAggregationSelection {
+              count: Int!
+              edge: MovieReviewerReviewersEdgeAggregateSelection
+              node: MovieReviewerReviewersNodeAggregateSelection
+            }
+
+            type MovieReviewerReviewersEdgeAggregateSelection {
+              score: IntAggregateSelectionNonNullable!
+            }
+
+            type MovieReviewerReviewersNodeAggregateSelection {
+              reputation: IntAggregateSelectionNonNullable!
+              reviewerId: IntAggregateSelectionNullable!
             }
 
             input MovieReviewersConnectFieldInput {
@@ -1715,6 +1731,7 @@ describe("Union Interface Relationships", () => {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              directors(options: QueryOptions, where: DirectorWhere): [Director!]!
               influencers(options: InfluencerOptions, where: InfluencerWhere): [Influencer!]!
               influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection!
               influencersConnection(after: String, first: Int, sort: [InfluencerSort], where: InfluencerWhere): InfluencersConnection!
@@ -1724,6 +1741,8 @@ describe("Union Interface Relationships", () => {
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+              reviewers(options: ReviewerOptions, where: ReviewerWhere): [Reviewer!]!
+              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
             }
 
             \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
@@ -1769,6 +1788,12 @@ describe("Union Interface Relationships", () => {
               reviewerId: Int
             }
 
+            type ReviewerAggregateSelection {
+              count: Int!
+              reputation: IntAggregateSelectionNonNullable!
+              reviewerId: IntAggregateSelectionNullable!
+            }
+
             input ReviewerConnectInput {
               _on: ReviewerImplementationsConnectInput
             }
@@ -1790,6 +1815,11 @@ describe("Union Interface Relationships", () => {
               _on: ReviewerImplementationsDisconnectInput
             }
 
+            enum ReviewerImplementation {
+              Influencer
+              Person
+            }
+
             input ReviewerImplementationsConnectInput {
               Person: [PersonConnectInput!]
             }
@@ -1805,11 +1835,6 @@ describe("Union Interface Relationships", () => {
             input ReviewerImplementationsUpdateInput {
               Influencer: InfluencerUpdateInput
               Person: PersonUpdateInput
-            }
-
-            input ReviewerImplementationsWhere {
-              Influencer: InfluencerWhere
-              Person: PersonWhere
             }
 
             input ReviewerOptions {
@@ -1840,7 +1865,9 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerWhere {
-              _on: ReviewerImplementationsWhere
+              AND: [ReviewerWhere!]
+              NOT: ReviewerWhere
+              OR: [ReviewerWhere!]
               reputation: Int
               reputation_GT: Int
               reputation_GTE: Int
@@ -1857,6 +1884,7 @@ describe("Union Interface Relationships", () => {
               reviewerId_LTE: Int
               reviewerId_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               reviewerId_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              typename_IN: [ReviewerImplementation!]
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

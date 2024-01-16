@@ -57,7 +57,6 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            experimental: true,
         });
     });
 
@@ -237,7 +236,6 @@ describe("Top-level Interface query pagination (sort and limit)", () => {
 
             neoSchema = new Neo4jGraphQL({
                 typeDefs,
-                experimental: true,
             });
         });
 

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
-import { Neo4jGraphQL } from "../../../../src";
+import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
-import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { gql } from "graphql-tag";
+import { Neo4jGraphQL } from "../../../../src";
 
 describe("@relationship directive, aggregate argument", () => {
     test("the default behavior should enable nested aggregation (this will change in 4.0)", async () => {
@@ -37,7 +37,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -65,7 +65,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -93,7 +93,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -121,7 +121,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -169,7 +169,7 @@ describe("@relationship directive, aggregate argument", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
@@ -218,7 +218,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -672,7 +672,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
             const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
             expect(printedSchema).toMatchInlineSnapshot(`
@@ -1143,7 +1143,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -1573,7 +1573,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -2018,7 +2018,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`
@@ -2541,7 +2541,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
                 `;
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, experimental: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
                 const schema = await neoSchema.getSchema();
                 const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
                 expect(printedSchema).toMatchInlineSnapshot(`

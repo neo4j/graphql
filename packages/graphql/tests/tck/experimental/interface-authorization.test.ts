@@ -75,7 +75,6 @@ describe("Interface top level operations with authorization", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
-            experimental: true,
         });
     });
     test("Read interface (interface target of a relationship)", async () => {

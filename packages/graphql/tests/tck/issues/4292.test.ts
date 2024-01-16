@@ -27,35 +27,24 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
         const typeDefs = /* GraphQL */ `
             type User {
                 id: ID! @unique
-
                 email: String! @unique
-
                 name: String
-
                 creator: [Group!]! @relationship(type: "CREATOR_OF", direction: OUT)
-
                 admin: [Admin!]! @relationship(type: "IS_USER", direction: IN)
-
                 contributor: [Contributor!]! @relationship(type: "IS_USER", direction: IN)
-
                 invitations: [Invitee!]! @relationship(type: "CREATOR_OF", direction: OUT)
-
                 roles: [String!]!
             }
 
             type Group {
                 id: ID! @id @unique
-
                 name: String
-
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
-
                 creator: User!
                     @relationship(type: "CREATOR_OF", direction: IN)
                     @settable(onCreate: true, onUpdate: true)
 
                 admins: [Admin!]! @relationship(type: "ADMIN_OF", direction: IN)
-
                 contributors: [Contributor!]! @relationship(type: "CONTRIBUTOR_TO", direction: IN)
             }
 
@@ -90,15 +79,11 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     ]
                 ) {
                 id: ID! @id @unique
-
                 name: String!
-
                 creator: User!
                     @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
                     @settable(onCreate: true, onUpdate: true)
-
                 group: Group! @relationship(type: "MEMBER_OF", direction: OUT)
-
                 partners: [Person!]!
                     @relationship(
                         type: "PARTNER_OF"
@@ -119,41 +104,34 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             interface Invitee {
-                id: ID! @id
-
+                id: ID!
                 email: String!
-
                 name: String
-
                 creator: User! @relationship(type: "CREATOR_OF", direction: IN)
-
                 group: Group! @relationship(type: "ADMIN_OF", direction: OUT)
-
-                status: InviteeStatus! @default(value: INVITED)
-
+                status: InviteeStatus!
                 user: User @relationship(type: "IS_USER", direction: OUT)
-
                 role: InviteeRole!
             }
 
             type Admin implements Invitee {
-                id: ID! @unique
+                id: ID! @unique @id
                 group: Group!
                 creator: User!
                 email: String!
                 name: String
-                status: InviteeStatus!
+                status: InviteeStatus! @default(value: INVITED)
                 user: User
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type Contributor implements Invitee {
-                id: ID! @unique
+                id: ID! @unique @id
                 group: Group! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
                 creator: User!
                 email: String!
                 name: String
-                status: InviteeStatus!
+                status: InviteeStatus! @default(value: INVITED)
                 user: User
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }

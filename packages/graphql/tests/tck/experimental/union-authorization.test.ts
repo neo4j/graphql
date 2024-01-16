@@ -50,7 +50,6 @@ describe("Union top level operations with authorization", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: { authorization: { key: secret } },
-            experimental: true,
         });
     });
     test("Read union", async () => {
