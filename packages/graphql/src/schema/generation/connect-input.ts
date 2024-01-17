@@ -29,7 +29,7 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { overwrite } from "../create-relationship-fields/fields/overwrite";
 import { makeImplementationsConnectInput } from "./implementation-inputs";
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
@@ -218,25 +218,12 @@ function makeConnectFieldInputTypeFields({
     ifUnionMemberEntity,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    // relationshipAdapter: RelationshipAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
-    // TODO
-    if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
-        const implementationsWithProperties = relationshipAdapter.relationshipImplementations
-            .filter((r) => r.propertiesTypeName)
-            .filter((relationshipAdapter) => relationshipAdapter.nonGeneratedProperties.length > 0);
-        if (implementationsWithProperties.length) {
-            fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
-        }
-    } else {
-        // RelationshipAdapter
-        const hasNonGeneratedProperties = relationshipAdapter.nonGeneratedProperties.length > 0;
-        if (hasNonGeneratedProperties) {
-            fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
-        }
+    if (relationshipAdapter.hasNonGeneratedProperties) {
+        fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
     }
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
         fields["where"] = withConnectWhereFieldInputType(relationshipAdapter.target, composer);

@@ -2605,6 +2605,7 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            \\"\\"\\"Type describing relationship properties for the Movie.actors field.\\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -5815,11 +5816,6 @@ describe("Subscriptions", () => {
               where: CreatureMoviesConnectionWhere
             }
 
-            input CreatureMoviesFieldInput {
-              connect: CreatureMoviesConnectFieldInput
-              create: CreatureMoviesCreateFieldInput
-            }
-
             type CreatureMoviesRelationship {
               cursor: String!
               node: Production!
@@ -5905,7 +5901,7 @@ describe("Subscriptions", () => {
             }
 
             input MovieCreateInput {
-              director: ProductionDirectorFieldInput
+              director: MovieDirectorFieldInput
               id: ID
               title: String!
             }
@@ -5935,6 +5931,11 @@ describe("Subscriptions", () => {
             input MovieDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              connect: MovieDirectorConnectFieldInput
+              create: MovieDirectorCreateFieldInput
             }
 
             input MovieDirectorUpdateConnectionInput {
@@ -6065,7 +6066,7 @@ describe("Subscriptions", () => {
             }
 
             input PersonCreateInput {
-              movies: CreatureMoviesFieldInput
+              movies: PersonMoviesFieldInput
             }
 
             type PersonCreatedEvent {
@@ -6112,6 +6113,11 @@ describe("Subscriptions", () => {
             input PersonMoviesDisconnectFieldInput {
               disconnect: ProductionDisconnectInput
               where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonMoviesFieldInput {
+              connect: PersonMoviesConnectFieldInput
+              create: PersonMoviesCreateFieldInput
             }
 
             input PersonMoviesRelationshipSubscriptionWhere {
@@ -6257,11 +6263,6 @@ describe("Subscriptions", () => {
             input ProductionDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
-            }
-
-            input ProductionDirectorFieldInput {
-              connect: ProductionDirectorConnectFieldInput
-              create: ProductionDirectorCreateFieldInput
             }
 
             type ProductionDirectorRelationship {
@@ -6416,7 +6417,7 @@ describe("Subscriptions", () => {
             }
 
             input SeriesCreateInput {
-              director: ProductionDirectorFieldInput
+              director: SeriesDirectorFieldInput
               episode: Int!
               id: ID
               title: String!
@@ -6459,6 +6460,11 @@ describe("Subscriptions", () => {
             input SeriesDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDirectorFieldInput {
+              connect: SeriesDirectorConnectFieldInput
+              create: SeriesDirectorCreateFieldInput
             }
 
             input SeriesDirectorUpdateConnectionInput {

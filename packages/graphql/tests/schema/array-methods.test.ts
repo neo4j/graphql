@@ -50,6 +50,10 @@ describe("Arrays Methods", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Actor.actedIn field.
+            Type describing relationship properties for the Movie.actors field.
+            \\"\\"\\"
             type ActedIn {
               pay: [Float]
             }

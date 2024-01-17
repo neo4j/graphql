@@ -146,11 +146,7 @@ function withAggregationWhereInputType({
     if (composer.has(aggregationInputName)) {
         return composer.getITC(aggregationInputName);
     }
-    // TODO
     if (entityAdapter instanceof RelationshipDeclarationAdapter) {
-        if (composer.has(aggregationInputName)) {
-            return composer.getITC(aggregationInputName);
-        }
         return;
     }
     const aggregationFields = entityAdapter.aggregationWhereFields;

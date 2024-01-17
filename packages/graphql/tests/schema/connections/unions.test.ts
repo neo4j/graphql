@@ -1001,6 +1001,11 @@ describe("Unions", () => {
               journals: [Journal!]!
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Author.publications field.
+            Type describing relationship properties for the Book.author field.
+            Type describing relationship properties for the Journal.author field.
+            \\"\\"\\"
             type Wrote {
               words: Int!
             }

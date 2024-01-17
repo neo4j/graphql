@@ -41,6 +41,7 @@ describe("nested aggregation on interface", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -677,6 +678,7 @@ describe("nested aggregation on interface", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }

@@ -60,13 +60,11 @@ export function withWhereInputType({
     userDefinedFieldDirectives,
     features,
     composer,
-    experimental,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
-    experimental: boolean;
 }): InputTypeComposer {
     if (composer.has(entityAdapter.operations.whereInputTypeName)) {
         return composer.getITC(entityAdapter.operations.whereInputTypeName);
@@ -208,9 +206,7 @@ export function makeConnectionWhereInputType({
         OR: connectionWhereInputType.NonNull.List,
         NOT: connectionWhereInputType,
     });
-    // TODO:
-    // if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.propertiesTypeName) {
-    if (composer.has(relationshipAdapter.operations.whereInputTypeName)) {
+    if (relationshipAdapter.hasAnyProperties) {
         connectionWhereInputType.addFields({
             edge: relationshipAdapter.operations.whereInputTypeName,
             edge_NOT: {

@@ -57,6 +57,7 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -640,6 +641,11 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Movie.actors field.
+            Type describing relationship properties for the Series.actors field.
+            Type describing relationship properties for the Actor.actedIn field.
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -1178,6 +1184,21 @@ describe("Interface Relationships", () => {
               node: MovieActorsNodeAggregationWhereInput
             }
 
+            input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
               NOT: MovieActorsEdgeAggregationWhereInput
@@ -1207,6 +1228,11 @@ describe("Interface Relationships", () => {
               screenTime_SUM_GTE: Int
               screenTime_SUM_LT: Int
               screenTime_SUM_LTE: Int
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
             }
 
             input MovieActorsNodeAggregationWhereInput {
@@ -1250,6 +1276,20 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type MovieAggregateSelection {
               count: Int!
               runtime: IntAggregateSelectionNonNullable!
@@ -1257,11 +1297,11 @@ describe("Interface Relationships", () => {
             }
 
             input MovieConnectInput {
-              actors: [ProductionActorsConnectFieldInput!]
+              actors: [MovieActorsConnectFieldInput!]
             }
 
             input MovieCreateInput {
-              actors: ProductionActorsFieldInput
+              actors: MovieActorsFieldInput
               runtime: Int!
               title: String!
             }
@@ -1289,7 +1329,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieRelationInput {
-              actors: [ProductionActorsCreateFieldInput!]
+              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -1301,7 +1341,7 @@ describe("Interface Relationships", () => {
             }
 
             input MovieUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!]
+              actors: [MovieActorsUpdateFieldInput!]
               runtime: Int
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
@@ -1411,7 +1451,7 @@ describe("Interface Relationships", () => {
 
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              edge: ProductionActorsEdgeCreateInput
+              edge: ProductionActorsEdgeCreateInput!
               \\"\\"\\"
               Whether or not to overwrite any matching relationship with the new properties.
               \\"\\"\\"
@@ -1426,7 +1466,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsConnectionSort {
-              edge: ActedInSort
+              edge: ProductionActorsEdgeSort
               node: ActorSort
             }
 
@@ -1434,14 +1474,14 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsConnectionWhere!]
               NOT: ProductionActorsConnectionWhere
               OR: [ProductionActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              edge: ProductionActorsEdgeWhere
+              edge_NOT: ProductionActorsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: ActorWhere
               node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input ProductionActorsCreateFieldInput {
-              edge: ProductionActorsEdgeCreateInput
+              edge: ProductionActorsEdgeCreateInput!
               node: ActorCreateInput!
             }
 
@@ -1456,20 +1496,43 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsEdgeAggregationWhereInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type Movie.
+              Relationship properties when source node is of type Series.
+              \\"\\"\\"
               ActedIn: SeriesActorsEdgeAggregationWhereInput
             }
 
             input ProductionActorsEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type Movie.
+              Relationship properties when source node is of type Series.
+              \\"\\"\\"
               ActedIn: ActedInCreateInput!
             }
 
+            input ProductionActorsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type Movie.
+              Relationship properties when source node is of type Series.
+              \\"\\"\\"
+              ActedIn: ActedInSort
+            }
+
             input ProductionActorsEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type Movie.
+              Relationship properties when source node is of type Series.
+              \\"\\"\\"
               ActedIn: ActedInUpdateInput
             }
 
-            input ProductionActorsFieldInput {
-              connect: [ProductionActorsConnectFieldInput!]
-              create: [ProductionActorsCreateFieldInput!]
+            input ProductionActorsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type Movie.
+              Relationship properties when source node is of type Series.
+              \\"\\"\\"
+              ActedIn: ActedInWhere
             }
 
             input ProductionActorsNodeAggregationWhereInput {
@@ -1516,8 +1579,10 @@ describe("Interface Relationships", () => {
             type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
-              properties: ActedIn!
+              properties: ProductionActorsRelationshipProperties!
             }
+
+            union ProductionActorsRelationshipProperties = ActedIn
 
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
@@ -1710,6 +1775,21 @@ describe("Interface Relationships", () => {
               node: SeriesActorsNodeAggregationWhereInput
             }
 
+            input SeriesActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
             input SeriesActorsEdgeAggregationWhereInput {
               AND: [SeriesActorsEdgeAggregationWhereInput!]
               NOT: SeriesActorsEdgeAggregationWhereInput
@@ -1739,6 +1819,11 @@ describe("Interface Relationships", () => {
               screenTime_SUM_GTE: Int
               screenTime_SUM_LT: Int
               screenTime_SUM_LTE: Int
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
             }
 
             input SeriesActorsNodeAggregationWhereInput {
@@ -1782,6 +1867,20 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input SeriesActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodeCount: IntAggregateSelectionNonNullable!
@@ -1789,7 +1888,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesConnectInput {
-              actors: [ProductionActorsConnectFieldInput!]
+              actors: [SeriesActorsConnectFieldInput!]
               episodes: [SeriesEpisodesConnectFieldInput!]
             }
 
@@ -1804,7 +1903,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesCreateInput {
-              actors: ProductionActorsFieldInput
+              actors: SeriesActorsFieldInput
               episodeCount: Int!
               episodes: SeriesEpisodesFieldInput
               title: String!
@@ -1951,7 +2050,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesRelationInput {
-              actors: [ProductionActorsCreateFieldInput!]
+              actors: [SeriesActorsCreateFieldInput!]
               episodes: [SeriesEpisodesCreateFieldInput!]
             }
 
@@ -1964,7 +2063,7 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!]
+              actors: [SeriesActorsUpdateFieldInput!]
               episodeCount: Int
               episodeCount_DECREMENT: Int
               episodeCount_INCREMENT: Int
@@ -2281,11 +2380,6 @@ describe("Interface Relationships", () => {
               where: Interface1Interface2ConnectionWhere
             }
 
-            input Interface1Interface2FieldInput {
-              connect: [Interface1Interface2ConnectFieldInput!]
-              create: [Interface1Interface2CreateFieldInput!]
-            }
-
             type Interface1Interface2Relationship {
               cursor: String!
               node: Interface2!
@@ -2572,7 +2666,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1CreateInput {
               field1: String!
-              interface2: Interface1Interface2FieldInput
+              interface2: Type1Interface1Interface2FieldInput
             }
 
             input Type1Interface1DeleteFieldInput {
@@ -2626,6 +2720,11 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2FieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
             }
 
             type Type1Interface1Interface2Interface2AggregationSelection {
@@ -2876,7 +2975,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1CreateInput {
               field1: String!
-              interface2: Interface1Interface2FieldInput
+              interface2: Type2Interface1Interface2FieldInput
             }
 
             input Type2Interface1DeleteInput {
@@ -2906,6 +3005,11 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2DisconnectFieldInput {
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2FieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
             }
 
             type Type2Interface1Interface2Interface2AggregationSelection {
@@ -3154,7 +3258,7 @@ describe("Interface Relationships", () => {
             }
 
             input CommentConnectInput {
-              creator: ContentCreatorConnectFieldInput
+              creator: CommentCreatorConnectFieldInput
               post: CommentPostConnectFieldInput
             }
 
@@ -3164,7 +3268,7 @@ describe("Interface Relationships", () => {
 
             input CommentCreateInput {
               content: String
-              creator: ContentCreatorFieldInput
+              creator: CommentCreatorFieldInput
               id: ID
               post: CommentPostFieldInput
             }
@@ -3179,6 +3283,24 @@ describe("Interface Relationships", () => {
               count_LT: Int
               count_LTE: Int
               node: CommentCreatorNodeAggregationWhereInput
+            }
+
+            input CommentCreatorConnectFieldInput {
+              connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: UserConnectWhere
+            }
+
+            input CommentCreatorCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input CommentCreatorFieldInput {
+              connect: CommentCreatorConnectFieldInput
+              create: CommentCreatorCreateFieldInput
             }
 
             input CommentCreatorNodeAggregationWhereInput {
@@ -3221,6 +3343,19 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int
               name_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input CommentCreatorUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input CommentCreatorUpdateFieldInput {
+              connect: CommentCreatorConnectFieldInput
+              create: CommentCreatorCreateFieldInput
+              delete: ContentCreatorDeleteFieldInput
+              disconnect: ContentCreatorDisconnectFieldInput
+              update: CommentCreatorUpdateConnectionInput
+              where: ContentCreatorConnectionWhere
             }
 
             input CommentDeleteInput {
@@ -3376,7 +3511,7 @@ describe("Interface Relationships", () => {
             }
 
             input CommentRelationInput {
-              creator: ContentCreatorCreateFieldInput
+              creator: CommentCreatorCreateFieldInput
               post: CommentPostCreateFieldInput
             }
 
@@ -3390,7 +3525,7 @@ describe("Interface Relationships", () => {
 
             input CommentUpdateInput {
               content: String
-              creator: ContentCreatorUpdateFieldInput
+              creator: CommentCreatorUpdateFieldInput
               id: ID
               post: CommentPostUpdateFieldInput
             }
@@ -3525,11 +3660,6 @@ describe("Interface Relationships", () => {
             input ContentCreatorDisconnectFieldInput {
               disconnect: UserDisconnectInput
               where: ContentCreatorConnectionWhere
-            }
-
-            input ContentCreatorFieldInput {
-              connect: ContentCreatorConnectFieldInput
-              create: ContentCreatorCreateFieldInput
             }
 
             input ContentCreatorNodeAggregationWhereInput {
@@ -3888,7 +4018,7 @@ describe("Interface Relationships", () => {
 
             input PostConnectInput {
               comments: [PostCommentsConnectFieldInput!]
-              creator: ContentCreatorConnectFieldInput
+              creator: PostCreatorConnectFieldInput
             }
 
             input PostConnectWhere {
@@ -3898,7 +4028,7 @@ describe("Interface Relationships", () => {
             input PostCreateInput {
               comments: PostCommentsFieldInput
               content: String
-              creator: ContentCreatorFieldInput
+              creator: PostCreatorFieldInput
               id: ID
             }
 
@@ -3912,6 +4042,24 @@ describe("Interface Relationships", () => {
               count_LT: Int
               count_LTE: Int
               node: PostCreatorNodeAggregationWhereInput
+            }
+
+            input PostCreatorConnectFieldInput {
+              connect: UserConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: UserConnectWhere
+            }
+
+            input PostCreatorCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input PostCreatorFieldInput {
+              connect: PostCreatorConnectFieldInput
+              create: PostCreatorCreateFieldInput
             }
 
             input PostCreatorNodeAggregationWhereInput {
@@ -3956,6 +4104,19 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input PostCreatorUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input PostCreatorUpdateFieldInput {
+              connect: PostCreatorConnectFieldInput
+              create: PostCreatorCreateFieldInput
+              delete: ContentCreatorDeleteFieldInput
+              disconnect: ContentCreatorDisconnectFieldInput
+              update: PostCreatorUpdateConnectionInput
+              where: ContentCreatorConnectionWhere
+            }
+
             input PostDeleteInput {
               comments: [PostCommentsDeleteFieldInput!]
               creator: ContentCreatorDeleteFieldInput
@@ -3982,7 +4143,7 @@ describe("Interface Relationships", () => {
 
             input PostRelationInput {
               comments: [PostCommentsCreateFieldInput!]
-              creator: ContentCreatorCreateFieldInput
+              creator: PostCreatorCreateFieldInput
             }
 
             \\"\\"\\"
@@ -3996,7 +4157,7 @@ describe("Interface Relationships", () => {
             input PostUpdateInput {
               comments: [PostCommentsUpdateFieldInput!]
               content: String
-              creator: ContentCreatorUpdateFieldInput
+              creator: PostCreatorUpdateFieldInput
               id: ID
             }
 

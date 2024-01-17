@@ -58,7 +58,6 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
             where: whereTypeName,
             options: optionsTypeName,
         };
-        // TODO:
         if (relationshipAdapter instanceof RelationshipAdapter) {
             const directedArg = getDirectedArgument(relationshipAdapter);
             if (directedArg) {

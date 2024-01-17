@@ -143,6 +143,14 @@ export class RelationshipDeclarationAdapter {
         return this._target;
     }
 
+    public get hasAnyProperties(): boolean {
+        return !!this.relationshipImplementations.find((relationshipImpl) => relationshipImpl.hasAnyProperties);
+    }
+
+    public get hasNonGeneratedProperties(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasNonGeneratedProperties);
+    }
+
     isReadable(): boolean {
         return this.annotations.selectable?.onRead !== false;
     }

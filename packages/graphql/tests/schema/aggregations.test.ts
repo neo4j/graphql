@@ -519,6 +519,7 @@ describe("Aggregations", () => {
               sum: Int
             }
 
+            \\"\\"\\"Type describing relationship properties for the Post.likes field.\\"\\"\\"
             type Likes {
               someBigInt: BigInt
               someDateTime: DateTime

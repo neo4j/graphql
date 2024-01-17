@@ -909,6 +909,11 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Movie.actors field.
+            Type describing relationship properties for the Series.actors field.
+            Type describing relationship properties for the Actor.actedIn field.
+            \\"\\"\\"
             type ActedIn {
               role: String!
             }
@@ -1200,6 +1205,21 @@ describe("Directive-preserve", () => {
               node: MovieActorsNodeAggregationWhereInput
             }
 
+            input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
               NOT: MovieActorsEdgeAggregationWhereInput
@@ -1239,6 +1259,11 @@ describe("Directive-preserve", () => {
               role_SHORTEST_LENGTH_LTE: Int
               role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
             }
 
             input MovieActorsNodeAggregationWhereInput {
@@ -1282,6 +1307,20 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type MovieAggregateSelection {
               count: Int!
               runtime: IntAggregateSelectionNonNullable!
@@ -1289,11 +1328,11 @@ describe("Directive-preserve", () => {
             }
 
             input MovieConnectInput {
-              actors: [ProductionActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
             }
 
             input MovieCreateInput {
-              actors: ProductionActorsFieldInput @deprecated(reason: \\"Do not use\\")
+              actors: MovieActorsFieldInput @deprecated(reason: \\"Do not use\\")
               runtime: Int!
               title: String!
             }
@@ -1321,7 +1360,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieRelationInput {
-              actors: [ProductionActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
             }
 
             \\"\\"\\"
@@ -1333,7 +1372,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               runtime: Int
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
@@ -1424,16 +1463,6 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
-            input ProductionActorsConnectFieldInput {
-              connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: ActorConnectWhere
-            }
-
             type ProductionActorsConnection {
               edges: [ProductionActorsRelationship!]!
               pageInfo: PageInfo!
@@ -1455,11 +1484,6 @@ describe("Directive-preserve", () => {
               node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input ProductionActorsCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: ActorCreateInput!
-            }
-
             input ProductionActorsDeleteFieldInput {
               delete: ActorDeleteInput
               where: ProductionActorsConnectionWhere
@@ -1470,29 +1494,10 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            input ProductionActorsFieldInput {
-              connect: [ProductionActorsConnectFieldInput!]
-              create: [ProductionActorsCreateFieldInput!]
-            }
-
             type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
               properties: ActedIn!
-            }
-
-            input ProductionActorsUpdateConnectionInput {
-              edge: ActedInUpdateInput
-              node: ActorUpdateInput
-            }
-
-            input ProductionActorsUpdateFieldInput {
-              connect: [ProductionActorsConnectFieldInput!]
-              create: [ProductionActorsCreateFieldInput!]
-              delete: [ProductionActorsDeleteFieldInput!]
-              disconnect: [ProductionActorsDisconnectFieldInput!]
-              update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type ProductionAggregateSelection {
@@ -1633,6 +1638,21 @@ describe("Directive-preserve", () => {
               node: SeriesActorsNodeAggregationWhereInput
             }
 
+            input SeriesActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
             input SeriesActorsEdgeAggregationWhereInput {
               AND: [SeriesActorsEdgeAggregationWhereInput!]
               NOT: SeriesActorsEdgeAggregationWhereInput
@@ -1672,6 +1692,11 @@ describe("Directive-preserve", () => {
               role_SHORTEST_LENGTH_LTE: Int
               role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
             }
 
             input SeriesActorsNodeAggregationWhereInput {
@@ -1715,6 +1740,20 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input SeriesActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelectionNonNullable!
@@ -1722,7 +1761,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesConnectInput {
-              actors: [ProductionActorsConnectFieldInput!]
+              actors: [SeriesActorsConnectFieldInput!]
             }
 
             type SeriesConnection {
@@ -1732,7 +1771,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesCreateInput {
-              actors: ProductionActorsFieldInput
+              actors: SeriesActorsFieldInput
               episodes: Int!
               title: String!
             }
@@ -1760,7 +1799,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesRelationInput {
-              actors: [ProductionActorsCreateFieldInput!]
+              actors: [SeriesActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -1772,7 +1811,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!]
+              actors: [SeriesActorsUpdateFieldInput!]
               episodes: Int
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
@@ -1910,6 +1949,11 @@ describe("Directive-preserve", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Movie.actors field.
+            Type describing relationship properties for the Series.actors field.
+            Type describing relationship properties for the Actor.actedIn field.
+            \\"\\"\\"
             type ActedIn {
               role: String!
             }
@@ -2201,6 +2245,21 @@ describe("Directive-preserve", () => {
               node: MovieActorsNodeAggregationWhereInput
             }
 
+            input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
             input MovieActorsEdgeAggregationWhereInput {
               AND: [MovieActorsEdgeAggregationWhereInput!]
               NOT: MovieActorsEdgeAggregationWhereInput
@@ -2240,6 +2299,11 @@ describe("Directive-preserve", () => {
               role_SHORTEST_LENGTH_LTE: Int
               role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
             }
 
             input MovieActorsNodeAggregationWhereInput {
@@ -2283,6 +2347,20 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type MovieAggregateSelection {
               count: Int!
               runtime: IntAggregateSelectionNonNullable!
@@ -2290,11 +2368,11 @@ describe("Directive-preserve", () => {
             }
 
             input MovieConnectInput {
-              actors: [ProductionActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
             }
 
             input MovieCreateInput {
-              actors: ProductionActorsFieldInput @deprecated(reason: \\"Do not use\\")
+              actors: MovieActorsFieldInput @deprecated(reason: \\"Do not use\\")
               runtime: Int!
               title: String!
             }
@@ -2322,7 +2400,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieRelationInput {
-              actors: [ProductionActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
             }
 
             \\"\\"\\"
@@ -2334,7 +2412,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               runtime: Int
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
@@ -2425,16 +2503,6 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
-            input ProductionActorsConnectFieldInput {
-              connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: ActorConnectWhere
-            }
-
             type ProductionActorsConnection {
               edges: [ProductionActorsRelationship!]!
               pageInfo: PageInfo!
@@ -2456,11 +2524,6 @@ describe("Directive-preserve", () => {
               node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input ProductionActorsCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: ActorCreateInput!
-            }
-
             input ProductionActorsDeleteFieldInput {
               delete: ActorDeleteInput
               where: ProductionActorsConnectionWhere
@@ -2471,29 +2534,10 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            input ProductionActorsFieldInput {
-              connect: [ProductionActorsConnectFieldInput!]
-              create: [ProductionActorsCreateFieldInput!]
-            }
-
             type ProductionActorsRelationship {
               cursor: String!
               node: Actor!
               properties: ActedIn!
-            }
-
-            input ProductionActorsUpdateConnectionInput {
-              edge: ActedInUpdateInput
-              node: ActorUpdateInput
-            }
-
-            input ProductionActorsUpdateFieldInput {
-              connect: [ProductionActorsConnectFieldInput!]
-              create: [ProductionActorsCreateFieldInput!]
-              delete: [ProductionActorsDeleteFieldInput!]
-              disconnect: [ProductionActorsDisconnectFieldInput!]
-              update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type ProductionAggregateSelection {
@@ -2634,6 +2678,21 @@ describe("Directive-preserve", () => {
               node: SeriesActorsNodeAggregationWhereInput
             }
 
+            input SeriesActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
             input SeriesActorsEdgeAggregationWhereInput {
               AND: [SeriesActorsEdgeAggregationWhereInput!]
               NOT: SeriesActorsEdgeAggregationWhereInput
@@ -2673,6 +2732,11 @@ describe("Directive-preserve", () => {
               role_SHORTEST_LENGTH_LTE: Int
               role_SHORTEST_LT: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
               role_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
             }
 
             input SeriesActorsNodeAggregationWhereInput {
@@ -2716,6 +2780,20 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            input SeriesActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelectionNonNullable!
@@ -2723,7 +2801,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesConnectInput {
-              actors: [ProductionActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [SeriesActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
             }
 
             type SeriesConnection {
@@ -2733,7 +2811,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesCreateInput {
-              actors: ProductionActorsFieldInput @deprecated(reason: \\"Do not use\\")
+              actors: SeriesActorsFieldInput @deprecated(reason: \\"Do not use\\")
               episodes: Int!
               title: String!
             }
@@ -2761,7 +2839,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesRelationInput {
-              actors: [ProductionActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [SeriesActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
             }
 
             \\"\\"\\"
@@ -2773,7 +2851,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesUpdateInput {
-              actors: [ProductionActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [SeriesActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
               episodes: Int
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int

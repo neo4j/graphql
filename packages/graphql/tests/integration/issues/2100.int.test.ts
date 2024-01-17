@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             id: ID!
             attendance: Int
             markedAttendance: Boolean!
-            serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
+            serviceDate: ${TimeGraphType}! @declareRelationship
         }
         `;
 

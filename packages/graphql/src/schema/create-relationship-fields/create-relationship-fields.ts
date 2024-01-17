@@ -47,14 +47,12 @@ export function createRelationshipFields({
     schemaComposer,
     // TODO: Ideally we come up with a solution where we don't have to pass the following into these kind of functions
     composeNode,
-    // relationshipPropertyFields,
     subgraph,
     userDefinedFieldDirectives,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
-    // relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): void {

@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -49,7 +51,7 @@ export function parseAnnotations(directives: readonly DirectiveNode[]): Annotati
     const annotations = directives.reduce((directivesMap, directive) => {
         if (directivesMap.has(directive.name.value)) {
             // TODO: takes the first one
-            // multiple interfaces can have this annotation - must constrain this flexibility by design
+            // will impact if we allow for repeatable directives
             return directivesMap;
         }
         const annotation = parseDirective(directive);

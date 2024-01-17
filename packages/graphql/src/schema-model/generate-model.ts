@@ -110,7 +110,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         annotations,
     });
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
-    // definitionCollection.interfaceTypes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
     definitionCollection.interfaceTypes.forEach((def) =>
         hydrateRelationshipDeclarations(def, schema, definitionCollection)
     );
@@ -173,40 +172,18 @@ function generateInterfaceEntity(
         entityImplementingTypeNames,
         concreteEntities
     );
-    const inheritedFields =
-        definition.interfaces?.flatMap((interfaceNamedNode) => {
-            const interfaceName = interfaceNamedNode.name.value;
-            return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
-        }) || [];
 
     const fields = (definition.fields || []).map((fieldDefinition) => {
-        const inheritedField = inheritedFields?.filter(
-            (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
-        );
         const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-        const isInheritedPrivateAttribute = inheritedField?.some((inheritedField) =>
-            findDirective(inheritedField.directives, privateDirective.name)
-        );
-        if (isPrivateAttribute || isInheritedPrivateAttribute) {
-            return;
-        }
-        /* HERE ALE
-        // TODO: this here should be declareRelationship
-        const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
 
-        // TODO: inheritance not possible anymore, right?
-        const isInheritedRelationshipAttribute = inheritedField?.some((inheritedField) =>
-            findDirective(inheritedField.directives, relationshipDirective.name)
-        );
-        if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
+        if (isPrivateAttribute) {
             return;
         }
-        */
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, declareRelationshipDirective.name);
         if (isRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
+        return parseAttribute(fieldDefinition, definitionCollection, definition.fields);
     });
 
     const inheritedDirectives =
@@ -250,11 +227,9 @@ function generateCompositeEntity(
         concreteEntities: compositeFields,
     };
 }
-// TODO: duplicate to create a hydrateRelationshipDeclaration fn, maybe create separate function for them as well
-// maybe change InterfaceEntity to have relationshipDeclarations instead of relationships?
-// make sure declarations are used in create-relationship-fields
+
 function hydrateRelationships(
-    definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    definition: ObjectTypeDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
     definitionCollection: DefinitionCollection
 ): void {
@@ -264,47 +239,23 @@ function hydrateRelationships(
     if (!entity) {
         throw new Error(`Cannot find entity ${name}`);
     }
-    if (entity instanceof UnionEntity) {
-        throw new Error(`Cannot add relationship to union entity ${name}`);
+    if (!(entity instanceof ConcreteEntity)) {
+        throw new Error(`Can only add relationship to concrete entity and ${name} is not concrete.`);
     }
-    // TODO: fix ts
-    const entityWithRelationships: ConcreteEntity | InterfaceEntity = entity as ConcreteEntity | InterfaceEntity;
-    /*  TODO HERE ALE
-    const inheritedFields =
-        definition.interfaces?.flatMap((interfaceNamedNode) => {
-            const interfaceName = interfaceNamedNode.name.value;
-            return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
-        }) || [];
-
-    // TODO: directives on definition have priority over interfaces
-    const mergedFields = (definition.fields || []).concat(inheritedFields);
-    */
-    const mergedFields = definition.fields || [];
-    const relationshipFieldsMap = new Map<string, Relationship>();
-    for (const fieldDefinition of mergedFields) {
-        // TODO: takes the first one
-        // multiple interfaces can have this annotation - must constrain this flexibility by design
-        if (relationshipFieldsMap.has(fieldDefinition.name.value)) {
-            continue;
-        }
-        const mergedDirectives = mergedFields
-            .filter((f) => f.name.value === fieldDefinition.name.value)
-            .flatMap((f) => f.directives || []);
+    if (!definition.fields?.length) {
+        return;
+    }
+    for (const fieldDefinition of definition.fields) {
         const relationshipField = generateRelationshipField(
             fieldDefinition,
             schema,
-            entityWithRelationships,
+            entity,
             definitionCollection,
-            mergedDirectives,
             getInterfaceNameIfInheritedField(definition, fieldDefinition.name.value, definitionCollection)
         );
         if (relationshipField) {
-            relationshipFieldsMap.set(fieldDefinition.name.value, relationshipField);
+            entity.addRelationship(relationshipField);
         }
-    }
-
-    for (const relationship of relationshipFieldsMap.values()) {
-        entityWithRelationships.addRelationship(relationship);
     }
 }
 function hydrateRelationshipDeclarations(
@@ -319,35 +270,21 @@ function hydrateRelationshipDeclarations(
         throw new Error(`Cannot find entity ${name}`);
     }
     if (!(entity instanceof InterfaceEntity)) {
-        throw new Error(`Can only declare relationships on Interface entities and ${name} is not.`);
+        throw new Error(`Can only declare relationships on Interface entities and ${name} is not an Interface.`);
     }
-    // TODO: fix ts
-    // const entityWithRelationships: ConcreteEntity | InterfaceEntity = entity as ConcreteEntity | InterfaceEntity;
-    const mergedFields = definition.fields || [];
-    const relationshipDeclarationsMap = new Map<string, RelationshipDeclaration>();
-    for (const fieldDefinition of mergedFields) {
-        // TODO: takes the first one
-        // multiple interfaces can have this annotation - must constrain this flexibility by design
-        if (relationshipDeclarationsMap.has(fieldDefinition.name.value)) {
-            continue;
-        }
-        const mergedDirectives = mergedFields
-            .filter((f) => f.name.value === fieldDefinition.name.value)
-            .flatMap((f) => f.directives || []);
+    if (!definition.fields?.length) {
+        return;
+    }
+    for (const fieldDefinition of definition.fields) {
         const relationshipField = generateRelationshipDeclaration(
             fieldDefinition,
             schema,
             entity,
-            definitionCollection,
-            mergedDirectives
+            definitionCollection
         );
         if (relationshipField) {
-            relationshipDeclarationsMap.set(fieldDefinition.name.value, relationshipField);
+            entity.addRelationshipDeclaration(relationshipField);
         }
-    }
-
-    for (const relationshipDeclaration of relationshipDeclarationsMap.values()) {
-        entity.addRelationshipDeclaration(relationshipDeclaration);
     }
 }
 
@@ -384,7 +321,6 @@ function generateRelationshipField(
     schema: Neo4jGraphQLSchemaModel,
     source: ConcreteEntity | InterfaceEntity,
     definitionCollection: DefinitionCollection,
-    mergedDirectives: DirectiveNode[],
     inheritedFrom: string | undefined
 ): Relationship | undefined {
     // TODO: remove reference to getFieldTypeMeta
@@ -416,34 +352,19 @@ function generateRelationshipField(
         }
         propertiesTypeName = properties;
 
-        const inheritedFields =
-            propertyInterface.interfaces?.flatMap((interfaceNamedNode) => {
-                const interfaceName = interfaceNamedNode.name.value;
-                return definitionCollection.interfaceTypes.get(interfaceName)?.fields || [];
-            }) || [];
         const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
-            const filteredInheritedFields = inheritedFields?.filter(
-                (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
-            );
             const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-            const isInheritedPrivateAttribute = filteredInheritedFields?.some((inheritedField) =>
-                findDirective(inheritedField.directives, privateDirective.name)
-            );
-            if (isPrivateAttribute || isInheritedPrivateAttribute) {
+
+            if (isPrivateAttribute) {
                 return;
             }
-            return parseAttribute(
-                fieldDefinition,
-                filteredInheritedFields,
-                definitionCollection,
-                propertyInterface.fields
-            );
+            return parseAttribute(fieldDefinition, definitionCollection, propertyInterface.fields);
         });
 
         attributes = filterTruthy(fields);
     }
 
-    const annotations = parseAnnotations(mergedDirectives);
+    const annotations = parseAnnotations(field.directives || []);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
 
     return new Relationship({
@@ -470,8 +391,7 @@ function generateRelationshipDeclaration(
     field: FieldDefinitionNode,
     schema: Neo4jGraphQLSchemaModel,
     source: InterfaceEntity,
-    definitionCollection: DefinitionCollection,
-    mergedDirectives: DirectiveNode[]
+    definitionCollection: DefinitionCollection
 ): RelationshipDeclaration | undefined {
     // TODO: remove reference to getFieldTypeMeta
     const fieldTypeMeta = getFieldTypeMeta(field.type);
@@ -490,7 +410,7 @@ function generateRelationshipDeclaration(
         aggregate: boolean;
     }>(declareRelationshipDirective, declareRelationshipUsage);
 
-    const annotations = parseAnnotations(mergedDirectives);
+    const annotations = parseAnnotations(field.directives || []);
     const relationshipImplementations = source.concreteEntities
         .map((concreteEntity) => concreteEntity.findRelationship(fieldName))
         .filter((x) => x) as Relationship[];
@@ -514,40 +434,19 @@ function generateConcreteEntity(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
-    const inheritsFrom = definition.interfaces?.map((interfaceNamedNode) => {
-        const interfaceName = interfaceNamedNode.name.value;
-        return definitionCollection.interfaceTypes.get(interfaceName);
-    });
-
     const fields = (definition.fields || []).map((fieldDefinition) => {
-        const inheritedFields = inheritsFrom?.flatMap((i) => i?.fields || []);
-        const inheritedField = inheritedFields?.filter(
-            (inheritedField) => inheritedField.name.value === fieldDefinition.name.value
-        );
-
         // If the attribute is the private directive then
         const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-        const isInheritedPrivateAttribute = inheritedField?.some((inheritedField) =>
-            findDirective(inheritedField.directives, privateDirective.name)
-        );
-        if (isPrivateAttribute || isInheritedPrivateAttribute) {
+
+        if (isPrivateAttribute) {
             return;
         }
 
-        /* HERE ALE
-        const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
-        const isInheritedRelationshipAttribute = inheritedField?.some((inheritedField) =>
-            findDirective(inheritedField.directives, relationshipDirective.name)
-        );
-        if (isRelationshipAttribute || isInheritedRelationshipAttribute) {
-            return;
-        }
-        */
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
         if (isRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, inheritedField, definitionCollection, definition.fields);
+        return parseAttribute(fieldDefinition, definitionCollection, definition.fields);
     });
 
     // schema configuration directives are propagated onto concrete entities
@@ -604,7 +503,7 @@ function generateOperation(
     definitionCollection: DefinitionCollection
 ): Operation {
     const attributes = (definition.fields || [])
-        .map((fieldDefinition) => parseAttribute(fieldDefinition, undefined, definitionCollection))
+        .map((fieldDefinition) => parseAttribute(fieldDefinition, definitionCollection))
         .filter((attribute) => attribute.annotations.cypher);
 
     return new Operation({

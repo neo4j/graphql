@@ -53,6 +53,10 @@ describe("Enums", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Actor.movies field.
+            Type describing relationship properties for the Movie.actors field.
+            \\"\\"\\"
             type ActedIn {
               roleType: RoleType!
             }

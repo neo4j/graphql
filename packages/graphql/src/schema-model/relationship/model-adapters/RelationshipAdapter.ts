@@ -265,6 +265,13 @@ export class RelationshipAdapter {
         return this.nonGeneratedProperties.some((property) => property.typeHelper.isRequired());
     }
 
+    public get hasNonGeneratedProperties(): boolean {
+        return this.nonGeneratedProperties.length > 0;
+    }
+    public get hasAnyProperties(): boolean {
+        return this.propertiesTypeName !== undefined;
+    }
+
     /**
      * Categories
      * = a grouping of attributes

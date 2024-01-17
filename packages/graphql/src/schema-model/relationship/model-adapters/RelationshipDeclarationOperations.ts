@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { isInterfaceEntity } from "../../../translate/queryAST/utils/is-interface-entity";
 import { isUnionEntity } from "../../../translate/queryAST/utils/is-union-entity";
 import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
@@ -49,11 +48,12 @@ export class RelationshipDeclarationOperations {
     }
 
     public get fieldInputPrefixForTypename(): string {
-        const isTargetInterface = isInterfaceEntity(this.relationshipDeclaration.target);
-        if (isTargetInterface) {
-            return this.relationshipDeclaration.source.name;
-        }
-        return this.prefixForTypename;
+        // const isTargetInterface = isInterfaceEntity(this.relationshipDeclaration.target);
+        // if (isTargetInterface) {
+        //     return this.relationshipDeclaration.source.name;
+        // }
+        // return this.prefixForTypename;
+        return this.relationshipDeclaration.source.name;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -85,6 +85,9 @@ export class RelationshipDeclarationOperations {
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             concreteEntityAdapter.name
         }ConnectionWhere`;
+        // return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        //     concreteEntityAdapter.name
+        // }ConnectionEdgeWhere`;
     }
 
     public get connectionSortInputTypename(): string {
@@ -92,12 +95,18 @@ export class RelationshipDeclarationOperations {
     }
 
     public get connectionWhereInputTypename(): string {
+        // edge??
+        // return `${this.connectionFieldTypename}EdgeWhere`;
         return `${this.connectionFieldTypename}Where`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get relationshipFieldTypename(): string {
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}Relationship`;
+    }
+
+    public get relationshipPropertiesFieldTypename(): string {
+        return `${this.relationshipFieldTypename}Properties`;
     }
 
     public getFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
@@ -176,6 +185,9 @@ export class RelationshipDeclarationOperations {
     }
 
     public getConnectionWhereTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
+        // return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        //     ifUnionRelationshipTargetEntity?.name || ""
+        // }ConnectionEdgeWhere`;
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectionWhere`;
@@ -266,6 +278,18 @@ export class RelationshipDeclarationOperations {
     public get edgeCreateInputTypeName(): string {
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
             this.relationshipDeclaration.name
+        )}EdgeCreateInput${
+            this.relationshipDeclaration.relationshipImplementations.filter(
+                (impl) => impl.hasNonNullNonGeneratedProperties
+            ).length
+                ? `!`
+                : ""
+        }`;
+    }
+
+    public get createInputTypeName(): string {
+        return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
+            this.relationshipDeclaration.name
         )}EdgeCreateInput`;
     }
 
@@ -276,7 +300,16 @@ export class RelationshipDeclarationOperations {
     }
 
     public get whereInputTypeName(): string {
-        return `${this.relationshipDeclaration.name}EdgeWhere`;
+        return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
+            this.relationshipDeclaration.name
+        )}EdgeWhere`;
+        // return `${this.relationshipDeclaration.name}Where`;
+    }
+
+    public get sortInputTypeName(): string {
+        return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
+            this.relationshipDeclaration.name
+        )}EdgeSort`;
     }
 
     public getConnectOrCreateInputFields(target: ConcreteEntityAdapter) {

@@ -80,6 +80,10 @@ describe("Union Interface Relationships", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Movie.actors field.
+            Type describing relationship properties for the Actor.movies field.
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -504,6 +508,7 @@ describe("Union Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Type describing relationship properties for the Movie.directors field.\\"\\"\\"
             type Directed {
               year: Int!
             }
@@ -1751,6 +1756,10 @@ describe("Union Interface Relationships", () => {
               offset: Int
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Movie.reviewers field.
+            Type describing relationship properties for the Person.movies field.
+            \\"\\"\\"
             type Review {
               score: Int!
             }

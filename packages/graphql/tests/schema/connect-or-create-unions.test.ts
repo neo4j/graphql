@@ -55,6 +55,7 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }

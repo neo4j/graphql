@@ -1348,6 +1348,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `);
     });
 
+    // TODO: connectOrCreate use this test as verification
     test("Simple type definitions implementing just one interface", async () => {
         const typeDefs = gql`
             interface IProduct {
@@ -1744,15 +1745,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            input IProductGenreConnectFieldInput {
-              connect: GenreConnectInput
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: GenreConnectWhere
-            }
-
             input IProductGenreConnectOrCreateFieldInput {
               onCreate: IProductGenreConnectOrCreateFieldInputOnCreate!
               where: GenreConnectOrCreateWhere!
@@ -1780,10 +1772,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node_NOT: GenreWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input IProductGenreCreateFieldInput {
-              node: GenreCreateInput!
-            }
-
             input IProductGenreDeleteFieldInput {
               delete: GenreDeleteInput
               where: IProductGenreConnectionWhere
@@ -1794,29 +1782,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               where: IProductGenreConnectionWhere
             }
 
-            input IProductGenreFieldInput {
-              connect: IProductGenreConnectFieldInput
-              connectOrCreate: IProductGenreConnectOrCreateFieldInput
-              create: IProductGenreCreateFieldInput
-            }
-
             type IProductGenreRelationship {
               cursor: String!
               node: Genre!
-            }
-
-            input IProductGenreUpdateConnectionInput {
-              node: GenreUpdateInput
-            }
-
-            input IProductGenreUpdateFieldInput {
-              connect: IProductGenreConnectFieldInput
-              connectOrCreate: IProductGenreConnectOrCreateFieldInput
-              create: IProductGenreCreateFieldInput
-              delete: IProductGenreDeleteFieldInput
-              disconnect: IProductGenreDisconnectFieldInput
-              update: IProductGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
             }
 
             enum IProductImplementation {
@@ -1935,7 +1903,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieConnectInput {
-              genre: IProductGenreConnectFieldInput
+              genre: MovieGenreConnectFieldInput
             }
 
             input MovieConnectOrCreateInput {
@@ -1947,7 +1915,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieCreateInput {
-              genre: IProductGenreFieldInput
+              genre: MovieGenreFieldInput
               id: String!
               name: String!
             }
@@ -1994,8 +1962,27 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: MovieGenreNodeAggregationWhereInput
             }
 
+            input MovieGenreConnectFieldInput {
+              connect: GenreConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: GenreConnectWhere
+            }
+
             type MovieGenreConnectedRelationship {
               node: GenreEventPayload!
+            }
+
+            input MovieGenreCreateFieldInput {
+              node: GenreCreateInput!
+            }
+
+            input MovieGenreFieldInput {
+              connect: MovieGenreConnectFieldInput
+              connectOrCreate: IProductGenreConnectOrCreateFieldInput
+              create: MovieGenreCreateFieldInput
             }
 
             type MovieGenreGenreAggregationSelection {
@@ -2052,6 +2039,20 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: GenreSubscriptionWhere
             }
 
+            input MovieGenreUpdateConnectionInput {
+              node: GenreUpdateInput
+            }
+
+            input MovieGenreUpdateFieldInput {
+              connect: MovieGenreConnectFieldInput
+              connectOrCreate: IProductGenreConnectOrCreateFieldInput
+              create: MovieGenreCreateFieldInput
+              delete: IProductGenreDeleteFieldInput
+              disconnect: IProductGenreDisconnectFieldInput
+              update: MovieGenreUpdateConnectionInput
+              where: IProductGenreConnectionWhere
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -2062,7 +2063,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieRelationInput {
-              genre: IProductGenreCreateFieldInput
+              genre: MovieGenreCreateFieldInput
             }
 
             type MovieRelationshipCreatedEvent {
@@ -2136,7 +2137,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input MovieUpdateInput {
-              genre: IProductGenreUpdateFieldInput
+              genre: MovieGenreUpdateFieldInput
               id: String
               name: String
             }
@@ -2234,7 +2235,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesConnectInput {
-              genre: IProductGenreConnectFieldInput
+              genre: SeriesGenreConnectFieldInput
             }
 
             input SeriesConnectOrCreateInput {
@@ -2252,7 +2253,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesCreateInput {
-              genre: IProductGenreFieldInput
+              genre: SeriesGenreFieldInput
               id: String!
               name: String!
             }
@@ -2299,8 +2300,27 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: SeriesGenreNodeAggregationWhereInput
             }
 
+            input SeriesGenreConnectFieldInput {
+              connect: GenreConnectInput
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: GenreConnectWhere
+            }
+
             type SeriesGenreConnectedRelationship {
               node: GenreEventPayload!
+            }
+
+            input SeriesGenreCreateFieldInput {
+              node: GenreCreateInput!
+            }
+
+            input SeriesGenreFieldInput {
+              connect: SeriesGenreConnectFieldInput
+              connectOrCreate: IProductGenreConnectOrCreateFieldInput
+              create: SeriesGenreCreateFieldInput
             }
 
             type SeriesGenreGenreAggregationSelection {
@@ -2357,6 +2377,20 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               node: GenreSubscriptionWhere
             }
 
+            input SeriesGenreUpdateConnectionInput {
+              node: GenreUpdateInput
+            }
+
+            input SeriesGenreUpdateFieldInput {
+              connect: SeriesGenreConnectFieldInput
+              connectOrCreate: IProductGenreConnectOrCreateFieldInput
+              create: SeriesGenreCreateFieldInput
+              delete: IProductGenreDeleteFieldInput
+              disconnect: IProductGenreDisconnectFieldInput
+              update: SeriesGenreUpdateConnectionInput
+              where: IProductGenreConnectionWhere
+            }
+
             input SeriesOptions {
               limit: Int
               offset: Int
@@ -2367,7 +2401,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesRelationInput {
-              genre: IProductGenreCreateFieldInput
+              genre: SeriesGenreCreateFieldInput
             }
 
             type SeriesRelationshipCreatedEvent {
@@ -2441,7 +2475,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input SeriesUpdateInput {
-              genre: IProductGenreUpdateFieldInput
+              genre: SeriesGenreUpdateFieldInput
               id: String
               name: String
             }

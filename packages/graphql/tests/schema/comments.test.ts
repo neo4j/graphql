@@ -735,6 +735,7 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
                 type ActedIn {
                   screenTime: Int!
                 }

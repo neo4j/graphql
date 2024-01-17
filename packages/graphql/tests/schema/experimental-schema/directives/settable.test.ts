@@ -6519,6 +6519,24 @@ describe("@settable", () => {
                   node: MovieActorsNodeAggregationWhereInput
                 }
 
+                input MovieActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input MovieActorsFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                }
+
                 input MovieActorsNodeAggregationWhereInput {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
@@ -6560,6 +6578,19 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input MovieActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: MovieActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   description: StringAggregateSelectionNullable!
@@ -6567,11 +6598,11 @@ describe("@settable", () => {
                 }
 
                 input MovieConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [MovieActorsConnectFieldInput!]
                 }
 
                 input MovieCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: MovieActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -6599,7 +6630,7 @@ describe("@settable", () => {
                 }
 
                 input MovieRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -6611,7 +6642,7 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [MovieActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -6743,10 +6774,6 @@ describe("@settable", () => {
                   node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                 }
 
-                input ProductionActorsCreateFieldInput {
-                  node: ActorCreateInput!
-                }
-
                 input ProductionActorsDeleteFieldInput {
                   delete: ActorDeleteInput
                   where: ProductionActorsConnectionWhere
@@ -6755,11 +6782,6 @@ describe("@settable", () => {
                 input ProductionActorsDisconnectFieldInput {
                   disconnect: ActorDisconnectInput
                   where: ProductionActorsConnectionWhere
-                }
-
-                input ProductionActorsFieldInput {
-                  connect: [ProductionActorsConnectFieldInput!]
-                  create: [ProductionActorsCreateFieldInput!]
                 }
 
                 input ProductionActorsNodeAggregationWhereInput {
@@ -6806,19 +6828,6 @@ describe("@settable", () => {
                 type ProductionActorsRelationship {
                   cursor: String!
                   node: Actor!
-                }
-
-                input ProductionActorsUpdateConnectionInput {
-                  node: ActorUpdateInput
-                }
-
-                input ProductionActorsUpdateFieldInput {
-                  connect: [ProductionActorsConnectFieldInput!]
-                  create: [ProductionActorsCreateFieldInput!]
-                  delete: [ProductionActorsDeleteFieldInput!]
-                  disconnect: [ProductionActorsDisconnectFieldInput!]
-                  update: ProductionActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
                 }
 
                 type ProductionAggregateSelection {
@@ -6987,6 +6996,24 @@ describe("@settable", () => {
                   node: SeriesActorsNodeAggregationWhereInput
                 }
 
+                input SeriesActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input SeriesActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input SeriesActorsFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
+                }
+
                 input SeriesActorsNodeAggregationWhereInput {
                   AND: [SeriesActorsNodeAggregationWhereInput!]
                   NOT: SeriesActorsNodeAggregationWhereInput
@@ -7028,6 +7055,19 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input SeriesActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input SeriesActorsUpdateFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: SeriesActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type SeriesAggregateSelection {
                   count: Int!
                   description: StringAggregateSelectionNullable!
@@ -7035,7 +7075,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [SeriesActorsConnectFieldInput!]
                 }
 
                 type SeriesConnection {
@@ -7045,7 +7085,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: SeriesActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -7073,7 +7113,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [SeriesActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7085,7 +7125,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [SeriesActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -7453,6 +7493,24 @@ describe("@settable", () => {
                   node: MovieActorsNodeAggregationWhereInput
                 }
 
+                input MovieActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input MovieActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input MovieActorsFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                }
+
                 input MovieActorsNodeAggregationWhereInput {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
@@ -7494,6 +7552,19 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input MovieActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input MovieActorsUpdateFieldInput {
+                  connect: [MovieActorsConnectFieldInput!]
+                  create: [MovieActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: MovieActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   description: StringAggregateSelectionNullable!
@@ -7501,11 +7572,11 @@ describe("@settable", () => {
                 }
 
                 input MovieConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [MovieActorsConnectFieldInput!]
                 }
 
                 input MovieCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: MovieActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -7533,7 +7604,7 @@ describe("@settable", () => {
                 }
 
                 input MovieRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [MovieActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -7545,7 +7616,7 @@ describe("@settable", () => {
                 }
 
                 input MovieUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [MovieActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }
@@ -7689,11 +7760,6 @@ describe("@settable", () => {
                 input ProductionActorsDisconnectFieldInput {
                   disconnect: ActorDisconnectInput
                   where: ProductionActorsConnectionWhere
-                }
-
-                input ProductionActorsFieldInput {
-                  connect: [ProductionActorsConnectFieldInput!]
-                  create: [ProductionActorsCreateFieldInput!]
                 }
 
                 input ProductionActorsNodeAggregationWhereInput {
@@ -7933,6 +7999,24 @@ describe("@settable", () => {
                   node: SeriesActorsNodeAggregationWhereInput
                 }
 
+                input SeriesActorsConnectFieldInput {
+                  connect: [ActorConnectInput!]
+                  \\"\\"\\"
+                  Whether or not to overwrite any matching relationship with the new properties.
+                  \\"\\"\\"
+                  overwrite: Boolean! = true
+                  where: ActorConnectWhere
+                }
+
+                input SeriesActorsCreateFieldInput {
+                  node: ActorCreateInput!
+                }
+
+                input SeriesActorsFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
+                }
+
                 input SeriesActorsNodeAggregationWhereInput {
                   AND: [SeriesActorsNodeAggregationWhereInput!]
                   NOT: SeriesActorsNodeAggregationWhereInput
@@ -7974,6 +8058,19 @@ describe("@settable", () => {
                   name_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
                 }
 
+                input SeriesActorsUpdateConnectionInput {
+                  node: ActorUpdateInput
+                }
+
+                input SeriesActorsUpdateFieldInput {
+                  connect: [SeriesActorsConnectFieldInput!]
+                  create: [SeriesActorsCreateFieldInput!]
+                  delete: [ProductionActorsDeleteFieldInput!]
+                  disconnect: [ProductionActorsDisconnectFieldInput!]
+                  update: SeriesActorsUpdateConnectionInput
+                  where: ProductionActorsConnectionWhere
+                }
+
                 type SeriesAggregateSelection {
                   count: Int!
                   description: StringAggregateSelectionNullable!
@@ -7981,7 +8078,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesConnectInput {
-                  actors: [ProductionActorsConnectFieldInput!]
+                  actors: [SeriesActorsConnectFieldInput!]
                 }
 
                 type SeriesConnection {
@@ -7991,7 +8088,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesCreateInput {
-                  actors: ProductionActorsFieldInput
+                  actors: SeriesActorsFieldInput
                   description: String
                   title: String!
                 }
@@ -8019,7 +8116,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesRelationInput {
-                  actors: [ProductionActorsCreateFieldInput!]
+                  actors: [SeriesActorsCreateFieldInput!]
                 }
 
                 \\"\\"\\"
@@ -8031,7 +8128,7 @@ describe("@settable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  actors: [ProductionActorsUpdateFieldInput!]
+                  actors: [SeriesActorsUpdateFieldInput!]
                   description: String
                   title: String
                 }

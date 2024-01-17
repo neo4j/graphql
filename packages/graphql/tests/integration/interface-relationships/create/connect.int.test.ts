@@ -173,7 +173,6 @@ describe("interface relationships", () => {
         }
     });
 
-    // TODO: fix types to remove ActedIn from edge
     test("should nested create connect using interface relationship fields and only connect from one type", async () => {
         const session = await neo4j.getSession();
 
@@ -199,15 +198,15 @@ describe("interface relationships", () => {
                     input: [
                         {
                             name: $name1
-                            actedIn: {
-                                connect: {
-                                    edge: { screenTime: $screenTime }
-                                    where: { node: { title: $title } }
-                                    connect: {
+                            actedIn: {        # ActorActedInFieldInput
+                                connect: {    # ActorActedInConnectFieldInput
+                                    edge: { screenTime: $screenTime }  # ActedInCreateInput
+                                    where: { node: { title: $title } } 
+                                    connect: { # ProductionConnectInput
                                         _on: {
                                             Movie: {
                                                 actors: {
-                                                    edge: { ActedIn: { screenTime: $screenTime } }
+                                                    edge: { screenTime: $screenTime }
                                                     where: { node: { name: $name2 } }
                                                 }
                                             }

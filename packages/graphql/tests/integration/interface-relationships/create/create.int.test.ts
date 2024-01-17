@@ -154,7 +154,6 @@ describe("interface relationships", () => {
         }
     });
 
-    // TODO: fix types to remove ActedIn from edge
     test("should create create nested nodes using interface relationship fields", async () => {
         const session = await neo4j.getSession();
 
@@ -205,7 +204,7 @@ describe("interface relationships", () => {
                                                 runtime: $movieRuntime
                                                 actors: {
                                                     create: {
-                                                        edge: { ActedIn: { screenTime: $screenTime } }
+                                                        edge: { screenTime: $screenTime }
                                                         node: { name: $name2 }
                                                     }
                                                 }

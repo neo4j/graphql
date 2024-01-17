@@ -75,7 +75,7 @@ describe("inheritance", () => {
             }
 
             input ActorCreateInput {
-              friends: PersonFriendsFieldInput
+              friends: ActorFriendsFieldInput
               name: String
             }
 
@@ -111,6 +111,11 @@ describe("inheritance", () => {
             input ActorFriendsDisconnectFieldInput {
               disconnect: PersonDisconnectInput
               where: PersonFriendsConnectionWhere
+            }
+
+            input ActorFriendsFieldInput {
+              connect: [ActorFriendsConnectFieldInput!]
+              create: [ActorFriendsCreateFieldInput!]
             }
 
             input ActorFriendsUpdateConnectionInput {
@@ -229,6 +234,7 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Type describing relationship properties for the Actor.friends field.\\"\\"\\"
             type FriendsWith {
               since: Int
             }
@@ -329,7 +335,7 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsConnectionSort {
-              edge: FriendsWithSort
+              edge: PersonFriendsEdgeSort
               node: PersonSort
             }
 
@@ -337,8 +343,8 @@ describe("inheritance", () => {
               AND: [PersonFriendsConnectionWhere!]
               NOT: PersonFriendsConnectionWhere
               OR: [PersonFriendsConnectionWhere!]
-              edge: FriendsWithWhere
-              edge_NOT: FriendsWithWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              edge: PersonFriendsEdgeWhere
+              edge_NOT: PersonFriendsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: PersonWhere
               node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
@@ -359,23 +365,32 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsEdgeCreateInput {
+              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
               FriendsWith: FriendsWithCreateInput
             }
 
+            input PersonFriendsEdgeSort {
+              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              FriendsWith: FriendsWithSort
+            }
+
             input PersonFriendsEdgeUpdateInput {
+              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
               FriendsWith: FriendsWithUpdateInput
             }
 
-            input PersonFriendsFieldInput {
-              connect: [PersonFriendsConnectFieldInput!]
-              create: [PersonFriendsCreateFieldInput!]
+            input PersonFriendsEdgeWhere {
+              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              FriendsWith: FriendsWithWhere
             }
 
             type PersonFriendsRelationship {
               cursor: String!
               node: Person!
-              properties: FriendsWith!
+              properties: PersonFriendsRelationshipProperties!
             }
+
+            union PersonFriendsRelationshipProperties = FriendsWith
 
             input PersonFriendsUpdateConnectionInput {
               edge: PersonFriendsEdgeUpdateInput

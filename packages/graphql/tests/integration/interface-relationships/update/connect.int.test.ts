@@ -263,7 +263,6 @@ describe("interface relationships", () => {
         }
     });
 
-    // TODO: fix types to remove ActedIn from edge
     test("should nested connect using interface relationship fields using _on to only connect from certain nested type", async () => {
         const session = await neo4j.getSession();
 
@@ -300,7 +299,7 @@ describe("interface relationships", () => {
                             connect: {
                                 _on: {
                                     Movie: {
-                                        actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name: $name2 } } }
+                                        actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
                                     }
                                 }
                             }

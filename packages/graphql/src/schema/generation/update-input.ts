@@ -38,7 +38,7 @@ import { makeImplementationsUpdateInput } from "./implementation-inputs";
 import { makeConnectionWhereInputType } from "./where-input";
 import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
 import { withCreateFieldInputType } from "./relation-input";
-import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -429,19 +429,8 @@ function makeUpdateConnectionFieldInputTypeFields({
         // fields["node"] = updateInputType;
         fields["node"] = relationshipAdapter.target.operations.updateInputTypeName;
     }
-    // TODO
-    if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
-        const implementationsWithProperties = relationshipAdapter.relationshipImplementations
-            .filter((r) => r.propertiesTypeName)
-            .filter((relationshipAdapter) => relationshipAdapter.nonGeneratedProperties.length > 0);
-        if (implementationsWithProperties.length) {
-            fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;
-        }
-    } else {
-        const hasNonGeneratedProperties = relationshipAdapter.nonGeneratedProperties.length > 0;
-        if (hasNonGeneratedProperties) {
-            fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;
-        }
+    if (relationshipAdapter.hasNonGeneratedProperties) {
+        fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;
     }
     return fields;
 }

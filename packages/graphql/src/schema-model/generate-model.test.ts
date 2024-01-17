@@ -423,24 +423,6 @@ describe("Relationship", () => {
         expect(actors?.target.name).toBe("Actor");
     });
 
-    test.skip("concrete entity has inherited relationship", () => {
-        const movieEntity = schemaModel.concreteEntities.find((e) => e.name === "Movie");
-        const actors = movieEntity?.relationships.get("actors");
-        expect(actors).toBeDefined();
-        expect(actors?.type).toBe("ACTED_IN");
-        expect(actors?.direction).toBe("OUT");
-        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
-        expect(actors?.nestedOperations).toEqual([
-            "CREATE",
-            "UPDATE",
-            "DELETE",
-            "CONNECT",
-            "DISCONNECT",
-            "CONNECT_OR_CREATE",
-        ]);
-        expect(actors?.target.name).toBe("Actor");
-    });
-
     test("concrete entity has overwritten the inherited relationship", () => {
         const showEntity = schemaModel.concreteEntities.find((e) => e.name === "TvShow");
         const actors = showEntity?.relationships.get("actors");
@@ -463,42 +445,6 @@ describe("Relationship", () => {
         const humanEntity = schemaModel.compositeEntities.find((e) => e.name === "Human") as InterfaceEntity;
         const actors = humanEntity?.relationshipDeclarations.get("favoriteActors");
         expect(actors).toBeDefined();
-        expect(actors?.nestedOperations).toEqual([
-            "CREATE",
-            "UPDATE",
-            "DELETE",
-            "CONNECT",
-            "DISCONNECT",
-            "CONNECT_OR_CREATE",
-        ]);
-        expect(actors?.target.name).toBe("Actor");
-    });
-
-    test.skip("composite entity has inherited relationship", () => {
-        const workerEntity = schemaModel.compositeEntities.find((e) => e.name === "Worker") as InterfaceEntity;
-        const actors = workerEntity?.relationships.get("favoriteActors");
-        expect(actors).toBeDefined();
-        expect(actors?.type).toBe("FAVORITE_ACTOR");
-        expect(actors?.direction).toBe("OUT");
-        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
-        expect(actors?.nestedOperations).toEqual([
-            "CREATE",
-            "UPDATE",
-            "DELETE",
-            "CONNECT",
-            "DISCONNECT",
-            "CONNECT_OR_CREATE",
-        ]);
-        expect(actors?.target.name).toBe("Actor");
-    });
-
-    test.skip("concrete entity has inherited relationship of first implemented interface with defined relationship", () => {
-        const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-        const actors = userEntity?.relationships.get("favoriteActors");
-        expect(actors).toBeDefined();
-        expect(actors?.type).toBe("LIKES");
-        expect(actors?.direction).toBe("OUT");
-        expect(actors?.queryDirection).toBe("DEFAULT_DIRECTED");
         expect(actors?.nestedOperations).toEqual([
             "CREATE",
             "UPDATE",
@@ -681,9 +627,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
 
         const movieYear = movieEntity?.attributes.get("year");
-        expect(movieYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(movieYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
-        expect(movieYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(movieYear?.annotations[AnnotationsKey.populatedBy]).toBeUndefined();
 
         const showYear = showEntity?.attributes.get("year");
         expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
@@ -697,8 +641,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
 
         const movieDefaultName = movieEntity?.attributes.get("defaultName");
         expect(movieDefaultName).toBeDefined();
-        expect(movieDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(movieDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+        expect(movieDefaultName?.annotations[AnnotationsKey.default]).toBeUndefined();
 
         const showDefaultName = showEntity?.attributes.get("defaultName");
         expect(showDefaultName).toBeDefined();
@@ -713,7 +656,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         expect(movieAliasedProp?.databaseName).toBeDefined();
         expect(movieAliasedProp?.databaseName).toBe("movieDbName");
         expect(showAliasedProp?.databaseName).toBeDefined();
-        expect(showAliasedProp?.databaseName).toBe("dbName");
+        expect(showAliasedProp?.databaseName).toBe("aliasedProp");
     });
 
     test("composite entity inherits from composite entity", () => {
@@ -757,9 +700,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
 
         const tvProductionYear = tvProductionEntity?.attributes.get("year");
-        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
-        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]).toBeUndefined();
 
         const showYear = showEntity?.attributes.get("year");
         expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
@@ -773,8 +714,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
 
         const tvProductionDefaultName = tvProductionEntity?.attributes.get("defaultName");
         expect(tvProductionDefaultName).toBeDefined();
-        expect(tvProductionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(tvProductionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+        expect(tvProductionDefaultName?.annotations[AnnotationsKey.default]).toBeUndefined();
 
         const showDefaultName = showEntity?.attributes.get("defaultName");
         expect(showDefaultName).toBeDefined();
@@ -789,7 +729,7 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         expect(tvProductionAliasedProp?.databaseName).toBeDefined();
         expect(tvProductionAliasedProp?.databaseName).toBe("movieDbName");
         expect(showAliasedProp?.databaseName).toBeDefined();
-        expect(showAliasedProp?.databaseName).toBe("movieDbName"); // first one listed in the implements list decides
+        expect(showAliasedProp?.databaseName).toBe("aliasedProp");
     });
 });
 

@@ -23,7 +23,13 @@ import type {
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
 } from "graphql";
-import { FIELD_DIRECTIVES, INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES, PROPAGATED_DIRECTIVES } from "../../constants";
+import {
+    FIELD_DIRECTIVES,
+    INTERFACE_DIRECTIVES,
+    OBJECT_DIRECTIVES,
+    PRIVATE,
+    PROPAGATED_DIRECTIVES,
+} from "../../constants";
 import { isInArray } from "../../utils/is-in-array";
 import type { DefinitionNodes } from "../get-definition-nodes";
 
@@ -55,7 +61,9 @@ function getUserDefinedMergedFieldDirectivesForDefinition(
             return userDefinedFieldDirectives;
         }
 
-        const matched = field.directives.filter((directive) => !isInArray(FIELD_DIRECTIVES, directive.name.value));
+        const matched = field.directives.filter(
+            (directive) => !isInArray(FIELD_DIRECTIVES, directive.name.value) && directive.name.value !== PRIVATE
+        );
         if (matched.length) {
             userDefinedFieldDirectives.set(field.name.value, matched);
         }

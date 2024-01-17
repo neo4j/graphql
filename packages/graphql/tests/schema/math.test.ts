@@ -1795,6 +1795,10 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Person.actedInMovies field.
+            Type describing relationship properties for the Movie.actors field.
+            \\"\\"\\"
             type ActedIn {
               pay: Float
               roles: [String!]

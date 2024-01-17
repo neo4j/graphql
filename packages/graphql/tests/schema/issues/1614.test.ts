@@ -263,6 +263,9 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the CrewMember.movies field.
+            \\"\\"\\"
             type CrewPosition {
               position: CrewPositionType
             }

@@ -45,6 +45,7 @@ export function withObjectType({
             name: entityAdapter.propertiesTypeName as string, // this is checked one layer above in execution
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(userDefinedObjectDirectives),
+            description: `Type describing relationship properties for the ${entityAdapter.source.name}.${entityAdapter.name} field.`,
         });
         return composeObject;
     }

@@ -539,6 +539,10 @@ describe("String Comparators", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Movie.actors field.
+            Type describing relationship properties for the Actor.actedIn field.
+            \\"\\"\\"
             type ActedIn {
               screenTime: String
             }

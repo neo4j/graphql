@@ -50,6 +50,10 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Actor.movies field.
+            Type describing relationship properties for the Movie.actors field.
+            \\"\\"\\"
             type ActedIn {
               leadRole: Boolean!
               screenTime: Int!
@@ -795,6 +799,10 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Actor.movies field.
+            Type describing relationship properties for the Movie.actors field.
+            \\"\\"\\"
             type ActedIn {
               id: ID!
               screenTime: Int!
@@ -1589,6 +1597,10 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            Type describing relationship properties for the Actor.movies field.
+            Type describing relationship properties for the Movie.actors field.
+            \\"\\"\\"
             type ActedIn {
               id: ID!
               timestamp: DateTime!

@@ -1085,6 +1085,7 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /** Type describing relationship properties for the Movie.actors field. */
             export type ActedIn = {
               __typename?: \\"ActedIn\\";
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
@@ -2044,6 +2045,10 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            /**
+             * Type describing relationship properties for the FAQ.entries field.
+             * Type describing relationship properties for the FAQEntry.inFAQs field.
+             */
             export type FaqEntryInFaq = {
               __typename?: \\"FaqEntryInFaq\\";
               position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;

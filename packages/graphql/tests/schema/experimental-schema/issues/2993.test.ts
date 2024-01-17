@@ -81,6 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Type describing relationship properties for the User.following field.\\"\\"\\"
             type FOLLOWS {
               since: DateTime!
             }
@@ -510,6 +511,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Type describing relationship properties for the User.following field.\\"\\"\\"
             type FOLLOWS {
               since: DateTime!
             }

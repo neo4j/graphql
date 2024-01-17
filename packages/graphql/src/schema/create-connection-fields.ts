@@ -25,6 +25,7 @@ import type {
     ObjectTypeComposer,
     ObjectTypeComposerArgumentConfigMapDefinition,
     SchemaComposer,
+    UnionTypeComposer,
 } from "graphql-compose";
 import { Relationship } from "../classes";
 import { DEPRECATED } from "../constants";
@@ -33,7 +34,7 @@ import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/Con
 import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { ConnectionQueryArgs } from "../types";
 import { DEPRECATE_NOT } from "./constants";
 import { addDirectedArgument } from "./directed-argument";
@@ -43,10 +44,12 @@ import { connectionFieldResolver } from "./pagination";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
 function addConnectionSortField({
+    connectionSortITC,
     schemaComposer,
     relationshipAdapter,
     composeNodeArgs,
 }: {
+    connectionSortITC: InputTypeComposer;
     schemaComposer: SchemaComposer;
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition;
@@ -70,21 +73,37 @@ function addConnectionSortField({
         We include all properties here to maintain existing behaviour.
         In future sorting by arrays should become an aggregation sort because it sorts by the length of the array.
     */
-    //    TODO
-    if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.propertiesTypeName) {
-        // if (relationshipAdapter.sortableFields.length) {
-        fields["edge"] = relationshipAdapter.operations.sortInputTypeName;
+    if (relationshipAdapter.hasAnyProperties) {
+        // if edge field was already set do not update unless target is Union
+        // because Unions depend on concrete types
+        if (!connectionSortITC.hasField("edge") || relationshipAdapter.target instanceof UnionEntityAdapter) {
+            fields["edge"] = relationshipAdapter.operations.sortInputTypeName;
+        }
     }
 
     if (Object.keys(fields).length === 0) {
         return undefined;
     }
 
-    const connectionSortITC = schemaComposer.getOrCreateITC(relationshipAdapter.operations.connectionSortInputTypename);
     connectionSortITC.addFields(fields);
     composeNodeArgs.sort = connectionSortITC.NonNull.List;
 
     return connectionSortITC;
+}
+
+function shouldGenerateConnectionSortInput(
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
+): boolean {
+    if (relationshipAdapter.hasAnyProperties) {
+        return true;
+    }
+    if (
+        !(relationshipAdapter.target instanceof UnionEntityAdapter) &&
+        relationshipAdapter.target.operations.sortInputTypeName
+    ) {
+        return true;
+    }
+    return false;
 }
 
 function addConnectionWhereFields({
@@ -107,8 +126,11 @@ function addConnectionWhereFields({
         },
     });
 
-    // TODO
-    if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.propertiesTypeName) {
+    if (inputTypeComposer.hasField("edge")) {
+        return;
+    }
+
+    if (relationshipAdapter.hasAnyProperties) {
         inputTypeComposer.addFields({
             edge: relationshipAdapter.operations.whereInputTypeName,
             edge_NOT: {
@@ -165,11 +187,15 @@ export function createConnectionFields({
             });
         });
 
-        // TODO
-        if (relationship instanceof RelationshipAdapter && relationship.propertiesTypeName) {
-            const propertiesObjectType = schemaComposer.getOTC(relationship.propertiesTypeName);
+        if (!relationshipObjectType.hasField("properties") && relationship.hasAnyProperties) {
+            let propertiesType: UnionTypeComposer | ObjectTypeComposer | undefined;
+            if (relationship instanceof RelationshipDeclarationAdapter) {
+                propertiesType = schemaComposer.getUTC(relationship.operations.relationshipPropertiesFieldTypename);
+            } else {
+                propertiesType = schemaComposer.getOTC(relationship.propertiesTypeName);
+            }
             relationshipObjectType.addFields({
-                properties: propertiesObjectType.NonNull,
+                properties: propertiesType.NonNull,
             });
         }
 
@@ -214,11 +240,17 @@ export function createConnectionFields({
             });
         }
 
-        addConnectionSortField({
-            schemaComposer,
-            relationshipAdapter: relationship,
-            composeNodeArgs,
-        });
+        if (shouldGenerateConnectionSortInput(relationship)) {
+            const connectionSortITC = schemaComposer.getOrCreateITC(
+                relationship.operations.connectionSortInputTypename
+            );
+            addConnectionSortField({
+                connectionSortITC,
+                schemaComposer,
+                relationshipAdapter: relationship,
+                composeNodeArgs,
+            });
+        }
 
         // This needs to be done after the composeNodeArgs.sort is set (through addConnectionSortField for example)
         if (relationship.isReadable()) {

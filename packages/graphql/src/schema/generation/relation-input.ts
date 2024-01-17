@@ -29,7 +29,7 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { withCreateInputType } from "./create-input";
 
 export function withRelationInputType({
@@ -225,19 +225,8 @@ function makeCreateFieldInputTypeFields({
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
-    // TODO
-    if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
-        const implementationsWithProperties = relationshipAdapter.relationshipImplementations
-            .filter((r) => r.propertiesTypeName)
-            .filter((relationshipAdapter) => relationshipAdapter.nonGeneratedProperties.length > 0);
-        if (implementationsWithProperties.length) {
-            fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
-        }
-    } else {
-        const hasNonGeneratedProperties = relationshipAdapter.nonGeneratedProperties.length > 0;
-        if (hasNonGeneratedProperties) {
-            fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
-        }
+    if (relationshipAdapter.hasNonGeneratedProperties) {
+        fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
     }
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
         // tODO: fix deprecatedDirectives and use the reference here instead of string

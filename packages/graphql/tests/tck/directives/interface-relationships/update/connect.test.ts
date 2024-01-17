@@ -264,7 +264,6 @@ describe("Interface Relationships - Update connect", () => {
         `);
     });
 
-    // TODO: fix types to remove ActedIn from edge
     test("Update connect to an interface relationship and nested connect using _on to connect only one implementation", async () => {
         const query = gql`
             mutation {
@@ -275,12 +274,7 @@ describe("Interface Relationships - Update connect", () => {
                             where: { node: { title_STARTS_WITH: "The " } }
                             connect: {
                                 _on: {
-                                    Movie: {
-                                        actors: {
-                                            edge: { ActedIn: { screenTime: 90 } }
-                                            where: { node: { name: "Actor" } }
-                                        }
-                                    }
+                                    Movie: { actors: { edge: { screenTime: 90 }, where: { node: { name: "Actor" } } } }
                                 }
                             }
                         }
@@ -378,7 +372,6 @@ describe("Interface Relationships - Update connect", () => {
         `);
     });
 
-    // TODO: fix types to remove ActedIn from edge inside _on.Movie
     test("Update connect to an interface relationship and nested connect using _on to override connection", async () => {
         const query = gql`
             mutation {
@@ -392,7 +385,7 @@ describe("Interface Relationships - Update connect", () => {
                                 _on: {
                                     Movie: {
                                         actors: {
-                                            edge: { ActedIn: { screenTime: 90 } }
+                                            edge: { screenTime: 90 }
                                             where: { node: { name: "Different Actor" } }
                                         }
                                     }
