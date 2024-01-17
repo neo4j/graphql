@@ -1,11 +1,3 @@
-import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { filterTruthy } from "../../../../utils/utils";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { ReadOperation } from "./ReadOperation";
-import { Operation, type OperationTranspileResult } from "./operations";
-
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -24,6 +16,14 @@ import { Operation, type OperationTranspileResult } from "./operations";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { filterTruthy } from "../../../../utils/utils";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
+import type { ReadOperation } from "./ReadOperation";
+import { Operation, type OperationTranspileResult } from "./operations";
 
 /**
  * This is currently just a dummy tree node,
