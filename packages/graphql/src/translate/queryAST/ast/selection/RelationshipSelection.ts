@@ -31,12 +31,14 @@ export class RelationshipSelection extends EntitySelection {
     private targetOverride: ConcreteEntityAdapter | undefined;
     private alias: string | undefined;
     private directed: boolean;
+    private optional: boolean;
 
     constructor({
         relationship,
         alias,
         directed,
         targetOverride,
+        optional,
     }: {
         relationship: RelationshipAdapter;
         alias?: string;
@@ -49,6 +51,7 @@ export class RelationshipSelection extends EntitySelection {
         this.alias = alias;
         this.directed = directed ?? true;
         this.targetOverride = targetOverride;
+        this.optional = optional ?? false;
     }
 
     public apply(context: QueryASTContext<Cypher.Node>): {
@@ -70,9 +73,13 @@ export class RelationshipSelection extends EntitySelection {
 
         // NOTE: Direction not passed (can we remove it from context?)
         const nestedContext = context.push({ target: targetNode, relationship: relVar });
+        const match = new Cypher.Match(pattern);
+        if (this.optional) {
+            match.optional();
+        }
         return {
             nestedContext: nestedContext,
-            selection: new Cypher.Match(pattern),
+            selection: match,
         };
     }
 }

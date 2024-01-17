@@ -26,6 +26,7 @@ import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import { ReadOperation } from "./operations/ReadOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
+import { DeleteOperation } from "./operations/DeleteOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -78,13 +79,16 @@ export class QueryAST {
     }
 
     public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
+        if (
+            this.operation instanceof ReadOperation ||
+            this.operation instanceof ConnectionReadOperation ||
+            this.operation instanceof DeleteOperation
+        ) {
+            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
+        }
         if (this.operation instanceof AggregationOperation) {
             return createNodeFromEntity(this.operation.entity as any, neo4jGraphQLContext, this.operation.nodeAlias);
         }
-        if (this.operation.target) {
-            return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
-        }
-        throw new Error("I guess at some point we need this target");
     }
 
     public print(): string {
@@ -107,7 +111,7 @@ function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
         // in case of depth > 2 there are two pipes rather than one.
         let fillerLength = (line.length + 1) * (depth - 1);
         if (depth > 2) {
-            fillerLength += 1;
+            fillerLength += depth - 2;
         }
 
         resultLines.push(`|${" ".repeat(fillerLength)}|${line} ${nodeName}`);

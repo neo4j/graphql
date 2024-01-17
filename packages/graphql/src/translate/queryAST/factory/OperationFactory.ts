@@ -658,20 +658,16 @@ export class OperationsFactory {
         return topLevelConnectionResolveTree;
     }
 
-    /**
-     * useNodeAndEdge is used to determine if the where argument should be split into node and edge. Top level does not contains node.
-     *
-     */
     private parseDeleteArgs(
         args: Record<string, any>,
-        useNodeAndEdge: boolean
+        isTopLevel: boolean
     ): {
         whereArg: { node: Record<string, any>; edge: Record<string, any> };
         deleteArg: Record<string, any>;
     } {
         let whereArg;
         const rawWhere = isRecord(args.where) ? args.where : {};
-        if (useNodeAndEdge) {
+        if (isTopLevel) {
             whereArg = { node: rawWhere.node ?? {}, edge: rawWhere.edge ?? {} };
         } else {
             whereArg = { node: rawWhere, edge: {} };
@@ -691,81 +687,193 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
     }): DeleteOperation {
-        console.log(JSON.stringify(resolveTree.args, null, 2));
-        const deleteOP = this.createDeleteOperation({ entityOrRel: entity, args: resolveTree.args, context, varName });
-        /*    if (!deleteOP) {
-            throw new Error("Failed to create delete operation");
-        } */
-        return deleteOP;
+        checkEntityAuthentication({
+            entity: entity.entity,
+            targetOperations: ["DELETE"],
+            context,
+        });
+        const { whereArg, deleteArg } = this.parseDeleteArgs(resolveTree.args, false);
+        const selection = new NodeSelection({
+            target: entity,
+            alias: varName,
+        });
+        const nodeFilters = this.filterFactory.createNodeFilters(entity, whereArg.node);
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(entity, ["DELETE"], context);
+        const authValidateBefore = this.authorizationFactory.createEntityAuthValidate(
+            entity,
+            ["DELETE"],
+            context,
+            "BEFORE"
+        );
+        const authValidateAfter = this.authorizationFactory.createEntityAuthValidate(
+            entity,
+            ["DELETE"],
+            context,
+            "AFTER"
+        );
+
+        const authBeforeFilters = filterTruthy([authFilters, authValidateBefore]);
+        /*         
+        TODO Add attribute auth
+        const authNodeAttributeFilters = this.createAttributeAuthFilters({
+            entity,
+            context,
+            rawFields: resolveTreeNodeFields,
+        });
+
+        const authNodeAttributeValidate = this.createAttributeAuthValidate({
+            entity,
+            context,
+            rawFields: resolveTreeNodeFields,
+            when: "BEFORE",
+        }); */
+
+        const nestedDeleteOperations = this.createNestedDeleteOperations(deleteArg, entity, context);
+        return new DeleteOperation({
+            target: entity,
+            selection,
+            filters: nodeFilters,
+            authFilters: authBeforeFilters,
+            authAfterFilters: authValidateAfter,
+            nestedDeleteOperations,
+        });
     }
 
-    private createDeleteOperation({
-        entityOrRel,
-        args,
-        context,
-        varName,
-    }: {
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter;
-        args: Record<string, any>;
-        context: Neo4jGraphQLTranslationContext;
-        varName?: string;
-    }): DeleteOperation {
-        /*   const responseFields = Object.values(
-            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
-        ); */
-        const { whereArg, deleteArg } = this.parseDeleteArgs(args, !isConcreteEntity(entityOrRel));
-        const selection = isConcreteEntity(entityOrRel)
-            ? new NodeSelection({
-                  target: entityOrRel,
-                  alias: varName,
-              })
-            : new RelationshipSelection({
-                  relationship: entityOrRel,
-                  directed: true,
-              });
-        // const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
-        // const resolveTreeDelete: Record<string, any> = isObject(resolveTree.args.delete) ? resolveTree.args.delete : {};
-
-        const nodeFilters = isConcreteEntity(entityOrRel)
-            ? this.filterFactory.createNodeFilters(entityOrRel, whereArg.node)
-            : this.filterFactory.createNodeFilters(entityOrRel.target, whereArg.node);
-        const edgeFilters = isConcreteEntity(entityOrRel)
-            ? []
-            : this.filterFactory.createEdgeFilters(entityOrRel, whereArg.edge);
-        const filters = [...nodeFilters, ...edgeFilters];
-        const target = isConcreteEntity(entityOrRel) ? entityOrRel : (entityOrRel.target as ConcreteEntityAdapter);
-
-        //const { whereArg, deleteArg } = this.parseDeleteArgs(deleteArg[entityOrRel.target.name]);
-
-        const nestedDeleteOperations = Object.entries(deleteArg).flatMap(([key, value]) => {
-            if (isConcreteEntity(entityOrRel)) {
-                const nestedTarget = entityOrRel.findRelationship(key);
+    private createNestedDeleteOperations(
+        deleteArg: Record<string, any>,
+        target: ConcreteEntityAdapter,
+        context: Neo4jGraphQLTranslationContext
+    ): DeleteOperation[] {
+        return filterTruthy(
+            Object.entries(deleteArg).flatMap(([key, value]) => {
+                if (key === "_on") {
+                    const concreteDeleteArg = value[target.name];
+                    if (concreteDeleteArg) {
+                        return asArray(concreteDeleteArg).flatMap((v) => {
+                            return this.createNestedDeleteOperations(v, target, context);
+                        });
+                    }
+                    return;
+                }
+                const nestedTarget = target.findRelationship(key);
                 if (!nestedTarget) {
                     throw new Error(`Failed to find relationship ${key}`);
                 }
-                return asArray(value).map((v) => {
-                    return this.createDeleteOperation({
-                        entityOrRel: nestedTarget,
+                return asArray(value).flatMap((v) => {
+                    return this.createNestedDeleteOperation({
+                        relationship: nestedTarget,
                         args: v,
                         context,
                     });
                 });
+            })
+        );
+    }
+
+    private createNestedDeleteOperation({
+        relationship,
+        args,
+        context,
+        concreteTarget,
+        sharedFilters,
+    }: {
+        relationship: RelationshipAdapter;
+        args: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+        concreteTarget?: ConcreteEntityAdapter;
+        sharedFilters?: Filter[];
+    }): DeleteOperation[] {
+        const target = concreteTarget ?? relationship.target;
+        const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
+        if (isUnionEntity(target)) {
+            throw new Error("Union entities are not supported in nested delete operations");
+        }
+
+        if (isInterfaceEntity(target)) {
+            if (this.experimental) {
+                const sharedFilters = this.filterFactory.createNodeFilters(relationship.target, whereArg.node);
+                return target.concreteEntities.flatMap((concreteEntity) => {
+                    return this.createNestedDeleteOperation({
+                        relationship,
+                        args,
+                        context,
+                        concreteTarget: concreteEntity,
+                        sharedFilters,
+                    });
+                });
             }
-            // TODO: are only concrete entities allowed in nested delete?
-            const nestedTarget = (entityOrRel.target as ConcreteEntityAdapter).findRelationship(key);
-            if (!nestedTarget) {
-                throw new Error(`Failed to find relationship ${key}`);
-            }
-            return asArray(value).map((v) => {
-                return this.createDeleteOperation({
-                    entityOrRel: nestedTarget,
-                    args: v,
+            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
+            return concreteEntities.flatMap((concreteEntity) => {
+                return this.createNestedDeleteOperation({
+                    relationship,
+                    args,
                     context,
+                    concreteTarget: concreteEntity,
+                    sharedFilters,
                 });
             });
+        }
+
+        if (isConcreteEntity(target)) {
+            checkEntityAuthentication({
+                entity: target.entity,
+                targetOperations: ["DELETE"],
+                context,
+            });
+        }
+
+        const selection = new RelationshipSelection({
+            relationship,
+            directed: true,
+            optional: true,
+            targetOverride: concreteTarget,
+        });
+        const nodeFilters = sharedFilters ?? this.filterFactory.createNodeFilters(target, whereArg.node);
+        const edgeFilters = this.filterFactory.createEdgeFilters(relationship, whereArg.edge);
+
+        const filters = [...nodeFilters, ...edgeFilters];
+
+        const authFilters = this.authorizationFactory.createEntityAuthFilters(target, ["DELETE"], context);
+        const authValidateBefore = this.authorizationFactory.createEntityAuthValidate(
+            target,
+            ["DELETE"],
+            context,
+            "BEFORE"
+        );
+        const authValidateAfter = this.authorizationFactory.createEntityAuthValidate(
+            target,
+            ["DELETE"],
+            context,
+            "AFTER"
+        );
+
+        const authBeforeFilters = filterTruthy([authFilters, authValidateBefore]);
+        /*         
+        TODO Add attribute auth
+        const authNodeAttributeFilters = this.createAttributeAuthFilters({
+            entity,
+            context,
+            rawFields: resolveTreeNodeFields,
         });
 
-        return new DeleteOperation({ target, selection, filters, nestedDeleteOperations });
+        const authNodeAttributeValidate = this.createAttributeAuthValidate({
+            entity,
+            context,
+            rawFields: resolveTreeNodeFields,
+            when: "BEFORE",
+        }); */
+
+        const nestedDeleteOperations = this.createNestedDeleteOperations(deleteArg, target, context);
+        return [
+            new DeleteOperation({
+                target: target,
+                selection,
+                filters,
+                authFilters: authBeforeFilters,
+                authAfterFilters: authValidateAfter,
+                nestedDeleteOperations,
+            }),
+        ];
     }
 
     private createCreateOperation(

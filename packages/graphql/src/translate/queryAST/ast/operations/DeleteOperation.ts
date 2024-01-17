@@ -22,36 +22,43 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { ReadOperation } from "./ReadOperation";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import { hasTarget } from "../../utils/context-has-target";
 import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
 import type { Filter } from "../filters/Filter";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export class DeleteOperation extends Operation {
-    public readonly target: ConcreteEntityAdapter;
-    public projectionOperations: ReadOperation[] = [];
+    public readonly target: ConcreteEntityAdapter | InterfaceEntityAdapter;
     public nodeAlias: string | undefined; // This is just to maintain naming with the old way (this), remove after refactor
     private selection: EntitySelection;
     private filters: Filter[];
+    private authFilters: Filter[];
+    private authAfterFilters: Filter | undefined; // contains only validate after rules
     private nestedDeleteOperations: DeleteOperation[];
 
     constructor({
         target,
         selection,
-        filters,
         nestedDeleteOperations = [],
+        filters = [],
+        authFilters = [],
+        authAfterFilters,
     }: {
-        target: ConcreteEntityAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         selection: EntitySelection;
-        filters: Filter[];
+        filters?: Filter[];
         nestedDeleteOperations?: DeleteOperation[];
+        authFilters?: Filter[];
+        authAfterFilters: Filter | undefined;
     }) {
         super();
         this.target = target;
         this.selection = selection;
         this.filters = filters;
+        this.authFilters = authFilters;
+        this.authAfterFilters = authAfterFilters;
         this.nestedDeleteOperations = nestedDeleteOperations;
     }
 
@@ -59,12 +66,47 @@ export class DeleteOperation extends Operation {
         return filterTruthy([
             this.selection,
             ...this.filters,
-            ...(this.nestedDeleteOperations ?? []),
-            ...this.projectionOperations,
+            ...this.authFilters,
+            this.authAfterFilters,
+            ...this.nestedDeleteOperations,
         ]);
     }
 
-    public transpileNested(
+    public transpile(context: QueryASTContext): OperationTranspileResult {
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
+        const { selection, nestedContext } = this.selection.apply(context);
+        if (nestedContext.relationship) {
+            return this.transpileNested(selection, nestedContext);
+        }
+        return this.transpileTopLevel(selection, nestedContext);
+    }
+
+    private transpileTopLevel(
+        selection: SelectionClause,
+        context: QueryASTContext<Cypher.Node>
+    ): OperationTranspileResult {
+        this.validateSelection(selection);
+        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
+        const authBeforeSubqueries = this.getAuthFilterSubqueries(context);
+        const predicate = this.getPredicate(context);
+        const extraSelections = this.getExtraSelections(context);
+
+        const nestedDeleteOperations: (Cypher.Call | Cypher.With)[] = this.getNestedDeleteSubQueries(context);
+        if (nestedDeleteOperations.length) {
+            nestedDeleteOperations.unshift(new Cypher.With("*"));
+        }
+        let statements = [selection, ...extraSelections, ...filterSubqueries, ...authBeforeSubqueries];
+        statements = this.appendFilters(statements, predicate);
+        statements.push(...nestedDeleteOperations);
+        statements = this.appendDeleteClause(statements, context);
+        const ret = Cypher.concat(...statements);
+
+        return { clauses: [ret], projectionExpr: new Cypher.NamedNode("IDK") };
+    }
+
+    private transpileNested(
         selection: SelectionClause,
         context: QueryASTContext<Cypher.Node>
     ): OperationTranspileResult {
@@ -72,11 +114,10 @@ export class DeleteOperation extends Operation {
         if (!context.relationship) {
             throw new Error("Transpile Error");
         }
-        selection.optional();
+        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
+        const authBeforeSubqueries = this.getAuthFilterSubqueries(context);
         const predicate = this.getPredicate(context);
-        if (predicate) {
-            selection.where(predicate);
-        }
+        const extraSelections = this.getExtraSelections(context);
         const collect = Cypher.collect(context.target).distinct();
         const deleteVar = new Cypher.Variable();
         const withBeforeDeleteBlock = new Cypher.With(context.relationship, [collect, deleteVar]);
@@ -85,64 +126,61 @@ export class DeleteOperation extends Operation {
         const deleteClause = new Cypher.Unwind([deleteVar, unwindDeleteVar]).detachDelete(unwindDeleteVar);
 
         const deleteBlock = new Cypher.Call(deleteClause).innerWith(deleteVar);
-        const nestedDeleteOperations: Cypher.Call[] = this.getNestedSubQueries(context);
-        let ret: Cypher.Clause;
-        if (nestedDeleteOperations.length > 0) {
-            const withBeforeCalls = new Cypher.With("*");
-
-            ret = Cypher.concat(
-                selection,
-                withBeforeCalls,
-                ...nestedDeleteOperations,
-                withBeforeDeleteBlock,
-                deleteBlock
-            );
-        } else {
-            ret = Cypher.concat(selection, withBeforeDeleteBlock, deleteBlock);
+        const nestedDeleteOperations: (Cypher.Call | Cypher.With)[] = this.getNestedDeleteSubQueries(context);
+        if (nestedDeleteOperations.length) {
+            nestedDeleteOperations.unshift(new Cypher.With("*"));
         }
+        const statements = this.appendFilters(
+            [selection, ...extraSelections, ...filterSubqueries, ...authBeforeSubqueries],
+            predicate
+        );
+        statements.push(...[...nestedDeleteOperations, withBeforeDeleteBlock, deleteBlock]);
+        const ret = Cypher.concat(...statements);
         return { clauses: [ret], projectionExpr: new Cypher.NamedNode("IDK") };
     }
 
-    public transpileTopLevel(
-        selection: SelectionClause,
-        context: QueryASTContext<Cypher.Node>
-    ): OperationTranspileResult {
-        this.validateSelection(selection);
-        const predicate = this.getPredicate(context);
-        if (predicate) {
-            selection.where(predicate);
+    private appendDeleteClause(clauses: Cypher.Clause[], context: QueryASTContext<Cypher.Node>): Cypher.Clause[] {
+        const lastClause = clauses[clauses.length - 1];
+        if (!lastClause) {
+            throw new Error("Transpile error");
         }
-        const nestedDeleteOperations: Cypher.Call[] = this.getNestedSubQueries(context);
-        let ret: Cypher.Clause;
-        if (nestedDeleteOperations.length > 0) {
-            const withBeforeCalls = new Cypher.With("*");
-
-            ret = Cypher.concat(
-                selection,
-                withBeforeCalls,
-                ...nestedDeleteOperations,
-                new Cypher.With("*").detachDelete(context.target)
-            );
-        } else {
-            ret = selection.detachDelete(context.target);
+        if (
+            lastClause instanceof Cypher.Match ||
+            lastClause instanceof Cypher.OptionalMatch ||
+            lastClause instanceof Cypher.With
+        ) {
+            lastClause.detachDelete(context.target);
+            return clauses;
         }
-
-        return { clauses: [ret], projectionExpr: new Cypher.NamedNode("IDK") };
+        const extraWith = new Cypher.With("*");
+        extraWith.detachDelete(context.target);
+        clauses.push(extraWith);
+        return clauses;
     }
 
-    public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (!hasTarget(context)) {
-            throw new Error("No parent node found!");
+    private appendFilters(clauses: Cypher.Clause[], predicate: Cypher.Predicate | undefined): Cypher.Clause[] {
+        if (!predicate) {
+            return clauses;
         }
-
-        const { selection, nestedContext } = this.selection.apply(context);
-        if (nestedContext.relationship) {
-            return this.transpileNested(selection, nestedContext);
+        const lastClause = clauses[clauses.length - 1];
+        if (!lastClause) {
+            throw new Error("Transpile error");
         }
-        return this.transpileTopLevel(selection, nestedContext);
+        if (
+            lastClause instanceof Cypher.Match ||
+            lastClause instanceof Cypher.OptionalMatch ||
+            lastClause instanceof Cypher.With
+        ) {
+            lastClause.where(predicate);
+            return clauses;
+        }
+        const withClause = new Cypher.With("*");
+        withClause.where(predicate);
+        clauses.push(withClause);
+        return clauses;
     }
 
-    private getNestedSubQueries(context: QueryASTContext): Cypher.Call[] {
+    private getNestedDeleteSubQueries(context: QueryASTContext): Cypher.Call[] {
         const nestedDeleteOperations: Cypher.Call[] = [];
         for (const nestedDeleteOperation of this.nestedDeleteOperations) {
             const { clauses } = nestedDeleteOperation.transpile(context);
@@ -153,12 +191,24 @@ export class DeleteOperation extends Operation {
 
     private validateSelection(selection: SelectionClause): asserts selection is Cypher.Match {
         if (!(selection instanceof Cypher.Match)) {
-            throw new Error("Yield is not a valid selection");
+            throw new Error("Yield is not a valid selection for Delete Operation");
         }
     }
 
     private getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        //  const authPredicates = this.getAuthFilterPredicate(queryASTContext);
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext))); //, ...authPredicates);
+        const authBeforePredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authBeforePredicates);
+    }
+
+    private getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    }
+
+    private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    private getExtraSelections(context: QueryASTContext): (Cypher.Match | Cypher.With)[] {
+        return this.getChildren().flatMap((f) => f.getSelection(context));
     }
 }

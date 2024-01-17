@@ -115,7 +115,7 @@ export class AuthorizationFactory {
         authAnnotation: AuthorizationAnnotation;
         operations: AuthorizationOperation[];
         context: Neo4jGraphQLTranslationContext;
-    }): AuthorizationFilters {
+    }): AuthorizationFilters | undefined {
         const rulesMatchingWhereOperations = findMatchingRules(authAnnotation.filter ?? [], operations);
 
         const whereFilters = rulesMatchingWhereOperations.flatMap((rule) => {
@@ -133,6 +133,9 @@ export class AuthorizationFactory {
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
         });
+        if (!whereFilters.length) {
+            return;
+        }
 
         return new AuthorizationFilters({
             validationFilters: [],

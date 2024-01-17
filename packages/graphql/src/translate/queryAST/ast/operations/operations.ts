@@ -20,7 +20,6 @@
 import type Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../QueryASTContext";
 import { QueryASTNode } from "../QueryASTNode";
-import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 
 export type OperationTranspileResult = {
     projectionExpr: Cypher.Expr;
@@ -29,7 +28,6 @@ export type OperationTranspileResult = {
 };
 
 export abstract class Operation extends QueryASTNode {
-    public target: EntityAdapter | undefined;
     public nodeAlias: string | undefined;
 
     abstract transpile(context: QueryASTContext): OperationTranspileResult;

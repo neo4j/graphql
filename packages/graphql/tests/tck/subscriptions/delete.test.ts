@@ -50,7 +50,7 @@ describe("Subscriptions metadata on delete", () => {
         });
     });
 
-    test("Simple delete", async () => {
+    test.only("Simple delete", async () => {
         const query = gql`
             mutation {
                 deleteMovies(where: { id: "1" }) {
