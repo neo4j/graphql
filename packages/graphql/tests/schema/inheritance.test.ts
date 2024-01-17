@@ -60,6 +60,7 @@ describe("inheritance", () => {
 
             type Actor implements Person @customDirectiveObj {
               friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
@@ -133,6 +134,20 @@ describe("inheritance", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorPersonFriendsAggregationSelection {
+              count: Int!
+              edge: ActorPersonFriendsEdgeAggregateSelection
+              node: ActorPersonFriendsNodeAggregateSelection
+            }
+
+            type ActorPersonFriendsEdgeAggregateSelection {
+              since: IntAggregateSelectionNullable!
+            }
+
+            type ActorPersonFriendsNodeAggregateSelection {
+              name: StringAggregateSelectionNullable!
             }
 
             input ActorRelationInput {
@@ -246,6 +261,13 @@ describe("inheritance", () => {
               since_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
+            type IntAggregateSelectionNullable {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
@@ -264,6 +286,11 @@ describe("inheritance", () => {
               friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
+            }
+
+            type PersonAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNullable!
             }
 
             input PersonConnectInput {
@@ -364,6 +391,10 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
+            enum PersonImplementation {
+              Actor
+            }
+
             input PersonImplementationsConnectInput {
               Actor: [ActorConnectInput!]
             }
@@ -378,10 +409,6 @@ describe("inheritance", () => {
 
             input PersonImplementationsUpdateInput {
               Actor: ActorUpdateInput
-            }
-
-            input PersonImplementationsWhere {
-              Actor: ActorWhere
             }
 
             input PersonOptions {
@@ -407,7 +434,9 @@ describe("inheritance", () => {
             }
 
             input PersonWhere {
-              _on: PersonImplementationsWhere
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
               friendsConnection: PersonFriendsConnectionWhere @deprecated(reason: \\"Use \`friendsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
@@ -436,12 +465,15 @@ describe("inheritance", () => {
               name_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [PersonImplementation!]
             }
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
+              people(options: PersonOptions, where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

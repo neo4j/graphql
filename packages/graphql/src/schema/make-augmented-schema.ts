@@ -382,7 +382,6 @@ function makeAugmentedSchema({
             composeNode,
             subgraph,
             userDefinedFieldDirectives,
-            experimental,
         });
         relationships = [
             ...relationships,
@@ -484,20 +483,18 @@ function makeAugmentedSchema({
                 composer,
                 experimental,
             });
-            if (experimental) {
-                // strip-out the schema config directives from the union type
-                const def = composer.getUTC(unionEntityAdapter.name);
-                def.setDirectives(
-                    graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
-                );
+            // strip-out the schema config directives from the union type
+            const def = composer.getUTC(unionEntityAdapter.name);
+            def.setDirectives(
+                graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
+            );
 
-                if (unionEntityAdapter.isReadable) {
-                    composer.Query.addFields({
-                        [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                            entityAdapter: unionEntityAdapter,
-                        }),
-                    });
-                }
+            if (unionEntityAdapter.isReadable) {
+                composer.Query.addFields({
+                    [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                        entityAdapter: unionEntityAdapter,
+                    }),
+                });
             }
             return;
         }
@@ -518,35 +515,33 @@ function makeAugmentedSchema({
                     includeRelationships: true,
                 },
             });
-            if (experimental) {
-                // TODO: mirror everything on interfaces target of relationships
-                withWhereInputType({
-                    entityAdapter: interfaceEntityAdapter,
-                    userDefinedFieldDirectives,
-                    features,
-                    composer,
-                    experimental,
-                });
-                withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
-                if (interfaceEntityAdapter.isReadable) {
-                    composer.Query.addFields({
-                        [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                            entityAdapter: interfaceEntityAdapter,
-                        }),
-                    });
-                    composer.Query.setFieldDirectives(
-                        interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-                        graphqlDirectivesToCompose(propagatedDirectives)
-                    );
-                }
-                if (interfaceEntityAdapter.isAggregable) {
-                    addInterfaceAggregateSelectionStuff({
+            // TODO: mirror everything on interfaces target of relationships
+            withWhereInputType({
+                entityAdapter: interfaceEntityAdapter,
+                userDefinedFieldDirectives,
+                features,
+                composer,
+                experimental,
+            });
+            withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
+            if (interfaceEntityAdapter.isReadable) {
+                composer.Query.addFields({
+                    [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                         entityAdapter: interfaceEntityAdapter,
-                        aggregationTypesMapper,
-                        propagatedDirectives,
-                        composer,
-                    });
-                }
+                    }),
+                });
+                composer.Query.setFieldDirectives(
+                    interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+                    graphqlDirectivesToCompose(propagatedDirectives)
+                );
+            }
+            if (interfaceEntityAdapter.isAggregable) {
+                addInterfaceAggregateSelectionStuff({
+                    entityAdapter: interfaceEntityAdapter,
+                    aggregationTypesMapper,
+                    propagatedDirectives,
+                    composer,
+                });
             }
             return;
         }
@@ -808,7 +803,6 @@ function doForInterfacesThatAreTargetOfARelationship({
         composeNode: composeInterface,
         subgraph,
         userDefinedFieldDirectives,
-        experimental,
     });
     relationships = [
         ...relationships,
@@ -821,28 +815,26 @@ function doForInterfacesThatAreTargetOfARelationship({
         }),
     ];
 
-    if (experimental) {
-        const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
-        if (interfaceEntityAdapter.isReadable) {
-            composer.Query.addFields({
-                [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                    entityAdapter: interfaceEntityAdapter,
-                }),
-            });
+    const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+    if (interfaceEntityAdapter.isReadable) {
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                entityAdapter: interfaceEntityAdapter,
+            }),
+        });
 
-            if (interfaceEntityAdapter.isAggregable) {
-                addInterfaceAggregateSelectionStuff({
-                    entityAdapter: interfaceEntityAdapter,
-                    aggregationTypesMapper,
-                    propagatedDirectives,
-                    composer,
-                });
-            }
-            composer.Query.setFieldDirectives(
-                interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
+        if (interfaceEntityAdapter.isAggregable) {
+            addInterfaceAggregateSelectionStuff({
+                entityAdapter: interfaceEntityAdapter,
+                aggregationTypesMapper,
+                propagatedDirectives,
+                composer,
+            });
         }
+        composer.Query.setFieldDirectives(
+            interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
     }
 
     return relationships;

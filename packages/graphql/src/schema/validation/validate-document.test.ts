@@ -305,27 +305,6 @@ describe("default max limit bypass warning", () => {
         expect(warn).toHaveBeenCalledTimes(2);
     });
 
-    test("Max limit higher on interface than concrete should not trigger warning if experimental: false", () => {
-        const doc = gql`
-            interface Production @limit(max: 10) {
-                title: String
-            }
-
-            type Movie implements Production @limit(max: 2) {
-                title: String
-            }
-        `;
-
-        validateDocument({
-            document: doc,
-            additionalDefinitions,
-            features: {},
-            experimental: false,
-        });
-
-        expect(warn).not.toHaveBeenCalled();
-    });
-
     test("Max limit higher on interface than concrete should trigger warning - multiple implementing types", () => {
         const doc = gql`
             interface Production @limit(max: 10) {
@@ -1040,71 +1019,6 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User", "name", "@cypher", "statement"]);
         });
 
-        test("@cypher.columnName property must be string inherited", () => {
-            const interfaceDoc = gql`
-                interface Person {
-                    name: String @cypher(statement: 42, columnName: "x")
-                }
-            `;
-            const doc = gql`
-                type User implements Person {
-                    name: String
-                }
-                ${interfaceDoc}
-            `;
-
-            const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-            const executeValidate = () =>
-                validateDocument({
-                    document: doc,
-                    features: {},
-                    additionalDefinitions: { ...additionalDefinitions, interfaces },
-                    experimental: false,
-                });
-            const errors = getError(executeValidate);
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid argument: statement, error: String cannot represent a non string value: 42"
-            );
-            expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher", "statement"]);
-        });
-
-        test("@cypher.columnName property must be string inherited extension", () => {
-            const interfaceDoc = gql`
-                interface Person {
-                    id: ID
-                }
-                extend interface Person {
-                    name: String @cypher(statement: 42, columnName: "x")
-                }
-            `;
-            const doc = gql`
-                type User implements Person {
-                    id: ID
-                    name: String
-                }
-                ${interfaceDoc}
-            `;
-
-            const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-            const executeValidate = () =>
-                validateDocument({
-                    document: doc,
-                    features: {},
-                    additionalDefinitions: { ...additionalDefinitions, interfaces },
-                    experimental: false,
-                });
-            const errors = getError(executeValidate);
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid argument: statement, error: String cannot represent a non string value: 42"
-            );
-            expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher", "statement"]);
-        });
         test("@cypher.statement property must be string", () => {
             const doc = gql`
                 type User {
@@ -1267,86 +1181,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
                 expect(errors[0]).toHaveProperty("path", ["User", "status", "@default", "value"]);
-            });
-
-            test("@default on enum must be enum inherited", () => {
-                const enumTypes = gql`
-                    enum Status {
-                        REGISTERED
-                        PENDING
-                    }
-                `;
-                const interfaceDoc = gql`
-                    interface Person {
-                        status: Status @default(value: "dummy")
-                    }
-                `;
-                const doc = gql`
-                    ${enumTypes}
-                    type User implements Person {
-                        status: Status
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
-                expect(errors[0]).toHaveProperty("path", ["Person", "status", "@default", "value"]);
-            });
-
-            test("@default on enum must be enum inherited extension", () => {
-                const enumTypes = gql`
-                    enum Status {
-                        REGISTERED
-                        PENDING
-                    }
-                `;
-                const interfaceDoc = gql`
-                    interface Person {
-                        id: ID
-                    }
-                    extend interface Person {
-                        status: Status @default(value: "dummy")
-                    }
-                `;
-                const doc = gql`
-                    ${enumTypes}
-                    type User implements Person {
-                        id: ID
-                        status: Status
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on Status fields must be of type Status");
-                expect(errors[0]).toHaveProperty("path", ["Person", "status", "@default", "value"]);
             });
 
             test("@default on enum must be enum correct", () => {
@@ -2069,92 +1903,6 @@ describe("validation 2.0", () => {
                     "@coalesce.value on Status list fields must be a list of Status values"
                 );
                 expect(errors[0]).toHaveProperty("path", ["User", "statuses", "@coalesce", "value"]);
-            });
-
-            test("@coalesce on enum list must be list inherited", () => {
-                const enumTypes = gql`
-                    enum Status {
-                        REGISTERED
-                        PENDING
-                    }
-                `;
-                const interfaceDoc = gql`
-                    interface Person {
-                        statuses: [Status] @coalesce(value: "dummy")
-                    }
-                `;
-                const doc = gql`
-                    ${enumTypes}
-                    type User implements Person {
-                        statuses: [Status]
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@coalesce.value on Status list fields must be a list of Status values"
-                );
-                expect(errors[0]).toHaveProperty("path", ["Person", "statuses", "@coalesce", "value"]);
-            });
-
-            test("@coalesce on enum list must be list inherited extsnion", () => {
-                const enumTypes = gql`
-                    enum Status {
-                        REGISTERED
-                        PENDING
-                    }
-                `;
-                const interfaceDoc = gql`
-                    interface Person {
-                        id: ID
-                    }
-                    extend interface Person {
-                        statuses: [Status] @coalesce(value: "dummy")
-                    }
-                `;
-                const doc = gql`
-                    ${enumTypes}
-                    type User implements Person {
-                        id: ID
-                        statuses: [Status]
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const enums = enumTypes.definitions as EnumTypeDefinitionNode[];
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const unions = [] as UnionTypeDefinitionNode[];
-                const objects = [] as ObjectTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
-                        features: {},
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@coalesce.value on Status list fields must be a list of Status values"
-                );
-                expect(errors[0]).toHaveProperty("path", ["Person", "statuses", "@coalesce", "value"]);
             });
 
             test("@coalesce on enum list must be list of enum values", () => {
@@ -3230,73 +2978,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "name", "@populatedBy", "callback"]);
             });
 
-            test("@populatedBy callback not provided inherited", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type User implements Person {
-                        id: ID
-                        name: String
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@populatedBy.callback needs to be provided in features option."
-                );
-                expect(errors[0]).toHaveProperty("path", ["Person", "name", "@populatedBy", "callback"]);
-            });
-
-            test("@populatedBy callback not provided inherited extension", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        id: ID
-                    }
-                    extend interface Person {
-                        name: String @populatedBy(operations: [CREATE], callback: "getUName")
-                    }
-                `;
-                const doc = gql`
-                    type User implements Person {
-                        id: ID
-                        name: String
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "@populatedBy.callback needs to be provided in features option."
-                );
-                expect(errors[0]).toHaveProperty("path", ["Person", "name", "@populatedBy", "callback"]);
-            });
-
             test("@populatedBy callback not a function", () => {
                 const doc = gql`
                     type User {
@@ -3390,6 +3071,7 @@ describe("validation 2.0", () => {
                     validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
                 expect(executeValidate).not.toThrow();
             });
+
             test("@unique cannot be used on fields of Interface types", () => {
                 const doc = gql`
                     interface IUser {
@@ -3403,10 +3085,14 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Cannot use `@unique` on fields of Interface types.");
-                expect(errors[0]).toHaveProperty("path", ["IUser", "name"]);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "Invalid directive usage: Directive @unique is not supported on fields of the IUser type."
+                );
+                expect(errors[0]).toHaveProperty("path", ["IUser", "name", "@unique"]);
             });
         });
+
         test("should throw cannot auto-generate a non ID field", () => {
             const doc = gql`
                 type Movie {
@@ -3454,30 +3140,6 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@timestamp valid inherited", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        lastSeenAt: DateTime @timestamp
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type User implements Person {
-                        lastSeenAt: DateTime
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
             test("@timestamp cannot autogenerate array", () => {
                 const doc = gql`
                     type User {
@@ -3510,34 +3172,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
                 expect(errors[0]).toHaveProperty("path", ["Movie", "name", "@timestamp"]);
-            });
-            test("should throw cannot timestamp on array of DateTime inherited", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        name: [DateTime] @timestamp(operations: [CREATE])
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type User implements Person {
-                        name: [DateTime]
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
-                expect(errors[0]).toHaveProperty("path", ["Person", "name", "@timestamp"]);
             });
 
             test("@timestamp cannot timestamp temporal fields lacking time zone information", () => {
@@ -3574,30 +3208,6 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("@id autogenerate valid inherited", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        uid: ID @id
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type User implements Person {
-                        uid: ID
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
             test("@id autogenerate cannot autogenerate array", () => {
                 const doc = gql`
                     type User {
@@ -3615,34 +3225,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["User", "uid", "@id"]);
             });
 
-            test("@id autogenerate cannot autogenerate array inherited", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        uid: [ID] @id
-                    }
-                `;
-                const doc = gql`
-                    type User implements Person {
-                        uid: [ID]
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "Cannot autogenerate an array.");
-                expect(errors[0]).toHaveProperty("path", ["Person", "uid", "@id"]);
-            });
             test("@id autogenerate cannot autogenerate a non ID field", () => {
                 const doc = gql`
                     type User {
@@ -3686,71 +3268,6 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () =>
                     validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("@cypher with @timestamp on Field inherited", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        name: DateTime @timestamp
-                    }
-                `;
-                const doc = gql`
-                    type User implements Person {
-                        id: ID
-                        name: DateTime
-                            @cypher(
-                                statement: """
-                                MATCH (u:User {id: 1}) RETURN u.lastSeenAt AS u
-                                """
-                                columnName: "u"
-                            )
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                expect(executeValidate).not.toThrow();
-            });
-
-            test("@cypher with @timestamp on Field inherited extension", () => {
-                const interfaceDoc = gql`
-                    interface Person {
-                        id: ID
-                    }
-                    extend interface Person {
-                        name: DateTime @timestamp
-                    }
-                `;
-                const doc = gql`
-                    type User implements Person {
-                        id: ID
-                        name: DateTime
-                            @cypher(
-                                statement: """
-                                MATCH (u:User {id: 1}) RETURN u.lastSeenAt AS u
-                                """
-                                columnName: "u"
-                            )
-                    }
-                    ${interfaceDoc}
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
                 expect(executeValidate).not.toThrow();
             });
 
@@ -3844,86 +3361,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
             });
 
-            test("@authentication can't be used with @relationship inherited", () => {
-                const interfaceDoc = gql`
-                    interface Production {
-                        actors: [Actor!]! @authentication
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type Movie implements Production {
-                        id: ID
-                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-
-                    type Actor {
-                        name: String
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        features: {},
-                        experimental: false,
-                    });
-
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @authentication"
-                );
-                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
-            });
-
-            test("@authentication can't be used with @relationship inherited extension", () => {
-                const interfaceDoc = gql`
-                    interface Production {
-                        id: ID
-                    }
-                    extend interface Production {
-                        actors: [Actor!]! @authentication
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type Movie implements Production {
-                        id: ID
-                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-
-                    type Actor {
-                        name: String
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        features: {},
-                        experimental: false,
-                    });
-
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @authentication"
-                );
-                expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
-            });
             test("@subscriptionsAuthorization can't be used with @relationship", () => {
                 const doc = gql`
                     type Movie {
@@ -3956,43 +3393,7 @@ describe("validation 2.0", () => {
                 );
                 expect(errors[0]).toHaveProperty("path", ["Movie", "actors"]);
             });
-            test("@subscriptionsAuthorization can't be used with @relationship inherited", () => {
-                const interfaceDoc = gql`
-                    interface Production {
-                        actors: [Actor!]! @subscriptionsAuthorization(filter: [{ where: { id: "1" } }])
-                    }
-                `;
-                const doc = gql`
-                    type Movie implements Production {
-                        id: ID
-                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
-                    }
-                    ${interfaceDoc}
 
-                    type Actor {
-                        name: String
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        features: {},
-                        experimental: false,
-                    });
-
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect([
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @subscriptionsAuthorization",
-                    "Invalid directive usage: Directive @subscriptionsAuthorization cannot be used in combination with @relationship",
-                ]).toContain(errors[0]!.message);
-                expect(errors[0]).toHaveProperty("path", ["Production", "actors"]);
-            });
             test("@authorization can't be used with @relationship", () => {
                 const doc = gql`
                     type Movie {
@@ -4568,7 +3969,7 @@ describe("validation 2.0", () => {
                     document: doc,
                     additionalDefinitions,
                     features: {},
-                    experimental: true,
+                    experimental: false,
                 });
 
             const errors = getError(executeValidate);
@@ -5082,83 +4483,6 @@ describe("validation 2.0", () => {
                 expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
             });
 
-            test("@jwtClaim cannot combined inherited extension", () => {
-                const interfaceDoc = gql`
-                    interface Something {
-                        id: ID
-                            @cypher(
-                                statement: """
-                                RETURN 1 as x
-                                """
-                                columnName: "x"
-                            )
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type JWTPayload implements Something {
-                        id: ID @jwtClaim(path: "user.id")
-                    }
-                    extend type JWTPayload @jwt
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with @cypher"
-                );
-                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
-            });
-
-            test("@jwtClaim cannot combined inherited", () => {
-                const interfaceDoc = gql`
-                    interface Something {
-                        id: ID
-                            @cypher(
-                                statement: """
-                                RETURN 1 as x
-                                """
-                                columnName: "x"
-                            )
-                    }
-                `;
-                const doc = gql`
-                    ${interfaceDoc}
-                    type JWTPayload implements Something @jwt {
-                        id: ID @jwtClaim(path: "user.id")
-                    }
-                `;
-
-                const interfaces = interfaceDoc.definitions as InterfaceTypeDefinitionNode[];
-                const executeValidate = () =>
-                    validateDocument({
-                        document: doc,
-                        features: {},
-                        additionalDefinitions: { ...additionalDefinitions, interfaces },
-                        experimental: false,
-                    });
-                const errors = getError(executeValidate);
-
-                expect(errors).toHaveLength(1);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    "Invalid directive usage: Directive @jwtClaim cannot be used in combination with @cypher"
-                );
-                expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id"]);
-            });
-
             test("@jwtClaim incorrect location outside @jwt", () => {
                 const doc = gql`
                     type JWTPayload {
@@ -5462,68 +4786,19 @@ describe("validation 2.0", () => {
                 validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
             const errors = getError(executeValidate);
 
-            expect(errors).toHaveLength(1);
+            expect(errors).toHaveLength(2);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
-            );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@relayId"]);
-        });
-
-        test("only one field can be @relayId with interface reverse order", () => {
-            const doc = gql`
-                type Movie implements MovieInterface {
-                    rottenid: ID! @relayId
-                    imdbid: ID!
-                    title: String
-                }
-                interface MovieInterface {
-                    imdbid: ID! @relayId
-                }
-            `;
-
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
+                "Invalid directive usage: Directive @relayId is not supported on fields of the MovieInterface type."
             );
             expect(errors[0]).toHaveProperty("path", ["MovieInterface", "imdbid", "@relayId"]);
-        });
-
-        test("only one field can be @relayId with interface implementing interface", () => {
-            const doc = gql`
-                interface ScorableInterface {
-                    imdbid: ID! @relayId
-                }
-
-                interface MovieInterface implements ScorableInterface {
-                    imdbid: ID!
-                }
-
-                type Movie implements MovieInterface & ScorableInterface {
-                    rottenid: ID! @relayId
-                    imdbid: ID!
-                    title: String
-                }
-            `;
-
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
+            expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[1]).toHaveProperty(
                 "message",
                 "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
             );
-            expect(errors[0]).toHaveProperty("path", ["Movie", "rottenid", "@relayId"]);
+            expect(errors[1]).toHaveProperty("path", ["Movie", "rottenid", "@relayId"]);
         });
 
         test("field named id already exists and not aliased on interface - multiple interfaces", () => {
@@ -5554,35 +4829,6 @@ describe("validation 2.0", () => {
                 "Type already has a field `id`, which is reserved for Relay global node identification.\nEither remove it, or if you need access to this property, consider using the `@alias` directive to access it via another field."
             );
             expect(errors[0]).toHaveProperty("path", ["Movie", "id"]);
-        });
-
-        test("only one field can be global @id with interface implementing interface reverse order", () => {
-            const doc = gql`
-                interface MovieInterface implements ScorableInterface {
-                    imdbid: ID!
-                }
-
-                type Movie implements MovieInterface & ScorableInterface {
-                    rottenid: ID! @relayId
-                    imdbid: ID!
-                    title: String
-                }
-                interface ScorableInterface {
-                    imdbid: ID! @relayId
-                }
-            `;
-
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
-            const errors = getError(executeValidate);
-
-            expect(errors).toHaveLength(1);
-            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                "Invalid directive usage: Only one field may be decorated with the `@relayId` directive."
-            );
-            expect(errors[0]).toHaveProperty("path", ["ScorableInterface", "imdbid", "@relayId"]);
         });
 
         test("field named id already exists", () => {
@@ -5640,22 +4886,6 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () =>
-                validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
-            expect(executeValidate).not.toThrow();
-        });
-
-        test("field named id already exists but aliased on interface", () => {
-            const doc = gql`
-                type Movie implements MovieInterface {
-                    rottenid: ID! @relayId
-                    id: ID!
-                    title: String
-                }
-                interface MovieInterface {
-                    id: ID! @alias(property: "somethingElse")
-                }
-            `;
             const executeValidate = () =>
                 validateDocument({ document: doc, features: {}, additionalDefinitions, experimental: false });
             expect(executeValidate).not.toThrow();

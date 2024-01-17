@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, translateQuery, formatParams, setTestEnvVars, unsetTestEnvVars } from "../utils/tck-test-utils";
+import { formatCypher, formatParams, setTestEnvVars, translateQuery, unsetTestEnvVars } from "../utils/tck-test-utils";
 
 describe("Cypher coalesce()", () => {
     beforeAll(() => {
@@ -32,8 +32,8 @@ describe("Cypher coalesce()", () => {
     test("Simple coalesce", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                fromInterface: String! @coalesce(value: "From Interface")
-                toBeOverridden: String! @coalesce(value: "To Be Overridden")
+                fromInterface: String!
+                toBeOverridden: String!
             }
 
             type User implements UserInterface {
@@ -98,7 +98,7 @@ describe("Cypher coalesce()", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (coalesce(this.verified, false) = $param2) AND coalesce(this.numberOfFriends, 0) > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
+            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (coalesce(this.verified, false) = $param2) AND coalesce(this.numberOfFriends, 0) > $param3 AND coalesce(this.rating, 2.5) < $param4 AND this.fromInterface = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
             RETURN this { .name } AS this"
         `);
 

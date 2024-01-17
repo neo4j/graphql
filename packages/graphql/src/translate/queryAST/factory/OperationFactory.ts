@@ -32,7 +32,9 @@ import type { AuthorizationOperation } from "../../../types/authorization";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy, isObject, isString } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
+import type { Field } from "../ast/fields/Field";
 import { FulltextScoreField } from "../ast/fields/FulltextScoreField";
+import type { Filter } from "../ast/filters/Filter";
 import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { FulltextScoreFilter } from "../ast/filters/property-filters/FulltextScoreFilter";
 import { AggregationOperation } from "../ast/operations/AggregationOperation";
@@ -66,8 +68,6 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import type { Field } from "../ast/fields/Field";
-import type { Filter } from "../ast/filters/Filter";
 
 const TOP_LEVEL_NODE_NAME = "this";
 export class OperationsFactory {
@@ -287,13 +287,13 @@ export class OperationsFactory {
         } else {
             // if typename is allowed and therefore _on is disabled we can compute only the shared filter without recomputing the filters for each concrete entity
             // if typename filters are allowed we are getting rid of the _on and the implicit typename filter.
-            const typenameFilterAllowed = this.experimental && isInterfaceEntity(entity);
+            const isInterface = isInterfaceEntity(entity);
 
-            const concreteEntities = typenameFilterAllowed
+            const concreteEntities = isInterface
                 ? entity.concreteEntities
                 : getConcreteEntitiesInOnArgumentOfWhere(entity, resolveTreeWhere);
 
-            const sharedFilters = typenameFilterAllowed
+            const sharedFilters = isInterface
                 ? this.filterFactory.createNodeFilters(entity, resolveTreeWhere)
                 : undefined;
 

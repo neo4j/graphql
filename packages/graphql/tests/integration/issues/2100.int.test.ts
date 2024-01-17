@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import Neo4j from "../neo4j";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { UniqueType } from "../../utils/graphql-types";
 import { createBearerToken } from "../../utils/create-bearer-token";
+import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let driver: Driver;
@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         }
 
         interface Church {
-            id: ID @id 
+            id: ID
             name: String!
             serviceLogs: [${ServiceLogType}!]! @declareRelationship
         }
@@ -82,14 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             id: ID!
             attendance: Int
             markedAttendance: Boolean!
-                @cypher(
-                    statement: """
-                    MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
-                    RETURN COUNT(member) > 0 AS markedAttendance
-                    """,
-                    columnName: "markedAttendance"
-                )
-            serviceDate: ${TimeGraphType}! @declareRelationship
+            serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
         `;
 

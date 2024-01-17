@@ -1472,6 +1472,7 @@ describe("Algebraic", () => {
             type Person {
               name: String!
               worksInProduction(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): [Production!]!
+              worksInProductionAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionWorksInProductionAggregationSelection
               worksInProductionConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
             }
 
@@ -1513,6 +1514,15 @@ describe("Algebraic", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
+            }
+
+            type PersonProductionWorksInProductionAggregationSelection {
+              count: Int!
+              node: PersonProductionWorksInProductionNodeAggregateSelection
+            }
+
+            type PersonProductionWorksInProductionNodeAggregateSelection {
+              viewers: IntAggregateSelectionNonNullable!
             }
 
             input PersonRelationInput {
@@ -1629,6 +1639,11 @@ describe("Algebraic", () => {
               viewers: Int!
             }
 
+            type ProductionAggregateSelection {
+              count: Int!
+              viewers: IntAggregateSelectionNonNullable!
+            }
+
             input ProductionConnectInput {
               _on: ProductionImplementationsConnectInput
             }
@@ -1649,6 +1664,10 @@ describe("Algebraic", () => {
               _on: ProductionImplementationsDisconnectInput
             }
 
+            enum ProductionImplementation {
+              Movie
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
             }
@@ -1663,10 +1682,6 @@ describe("Algebraic", () => {
 
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
             }
 
             input ProductionOptions {
@@ -1693,7 +1708,10 @@ describe("Algebraic", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              typename_IN: [ProductionImplementation!]
               viewers: Int
               viewers_GT: Int
               viewers_GTE: Int
@@ -1711,6 +1729,8 @@ describe("Algebraic", () => {
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
+              productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

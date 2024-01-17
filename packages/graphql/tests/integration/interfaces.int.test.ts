@@ -20,10 +20,10 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
-import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
-import { UniqueType } from "../utils/graphql-types";
 import { createBearerToken } from "../utils/create-bearer-token";
+import { UniqueType } from "../utils/graphql-types";
+import Neo4j from "./neo4j";
 
 describe("Interfaces tests", () => {
     const secret = "the-secret";
@@ -59,7 +59,7 @@ describe("Interfaces tests", () => {
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
             interface MyInterface {
-                id: ID! @id
+                id: ID!
             }
             type ${MyImplementationType} implements MyInterface {
                 id: ID! @id @unique

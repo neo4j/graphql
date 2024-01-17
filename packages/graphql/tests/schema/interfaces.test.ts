@@ -29,13 +29,6 @@ describe("Interfaces", () => {
                 id: ID
                 movies: [Movie!]! @declareRelationship
                 customQuery: [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie)
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
             }
 
             type Movie implements MovieNode {
@@ -164,6 +157,15 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            type MovieNodeAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
+            enum MovieNodeImplementation {
+              Movie
+            }
+
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -226,6 +228,39 @@ describe("Interfaces", () => {
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieNodeMoviesUpdateConnectionInput
               where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieNodeSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort MovieNodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieNodeSort object.
+            \\"\\"\\"
+            input MovieNodeSort {
+              id: SortDirection
+            }
+
+            input MovieNodeWhere {
+              AND: [MovieNodeWhere!]
+              NOT: MovieNodeWhere
+              OR: [MovieNodeWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              typename_IN: [MovieNodeImplementation!]
             }
 
             input MovieOptions {
@@ -319,6 +354,8 @@ describe("Interfaces", () => {
             }
 
             type Query {
+              movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -357,13 +394,6 @@ describe("Interfaces", () => {
                 id: ID
                 movies: [Movie!]! @declareRelationship
                 customQuery: [Movie]
-                    @cypher(
-                        statement: """
-                        MATCH (m:Movie)
-                        RETURN m
-                        """
-                        columnName: "m"
-                    )
             }
 
             type Movie implements MovieNode {
@@ -494,6 +524,15 @@ describe("Interfaces", () => {
               moviesConnection: MovieNodeMoviesConnection!
             }
 
+            type MovieNodeAggregateSelection {
+              count: Int!
+              id: IDAggregateSelectionNullable!
+            }
+
+            enum MovieNodeImplementation {
+              Movie
+            }
+
             input MovieNodeMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               \\"\\"\\"
@@ -556,6 +595,39 @@ describe("Interfaces", () => {
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieNodeMoviesUpdateConnectionInput
               where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieNodeSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort MovieNodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieNodeSort object.
+            \\"\\"\\"
+            input MovieNodeSort {
+              id: SortDirection
+            }
+
+            input MovieNodeWhere {
+              AND: [MovieNodeWhere!]
+              NOT: MovieNodeWhere
+              OR: [MovieNodeWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
+              typename_IN: [MovieNodeImplementation!]
             }
 
             input MovieOptions {
@@ -649,6 +721,8 @@ describe("Interfaces", () => {
             }
 
             type Query {
+              movieNodes(options: MovieNodeOptions, where: MovieNodeWhere): [MovieNode!]!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

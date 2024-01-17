@@ -2201,11 +2201,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              _on: {
-                                                ${typePerson.name}: {
-                                                  reputation: 100
-                                                }
-                                              }
+                                                reputation: 100
                                             }
                                           },
                                           edge: {
@@ -2399,11 +2395,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              _on: {
-                                                ${typePerson.name}: {
-                                                  reputation: 100
-                                                }
-                                              }
+                                                reputation: 100
                                             }
                                           },
                                           edge: {
@@ -2487,7 +2479,7 @@ subscription SubscriptionPerson {
                             },
                             {
                                 name: "Bob",
-                                reputation: 100
+                                reputation: 101
                             }
                         ]
                     ) {
@@ -2520,11 +2512,7 @@ subscription SubscriptionPerson {
                                         {
                                           where: {
                                             node: {
-                                              _on: {
-                                                ${typePerson.name}: {
-                                                  name: "Ana"
-                                                }
-                                              }
+                                                reputation: 100
                                             }
                                           },
                                           edge: {
@@ -2873,149 +2861,6 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test("connect via create - connect subscription simple case with nodes of different type + interface", async () => {
-        // 1. create resources that will be connected
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typePerson.operations.create}(
-                        input: [
-                            {
-                                name: "Ana",
-                                reputation: 100
-                            }
-                        ]
-                    ) {
-                        ${typePerson.plural} {
-                            reputation
-                            name
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeInfluencer.operations.create}(
-                        input: [
-                            {
-                                url: "/bob",
-                                reputation: 98
-                            }
-                        ]
-                    ) {
-                        ${typeInfluencer.plural} {
-                            reputation
-                            url
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        await wsClient.subscribe(actorSubscriptionQuery(typeActor));
-
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.create}(
-                            input: [
-                                {
-                                    title: "Matrix",
-                                    imdbId: 1,
-                                    reviewers: {
-                                      connect: [
-                                        {
-                                          where: {
-                                            node: {
-                                              _on: {
-                                                ${typePerson.name}: {
-                                                  reputation: 100
-                                                },
-                                                ${typeInfluencer.name}: {
-                                                    reputation: 98
-                                                  }
-                                              }
-                                            }
-                                          },
-                                          edge: {
-                                            score: 10
-                                          }
-                                        }
-                                      ]
-                                    }
-                                }
-                        ]
-                        ) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        // forcing a delay to ensure events do not exist
-        await delay(2);
-        await wsClient2.waitForEvents(2);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-        expect(wsClient2.events).toHaveLength(2);
-        expect(wsClient.events).toEqual([]);
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.relationship_created]: {
-                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "CREATE_RELATIONSHIP",
-                    relationshipFieldName: "reviewers",
-                    createdRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 10,
-                            node: {
-                                name: "Ana",
-                                reputation: 100,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.relationship_created]: {
-                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "Matrix" },
-                    event: "CREATE_RELATIONSHIP",
-                    relationshipFieldName: "reviewers",
-                    createdRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 10,
-                            node: {
-                                url: "/bob",
-                                reputation: 98,
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
     test("connect via create - connect subscription 2 levels deep + interface", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
@@ -3095,11 +2940,8 @@ subscription SubscriptionPerson {
                                                   },
                                                   where: {
                                                     node: {
-                                                        _on: {
-                                                            ${typePerson.name}: {
-                                                              name: "Ana"
-                                                            }
-                                                        }
+                                                        reputation: 100
+                                              
                                                     }
                                                   },
                                                 }
@@ -3735,11 +3577,7 @@ subscription SubscriptionPerson {
                                                                   },
                                                                   where: {
                                                                     node: {
-                                                                      _on: {
-                                                                        ${typePerson.name}: {
-                                                                            reputation: 98
-                                                                        }
-                                                                      }
+                                                                        reputation: 98
                                                                     }
                                                                   },
                                                                   connect: {
@@ -4130,239 +3968,6 @@ subscription SubscriptionPerson {
                             },
                         },
                         reviewers: null,
-                    },
-                },
-            },
-        ]);
-    });
-
-    test("connect via update - connect subscription sends events both ways: interface type", async () => {
-        // 1. create
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeMovie.operations.create}(
-                        input: [
-                            {
-                                actors: {
-                                    create: [
-                                        {
-                                            node: {
-                                                name: "Keanu Reeves"
-                                            },
-                                            edge: {
-                                                screenTime: 42
-                                            }
-                                        }
-                                    ]
-                                },
-                                title: "John Wick",
-                            }
-                        ]
-                    ) {
-                        ${typeMovie.plural} {
-                            title
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typePerson.operations.create}(
-                        input: [
-                            {
-                                name: "Ana",
-                                reputation: 100
-                            }
-                        ]
-                    ) {
-                        ${typePerson.plural} {
-                            reputation
-                            name
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typeInfluencer.operations.create}(
-                        input: [
-                            {
-                                url: "/bob",
-                                reputation: 100
-                            }
-                        ]
-                    ) {
-                        ${typeInfluencer.plural} {
-                            reputation
-                            url
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        // 2. subscribe both ways
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await wsClient.subscribe(personSubscriptionQuery(typePerson));
-
-        // 3. perform update on created node
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeActor.operations.update}(
-                                where: {
-                                  name: "Keanu Reeves"
-                                },
-                                update: {
-                                    name: "Keanu R",
-                                    movies: [
-                                      {
-                                        where: {
-                                            node: {
-                                                title: "John Wick"
-                                            }
-                                        },
-                                        update: {
-                                          edge: {
-                                            screenTime: 420
-                                          },
-                                          node: {
-                                            reviewers: [
-                                              {
-                                                connect: [
-                                                  {
-                                                    where: {
-                                                      node: {
-                                                        reputation: 100,
-                                                        _on: {
-                                                          ${typePerson.name}: {
-                                                            name: "Ana"
-                                                          },
-                                                          ${typeInfluencer.name}: {
-                                                            url: "/bob"
-                                                          }
-                                                        }
-                                                      }
-                                                    },
-                                                    edge: {
-                                                      score: 10
-                                                    },
-                                                    connect: {
-                                                      _on: {
-                                                        ${typePerson.name}: [
-                                                          {
-                                                            movies: [
-                                                              {
-                                                                where: {
-                                                                  node: {
-                                                                    title: "Matrix"
-                                                                  }
-                                                                },
-                                                                edge: {
-                                                                  score: 9
-                                                                }
-                                                              }
-                                                            ]
-                                                          }
-                                                        ]
-                                                      }
-                                                    }
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      }
-                                    ]
-                                }
-                        ) {
-                            ${typeActor.plural} {
-                                name
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        await wsClient.waitForEvents(1);
-        await wsClient2.waitForEvents(2);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-        expect(wsClient2.events).toHaveLength(2);
-        expect(wsClient.events).toHaveLength(1);
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.relationship_created]: {
-                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "CREATE_RELATIONSHIP",
-                    relationshipFieldName: "reviewers",
-                    createdRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 10,
-                            node: {
-                                name: "Ana",
-                                reputation: 100,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.relationship_created]: {
-                    [typeMovie.operations.subscribe.payload.relationship_created]: { title: "John Wick" },
-                    event: "CREATE_RELATIONSHIP",
-                    relationshipFieldName: "reviewers",
-                    createdRelationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 10,
-                            node: {
-                                url: "/bob",
-                                reputation: 100,
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typePerson.operations.subscribe.relationship_created]: {
-                    [typePerson.operations.subscribe.payload.relationship_created]: { name: "Ana" },
-                    event: "CREATE_RELATIONSHIP",
-                    relationshipFieldName: "movies",
-                    createdRelationship: {
-                        movies: {
-                            score: 10,
-                            node: {
-                                title: "John Wick",
-                            },
-                        },
                     },
                 },
             },

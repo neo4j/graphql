@@ -108,7 +108,6 @@ describe("Interface filtering", () => {
                     key: secret,
                 },
             },
-            experimental: true,
         });
         schema = await neoGraphql.getSchema();
     });

@@ -36,7 +36,6 @@ import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputTypeWithRelationshipFields } from "./augment-where-input";
-import { makeImplementationsWhereInput } from "./implementation-inputs";
 
 export function withUniqueWhereInputType({
     concreteEntityAdapter,
@@ -94,31 +93,25 @@ export function withWhereInputType({
             NOT: whereInputType,
         });
     } else if (entityAdapter instanceof InterfaceEntityAdapter) {
-        if (experimental) {
-            whereInputType.addFields({
-                OR: whereInputType.NonNull.List,
-                AND: whereInputType.NonNull.List,
-                NOT: whereInputType,
-            });
+        whereInputType.addFields({
+            OR: whereInputType.NonNull.List,
+            AND: whereInputType.NonNull.List,
+            NOT: whereInputType,
+        });
 
+        if (entityAdapter.concreteEntities.length > 0) {
             const enumValues = Object.fromEntries(
                 entityAdapter.concreteEntities.map((concreteEntity) => [
                     concreteEntity.name,
                     { value: concreteEntity.name },
                 ])
             );
+
             const interfaceImplementation = composer.createEnumTC({
                 name: entityAdapter.operations.implementationEnumTypename,
                 values: enumValues,
             });
             whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
-        } else {
-            const implementationsWhereInputType = makeImplementationsWhereInput({
-                interfaceEntityAdapter: entityAdapter,
-                composer,
-            });
-            // TODO: add interfaces that implement this interface here
-            whereInputType.addFields({ _on: implementationsWhereInputType });
         }
     }
     return whereInputType;

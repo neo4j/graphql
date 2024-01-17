@@ -122,34 +122,34 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             interface Invitee {
-                id: ID! @id
+                id: ID!
                 email: String!
                 name: String
                 creator: ${User.name}! @declareRelationship 
                 group: ${Group.name}! @declareRelationship 
-                status: InviteeStatus! @default(value: INVITED)
+                status: InviteeStatus!
                 user: ${User.name} @declareRelationship 
                 role: InviteeRole!
             }
 
             type ${Admin.name} implements Invitee {
-                id: ID! @unique
+                id: ID! @unique @id
                 group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
                 creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
-                status: InviteeStatus!
+                status: InviteeStatus! @default(value: INVITED)
                 user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type ${Contributor.name} implements Invitee {
-                id: ID! @unique
+                id: ID! @unique @id
                 group: ${Group.name}! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
                 creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
-                status: InviteeStatus!
+                status: InviteeStatus! @default(value: INVITED)
                 user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }

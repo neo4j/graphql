@@ -49,7 +49,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -690,7 +689,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -1457,7 +1455,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -2597,7 +2594,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -3478,7 +3474,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -4003,7 +3998,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -4610,7 +4604,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -5698,7 +5691,6 @@ describe("Subscriptions", () => {
             features: {
                 subscriptions: plugin,
             },
-            experimental: true,
         });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));

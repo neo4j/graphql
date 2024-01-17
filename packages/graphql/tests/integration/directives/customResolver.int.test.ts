@@ -24,9 +24,9 @@ import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { createBearerToken } from "../../utils/create-bearer-token";
 import { UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
-import { createBearerToken } from "../../utils/create-bearer-token";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
@@ -296,32 +296,6 @@ describe("@customResolver directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             await neoSchema.getSchema();
 
-            expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
-        });
-
-        test("Check throws error if custom resolver defined for interface", async () => {
-            const interfaceType = new UniqueType("UserInterface");
-            const typeDefs = `
-                interface ${interfaceType.name} {
-                    ${customResolverField}: String @customResolver(requires: "firstName lastName")
-                }
-
-                type ${testType} implements ${interfaceType.name} {
-                    id: ID!
-                    firstName: String!
-                    lastName: String!
-                    ${customResolverField}: String
-                }
-            `;
-
-            const testResolver = () => "Some value";
-            const resolvers = {
-                [interfaceType.name]: {
-                    [customResolverField]: testResolver,
-                },
-            };
-            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-            await neoSchema.getSchema();
             expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
     });
@@ -2047,7 +2021,7 @@ describe("Related Fields", () => {
     test("should throw an error when requiring another @customResolver field on a nested type", async () => {
         const typeDefs = gql`
             interface ${Publication} {
-                publicationYear: Int! @customResolver
+                publicationYear: Int! 
             }
 
             type ${User} {
@@ -2065,13 +2039,13 @@ describe("Related Fields", () => {
 
             type ${Book} implements ${Publication} {
                 title: String!
-                publicationYear: Int!
+                publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${Journal} implements ${Publication} {
                 subject: String!
-                publicationYear: Int!
+                publicationYear: Int! @customResolver
                 author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
         `;

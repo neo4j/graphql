@@ -20,9 +20,9 @@
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
-import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { UniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/1687", () => {
     const productionType = new UniqueType("Production");
@@ -81,11 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
                 ${genreType.plural}(where: {
                     ${movieType.operations.connection}_SOME: {
                         node: {
-                            _on: {
-                                ${movieType.name}: {
-                                    title: "Matrix"
-                                }
-                            }
+                            title: "Matrix"
                         }
                     }
                 }) {
