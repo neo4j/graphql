@@ -47,7 +47,7 @@
         "neo4j-driver": "5.16.0",
         "pluralize": "8.0.0",
         "randomstring": "1.3.0",
-        "supertest": "6.3.3",
+        "supertest": "6.3.4",
         "ts-jest": "29.1.1",
         "typescript": "5.1.6",
         "ws": "8.16.0"
