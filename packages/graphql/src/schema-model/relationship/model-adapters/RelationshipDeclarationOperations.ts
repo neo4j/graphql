@@ -61,7 +61,7 @@ export class RelationshipDeclarationOperations {
         )}${nestedFieldStr}${aggregationStr}Selection`;
     }
 
-    getTargetTypePrettyName(): string {
+    public getTargetTypePrettyName(): string {
         if (this.relationshipDeclaration.isList) {
             return `[${this.relationshipDeclaration.target.name}!]${
                 this.relationshipDeclaration.isNullable === false ? "!" : ""
@@ -245,15 +245,12 @@ export class RelationshipDeclarationOperations {
     // }
 
     public get edgeCreateInputTypeName(): string {
+        const isRequired = this.relationshipDeclaration.relationshipImplementations.some(
+            (impl) => impl.hasNonNullNonGeneratedProperties
+        );
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
             this.relationshipDeclaration.name
-        )}EdgeCreateInput${
-            this.relationshipDeclaration.relationshipImplementations.filter(
-                (impl) => impl.hasNonNullNonGeneratedProperties
-            ).length
-                ? `!`
-                : ""
-        }`;
+        )}EdgeCreateInput${isRequired ? `!` : ""}`;
     }
 
     public get createInputTypeName(): string {

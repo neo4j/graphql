@@ -110,13 +110,13 @@ export class RelationshipAdapter {
         this.inheritedFrom = inheritedFrom;
     }
 
-    get operations(): RelationshipOperations {
+    public get operations(): RelationshipOperations {
         if (!this._operations) {
             return new RelationshipOperations(this);
         }
         return this._operations;
     }
-    get listFiltersModel(): ListFiltersAdapter | undefined {
+    public get listFiltersModel(): ListFiltersAdapter | undefined {
         if (!this._listFiltersModel) {
             if (!this.isList) {
                 return;
@@ -184,7 +184,7 @@ export class RelationshipAdapter {
     }
 
     // construct the target entity only when requested
-    get target(): EntityAdapter {
+    public get target(): EntityAdapter {
         if (!this._target) {
             if (this.rawEntity instanceof ConcreteEntity) {
                 this._target = new ConcreteEntityAdapter(this.rawEntity);
@@ -199,31 +199,31 @@ export class RelationshipAdapter {
         return this._target;
     }
 
-    isReadable(): boolean {
+    public isReadable(): boolean {
         return this.annotations.selectable?.onRead !== false;
     }
 
-    isFilterableByValue(): boolean {
+    public isFilterableByValue(): boolean {
         return this.annotations.filterable?.byValue !== false;
     }
 
-    isFilterableByAggregate(): boolean {
+    public isFilterableByAggregate(): boolean {
         return this.annotations.filterable?.byAggregate !== false;
     }
 
-    isAggregable(): boolean {
+    public isAggregable(): boolean {
         return this.annotations.selectable?.onAggregate !== false;
     }
 
-    isCreatable(): boolean {
+    public isCreatable(): boolean {
         return this.annotations.settable?.onCreate !== false;
     }
 
-    isUpdatable(): boolean {
+    public isUpdatable(): boolean {
         return this.annotations.settable?.onUpdate !== false;
     }
 
-    shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+    public shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
         let relationshipTarget = this.target;
         if (ifUnionRelationshipTargetEntity) {
             relationshipTarget = ifUnionRelationshipTargetEntity;
@@ -238,7 +238,7 @@ export class RelationshipAdapter {
         );
     }
 
-    shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
+    public shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
         const onlyConnectOrCreate =
             this.nestedOperations.size === 1 &&
             this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE);

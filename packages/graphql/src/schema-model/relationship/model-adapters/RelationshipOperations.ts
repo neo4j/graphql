@@ -74,7 +74,7 @@ export class RelationshipOperations {
         )}${nestedFieldStr}${aggregationStr}Selection`;
     }
 
-    getTargetTypePrettyName(): string {
+    public getTargetTypePrettyName(): string {
         if (this.relationship.isList) {
             return `[${this.relationship.target.name}!]${this.relationship.isNullable === false ? "!" : ""}`;
         }

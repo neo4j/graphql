@@ -102,7 +102,7 @@ export class RelationshipDeclaration {
     private addAnnotation(annotation: Annotation): void {
         const annotationKey = annotationToKey(annotation);
         if (this.annotations[annotationKey]) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ????`);
+            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
         }
 
         // We cast to any because we aren't narrowing the Annotation type here.

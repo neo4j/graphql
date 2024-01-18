@@ -271,7 +271,6 @@ export function createConnectionFields({
             });
         }
 
-        // TODO
         const relFields: ObjectFields | undefined =
             relationship instanceof RelationshipAdapter && relationship.propertiesTypeName
                 ? relationshipFields.get(relationship.propertiesTypeName)
@@ -279,11 +278,10 @@ export function createConnectionFields({
 
         const r = new Relationship({
             name: relationship.operations.relationshipFieldTypename,
-            type: relationship instanceof RelationshipAdapter ? relationship.type : "dummy_type",
+            type: relationship instanceof RelationshipAdapter ? relationship.type : undefined,
             source: relationship.source.name,
             target: relationship.target.name,
-            properties:
-                relationship instanceof RelationshipAdapter ? relationship.propertiesTypeName : "dummy_props_typename",
+            properties: relationship instanceof RelationshipAdapter ? relationship.propertiesTypeName : undefined,
             ...(relFields
                 ? {
                       temporalFields: relFields.temporalFields,
