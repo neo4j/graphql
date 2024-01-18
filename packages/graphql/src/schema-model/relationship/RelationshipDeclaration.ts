@@ -29,7 +29,6 @@ export type NestedOperation = keyof typeof RelationshipNestedOperationsOption;
 // "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
 
 export class RelationshipDeclaration {
-    // TODO: prune unused fields
     public readonly name: string; // name of the relationship field, e.g. friends
     public readonly args: Argument[];
     public readonly source: Entity;
@@ -110,15 +109,4 @@ export class RelationshipDeclaration {
         // There's no reason to narrow either, since we care more about performance.
         this.annotations[annotationKey] = annotation as any;
     }
-
-    // // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
-    // /**Note: Required for now to infer the types without ResolveTree */
-    // public get connectionFieldTypename(): string {
-    //     return `${this.source.name}${upperFirst(this.name)}Connection`;
-    // }
-
-    // /**Note: Required for now to infer the types without ResolveTree */
-    // public get relationshipFieldTypename(): string {
-    //     return `${this.source.name}${upperFirst(this.name)}Relationship`;
-    // }
 }

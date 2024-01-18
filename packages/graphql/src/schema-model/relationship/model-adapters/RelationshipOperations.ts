@@ -50,7 +50,6 @@ export class RelationshipOperations {
         // then return this.interface.name
 
         return this.relationship.inheritedFrom || this.relationship.source.name;
-        // return this.relationship.source.name;
     }
 
     public get fieldInputPrefixForTypename(): string {
@@ -94,10 +93,6 @@ export class RelationshipOperations {
 
     public get connectionWhereInputTypename(): string {
         return `${this.connectionFieldTypename}Where`;
-        // const connectionFieldTypename = `${this.relationship.source.name}${upperFirst(
-        //     this.relationship.name
-        // )}Connection`;
-        // return `${connectionFieldTypename}Where`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
@@ -109,9 +104,6 @@ export class RelationshipOperations {
         return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }FieldInput`;
-        // return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }FieldInput`;
     }
 
     public getToUnionFieldInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
@@ -124,18 +116,12 @@ export class RelationshipOperations {
         return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }UpdateFieldInput`;
-        // return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }UpdateFieldInput`;
     }
 
     public getCreateFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
         return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }CreateFieldInput`;
-        // return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }CreateFieldInput`;
     }
 
     public getDeleteFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
@@ -145,18 +131,9 @@ export class RelationshipOperations {
     }
 
     public getConnectFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        // TODO: swap these
-        // to create ProductionActorsConnectFieldInput for ProductionActorsFieldInput
-        // MovieActorsConnectFieldInput for MovieActorsFieldInput
-        // ...
-        // use test 2 from packages/graphql/tests/integration/interface-relationships/create/connect.int.test.ts to test
-
         return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectFieldInput`;
-        // return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }ConnectFieldInput`;
     }
 
     public getDisconnectFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
@@ -191,9 +168,6 @@ export class RelationshipOperations {
     }
 
     public getConnectionWhereTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        // return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }ConnectionWhere`;
         return `${this.prefixForTypename}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectionWhere`;
@@ -203,9 +177,6 @@ export class RelationshipOperations {
         return `${this.relationship.source.name}${upperFirst(this.relationship.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }UpdateConnectionInput`;
-        // return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationship.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }UpdateConnectionInput`;
     }
 
     public get aggregateInputTypeName(): string {

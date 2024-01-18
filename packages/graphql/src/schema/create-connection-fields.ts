@@ -279,11 +279,11 @@ export function createConnectionFields({
 
         const r = new Relationship({
             name: relationship.operations.relationshipFieldTypename,
-            type: relationship instanceof RelationshipAdapter ? relationship.type : "test_type",
+            type: relationship instanceof RelationshipAdapter ? relationship.type : "dummy_type",
             source: relationship.source.name,
             target: relationship.target.name,
             properties:
-                relationship instanceof RelationshipAdapter ? relationship.propertiesTypeName : "test_props_typename",
+                relationship instanceof RelationshipAdapter ? relationship.propertiesTypeName : "dummy_props_typename",
             ...(relFields
                 ? {
                       temporalFields: relFields.temporalFields,

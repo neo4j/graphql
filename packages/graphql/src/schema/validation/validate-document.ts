@@ -199,7 +199,7 @@ function runValidationRulesOnFilteredDocument({
         [
             ...specifiedSDLRules,
             directiveIsValid(extra, features?.populatedBy?.callbacks),
-            ValidDirectiveAtFieldLocation(experimental),
+            ValidDirectiveAtFieldLocation,
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,

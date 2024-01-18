@@ -47,15 +47,6 @@ export class RelationshipDeclarationOperations {
         return this.relationshipDeclaration.source.name;
     }
 
-    public get fieldInputPrefixForTypename(): string {
-        // const isTargetInterface = isInterfaceEntity(this.relationshipDeclaration.target);
-        // if (isTargetInterface) {
-        //     return this.relationshipDeclaration.source.name;
-        // }
-        // return this.prefixForTypename;
-        return this.relationshipDeclaration.source.name;
-    }
-
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}Connection`;
@@ -85,9 +76,6 @@ export class RelationshipDeclarationOperations {
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             concreteEntityAdapter.name
         }ConnectionWhere`;
-        // return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
-        //     concreteEntityAdapter.name
-        // }ConnectionEdgeWhere`;
     }
 
     public get connectionSortInputTypename(): string {
@@ -95,8 +83,6 @@ export class RelationshipDeclarationOperations {
     }
 
     public get connectionWhereInputTypename(): string {
-        // edge??
-        // return `${this.connectionFieldTypename}EdgeWhere`;
         return `${this.connectionFieldTypename}Where`;
     }
 
@@ -115,47 +101,32 @@ export class RelationshipDeclarationOperations {
         }FieldInput`;
     }
 
-    public getToUnionFieldInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.relationshipDeclaration.source.name}${upperFirst(this.relationshipDeclaration.name)}${
-            ifUnionRelationshipTargetEntity.name
-        }FieldInput`;
-    }
-
     public getUpdateFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }UpdateFieldInput`;
     }
 
     public getCreateFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }CreateFieldInput`;
     }
 
     public getDeleteFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }DeleteFieldInput`;
     }
 
     public getConnectFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        // TODO: swap these
-        // to create ProductionActorsConnectFieldInput for ProductionActorsFieldInput
-        // MovieActorsConnectFieldInput for MovieActorsFieldInput
-        // ...
-        // use test 2 from packages/graphql/tests/integration/interface-relationships/create/connect.int.test.ts to test
-
-        // return `${this.relationshipDeclaration.source.name}${upperFirst(this.relationshipDeclaration.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }ConnectFieldInput`;
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectFieldInput`;
     }
 
     public getDisconnectFieldInputTypeName(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }DisconnectFieldInput`;
     }
@@ -185,16 +156,13 @@ export class RelationshipDeclarationOperations {
     }
 
     public getConnectionWhereTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        // return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
-        //     ifUnionRelationshipTargetEntity?.name || ""
-        // }ConnectionEdgeWhere`;
         return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }ConnectionWhere`;
     }
 
     public getUpdateConnectionInputTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
-        return `${this.fieldInputPrefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
+        return `${this.prefixForTypename}${upperFirst(this.relationshipDeclaration.name)}${
             ifUnionRelationshipTargetEntity?.name || ""
         }UpdateConnectionInput`;
     }
@@ -215,17 +183,18 @@ export class RelationshipDeclarationOperations {
         )}${isA}AggregationWhereInput`;
     }
 
-    public get subscriptionWhereInputTypeName(): string {
-        return `${this.relationshipDeclaration.source.name}${upperFirst(
-            this.relationshipDeclaration.name
-        )}RelationshipSubscriptionWhere`;
-    }
+    // TODO: subscriptions?
+    // public get subscriptionWhereInputTypeName(): string {
+    //     return `${this.relationshipDeclaration.source.name}${upperFirst(
+    //         this.relationshipDeclaration.name
+    //     )}RelationshipSubscriptionWhere`;
+    // }
 
-    public getToUnionSubscriptionWhereInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
-        return `${this.relationshipDeclaration.source.name}${upperFirst(this.relationshipDeclaration.name)}${
-            ifUnionRelationshipTargetEntity.name
-        }SubscriptionWhere`;
-    }
+    // public getToUnionSubscriptionWhereInputTypeName(ifUnionRelationshipTargetEntity: ConcreteEntityAdapter): string {
+    //     return `${this.relationshipDeclaration.source.name}${upperFirst(this.relationshipDeclaration.name)}${
+    //         ifUnionRelationshipTargetEntity.name
+    //     }SubscriptionWhere`;
+    // }
 
     public get unionConnectInputTypeName(): string {
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
@@ -269,11 +238,11 @@ export class RelationshipDeclarationOperations {
         }UpdateInput`;
     }
 
-    public get subscriptionConnectedRelationshipTypeName(): string {
-        return `${this.relationshipDeclaration.source.name}${upperFirst(
-            this.relationshipDeclaration.name
-        )}ConnectedRelationship`;
-    }
+    // public get subscriptionConnectedRelationshipTypeName(): string {
+    //     return `${this.relationshipDeclaration.source.name}${upperFirst(
+    //         this.relationshipDeclaration.name
+    //     )}ConnectedRelationship`;
+    // }
 
     public get edgeCreateInputTypeName(): string {
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
@@ -303,7 +272,6 @@ export class RelationshipDeclarationOperations {
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
             this.relationshipDeclaration.name
         )}EdgeWhere`;
-        // return `${this.relationshipDeclaration.name}Where`;
     }
 
     public get sortInputTypeName(): string {
