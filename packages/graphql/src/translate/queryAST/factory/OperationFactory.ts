@@ -705,12 +705,6 @@ export class OperationsFactory {
             context,
             "BEFORE"
         );
-        const authValidateAfter = this.authorizationFactory.createEntityAuthValidate(
-            entity,
-            ["DELETE"],
-            context,
-            "AFTER"
-        );
 
         const authBeforeFilters = filterTruthy([authFilters, authValidateBefore]);
         /*         
@@ -734,7 +728,6 @@ export class OperationsFactory {
             selection,
             filters: nodeFilters,
             authFilters: authBeforeFilters,
-            authAfterFilters: authValidateAfter,
             nestedDeleteOperations,
         });
     }
@@ -790,19 +783,13 @@ export class OperationsFactory {
         }
 
         if (isInterfaceEntity(target)) {
-            if (this.experimental) {
-                const sharedFilters = this.filterFactory.createNodeFilters(relationship.target, whereArg.node);
-                return target.concreteEntities.flatMap((concreteEntity) => {
-                    return this.createNestedDeleteOperation({
-                        relationship,
-                        args,
-                        context,
-                        concreteTarget: concreteEntity,
-                        sharedFilters,
-                    });
-                });
-            }
-            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
+            // TODO: Remove branch condition with the 5.0 release
+            const sharedFilters = this.experimental
+                ? this.filterFactory.createNodeFilters(relationship.target, whereArg.node)
+                : undefined;
+            const concreteEntities = this.experimental
+                ? getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node)
+                : target.concreteEntities;
             return concreteEntities.flatMap((concreteEntity) => {
                 return this.createNestedDeleteOperation({
                     relationship,
@@ -840,12 +827,6 @@ export class OperationsFactory {
             context,
             "BEFORE"
         );
-        const authValidateAfter = this.authorizationFactory.createEntityAuthValidate(
-            target,
-            ["DELETE"],
-            context,
-            "AFTER"
-        );
 
         const authBeforeFilters = filterTruthy([authFilters, authValidateBefore]);
         /*         
@@ -870,7 +851,6 @@ export class OperationsFactory {
                 selection,
                 filters,
                 authFilters: authBeforeFilters,
-                authAfterFilters: authValidateAfter,
                 nestedDeleteOperations,
             }),
         ];

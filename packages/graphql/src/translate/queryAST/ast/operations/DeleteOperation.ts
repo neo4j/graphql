@@ -35,7 +35,6 @@ export class DeleteOperation extends Operation {
     private selection: EntitySelection;
     private filters: Filter[];
     private authFilters: Filter[];
-    private authAfterFilters: Filter | undefined; // contains only validate after rules
     private nestedDeleteOperations: DeleteOperation[];
 
     constructor({
@@ -44,32 +43,23 @@ export class DeleteOperation extends Operation {
         nestedDeleteOperations = [],
         filters = [],
         authFilters = [],
-        authAfterFilters,
     }: {
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         selection: EntitySelection;
         filters?: Filter[];
         nestedDeleteOperations?: DeleteOperation[];
         authFilters?: Filter[];
-        authAfterFilters: Filter | undefined;
     }) {
         super();
         this.target = target;
         this.selection = selection;
         this.filters = filters;
         this.authFilters = authFilters;
-        this.authAfterFilters = authAfterFilters;
         this.nestedDeleteOperations = nestedDeleteOperations;
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([
-            this.selection,
-            ...this.filters,
-            ...this.authFilters,
-            this.authAfterFilters,
-            ...this.nestedDeleteOperations,
-        ]);
+        return filterTruthy([this.selection, ...this.filters, ...this.authFilters, ...this.nestedDeleteOperations]);
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
