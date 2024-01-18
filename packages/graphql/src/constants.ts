@@ -144,5 +144,3 @@ export type UnionDirective = (typeof UNION_DIRECTIVES)[number];
 export const DEPRECATED = "deprecated";
 
 export const PROPAGATED_DIRECTIVES = ["shareable", DEPRECATED] as const;
-
-export const PRIVATE = "private";

@@ -59,10 +59,10 @@ describe("inheritance", () => {
             directive @customDirectiveObj on OBJECT
 
             type Actor implements Person @customDirectiveObj {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
               friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
-              name: String @customDirectiveField
+              name: String
             }
 
             type ActorAggregateSelection {

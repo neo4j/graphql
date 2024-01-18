@@ -2211,9 +2211,9 @@ describe("Directive-preserve", () => {
             }
 
             type Movie implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
             }
@@ -2368,21 +2368,21 @@ describe("Directive-preserve", () => {
             }
 
             input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsConnectFieldInput!]
             }
 
             input MovieCreateInput {
-              actors: MovieActorsFieldInput @deprecated(reason: \\"Do not use\\")
+              actors: MovieActorsFieldInput
               runtime: Int!
               title: String!
             }
 
             input MovieDeleteInput {
-              actors: [ProductionActorsDeleteFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [ProductionActorsDeleteFieldInput!]
             }
 
             input MovieDisconnectInput {
-              actors: [ProductionActorsDisconnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -2400,7 +2400,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -2412,7 +2412,7 @@ describe("Directive-preserve", () => {
             }
 
             input MovieUpdateInput {
-              actors: [MovieActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [MovieActorsUpdateFieldInput!]
               runtime: Int
               runtime_DECREMENT: Int
               runtime_INCREMENT: Int
@@ -2424,34 +2424,34 @@ describe("Directive-preserve", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_ALL: ProductionActorsConnectionWhere
               \\"\\"\\"
               Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
               \\"\\"\\"
               Return Movies where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_SOME: ProductionActorsConnectionWhere
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_ALL: ActorWhere
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_SOME: ActorWhere
               runtime: Int
               runtime_GT: Int
               runtime_GTE: Int
@@ -2644,9 +2644,9 @@ describe("Directive-preserve", () => {
             }
 
             type Series implements Production {
-              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
-              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodes: Int!
               title: String!
             }
@@ -2801,7 +2801,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesConnectInput {
-              actors: [SeriesActorsConnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [SeriesActorsConnectFieldInput!]
             }
 
             type SeriesConnection {
@@ -2811,17 +2811,17 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesCreateInput {
-              actors: SeriesActorsFieldInput @deprecated(reason: \\"Do not use\\")
+              actors: SeriesActorsFieldInput
               episodes: Int!
               title: String!
             }
 
             input SeriesDeleteInput {
-              actors: [ProductionActorsDeleteFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [ProductionActorsDeleteFieldInput!]
             }
 
             input SeriesDisconnectInput {
-              actors: [ProductionActorsDisconnectFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             type SeriesEdge {
@@ -2839,7 +2839,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesRelationInput {
-              actors: [SeriesActorsCreateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [SeriesActorsCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -2851,7 +2851,7 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesUpdateInput {
-              actors: [SeriesActorsUpdateFieldInput!] @deprecated(reason: \\"Do not use\\")
+              actors: [SeriesActorsUpdateFieldInput!]
               episodes: Int
               episodes_DECREMENT: Int
               episodes_INCREMENT: Int
@@ -2863,34 +2863,34 @@ describe("Directive-preserve", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
-              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_ALL: ProductionActorsConnectionWhere
               \\"\\"\\"
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_NONE: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere
               \\"\\"\\"
               Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
+              actorsConnection_SOME: ProductionActorsConnectionWhere
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_ALL: ActorWhere
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_NONE: ActorWhere
               actors_NOT: ActorWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_SINGLE: ActorWhere
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere @deprecated(reason: \\"Do not use\\")
+              actors_SOME: ActorWhere
               episodes: Int
               episodes_GT: Int
               episodes_GTE: Int
