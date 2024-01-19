@@ -713,7 +713,7 @@ export class OperationsFactory {
             selection,
             filters: nodeFilters,
             authFilters: authBeforeFilters,
-            nestedDeleteOperations,
+            nestedOperations: nestedDeleteOperations,
         });
     }
 
@@ -834,7 +834,7 @@ export class OperationsFactory {
                 selection,
                 filters,
                 authFilters: authBeforeFilters,
-                nestedDeleteOperations,
+                nestedOperations: nestedDeleteOperations,
             }),
         ];
     }
