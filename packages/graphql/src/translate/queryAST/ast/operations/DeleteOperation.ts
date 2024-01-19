@@ -22,8 +22,8 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import { MutationOperation } from "./operations";
 import type { OperationTranspileResult } from "./operations";
-import { MutationOperation, Operation } from "./operations";
 import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
 import type { Filter } from "../filters/Filter";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
@@ -35,7 +35,7 @@ export class DeleteOperation extends MutationOperation {
     private selection: EntitySelection;
     private filters: Filter[];
     private authFilters: Filter[];
-    private nestedOperations: Operation[];
+    private nestedOperations: MutationOperation[];
 
     constructor({
         target,
@@ -59,7 +59,7 @@ export class DeleteOperation extends MutationOperation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([this.selection, ...this.filters, ...this.authFilters, ...this.nestedOperations]);
+        return [this.selection, ...this.filters, ...this.authFilters, ...this.nestedOperations];
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
