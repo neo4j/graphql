@@ -3649,7 +3649,7 @@ __metadata:
     "@neo4j/graphql": 4.4.5
     "@neo4j/introspector": 2.0.0
     "@playwright/test": 1.40.1
-    "@tsconfig/create-react-app": 2.0.1
+    "@tsconfig/create-react-app": 2.0.2
     "@types/codemirror": 5.60.15
     "@types/lodash.debounce": 4.0.9
     "@types/prettier": 2.7.3
@@ -7185,10 +7185,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/create-react-app@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@tsconfig/create-react-app@npm:2.0.1"
-  checksum: ae06caa4845591a963d0870c627553344aa647ff63e05f6b9589db0a499e71e2a2b2a5b510b0f706c011a7375ccf67cddfebaa1a3303ef288102c29e8a76eecf
+"@tsconfig/create-react-app@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@tsconfig/create-react-app@npm:2.0.2"
+  checksum: 75b4de2227bd9ec6fc3a42c0f904dcd5aa873bf169971dadb4b151b4f74c0b6bd9411c6f5addd3c4fac777e3f34882ec832b0babd2eac2ecd87fb8ba01696785
   languageName: node
   linkType: hard
 

@@ -71,7 +71,7 @@
     },
     "devDependencies": {
         "@playwright/test": "1.40.1",
-        "@tsconfig/create-react-app": "2.0.1",
+        "@tsconfig/create-react-app": "2.0.2",
         "@types/codemirror": "5.60.15",
         "@types/lodash.debounce": "4.0.9",
         "@types/prettier": "2.7.3",
