@@ -20,41 +20,65 @@
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import { gql } from "graphql-tag";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src";
 import Neo4j from "./neo4j";
+import { UniqueType } from "../utils/graphql-types";
+import { cleanNodes } from "../utils/clean-nodes";
 
 describe("delete union relationships", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
+    let session: Session;
+
+    const episodeType = new UniqueType("Episode");
+    const movieType = new UniqueType("Movie");
+    const seriesType = new UniqueType("Series");
+    const actorType = new UniqueType("Actor");
+
+    let actorName1: string;
+    let actorName2: string;
+    let movieTitle1: string;
+    let movieTitle2: string;
+    let movieRuntime1: number;
+    let movieRuntime2: number;
+    let movieScreenTime1: number;
+    let movieScreenTime2: number;
+    let seriesTitle1: string;
+    let seriesTitle2: string;
+    let seriesTitle3: string;
+    let seriesScreenTime1: number;
+    let seriesScreenTime2: number;
+    let seriesScreenTime3: number;
+
+    let nestedMovieActorScreenTime: number;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-
         const typeDefs = gql`
-            type Episode {
+            type ${episodeType.name} {
                 runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: ${seriesType.name} ! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
-            union Production = Movie | Series
+            union Production = ${movieType.name} | ${seriesType.name}
 
-            type Movie {
+            type ${movieType.name} {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Series {
+            type ${seriesType.name} {
                 title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                episodes: [${episodeType.name}!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type Actor {
+            type ${actorType.name} {
                 name: String!
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
@@ -66,7 +90,87 @@ describe("delete union relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            driver,
         });
+    });
+
+    beforeEach(async () => {
+        actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        movieTitle1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        movieTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        movieRuntime1 = faker.number.int({ max: 100000 });
+        movieRuntime2 = faker.number.int({ max: 100000 });
+        movieScreenTime1 = faker.number.int({ max: 100000 });
+        movieScreenTime2 = faker.number.int({ max: 100000 });
+
+        seriesTitle1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        seriesTitle2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        seriesTitle3 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        seriesScreenTime1 = faker.number.int({ max: 100000 });
+        seriesScreenTime2 = faker.number.int({ max: 100000 });
+        seriesScreenTime3 = faker.number.int({ max: 100000 });
+        nestedMovieActorScreenTime = faker.number.int({ max: 100000 });
+
+        session = await neo4j.getSession();
+        await session.run(
+            `
+            CREATE (a:${actorType.name} { name: $actorName1 })
+            CREATE (a2:${actorType.name} { name: $actorName2 })
+            CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime1 }]->(:${movieType.name} { title: $movieTitle1, runtime:$movieRuntime1 })
+            CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime2 }]->(m2:${movieType.name} { title: $movieTitle2, runtime:$movieRuntime2 })
+            CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime1 }]->(:${seriesType.name} { title: $seriesTitle1 })
+            CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime2 }]->(:${seriesType.name} { title: $seriesTitle2 })
+            CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime3 }]->(:${seriesType.name} { title: $seriesTitle3 })
+            CREATE (a2)-[:ACTED_IN { screenTime: $nestedMovieActorScreenTime }]->(m2)
+        `,
+            {
+                actorName1,
+                actorName2,
+                movieTitle1,
+                movieTitle2,
+                movieRuntime1,
+                movieRuntime2,
+                movieScreenTime1,
+                movieScreenTime2,
+                seriesTitle1,
+                seriesTitle2,
+                seriesTitle3,
+                seriesScreenTime1,
+                seriesScreenTime2,
+                seriesScreenTime3,
+                nestedMovieActorScreenTime,
+            }
+        );
+    });
+
+    afterEach(async () => {
+        await cleanNodes(session, [episodeType, movieType, seriesType, actorType]);
+        await session.close();
     });
 
     afterAll(async () => {
@@ -74,140 +178,40 @@ describe("delete union relationships", () => {
     });
 
     test("should delete one nested concrete entity", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.number.int({ max: 100000 });
-        const seriesScreenTime2 = faker.number.int({ max: 100000 });
-        const seriesScreenTime3 = faker.number.int({ max: 100000 });
-
         const query = `
             mutation DeleteActorAndMovie($name: String, $title: String) {
-                deleteActors(where: { name: $name }, delete: { actedIn: { Movie: { where: { node: { title: $title } } } } }) {
+                ${actorType.operations.delete}(where: { name: $name }, delete: { actedIn: { ${movieType.name}: { where: { node: { title: $title } } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
             }
         `;
 
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime2 }]->(:Series { title: $seriesTitle2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime3 }]->(:Series { title: $seriesTitle3 })
-            `,
-                {
-                    actorName,
-                    movieTitle,
-                    movieRuntime,
-                    movieScreenTime,
-                    seriesTitle,
-                    seriesTitle2,
-                    seriesTitle3,
-                    seriesScreenTime,
-                    seriesScreenTime2,
-                    seriesScreenTime3,
-                }
-            );
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { name: actorName1, title: movieTitle1 },
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { name: actorName, title: movieTitle },
-            });
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                deleteActors: {
-                    nodesDeleted: 2,
-                    relationshipsDeleted: 4,
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.data).toEqual({
+            [actorType.operations.delete]: {
+                nodesDeleted: 2,
+                relationshipsDeleted: 5,
+            },
+        });
     });
 
     test("should delete one nested concrete entity using interface relationship fields", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieRuntime1 = faker.number.int({ max: 100000 });
-        const movieRuntime2 = faker.number.int({ max: 100000 });
-        const movieScreenTime1 = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
-
-        const seriesTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime1 = faker.number.int({ max: 100000 });
-        const seriesScreenTime2 = faker.number.int({ max: 100000 });
-        const seriesScreenTime3 = faker.number.int({ max: 100000 });
-
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int) {
-                deleteActors(
+                ${actorType.operations.delete}(
                     where: { name: $name1 }
                     delete: {
                         actedIn: {
-                            Movie: {
+                            ${movieType.name}: {
                                 where: { edge: { screenTime: $movieScreenTime1 } }
                             }
                         }
@@ -219,106 +223,31 @@ describe("delete union relationships", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (a2:Actor { name: $actorName2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime1 }]->(:Movie { title: $movieTitle1, runtime:$movieRuntime1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime2 }]->(:Movie { title: $movieTitle2, runtime:$movieRuntime2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime1 }]->(:Series { title: $seriesTitle1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime2 }]->(:Series { title: $seriesTitle2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime3 }]->(:Series { title: $seriesTitle3 })
-            `,
-                {
-                    actorName1,
-                    actorName2,
-                    movieTitle1,
-                    movieTitle2,
-                    movieRuntime1,
-                    movieRuntime2,
-                    movieScreenTime1,
-                    movieScreenTime2,
-                    seriesTitle1,
-                    seriesTitle2,
-                    seriesTitle3,
-                    seriesScreenTime1,
-                    seriesScreenTime2,
-                    seriesScreenTime3,
-                }
-            );
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { name1: actorName1, movieScreenTime1: movieScreenTime1 },
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { name1: actorName1, movieScreenTime1: movieScreenTime1 },
-            });
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                deleteActors: {
-                    nodesDeleted: 2,
-                    relationshipsDeleted: 5,
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.data).toEqual({
+            [actorType.operations.delete]: {
+                nodesDeleted: 2,
+                relationshipsDeleted: 5,
+            },
+        });
     });
 
     test("should delete two nested concrete entity using interface relationship fields", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieRuntime1 = faker.number.int({ max: 100000 });
-        const movieRuntime2 = faker.number.int({ max: 100000 });
-        const movieScreenTime1 = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
-
-        const seriesTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime1 = faker.number.int({ max: 100000 });
-        const seriesScreenTime2 = faker.number.int({ max: 100000 });
-        const seriesScreenTime3 = faker.number.int({ max: 100000 });
-
         const query = `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int, $movieScreenTime2: Int) {
-                deleteActors(
+                ${actorType.operations.delete}(
                     where: { name: $name1 }
                     delete: {
                         actedIn: {
-                            Movie:  [ 
+                            ${movieType.name}:  [ 
                                 { where: { edge: { screenTime: $movieScreenTime1 } } }
                                 { where: { edge: { screenTime: $movieScreenTime2 } } }
                             ]
@@ -331,108 +260,36 @@ describe("delete union relationships", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (a2:Actor { name: $actorName2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime1 }]->(:Movie { title: $movieTitle1, runtime:$movieRuntime1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime2 }]->(:Movie { title: $movieTitle2, runtime:$movieRuntime2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime1 }]->(:Series { title: $seriesTitle1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime2 }]->(:Series { title: $seriesTitle2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime3 }]->(:Series { title: $seriesTitle3 })
-            `,
-                {
-                    actorName1,
-                    actorName2,
-                    movieTitle1,
-                    movieTitle2,
-                    movieRuntime1,
-                    movieRuntime2,
-                    movieScreenTime1,
-                    movieScreenTime2,
-                    seriesTitle1,
-                    seriesTitle2,
-                    seriesTitle3,
-                    seriesScreenTime1,
-                    seriesScreenTime2,
-                    seriesScreenTime3,
-                }
-            );
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: {
+                name1: actorName1,
+                movieScreenTime1: movieScreenTime1,
+                movieScreenTime2: movieScreenTime2,
+            },
+        });
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { name1: actorName1, movieScreenTime1: movieScreenTime1, movieScreenTime2: movieScreenTime2 },
-            });
+        expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                deleteActors: {
-                    nodesDeleted: 3,
-                    relationshipsDeleted: 5,
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.data).toEqual({
+            [actorType.operations.delete]: {
+                nodesDeleted: 3,
+                relationshipsDeleted: 6,
+            },
+        });
     });
 
     test("should be possible to double nested delete", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieRuntime1 = faker.number.int({ max: 100000 });
-        const movieRuntime2 = faker.number.int({ max: 100000 });
-        const movieScreenTime1 = faker.number.int({ max: 100000 });
-        const movieScreenTime2 = faker.number.int({ max: 100000 });
-        const movieActorScreenTime = faker.number.int({ max: 100000 });
-
-        const seriesTitle1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesTitle3 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime1 = faker.number.int({ max: 100000 });
-        const seriesScreenTime2 = faker.number.int({ max: 100000 });
-        const seriesScreenTime3 = faker.number.int({ max: 100000 });
-
         const query = `
-            mutation DeleteActorAndMovie($name1: String, $movieRuntime1: Int, $name2: String) {
-                deleteActors(
+            mutation DeleteActorAndMovie($name1: String, $movieRuntime2: Int, $name2: String) {
+                ${actorType.operations.delete}(
                     where: { name: $name1 }
                     delete: {
                         actedIn: {
-                            Movie: {
-                                where: { node: { runtime: $movieRuntime1 } }
+                            ${movieType.name}: {
+                                where: { node: { runtime: $movieRuntime2 } }
                                 delete: {
                                     actors: {
                                         where: { node: { name: $name2 } }
@@ -448,55 +305,20 @@ describe("delete union relationships", () => {
             }
         `;
 
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (a2:Actor { name: $actorName2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime1 }]->(m1:Movie { title: $movieTitle1, runtime:$movieRuntime1 })
-                CREATE (a2)-[:ACTED_IN { screenTime: $movieActorScreenTime }]->(m1)
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues(),
+            variableValues: { name1: actorName1, movieRuntime2: movieRuntime2, name2: actorName2 },
+        });
 
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime2 }]->(:Movie { title: $movieTitle2, runtime:$movieRuntime2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime1 }]->(:Series { title: $seriesTitle1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime2 }]->(:Series { title: $seriesTitle2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime3 }]->(:Series { title: $seriesTitle3 })
-            `,
-                {
-                    actorName1,
-                    actorName2,
-                    movieTitle1,
-                    movieTitle2,
-                    movieRuntime1,
-                    movieRuntime2,
-                    movieScreenTime1,
-                    movieScreenTime2,
-                    movieActorScreenTime,
-                    seriesTitle1,
-                    seriesTitle2,
-                    seriesTitle3,
-                    seriesScreenTime1,
-                    seriesScreenTime2,
-                    seriesScreenTime3,
-                }
-            );
+        expect(gqlResult.errors).toBeFalsy();
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: { name1: actorName1, movieRuntime1: movieRuntime1, name2: actorName2 },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                deleteActors: {
-                    nodesDeleted: 3,
-                    relationshipsDeleted: 6,
-                },
-            });
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.data).toEqual({
+            [actorType.operations.delete]: {
+                nodesDeleted: 3,
+                relationshipsDeleted: 6,
+            },
+        });
     });
 });

@@ -94,7 +94,7 @@ describe("Delete using top level aggregate where", () => {
         await driver.close();
     });
 
-    test.only("Implicit AND", async () => {
+    test("Implicit AND", async () => {
         const query = `
             mutation {
                 ${postType.operations.delete}(where: { 
