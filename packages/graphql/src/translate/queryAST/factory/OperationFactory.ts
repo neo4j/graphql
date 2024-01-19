@@ -112,7 +112,6 @@ export class OperationsFactory {
             if (operationMatch.isCreate) {
                 return this.createCreateOperation(entity, resolveTree, context); // TODO: move this to separate method?
             } else if (operationMatch.isDelete) {
-                // const topLevelConnectionResolveTree = this.normalizeResolveTreeForTopLevelConnection(resolveTree);
                 return this.createTopLevelDeleteOperation({
                     entity,
                     resolveTree,
@@ -788,8 +787,8 @@ export class OperationsFactory {
                 ? this.filterFactory.createNodeFilters(relationship.target, whereArg.node)
                 : undefined;
             const concreteEntities = this.experimental
-                ? getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node)
-                : target.concreteEntities;
+                ? target.concreteEntities
+                : getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
             return concreteEntities.flatMap((concreteEntity) => {
                 return this.createNestedDeleteOperation({
                     relationship,

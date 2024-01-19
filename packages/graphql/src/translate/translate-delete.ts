@@ -42,9 +42,9 @@ export function translateDelete({
     node: Node;
     entityAdapter: EntityAdapter;
 }): Cypher.CypherResult {
-   /*  if (context.subscriptionsEnabled) {
+    if (context.subscriptionsEnabled) {
         throw new Error("Subscriptions are not supported for delete operations");
-    } */
+    }
     const { resolveTree } = context;
     const varName = "this";
     const operationsTreeFactory = new QueryASTFactory(context.schemaModel, context.experimental);
