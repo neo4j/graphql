@@ -105,40 +105,24 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title = $this_deleteActors_args_delete_actedIn_Movie0_where_this_actedIn_Movie0param0
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Keanu\\",
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": {
-                                \\"Movie\\": [
-                                    {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"title\\": \\"Matrix\\"
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn_Movie0_where_this_actedIn_Movie0param0\\": \\"Matrix\\"
+                \\"param1\\": \\"Matrix\\"
             }"
         `);
     });
@@ -169,60 +153,36 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title = $this_deleteActors_args_delete_actedIn_Movie0_where_this_actedIn_Movie0param0
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
+                WITH *
+                OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
+                WHERE this5.title = $param2
+                WITH this4, collect(DISTINCT this5) AS var6
+                CALL {
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
             }
             WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie1_relationship:ACTED_IN]->(this_actedIn_Movie1:Movie)
-            WHERE this_actedIn_Movie1.title = $this_deleteActors_args_delete_actedIn_Movie1_where_this_actedIn_Movie1param0
-            WITH this_actedIn_Movie1_relationship, collect(DISTINCT this_actedIn_Movie1) AS this_actedIn_Movie1_to_delete
-            CALL {
-            	WITH this_actedIn_Movie1_to_delete
-            	UNWIND this_actedIn_Movie1_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Keanu\\",
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": {
-                                \\"Movie\\": [
-                                    {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"title\\": \\"Matrix\\"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"title\\": \\"Matrix Reloaded\\"
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn_Movie0_where_this_actedIn_Movie0param0\\": \\"Matrix\\",
-                \\"this_deleteActors_args_delete_actedIn_Movie1_where_this_actedIn_Movie1param0\\": \\"Matrix Reloaded\\"
+                \\"param1\\": \\"Matrix\\",
+                \\"param2\\": \\"Matrix Reloaded\\"
             }"
         `);
     });
@@ -253,64 +213,37 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
+                WITH *
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WHERE this3.name = $param2
+                    WITH this2, collect(DISTINCT this3) AS var4
+                    CALL {
+                        WITH var4
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
+                    }
+                }
+                WITH this0, collect(DISTINCT this1) AS var6
+                CALL {
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title = $this_deleteActors_args_delete_actedIn_Movie0_where_this_actedIn_Movie0param0
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this_actedIn_Movie0)<-[this_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_actedIn_Movie0_actors0:Actor)
-            WHERE this_actedIn_Movie0_actors0.name = $this_deleteActors_args_delete_actedIn_Movie0_delete_actors0_where_this_actedIn_Movie0_actors0param0
-            WITH this_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_actedIn_Movie0_actors0) AS this_actedIn_Movie0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_actors0_to_delete
-            	UNWIND this_actedIn_Movie0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Keanu\\",
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": {
-                                \\"Movie\\": [
-                                    {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"title\\": \\"Matrix\\"
-                                            }
-                                        },
-                                        \\"delete\\": {
-                                            \\"actors\\": [
-                                                {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"name\\": \\"Gloria Foster\\"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn_Movie0_where_this_actedIn_Movie0param0\\": \\"Matrix\\",
-                \\"this_deleteActors_args_delete_actedIn_Movie0_delete_actors0_where_this_actedIn_Movie0_actors0param0\\": \\"Gloria Foster\\"
+                \\"param1\\": \\"Matrix\\",
+                \\"param2\\": \\"Gloria Foster\\"
             }"
         `);
     });

@@ -706,20 +706,6 @@ export class OperationsFactory {
         );
 
         const authBeforeFilters = filterTruthy([authFilters, authValidateBefore]);
-        /*         
-        TODO Add attribute auth
-        const authNodeAttributeFilters = this.createAttributeAuthFilters({
-            entity,
-            context,
-            rawFields: resolveTreeNodeFields,
-        });
-
-        const authNodeAttributeValidate = this.createAttributeAuthValidate({
-            entity,
-            context,
-            rawFields: resolveTreeNodeFields,
-            when: "BEFORE",
-        }); */
 
         const nestedDeleteOperations = this.createNestedDeleteOperations(deleteArg, entity, context);
         return new DeleteOperation({
@@ -733,27 +719,27 @@ export class OperationsFactory {
 
     private createNestedDeleteOperations(
         deleteArg: Record<string, any>,
-        target: ConcreteEntityAdapter,
+        source: ConcreteEntityAdapter,
         context: Neo4jGraphQLTranslationContext
     ): DeleteOperation[] {
         return filterTruthy(
             Object.entries(deleteArg).flatMap(([key, value]) => {
                 if (key === "_on") {
-                    const concreteDeleteArg = value[target.name];
-                    if (concreteDeleteArg) {
-                        return asArray(concreteDeleteArg).flatMap((v) => {
-                            return this.createNestedDeleteOperations(v, target, context);
-                        });
+                    const concreteDeleteArg = value[source.name];
+                    if (!concreteDeleteArg) {
+                        return;
                     }
-                    return;
+                    return asArray(concreteDeleteArg).flatMap((v) => {
+                        return this.createNestedDeleteOperations(v, source, context);
+                    });
                 }
-                const nestedTarget = target.findRelationship(key);
-                if (!nestedTarget) {
+                const relationship = source.findRelationship(key);
+                if (!relationship) {
                     throw new Error(`Failed to find relationship ${key}`);
                 }
                 return asArray(value).flatMap((v) => {
                     return this.createNestedDeleteOperation({
-                        relationship: nestedTarget,
+                        relationship,
                         args: v,
                         context,
                     });
@@ -776,11 +762,23 @@ export class OperationsFactory {
         sharedFilters?: Filter[];
     }): DeleteOperation[] {
         const target = concreteTarget ?? relationship.target;
-        const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
-        if (isUnionEntity(target)) {
-            throw new Error("Union entities are not supported in nested delete operations");
-        }
 
+        if (isUnionEntity(target)) {
+            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, args);
+
+            return concreteEntities.flatMap((concreteEntity) => {
+                return asArray(args[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {
+                    return this.createNestedDeleteOperation({
+                        relationship,
+                        args: concreteArgs,
+                        context,
+                        concreteTarget: concreteEntity,
+                        sharedFilters,
+                    });
+                });
+            });
+        }
+        const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
         if (isInterfaceEntity(target)) {
             // TODO: Remove branch condition with the 5.0 release
             const sharedFilters = this.experimental
@@ -828,20 +826,6 @@ export class OperationsFactory {
         );
 
         const authBeforeFilters = filterTruthy([authFilters, authValidateBefore]);
-        /*         
-        TODO Add attribute auth
-        const authNodeAttributeFilters = this.createAttributeAuthFilters({
-            entity,
-            context,
-            rawFields: resolveTreeNodeFields,
-        });
-
-        const authNodeAttributeValidate = this.createAttributeAuthValidate({
-            entity,
-            context,
-            rawFields: resolveTreeNodeFields,
-            when: "BEFORE",
-        }); */
 
         const nestedDeleteOperations = this.createNestedDeleteOperations(deleteArg, target, context);
         return [
