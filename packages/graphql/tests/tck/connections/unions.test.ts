@@ -349,13 +349,16 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS edge
-                WITH edge, totalCount
-                ORDER BY edge.properties.words ASC
-                WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    ORDER BY edge.properties.words ASC
+                    RETURN collect(edge) AS var4
+                }
+                RETURN { edges: var4, totalCount: totalCount } AS var5
             }
-            RETURN this { .name, publicationsConnection: var4 } AS this"
+            RETURN this { .name, publicationsConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
