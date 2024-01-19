@@ -716,6 +716,60 @@ export class OperationsFactory {
             nestedOperations: nestedDeleteOperations,
         });
     }
+    private createNestedDeleteOperationsForInterface({
+        deleteArg,
+        relationship,
+        target,
+        context,
+    }: {
+        deleteArg: Record<string, any>;
+        relationship: RelationshipAdapter;
+        target: InterfaceEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+    }): DeleteOperation[] {
+        const { whereArg } = this.parseDeleteArgs(deleteArg, true);
+        // TODO: Remove branch condition with the 5.0 release
+        const sharedFilters = this.experimental
+            ? this.filterFactory.createNodeFilters(target, whereArg.node)
+            : undefined;
+        const concreteEntities = this.experimental
+            ? target.concreteEntities
+            : getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
+        return concreteEntities.flatMap((concreteEntity) => {
+            return this.createNestedDeleteOperation({
+                relationship,
+                target: concreteEntity,
+                args: deleteArg,
+                context,
+                sharedFilters,
+            });
+        });
+    }
+
+    private createNestedDeleteOperationsForUnion({
+        deleteArg,
+        relationship,
+        target,
+        context,
+    }: {
+        deleteArg: Record<string, any>;
+        relationship: RelationshipAdapter;
+        target: UnionEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+    }): DeleteOperation[] {
+        const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, deleteArg);
+
+        return concreteEntities.flatMap((concreteEntity) => {
+            return asArray(deleteArg[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {
+                return this.createNestedDeleteOperation({
+                    relationship,
+                    target: concreteEntity,
+                    args: concreteArgs,
+                    context,
+                });
+            });
+        });
+    }
 
     private createNestedDeleteOperations(
         deleteArg: Record<string, any>,
@@ -723,24 +777,44 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext
     ): DeleteOperation[] {
         return filterTruthy(
-            Object.entries(deleteArg).flatMap(([key, value]) => {
-                if (key === "_on") {
-                    const concreteDeleteArg = value[source.name];
-                    if (!concreteDeleteArg) {
-                        return;
+            Object.entries(deleteArg).flatMap(([key, valueArr]) => {
+                return asArray(valueArr).flatMap((value) => {
+                    if (key === "_on") {
+                        const concreteDeleteArg = value[source.name];
+                        if (!concreteDeleteArg) {
+                            return;
+                        }
+
+                        return asArray(concreteDeleteArg).flatMap((v) => {
+                            return this.createNestedDeleteOperations(v, source, context);
+                        });
                     }
-                    return asArray(concreteDeleteArg).flatMap((v) => {
-                        return this.createNestedDeleteOperations(v, source, context);
-                    });
-                }
-                const relationship = source.findRelationship(key);
-                if (!relationship) {
-                    throw new Error(`Failed to find relationship ${key}`);
-                }
-                return asArray(value).flatMap((v) => {
+                    const relationship = source.findRelationship(key);
+                    if (!relationship) {
+                        throw new Error(`Failed to find relationship ${key}`);
+                    }
+                    const target = relationship.target;
+                    if (isInterfaceEntity(target)) {
+                        return this.createNestedDeleteOperationsForInterface({
+                            deleteArg: value,
+                            relationship,
+                            target,
+                            context,
+                        });
+                    }
+                    if (isUnionEntity(target)) {
+                        return this.createNestedDeleteOperationsForUnion({
+                            deleteArg: value,
+                            relationship,
+                            target,
+                            context,
+                        });
+                    }
+
                     return this.createNestedDeleteOperation({
                         relationship,
-                        args: v,
+                        target,
+                        args: value,
                         context,
                     });
                 });
@@ -750,67 +824,30 @@ export class OperationsFactory {
 
     private createNestedDeleteOperation({
         relationship,
+        target,
         args,
         context,
-        concreteTarget,
         sharedFilters,
     }: {
         relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter;
         args: Record<string, any>;
         context: Neo4jGraphQLTranslationContext;
-        concreteTarget?: ConcreteEntityAdapter;
         sharedFilters?: Filter[];
     }): DeleteOperation[] {
-        const target = concreteTarget ?? relationship.target;
-
-        if (isUnionEntity(target)) {
-            const concreteEntities = getConcreteEntitiesInOnArgumentOfWhere(target, args);
-
-            return concreteEntities.flatMap((concreteEntity) => {
-                return asArray(args[concreteEntity.name] ?? {}).flatMap((concreteArgs) => {
-                    return this.createNestedDeleteOperation({
-                        relationship,
-                        args: concreteArgs,
-                        context,
-                        concreteTarget: concreteEntity,
-                        sharedFilters,
-                    });
-                });
-            });
-        }
         const { whereArg, deleteArg } = this.parseDeleteArgs(args, true);
-        if (isInterfaceEntity(target)) {
-            // TODO: Remove branch condition with the 5.0 release
-            const sharedFilters = this.experimental
-                ? this.filterFactory.createNodeFilters(relationship.target, whereArg.node)
-                : undefined;
-            const concreteEntities = this.experimental
-                ? target.concreteEntities
-                : getConcreteEntitiesInOnArgumentOfWhere(target, whereArg.node);
-            return concreteEntities.flatMap((concreteEntity) => {
-                return this.createNestedDeleteOperation({
-                    relationship,
-                    args,
-                    context,
-                    concreteTarget: concreteEntity,
-                    sharedFilters,
-                });
-            });
-        }
 
-        if (isConcreteEntity(target)) {
-            checkEntityAuthentication({
-                entity: target.entity,
-                targetOperations: ["DELETE"],
-                context,
-            });
-        }
+        checkEntityAuthentication({
+            entity: target.entity,
+            targetOperations: ["DELETE"],
+            context,
+        });
 
         const selection = new RelationshipSelection({
             relationship,
             directed: true,
             optional: true,
-            targetOverride: concreteTarget,
+            targetOverride: target,
         });
         const nodeFilters = sharedFilters ?? this.filterFactory.createNodeFilters(target, whereArg.node);
         const edgeFilters = this.filterFactory.createEdgeFilters(relationship, whereArg.edge);
@@ -830,7 +867,7 @@ export class OperationsFactory {
         const nestedDeleteOperations = this.createNestedDeleteOperations(deleteArg, target, context);
         return [
             new DeleteOperation({
-                target: target,
+                target,
                 selection,
                 filters,
                 authFilters: authBeforeFilters,
