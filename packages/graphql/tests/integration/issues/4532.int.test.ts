@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
     let neo4j: Neo4j;
     let neo4jGraphql: Neo4jGraphQL;
 
-    describe("order-by relationship property should", () => {
+    describe("order-by relationship property", () => {
         const Inventory = new UniqueType("Inventory");
         const Scenario = new UniqueType("Scenario");
 
