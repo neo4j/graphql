@@ -96,12 +96,12 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
                     CALL {
                         WITH *
                         MATCH (this)<-[update_this0:TRANSLATED_BOOK_TITLE]-(update_this1:BookTitle_SV)
-                        WITH update_this1 { __resolveType: \\"BookTitle_SV\\", __id: id(this), .value } AS update_this1
+                        WITH update_this1 { .value, __resolveType: \\"BookTitle_SV\\", __id: id(update_this1) } AS update_this1
                         RETURN update_this1 AS update_var2
                         UNION
                         WITH *
                         MATCH (this)<-[update_this3:TRANSLATED_BOOK_TITLE]-(update_this4:BookTitle_EN)
-                        WITH update_this4 { __resolveType: \\"BookTitle_EN\\", __id: id(this), .value } AS update_this4
+                        WITH update_this4 { .value, __resolveType: \\"BookTitle_EN\\", __id: id(update_this4) } AS update_this4
                         RETURN update_this4 AS update_var2
                     }
                     WITH update_var2
@@ -187,12 +187,12 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
                     CALL {
                         WITH *
                         MATCH (this)<-[update_this0:TRANSLATED_BOOK_TITLE]-(update_this1:BookTitle_SV)
-                        WITH update_this1 { __resolveType: \\"BookTitle_SV\\", __id: id(this), .value } AS update_this1
+                        WITH update_this1 { .value, __resolveType: \\"BookTitle_SV\\", __id: id(update_this1) } AS update_this1
                         RETURN update_this1 AS update_var2
                         UNION
                         WITH *
                         MATCH (this)<-[update_this3:TRANSLATED_BOOK_TITLE]-(update_this4:BookTitle_EN)
-                        WITH update_this4 { __resolveType: \\"BookTitle_EN\\", __id: id(this) } AS update_this4
+                        WITH update_this4 { __resolveType: \\"BookTitle_EN\\", __id: id(update_this4) } AS update_this4
                         RETURN update_this4 AS update_var2
                     }
                     WITH update_var2

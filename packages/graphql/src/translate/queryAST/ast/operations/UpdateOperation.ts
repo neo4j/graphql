@@ -23,14 +23,13 @@ import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "./ReadOperation";
-import type { OperationTranspileResult } from "./operations";
-import { MutationOperation } from "./operations";
+import { Operation, type OperationTranspileResult } from "./operations";
 
 /**
  * This is currently just a dummy tree node,
  * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
  **/
-export class CreateOperation extends MutationOperation {
+export class UpdateOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
@@ -51,8 +50,7 @@ export class CreateOperation extends MutationOperation {
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
-        context.env.topLevelOperationName = "CREATE";
-        // TODO: implement the actual create / unwind create
+        context.env.topLevelOperationName = "UPDATE";
         const clauses = this.getProjectionClause(context);
         return { projectionExpr: context.returnVariable, clauses };
     }
@@ -63,4 +61,3 @@ export class CreateOperation extends MutationOperation {
         });
     }
 }
-

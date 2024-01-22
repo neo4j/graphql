@@ -106,7 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 RETURN count(*) AS _
             }
             WITH *
-            RETURN 'Query cannot conclude with CALL'"
+            RETURN \\"Query cannot conclude with CALL\\""
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

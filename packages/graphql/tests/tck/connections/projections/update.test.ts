@@ -76,12 +76,17 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH { screenTime: update_this0.screenTime, node: { name: update_this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS update_var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS update_this1, edge.relationship AS update_this0
+                    RETURN collect({ screenTime: update_this0.screenTime, node: { name: update_this1.name } }) AS update_var2
+                }
+                RETURN { edges: update_var2, totalCount: totalCount } AS update_var3
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: update_var2 }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: update_var3 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

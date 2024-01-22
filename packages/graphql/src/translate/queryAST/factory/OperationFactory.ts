@@ -67,6 +67,7 @@ import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-b
 import { getFieldsByTypeName } from "./parsers/get-fields-by-type-name";
 import { parseInterfaceOperationField, parseOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { UpdateOperation } from "../ast/operations/UpdateOperation";
 import { DeleteOperation } from "../ast/operations/DeleteOperation";
 
 const TOP_LEVEL_NODE_NAME = "this";
@@ -110,7 +111,11 @@ export class OperationsFactory {
             const operationMatch = parseOperationField(resolveTree.name, entity);
 
             if (operationMatch.isCreate) {
-                return this.createCreateOperation(entity, resolveTree, context); // TODO: move this to separate method?
+                return this.createCreateOperation(entity, resolveTree, context);
+            } else if (operationMatch.isUpdate) {
+                const op = this.createUpdateOperation(entity, resolveTree, context);
+                op.nodeAlias = TOP_LEVEL_NODE_NAME;
+                return op;
             } else if (operationMatch.isDelete) {
                 return this.createTopLevelDeleteOperation({
                     entity,
@@ -123,7 +128,12 @@ export class OperationsFactory {
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                     op = this.createFulltextOperation(entity, resolveTree, context);
                 } else {
-                    op = this.createReadOperation(entity, resolveTree, context, varName) as ReadOperation;
+                    op = this.createReadOperation({
+                        entityOrRel: entity,
+                        resolveTree,
+                        context,
+                        varName,
+                    }) as ReadOperation;
                 }
 
                 op.nodeAlias = TOP_LEVEL_NODE_NAME;
@@ -154,7 +164,7 @@ export class OperationsFactory {
             }
         }
 
-        return this.createReadOperation(entity, resolveTree, context);
+        return this.createReadOperation({ entityOrRel: entity, resolveTree, context });
     }
 
     public createFulltextOperation(
@@ -247,12 +257,17 @@ export class OperationsFactory {
         return operation;
     }
 
-    public createReadOperation(
-        entityOrRel: EntityAdapter | RelationshipAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext,
-        varName?: string
-    ): ReadOperation | CompositeReadOperation {
+    public createReadOperation({
+        entityOrRel,
+        resolveTree,
+        context,
+        varName,
+    }: {
+        entityOrRel: EntityAdapter | RelationshipAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+    }): ReadOperation | CompositeReadOperation {
         const entity = entityOrRel instanceof RelationshipAdapter ? entityOrRel.target : entityOrRel;
         const relationship = entityOrRel instanceof RelationshipAdapter ? entityOrRel : undefined;
         const resolveTreeWhere: Record<string, any> = isObject(resolveTree.args.where) ? resolveTree.args.where : {};
@@ -888,12 +903,40 @@ export class OperationsFactory {
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
-                const readOP = this.createReadOperation(entity, field, context) as ReadOperation;
+                const readOP = this.createReadOperation({
+                    entityOrRel: entity,
+                    resolveTree: field,
+                    context,
+                }) as ReadOperation;
                 return readOP;
             });
 
         createOP.addProjectionOperations(projectionFields);
         return createOP;
+    }
+
+    private createUpdateOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ): UpdateOperation {
+        const responseFields = Object.values(
+            resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.update] ?? {}
+        );
+        const updateOp = new UpdateOperation({ target: entity });
+        const projectionFields = responseFields
+            .filter((f) => f.name === entity.plural)
+            .map((field) => {
+                const readOP = this.createReadOperation({
+                    entityOrRel: entity,
+                    resolveTree: field,
+                    context,
+                }) as ReadOperation;
+                return readOP;
+            });
+
+        updateOp.addProjectionOperations(projectionFields);
+        return updateOp;
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
