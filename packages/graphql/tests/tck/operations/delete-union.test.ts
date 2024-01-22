@@ -22,21 +22,50 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("Cypher Delete", () => {
+describe("Cypher Delete - union", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
-            type Actor {
+            type Episode {
+                runtime: Int!
+                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+            }
+
+            union Production = Movie | Series
+
+            union Worker = ScreenWriter | StuntPerformer
+
+            type ScreenWriter {
                 name: String
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type StuntPerformer {
+                name: String!
+                workedOn: [Production!]! @relationship(type: "WORKED_ON", direction: OUT)
             }
 
             type Movie {
-                id: ID
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                workers: [Worker!]! @relationship(type: "WORKED_ON", direction: IN)
+            }
+
+            type Series {
+                title: String!
+                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            interface ActedIn @relationshipProperties {
+                screenTime: Int!
             }
         `;
 
@@ -48,7 +77,7 @@ describe("Cypher Delete", () => {
     test("Simple Delete", async () => {
         const query = gql`
             mutation {
-                deleteMovies(where: { id: "123" }) {
+                deleteActors(where: { name: "Keanu" }) {
                     nodesDeleted
                 }
             }
@@ -57,14 +86,14 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $param0
+            "MATCH (this:Actor)
+            WHERE this.name = $param0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"123\\"
+                \\"param0\\": \\"Keanu\\"
             }"
         `);
     });
@@ -72,7 +101,10 @@ describe("Cypher Delete", () => {
     test("Single Nested Delete", async () => {
         const query = gql`
             mutation {
-                deleteMovies(where: { id: 123 }, delete: { actors: { where: { node: { name: "Actor to delete" } } } }) {
+                deleteActors(
+                    where: { name: "Keanu" }
+                    delete: { actedIn: { Movie: { where: { node: { title: "Matrix" } } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -81,13 +113,13 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $param0
+            "MATCH (this:Actor)
+            WHERE this.name = $param0
             WITH *
             CALL {
                 WITH *
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
                 WITH this0, collect(DISTINCT this1) AS var2
                 CALL {
                     WITH var2
@@ -101,22 +133,24 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"123\\",
-                \\"param1\\": \\"Actor to delete\\"
+                \\"param0\\": \\"Keanu\\",
+                \\"param1\\": \\"Matrix\\"
             }"
         `);
     });
 
-    test("Single Nested Delete deleting multiple", async () => {
+    test("Single Nested Delete, deleting multiple", async () => {
         const query = gql`
             mutation {
-                deleteMovies(
-                    where: { id: 123 }
+                deleteActors(
+                    where: { name: "Keanu" }
                     delete: {
-                        actors: [
-                            { where: { node: { name: "Actor to delete" } } }
-                            { where: { node: { name: "Another actor to delete" } } }
-                        ]
+                        actedIn: {
+                            Movie: [
+                                { where: { node: { title: "Matrix" } } }
+                                { where: { node: { title: "Matrix Reloaded" } } }
+                            ]
+                        }
                     }
                 ) {
                     nodesDeleted
@@ -127,13 +161,13 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $param0
+            "MATCH (this:Actor)
+            WHERE this.name = $param0
             WITH *
             CALL {
                 WITH *
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
                 WITH this0, collect(DISTINCT this1) AS var2
                 CALL {
                     WITH var2
@@ -143,8 +177,8 @@ describe("Cypher Delete", () => {
             }
             CALL {
                 WITH *
-                OPTIONAL MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
-                WHERE this5.name = $param2
+                OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
+                WHERE this5.title = $param2
                 WITH this4, collect(DISTINCT this5) AS var6
                 CALL {
                     WITH var6
@@ -158,9 +192,9 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"123\\",
-                \\"param1\\": \\"Actor to delete\\",
-                \\"param2\\": \\"Another actor to delete\\"
+                \\"param0\\": \\"Keanu\\",
+                \\"param1\\": \\"Matrix\\",
+                \\"param2\\": \\"Matrix Reloaded\\"
             }"
         `);
     });
@@ -168,12 +202,14 @@ describe("Cypher Delete", () => {
     test("Double Nested Delete", async () => {
         const query = gql`
             mutation {
-                deleteMovies(
-                    where: { id: 123 }
+                deleteActors(
+                    where: { name: "Keanu" }
                     delete: {
-                        actors: {
-                            where: { node: { name: "Actor to delete" } }
-                            delete: { movies: { where: { node: { id: 321 } } } }
+                        actedIn: {
+                            Movie: {
+                                where: { node: { title: "Matrix" } }
+                                delete: { actors: { where: { node: { name: "Gloria Foster" } } } }
+                            }
                         }
                     }
                 ) {
@@ -185,18 +221,18 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $param0
+            "MATCH (this:Actor)
+            WHERE this.name = $param0
             WITH *
             CALL {
                 WITH *
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
                 WITH *
                 CALL {
                     WITH *
-                    OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE this3.id = $param2
+                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WHERE this3.name = $param2
                     WITH this2, collect(DISTINCT this3) AS var4
                     CALL {
                         WITH var4
@@ -217,26 +253,23 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"123\\",
-                \\"param1\\": \\"Actor to delete\\",
-                \\"param2\\": \\"321\\"
+                \\"param0\\": \\"Keanu\\",
+                \\"param1\\": \\"Matrix\\",
+                \\"param2\\": \\"Gloria Foster\\"
             }"
         `);
     });
 
-    test("Triple Nested Delete", async () => {
+    test("Double Nested, with union target", async () => {
         const query = gql`
             mutation {
-                deleteMovies(
-                    where: { id: 123 }
+                deleteActors(
+                    where: { name: "Keanu" }
                     delete: {
-                        actors: {
-                            where: { node: { name: "Actor to delete" } }
-                            delete: {
-                                movies: {
-                                    where: { node: { id: 321 } }
-                                    delete: { actors: { where: { node: { name: "Another actor to delete" } } } }
-                                }
+                        actedIn: {
+                            Movie: {
+                                where: { node: { title: "Matrix" } }
+                                delete: { workers: { ScreenWriter: { where: { node: { name: "Wachowski" } } } } }
                             }
                         }
                     }
@@ -249,42 +282,30 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $param0
+            "MATCH (this:Actor)
+            WHERE this.name = $param0
             WITH *
             CALL {
                 WITH *
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title = $param1
                 WITH *
                 CALL {
                     WITH *
-                    OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE this3.id = $param2
-                    WITH *
+                    OPTIONAL MATCH (this1)<-[this2:WORKED_ON]-(this3:ScreenWriter)
+                    WHERE this3.name = $param2
+                    WITH this2, collect(DISTINCT this3) AS var4
                     CALL {
-                        WITH *
-                        OPTIONAL MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
-                        WHERE this5.name = $param3
-                        WITH this4, collect(DISTINCT this5) AS var6
-                        CALL {
-                            WITH var6
-                            UNWIND var6 AS var7
-                            DETACH DELETE var7
-                        }
-                    }
-                    WITH this2, collect(DISTINCT this3) AS var8
-                    CALL {
-                        WITH var8
-                        UNWIND var8 AS var9
-                        DETACH DELETE var9
+                        WITH var4
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
                     }
                 }
-                WITH this0, collect(DISTINCT this1) AS var10
+                WITH this0, collect(DISTINCT this1) AS var6
                 CALL {
-                    WITH var10
-                    UNWIND var10 AS var11
-                    DETACH DELETE var11
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
                 }
             }
             WITH *
@@ -293,10 +314,9 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"123\\",
-                \\"param1\\": \\"Actor to delete\\",
-                \\"param2\\": \\"321\\",
-                \\"param3\\": \\"Another actor to delete\\"
+                \\"param0\\": \\"Keanu\\",
+                \\"param1\\": \\"Matrix\\",
+                \\"param2\\": \\"Wachowski\\"
             }"
         `);
     });

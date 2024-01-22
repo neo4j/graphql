@@ -334,53 +334,38 @@ describe("@auth allow on specific interface implementation", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
-            WHERE this_content_Comment0.id = $this_deleteUsers_args_delete_content0_where_this_content_Comment0param0
-            WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WHERE this1.id = $param1
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             CALL {
-            	WITH this_content_Comment0_to_delete
-            	UNWIND this_content_Comment0_to_delete AS x
-            	DETACH DELETE x
-            }
+                WITH *
+                OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+                OPTIONAL MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
+                WITH *, count(this6) AS creatorCount
+                WHERE (this5.id = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH this4, collect(DISTINCT this5) AS var7
+                CALL {
+                    WITH var7
+                    UNWIND var7 AS var8
+                    DETACH DELETE var8
+                }
             }
             WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
-            OPTIONAL MATCH (this_content_Post0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WHERE this_content_Post0.id = $this_deleteUsers_args_delete_content0_where_this_content_Post0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
-            CALL {
-            	WITH this_content_Post0_to_delete
-            	UNWIND this_content_Post0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"this_deleteUsers\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"content\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteUsers_args_delete_content0_where_this_content_Comment0param0\\": \\"post-id\\",
-                \\"this_deleteUsers_args_delete_content0_where_this_content_Post0param0\\": \\"post-id\\",
+                \\"param1\\": \\"post-id\\",
+                \\"param2\\": \\"post-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
