@@ -3539,9 +3539,9 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @cypher"
+                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
                 );
-                expect(errors[0]).toHaveProperty("path", ["Person", "post"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
             });
 
             test("@cypher double", () => {
