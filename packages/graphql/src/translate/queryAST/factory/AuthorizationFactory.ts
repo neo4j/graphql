@@ -157,7 +157,7 @@ export class AuthorizationFactory {
         context: Neo4jGraphQLTranslationContext;
         when: "BEFORE" | "AFTER";
         conditionForEvaluation?: Cypher.Predicate;
-    }): AuthorizationFilters {
+    }): AuthorizationFilters | undefined {
         const rulesMatchingOperations = findMatchingRules(authAnnotation.validate ?? [], operations).filter((rule) =>
             rule.when.includes(when)
         );
@@ -177,7 +177,7 @@ export class AuthorizationFactory {
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
         });
-
+        if (validationFilers.length === 0) return;
         return new AuthorizationFilters({
             validationFilters: validationFilers,
             whereFilters: [],

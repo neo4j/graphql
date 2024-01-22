@@ -125,7 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDGroup.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            RETURN 'Query cannot conclude with CALL'"
+            RETURN \\"Query cannot conclude with CALL\\""
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
