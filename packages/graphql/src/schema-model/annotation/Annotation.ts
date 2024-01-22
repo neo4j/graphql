@@ -69,7 +69,11 @@ export interface Annotation {
     readonly name: string;
 }
 
-export type Annotations = {
+type CheckAnnotationName<T> = {
+    [P in keyof T]: T[P] & { name: P };
+};
+
+export type Annotations = CheckAnnotationName<{
     private: PrivateAnnotation;
     plural: PluralAnnotation;
     customResolver: CustomResolverAnnotation;
@@ -95,7 +99,7 @@ export type Annotations = {
     mutation: MutationAnnotation;
     relayId: RelayIDAnnotation;
     unique: UniqueAnnotation;
-};
+}>;
 
 export type AnnotationParser<T extends Annotation> = (
     firstDirective: DirectiveNode,
