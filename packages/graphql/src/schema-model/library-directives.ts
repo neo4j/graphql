@@ -23,15 +23,13 @@ import { SHAREABLE } from "../constants";
 const additionalDirectives = ["alias", "relationship", "relationshipProperties", "node", SHAREABLE] as const;
 
 export type LibraryDirectives = keyof Annotations | (typeof additionalDirectives)[number] | typeof DEPRECATED;
-const createDirectivesArray = <T extends readonly LibraryDirectives[]>(arr: T) => arr;
-
-export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = createDirectivesArray([
+export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
     "selectable",
     "settable",
-] as const);
+] as const satisfies readonly LibraryDirectives[];
 
-export const FIELD_DIRECTIVES = createDirectivesArray([
+export const FIELD_DIRECTIVES = [
     "alias",
     "authentication",
     "authorization",
@@ -48,16 +46,16 @@ export const FIELD_DIRECTIVES = createDirectivesArray([
     "timestamp",
     "unique",
     ...SCHEMA_CONFIGURATION_FIELD_DIRECTIVES,
-] as const);
+] as const satisfies readonly LibraryDirectives[];
 
 export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
-export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = createDirectivesArray([
+export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = [
     "query",
     "mutation",
     "subscription",
-] as const);
+] as const satisfies readonly LibraryDirectives[];
 
-export const OBJECT_DIRECTIVES = createDirectivesArray([
+export const OBJECT_DIRECTIVES = [
     "authentication",
     "authorization",
     "subscriptionsAuthorization",
@@ -69,16 +67,16 @@ export const OBJECT_DIRECTIVES = createDirectivesArray([
     SHAREABLE,
     "deprecated",
     ...SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES,
-] as const);
+] as const satisfies readonly LibraryDirectives[];
 export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
 
-export const INTERFACE_DIRECTIVES = createDirectivesArray([
+export const INTERFACE_DIRECTIVES = [
     "relationshipProperties",
     "query",
     "plural",
     "limit",
-] as const);
+] as const satisfies readonly LibraryDirectives[];
 export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
 
-const UNION_DIRECTIVES = createDirectivesArray(["query", "plural"] as const);
+const UNION_DIRECTIVES = ["query", "plural"] as const satisfies readonly LibraryDirectives[];
 export type UnionDirective = (typeof UNION_DIRECTIVES)[number];
