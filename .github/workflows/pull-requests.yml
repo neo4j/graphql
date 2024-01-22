@@ -88,18 +88,20 @@ jobs:
   federation-tests:
     uses: ./.github/workflows/reusable-federation-tests.yml
 
-  quality-gate:
-    if: ${{ !(failure() || cancelled()) }}
-    needs:
-      - reviewdog-eslint
-      - code-scanning
-      - package-tests
-      - license-header-check
-      - unit-tests
-      - e2e-tests-plugins
-      - api-library-tests
-      - toolbox-tests
-      - integration-tests-on-prem
+quality-gate:
+  needs:
+    - reviewdog-eslint
+    - code-scanning
+    - package-tests
+    - license-header-check
+    - unit-tests
+    - e2e-tests-plugins
+    - api-library-tests
+    - toolbox-tests
+    - integration-tests-on-prem
+  if: >-
+    (needs.license-header-check.result == 'success' || needs.license-header-check.result == 'skipped')
+
 
     runs-on: ubuntu-latest
 
