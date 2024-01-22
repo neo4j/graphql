@@ -183,9 +183,9 @@ export class DeleteOperation extends MutationOperation {
         return nestedOperations;
     }
 
-    private validateSelection(selection: SelectionClause): asserts selection is Cypher.Match {
-        if (!(selection instanceof Cypher.Match)) {
-            throw new Error("Yield is not a valid selection for Delete Operation");
+    private validateSelection(selection: SelectionClause): asserts selection is Cypher.Match | Cypher.With {
+        if (!(selection instanceof Cypher.Match || selection instanceof Cypher.With)) {
+            throw new Error("Cypher Yield statement is not a valid selection for Delete Operation");
         }
     }
 
