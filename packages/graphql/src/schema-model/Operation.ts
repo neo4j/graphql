@@ -26,7 +26,7 @@ export class Operation {
     public readonly name: string;
     //  only includes custom Cypher fields
     public readonly attributes: Map<string, Attribute> = new Map();
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor({
         name,

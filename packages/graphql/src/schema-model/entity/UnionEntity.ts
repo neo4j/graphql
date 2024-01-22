@@ -24,8 +24,7 @@ import type { Annotations } from "../annotation/Annotation";
 export class UnionEntity implements CompositeEntity {
     public readonly name: string;
     public concreteEntities: ConcreteEntity[];
-
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor({
         name,

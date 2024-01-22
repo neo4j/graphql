@@ -23,7 +23,7 @@ import type { AttributeType } from "./AttributeType";
 
 export class Attribute {
     public readonly name: string;
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
     public readonly type: AttributeType;
     public readonly databaseName: string;
     public readonly description?: string;
@@ -38,7 +38,7 @@ export class Attribute {
         description,
     }: {
         name: string;
-        annotations: Partial<Annotations>;
+        annotations?: Partial<Annotations>;
         type: AttributeType;
         args: Argument[];
         databaseName?: string;

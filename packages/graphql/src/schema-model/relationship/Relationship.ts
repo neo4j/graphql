@@ -45,7 +45,7 @@ export class Relationship {
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
     public readonly description?: string;
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
     public readonly propertiesTypeName: string | undefined;
     public readonly inheritedFrom: string | undefined;
 
@@ -80,7 +80,7 @@ export class Relationship {
         aggregate: boolean;
         isNullable: boolean;
         description?: string;
-        annotations: Partial<Annotations>;
+        annotations?: Partial<Annotations>;
         propertiesTypeName?: string;
         inheritedFrom?: string;
     }) {

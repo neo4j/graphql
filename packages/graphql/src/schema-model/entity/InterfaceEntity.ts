@@ -31,7 +31,7 @@ export class InterfaceEntity implements CompositeEntity {
     public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationships: Map<string, Relationship> = new Map();
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor({
         name,

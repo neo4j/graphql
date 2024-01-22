@@ -36,18 +36,18 @@ export class Neo4jGraphQLSchemaModel {
     public concreteEntities: ConcreteEntity[];
     public compositeEntities: CompositeEntity[];
     public operations: Operations;
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor({
         concreteEntities,
         compositeEntities,
         operations,
-        annotations,
+        annotations = {},
     }: {
         concreteEntities: ConcreteEntity[];
         compositeEntities: CompositeEntity[];
         operations: Operations;
-        annotations: Partial<Annotations>;
+        annotations?: Partial<Annotations>;
     }) {
         this.entities = [...compositeEntities, ...concreteEntities].reduce((acc, entity) => {
             acc.set(entity.name, entity);
