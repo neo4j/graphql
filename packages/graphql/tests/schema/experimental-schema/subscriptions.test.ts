@@ -2605,7 +2605,10 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
-            \\"\\"\\"Type describing relationship properties for the Movie.actors field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }

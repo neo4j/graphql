@@ -57,7 +57,10 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -642,9 +645,10 @@ describe("Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Series.actors field.
-            Type describing relationship properties for the Actor.actedIn field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Series.actors
+            * Actor.actedIn
             \\"\\"\\"
             type ActedIn {
               screenTime: Int!

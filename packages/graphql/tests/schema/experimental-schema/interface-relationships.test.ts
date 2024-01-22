@@ -57,7 +57,10 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -642,9 +645,10 @@ describe("Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Series.actors field.
-            Type describing relationship properties for the Actor.actedIn field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Series.actors
+            * Actor.actedIn
             \\"\\"\\"
             type ActedIn {
               screenTime: Int!
@@ -2247,8 +2251,9 @@ describe("Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Actor.actedIn field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.actedIn
             \\"\\"\\"
             type ActedIn {
               screenTime: Int!
@@ -3760,7 +3765,10 @@ describe("Interface Relationships", () => {
               DESC
             }
 
-            \\"\\"\\"Type describing relationship properties for the Series.actors field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Series.actors
+            \\"\\"\\"
             type StarredIn {
               seasons: Int!
             }
@@ -5235,8 +5243,9 @@ describe("Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Type1Interface1.interface2 field.
-            Type describing relationship properties for the Type2Interface1.interface2 field.
+            The edge properties for the following fields:
+            * Type1Interface1.interface2
+            * Type2Interface1.interface2
             \\"\\"\\"
             type Props {
               propsField: Int!
@@ -6706,7 +6715,8 @@ describe("Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Type1Interface1.interface2 field.
+            The edge properties for the following fields:
+            * Type1Interface1.interface2
             \\"\\"\\"
             type Type1Props {
               type1Field: Int!
@@ -7007,7 +7017,8 @@ describe("Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Type2Interface1.interface2 field.
+            The edge properties for the following fields:
+            * Type2Interface1.interface2
             \\"\\"\\"
             type Type2Props {
               type2Field: Int!
@@ -9863,1136 +9874,1136 @@ describe("Interface Relationships", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-        
-"schema {
-  query: Query
-  mutation: Mutation
-}
-
-type ActedIn {
-  role: String!
-}
-
-input ActedInCreateInput {
-  role: String!
-}
-
-input ActedInSort {
-  role: SortDirection
-}
-
-input ActedInUpdateInput {
-  role: String
-}
-
-input ActedInWhere {
-  AND: [ActedInWhere!]
-  NOT: ActedInWhere
-  OR: [ActedInWhere!]
-  role: String
-  role_CONTAINS: String
-  role_ENDS_WITH: String
-  role_IN: [String!]
-  role_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  role_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  role_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  role_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  role_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  role_STARTS_WITH: String
-}
-
-interface Actor {
-  actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
-  actedInConnection(after: String, first: Int, where: ActorActedInConnectionWhere): ActorActedInConnection!
-  name: String!
-}
-
-input ActorActedInConnectInput {
-  Movie: [ActorActedInMovieConnectFieldInput!]
-  Series: [ActorActedInSeriesConnectFieldInput!]
-}
-
-type ActorActedInConnection {
-  edges: [ActorActedInRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input ActorActedInConnectionSort {
-  edge: ActedInSort
-}
-
-input ActorActedInConnectionWhere {
-  Movie: ActorActedInMovieConnectionWhere
-  Series: ActorActedInSeriesConnectionWhere
-}
-
-input ActorActedInDeleteInput {
-  Movie: [ActorActedInMovieDeleteFieldInput!]
-  Series: [ActorActedInSeriesDeleteFieldInput!]
-}
-
-input ActorActedInDisconnectInput {
-  Movie: [ActorActedInMovieDisconnectFieldInput!]
-  Series: [ActorActedInSeriesDisconnectFieldInput!]
-}
-
-input ActorActedInEdgeCreateInput {
-  ActedIn: ActedInCreateInput!
-}
-
-input ActorActedInEdgeUpdateInput {
-  ActedIn: ActedInUpdateInput
-}
-
-input ActorActedInMovieConnectFieldInput {
-  connect: [MovieConnectInput!]
-  edge: ActorActedInEdgeCreateInput
-  where: MovieConnectWhere
-}
-
-input ActorActedInMovieConnectionWhere {
-  AND: [ActorActedInMovieConnectionWhere!]
-  NOT: ActorActedInMovieConnectionWhere
-  OR: [ActorActedInMovieConnectionWhere!]
-  edge: ActedInWhere
-  edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  node: MovieWhere
-  node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
-
-input ActorActedInMovieCreateFieldInput {
-  edge: ActorActedInEdgeCreateInput
-  node: MovieCreateInput!
-}
-
-input ActorActedInMovieDeleteFieldInput {
-  delete: MovieDeleteInput
-  where: ActorActedInMovieConnectionWhere
-}
-
-input ActorActedInMovieDisconnectFieldInput {
-  disconnect: MovieDisconnectInput
-  where: ActorActedInMovieConnectionWhere
-}
-
-input ActorActedInMovieFieldInput {
-  connect: [ActorActedInMovieConnectFieldInput!]
-  create: [ActorActedInMovieCreateFieldInput!]
-}
-
-input ActorActedInMovieUpdateConnectionInput {
-  edge: ActorActedInEdgeUpdateInput
-  node: MovieUpdateInput
-}
-
-input ActorActedInMovieUpdateFieldInput {
-  connect: [ActorActedInMovieConnectFieldInput!]
-  create: [ActorActedInMovieCreateFieldInput!]
-  delete: [ActorActedInMovieDeleteFieldInput!]
-  disconnect: [ActorActedInMovieDisconnectFieldInput!]
-  update: ActorActedInMovieUpdateConnectionInput
-  where: ActorActedInMovieConnectionWhere
-}
-
-type ActorActedInRelationship {
-  cursor: String!
-  node: Production!
-  properties: ActedIn!
-}
-
-input ActorActedInSeriesConnectFieldInput {
-  connect: [SeriesConnectInput!]
-  edge: ActorActedInEdgeCreateInput
-  where: SeriesConnectWhere
-}
-
-input ActorActedInSeriesConnectionWhere {
-  AND: [ActorActedInSeriesConnectionWhere!]
-  NOT: ActorActedInSeriesConnectionWhere
-  OR: [ActorActedInSeriesConnectionWhere!]
-  edge: ActedInWhere
-  edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  node: SeriesWhere
-  node_NOT: SeriesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
-
-input ActorActedInSeriesCreateFieldInput {
-  edge: ActorActedInEdgeCreateInput
-  node: SeriesCreateInput!
-}
-
-input ActorActedInSeriesDeleteFieldInput {
-  delete: SeriesDeleteInput
-  where: ActorActedInSeriesConnectionWhere
-}
-
-input ActorActedInSeriesDisconnectFieldInput {
-  disconnect: SeriesDisconnectInput
-  where: ActorActedInSeriesConnectionWhere
-}
-
-input ActorActedInSeriesFieldInput {
-  connect: [ActorActedInSeriesConnectFieldInput!]
-  create: [ActorActedInSeriesCreateFieldInput!]
-}
-
-input ActorActedInSeriesUpdateConnectionInput {
-  edge: ActorActedInEdgeUpdateInput
-  node: SeriesUpdateInput
-}
-
-input ActorActedInSeriesUpdateFieldInput {
-  connect: [ActorActedInSeriesConnectFieldInput!]
-  create: [ActorActedInSeriesCreateFieldInput!]
-  delete: [ActorActedInSeriesDeleteFieldInput!]
-  disconnect: [ActorActedInSeriesDisconnectFieldInput!]
-  update: ActorActedInSeriesUpdateConnectionInput
-  where: ActorActedInSeriesConnectionWhere
-}
-
-input ActorActedInUpdateInput {
-  Movie: [ActorActedInMovieUpdateFieldInput!]
-  Series: [ActorActedInSeriesUpdateFieldInput!]
-}
-
-type ActorAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-}
-
-input ActorConnectInput {
-  _on: ActorImplementationsConnectInput
-  actedIn: ActorActedInConnectInput
-}
-
-input ActorConnectWhere {
-  node: ActorWhere!
-}
-
-input ActorCreateInput {
-  FemaleActor: FemaleActorCreateInput
-  MaleActor: MaleActorCreateInput
-}
-
-input ActorDeleteInput {
-  _on: ActorImplementationsDeleteInput
-  actedIn: ActorActedInDeleteInput
-}
-
-input ActorDisconnectInput {
-  _on: ActorImplementationsDisconnectInput
-  actedIn: ActorActedInDisconnectInput
-}
-
-enum ActorImplementation {
-  FemaleActor
-  MaleActor
-}
-
-input ActorImplementationsConnectInput {
-  FemaleActor: [FemaleActorConnectInput!]
-  MaleActor: [MaleActorConnectInput!]
-}
-
-input ActorImplementationsDeleteInput {
-  FemaleActor: [FemaleActorDeleteInput!]
-  MaleActor: [MaleActorDeleteInput!]
-}
-
-input ActorImplementationsDisconnectInput {
-  FemaleActor: [FemaleActorDisconnectInput!]
-  MaleActor: [MaleActorDisconnectInput!]
-}
-
-input ActorImplementationsUpdateInput {
-  FemaleActor: FemaleActorUpdateInput
-  MaleActor: MaleActorUpdateInput
-}
-
-input ActorOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [ActorSort]
-}
-
-\\"\\"\\"
-Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
-\\"\\"\\"
-input ActorSort {
-  name: SortDirection
-}
-
-input ActorUpdateInput {
-  _on: ActorImplementationsUpdateInput
-  actedIn: ActorActedInUpdateInput
-  name: String
-}
-
-input ActorWhere {
-  AND: [ActorWhere!]
-  NOT: ActorWhere
-  OR: [ActorWhere!]
-  actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
-  \\"\\"\\"
-  Return Actors where all of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_ALL: ActorActedInConnectionWhere
-  \\"\\"\\"
-  Return Actors where none of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_NONE: ActorActedInConnectionWhere
-  actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-  \\"\\"\\"
-  Return Actors where one of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_SINGLE: ActorActedInConnectionWhere
-  \\"\\"\\"
-  Return Actors where some of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_SOME: ActorActedInConnectionWhere
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String!]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  typename_IN: [ActorImplementation!]
-}
-
-type CreateFemaleActorsMutationResponse {
-  femaleActors: [FemaleActor!]!
-  info: CreateInfo!
-}
-
-\\"\\"\\"
-Information about the number of nodes and relationships created during a create mutation
-\\"\\"\\"
-type CreateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  relationshipsCreated: Int!
-}
-
-type CreateMaleActorsMutationResponse {
-  info: CreateInfo!
-  maleActors: [MaleActor!]!
-}
-
-type CreateMoviesMutationResponse {
-  info: CreateInfo!
-  movies: [Movie!]!
-}
-
-type CreateSeriesMutationResponse {
-  info: CreateInfo!
-  series: [Series!]!
-}
-
-\\"\\"\\"
-Information about the number of nodes and relationships deleted during a delete mutation
-\\"\\"\\"
-type DeleteInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
-
-type FemaleActor implements Actor {
-  actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-  actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
-  age: Int!
-  name: String!
-}
-
-input FemaleActorActedInConnectInput {
-  Movie: [ActorActedInMovieConnectFieldInput!]
-  Series: [ActorActedInSeriesConnectFieldInput!]
-}
-
-input FemaleActorActedInCreateFieldInput {
-  Movie: [ActorActedInMovieCreateFieldInput!]
-  Series: [ActorActedInSeriesCreateFieldInput!]
-}
-
-input FemaleActorActedInCreateInput {
-  Movie: ActorActedInMovieFieldInput
-  Series: ActorActedInSeriesFieldInput
-}
-
-input FemaleActorActedInDeleteInput {
-  Movie: [ActorActedInMovieDeleteFieldInput!]
-  Series: [ActorActedInSeriesDeleteFieldInput!]
-}
-
-input FemaleActorActedInDisconnectInput {
-  Movie: [ActorActedInMovieDisconnectFieldInput!]
-  Series: [ActorActedInSeriesDisconnectFieldInput!]
-}
-
-input FemaleActorActedInUpdateInput {
-  Movie: [ActorActedInMovieUpdateFieldInput!]
-  Series: [ActorActedInSeriesUpdateFieldInput!]
-}
-
-type FemaleActorAggregateSelection {
-  age: IntAggregateSelectionNonNullable!
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-}
-
-input FemaleActorConnectInput {
-  actedIn: FemaleActorActedInConnectInput
-}
-
-input FemaleActorCreateInput {
-  actedIn: FemaleActorActedInCreateInput
-  age: Int!
-  name: String!
-}
-
-input FemaleActorDeleteInput {
-  actedIn: FemaleActorActedInDeleteInput
-}
-
-input FemaleActorDisconnectInput {
-  actedIn: FemaleActorActedInDisconnectInput
-}
-
-type FemaleActorEdge {
-  cursor: String!
-  node: FemaleActor!
-}
-
-input FemaleActorOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more FemaleActorSort objects to sort FemaleActors by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [FemaleActorSort!]
-}
-
-input FemaleActorRelationInput {
-  actedIn: FemaleActorActedInCreateFieldInput
-}
-
-\\"\\"\\"
-Fields to sort FemaleActors by. The order in which sorts are applied is not guaranteed when specifying many fields in one FemaleActorSort object.
-\\"\\"\\"
-input FemaleActorSort {
-  age: SortDirection
-  name: SortDirection
-}
-
-input FemaleActorUpdateInput {
-  actedIn: FemaleActorActedInUpdateInput
-  age: Int
-  age_DECREMENT: Int
-  age_INCREMENT: Int
-  name: String
-}
-
-input FemaleActorWhere {
-  AND: [FemaleActorWhere!]
-  NOT: FemaleActorWhere
-  OR: [FemaleActorWhere!]
-  actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
-  \\"\\"\\"
-  Return FemaleActors where all of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_ALL: ActorActedInConnectionWhere
-  \\"\\"\\"
-  Return FemaleActors where none of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_NONE: ActorActedInConnectionWhere
-  actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-  \\"\\"\\"
-  Return FemaleActors where one of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_SINGLE: ActorActedInConnectionWhere
-  \\"\\"\\"
-  Return FemaleActors where some of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_SOME: ActorActedInConnectionWhere
-  age: Int
-  age_GT: Int
-  age_GTE: Int
-  age_IN: [Int!]
-  age_LT: Int
-  age_LTE: Int
-  age_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  age_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String!]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-}
-
-type FemaleActorsConnection {
-  edges: [FemaleActorEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type IntAggregateSelectionNonNullable {
-  average: Float!
-  max: Int!
-  min: Int!
-  sum: Int!
-}
-
-type MaleActor implements Actor {
-  actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
-  actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
-  name: String!
-  rating: Int!
-}
-
-input MaleActorActedInConnectInput {
-  Movie: [ActorActedInMovieConnectFieldInput!]
-  Series: [ActorActedInSeriesConnectFieldInput!]
-}
-
-input MaleActorActedInCreateFieldInput {
-  Movie: [ActorActedInMovieCreateFieldInput!]
-  Series: [ActorActedInSeriesCreateFieldInput!]
-}
-
-input MaleActorActedInCreateInput {
-  Movie: ActorActedInMovieFieldInput
-  Series: ActorActedInSeriesFieldInput
-}
-
-input MaleActorActedInDeleteInput {
-  Movie: [ActorActedInMovieDeleteFieldInput!]
-  Series: [ActorActedInSeriesDeleteFieldInput!]
-}
-
-input MaleActorActedInDisconnectInput {
-  Movie: [ActorActedInMovieDisconnectFieldInput!]
-  Series: [ActorActedInSeriesDisconnectFieldInput!]
-}
-
-input MaleActorActedInUpdateInput {
-  Movie: [ActorActedInMovieUpdateFieldInput!]
-  Series: [ActorActedInSeriesUpdateFieldInput!]
-}
-
-type MaleActorAggregateSelection {
-  count: Int!
-  name: StringAggregateSelectionNonNullable!
-  rating: IntAggregateSelectionNonNullable!
-}
-
-input MaleActorConnectInput {
-  actedIn: MaleActorActedInConnectInput
-}
-
-input MaleActorCreateInput {
-  actedIn: MaleActorActedInCreateInput
-  name: String!
-  rating: Int!
-}
-
-input MaleActorDeleteInput {
-  actedIn: MaleActorActedInDeleteInput
-}
-
-input MaleActorDisconnectInput {
-  actedIn: MaleActorActedInDisconnectInput
-}
-
-type MaleActorEdge {
-  cursor: String!
-  node: MaleActor!
-}
-
-input MaleActorOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more MaleActorSort objects to sort MaleActors by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [MaleActorSort!]
-}
-
-input MaleActorRelationInput {
-  actedIn: MaleActorActedInCreateFieldInput
-}
-
-\\"\\"\\"
-Fields to sort MaleActors by. The order in which sorts are applied is not guaranteed when specifying many fields in one MaleActorSort object.
-\\"\\"\\"
-input MaleActorSort {
-  name: SortDirection
-  rating: SortDirection
-}
-
-input MaleActorUpdateInput {
-  actedIn: MaleActorActedInUpdateInput
-  name: String
-  rating: Int
-  rating_DECREMENT: Int
-  rating_INCREMENT: Int
-}
-
-input MaleActorWhere {
-  AND: [MaleActorWhere!]
-  NOT: MaleActorWhere
-  OR: [MaleActorWhere!]
-  actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
-  \\"\\"\\"
-  Return MaleActors where all of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_ALL: ActorActedInConnectionWhere
-  \\"\\"\\"
-  Return MaleActors where none of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_NONE: ActorActedInConnectionWhere
-  actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
-  \\"\\"\\"
-  Return MaleActors where one of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_SINGLE: ActorActedInConnectionWhere
-  \\"\\"\\"
-  Return MaleActors where some of the related ActorActedInConnections match this filter
-  \\"\\"\\"
-  actedInConnection_SOME: ActorActedInConnectionWhere
-  name: String
-  name_CONTAINS: String
-  name_ENDS_WITH: String
-  name_IN: [String!]
-  name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  name_STARTS_WITH: String
-  rating: Int
-  rating_GT: Int
-  rating_GTE: Int
-  rating_IN: [Int!]
-  rating_LT: Int
-  rating_LTE: Int
-  rating_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  rating_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
-
-type MaleActorsConnection {
-  edges: [MaleActorEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type Movie {
-  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
-  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-  runtime: Int!
-  title: String!
-}
-
-type MovieActorActorsAggregationSelection {
-  count: Int!
-  edge: MovieActorActorsEdgeAggregateSelection
-  node: MovieActorActorsNodeAggregateSelection
-}
-
-type MovieActorActorsEdgeAggregateSelection {
-  role: StringAggregateSelectionNonNullable!
-}
-
-type MovieActorActorsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
-
-input MovieActorsConnectFieldInput {
-  connect: ActorConnectInput
-  edge: ActedInCreateInput!
-  where: ActorConnectWhere
-}
-
-type MovieActorsConnection {
-  edges: [MovieActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input MovieActorsConnectionSort {
-  edge: ActedInSort
-  node: ActorSort
-}
-
-input MovieActorsConnectionWhere {
-  AND: [MovieActorsConnectionWhere!]
-  NOT: MovieActorsConnectionWhere
-  OR: [MovieActorsConnectionWhere!]
-  edge: ActedInWhere
-  edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  node: ActorWhere
-  node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
-
-input MovieActorsCreateFieldInput {
-  edge: ActedInCreateInput!
-  node: ActorCreateInput!
-}
-
-input MovieActorsDeleteFieldInput {
-  delete: ActorDeleteInput
-  where: MovieActorsConnectionWhere
-}
-
-input MovieActorsDisconnectFieldInput {
-  disconnect: ActorDisconnectInput
-  where: MovieActorsConnectionWhere
-}
-
-input MovieActorsFieldInput {
-  connect: [MovieActorsConnectFieldInput!]
-  create: [MovieActorsCreateFieldInput!]
-}
-
-type MovieActorsRelationship {
-  cursor: String!
-  node: Actor!
-  properties: ActedIn!
-}
-
-input MovieActorsUpdateConnectionInput {
-  edge: ActedInUpdateInput
-  node: ActorUpdateInput
-}
-
-input MovieActorsUpdateFieldInput {
-  connect: [MovieActorsConnectFieldInput!]
-  create: [MovieActorsCreateFieldInput!]
-  delete: [MovieActorsDeleteFieldInput!]
-  disconnect: [MovieActorsDisconnectFieldInput!]
-  update: MovieActorsUpdateConnectionInput
-  where: MovieActorsConnectionWhere
-}
-
-type MovieAggregateSelection {
-  count: Int!
-  runtime: IntAggregateSelectionNonNullable!
-  title: StringAggregateSelectionNonNullable!
-}
-
-input MovieConnectInput {
-  actors: [MovieActorsConnectFieldInput!]
-}
-
-input MovieConnectWhere {
-  node: MovieWhere!
-}
-
-input MovieCreateInput {
-  actors: MovieActorsFieldInput
-  runtime: Int!
-  title: String!
-}
-
-input MovieDeleteInput {
-  actors: [MovieActorsDeleteFieldInput!]
-}
-
-input MovieDisconnectInput {
-  actors: [MovieActorsDisconnectFieldInput!]
-}
-
-type MovieEdge {
-  cursor: String!
-  node: Movie!
-}
-
-input MovieOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [MovieSort!]
-}
-
-input MovieRelationInput {
-  actors: [MovieActorsCreateFieldInput!]
-}
-
-\\"\\"\\"
-Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-\\"\\"\\"
-input MovieSort {
-  runtime: SortDirection
-  title: SortDirection
-}
-
-input MovieUpdateInput {
-  actors: [MovieActorsUpdateFieldInput!]
-  runtime: Int
-  runtime_DECREMENT: Int
-  runtime_INCREMENT: Int
-  title: String
-}
-
-input MovieWhere {
-  AND: [MovieWhere!]
-  NOT: MovieWhere
-  OR: [MovieWhere!]
-  actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-  \\"\\"\\"
-  Return Movies where all of the related MovieActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_ALL: MovieActorsConnectionWhere
-  \\"\\"\\"
-  Return Movies where none of the related MovieActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_NONE: MovieActorsConnectionWhere
-  actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-  \\"\\"\\"
-  Return Movies where one of the related MovieActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_SINGLE: MovieActorsConnectionWhere
-  \\"\\"\\"
-  Return Movies where some of the related MovieActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_SOME: MovieActorsConnectionWhere
-  runtime: Int
-  runtime_GT: Int
-  runtime_GTE: Int
-  runtime_IN: [Int!]
-  runtime_LT: Int
-  runtime_LTE: Int
-  runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title: String
-  title_CONTAINS: String
-  title_ENDS_WITH: String
-  title_IN: [String!]
-  title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_STARTS_WITH: String
-}
-
-type MoviesConnection {
-  edges: [MovieEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type Mutation {
-  createFemaleActors(input: [FemaleActorCreateInput!]!): CreateFemaleActorsMutationResponse!
-  createMaleActors(input: [MaleActorCreateInput!]!): CreateMaleActorsMutationResponse!
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
-  deleteFemaleActors(delete: FemaleActorDeleteInput, where: FemaleActorWhere): DeleteInfo!
-  deleteMaleActors(delete: MaleActorDeleteInput, where: MaleActorWhere): DeleteInfo!
-  deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-  deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-  updateFemaleActors(connect: FemaleActorConnectInput, create: FemaleActorRelationInput, delete: FemaleActorDeleteInput, disconnect: FemaleActorDisconnectInput, update: FemaleActorUpdateInput, where: FemaleActorWhere): UpdateFemaleActorsMutationResponse!
-  updateMaleActors(connect: MaleActorConnectInput, create: MaleActorRelationInput, delete: MaleActorDeleteInput, disconnect: MaleActorDisconnectInput, update: MaleActorUpdateInput, where: MaleActorWhere): UpdateMaleActorsMutationResponse!
-  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-  updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
-}
-
-\\"\\"\\"Pagination information (Relay)\\"\\"\\"
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
-union Production = Movie | Series
-
-input ProductionWhere {
-  Movie: MovieWhere
-  Series: SeriesWhere
-}
-
-type Query {
-  actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
-  femaleActors(options: FemaleActorOptions, where: FemaleActorWhere): [FemaleActor!]!
-  femaleActorsAggregate(where: FemaleActorWhere): FemaleActorAggregateSelection!
-  femaleActorsConnection(after: String, first: Int, sort: [FemaleActorSort], where: FemaleActorWhere): FemaleActorsConnection!
-  maleActors(options: MaleActorOptions, where: MaleActorWhere): [MaleActor!]!
-  maleActorsAggregate(where: MaleActorWhere): MaleActorAggregateSelection!
-  maleActorsConnection(after: String, first: Int, sort: [MaleActorSort], where: MaleActorWhere): MaleActorsConnection!
-  movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
-  moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-  productions(options: QueryOptions, where: ProductionWhere): [Production!]!
-  series(options: SeriesOptions, where: SeriesWhere): [Series!]!
-  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
-  seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
-}
-
-\\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-input QueryOptions {
-  limit: Int
-  offset: Int
-}
-
-type Series {
-  actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
-  actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
-  actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
-  episodes: Int!
-  title: String!
-}
-
-type SeriesActorActorsAggregationSelection {
-  count: Int!
-  edge: SeriesActorActorsEdgeAggregateSelection
-  node: SeriesActorActorsNodeAggregateSelection
-}
-
-type SeriesActorActorsEdgeAggregateSelection {
-  role: StringAggregateSelectionNonNullable!
-}
-
-type SeriesActorActorsNodeAggregateSelection {
-  name: StringAggregateSelectionNonNullable!
-}
-
-input SeriesActorsConnectFieldInput {
-  connect: ActorConnectInput
-  edge: ActedInCreateInput!
-  where: ActorConnectWhere
-}
-
-type SeriesActorsConnection {
-  edges: [SeriesActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input SeriesActorsConnectionSort {
-  edge: ActedInSort
-  node: ActorSort
-}
-
-input SeriesActorsConnectionWhere {
-  AND: [SeriesActorsConnectionWhere!]
-  NOT: SeriesActorsConnectionWhere
-  OR: [SeriesActorsConnectionWhere!]
-  edge: ActedInWhere
-  edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  node: ActorWhere
-  node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-}
-
-input SeriesActorsCreateFieldInput {
-  edge: ActedInCreateInput!
-  node: ActorCreateInput!
-}
-
-input SeriesActorsDeleteFieldInput {
-  delete: ActorDeleteInput
-  where: SeriesActorsConnectionWhere
-}
-
-input SeriesActorsDisconnectFieldInput {
-  disconnect: ActorDisconnectInput
-  where: SeriesActorsConnectionWhere
-}
-
-input SeriesActorsFieldInput {
-  connect: [SeriesActorsConnectFieldInput!]
-  create: [SeriesActorsCreateFieldInput!]
-}
-
-type SeriesActorsRelationship {
-  cursor: String!
-  node: Actor!
-  properties: ActedIn!
-}
-
-input SeriesActorsUpdateConnectionInput {
-  edge: ActedInUpdateInput
-  node: ActorUpdateInput
-}
-
-input SeriesActorsUpdateFieldInput {
-  connect: [SeriesActorsConnectFieldInput!]
-  create: [SeriesActorsCreateFieldInput!]
-  delete: [SeriesActorsDeleteFieldInput!]
-  disconnect: [SeriesActorsDisconnectFieldInput!]
-  update: SeriesActorsUpdateConnectionInput
-  where: SeriesActorsConnectionWhere
-}
-
-type SeriesAggregateSelection {
-  count: Int!
-  episodes: IntAggregateSelectionNonNullable!
-  title: StringAggregateSelectionNonNullable!
-}
-
-input SeriesConnectInput {
-  actors: [SeriesActorsConnectFieldInput!]
-}
-
-input SeriesConnectWhere {
-  node: SeriesWhere!
-}
-
-type SeriesConnection {
-  edges: [SeriesEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-input SeriesCreateInput {
-  actors: SeriesActorsFieldInput
-  episodes: Int!
-  title: String!
-}
-
-input SeriesDeleteInput {
-  actors: [SeriesActorsDeleteFieldInput!]
-}
-
-input SeriesDisconnectInput {
-  actors: [SeriesActorsDisconnectFieldInput!]
-}
-
-type SeriesEdge {
-  cursor: String!
-  node: Series!
-}
-
-input SeriesOptions {
-  limit: Int
-  offset: Int
-  \\"\\"\\"
-  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-  \\"\\"\\"
-  sort: [SeriesSort!]
-}
-
-input SeriesRelationInput {
-  actors: [SeriesActorsCreateFieldInput!]
-}
-
-\\"\\"\\"
-Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
-\\"\\"\\"
-input SeriesSort {
-  episodes: SortDirection
-  title: SortDirection
-}
-
-input SeriesUpdateInput {
-  actors: [SeriesActorsUpdateFieldInput!]
-  episodes: Int
-  episodes_DECREMENT: Int
-  episodes_INCREMENT: Int
-  title: String
-}
-
-input SeriesWhere {
-  AND: [SeriesWhere!]
-  NOT: SeriesWhere
-  OR: [SeriesWhere!]
-  actorsConnection: SeriesActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
-  \\"\\"\\"
-  Return Series where all of the related SeriesActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_ALL: SeriesActorsConnectionWhere
-  \\"\\"\\"
-  Return Series where none of the related SeriesActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_NONE: SeriesActorsConnectionWhere
-  actorsConnection_NOT: SeriesActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
-  \\"\\"\\"
-  Return Series where one of the related SeriesActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_SINGLE: SeriesActorsConnectionWhere
-  \\"\\"\\"
-  Return Series where some of the related SeriesActorsConnections match this filter
-  \\"\\"\\"
-  actorsConnection_SOME: SeriesActorsConnectionWhere
-  episodes: Int
-  episodes_GT: Int
-  episodes_GTE: Int
-  episodes_IN: [Int!]
-  episodes_LT: Int
-  episodes_LTE: Int
-  episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title: String
-  title_CONTAINS: String
-  title_ENDS_WITH: String
-  title_IN: [String!]
-  title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-  title_STARTS_WITH: String
-}
-
-\\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-enum SortDirection {
-  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-  ASC
-  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-  DESC
-}
-
-type StringAggregateSelectionNonNullable {
-  longest: String!
-  shortest: String!
-}
-
-type UpdateFemaleActorsMutationResponse {
-  femaleActors: [FemaleActor!]!
-  info: UpdateInfo!
-}
-
-\\"\\"\\"
-Information about the number of nodes and relationships created and deleted during an update mutation
-\\"\\"\\"
-type UpdateInfo {
-  bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
-  nodesCreated: Int!
-  nodesDeleted: Int!
-  relationshipsCreated: Int!
-  relationshipsDeleted: Int!
-}
-
-type UpdateMaleActorsMutationResponse {
-  info: UpdateInfo!
-  maleActors: [MaleActor!]!
-}
-
-type UpdateMoviesMutationResponse {
-  info: UpdateInfo!
-  movies: [Movie!]!
-}
-
-type UpdateSeriesMutationResponse {
-  info: UpdateInfo!
-  series: [Series!]!
-}"
-        `);
+                    
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type ActedIn {
+              role: String!
+            }
+
+            input ActedInCreateInput {
+              role: String!
+            }
+
+            input ActedInSort {
+              role: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              role: String
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              role: String
+              role_CONTAINS: String
+              role_ENDS_WITH: String
+              role_IN: [String!]
+              role_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              role_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              role_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              role_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              role_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              role_STARTS_WITH: String
+            }
+
+            interface Actor {
+              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(after: String, first: Int, where: ActorActedInConnectionWhere): ActorActedInConnection!
+              name: String!
+            }
+
+            input ActorActedInConnectInput {
+              Movie: [ActorActedInMovieConnectFieldInput!]
+              Series: [ActorActedInSeriesConnectFieldInput!]
+            }
+
+            type ActorActedInConnection {
+              edges: [ActorActedInRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
+            }
+
+            input ActorActedInConnectionWhere {
+              Movie: ActorActedInMovieConnectionWhere
+              Series: ActorActedInSeriesConnectionWhere
+            }
+
+            input ActorActedInDeleteInput {
+              Movie: [ActorActedInMovieDeleteFieldInput!]
+              Series: [ActorActedInSeriesDeleteFieldInput!]
+            }
+
+            input ActorActedInDisconnectInput {
+              Movie: [ActorActedInMovieDisconnectFieldInput!]
+              Series: [ActorActedInSeriesDisconnectFieldInput!]
+            }
+
+            input ActorActedInEdgeCreateInput {
+              ActedIn: ActedInCreateInput!
+            }
+
+            input ActorActedInEdgeUpdateInput {
+              ActedIn: ActedInUpdateInput
+            }
+
+            input ActorActedInMovieConnectFieldInput {
+              connect: [MovieConnectInput!]
+              edge: ActorActedInEdgeCreateInput
+              where: MovieConnectWhere
+            }
+
+            input ActorActedInMovieConnectionWhere {
+              AND: [ActorActedInMovieConnectionWhere!]
+              NOT: ActorActedInMovieConnectionWhere
+              OR: [ActorActedInMovieConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: MovieWhere
+              node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ActorActedInMovieCreateFieldInput {
+              edge: ActorActedInEdgeCreateInput
+              node: MovieCreateInput!
+            }
+
+            input ActorActedInMovieDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: ActorActedInMovieConnectionWhere
+            }
+
+            input ActorActedInMovieDisconnectFieldInput {
+              disconnect: MovieDisconnectInput
+              where: ActorActedInMovieConnectionWhere
+            }
+
+            input ActorActedInMovieFieldInput {
+              connect: [ActorActedInMovieConnectFieldInput!]
+              create: [ActorActedInMovieCreateFieldInput!]
+            }
+
+            input ActorActedInMovieUpdateConnectionInput {
+              edge: ActorActedInEdgeUpdateInput
+              node: MovieUpdateInput
+            }
+
+            input ActorActedInMovieUpdateFieldInput {
+              connect: [ActorActedInMovieConnectFieldInput!]
+              create: [ActorActedInMovieCreateFieldInput!]
+              delete: [ActorActedInMovieDeleteFieldInput!]
+              disconnect: [ActorActedInMovieDisconnectFieldInput!]
+              update: ActorActedInMovieUpdateConnectionInput
+              where: ActorActedInMovieConnectionWhere
+            }
+
+            type ActorActedInRelationship {
+              cursor: String!
+              node: Production!
+              properties: ActedIn!
+            }
+
+            input ActorActedInSeriesConnectFieldInput {
+              connect: [SeriesConnectInput!]
+              edge: ActorActedInEdgeCreateInput
+              where: SeriesConnectWhere
+            }
+
+            input ActorActedInSeriesConnectionWhere {
+              AND: [ActorActedInSeriesConnectionWhere!]
+              NOT: ActorActedInSeriesConnectionWhere
+              OR: [ActorActedInSeriesConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: SeriesWhere
+              node_NOT: SeriesWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input ActorActedInSeriesCreateFieldInput {
+              edge: ActorActedInEdgeCreateInput
+              node: SeriesCreateInput!
+            }
+
+            input ActorActedInSeriesDeleteFieldInput {
+              delete: SeriesDeleteInput
+              where: ActorActedInSeriesConnectionWhere
+            }
+
+            input ActorActedInSeriesDisconnectFieldInput {
+              disconnect: SeriesDisconnectInput
+              where: ActorActedInSeriesConnectionWhere
+            }
+
+            input ActorActedInSeriesFieldInput {
+              connect: [ActorActedInSeriesConnectFieldInput!]
+              create: [ActorActedInSeriesCreateFieldInput!]
+            }
+
+            input ActorActedInSeriesUpdateConnectionInput {
+              edge: ActorActedInEdgeUpdateInput
+              node: SeriesUpdateInput
+            }
+
+            input ActorActedInSeriesUpdateFieldInput {
+              connect: [ActorActedInSeriesConnectFieldInput!]
+              create: [ActorActedInSeriesCreateFieldInput!]
+              delete: [ActorActedInSeriesDeleteFieldInput!]
+              disconnect: [ActorActedInSeriesDisconnectFieldInput!]
+              update: ActorActedInSeriesUpdateConnectionInput
+              where: ActorActedInSeriesConnectionWhere
+            }
+
+            input ActorActedInUpdateInput {
+              Movie: [ActorActedInMovieUpdateFieldInput!]
+              Series: [ActorActedInSeriesUpdateFieldInput!]
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input ActorConnectInput {
+              _on: ActorImplementationsConnectInput
+              actedIn: ActorActedInConnectInput
+            }
+
+            input ActorConnectWhere {
+              node: ActorWhere!
+            }
+
+            input ActorCreateInput {
+              FemaleActor: FemaleActorCreateInput
+              MaleActor: MaleActorCreateInput
+            }
+
+            input ActorDeleteInput {
+              _on: ActorImplementationsDeleteInput
+              actedIn: ActorActedInDeleteInput
+            }
+
+            input ActorDisconnectInput {
+              _on: ActorImplementationsDisconnectInput
+              actedIn: ActorActedInDisconnectInput
+            }
+
+            enum ActorImplementation {
+              FemaleActor
+              MaleActor
+            }
+
+            input ActorImplementationsConnectInput {
+              FemaleActor: [FemaleActorConnectInput!]
+              MaleActor: [MaleActorConnectInput!]
+            }
+
+            input ActorImplementationsDeleteInput {
+              FemaleActor: [FemaleActorDeleteInput!]
+              MaleActor: [MaleActorDeleteInput!]
+            }
+
+            input ActorImplementationsDisconnectInput {
+              FemaleActor: [FemaleActorDisconnectInput!]
+              MaleActor: [MaleActorDisconnectInput!]
+            }
+
+            input ActorImplementationsUpdateInput {
+              FemaleActor: FemaleActorUpdateInput
+              MaleActor: MaleActorUpdateInput
+            }
+
+            input ActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ActorSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              _on: ActorImplementationsUpdateInput
+              actedIn: ActorActedInUpdateInput
+              name: String
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              typename_IN: [ActorImplementation!]
+            }
+
+            type CreateFemaleActorsMutationResponse {
+              femaleActors: [FemaleActor!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMaleActorsMutationResponse {
+              info: CreateInfo!
+              maleActors: [MaleActor!]!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type FemaleActor implements Actor {
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              age: Int!
+              name: String!
+            }
+
+            input FemaleActorActedInConnectInput {
+              Movie: [ActorActedInMovieConnectFieldInput!]
+              Series: [ActorActedInSeriesConnectFieldInput!]
+            }
+
+            input FemaleActorActedInCreateFieldInput {
+              Movie: [ActorActedInMovieCreateFieldInput!]
+              Series: [ActorActedInSeriesCreateFieldInput!]
+            }
+
+            input FemaleActorActedInCreateInput {
+              Movie: ActorActedInMovieFieldInput
+              Series: ActorActedInSeriesFieldInput
+            }
+
+            input FemaleActorActedInDeleteInput {
+              Movie: [ActorActedInMovieDeleteFieldInput!]
+              Series: [ActorActedInSeriesDeleteFieldInput!]
+            }
+
+            input FemaleActorActedInDisconnectInput {
+              Movie: [ActorActedInMovieDisconnectFieldInput!]
+              Series: [ActorActedInSeriesDisconnectFieldInput!]
+            }
+
+            input FemaleActorActedInUpdateInput {
+              Movie: [ActorActedInMovieUpdateFieldInput!]
+              Series: [ActorActedInSeriesUpdateFieldInput!]
+            }
+
+            type FemaleActorAggregateSelection {
+              age: IntAggregateSelectionNonNullable!
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input FemaleActorConnectInput {
+              actedIn: FemaleActorActedInConnectInput
+            }
+
+            input FemaleActorCreateInput {
+              actedIn: FemaleActorActedInCreateInput
+              age: Int!
+              name: String!
+            }
+
+            input FemaleActorDeleteInput {
+              actedIn: FemaleActorActedInDeleteInput
+            }
+
+            input FemaleActorDisconnectInput {
+              actedIn: FemaleActorActedInDisconnectInput
+            }
+
+            type FemaleActorEdge {
+              cursor: String!
+              node: FemaleActor!
+            }
+
+            input FemaleActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more FemaleActorSort objects to sort FemaleActors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [FemaleActorSort!]
+            }
+
+            input FemaleActorRelationInput {
+              actedIn: FemaleActorActedInCreateFieldInput
+            }
+
+            \\"\\"\\"
+            Fields to sort FemaleActors by. The order in which sorts are applied is not guaranteed when specifying many fields in one FemaleActorSort object.
+            \\"\\"\\"
+            input FemaleActorSort {
+              age: SortDirection
+              name: SortDirection
+            }
+
+            input FemaleActorUpdateInput {
+              actedIn: FemaleActorActedInUpdateInput
+              age: Int
+              age_DECREMENT: Int
+              age_INCREMENT: Int
+              name: String
+            }
+
+            input FemaleActorWhere {
+              AND: [FemaleActorWhere!]
+              NOT: FemaleActorWhere
+              OR: [FemaleActorWhere!]
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return FemaleActors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return FemaleActors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return FemaleActors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return FemaleActors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              age: Int
+              age_GT: Int
+              age_GTE: Int
+              age_IN: [Int!]
+              age_LT: Int
+              age_LTE: Int
+              age_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              age_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+            }
+
+            type FemaleActorsConnection {
+              edges: [FemaleActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type IntAggregateSelectionNonNullable {
+              average: Float!
+              max: Int!
+              min: Int!
+              sum: Int!
+            }
+
+            type MaleActor implements Actor {
+              actedIn(directed: Boolean = true, options: QueryOptions, where: ProductionWhere): [Production!]!
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+              name: String!
+              rating: Int!
+            }
+
+            input MaleActorActedInConnectInput {
+              Movie: [ActorActedInMovieConnectFieldInput!]
+              Series: [ActorActedInSeriesConnectFieldInput!]
+            }
+
+            input MaleActorActedInCreateFieldInput {
+              Movie: [ActorActedInMovieCreateFieldInput!]
+              Series: [ActorActedInSeriesCreateFieldInput!]
+            }
+
+            input MaleActorActedInCreateInput {
+              Movie: ActorActedInMovieFieldInput
+              Series: ActorActedInSeriesFieldInput
+            }
+
+            input MaleActorActedInDeleteInput {
+              Movie: [ActorActedInMovieDeleteFieldInput!]
+              Series: [ActorActedInSeriesDeleteFieldInput!]
+            }
+
+            input MaleActorActedInDisconnectInput {
+              Movie: [ActorActedInMovieDisconnectFieldInput!]
+              Series: [ActorActedInSeriesDisconnectFieldInput!]
+            }
+
+            input MaleActorActedInUpdateInput {
+              Movie: [ActorActedInMovieUpdateFieldInput!]
+              Series: [ActorActedInSeriesUpdateFieldInput!]
+            }
+
+            type MaleActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelectionNonNullable!
+              rating: IntAggregateSelectionNonNullable!
+            }
+
+            input MaleActorConnectInput {
+              actedIn: MaleActorActedInConnectInput
+            }
+
+            input MaleActorCreateInput {
+              actedIn: MaleActorActedInCreateInput
+              name: String!
+              rating: Int!
+            }
+
+            input MaleActorDeleteInput {
+              actedIn: MaleActorActedInDeleteInput
+            }
+
+            input MaleActorDisconnectInput {
+              actedIn: MaleActorActedInDisconnectInput
+            }
+
+            type MaleActorEdge {
+              cursor: String!
+              node: MaleActor!
+            }
+
+            input MaleActorOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MaleActorSort objects to sort MaleActors by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MaleActorSort!]
+            }
+
+            input MaleActorRelationInput {
+              actedIn: MaleActorActedInCreateFieldInput
+            }
+
+            \\"\\"\\"
+            Fields to sort MaleActors by. The order in which sorts are applied is not guaranteed when specifying many fields in one MaleActorSort object.
+            \\"\\"\\"
+            input MaleActorSort {
+              name: SortDirection
+              rating: SortDirection
+            }
+
+            input MaleActorUpdateInput {
+              actedIn: MaleActorActedInUpdateInput
+              name: String
+              rating: Int
+              rating_DECREMENT: Int
+              rating_INCREMENT: Int
+            }
+
+            input MaleActorWhere {
+              AND: [MaleActorWhere!]
+              NOT: MaleActorWhere
+              OR: [MaleActorWhere!]
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return MaleActors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return MaleActors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return MaleActors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return MaleActors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String!]
+              name_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              name_STARTS_WITH: String
+              rating: Int
+              rating_GT: Int
+              rating_GTE: Int
+              rating_IN: [Int!]
+              rating_LT: Int
+              rating_LTE: Int
+              rating_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              rating_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            type MaleActorsConnection {
+              edges: [MaleActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Movie {
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              runtime: Int!
+              title: String!
+            }
+
+            type MovieActorActorsAggregationSelection {
+              count: Int!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
+            type MovieActorActorsEdgeAggregateSelection {
+              role: StringAggregateSelectionNonNullable!
+            }
+
+            type MovieActorActorsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input MovieActorsConnectFieldInput {
+              connect: ActorConnectInput
+              edge: ActedInCreateInput!
+              where: ActorConnectWhere
+            }
+
+            type MovieActorsConnection {
+              edges: [MovieActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input MovieActorsConnectionSort {
+              edge: ActedInSort
+              node: ActorSort
+            }
+
+            input MovieActorsConnectionWhere {
+              AND: [MovieActorsConnectionWhere!]
+              NOT: MovieActorsConnectionWhere
+              OR: [MovieActorsConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input MovieActorsDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: MovieActorsConnectionWhere
+            }
+
+            input MovieActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: MovieActorsConnectionWhere
+            }
+
+            input MovieActorsFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+            }
+
+            type MovieActorsRelationship {
+              cursor: String!
+              node: Actor!
+              properties: ActedIn!
+            }
+
+            input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input MovieActorsUpdateFieldInput {
+              connect: [MovieActorsConnectFieldInput!]
+              create: [MovieActorsCreateFieldInput!]
+              delete: [MovieActorsDeleteFieldInput!]
+              disconnect: [MovieActorsDisconnectFieldInput!]
+              update: MovieActorsUpdateConnectionInput
+              where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input MovieConnectInput {
+              actors: [MovieActorsConnectFieldInput!]
+            }
+
+            input MovieConnectWhere {
+              node: MovieWhere!
+            }
+
+            input MovieCreateInput {
+              actors: MovieActorsFieldInput
+              runtime: Int!
+              title: String!
+            }
+
+            input MovieDeleteInput {
+              actors: [MovieActorsDeleteFieldInput!]
+            }
+
+            input MovieDisconnectInput {
+              actors: [MovieActorsDisconnectFieldInput!]
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            input MovieRelationInput {
+              actors: [MovieActorsCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              runtime: SortDirection
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              actors: [MovieActorsUpdateFieldInput!]
+              runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
+              title: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NOT: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: MovieActorsConnectionWhere
+              runtime: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_IN: [Int!]
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              runtime_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createFemaleActors(input: [FemaleActorCreateInput!]!): CreateFemaleActorsMutationResponse!
+              createMaleActors(input: [MaleActorCreateInput!]!): CreateMaleActorsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteFemaleActors(delete: FemaleActorDeleteInput, where: FemaleActorWhere): DeleteInfo!
+              deleteMaleActors(delete: MaleActorDeleteInput, where: MaleActorWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateFemaleActors(connect: FemaleActorConnectInput, create: FemaleActorRelationInput, delete: FemaleActorDeleteInput, disconnect: FemaleActorDisconnectInput, update: FemaleActorUpdateInput, where: FemaleActorWhere): UpdateFemaleActorsMutationResponse!
+              updateMaleActors(connect: MaleActorConnectInput, create: MaleActorRelationInput, delete: MaleActorDeleteInput, disconnect: MaleActorDisconnectInput, update: MaleActorUpdateInput, where: MaleActorWhere): UpdateMaleActorsMutationResponse!
+              updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            union Production = Movie | Series
+
+            input ProductionWhere {
+              Movie: MovieWhere
+              Series: SeriesWhere
+            }
+
+            type Query {
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              femaleActors(options: FemaleActorOptions, where: FemaleActorWhere): [FemaleActor!]!
+              femaleActorsAggregate(where: FemaleActorWhere): FemaleActorAggregateSelection!
+              femaleActorsConnection(after: String, first: Int, sort: [FemaleActorSort], where: FemaleActorWhere): FemaleActorsConnection!
+              maleActors(options: MaleActorOptions, where: MaleActorWhere): [MaleActor!]!
+              maleActorsAggregate(where: MaleActorWhere): MaleActorAggregateSelection!
+              maleActorsConnection(after: String, first: Int, sort: [MaleActorSort], where: MaleActorWhere): MaleActorsConnection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              productions(options: QueryOptions, where: ProductionWhere): [Production!]!
+              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort], where: SeriesWhere): SeriesConnection!
+            }
+
+            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            type Series {
+              actors(directed: Boolean = true, options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(directed: Boolean = true, where: ActorWhere): SeriesActorActorsAggregationSelection
+              actorsConnection(after: String, directed: Boolean = true, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
+              episodes: Int!
+              title: String!
+            }
+
+            type SeriesActorActorsAggregationSelection {
+              count: Int!
+              edge: SeriesActorActorsEdgeAggregateSelection
+              node: SeriesActorActorsNodeAggregateSelection
+            }
+
+            type SeriesActorActorsEdgeAggregateSelection {
+              role: StringAggregateSelectionNonNullable!
+            }
+
+            type SeriesActorActorsNodeAggregateSelection {
+              name: StringAggregateSelectionNonNullable!
+            }
+
+            input SeriesActorsConnectFieldInput {
+              connect: ActorConnectInput
+              edge: ActedInCreateInput!
+              where: ActorConnectWhere
+            }
+
+            type SeriesActorsConnection {
+              edges: [SeriesActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesActorsConnectionSort {
+              edge: ActedInSort
+              node: ActorSort
+            }
+
+            input SeriesActorsConnectionWhere {
+              AND: [SeriesActorsConnectionWhere!]
+              NOT: SeriesActorsConnectionWhere
+              OR: [SeriesActorsConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              node: ActorWhere
+              node_NOT: ActorWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+            }
+
+            input SeriesActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
+            }
+
+            input SeriesActorsDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: SeriesActorsConnectionWhere
+            }
+
+            input SeriesActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: SeriesActorsConnectionWhere
+            }
+
+            input SeriesActorsFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+            }
+
+            type SeriesActorsRelationship {
+              cursor: String!
+              node: Actor!
+              properties: ActedIn!
+            }
+
+            input SeriesActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input SeriesActorsUpdateFieldInput {
+              connect: [SeriesActorsConnectFieldInput!]
+              create: [SeriesActorsCreateFieldInput!]
+              delete: [SeriesActorsDeleteFieldInput!]
+              disconnect: [SeriesActorsDisconnectFieldInput!]
+              update: SeriesActorsUpdateConnectionInput
+              where: SeriesActorsConnectionWhere
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              episodes: IntAggregateSelectionNonNullable!
+              title: StringAggregateSelectionNonNullable!
+            }
+
+            input SeriesConnectInput {
+              actors: [SeriesActorsConnectFieldInput!]
+            }
+
+            input SeriesConnectWhere {
+              node: SeriesWhere!
+            }
+
+            type SeriesConnection {
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesCreateInput {
+              actors: SeriesActorsFieldInput
+              episodes: Int!
+              title: String!
+            }
+
+            input SeriesDeleteInput {
+              actors: [SeriesActorsDeleteFieldInput!]
+            }
+
+            input SeriesDisconnectInput {
+              actors: [SeriesActorsDisconnectFieldInput!]
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
+            }
+
+            input SeriesRelationInput {
+              actors: [SeriesActorsCreateFieldInput!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
+            input SeriesSort {
+              episodes: SortDirection
+              title: SortDirection
+            }
+
+            input SeriesUpdateInput {
+              actors: [SeriesActorsUpdateFieldInput!]
+              episodes: Int
+              episodes_DECREMENT: Int
+              episodes_INCREMENT: Int
+              title: String
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              NOT: SeriesWhere
+              OR: [SeriesWhere!]
+              actorsConnection: SeriesActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_ALL: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_NONE: SeriesActorsConnectionWhere
+              actorsConnection_NOT: SeriesActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SINGLE: SeriesActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesActorsConnections match this filter
+              \\"\\"\\"
+              actorsConnection_SOME: SeriesActorsConnectionWhere
+              episodes: Int
+              episodes_GT: Int
+              episodes_GTE: Int
+              episodes_IN: [Int!]
+              episodes_LT: Int
+              episodes_LTE: Int
+              episodes_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              episodes_NOT_IN: [Int!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String!]
+              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              title_STARTS_WITH: String
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelectionNonNullable {
+              longest: String!
+              shortest: String!
+            }
+
+            type UpdateFemaleActorsMutationResponse {
+              femaleActors: [FemaleActor!]!
+              info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMaleActorsMutationResponse {
+              info: UpdateInfo!
+              maleActors: [MaleActor!]!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
+            }"
+                `);
     });
 });

@@ -78,7 +78,7 @@ import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator"
 import { withAggregateSelectionType } from "./generation/aggregate-types";
 import { withCreateInputType } from "./generation/create-input";
 import { withInterfaceType } from "./generation/interface-type";
-import { withObjectType } from "./generation/object-type";
+import { getRelationshipPropertiesTypeDescription, withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType, withSortInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
@@ -227,10 +227,7 @@ function makeAugmentedSchema({
                     // update description
                     const propertiesObjectType = composer.getOTC(relationshipAdapter.propertiesTypeName);
                     propertiesObjectType.setDescription(
-                        [
-                            propertiesObjectType.getDescription(),
-                            `Type describing relationship properties for the ${relationshipAdapter.source.name}.${relationshipAdapter.name} field.`,
-                        ].join("\n")
+                        getRelationshipPropertiesTypeDescription({ relationshipAdapter, propertiesObjectType })
                     );
                     continue;
                 }

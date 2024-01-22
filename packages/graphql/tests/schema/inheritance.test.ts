@@ -234,7 +234,10 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Type describing relationship properties for the Actor.friends field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.friends
+            \\"\\"\\"
             type FriendsWith {
               since: Int
             }

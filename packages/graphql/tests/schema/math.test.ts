@@ -1796,8 +1796,9 @@ describe("Algebraic", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Person.actedInMovies field.
-            Type describing relationship properties for the Movie.actors field.
+            The edge properties for the following fields:
+            * Person.actedInMovies
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
               pay: Float

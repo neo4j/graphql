@@ -264,7 +264,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the CrewMember.movies field.
+            The edge properties for the following fields:
+            * CrewMember.movies
             \\"\\"\\"
             type CrewPosition {
               position: CrewPositionType

@@ -910,9 +910,10 @@ describe("Directive-preserve", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Series.actors field.
-            Type describing relationship properties for the Actor.actedIn field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Series.actors
+            * Actor.actedIn
             \\"\\"\\"
             type ActedIn {
               role: String!
@@ -1950,9 +1951,10 @@ describe("Directive-preserve", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Series.actors field.
-            Type describing relationship properties for the Actor.actedIn field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Series.actors
+            * Actor.actedIn
             \\"\\"\\"
             type ActedIn {
               role: String!
