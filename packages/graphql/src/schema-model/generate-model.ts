@@ -32,7 +32,6 @@ import { filterTruthy } from "../utils/utils";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { Operation } from "./Operation";
-import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
@@ -46,6 +45,7 @@ import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribut
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
+import { isInArray } from "../utils/is-in-array";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
@@ -94,7 +94,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         );
     });
 
-    const annotations = createSchemaModelAnnotations(definitionCollection.schemaDirectives);
+    const annotations = parseAnnotations(definitionCollection.schemaDirectives);
 
     const schema = new Neo4jGraphQLSchemaModel({
         compositeEntities: [...unionEntities, ...interfaceEntities],
@@ -435,7 +435,7 @@ function generateConcreteEntity(
 
     // schema configuration directives are propagated onto concrete entities
     const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
-        SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES.includes(x.name.value as any)
+        isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
     );
     const annotations = parseAnnotations((definition.directives || []).concat(schemaDirectives || []));
 
@@ -457,14 +457,6 @@ function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
         }
     }
     return [entityDefinition.name.value];
-}
-
-function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    const schemaModelAnnotations: Annotation[] = [];
-
-    const annotations = parseAnnotations(directives);
-
-    return schemaModelAnnotations.concat(annotations);
 }
 
 function generateOperation(

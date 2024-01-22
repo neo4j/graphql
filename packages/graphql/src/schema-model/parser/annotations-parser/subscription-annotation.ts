@@ -16,16 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { subscriptionDirective } from "../../../graphql/directives";
 import type { SubscriptionEvent } from "../../../graphql/directives/subscription";
 import { SubscriptionAnnotation } from "../../annotation/SubscriptionAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseSubscriptionAnnotation(directive: DirectiveNode): SubscriptionAnnotation {
+export const parseSubscriptionAnnotation: AnnotationFactory<SubscriptionAnnotation> = (directive) => {
     const { events } = parseArguments<{ events: SubscriptionEvent[] }>(subscriptionDirective, directive);
 
     return new SubscriptionAnnotation({
         events: new Set<SubscriptionEvent>(events),
     });
-}
+};

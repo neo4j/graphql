@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { uniqueDirective } from "../../../graphql/directives";
 import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseUniqueAnnotation(directive: DirectiveNode): UniqueAnnotation {
+export const parseUniqueAnnotation: AnnotationFactory<UniqueAnnotation> = (directive) => {
     const { constraintName } = parseArguments<{ constraintName: string }>(uniqueDirective, directive);
 
     return new UniqueAnnotation({
         constraintName,
     });
-}
+};

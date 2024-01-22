@@ -19,8 +19,7 @@
 
 import type { ConcreteEntity } from "./ConcreteEntity";
 import type { CompositeEntity } from "./CompositeEntity";
-import type { Annotation, Annotations } from "../annotation/Annotation";
-import { Neo4jGraphQLSchemaValidationError } from "../../classes";
+import type { Annotations } from "../annotation/Annotation";
 
 export class UnionEntity implements CompositeEntity {
     public readonly name: string;
@@ -31,31 +30,15 @@ export class UnionEntity implements CompositeEntity {
     constructor({
         name,
         concreteEntities,
-        annotations = [],
+        annotations = {},
     }: {
         name: string;
         concreteEntities: ConcreteEntity[];
-        annotations?: Annotation[];
+        annotations?: Partial<Annotations>;
     }) {
         this.name = name;
         this.concreteEntities = concreteEntities;
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
-        }
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotation.name;
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
+        this.annotations = annotations;
     }
 
     isConcreteEntity(): this is ConcreteEntity {

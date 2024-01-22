@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import type {
     AuthorizationFilterRuleConstructor,
     AuthorizationValidateRuleConstructor,
@@ -27,8 +26,9 @@ import {
     AuthorizationValidateRule,
 } from "../../annotation/AuthorizationAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseAuthorizationAnnotation(directive: DirectiveNode): AuthorizationAnnotation {
+export const parseAuthorizationAnnotation: AnnotationFactory<AuthorizationAnnotation> = (directive) => {
     const { filter, validate } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
         validate?: Record<string, any>[];
@@ -42,4 +42,4 @@ export function parseAuthorizationAnnotation(directive: DirectiveNode): Authoriz
         filter: filterRules,
         validate: validateRules,
     });
-}
+};

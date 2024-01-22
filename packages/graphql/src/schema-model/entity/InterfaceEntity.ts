@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import type { Annotation, Annotations } from "../annotation/Annotation";
+import type { Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
 import type { CompositeEntity } from "./CompositeEntity";
@@ -38,25 +38,22 @@ export class InterfaceEntity implements CompositeEntity {
         description,
         concreteEntities,
         attributes = [],
-        annotations = [],
+        annotations = {},
         relationships = [],
     }: {
         name: string;
         description?: string;
         concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
-        annotations?: Annotation[];
+        annotations?: Partial<Annotations>;
         relationships?: Relationship[];
     }) {
         this.name = name;
         this.description = description;
         this.concreteEntities = concreteEntities;
+        this.annotations = annotations;
         for (const attribute of attributes) {
             this.addAttribute(attribute);
-        }
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
         }
 
         for (const relationship of relationships) {
@@ -76,19 +73,6 @@ export class InterfaceEntity implements CompositeEntity {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotation.name;
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
     }
 
     public addRelationship(relationship: Relationship): void {

@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { settableDirective } from "../../../graphql/directives";
 import { SettableAnnotation } from "../../annotation/SettableAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseSettableAnnotation(directive: DirectiveNode): SettableAnnotation {
+export const parseSettableAnnotation: AnnotationFactory<SettableAnnotation> = (directive) => {
     const { onCreate, onUpdate } = parseArguments<{
         onCreate: boolean;
         onUpdate: boolean;
@@ -31,4 +31,4 @@ export function parseSettableAnnotation(directive: DirectiveNode): SettableAnnot
         onCreate,
         onUpdate,
     });
-}
+};

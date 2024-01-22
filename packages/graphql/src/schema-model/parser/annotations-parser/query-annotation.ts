@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode } from "graphql";
 import { queryDirective } from "../../../graphql/directives";
 import { QueryAnnotation } from "../../annotation/QueryAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseQueryAnnotation(directive: DirectiveNode): QueryAnnotation {
+export const parseQueryAnnotation: AnnotationFactory<QueryAnnotation> = (directive) => {
     const { read, aggregate } = parseArguments<{ read: boolean; aggregate: boolean }>(queryDirective, directive);
 
     return new QueryAnnotation({
         read,
         aggregate,
     });
-}
+};

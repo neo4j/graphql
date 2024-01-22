@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
-import type { Annotation, Annotations } from "../annotation/Annotation";
+import type { Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
 import type { CompositeEntity } from "./CompositeEntity";
@@ -39,14 +39,14 @@ export class ConcreteEntity implements Entity {
         description,
         labels,
         attributes = [],
-        annotations = [],
+        annotations = {},
         relationships = [],
         compositeEntities = [],
     }: {
         name: string;
         labels: string[];
         attributes?: Attribute[];
-        annotations?: Annotation[];
+        annotations?: Partial<Annotations>;
         relationships?: Relationship[];
         description?: string;
         compositeEntities?: CompositeEntity[];
@@ -54,12 +54,9 @@ export class ConcreteEntity implements Entity {
         this.name = name;
         this.description = description;
         this.labels = new Set(labels);
+        this.annotations = annotations;
         for (const attribute of attributes) {
             this.addAttribute(attribute);
-        }
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
         }
 
         for (const relationship of relationships) {
@@ -88,19 +85,6 @@ export class ConcreteEntity implements Entity {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotation.name;
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
     }
 
     public addRelationship(relationship: Relationship): void {

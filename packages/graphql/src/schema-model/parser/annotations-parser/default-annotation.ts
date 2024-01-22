@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode } from "graphql";
 import type { DefaultAnnotationValue } from "../../annotation/DefaultAnnotation";
 import { DefaultAnnotation } from "../../annotation/DefaultAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotation {
+export const parseDefaultAnnotation: AnnotationFactory<DefaultAnnotation> = (directive) => {
     const args = parseArgumentsFromUnknownDirective(directive) as Record<string, DefaultAnnotationValue>;
 
     if (args.value === undefined) {
@@ -32,4 +32,4 @@ export function parseDefaultAnnotation(directive: DirectiveNode): DefaultAnnotat
     return new DefaultAnnotation({
         value: args.value,
     });
-}
+};

@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { selectableDirective } from "../../../graphql/directives";
 import { SelectableAnnotation } from "../../annotation/SelectableAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseSelectableAnnotation(directive: DirectiveNode): SelectableAnnotation {
+export const parseSelectableAnnotation: AnnotationFactory<SelectableAnnotation> = (directive) => {
     const { onRead, onAggregate } = parseArguments<{
         onRead: boolean;
         onAggregate: boolean;
@@ -31,4 +31,4 @@ export function parseSelectableAnnotation(directive: DirectiveNode): SelectableA
         onRead,
         onAggregate,
     });
-}
+};

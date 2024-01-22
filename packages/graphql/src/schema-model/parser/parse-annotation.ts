@@ -18,24 +18,23 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import type { Annotation } from "../annotation/Annotation";
+import type { Annotations } from "../annotation/Annotation";
 import { annotationsParsers } from "../annotation/Annotation";
 
-export function parseAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    const annotations = directives.reduce((directivesMap, directive) => {
-        if (directivesMap.has(directive.name.value)) {
-            // TODO: takes the first one
-            // multiple interfaces can have this annotation - must constrain this flexibility by design
-            return directivesMap;
+export function parseAnnotations(directives: readonly DirectiveNode[]): Partial<Annotations> {
+    const groupedDirectives = new Map<string, DirectiveNode[]>();
+    directives.forEach((directive) => {
+        const directivesOfName = groupedDirectives.get(directive.name.value) ?? [];
+        groupedDirectives.set(directive.name.value, [...directivesOfName, directive]);
+    });
+
+    const result: Partial<Annotations> = {};
+    Object.entries(annotationsParsers).forEach(([name, parser]) => {
+        const relevantDirectives = groupedDirectives.get(name);
+        if (relevantDirectives?.length) {
+            const [first] = relevantDirectives;
+            result[name] = parser(first!, relevantDirectives);
         }
-        const annotation = annotationsParsers[directive.name.value]?.(
-            directive,
-            directives.filter((other) => other.name.value === directive.name.value)
-        );
-        if (annotation) {
-            directivesMap.set(directive.name.value, annotation);
-        }
-        return directivesMap;
-    }, new Map<string, Annotation>());
-    return Array.from(annotations.values());
+    });
+    return result;
 }

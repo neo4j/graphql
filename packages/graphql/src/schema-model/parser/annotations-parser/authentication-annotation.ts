@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import type { GraphQLWhereArg } from "../../../types";
 import type { AuthenticationOperation } from "../../annotation/AuthenticationAnnotation";
 import { AuthenticationAnnotation } from "../../annotation/AuthenticationAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
-
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
 const authenticationDefaultOperations: AuthenticationOperation[] = [
     "READ",
@@ -33,7 +32,7 @@ const authenticationDefaultOperations: AuthenticationOperation[] = [
     "DELETE_RELATIONSHIP",
     "SUBSCRIBE",
 ];
-export function parseAuthenticationAnnotation(directive: DirectiveNode): AuthenticationAnnotation {
+export const parseAuthenticationAnnotation: AnnotationFactory<AuthenticationAnnotation> = (directive) => {
     const args = parseArgumentsFromUnknownDirective(directive) as {
         operations?: AuthenticationOperation[];
         jwt?: GraphQLWhereArg;
@@ -47,4 +46,4 @@ export function parseAuthenticationAnnotation(directive: DirectiveNode): Authent
     }
 
     return new AuthenticationAnnotation(...constructorArgs);
-}
+};

@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
 import { parseArguments } from "../parse-arguments";
 import { cypherDirective } from "../../../graphql/directives";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotation {
+export const parseCypherAnnotation: AnnotationFactory<CypherAnnotation> = (directive) => {
     const { statement, columnName } = parseArguments(cypherDirective, directive);
     if (!statement || typeof statement !== "string") {
         throw new Neo4jGraphQLSchemaValidationError("@cypher statement required");
@@ -34,4 +34,4 @@ export function parseCypherAnnotation(directive: DirectiveNode): CypherAnnotatio
         statement: statement,
         columnName: columnName,
     });
-}
+};

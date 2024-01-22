@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
 
-import type { Annotation, Annotations } from "./annotation/Annotation";
+import type { Annotations } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
 
 export class Operation {
@@ -31,20 +31,17 @@ export class Operation {
     constructor({
         name,
         attributes = [],
-        annotations = [],
+        annotations = {},
     }: {
         name: string;
         attributes?: Attribute[];
-        annotations?: Annotation[];
+        annotations?: Partial<Annotations>;
     }) {
         this.name = name;
+        this.annotations = annotations;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
-        }
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
         }
     }
 
@@ -57,17 +54,5 @@ export class Operation {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotation.name;
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        this.annotations[annotationKey] = annotation as any;
     }
 }

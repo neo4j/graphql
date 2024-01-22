@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { MutationAnnotation } from "../../annotation/MutationAnnotation";
 import { mutationDirective } from "../../../graphql/directives";
 import { parseArguments } from "../parse-arguments";
 import type { MutationOperations } from "../../../graphql/directives/mutation";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseMutationAnnotation(directive: DirectiveNode): MutationAnnotation {
+export const parseMutationAnnotation: AnnotationFactory<MutationAnnotation> = (directive) => {
     const { operations } = parseArguments(mutationDirective, directive);
     if (!Array.isArray(operations)) {
         throw new Neo4jGraphQLSchemaValidationError("@mutation operations must be an array");
@@ -31,4 +31,4 @@ export function parseMutationAnnotation(directive: DirectiveNode): MutationAnnot
     return new MutationAnnotation({
         operations: new Set<MutationOperations>(operations),
     });
-}
+};

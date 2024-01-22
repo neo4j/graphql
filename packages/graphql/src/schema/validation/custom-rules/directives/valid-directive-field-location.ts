@@ -28,12 +28,13 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { createGraphQLError, assertValid, DocumentValidationError } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 import * as directives from "../../../../graphql/directives";
 import { typeDependantDirectivesScaffolds } from "../../../../graphql/directives/type-dependant-directives/scaffolds";
 import { SCHEMA_CONFIGURATION_FIELD_DIRECTIVES } from "../../../../schema-model/library-directives";
+import { isInArray } from "../../../../utils/is-in-array";
 
 export function ValidDirectiveAtFieldLocation(experimental: boolean) {
     return function (context: SDLValidationContext): ASTVisitor {
@@ -194,7 +195,7 @@ function validFieldOfInterfaceTypeLocation({
     directiveNode: DirectiveNode;
     parentDef: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode;
 }) {
-    if (SCHEMA_CONFIGURATION_FIELD_DIRECTIVES.includes(directiveNode.name.value as any)) {
+    if (isInArray(SCHEMA_CONFIGURATION_FIELD_DIRECTIVES, directiveNode.name.value)) {
         return;
     }
     if (directiveNode.name.value === "relationship") {

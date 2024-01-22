@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { timestampDirective } from "../../../graphql/directives";
 import { TimestampAnnotation } from "../../annotation/TimestampAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parseTimestampAnnotation(directive: DirectiveNode): TimestampAnnotation {
+export const parseTimestampAnnotation: AnnotationFactory<TimestampAnnotation> = (directive) => {
     const { operations } = parseArguments<{ operations: string[] }>(timestampDirective, directive);
 
     if (operations.length === 0) {
@@ -31,4 +31,4 @@ export function parseTimestampAnnotation(directive: DirectiveNode): TimestampAnn
     return new TimestampAnnotation({
         operations,
     });
-}
+};

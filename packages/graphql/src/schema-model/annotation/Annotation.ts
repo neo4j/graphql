@@ -28,11 +28,9 @@ import { parseDefaultAnnotation } from "../parser/annotations-parser/default-ann
 import { parseFilterableAnnotation } from "../parser/annotations-parser/filterable-annotation";
 import { parseFullTextAnnotation } from "../parser/annotations-parser/full-text-annotation";
 import { parseJWTClaimAnnotation } from "../parser/annotations-parser/jwt-claim-annotation";
-import { parseJWTPayloadAnnotation } from "../parser/annotations-parser/jwt-payload-annotation";
 import { parseMutationAnnotation } from "../parser/annotations-parser/mutation-annotation";
 import { parsePluralAnnotation } from "../parser/annotations-parser/plural-annotation";
 import { parsePopulatedByAnnotation } from "../parser/annotations-parser/populated-by-annotation";
-import { parsePrivateAnnotation } from "../parser/annotations-parser/private-annotation";
 import { parseQueryAnnotation } from "../parser/annotations-parser/query-annotation";
 import { parseLimitAnnotation } from "../parser/annotations-parser/limit-annotation";
 import { parseSelectableAnnotation } from "../parser/annotations-parser/selectable-annotation";
@@ -43,12 +41,68 @@ import { parseTimestampAnnotation } from "../parser/annotations-parser/timestamp
 import { parseUniqueAnnotation } from "../parser/annotations-parser/unique-annotation";
 import type { DirectiveNode } from "graphql";
 import { parseKeyAnnotation } from "../parser/annotations-parser/key-annotation";
+import { PrivateAnnotation } from "./PrivateAnnotation";
+import type { PluralAnnotation } from "./PluralAnnotation";
+import type { CustomResolverAnnotation } from "./CustomResolverAnnotation";
+import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
+import type { SelectableAnnotation } from "./SelectableAnnotation";
+import type { PopulatedByAnnotation } from "./PopulatedByAnnotation";
+import type { SubscriptionAnnotation } from "./SubscriptionAnnotation";
+import type { AuthorizationAnnotation } from "./AuthorizationAnnotation";
+import type { DefaultAnnotation } from "./DefaultAnnotation";
+import type { SettableAnnotation } from "./SettableAnnotation";
+import type { CypherAnnotation } from "./CypherAnnotation";
+import type { FullTextAnnotation } from "./FullTextAnnotation";
+import type { LimitAnnotation } from "./LimitAnnotation";
+import type { KeyAnnotation } from "./KeyAnnotation";
+import type { AuthenticationAnnotation } from "./AuthenticationAnnotation";
+import type { TimestampAnnotation } from "./TimestampAnnotation";
+import type { FilterableAnnotation } from "./FilterableAnnotation";
+import type { JWTClaimAnnotation } from "./JWTClaimAnnotation";
+import type { QueryAnnotation } from "./QueryAnnotation";
+import type { CoalesceAnnotation } from "./CoalesceAnnotation";
+import type { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
+import type { MutationAnnotation } from "./MutationAnnotation";
+import type { UniqueAnnotation } from "./UniqueAnnotation";
 
 export interface Annotation {
     readonly name: string;
 }
 
-export const annotationsParsers = {
+export type Annotations = {
+    private: PrivateAnnotation;
+    plural: PluralAnnotation;
+    customResolver: CustomResolverAnnotation;
+    jwt: JWTPayloadAnnotation;
+    selectable: SelectableAnnotation;
+    populatedBy: PopulatedByAnnotation;
+    subscription: SubscriptionAnnotation;
+    authorization: AuthorizationAnnotation;
+    default: DefaultAnnotation;
+    settable: SettableAnnotation;
+    cypher: CypherAnnotation;
+    fulltext: FullTextAnnotation;
+    limit: LimitAnnotation;
+    id: IDAnnotation;
+    key: KeyAnnotation;
+    authentication: AuthenticationAnnotation;
+    timestamp: TimestampAnnotation;
+    filterable: FilterableAnnotation;
+    jwtClaim: JWTClaimAnnotation;
+    query: QueryAnnotation;
+    coalesce: CoalesceAnnotation;
+    subscriptionsAuthorization: SubscriptionsAuthorizationAnnotation;
+    mutation: MutationAnnotation;
+    relayId: RelayIDAnnotation;
+    unique: UniqueAnnotation;
+};
+
+export type AnnotationFactory<T extends Annotation> = (
+    firstDirective: DirectiveNode,
+    directives: readonly DirectiveNode[]
+) => T;
+
+export const annotationsParsers: { [key in keyof Annotations]: AnnotationFactory<Annotations[key]> } = {
     authentication: parseAuthenticationAnnotation,
     authorization: parseAuthorizationAnnotation,
     coalesce: parseCoalesceAnnotation,
@@ -59,12 +113,12 @@ export const annotationsParsers = {
     fulltext: parseFullTextAnnotation,
     id: () => new IDAnnotation(),
     jwtClaim: parseJWTClaimAnnotation,
-    jwt: parseJWTPayloadAnnotation,
+    jwt: () => new JWTPayloadAnnotation(),
     key: parseKeyAnnotation,
     mutation: parseMutationAnnotation,
     plural: parsePluralAnnotation,
     populatedBy: parsePopulatedByAnnotation,
-    private: parsePrivateAnnotation,
+    private: () => new PrivateAnnotation(),
     query: parseQueryAnnotation,
     limit: parseLimitAnnotation,
     selectable: parseSelectableAnnotation,
@@ -74,26 +128,4 @@ export const annotationsParsers = {
     timestamp: parseTimestampAnnotation,
     unique: parseUniqueAnnotation,
     relayId: () => new RelayIDAnnotation(),
-};
-
-// Define a mapped type to enforce the constraint
-type AnnotationsParsers = {
-    [K in keyof typeof annotationsParsers]: (
-        first: DirectiveNode,
-        allDirectives: ReadonlyArray<DirectiveNode>
-    ) => {
-        name: K;
-    } & Annotation;
-};
-
-/*
- Keep this for type checking!
- We cannot directly assign the type `AnnotationsParsers` to the const `annotationsParsers`
- because this will create a circular reference for type resolution.
-*/
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const typeCheckingForAnnotationsParsers: AnnotationsParsers = annotationsParsers;
-
-export type Annotations = {
-    [P in keyof typeof annotationsParsers]?: ReturnType<(typeof annotationsParsers)[P]>;
 };

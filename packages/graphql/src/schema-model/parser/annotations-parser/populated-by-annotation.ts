@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
 import { populatedByDirective } from "../../../graphql/directives";
 import { PopulatedByAnnotation } from "../../annotation/PopulatedByAnnotation";
 import { parseArguments } from "../parse-arguments";
+import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export function parsePopulatedByAnnotation(directive: DirectiveNode): PopulatedByAnnotation {
+export const parsePopulatedByAnnotation: AnnotationFactory<PopulatedByAnnotation> = (directive) => {
     const { callback, operations } = parseArguments<{
         callback: string;
         operations: string[];
@@ -31,4 +31,4 @@ export function parsePopulatedByAnnotation(directive: DirectiveNode): PopulatedB
         callback,
         operations,
     });
-}
+};
