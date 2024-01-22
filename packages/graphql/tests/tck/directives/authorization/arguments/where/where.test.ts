@@ -693,7 +693,6 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             DETACH DELETE this"
         `);
@@ -727,7 +726,6 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             DETACH DELETE this"
         `);
@@ -762,22 +760,22 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                WITH *, count(this2) AS creatorCount
+                WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
+                WITH this0, collect(DISTINCT this1) AS var3
+                CALL {
+                    WITH var3
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)))
-            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
-            CALL {
-            	WITH this_posts0_to_delete
-            	UNWIND this_posts0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 

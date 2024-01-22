@@ -749,7 +749,6 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
         `);
@@ -784,20 +783,20 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
-            CALL {
-            	WITH this_posts0_to_delete
-            	UNWIND this_posts0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
@@ -811,7 +810,7 @@ describe("Cypher Auth Roles", () => {
                     \\"sub\\": \\"super_admin\\"
                 },
                 \\"param2\\": \\"admin\\",
-                \\"authorization__before_param2\\": \\"super-admin\\"
+                \\"param3\\": \\"super-admin\\"
             }"
         `);
     });

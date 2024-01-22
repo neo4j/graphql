@@ -24,7 +24,7 @@ type Scope = Map<string, Cypher.Variable>;
 
 export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
-    public topLevelOperationName: "READ" | "CREATE" = "READ";
+    public topLevelOperationName: "READ" | "CREATE" | "DELETE" = "READ";
     public getScope(element: Cypher.Node | Cypher.Relationship): Scope {
         const scope = this.scopes.get(element);
         if (scope) {
