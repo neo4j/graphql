@@ -117,7 +117,6 @@ describe("Node Directive", () => {
             "MATCH (this:Comment)
             OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:Person)
             WITH *, count(this0) AS creatorCount
-            WITH *
             WHERE ((creatorCount <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);

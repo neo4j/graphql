@@ -133,7 +133,10 @@ export class AuthorizationFactory {
                 isAuthenticatedParam: context.authorization.isAuthenticatedParam,
             });
         });
-        if (whereFilters.length === 0) return undefined;
+        if (!whereFilters.length) {
+            return;
+        }
+
         return new AuthorizationFilters({
             validationFilters: [],
             whereFilters: whereFilters,

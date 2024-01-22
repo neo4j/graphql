@@ -558,7 +558,6 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
@@ -593,22 +592,22 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                WITH *, count(this2) AS creatorCount
+                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH this0, collect(DISTINCT this1) AS var3
+                CALL {
+                    WITH var3
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WHERE this_posts0.id = $this_deleteUsers_args_delete_posts0_where_this_posts0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
-            CALL {
-            	WITH this_posts0_to_delete
-            	UNWIND this_posts0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
@@ -622,22 +621,7 @@ describe("Cypher Auth Allow", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 },
-                \\"this_deleteUsers\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"posts\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id\\": \\"post-id\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteUsers_args_delete_posts0_where_this_posts0param0\\": \\"post-id\\"
+                \\"param3\\": \\"post-id\\"
             }"
         `);
     });

@@ -84,52 +84,30 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             WHERE this.title = $param0
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_ADMINISTRATOR]->(this1:Admin)
+                CALL {
+                    WITH this1
+                    MATCH (this1)<-[this2:HAS_ADMINISTRATOR]-(this3:Organization)
+                    RETURN count(this3) = $param1 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this0, collect(DISTINCT this1) AS var5
+                CALL {
+                    WITH var5
+                    UNWIND var5 AS var6
+                    DETACH DELETE var6
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
-            CALL {
-                WITH this_admins0
-                MATCH (this_admins0)<-[this_deleteOrganizations_args_delete_admins0_where_this_admins0this1:HAS_ADMINISTRATOR]-(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2:Organization)
-                RETURN count(this_deleteOrganizations_args_delete_admins0_where_this_admins0this2) = $this_deleteOrganizations_args_delete_admins0_where_this_admins0param0 AS this_deleteOrganizations_args_delete_admins0_where_this_admins0var0
-            }
-            WITH *, CASE this_deleteOrganizations_args_delete_admins0_where_this_admins0var0 = true
-                WHEN true THEN [this_admins0_relationship, this_admins0]
-                ELSE [NULL, NULL]
-            END AS aggregateWhereFiltervar0
-            WITH *, aggregateWhereFiltervar0[0] AS this_admins0_relationship, aggregateWhereFiltervar0[1] AS this_admins0
-            WITH this_admins0_relationship, collect(DISTINCT this_admins0) AS this_admins0_to_delete
-            CALL {
-            	WITH this_admins0_to_delete
-            	UNWIND this_admins0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Google\\",
-                \\"this_deleteOrganizations\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"admins\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"organizationsAggregate\\": {
-                                                \\"count\\": {
-                                                    \\"low\\": 1,
-                                                    \\"high\\": 0
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteOrganizations_args_delete_admins0_where_this_admins0param0\\": {
+                \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }

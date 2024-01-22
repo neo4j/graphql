@@ -396,26 +396,26 @@ describe("Cypher Auth isAuthenticated", () => {
             "MATCH (this:User)
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
-            WITH this_content_Comment0_relationship, collect(DISTINCT this_content_Comment0) AS this_content_Comment0_to_delete
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             CALL {
-            	WITH this_content_Comment0_to_delete
-            	UNWIND this_content_Comment0_to_delete AS x
-            	DETACH DELETE x
-            }
+                WITH *
+                OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+                WITH this4, collect(DISTINCT this5) AS var6
+                CALL {
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
             }
             WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
-            WITH this_content_Post0_relationship, collect(DISTINCT this_content_Post0) AS this_content_Post0_to_delete
-            CALL {
-            	WITH this_content_Post0_to_delete
-            	UNWIND this_content_Post0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
