@@ -19,6 +19,7 @@
 
 import type { GraphQLWhereArg } from "../../types";
 import type { Annotation } from "./Annotation";
+import type { ValueOf } from "../../utils/value-of";
 
 export const SubscriptionsAuthorizationAnnotationArguments = ["filter"] as const;
 
@@ -30,7 +31,7 @@ export const SubscriptionsAuthorizationFilterEventRule = [
     "RELATIONSHIP_DELETED",
 ] as const;
 
-export type SubscriptionsAuthorizationFilterEvent = (typeof SubscriptionsAuthorizationFilterEventRule)[number];
+export type SubscriptionsAuthorizationFilterEvent = ValueOf<typeof SubscriptionsAuthorizationFilterEventRule>;
 
 export type SubscriptionsAuthorizationWhere = {
     AND?: SubscriptionsAuthorizationWhere[];

@@ -20,8 +20,9 @@
 import type { AttributeAdapter } from "./AttributeAdapter";
 
 import { AGGREGATION_COMPARISON_OPERATORS } from "../../../constants";
+import type { ValueOf } from "../../../utils/value-of";
 
-type ComparisonOperator = (typeof AGGREGATION_COMPARISON_OPERATORS)[number];
+type ComparisonOperator = ValueOf<typeof AGGREGATION_COMPARISON_OPERATORS>;
 
 export class AggregationAdapter {
     readonly AttributeAdapter: AttributeAdapter;

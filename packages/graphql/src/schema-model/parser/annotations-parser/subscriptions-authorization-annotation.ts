@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 import type { SubscriptionsAuthorizationFilterRuleConstructor } from "../../annotation/SubscriptionsAuthorizationAnnotation";
@@ -23,11 +24,10 @@ import {
     SubscriptionsAuthorizationAnnotation,
     SubscriptionsAuthorizationFilterRule,
 } from "../../annotation/SubscriptionsAuthorizationAnnotation";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseSubscriptionsAuthorizationAnnotation: AnnotationFactory<SubscriptionsAuthorizationAnnotation> = (
-    directive
-) => {
+export function parseSubscriptionsAuthorizationAnnotation(
+    directive: DirectiveNode
+): SubscriptionsAuthorizationAnnotation {
     const { filter } = parseArgumentsFromUnknownDirective(directive) as {
         filter?: Record<string, any>[];
     };
@@ -39,4 +39,4 @@ export const parseSubscriptionsAuthorizationAnnotation: AnnotationFactory<Subscr
     return new SubscriptionsAuthorizationAnnotation({
         filter: filterRules,
     });
-};
+}

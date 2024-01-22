@@ -19,6 +19,7 @@
 
 import type { GraphQLWhereArg } from "../../types";
 import type { Annotation } from "./Annotation";
+import type { ValueOf } from "../../utils/value-of";
 
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
@@ -41,9 +42,9 @@ export const AuthorizationValidateOperationRule = [
     "DELETE_RELATIONSHIP",
 ] as const;
 
-type AuthorizationFilterOperation = (typeof AuthorizationFilterOperationRule)[number];
+type AuthorizationFilterOperation = ValueOf<typeof AuthorizationFilterOperationRule>;
 
-type AuthorizationValidateOperation = (typeof AuthorizationValidateOperationRule)[number];
+type AuthorizationValidateOperation = ValueOf<typeof AuthorizationValidateOperationRule>;
 
 type ValidateWhen = "BEFORE" | "AFTER";
 

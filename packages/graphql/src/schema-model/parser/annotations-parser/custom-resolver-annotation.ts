@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
 import { customResolverDirective } from "../../../graphql/directives";
 import { CustomResolverAnnotation } from "../../annotation/CustomResolverAnnotation";
 import { parseArguments } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseCustomResolverAnnotation: AnnotationFactory<CustomResolverAnnotation> = (directive) => {
+export function parseCustomResolverAnnotation(directive: DirectiveNode): CustomResolverAnnotation {
     const { requires } = parseArguments<{ requires: string | undefined }>(customResolverDirective, directive);
     return new CustomResolverAnnotation({
         requires,
     });
-};
+}

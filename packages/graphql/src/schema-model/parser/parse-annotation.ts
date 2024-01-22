@@ -23,18 +23,18 @@ import { annotationsParsers } from "../annotation/Annotation";
 
 export function parseAnnotations(directives: readonly DirectiveNode[]): Partial<Annotations> {
     const groupedDirectives = new Map<string, DirectiveNode[]>();
-    directives.forEach((directive) => {
+    for (const directive of directives) {
         const directivesOfName = groupedDirectives.get(directive.name.value) ?? [];
         groupedDirectives.set(directive.name.value, [...directivesOfName, directive]);
-    });
+    }
 
     const result: Partial<Annotations> = {};
-    Object.entries(annotationsParsers).forEach(([name, parser]) => {
-        const relevantDirectives = groupedDirectives.get(name);
-        if (relevantDirectives?.length) {
-            const [first] = relevantDirectives;
-            result[name] = parser(first!, relevantDirectives);
+    for (const [name, parser] of Object.entries(annotationsParsers)) {
+        const relevantDirectives = groupedDirectives.get(name) ?? [];
+        const firstDirective = relevantDirectives[0];
+        if (firstDirective) {
+            result[name] = parser(firstDirective, relevantDirectives);
         }
-    });
+    }
     return result;
 }

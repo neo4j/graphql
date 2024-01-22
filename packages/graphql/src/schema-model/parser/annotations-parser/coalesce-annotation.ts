@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
+import type { DirectiveNode } from "graphql";
 import type { CoalesceAnnotationValue } from "../../annotation/CoalesceAnnotation";
 import { CoalesceAnnotation } from "../../annotation/CoalesceAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseCoalesceAnnotation: AnnotationFactory<CoalesceAnnotation> = (directive) => {
+export function parseCoalesceAnnotation(directive: DirectiveNode): CoalesceAnnotation {
     const args = parseArgumentsFromUnknownDirective(directive) as Record<string, CoalesceAnnotationValue>;
 
     if (!args || args.value === undefined) {
@@ -32,4 +32,4 @@ export const parseCoalesceAnnotation: AnnotationFactory<CoalesceAnnotation> = (d
     return new CoalesceAnnotation({
         value: args.value,
     });
-};
+}

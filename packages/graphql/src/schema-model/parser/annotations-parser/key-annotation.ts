@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { KeyAnnotation } from "../../annotation/KeyAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseKeyAnnotation: AnnotationFactory<KeyAnnotation> = (_, directives) => {
+export function parseKeyAnnotation(_: DirectiveNode, directives: readonly DirectiveNode[]): KeyAnnotation {
     let isResolvable = false;
 
     directives.forEach((directive) => {
@@ -43,4 +43,4 @@ export const parseKeyAnnotation: AnnotationFactory<KeyAnnotation> = (_, directiv
     return new KeyAnnotation({
         resolvable: isResolvable,
     });
-};
+}

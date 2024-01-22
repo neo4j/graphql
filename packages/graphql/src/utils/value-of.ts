@@ -17,16 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode } from "graphql";
-import { queryDirective } from "../../../graphql/directives";
-import { QueryAnnotation } from "../../annotation/QueryAnnotation";
-import { parseArguments } from "../parse-arguments";
-
-export function parseQueryAnnotation(directive: DirectiveNode): QueryAnnotation {
-    const { read, aggregate } = parseArguments<{ read: boolean; aggregate: boolean }>(queryDirective, directive);
-
-    return new QueryAnnotation({
-        read,
-        aggregate,
-    });
-}
+/**
+ * Type matching the elements in object/array
+ */
+export type ValueOf<T extends ReadonlyArray<unknown> | Array<unknown>> = T[number];

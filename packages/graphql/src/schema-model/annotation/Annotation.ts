@@ -97,12 +97,12 @@ export type Annotations = {
     unique: UniqueAnnotation;
 };
 
-export type AnnotationFactory<T extends Annotation> = (
+export type AnnotationParser<T extends Annotation> = (
     firstDirective: DirectiveNode,
     directives: readonly DirectiveNode[]
 ) => T;
 
-export const annotationsParsers: { [key in keyof Annotations]: AnnotationFactory<Annotations[key]> } = {
+export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<Annotations[key]> } = {
     authentication: parseAuthenticationAnnotation,
     authorization: parseAuthorizationAnnotation,
     coalesce: parseCoalesceAnnotation,

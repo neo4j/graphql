@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
 import { jwtClaim } from "../../../graphql/directives";
 import { JWTClaimAnnotation } from "../../annotation/JWTClaimAnnotation";
 import { parseArguments } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseJWTClaimAnnotation: AnnotationFactory<JWTClaimAnnotation> = (directive) => {
+export function parseJWTClaimAnnotation(directive: DirectiveNode): JWTClaimAnnotation {
     const { path } = parseArguments<{ path: string }>(jwtClaim, directive);
 
     return new JWTClaimAnnotation({
         path,
     });
-};
+}

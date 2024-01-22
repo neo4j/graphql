@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import type { DirectiveNode } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { limitDirective } from "../../../graphql/directives";
 import { LimitAnnotation } from "../../annotation/LimitAnnotation";
 import { parseArguments } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseLimitAnnotation: AnnotationFactory<LimitAnnotation> = (directive) => {
+export function parseLimitAnnotation(directive: DirectiveNode): LimitAnnotation {
     const { default: _default, max } = parseArguments<{
         default?: number;
         max?: number;
@@ -41,4 +41,4 @@ export const parseLimitAnnotation: AnnotationFactory<LimitAnnotation> = (directi
         default: _default,
         max,
     });
-};
+}

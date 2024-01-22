@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
 import { filterableDirective } from "../../../graphql/directives";
 import { FilterableAnnotation } from "../../annotation/FilterableAnnotation";
 import { parseArguments } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parseFilterableAnnotation: AnnotationFactory<FilterableAnnotation> = (directive) => {
+export function parseFilterableAnnotation(directive: DirectiveNode): FilterableAnnotation {
     const { byValue, byAggregate } = parseArguments<{
         byValue: boolean;
         byAggregate: boolean;
@@ -31,4 +31,4 @@ export const parseFilterableAnnotation: AnnotationFactory<FilterableAnnotation> 
         byAggregate,
         byValue,
     });
-};
+}

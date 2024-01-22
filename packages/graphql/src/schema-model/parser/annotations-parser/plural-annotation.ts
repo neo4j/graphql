@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { DirectiveNode } from "graphql";
 import { pluralDirective } from "../../../graphql/directives";
 import { PluralAnnotation } from "../../annotation/PluralAnnotation";
 import { parseArguments } from "../parse-arguments";
-import type { AnnotationFactory } from "../../annotation/Annotation";
 
-export const parsePluralAnnotation: AnnotationFactory<PluralAnnotation> = (directive) => {
+export function parsePluralAnnotation(directive: DirectiveNode): PluralAnnotation {
     const { value } = parseArguments<{ value: string }>(pluralDirective, directive);
     return new PluralAnnotation({
         value,
     });
-};
+}
