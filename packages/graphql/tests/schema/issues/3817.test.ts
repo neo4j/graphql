@@ -89,7 +89,10 @@ describe("3817", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Type describing relationship properties for the Person.friends field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Person.friends
+            \\"\\"\\"
             type FriendOf {
               id: String
             }

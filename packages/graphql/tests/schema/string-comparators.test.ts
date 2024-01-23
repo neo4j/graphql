@@ -540,8 +540,9 @@ describe("String Comparators", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Actor.actedIn field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.actedIn
             \\"\\"\\"
             type ActedIn {
               screenTime: String

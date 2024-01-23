@@ -51,8 +51,9 @@ describe("Relationship-properties", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Actor.movies field.
-            Type describing relationship properties for the Movie.actors field.
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
               leadRole: Boolean!
@@ -800,8 +801,9 @@ describe("Relationship-properties", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Actor.movies field.
-            Type describing relationship properties for the Movie.actors field.
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
               id: ID!
@@ -1598,8 +1600,9 @@ describe("Relationship-properties", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Actor.movies field.
-            Type describing relationship properties for the Movie.actors field.
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
               id: ID!

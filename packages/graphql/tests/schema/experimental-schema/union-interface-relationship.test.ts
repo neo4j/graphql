@@ -81,8 +81,9 @@ describe("Union Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.actors field.
-            Type describing relationship properties for the Actor.movies field.
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.movies
             \\"\\"\\"
             type ActedIn {
               screenTime: Int!
@@ -508,7 +509,10 @@ describe("Union Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Type describing relationship properties for the Movie.directors field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.directors
+            \\"\\"\\"
             type Directed {
               year: Int!
             }
@@ -1757,8 +1761,9 @@ describe("Union Interface Relationships", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Movie.reviewers field.
-            Type describing relationship properties for the Person.movies field.
+            The edge properties for the following fields:
+            * Movie.reviewers
+            * Person.movies
             \\"\\"\\"
             type Review {
               score: Int!

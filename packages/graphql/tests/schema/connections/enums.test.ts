@@ -54,8 +54,9 @@ describe("Enums", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Actor.movies field.
-            Type describing relationship properties for the Movie.actors field.
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
               roleType: RoleType!

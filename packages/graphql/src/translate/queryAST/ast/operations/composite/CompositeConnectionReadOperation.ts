@@ -57,8 +57,9 @@ export class CompositeConnectionReadOperation extends Operation {
 
         const nestedSubquery = new Cypher.Call(union);
 
-        let extraWithOrder: Cypher.With | undefined;
+        let orderSubquery: Cypher.Call | undefined;
 
+        let returnEdgesVar: Cypher.Variable = edgesVar;
         if (this.pagination || this.sortFields.length > 0) {
             const paginationField = this.pagination && this.pagination.getPagination();
 
@@ -74,7 +75,7 @@ export class CompositeConnectionReadOperation extends Operation {
                 edgeVar.property("node"),
                 edgeVar.property("properties")
             );
-            extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar, totalCount).orderBy(...sortFields);
+            const extraWithOrder = new Cypher.Unwind([edgesVar, edgeVar]).with(edgeVar).orderBy(...sortFields);
 
             if (paginationField && paginationField.skip) {
                 extraWithOrder.skip(paginationField.skip);
@@ -84,21 +85,25 @@ export class CompositeConnectionReadOperation extends Operation {
                 extraWithOrder.limit(paginationField.limit);
             }
 
-            extraWithOrder.with([Cypher.collect(edgeVar), edgesVar], totalCount);
+            const edgesVar2 = new Cypher.Variable();
+
+            extraWithOrder.return([Cypher.collect(edgeVar), edgesVar2]);
+            returnEdgesVar = edgesVar2;
+            orderSubquery = new Cypher.Call(extraWithOrder).innerWith(edgesVar);
         }
 
         nestedSubquery.with([Cypher.collect(edgeVar), edgesVar]).with(edgesVar, [Cypher.size(edgesVar), totalCount]);
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
-                edges: edgesVar,
+                edges: returnEdgesVar,
                 totalCount: totalCount,
             }),
             context.returnVariable,
         ]);
 
         return {
-            clauses: [Cypher.concat(nestedSubquery, extraWithOrder, returnClause)],
+            clauses: [Cypher.concat(nestedSubquery, orderSubquery, returnClause)],
             projectionExpr: context.returnVariable,
         };
     }

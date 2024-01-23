@@ -81,7 +81,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Type describing relationship properties for the User.following field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * User.following
+            \\"\\"\\"
             type FOLLOWS {
               since: DateTime!
             }

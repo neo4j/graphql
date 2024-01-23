@@ -55,7 +55,10 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Type describing relationship properties for the Actor.actedIn field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }

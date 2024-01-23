@@ -1085,7 +1085,10 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
-            /** Type describing relationship properties for the Movie.actors field. */
+            /**
+             * The edge properties for the following fields:
+             * * Movie.actors
+             */
             export type ActedIn = {
               __typename?: \\"ActedIn\\";
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
@@ -2046,8 +2049,9 @@ describe("generate", () => {
             };
 
             /**
-             * Type describing relationship properties for the FAQ.entries field.
-             * Type describing relationship properties for the FAQEntry.inFAQs field.
+             * The edge properties for the following fields:
+             * * FAQ.entries
+             * * FAQEntry.inFAQs
              */
             export type FaqEntryInFaq = {
               __typename?: \\"FaqEntryInFaq\\";

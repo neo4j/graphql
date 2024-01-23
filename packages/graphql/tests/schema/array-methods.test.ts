@@ -51,8 +51,9 @@ describe("Arrays Methods", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Actor.actedIn field.
-            Type describing relationship properties for the Movie.actors field.
+            The edge properties for the following fields:
+            * Actor.actedIn
+            * Movie.actors
             \\"\\"\\"
             type ActedIn {
               pay: [Float]

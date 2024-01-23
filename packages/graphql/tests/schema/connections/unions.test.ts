@@ -1002,9 +1002,10 @@ describe("Unions", () => {
             }
 
             \\"\\"\\"
-            Type describing relationship properties for the Author.publications field.
-            Type describing relationship properties for the Book.author field.
-            Type describing relationship properties for the Journal.author field.
+            The edge properties for the following fields:
+            * Author.publications
+            * Book.author
+            * Journal.author
             \\"\\"\\"
             type Wrote {
               words: Int!

@@ -234,7 +234,10 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"Type describing relationship properties for the Actor.friends field.\\"\\"\\"
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.friends
+            \\"\\"\\"
             type FriendsWith {
               since: Int
             }
@@ -365,22 +368,34 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsEdgeCreateInput {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithCreateInput
             }
 
             input PersonFriendsEdgeSort {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithSort
             }
 
             input PersonFriendsEdgeUpdateInput {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithUpdateInput
             }
 
             input PersonFriendsEdgeWhere {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithWhere
             }
 
