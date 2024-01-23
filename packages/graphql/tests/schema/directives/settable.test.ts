@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
@@ -6868,8 +6868,8 @@ describe("@settable", () => {
                 }
 
                 input ProductionConnectInput {
-                  _on: ProductionImplementationsConnectInput
-                  actors: [ProductionActorsConnectFieldInput!]
+                  Movie: [MovieConnectInput!]
+                  Series: [SeriesConnectInput!]
                 }
 
                 input ProductionConnectWhere {
@@ -6894,11 +6894,6 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsConnectInput {
-                  Movie: [MovieConnectInput!]
-                  Series: [SeriesConnectInput!]
                 }
 
                 input ProductionImplementationsDeleteInput {
@@ -7802,8 +7797,8 @@ describe("@settable", () => {
                 }
 
                 input ProductionConnectInput {
-                  _on: ProductionImplementationsConnectInput
-                  actors: [ProductionActorsConnectFieldInput!]
+                  Movie: [MovieConnectInput!]
+                  Series: [SeriesConnectInput!]
                 }
 
                 input ProductionConnectWhere {
@@ -7828,11 +7823,6 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsConnectInput {
-                  Movie: [MovieConnectInput!]
-                  Series: [SeriesConnectInput!]
                 }
 
                 input ProductionImplementationsDeleteInput {

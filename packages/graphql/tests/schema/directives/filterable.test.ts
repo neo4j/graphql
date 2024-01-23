@@ -7338,7 +7338,7 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonConnectWhere {
@@ -7363,10 +7363,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonImplementationsDeleteInput {
@@ -8206,7 +8202,7 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonConnectWhere {
@@ -8231,10 +8227,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonImplementationsDeleteInput {
@@ -9074,7 +9066,7 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
+                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonConnectWhere {
@@ -9099,10 +9091,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonImplementationsDeleteInput {

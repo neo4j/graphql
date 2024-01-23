@@ -68,7 +68,7 @@ export function makeImplementationsConnectInput({
     }
 
     const implementationsConnectType = composer.createInputTC({
-        name: interfaceEntityAdapter.operations.whereOnImplementationsConnectInputTypeName,
+        name: interfaceEntityAdapter.operations.connectInputTypeName,
         fields,
     });
     // ensureNonEmptyInput(composer, implementationsConnectType);

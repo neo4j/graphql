@@ -450,7 +450,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductConnectInput {
-              _on: IProductImplementationsConnectInput
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
             }
 
             input IProductConnectWhere {
@@ -478,11 +479,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input IProductImplementationsDeleteInput {
@@ -1725,7 +1721,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductConnectInput {
-              _on: IProductImplementationsConnectInput
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
             }
 
             input IProductConnectWhere {
@@ -1828,11 +1825,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input IProductImplementationsDeleteInput {

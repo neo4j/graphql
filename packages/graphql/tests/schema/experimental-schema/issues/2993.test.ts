@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileConnectInput {
-              _on: ProfileImplementationsConnectInput
+              User: [UserConnectInput!]
             }
 
             input ProfileConnectWhere {
@@ -159,10 +159,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             enum ProfileImplementation {
               User
-            }
-
-            input ProfileImplementationsConnectInput {
-              User: [UserConnectInput!]
             }
 
             input ProfileImplementationsDeleteInput {
@@ -572,7 +568,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileConnectInput {
-              _on: ProfileImplementationsConnectInput
+              User: [UserConnectInput!]
             }
 
             input ProfileConnectWhere {
@@ -593,10 +589,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             enum ProfileImplementation {
               User
-            }
-
-            input ProfileImplementationsConnectInput {
-              User: [UserConnectInput!]
             }
 
             input ProfileImplementationsDeleteInput {

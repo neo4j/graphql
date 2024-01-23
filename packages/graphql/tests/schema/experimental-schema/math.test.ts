@@ -1645,7 +1645,7 @@ describe("Algebraic", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
+              Movie: [MovieConnectInput!]
             }
 
             input ProductionConnectWhere {
@@ -1666,10 +1666,6 @@ describe("Algebraic", () => {
 
             enum ProductionImplementation {
               Movie
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {

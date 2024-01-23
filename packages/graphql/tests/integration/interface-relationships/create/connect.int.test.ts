@@ -76,103 +76,6 @@ describe("interface relationships", () => {
         await driver.close();
     });
 
-    test("should nested create connect using interface relationship fields", async () => {
-        const session = await neo4j.getSession();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.number.int({ max: 100000 });
-        const movieScreenTime = faker.number.int({ max: 100000 });
-
-        const query = `
-            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
-                createActors(
-                    input: [
-                        {
-                            name: $name1
-                            actedIn: {
-                                connect: {
-                                    edge: { screenTime: $screenTime }
-                                    where: { node: { title: $title } }
-                                    connect: {
-                                        actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                ) {
-                    actors {
-                        name
-                        actedIn {
-                            title
-                            actors {
-                                name
-                            }
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (:Actor { name: $name })
-            `,
-                { movieTitle, movieRuntime, name: actorName2 }
-            );
-
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-                variableValues: {
-                    name1: actorName1,
-                    title: movieTitle,
-                    screenTime: movieScreenTime,
-                    name2: actorName2,
-                },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                createActors: {
-                    actors: [
-                        {
-                            actedIn: [
-                                {
-                                    runtime: movieRuntime,
-                                    title: movieTitle,
-                                    actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
-                                },
-                            ],
-                            name: actorName1,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
-
     test("should nested create connect using interface relationship fields and only connect from one type", async () => {
         const session = await neo4j.getSession();
 
@@ -203,12 +106,10 @@ describe("interface relationships", () => {
                                     edge: { screenTime: $screenTime }
                                     where: { node: { title: $title } }
                                     connect: {
-                                        _on: {
-                                            Movie: {
-                                                actors: {
-                                                    edge: { screenTime: $screenTime }
-                                                    where: { node: { name: $name2 } }
-                                                }
+                                        Movie: {
+                                            actors: {
+                                                edge: { screenTime: $screenTime }
+                                                where: { node: { name: $name2 } }
                                             }
                                         }
                                     }

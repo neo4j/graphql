@@ -44,18 +44,10 @@ export function withConnectInputType({
     if (entityAdapter instanceof ConcreteEntityAdapter) {
         return composer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
     }
-    const implementationsConnectInputType = makeImplementationsConnectInput({
+    return makeImplementationsConnectInput({
         interfaceEntityAdapter: entityAdapter,
         composer,
     });
-
-    if (!implementationsConnectInputType) {
-        return undefined;
-    }
-
-    const connectInputType = composer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
-    connectInputType.setField("_on", implementationsConnectInputType);
-    return connectInputType;
 }
 
 export function augmentConnectInputTypeWithConnectFieldInput({

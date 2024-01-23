@@ -1501,7 +1501,8 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
             }
 
             input ProductionConnectWhere {
@@ -1524,11 +1525,6 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {
@@ -2502,7 +2498,8 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
             }
 
             input ProductionConnectWhere {
@@ -2525,11 +2522,6 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {

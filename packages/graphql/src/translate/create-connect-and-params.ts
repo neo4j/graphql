@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { RelationField } from "../types";
-import createWhereAndParams from "./where/create-where-and-params";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import createRelationshipValidationString from "./create-relationship-validation-string";
 import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { RelationField } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { caseWhere } from "../utils/case-where";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import createRelationshipValidationString from "./create-relationship-validation-string";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
-import Cypher from "@neo4j/cypher-builder";
-import { caseWhere } from "../utils/case-where";
-import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
-import { checkAuthentication } from "./authorization/check-authentication";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import createWhereAndParams from "./where/create-where-and-params";
 
 interface Res {
     connects: string[];
@@ -102,14 +102,6 @@ function createConnectAndParams({
         const whereStrs: string[] = [];
         let aggregationWhere = false;
         if (connect.where) {
-            // If _on is the only where key and it doesn't contain this implementation, don't connect it
-            if (
-                connect.where.node._on &&
-                Object.keys(connect.where.node).length === 1 &&
-                !Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name)
-            ) {
-                return { subquery: "", params: {} };
-            }
             const whereInput = {
                 ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                     if (k !== "_on") {
@@ -136,38 +128,6 @@ function createConnectAndParams({
                 if (preComputedSubqueries) {
                     subquery.push(preComputedSubqueries);
                     aggregationWhere = true;
-                }
-            }
-
-            // For _on filters
-            if (connect.where.node?._on?.[relatedNode.name]) {
-                const [onTypeNodeWhereCypher, preComputedSubqueries, onTypeNodeWhereParams] = createWhereAndParams({
-                    whereInput: {
-                        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
-                            if (k !== "_on") {
-                                return { ...args, [k]: v };
-                            }
-
-                            if (Object.prototype.hasOwnProperty.call(v, relatedNode.name)) {
-                                return { ...args, ...(v as any)[relatedNode.name] };
-                            }
-
-                            return args;
-                        }, {}),
-                    },
-                    context,
-                    node: relatedNode,
-                    varName: `${nodeName}`,
-                    chainStr: `${nodeName}_on_${relatedNode.name}`,
-                    recursing: true,
-                });
-                if (onTypeNodeWhereCypher) {
-                    whereStrs.push(onTypeNodeWhereCypher);
-                    params = { ...params, ...onTypeNodeWhereParams };
-                    if (preComputedSubqueries) {
-                        subquery.push(preComputedSubqueries);
-                        aggregationWhere = true;
-                    }
                 }
             }
         }
@@ -323,14 +283,10 @@ function createConnectAndParams({
             connects.forEach((c) => {
                 const reduced = Object.entries(c)
                     .filter(([k]) => {
-                        if (k === "_on") {
-                            return false;
-                        }
-
-                        if (relationField.interface && c?._on?.[relatedNode.name]) {
-                            const onArray = Array.isArray(c._on[relatedNode.name])
-                                ? c._on[relatedNode.name]
-                                : [c._on[relatedNode.name]];
+                        if (relationField.interface && c?.[relatedNode.name]) {
+                            const onArray = Array.isArray(c[relatedNode.name])
+                                ? c[relatedNode.name]
+                                : [c[relatedNode.name]];
                             if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
                                 return false;
                             }
@@ -343,6 +299,10 @@ function createConnectAndParams({
                             const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
                             const newRefNodes: Node[] = [];
 
+                            // Skipping this layer
+                            if (!relField) {
+                                return r;
+                            }
                             if (relField.union) {
                                 Object.keys(v).forEach((modelName) => {
                                     newRefNodes.push(context.nodes.find((x) => x.name === modelName) as Node);
@@ -383,10 +343,8 @@ function createConnectAndParams({
                 subquery.push(reduced.connects.join("\n"));
                 params = { ...params, ...reduced.params };
 
-                if (relationField.interface && c?._on?.[relatedNode.name]) {
-                    const onConnects = Array.isArray(c._on[relatedNode.name])
-                        ? c._on[relatedNode.name]
-                        : [c._on[relatedNode.name]];
+                if (relationField.interface && c?.[relatedNode.name]) {
+                    const onConnects = Array.isArray(c[relatedNode.name]) ? c[relatedNode.name] : [c[relatedNode.name]];
 
                     onConnects.forEach((onConnect, onConnectIndex) => {
                         const onReduced = Object.entries(onConnect).reduce(

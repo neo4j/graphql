@@ -1805,7 +1805,7 @@ describe("Union Interface Relationships", () => {
             }
 
             input ReviewerConnectInput {
-              _on: ReviewerImplementationsConnectInput
+              Person: [PersonConnectInput!]
             }
 
             input ReviewerConnectWhere {
@@ -1828,10 +1828,6 @@ describe("Union Interface Relationships", () => {
             enum ReviewerImplementation {
               Influencer
               Person
-            }
-
-            input ReviewerImplementationsConnectInput {
-              Person: [PersonConnectInput!]
             }
 
             input ReviewerImplementationsDeleteInput {

@@ -97,8 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input CreatureConnectInput {
-              _on: CreatureImplementationsConnectInput
-              movies: CreatureMoviesConnectFieldInput
+              Person: [PersonConnectInput!]
             }
 
             input CreatureConnectWhere {
@@ -121,10 +120,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             enum CreatureImplementation {
               Person
-            }
-
-            input CreatureImplementationsConnectInput {
-              Person: [PersonConnectInput!]
             }
 
             input CreatureImplementationsDeleteInput {
@@ -569,8 +564,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
-              director: ProductionDirectorConnectFieldInput
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
             }
 
             input ProductionConnectWhere {
@@ -655,11 +650,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {

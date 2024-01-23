@@ -5756,8 +5756,7 @@ describe("Subscriptions", () => {
             }
 
             input CreatureConnectInput {
-              _on: CreatureImplementationsConnectInput
-              movies: CreatureMoviesConnectFieldInput
+              Person: [PersonConnectInput!]
             }
 
             input CreatureConnectWhere {
@@ -5780,10 +5779,6 @@ describe("Subscriptions", () => {
 
             enum CreatureImplementation {
               Person
-            }
-
-            input CreatureImplementationsConnectInput {
-              Person: [PersonConnectInput!]
             }
 
             input CreatureImplementationsDeleteInput {
@@ -6228,8 +6223,8 @@ describe("Subscriptions", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
-              director: ProductionDirectorConnectFieldInput
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
             }
 
             input ProductionConnectWhere {
@@ -6314,11 +6309,6 @@ describe("Subscriptions", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {
