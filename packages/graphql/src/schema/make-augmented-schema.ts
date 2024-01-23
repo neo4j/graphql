@@ -88,6 +88,8 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -245,7 +247,6 @@ function makeAugmentedSchema({
 
     // creates the type for the `edge` field that contains all possible implementations of a declared relationship
     // an implementation being a relationship directive with different `properties` value
-    // TODO: figure out where to put this logic
     schemaModel.compositeEntities.forEach((compositeEntity) => {
         if (!(compositeEntity instanceof InterfaceEntity)) {
             return;
@@ -253,91 +254,7 @@ function makeAugmentedSchema({
         const interfaceEntityAdapter = new InterfaceEntityAdapter(compositeEntity);
         for (const relationshipDeclarationAdapter of interfaceEntityAdapter.relationshipDeclarations.values()) {
             // this is a declaration, that has multiple implementations
-            const implementations = relationshipDeclarationAdapter.relationshipImplementations.reduce(
-                (acc, relationshipAdapter) => {
-                    if (!relationshipAdapter.propertiesTypeName) {
-                        return acc;
-                    }
-
-                    const fieldDescription = `Relationship properties when source node is of type ${relationshipAdapter.source.name}.`;
-                    const updatedDescription = (path) => {
-                        const alreadyGenerated = path[relationshipAdapter.propertiesTypeName as string];
-                        return alreadyGenerated?.type
-                            ? [alreadyGenerated.description, fieldDescription].join("\n")
-                            : fieldDescription;
-                    };
-
-                    acc.where[relationshipAdapter.propertiesTypeName] = {
-                        type: relationshipAdapter.operations.whereInputTypeName,
-                        description: updatedDescription(acc.where),
-                    };
-
-                    acc.sort[relationshipAdapter.propertiesTypeName] = {
-                        type: relationshipAdapter.operations.sortInputTypeName,
-                        description: updatedDescription(acc.sort),
-                    };
-
-                    acc.properties[relationshipAdapter.propertiesTypeName] = relationshipAdapter.propertiesTypeName;
-
-                    const hasNonGeneratedProperties = relationshipAdapter.nonGeneratedProperties.length > 0;
-                    if (hasNonGeneratedProperties) {
-                        acc.create[relationshipAdapter.propertiesTypeName] = {
-                            type: relationshipAdapter.operations.edgeCreateInputTypeName,
-                            description: updatedDescription(acc.create),
-                        };
-                        acc.update[relationshipAdapter.propertiesTypeName] = {
-                            type: relationshipAdapter.operations.edgeUpdateInputTypeName,
-                            description: updatedDescription(acc.update),
-                        };
-                    }
-
-                    if (relationshipAdapter.aggregationWhereFields) {
-                        acc.aggregationWhere[relationshipAdapter.propertiesTypeName] = {
-                            type: relationshipAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
-                            description: updatedDescription(acc.aggregationWhere),
-                        };
-                    }
-
-                    return acc;
-                },
-                { create: {}, update: {}, where: {}, aggregationWhere: {}, sort: {}, properties: {} }
-            );
-            if (Object.keys(implementations.create).length) {
-                composer.createInputTC({
-                    name: relationshipDeclarationAdapter.operations.createInputTypeName,
-                    fields: implementations.create,
-                });
-            }
-            if (Object.keys(implementations.update).length) {
-                composer.createInputTC({
-                    name: relationshipDeclarationAdapter.operations.edgeUpdateInputTypeName,
-                    fields: implementations.update,
-                });
-            }
-            if (Object.keys(implementations.where).length) {
-                composer.createInputTC({
-                    name: relationshipDeclarationAdapter.operations.whereInputTypeName,
-                    fields: implementations.where,
-                });
-            }
-            if (Object.keys(implementations.aggregationWhere).length) {
-                composer.createInputTC({
-                    name: relationshipDeclarationAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
-                    fields: implementations.aggregationWhere,
-                });
-            }
-            if (Object.keys(implementations.sort).length) {
-                composer.createInputTC({
-                    name: relationshipDeclarationAdapter.operations.sortInputTypeName,
-                    fields: implementations.sort,
-                });
-            }
-            if (Object.keys(implementations.properties).length) {
-                composer.createUnionTC({
-                    name: relationshipDeclarationAdapter.operations.relationshipPropertiesFieldTypename,
-                    types: Object.values(implementations.properties),
-                });
-            }
+            doForRelationshipDeclaration({ relationshipDeclarationAdapter, composer });
         }
     });
 
@@ -747,6 +664,59 @@ function makeAugmentedSchema({
 
 export default makeAugmentedSchema;
 
+function doForRelationshipDeclaration({
+    relationshipDeclarationAdapter,
+    composer,
+}: {
+    relationshipDeclarationAdapter: RelationshipDeclarationAdapter;
+    composer: SchemaComposer;
+}) {
+    for (const relationshipAdapter of relationshipDeclarationAdapter.relationshipImplementations) {
+        if (!relationshipAdapter.propertiesTypeName) {
+            continue;
+        }
+        composer
+            .getOrCreateUTC(relationshipDeclarationAdapter.operations.relationshipPropertiesFieldTypename)
+            .addType(relationshipAdapter.propertiesTypeName);
+
+        withEdgeWrapperType({
+            edgeTypeName: relationshipDeclarationAdapter.operations.whereInputTypeName,
+            edgeFieldTypeName: relationshipAdapter.operations.whereInputTypeName,
+            edgeFieldAdapter: relationshipAdapter,
+            composer,
+        });
+        withEdgeWrapperType({
+            edgeTypeName: relationshipDeclarationAdapter.operations.sortInputTypeName,
+            edgeFieldTypeName: relationshipAdapter.operations.sortInputTypeName,
+            edgeFieldAdapter: relationshipAdapter,
+            composer,
+        });
+
+        if (relationshipAdapter.hasNonGeneratedProperties) {
+            withEdgeWrapperType({
+                edgeTypeName: relationshipDeclarationAdapter.operations.createInputTypeName,
+                edgeFieldTypeName: relationshipAdapter.operations.edgeCreateInputTypeName,
+                edgeFieldAdapter: relationshipAdapter,
+                composer,
+            });
+            withEdgeWrapperType({
+                edgeTypeName: relationshipDeclarationAdapter.operations.edgeUpdateInputTypeName,
+                edgeFieldTypeName: relationshipAdapter.operations.edgeUpdateInputTypeName,
+                edgeFieldAdapter: relationshipAdapter,
+                composer,
+            });
+        }
+
+        if (relationshipAdapter.aggregationWhereFields) {
+            withEdgeWrapperType({
+                edgeTypeName: relationshipDeclarationAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
+                edgeFieldTypeName: relationshipAdapter.operations.getAggregationWhereInputTypeName(`Edge`),
+                edgeFieldAdapter: relationshipAdapter,
+                composer,
+            });
+        }
+    }
+}
 function doForRelationshipPropertiesType({
     composer,
     relationshipAdapter,

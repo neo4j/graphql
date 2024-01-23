@@ -368,22 +368,34 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsEdgeCreateInput {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithCreateInput
             }
 
             input PersonFriendsEdgeSort {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithSort
             }
 
             input PersonFriendsEdgeUpdateInput {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithUpdateInput
             }
 
             input PersonFriendsEdgeWhere {
-              \\"\\"\\"Relationship properties when source node is of type Actor.\\"\\"\\"
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
               FriendsWith: FriendsWithWhere
             }
 
