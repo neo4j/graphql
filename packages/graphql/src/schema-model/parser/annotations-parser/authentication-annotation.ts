@@ -22,7 +22,6 @@ import type { AuthenticationOperation } from "../../annotation/AuthenticationAnn
 import { AuthenticationAnnotation } from "../../annotation/AuthenticationAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
-
 const authenticationDefaultOperations: AuthenticationOperation[] = [
     "READ",
     "AGGREGATE",

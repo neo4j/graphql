@@ -38,7 +38,7 @@ export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4
                 concreteEntities: [] as ConcreteEntity[],
                 compositeEntities: [] as CompositeEntity[],
                 operations: {},
-                annotations: [],
+                annotations: {},
             }),
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,

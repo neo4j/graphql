@@ -21,7 +21,7 @@ import { Neo4jGraphQLSchemaValidationError } from "../../../classes";
 import { KeyAnnotation } from "../../annotation/KeyAnnotation";
 import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
-export function parseKeyAnnotation(directives: readonly DirectiveNode[]): KeyAnnotation {
+export function parseKeyAnnotation(_: DirectiveNode, directives: readonly DirectiveNode[]): KeyAnnotation {
     let isResolvable = false;
 
     directives.forEach((directive) => {

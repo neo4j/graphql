@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class SettableAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class SettableAnnotation implements Annotation {
+    readonly name = "settable";
     public readonly onCreate: boolean;
     public readonly onUpdate: boolean;
 

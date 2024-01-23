@@ -26,7 +26,7 @@ describe("Read resolver", () => {
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
-            annotations: [],
+            annotations: {},
             attributes: [],
             compositeEntities: [],
             description: undefined,

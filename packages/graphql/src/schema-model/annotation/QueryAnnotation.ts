@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class QueryAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class QueryAnnotation implements Annotation {
+    readonly name = "query";
     public readonly read: boolean;
     public readonly aggregate: boolean;
 

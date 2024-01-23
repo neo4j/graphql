@@ -35,7 +35,7 @@ describe("Cypher resolver", () => {
         };
         const attribute = new Attribute({
             name: "test",
-            annotations: [],
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
             args: [],
         });
