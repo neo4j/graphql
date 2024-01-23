@@ -23,7 +23,8 @@ import type { ValueOf } from "../utils/value-of";
 
 const additionalDirectives = ["alias", "relationship", "relationshipProperties", "node", SHAREABLE] as const;
 
-export type LibraryDirectives = keyof Annotations | ValueOf<typeof additionalDirectives> | typeof DEPRECATED;
+type LibraryDirectives = keyof Annotations | ValueOf<typeof additionalDirectives> | typeof DEPRECATED;
+
 export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
     "selectable",

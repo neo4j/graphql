@@ -69,6 +69,7 @@ export interface Annotation {
     readonly name: string;
 }
 
+// Ensures that annotation name property matches its Annotations object key
 type CheckAnnotationName<T> = {
     [P in keyof T]: T[P] & { name: P };
 };
