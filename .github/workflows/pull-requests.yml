@@ -89,6 +89,7 @@ jobs:
     uses: ./.github/workflows/reusable-federation-tests.yml
 
   quality-gate:
+    if: ${{ always() }}
     needs:
       - reviewdog-eslint
       - code-scanning
@@ -102,4 +103,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Passed!"
+      - name: Check Job Status
+        run: |
+          if [ ${{ needs.reviewdog-eslint.result }} != 'success' ] || 
+            [ ${{ needs.code-scanning.result }} != 'success' ] ||
+            [ ${{ needs.package-tests.result }} != 'success' ] ||
+            [ ${{ needs.unit-tests.result }} != 'success' ] ||
+            [ ${{ needs.e2e-tests-plugins.result }} != 'success' ] ||
+            [ ${{ needs.api-library-tests.result }} != 'success' ] ||
+            [ ${{ needs.toolbox-tests.result }} != 'success' ] ||
+            [ ${{ needs.integration-tests-on-prem.result }} != 'success' ]; then
+            echo "One or more jobs failed"
+            exit 1
+          else
+            echo "Passed!"
+          fi
