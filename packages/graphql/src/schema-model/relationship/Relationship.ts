@@ -20,8 +20,7 @@
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
 import { upperFirst } from "../../utils/upper-first";
-import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
+import type { Annotations } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { Attribute } from "../attribute/Attribute";
 import type { Entity } from "../entity/Entity";
@@ -46,7 +45,7 @@ export class Relationship {
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
     public readonly description?: string;
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
     public readonly propertiesTypeName: string | undefined;
     public readonly inheritedFrom: string | undefined;
 
@@ -64,7 +63,7 @@ export class Relationship {
         aggregate,
         isNullable,
         description,
-        annotations = [],
+        annotations = {},
         propertiesTypeName,
         inheritedFrom,
     }: {
@@ -81,7 +80,7 @@ export class Relationship {
         aggregate: boolean;
         isNullable: boolean;
         description?: string;
-        annotations: Annotation[];
+        annotations?: Partial<Annotations>;
         propertiesTypeName?: string;
         inheritedFrom?: string;
     }) {
@@ -97,15 +96,12 @@ export class Relationship {
         this.aggregate = aggregate;
         this.isNullable = isNullable;
         this.description = description;
+        this.annotations = annotations;
         this.propertiesTypeName = propertiesTypeName;
         this.inheritedFrom = inheritedFrom;
 
         for (const attribute of attributes) {
             this.addAttribute(attribute);
-        }
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
         }
     }
 
@@ -124,21 +120,10 @@ export class Relationship {
             aggregate: this.aggregate,
             isNullable: this.isNullable,
             description: this.description,
-            annotations: Object.values(this.annotations),
+            annotations: this.annotations,
             propertiesTypeName: this.propertiesTypeName,
             inheritedFrom: this.inheritedFrom,
         });
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
-        if (this.annotations[annotationKey]) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
     }
 
     private addAttribute(attribute: Attribute): void {

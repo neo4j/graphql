@@ -16,9 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { JWTPayloadAnnotation } from "../../annotation/JWTPayloadAnnotation";
 
-export function parseJWTPayloadAnnotation(_directive: DirectiveNode): JWTPayloadAnnotation {
-    return new JWTPayloadAnnotation();
-}
+/**
+ * Type matching the elements in object/array
+ */
+export type ValueOf<T extends ReadonlyArray<unknown> | Array<unknown>> = T[number];

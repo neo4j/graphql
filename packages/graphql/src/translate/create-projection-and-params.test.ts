@@ -98,7 +98,7 @@ describe("createProjectionAndParams", () => {
                             new Attribute({
                                 name: "title",
                                 type: new ScalarType(GraphQLBuiltInScalarType.String, true),
-                                annotations: [],
+                                annotations: {},
                                 args: [],
                             }),
                         ],
@@ -106,7 +106,7 @@ describe("createProjectionAndParams", () => {
                 ],
                 compositeEntities: [],
                 operations: {},
-                annotations: [],
+                annotations: {},
             }),
             resolveTree,
         }).instance();
@@ -193,7 +193,7 @@ describe("createProjectionAndParams", () => {
                             new Attribute({
                                 name: "title",
                                 type: new ScalarType(GraphQLBuiltInScalarType.String, true),
-                                annotations: [],
+                                annotations: {},
                                 args: [],
                             }),
                         ],
@@ -201,7 +201,7 @@ describe("createProjectionAndParams", () => {
                 ],
                 compositeEntities: [],
                 operations: {},
-                annotations: [],
+                annotations: {},
             }),
             resolveTree,
         }).instance();

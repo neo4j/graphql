@@ -83,7 +83,7 @@ describe("createUpdateAndParams", () => {
                             new Attribute({
                                 name: "id",
                                 type: new ScalarType(GraphQLBuiltInScalarType.String, true),
-                                annotations: [],
+                                annotations: {},
                                 args: [],
                             }),
                         ],
@@ -91,7 +91,7 @@ describe("createUpdateAndParams", () => {
                 ],
                 compositeEntities: [],
                 operations: {},
-                annotations: [],
+                annotations: {},
             }),
         }).instance();
 

@@ -30,6 +30,7 @@ import parseNodeDirective from "./parse-node-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parsePluralDirective from "./parse/parse-plural-directive";
 import { parseLimitDirective } from "./parse/parse-limit-directive";
+import { DEPRECATED, SHAREABLE } from "../constants";
 
 type Nodes = {
     nodes: Node[];
@@ -65,7 +66,7 @@ function getNodes(
                     "fulltext",
                     "limit",
                     "plural",
-                    "shareable",
+                    SHAREABLE,
                     "subscriptionsAuthorization",
                     "deprecated",
                     "query",
@@ -75,7 +76,7 @@ function getNodes(
                 ].includes(x.name.value)
         );
         const propagatedDirectives = (definition.directives || []).filter((x) =>
-            ["deprecated", "shareable"].includes(x.name.value)
+            [DEPRECATED, SHAREABLE].includes(x.name.value)
         );
 
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");

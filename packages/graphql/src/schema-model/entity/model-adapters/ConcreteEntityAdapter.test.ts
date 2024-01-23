@@ -34,26 +34,26 @@ describe("ConcreteEntityAdapter", () => {
     beforeAll(() => {
         const idAttribute = new Attribute({
             name: "id",
-            annotations: [new UniqueAnnotation({ constraintName: "User_id_unique" })],
+            annotations: { unique: new UniqueAnnotation({ constraintName: "User_id_unique" }) },
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
             args: [],
         });
 
         const nameAttribute = new Attribute({
             name: "name",
-            annotations: [],
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
             args: [],
         });
 
         const closestUserAttribute = new Attribute({
             name: "closestUser",
-            annotations: [
-                new CypherAnnotation({
+            annotations: {
+                cypher: new CypherAnnotation({
                     statement: "MATCH (this)-[:FRIENDS_WITH]->(closestUser:User) RETURN closestUser",
                     columnName: "closestUser",
                 }),
-            ],
+            },
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
             args: [],
         });
