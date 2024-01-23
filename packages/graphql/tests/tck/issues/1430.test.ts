@@ -93,12 +93,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:ChildOne)
-                    WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
+                    WITH update_this1 { .id, .name, __resolveType: \\"ChildOne\\", __id: id(update_this1) } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
                     MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:ChildTwo)
-                    WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
+                    WITH update_this4 { .id, .name, __resolveType: \\"ChildTwo\\", __id: id(update_this4) } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
                 WITH update_var2
@@ -183,12 +183,12 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:HAS_INTERFACE]->(update_this1:ChildOne)
-                    WITH update_this1 { __resolveType: \\"ChildOne\\", __id: id(this), .id, .name } AS update_this1
+                    WITH update_this1 { .id, .name, __resolveType: \\"ChildOne\\", __id: id(update_this1) } AS update_this1
                     RETURN update_this1 AS update_var2
                     UNION
                     WITH *
                     MATCH (this)-[update_this3:HAS_INTERFACE]->(update_this4:ChildTwo)
-                    WITH update_this4 { __resolveType: \\"ChildTwo\\", __id: id(this), .id, .name } AS update_this4
+                    WITH update_this4 { .id, .name, __resolveType: \\"ChildTwo\\", __id: id(update_this4) } AS update_this4
                     RETURN update_this4 AS update_var2
                 }
                 WITH update_var2

@@ -24,7 +24,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
 
-describe("https://github.com/neo4j/graphql/issues/3351", () => {
+describe("https://github.com/neo4j/graphql/issues/3355", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
