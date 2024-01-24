@@ -258,13 +258,9 @@ export class RelationshipAdapter {
         return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
     }
 
-    public get nonGeneratedProperties(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isNonGeneratedField());
+    public get hasNonNullCreateInputFields(): boolean {
+        return this.createInputFields.some((property) => property.typeHelper.isRequired());
     }
-    public get hasNonNullNonGeneratedProperties(): boolean {
-        return this.nonGeneratedProperties.some((property) => property.typeHelper.isRequired());
-    }
-
     /**
      * Categories
      * = a grouping of attributes

@@ -18,22 +18,25 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { RelationshipWhereOperator } from "../../../where/types";
-import { Filter } from "./Filter";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { QueryASTNode } from "../QueryASTNode";
 import { Memoize } from "typescript-memoize";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import type { RelationshipWhereOperator } from "../../../where/types";
 import { hasTarget } from "../../utils/context-has-target";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import { createNodeFromEntity } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
+import { Filter } from "./Filter";
 
 export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
     protected relationship: RelationshipAdapter;
     protected operator: RelationshipWhereOperator;
     protected isNot: boolean;
+    protected target: ConcreteEntityAdapter | InterfaceEntityAdapter;
 
     // TODO: remove this, this is not good
     protected subqueryPredicate: Cypher.Predicate | undefined;
@@ -45,15 +48,18 @@ export class RelationshipFilter extends Filter {
         relationship,
         operator,
         isNot,
+        target,
     }: {
         relationship: RelationshipAdapter;
         operator: RelationshipWhereOperator;
         isNot: boolean;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
     }) {
         super();
         this.relationship = relationship;
         this.isNot = isNot;
         this.operator = operator;
+        this.target = target;
 
         // Note: This is just to keep naming with previous Cypher, it is safe to remove
         this.countVariable = new Cypher.NamedVariable(`${this.relationship.name}Count`);
@@ -73,7 +79,7 @@ export class RelationshipFilter extends Filter {
 
     @Memoize()
     protected getNestedContext(context: QueryASTContext): QueryASTContext {
-        const relatedEntity = this.relationship.target;
+        const relatedEntity = this.target;
         const target = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,
@@ -134,7 +140,7 @@ export class RelationshipFilter extends Filter {
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         // NOTE: not using getNestedContext because this should not be memoized in ALL operations
-        const relatedEntity = this.relationship.target;
+        const relatedEntity = this.target;
         const target = createNodeFromEntity(relatedEntity, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship({
             type: this.relationship.type,

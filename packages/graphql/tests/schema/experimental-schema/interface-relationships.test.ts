@@ -419,14 +419,14 @@ describe("Interface Relationships", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -451,7 +451,9 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -462,6 +464,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -1578,6 +1581,11 @@ describe("Interface Relationships", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -1596,11 +1604,6 @@ describe("Interface Relationships", () => {
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -1626,7 +1629,9 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -1666,6 +1671,7 @@ describe("Interface Relationships", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -2235,6 +2241,11 @@ describe("Interface Relationships", () => {
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
+            enum Interface1Implementation {
+              Type1Interface1
+              Type2Interface1
+            }
+
             input Interface1ImplementationsConnectInput {
               Type1Interface1: [Type1Interface1ConnectInput!]
               Type2Interface1: [Type2Interface1ConnectInput!]
@@ -2253,11 +2264,6 @@ describe("Interface Relationships", () => {
             input Interface1ImplementationsUpdateInput {
               Type1Interface1: Type1Interface1UpdateInput
               Type2Interface1: Type2Interface1UpdateInput
-            }
-
-            input Interface1ImplementationsWhere {
-              Type1Interface1: Type1Interface1Where
-              Type2Interface1: Type2Interface1Where
             }
 
             input Interface1Interface2ConnectFieldInput {
@@ -2340,7 +2346,9 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Where {
-              _on: Interface1ImplementationsWhere
+              AND: [Interface1Where!]
+              NOT: Interface1Where
+              OR: [Interface1Where!]
               field1: String
               field1_CONTAINS: String
               field1_ENDS_WITH: String
@@ -2369,6 +2377,7 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              typename_IN: [Interface1Implementation!]
             }
 
             interface Interface2 {
@@ -2389,14 +2398,14 @@ describe("Interface Relationships", () => {
               Type2Interface2: Type2Interface2CreateInput
             }
 
+            enum Interface2Implementation {
+              Type1Interface2
+              Type2Interface2
+            }
+
             input Interface2ImplementationsUpdateInput {
               Type1Interface2: Type1Interface2UpdateInput
               Type2Interface2: Type2Interface2UpdateInput
-            }
-
-            input Interface2ImplementationsWhere {
-              Type1Interface2: Type1Interface2Where
-              Type2Interface2: Type2Interface2Where
             }
 
             input Interface2Options {
@@ -2421,7 +2430,9 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2Where {
-              _on: Interface2ImplementationsWhere
+              AND: [Interface2Where!]
+              NOT: Interface2Where
+              OR: [Interface2Where!]
               field2: String
               field2_CONTAINS: String
               field2_ENDS_WITH: String
@@ -2432,6 +2443,7 @@ describe("Interface Relationships", () => {
               field2_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               field2_STARTS_WITH: String
+              typename_IN: [Interface2Implementation!]
             }
 
             type Mutation {
@@ -3609,6 +3621,11 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorDisconnectFieldInput
             }
 
+            enum ContentImplementation {
+              Comment
+              Post
+            }
+
             input ContentImplementationsConnectInput {
               Comment: [CommentConnectInput!]
               Post: [PostConnectInput!]
@@ -3627,11 +3644,6 @@ describe("Interface Relationships", () => {
             input ContentImplementationsUpdateInput {
               Comment: CommentUpdateInput
               Post: PostUpdateInput
-            }
-
-            input ContentImplementationsWhere {
-              Comment: CommentWhere
-              Post: PostWhere
             }
 
             input ContentOptions {
@@ -3659,7 +3671,9 @@ describe("Interface Relationships", () => {
             }
 
             input ContentWhere {
-              _on: ContentImplementationsWhere
+              AND: [ContentWhere!]
+              NOT: ContentWhere
+              OR: [ContentWhere!]
               content: String
               content_CONTAINS: String
               content_ENDS_WITH: String
@@ -3685,6 +3699,7 @@ describe("Interface Relationships", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [ContentImplementation!]
             }
 
             type CreateCommentsMutationResponse {

@@ -17,14 +17,18 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
+import type { Visitor } from "./types";
 
-/** Deprecated in favour of @populatedBy */
-export const CallbackOperationEnum = new GraphQLEnumType({
-    name: "CallbackOperation",
-    description: "*For use in the @callback directive only*",
-    values: {
-        CREATE: {},
-        UPDATE: {},
-    },
-});
+export abstract class UnwindASTNode {
+    public id: number;
+    public children: UnwindASTNode[] = [];
+
+    constructor(id: number) {
+        this.id = id;
+    }
+    addChildren(node: UnwindASTNode): void {
+        this.children.push(node);
+    }
+
+    abstract accept<T>(visitor: Visitor<T>): T;
+}

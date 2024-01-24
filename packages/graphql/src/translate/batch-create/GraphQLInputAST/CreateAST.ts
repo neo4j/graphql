@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import type { Visitor, ICreateAST } from "./types";
+import type { Visitor } from "./types";
 import type { Node } from "../../../classes";
-import { AST } from "./AST";
+import { UnwindASTNode } from "./UnwindASTNode";
 
-export class CreateAST extends AST implements ICreateAST {
+export class CreateAST extends UnwindASTNode {
     nodeProperties: string[];
     node: Node;
 
-    constructor(nodeProperties: string[], node: Node) {
-        super();
+    constructor(id: number, nodeProperties: string[], node: Node) {
+        super(id);
         this.nodeProperties = nodeProperties;
         this.node = node;
     }
 
-    accept(visitor: Visitor): void {
-        visitor.visitCreate(this);
+    accept<T>(visitor: Visitor<T>): T {
+        return visitor.visitCreate(this);
     }
 }

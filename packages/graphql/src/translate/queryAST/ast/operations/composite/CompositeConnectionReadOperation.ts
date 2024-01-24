@@ -21,13 +21,13 @@ import Cypher from "@neo4j/cypher-builder";
 import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 
-import type { QueryASTNode } from "../../QueryASTNode";
-import type { CompositeConnectionPartial } from "./CompositeConnectionPartial";
-import type { Sort, SortField } from "../../sort/Sort";
-import type { Pagination } from "../../pagination/Pagination";
-import { QueryASTContext } from "../../QueryASTContext";
 import { filterTruthy } from "../../../../../utils/utils";
 import { hasTarget } from "../../../utils/context-has-target";
+import { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTNode } from "../../QueryASTNode";
+import type { Pagination } from "../../pagination/Pagination";
+import type { Sort, SortField } from "../../sort/Sort";
+import type { CompositeConnectionPartial } from "./CompositeConnectionPartial";
 
 export class CompositeConnectionReadOperation extends Operation {
     private children: CompositeConnectionPartial[];

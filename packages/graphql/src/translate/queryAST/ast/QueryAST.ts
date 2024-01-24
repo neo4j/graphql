@@ -26,6 +26,7 @@ import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import { ReadOperation } from "./operations/ReadOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
+import { DeleteOperation } from "./operations/DeleteOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -36,7 +37,6 @@ export class QueryAST {
 
     public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
-
         return Cypher.concat(...this.transpile(context).clauses);
     }
 
@@ -44,8 +44,14 @@ export class QueryAST {
     public buildNew(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
 
-        const { clauses, projectionExpr } = this.transpile(context);
-        const returnClause = new Cypher.Return(projectionExpr);
+        const { clauses, projectionExpr, extraProjectionColumns } = this.transpile(context);
+        const returnClause = varName ? new Cypher.Return([projectionExpr, varName]) : new Cypher.Return(projectionExpr);
+
+        if (extraProjectionColumns) {
+            for (const projectionColumn of extraProjectionColumns) {
+                returnClause.addColumns(projectionColumn);
+            }
+        }
 
         return Cypher.concat(...clauses, returnClause);
     }
@@ -73,7 +79,11 @@ export class QueryAST {
     }
 
     public getTargetFromOperation(neo4jGraphQLContext: Neo4jGraphQLTranslationContext): Cypher.Node | undefined {
-        if (this.operation instanceof ReadOperation || this.operation instanceof ConnectionReadOperation) {
+        if (
+            this.operation instanceof ReadOperation ||
+            this.operation instanceof ConnectionReadOperation ||
+            this.operation instanceof DeleteOperation
+        ) {
             return createNodeFromEntity(this.operation.target, neo4jGraphQLContext, this.operation.nodeAlias);
         }
         if (this.operation instanceof AggregationOperation) {
@@ -91,12 +101,20 @@ function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
     const nodeName = treeNode.print();
     const resultLines: string[] = [];
 
+    const line = "────";
     if (depth === 0) {
         resultLines.push(`${nodeName}`);
     } else if (depth === 1) {
-        resultLines.push(`|${"────".repeat(depth)} ${nodeName}`);
+        resultLines.push(`|${line} ${nodeName}`);
     } else {
-        resultLines.push(`|${"    ".repeat(depth - 1)} |──── ${nodeName}`);
+        // fillerLength is the line length repeated by the depth (minus 1 for the first line),
+        // in case of depth > 2 there are two pipes rather than one.
+        let fillerLength = (line.length + 1) * (depth - 1);
+        if (depth > 2) {
+            fillerLength += depth - 2;
+        }
+
+        resultLines.push(`|${" ".repeat(fillerLength)}|${line} ${nodeName}`);
     }
 
     const children = treeNode.getChildren();

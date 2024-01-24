@@ -54,7 +54,7 @@ export default function createConnectionWhereAndParams({
     });
 
     let subquery = "";
-    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
+    const whereCypher = new Cypher.Raw((env: Cypher.Environment) => {
         const cypher = (andOp as any)?.getCypher(env) || "";
         if (preComputedSubqueries) {
             subquery = compileCypher(preComputedSubqueries, env);

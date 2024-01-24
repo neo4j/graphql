@@ -1446,12 +1446,12 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
+                    enum PersonImplementation {
+                      Actor
                     }
 
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    input PersonImplementationsUpdateInput {
+                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -1478,7 +1478,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
@@ -1489,6 +1491,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -1884,12 +1887,12 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
+                    enum PersonImplementation {
+                      Actor
                     }
 
-                    input PersonImplementationsWhere {
-                      Actor: ActorWhere
+                    input PersonImplementationsUpdateInput {
+                      Actor: ActorUpdateInput
                     }
 
                     input PersonOptions {
@@ -1916,7 +1919,9 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonWhere {
-                      _on: PersonImplementationsWhere
+                      AND: [PersonWhere!]
+                      NOT: PersonWhere
+                      OR: [PersonWhere!]
                       password: String
                       password_CONTAINS: String
                       password_ENDS_WITH: String
@@ -1927,6 +1932,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                       password_STARTS_WITH: String
+                      typename_IN: [PersonImplementation!]
                       username: String
                       username_CONTAINS: String
                       username_ENDS_WITH: String
@@ -2332,6 +2338,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2350,6 +2357,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      actors_ALL: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      actors_NONE: CastMemberWhere
+                      actors_NOT: CastMemberWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      actors_SINGLE: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      actors_SOME: CastMemberWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -2855,6 +2871,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2873,6 +2890,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      actors_ALL: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      actors_NONE: CastMemberWhere
+                      actors_NOT: CastMemberWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      actors_SINGLE: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      actors_SOME: CastMemberWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String

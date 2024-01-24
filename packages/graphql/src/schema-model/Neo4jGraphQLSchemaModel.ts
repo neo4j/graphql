@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import type { Operation } from "./Operation";
-import type { Annotations, Annotation } from "./annotation/Annotation";
-import { annotationToKey } from "./annotation/Annotation";
+import type { Annotations } from "./annotation/Annotation";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import type { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
@@ -31,24 +29,25 @@ export type Operations = {
     Mutation?: Operation;
     Subscription?: Operation;
 };
+
 /** Represents the internal model for the Neo4jGraphQL schema */
 export class Neo4jGraphQLSchemaModel {
     public entities: Map<string, Entity>;
     public concreteEntities: ConcreteEntity[];
     public compositeEntities: CompositeEntity[];
     public operations: Operations;
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor({
         concreteEntities,
         compositeEntities,
         operations,
-        annotations,
+        annotations = {},
     }: {
         concreteEntities: ConcreteEntity[];
         compositeEntities: CompositeEntity[];
         operations: Operations;
-        annotations: Annotation[];
+        annotations?: Partial<Annotations>;
     }) {
         this.entities = [...compositeEntities, ...concreteEntities].reduce((acc, entity) => {
             acc.set(entity.name, entity);
@@ -58,10 +57,7 @@ export class Neo4jGraphQLSchemaModel {
         this.concreteEntities = concreteEntities;
         this.compositeEntities = compositeEntities;
         this.operations = operations;
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
-        }
+        this.annotations = annotations;
     }
 
     public getEntity(name: string): Entity | undefined {
@@ -79,17 +75,5 @@ export class Neo4jGraphQLSchemaModel {
 
     public getEntitiesByNameAndLabels(name: string, labels: string[]): ConcreteEntity[] {
         return this.concreteEntities.filter((entity) => entity.name === name && entity.matchLabels(labels));
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists on the schema`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        this.annotations[annotationKey] = annotation as any;
     }
 }

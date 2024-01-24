@@ -88,6 +88,7 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import { SHAREABLE } from "../constants";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -160,7 +161,7 @@ function makeAugmentedSchema({
 
     // TODO: ideally move these in getSubgraphSchema()
     if (subgraph) {
-        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+        const shareable = subgraph.getFullyQualifiedDirectiveName(SHAREABLE);
         [CreateInfo.name, UpdateInfo.name, DeleteInfo.name, PageInfo.name].forEach((typeName) => {
             const typeComposer = composer.getOTC(typeName);
             typeComposer.setDirectiveByName(shareable);
@@ -229,6 +230,7 @@ function makeAugmentedSchema({
                     userDefinedDirectivesForInterface,
                     userDefinedFieldDirectivesForNode,
                     features,
+                    experimental,
                 });
                 seenRelationshipPropertiesInterfaces.add(relationshipAdapter.propertiesTypeName);
             }
@@ -287,7 +289,13 @@ function makeAugmentedSchema({
             propagatedDirectives,
             composer,
         });
-        withWhereInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, features, composer });
+        withWhereInputType({
+            entityAdapter: concreteEntityAdapter,
+            userDefinedFieldDirectives,
+            features,
+            composer,
+            experimental,
+        });
         /**
          * TODO [translation-layer-compatibility]
          * Need to migrate resolvers, which themselves rely on the translation layer being migrated to the new schema model
@@ -328,7 +336,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isReadable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                    node,
                     entityAdapter: concreteEntityAdapter,
                 }),
             });
@@ -338,7 +345,6 @@ function makeAugmentedSchema({
             );
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                    node,
                     composer,
                     concreteEntityAdapter,
                     propagatedDirectives,
@@ -352,7 +358,6 @@ function makeAugmentedSchema({
         if (concreteEntityAdapter.isAggregable) {
             composer.Query.addFields({
                 [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                    node,
                     concreteEntityAdapter,
                 }),
             });
@@ -412,6 +417,7 @@ function makeAugmentedSchema({
                 userDefinedFieldDirectives: new Map<string, DirectiveNode[]>(),
                 features,
                 composer,
+                experimental,
             });
             if (experimental) {
                 // strip-out the schema config directives from the union type
@@ -455,6 +461,7 @@ function makeAugmentedSchema({
                     userDefinedFieldDirectives,
                     features,
                     composer,
+                    experimental,
                 });
                 withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
                 if (interfaceEntityAdapter.isReadable) {
@@ -489,6 +496,7 @@ function makeAugmentedSchema({
             schemaModel,
             userDefinedFieldDirectivesForNode,
             generateRelationshipTypes: !isCDCEngine,
+            experimental,
         });
     }
 
@@ -652,12 +660,14 @@ function doForRelationshipPropertiesInterface({
     userDefinedDirectivesForInterface,
     userDefinedFieldDirectivesForNode,
     features,
+    experimental,
 }: {
     composer: SchemaComposer;
     relationshipAdapter: RelationshipAdapter;
     userDefinedDirectivesForInterface: Map<string, DirectiveNode[]>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     features?: Neo4jFeaturesSettings;
+    experimental: boolean;
 }) {
     if (!relationshipAdapter.propertiesTypeName) {
         return;
@@ -674,7 +684,13 @@ function doForRelationshipPropertiesInterface({
     });
     withSortInputType({ relationshipAdapter, userDefinedFieldDirectives, composer });
     withUpdateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
-    withWhereInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, features, composer });
+    withWhereInputType({
+        entityAdapter: relationshipAdapter,
+        userDefinedFieldDirectives,
+        features,
+        composer,
+        experimental,
+    });
     withCreateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
 }
 
@@ -706,7 +722,13 @@ function doForInterfacesThatAreTargetOfARelationship({
         DirectiveNode[]
     >;
     withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
-    withWhereInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, features, composer });
+    withWhereInputType({
+        entityAdapter: interfaceEntityAdapter,
+        userDefinedFieldDirectives,
+        features,
+        composer,
+        experimental,
+    });
     withCreateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
     withUpdateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
 

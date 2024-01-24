@@ -430,14 +430,14 @@ describe("nested aggregation on interface", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -468,7 +468,9 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               cost: Float
               cost_GT: Float
               cost_GTE: Float
@@ -487,6 +489,7 @@ describe("nested aggregation on interface", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -1047,14 +1050,14 @@ describe("nested aggregation on interface", () => {
               Series: SeriesCreateInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -1085,7 +1088,9 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               cost: Float
               cost_GT: Float
               cost_GTE: Float
@@ -1104,6 +1109,7 @@ describe("nested aggregation on interface", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {

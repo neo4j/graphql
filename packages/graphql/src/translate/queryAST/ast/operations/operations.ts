@@ -18,14 +18,23 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
-import { QueryASTNode } from "../QueryASTNode";
 import type { QueryASTContext } from "../QueryASTContext";
+import { QueryASTNode } from "../QueryASTNode";
 
 export type OperationTranspileResult = {
     projectionExpr: Cypher.Expr;
     clauses: Cypher.Clause[];
+    extraProjectionColumns?: Array<[Cypher.Expr, Cypher.Variable]>; // This embeds extra columns in the last return, used as a hack for fulltext score
 };
 
 export abstract class Operation extends QueryASTNode {
+    public nodeAlias: string | undefined;
+
+    abstract transpile(context: QueryASTContext): OperationTranspileResult;
+}
+
+export abstract class MutationOperation extends Operation {
+    public nodeAlias: string | undefined;
+
     abstract transpile(context: QueryASTContext): OperationTranspileResult;
 }

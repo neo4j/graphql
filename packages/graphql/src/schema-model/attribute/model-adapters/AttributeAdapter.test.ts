@@ -42,7 +42,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, false),
                     args: [],
                 })
@@ -54,7 +54,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                     args: [],
                 })
@@ -66,7 +66,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), true),
                     args: [],
                 })
@@ -78,7 +78,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, false), true),
                     args: [],
                 })
@@ -90,7 +90,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
                     args: [],
                 })
@@ -103,7 +103,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.Boolean, true),
                     args: [],
                 })
@@ -116,7 +116,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.Int, true),
                     args: [],
                 })
@@ -129,7 +129,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.Float, true),
                     args: [],
                 })
@@ -141,7 +141,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                     args: [],
                 })
@@ -153,7 +153,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new Neo4jCartesianPointType(true),
                     args: [],
                 })
@@ -166,7 +166,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new Neo4jPointType(true),
                     args: [],
                 })
@@ -179,7 +179,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLNumberType.BigInt, true),
                     args: [],
                 })
@@ -192,7 +192,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.Date, true),
                     args: [],
                 })
@@ -205,7 +205,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.DateTime, true),
                     args: [],
                 })
@@ -218,7 +218,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.LocalDateTime, true),
                     args: [],
                 })
@@ -231,7 +231,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.Time, true),
                     args: [],
                 })
@@ -244,7 +244,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.LocalTime, true),
                     args: [],
                 })
@@ -257,7 +257,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.Duration, true),
                     args: [],
                 })
@@ -270,7 +270,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ObjectType("testType", true),
                     args: [],
                 })
@@ -283,7 +283,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new EnumType("testType", true),
                     args: [],
                 })
@@ -296,7 +296,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new UserScalarType("testType", true),
                     args: [],
                 })
@@ -309,7 +309,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new InterfaceType("Tool", true),
                     args: [],
                 })
@@ -321,7 +321,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new UnionType("Tool", true),
                     args: [],
                 })
@@ -336,7 +336,7 @@ describe("Attribute", () => {
                 const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
-                        annotations: [],
+                        annotations: {},
                         type: new ListType(stringType, true),
                         args: [],
                     })
@@ -351,7 +351,7 @@ describe("Attribute", () => {
                 const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
-                        annotations: [],
+                        annotations: {},
                         type: stringType,
                         args: [],
                     })
@@ -366,7 +366,7 @@ describe("Attribute", () => {
                 const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
-                        annotations: [],
+                        annotations: {},
                         type: new ListType(stringType, true),
                         args: [],
                     })
@@ -381,7 +381,7 @@ describe("Attribute", () => {
                 const attribute = new AttributeAdapter(
                     new Attribute({
                         name: "test",
-                        annotations: [],
+                        annotations: {},
                         type: new ListType(stringType, true),
                         args: [],
                     })
@@ -397,7 +397,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                     args: [],
                 })
@@ -406,7 +406,7 @@ describe("Attribute", () => {
             const nonBuiltInScalar = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLNumberType.BigInt, true),
                     args: [],
                 })
@@ -420,7 +420,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new Neo4jCartesianPointType(true),
                     args: [],
                 })
@@ -428,7 +428,7 @@ describe("Attribute", () => {
             const nonSpatial = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                     args: [],
                 })
@@ -442,7 +442,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(Neo4jGraphQLTemporalType.Date, true),
                     args: [],
                 })
@@ -451,7 +451,7 @@ describe("Attribute", () => {
             const nonTemporal = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                     args: [],
                 })
@@ -465,7 +465,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new UnionType("Tool", true),
                     args: [],
                 })
@@ -474,7 +474,7 @@ describe("Attribute", () => {
             const nonAbstract = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                     args: [],
                 })
@@ -489,7 +489,7 @@ describe("Attribute", () => {
         const attributeRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
-                annotations: [],
+                annotations: {},
                 type: new ScalarType(GraphQLBuiltInScalarType.String, true),
                 args: [],
             })
@@ -498,7 +498,7 @@ describe("Attribute", () => {
         const attributeNotRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
-                annotations: [],
+                annotations: {},
                 type: new ScalarType(GraphQLBuiltInScalarType.String, false),
                 args: [],
             })
@@ -512,7 +512,7 @@ describe("Attribute", () => {
         const attributeRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
-                annotations: [],
+                annotations: {},
                 type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), true),
                 args: [],
             })
@@ -521,7 +521,7 @@ describe("Attribute", () => {
         const attributeNotRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
-                annotations: [],
+                annotations: {},
                 type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), false),
                 args: [],
             })
@@ -535,7 +535,7 @@ describe("Attribute", () => {
         const listElementRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
-                annotations: [],
+                annotations: {},
                 type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), false),
                 args: [],
             })
@@ -544,7 +544,7 @@ describe("Attribute", () => {
         const listElementNotRequired = new AttributeAdapter(
             new Attribute({
                 name: "test",
-                annotations: [],
+                annotations: {},
                 type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, false), true),
                 args: [],
             })
@@ -559,7 +559,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [new UniqueAnnotation({ constraintName: "test" })],
+                    annotations: { unique: new UniqueAnnotation({ constraintName: "test" }) },
                     type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
                     args: [],
                 })
@@ -571,12 +571,12 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [
-                        new CypherAnnotation({
+                    annotations: {
+                        cypher: new CypherAnnotation({
                             statement: "MATCH (this)-[:FRIENDS_WITH]->(closestUser:User) RETURN closestUser",
                             columnName: "closestUser",
                         }),
-                    ],
+                    },
                     type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
                     args: [],
                 })
@@ -590,7 +590,7 @@ describe("Attribute", () => {
             const listElementAttribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ListType(new ScalarType(GraphQLBuiltInScalarType.String, true), false),
                     args: [],
                 })
@@ -608,7 +608,7 @@ describe("Attribute", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.Int, true),
                     args: [],
                 })
@@ -673,7 +673,7 @@ describe("Attribute", () => {
             const intAttribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.Int, true),
                     args: [],
                 })
@@ -692,7 +692,7 @@ describe("Attribute", () => {
             const floatAttribute = new AttributeAdapter(
                 new Attribute({
                     name: "test",
-                    annotations: [],
+                    annotations: {},
                     type: new ScalarType(GraphQLBuiltInScalarType.Float, true),
                     args: [],
                 })

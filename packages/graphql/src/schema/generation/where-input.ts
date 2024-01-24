@@ -60,11 +60,13 @@ export function withWhereInputType({
     userDefinedFieldDirectives,
     features,
     composer,
+    experimental,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
+    experimental: boolean;
 }): InputTypeComposer {
     if (composer.has(entityAdapter.operations.whereInputTypeName)) {
         return composer.getITC(entityAdapter.operations.whereInputTypeName);
@@ -91,12 +93,32 @@ export function withWhereInputType({
             NOT: whereInputType,
         });
     } else if (entityAdapter instanceof InterfaceEntityAdapter) {
-        const implementationsWhereInputType = makeImplementationsWhereInput({
-            interfaceEntityAdapter: entityAdapter,
-            composer,
-        });
-        // TODO: add interfaces that implement this interface here
-        whereInputType.addFields({ _on: implementationsWhereInputType });
+        if (experimental) {
+            whereInputType.addFields({
+                OR: whereInputType.NonNull.List,
+                AND: whereInputType.NonNull.List,
+                NOT: whereInputType,
+            });
+
+            const enumValues = Object.fromEntries(
+                entityAdapter.concreteEntities.map((concreteEntity) => [
+                    concreteEntity.name,
+                    { value: concreteEntity.name },
+                ])
+            );
+            const interfaceImplementation = composer.createEnumTC({
+                name: entityAdapter.operations.implementationEnumTypename,
+                values: enumValues,
+            });
+            whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
+        } else {
+            const implementationsWhereInputType = makeImplementationsWhereInput({
+                interfaceEntityAdapter: entityAdapter,
+                composer,
+            });
+            // TODO: add interfaces that implement this interface here
+            whereInputType.addFields({ _on: implementationsWhereInputType });
+        }
     }
     return whereInputType;
 }
@@ -135,22 +157,25 @@ export function withSourceWhereInputType({
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
     const relationshipTarget = relationshipAdapter.target;
-    if (!(relationshipTarget instanceof ConcreteEntityAdapter)) {
-        throw new Error("Expected concrete target");
+    if (relationshipTarget instanceof InterfaceEntityAdapter) {
+        throw new Error("Unexpected interface target");
     }
     const relationshipSource = relationshipAdapter.source;
-    if (relationshipSource instanceof UnionEntityAdapter) {
-        throw new Error("Unexpected union source");
-    }
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
     const fields = augmentWhereInputTypeWithRelationshipFields(relationshipAdapter, deprecatedDirectives);
     whereInput.addFields(fields);
+
+    // TODO: Current unions are not supported as relationship targets beyond the above fields
+    if (relationshipTarget instanceof UnionEntityAdapter) {
+        return;
+    }
 
     const whereAggregateInput = withAggregateInputType({
         relationshipAdapter,
         entityAdapter: relationshipTarget,
         composer: composer,
     });
+
     if (relationshipAdapter.isFilterableByAggregate()) {
         whereInput.addFields({
             [relationshipAdapter.operations.aggregateTypeName]: {

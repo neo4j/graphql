@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class FilterableAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class FilterableAnnotation implements Annotation {
+    readonly name = "filterable";
     public readonly byValue: boolean;
     public readonly byAggregate: boolean;
 

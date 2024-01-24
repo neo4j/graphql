@@ -9,6 +9,7 @@ on:
     branches:
       - dev
       - master
+      - "*.*.*"
     paths-ignore:
       - "docs/**"
 
@@ -18,13 +19,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
+      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
           node-version: 18.13.0
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@10ca150f51dbbb963467c37a03c873ba1fa75f91 # v1.20.0
+      - uses: reviewdog/action-eslint@5deb8e2c1d8a9bbefff4d80d6702c41c5b3729cb # v1.22.0
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -61,7 +62,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4
+      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5
         with:
           go-version: "^1.17.0"
       - name: Install addlicense
@@ -88,11 +89,11 @@ jobs:
     uses: ./.github/workflows/reusable-federation-tests.yml
 
   quality-gate:
+    if: ${{ always() }}
     needs:
       - reviewdog-eslint
       - code-scanning
       - package-tests
-      - license-header-check
       - unit-tests
       - e2e-tests-plugins
       - api-library-tests
@@ -102,4 +103,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Passed!"
+      - name: Check Job Status
+        run: |
+          if [ ${{ needs.reviewdog-eslint.result }} != 'success' ] || 
+            [ ${{ needs.code-scanning.result }} != 'success' ] ||
+            [ ${{ needs.package-tests.result }} != 'success' ] ||
+            [ ${{ needs.unit-tests.result }} != 'success' ] ||
+            [ ${{ needs.e2e-tests-plugins.result }} != 'success' ] ||
+            [ ${{ needs.api-library-tests.result }} != 'success' ] ||
+            [ ${{ needs.toolbox-tests.result }} != 'success' ] ||
+            [ ${{ needs.integration-tests-on-prem.result }} != 'success' ]; then
+            echo "One or more jobs failed"
+            exit 1
+          else
+            echo "Passed!"
+          fi

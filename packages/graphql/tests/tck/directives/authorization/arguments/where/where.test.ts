@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import type { DocumentNode } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "../../../../utils/tck-test-utils";
 
 describe("Cypher Auth Where", () => {
     const secret = "secret";
@@ -221,12 +221,17 @@ describe("Cypher Auth Where", () => {
                 WITH *, count(this2) AS creatorCount
                 WITH *
                 WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { content: this1.content } }) AS var3
+                }
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -274,12 +279,17 @@ describe("Cypher Auth Where", () => {
                 WITH *, count(this2) AS creatorCount
                 WITH *
                 WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
-                WITH { node: { content: this1.content } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var3
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { content: this1.content } }) AS var3
+                }
+                RETURN { edges: var3, totalCount: totalCount } AS var4
             }
-            RETURN this { .id, postsConnection: var3 } AS this"
+            RETURN this { .id, postsConnection: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -539,6 +549,8 @@ describe("Cypher Auth Where", () => {
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             SET this.name = $this_update_name
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -578,12 +590,13 @@ describe("Cypher Auth Where", () => {
             WITH *
             WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             SET this.name = $this_update_name
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"bob\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -591,6 +604,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
+                \\"param0\\": \\"bob\\",
                 \\"this_update_name\\": \\"Bob\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -639,11 +653,13 @@ describe("Cypher Auth Where", () => {
             	RETURN count(*) AS update_this_posts0
             }
             WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_POST]->(update_this1:Post)
                 OPTIONAL MATCH (update_this1)<-[:HAS_POST]-(update_this2:User)
                 WITH *, count(update_this2) AS creatorCount
+                WITH *
                 WITH *
                 WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND update_this2.id = $jwt.sub)))
                 WITH update_this1 { .id } AS update_this1
@@ -683,7 +699,6 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             DETACH DELETE this"
         `);
@@ -717,7 +732,6 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             DETACH DELETE this"
         `);
@@ -752,22 +766,22 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                WITH *, count(this2) AS creatorCount
+                WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
+                WITH this0, collect(DISTINCT this1) AS var3
+                CALL {
+                    WITH var3
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(authorization__before_this0:User)
-            WITH *, count(authorization__before_this0) AS creatorCount
-            WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)))
-            WITH this_posts0_relationship, collect(DISTINCT this_posts0) AS this_posts0_to_delete
-            CALL {
-            	WITH this_posts0_to_delete
-            	UNWIND this_posts0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
@@ -814,10 +828,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
-            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_0_0_0_before_this0:User)
-            WITH *, count(authorization_0_0_0_0_before_this0) AS creatorCount
+            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_before_this0:User)
+            WITH *, count(authorization_0_before_this0) AS creatorCount
             WITH *
-            	WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_0_0_0_before_this0.id = $jwt.sub)))
+            	WHERE ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_before_this0.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -892,10 +906,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
-            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_0_0_0_before_this0:User)
-            WITH *, count(authorization_0_0_0_0_before_this0) AS creatorCount
+            OPTIONAL MATCH (this0_posts_connect0_node)<-[:HAS_POST]-(authorization_0_before_this0:User)
+            WITH *, count(authorization_0_before_this0) AS creatorCount
             WITH *
-            	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_0_0_0_before_this0.id = $jwt.sub)))
+            	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND ($isAuthenticated = true AND (creatorCount <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_before_this0.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
@@ -977,6 +991,8 @@ describe("Cypher Auth Where", () => {
             WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1035,6 +1051,8 @@ describe("Cypher Auth Where", () => {
             WITH this, this_posts0_connect0_node
             	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1095,6 +1113,8 @@ describe("Cypher Auth Where", () => {
             	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1154,6 +1174,8 @@ describe("Cypher Auth Where", () => {
             	RETURN count(*) AS connect_this_connect_posts_Post0
             }
             WITH *
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1207,6 +1229,8 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1259,6 +1283,8 @@ describe("Cypher Auth Where", () => {
             }
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1332,6 +1358,8 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1396,6 +1424,8 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
+            WITH *
+            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

@@ -20,7 +20,6 @@
 import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import { aliasDirective } from "../../graphql/directives";
-import { CustomResolverAnnotation } from "../annotation/CustomResolverAnnotation";
 import { Argument } from "../argument/Argument";
 import { Attribute } from "../attribute/Attribute";
 import type { AttributeType, Neo4jGraphQLScalarType } from "../attribute/AttributeType";
@@ -73,11 +72,7 @@ export function parseAttribute(
 
     const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
 
-    for (const annotation of annotations) {
-        if (annotation instanceof CustomResolverAnnotation) {
-            annotation.parseRequire(definitionCollection.document, definitionFields);
-        }
-    }
+    annotations.customResolver?.parseRequire(definitionCollection.document, definitionFields);
 
     const databaseName = getDatabaseName(field, inheritedField);
     return new Attribute({
@@ -171,6 +166,7 @@ function isUserScalar(definitionCollection: DefinitionCollection, name: string) 
 function isObject(definitionCollection, name: string) {
     return definitionCollection.nodes.has(name);
 }
+
 function isInput(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.inputTypes.has(name);
 }

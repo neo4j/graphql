@@ -78,11 +78,11 @@ describe("OGM", () => {
         await session.close();
     });
 
-    test("should filter the document and remove directives such as auth", async () => {
+    test("should filter the document and remove directives such as authentication", async () => {
         const session = driver.session();
 
         const typeDefs = `
-            type ${typeMovie} @auth(rules: [{ isAuthenticated: true }]){
+            type ${typeMovie} @authentication {
                 id: ID
             }
         `;

@@ -44,7 +44,7 @@ export function compilePredicateReturn(
     let subqueries: string | undefined;
 
     if (predicate) {
-        const predicateCypher = new Cypher.RawCypher((env) => {
+        const predicateCypher = new Cypher.Raw((env) => {
             const predicateStr = compileCypher(predicate, env);
             if (preComputedSubqueries && !preComputedSubqueries.empty) {
                 // Assign the Cypher string to a variable outside of the scope of the compilation

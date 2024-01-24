@@ -42,7 +42,11 @@ export function deleteResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const { cypher, params } = translateDelete({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = translateDelete({
+            context: context as Neo4jGraphQLTranslationContext,
+            node,
+            entityAdapter: concreteEntityAdapter,
+        });
         const executeResult = await execute({
             cypher,
             params,

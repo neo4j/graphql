@@ -29,6 +29,7 @@ import type { AggregationField } from "../fields/aggregation-fields/AggregationF
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
+import type { EntitySelection } from "../selection/EntitySelection";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
@@ -36,6 +37,7 @@ import { Operation } from "./operations";
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
     public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
+    private selection: EntitySelection;
     protected directed: boolean;
 
     public fields: AggregationField[] = []; // Aggregation fields
@@ -55,13 +57,16 @@ export class AggregationOperation extends Operation {
     constructor({
         entity,
         directed = true,
+        selection,
     }: {
         entity: ConcreteEntityAdapter | RelationshipAdapter;
         directed?: boolean;
+        selection: EntitySelection;
     }) {
         super();
         this.entity = entity;
         this.directed = directed;
+        this.selection = selection;
     }
 
     public setFields(fields: AggregationField[]) {
@@ -92,6 +97,7 @@ export class AggregationOperation extends Operation {
             ...this.filters,
             ...this.sortFields,
             ...this.authFilters,
+            this.selection,
             this.pagination,
         ]);
     }
@@ -200,14 +206,14 @@ export class AggregationOperation extends Operation {
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, operationContext.target, returnVariable, operationContext);
+            return this.createSubquery(f, pattern, returnVariable, context);
         });
 
         const nodeMap = new Cypher.Map();
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, operationContext.target, returnVariable, operationContext);
+            return this.createSubquery(f, pattern, returnVariable, context);
         });
 
         if (nodeMap.size > 0) {
@@ -216,12 +222,11 @@ export class AggregationOperation extends Operation {
 
         let edgeFieldSubqueries: Cypher.Clause[] = [];
         if (operationContext.relationship) {
-            const relVar = operationContext.relationship;
             const edgeMap = new Cypher.Map();
             edgeFieldSubqueries = this.edgeFields.map((f) => {
                 const returnVariable = new Cypher.Variable();
                 edgeMap.set(f.getProjectionField(returnVariable));
-                return this.createSubquery(f, pattern, relVar, returnVariable, operationContext);
+                return this.createSubquery(f, pattern, returnVariable, context, "edge");
             });
             if (edgeMap.size > 0) {
                 this.aggregationProjectionMap.set("edge", edgeMap);
@@ -234,18 +239,21 @@ export class AggregationOperation extends Operation {
     private createSubquery(
         field: AggregationField,
         pattern: Cypher.Pattern,
-        target: Cypher.Variable,
         returnVariable: Cypher.Variable,
-        context: QueryASTContext
+        context: QueryASTContext,
+        target: "edge" | "node" = "node"
     ): Cypher.Clause {
-        const matchClause = new Cypher.Match(pattern);
+        const { selection: matchClause, nestedContext } = this.selection.apply(context);
         let extraSelectionWith: Cypher.With | undefined = undefined;
 
-        const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
-        const filterPredicates = this.getPredicates(context);
+        const nestedSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.getChildren(), [nestedContext.target]);
+        const targetVar = target === "edge" ? nestedContext.relationship : nestedContext.target;
+        if (!targetVar) throw new Error("Edge not define in aggregations");
+
+        const filterPredicates = this.getPredicates(nestedContext);
 
         const selectionClauses = this.getChildren().flatMap((c) => {
-            return c.getSelection(context);
+            return c.getSelection(nestedContext);
         });
         if (selectionClauses.length > 0 || nestedSubqueries.length > 0) {
             extraSelectionWith = new Cypher.With("*");
@@ -258,12 +266,13 @@ export class AggregationOperation extends Operation {
                 matchClause.where(filterPredicates);
             }
         }
-        const ret = this.getFieldProjectionClause(target, returnVariable, field);
+
+        const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);
 
         let sortClause: Cypher.With | undefined;
         if (this.sortFields.length > 0 || this.pagination) {
             sortClause = new Cypher.With("*");
-            this.addSortToClause(context, target, sortClause);
+            this.addSortToClause(nestedContext, targetVar, sortClause);
         }
 
         return Cypher.concat(

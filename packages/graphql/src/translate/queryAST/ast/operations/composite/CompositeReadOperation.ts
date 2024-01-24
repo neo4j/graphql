@@ -18,16 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { Pagination } from "../../pagination/Pagination";
+import type { Sort, SortField } from "../../sort/Sort";
 import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 import type { CompositeReadPartial } from "./CompositeReadPartial";
-import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { Pagination } from "../../pagination/Pagination";
-import type { Sort, SortField } from "../../sort/Sort";
-import type { QueryASTContext } from "../../QueryASTContext";
 import { uniqSubQueries } from "./optimization";
 
 export class CompositeReadOperation extends Operation {
@@ -98,10 +98,6 @@ export class CompositeReadOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (!this.relationship) {
-            return this.transpileTopLevelCompositeRead(context);
-        }
-
         const parentNode = context.target;
 
         const isSelectingAllChildren = this.entity.concreteEntities.length === this.children.length;
@@ -124,6 +120,9 @@ export class CompositeReadOperation extends Operation {
         ).flat();
 
         let aggrExpr: Cypher.Expr = Cypher.collect(context.returnVariable);
+        if (!this.relationship) {
+            aggrExpr = context.returnVariable;
+        }
         if (this.relationship && !this.relationship.isList) {
             aggrExpr = Cypher.head(aggrExpr);
         }

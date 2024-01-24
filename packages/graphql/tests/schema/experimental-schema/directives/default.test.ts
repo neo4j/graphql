@@ -215,8 +215,8 @@ describe("@default directive", () => {
               toBeOverridden: StringAggregateSelectionNonNullable!
             }
 
-            input UserInterfaceImplementationsWhere {
-              User: UserWhere
+            enum UserInterfaceImplementation {
+              User
             }
 
             input UserInterfaceOptions {
@@ -237,7 +237,9 @@ describe("@default directive", () => {
             }
 
             input UserInterfaceWhere {
-              _on: UserInterfaceImplementationsWhere
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
               fromInterface: String
               fromInterface_CONTAINS: String
               fromInterface_ENDS_WITH: String
@@ -258,6 +260,7 @@ describe("@default directive", () => {
               toBeOverridden_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               toBeOverridden_STARTS_WITH: String
+              typename_IN: [UserInterfaceImplementation!]
             }
 
             input UserOptions {

@@ -146,8 +146,8 @@ describe("@private directive", () => {
               id: IDAggregateSelectionNullable!
             }
 
-            input UserInterfaceImplementationsWhere {
-              User: UserWhere
+            enum UserInterfaceImplementation {
+              User
             }
 
             input UserInterfaceOptions {
@@ -167,7 +167,9 @@ describe("@private directive", () => {
             }
 
             input UserInterfaceWhere {
-              _on: UserInterfaceImplementationsWhere
+              AND: [UserInterfaceWhere!]
+              NOT: UserInterfaceWhere
+              OR: [UserInterfaceWhere!]
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -178,6 +180,7 @@ describe("@private directive", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              typename_IN: [UserInterfaceImplementation!]
             }
 
             input UserOptions {

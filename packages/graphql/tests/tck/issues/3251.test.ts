@@ -86,12 +86,6 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 	RETURN count(*) AS connect_this_connect_genre_Genre0
                 }
                 WITH *
-                CALL {
-                    WITH this
-                    MATCH (this)-[update_this0:HAS_GENRE]->(update_this1:Genre)
-                    WITH update_this1 { .name } AS update_this1
-                    RETURN head(collect(update_this1)) AS update_var2
-                }
                 WITH *
                 CALL {
                 	WITH this
@@ -99,6 +93,12 @@ describe("https://github.com/neo4j/graphql/issues/3251", () => {
                 	WITH count(this_genre_Genre_unique) as c
                 	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.genre required exactly once', [0])
                 	RETURN c AS this_genre_Genre_unique_ignored
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[update_this0:HAS_GENRE]->(update_this1:Genre)
+                    WITH update_this1 { .name } AS update_this1
+                    RETURN head(collect(update_this1)) AS update_var2
                 }
                 RETURN collect(DISTINCT this { .name, genre: update_var2 }) AS data"
             `);

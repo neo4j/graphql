@@ -19,7 +19,7 @@
 
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Cypher sort tests", () => {
     let typeDefs: string;
@@ -27,18 +27,29 @@ describe("Cypher sort tests", () => {
 
     beforeAll(() => {
         typeDefs = `
-            type Movie {
-                id: ID
-                title: String
+            interface Production {
+                id: ID!
+                title: String!
+            }
+            type Movie implements Production {
+                id: ID!
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
-                totalGenres: Int!
+                numberOfActors: Int!
                     @cypher(
-                        statement: """
-                        MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                        RETURN count(DISTINCT genre) as result
-                        """
-                        columnName: "result"
+                        statement: "MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count"
+                        columnName: "count"
                     )
+                totalGenres: Int!
+                @cypher(
+                    statement: """
+                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                    RETURN count(DISTINCT genre) as result
+                    """
+                    columnName: "result"
+                )
             }
 
             type Genre {
@@ -52,6 +63,29 @@ describe("Cypher sort tests", () => {
                         """
                         columnName: "result"
                     )
+            }
+
+            type Series implements Production {
+                id: ID!
+                title: String!
+                episodes: Int!
+            }
+            type Actor {
+                id: ID!
+                name: String!
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                totalScreenTime: Int!
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[r:ACTED_IN]->(:Movie)
+                        RETURN sum(r.screenTime) as sum
+                        """
+                        columnName: "sum"
+                    )
+            }
+            interface ActedIn @relationshipProperties {
+                screenTime: Int!
             }
         `;
 
@@ -342,12 +376,195 @@ describe("Cypher sort tests", () => {
                     RETURN head(collect(this2)) AS this2
                 }
                 WITH this1 { .name, totalMovies: this2 } AS this1
-                ORDER BY this1.totalMovies ASC
+                ORDER BY this2 ASC
                 RETURN collect(this1) AS var3
             }
             RETURN this { genres: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("Connection top level", async () => {
+        const query = gql`
+            query {
+                moviesConnection(first: 2, sort: { title: DESC, numberOfActors: ASC }) {
+                    totalCount
+                    edges {
+                        node {
+                            title
+                            actorsConnection {
+                                edges {
+                                    node {
+                                        name
+                                        totalScreenTime
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:Movie)
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                CALL {
+                    WITH this0
+                    CALL {
+                        WITH this0
+                        WITH this0 AS this
+                        MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+                    }
+                    UNWIND count AS this1
+                    RETURN head(collect(this1)) AS this1
+                }
+                WITH *
+                ORDER BY this0.title DESC, this1 ASC
+                LIMIT $param0
+                CALL {
+                    WITH this0
+                    MATCH (this0)<-[this2:ACTED_IN]-(this3:Actor)
+                    WITH collect({ node: this3, relationship: this2 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this3, edge.relationship AS this2
+                        CALL {
+                            WITH this3
+                            CALL {
+                                WITH this3
+                                WITH this3 AS this
+                                MATCH (this)-[r:ACTED_IN]->(:Movie)
+                                RETURN sum(r.screenTime) as sum
+                            }
+                            UNWIND sum AS this4
+                            RETURN head(collect(this4)) AS this4
+                        }
+                        RETURN collect({ node: { name: this3.name, totalScreenTime: this4 } }) AS var5
+                    }
+                    RETURN { edges: var5, totalCount: totalCount } AS var6
+                }
+                RETURN collect({ node: { title: this0.title, actorsConnection: var6 } }) AS var7
+            }
+            RETURN { edges: var7, totalCount: totalCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 2,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("Connection nested", async () => {
+        const query = gql`
+            query {
+                actors {
+                    moviesConnection(first: 2, sort: { node: { title: DESC, numberOfActors: ASC } }) {
+                        totalCount
+                        edges {
+                            node {
+                                title
+                                actorsConnection {
+                                    edges {
+                                        node {
+                                            name
+                                            totalScreenTime
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        pageInfo {
+                            hasNextPage
+                            endCursor
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            CALL {
+                WITH this
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH collect({ node: this1, relationship: this0 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    CALL {
+                        WITH this1
+                        CALL {
+                            WITH this1
+                            WITH this1 AS this
+                            MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+                        }
+                        UNWIND count AS this2
+                        RETURN head(collect(this2)) AS this2
+                    }
+                    WITH *
+                    ORDER BY this1.title DESC, this2 ASC
+                    LIMIT $param0
+                    CALL {
+                        WITH this1
+                        MATCH (this1)<-[this3:ACTED_IN]-(this4:Actor)
+                        WITH collect({ node: this4, relationship: this3 }) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        CALL {
+                            WITH edges
+                            UNWIND edges AS edge
+                            WITH edge.node AS this4, edge.relationship AS this3
+                            CALL {
+                                WITH this4
+                                CALL {
+                                    WITH this4
+                                    WITH this4 AS this
+                                    MATCH (this)-[r:ACTED_IN]->(:Movie)
+                                    RETURN sum(r.screenTime) as sum
+                                }
+                                UNWIND sum AS this5
+                                RETURN head(collect(this5)) AS this5
+                            }
+                            RETURN collect({ node: { name: this4.name, totalScreenTime: this5 } }) AS var6
+                        }
+                        RETURN { edges: var6, totalCount: totalCount } AS var7
+                    }
+                    RETURN collect({ node: { title: this1.title, actorsConnection: var7 } }) AS var8
+                }
+                RETURN { edges: var8, totalCount: totalCount } AS var9
+            }
+            RETURN this { moviesConnection: var9 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 2,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
 });

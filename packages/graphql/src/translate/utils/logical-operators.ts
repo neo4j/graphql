@@ -19,8 +19,10 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { LOGICAL_OPERATORS } from "../../constants";
+import type { ValueOf } from "../../utils/value-of";
+import { isInArray } from "../../utils/is-in-array";
 
-type LogicalOperator = (typeof LOGICAL_OPERATORS)[number];
+type LogicalOperator = ValueOf<typeof LOGICAL_OPERATORS>;
 
 export function getLogicalPredicate(
     graphQLOperator: LogicalOperator,
@@ -38,6 +40,6 @@ export function getLogicalPredicate(
     }
 }
 
-export function isLogicalOperator(key: string): key is LogicalOperator {
-    return (LOGICAL_OPERATORS as ReadonlyArray<unknown>).includes(key);
+export function isLogicalOperator(key: unknown): key is LogicalOperator {
+    return isInArray(LOGICAL_OPERATORS, key);
 }

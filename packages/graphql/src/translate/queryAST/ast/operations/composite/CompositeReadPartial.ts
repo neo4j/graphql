@@ -20,8 +20,8 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { hasTarget } from "../../../utils/context-has-target";
-import { createNodeFromEntity, createRelationshipFromEntity } from "../../../utils/create-node-from-entity";
-import { QueryASTContext } from "../../QueryASTContext";
+import type { QueryASTContext } from "../../QueryASTContext";
+import type { SelectionClause } from "../../selection/EntitySelection";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileResult } from "../operations";
 import { UNION_UNIFICATION_ENABLED } from "../optimizationSettings";
@@ -51,26 +51,19 @@ export class CompositeReadPartial extends ReadOperation {
         exclusionPredicates?: (matchNode: Cypher.Node) => Cypher.Predicate[]
     ): OperationTranspileResult {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        const parentNode = context.target;
-        const relVar = createRelationshipFromEntity(entity);
-        const targetNode =
-            matchByInterfaceOrUnion && context.neo4jGraphQLContext.labelManager
-                ? new Cypher.Node({
-                      labels: context.neo4jGraphQLContext.labelManager.getLabelSelectorExpressionObject(
-                          matchByInterfaceOrUnion
-                      ),
-                  })
-                : createNodeFromEntity(this.target, context.neo4jGraphQLContext);
-        const relDirection = entity.getCypherDirection(this.directed);
 
-        const pattern = new Cypher.Pattern(parentNode)
-            .withoutLabels()
-            .related(relVar)
-            .withDirection(relDirection)
-            .to(targetNode);
+        // eslint-disable-next-line prefer-const
+        let { selection: matchClause, nestedContext } = this.selection.apply(context);
 
-        const nestedContext = context.push({ target: targetNode, relationship: relVar });
-        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, pattern);
+        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
+            return f.getSelection(nestedContext);
+        });
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
+
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
@@ -89,12 +82,12 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).innerWith(targetNode));
+            .map((sq) => new Cypher.Call(sq).innerWith(nestedContext.target));
 
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
         const clause = Cypher.concat(
-            ...preSelection,
+            ...extraMatches,
             matchClause,
             ...authFilterSubqueries,
             subqueries,
@@ -110,13 +103,18 @@ export class CompositeReadPartial extends ReadOperation {
 
     // dupe from transpileNestedCompositeRelationship
     private transpileTopLevelCompositeEntity(context: QueryASTContext): OperationTranspileResult {
-        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
-        const nestedContext = new QueryASTContext({
-            target: targetNode,
-            env: context.env,
-            neo4jGraphQLContext: context.neo4jGraphQLContext,
+        // eslint-disable-next-line prefer-const
+        let { selection: matchClause, nestedContext } = this.selection.apply(context);
+
+        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
+            return f.getSelection(nestedContext);
         });
-        const { preSelection, selectionClause: matchClause } = this.getSelectionClauses(nestedContext, targetNode);
+
+        if (extraMatches.length > 0) {
+            extraMatches = [matchClause, ...extraMatches];
+            matchClause = new Cypher.With("*");
+        }
+
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
@@ -128,7 +126,7 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext));
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
-        const clause = Cypher.concat(...preSelection, matchClause, ...authFilterSubqueries, subqueries, ret);
+        const clause = Cypher.concat(...extraMatches, matchClause, ...authFilterSubqueries, subqueries, ret);
 
         return {
             clauses: [clause],

@@ -107,23 +107,25 @@ export class ConnectionFilter extends Filter {
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
-        if (this.subqueryPredicate) return this.subqueryPredicate;
-        else {
-            const target = this.getTargetNode(queryASTContext);
-            const relationship = new Cypher.Relationship({
-                type: this.relationship.type,
-            });
+        if (this.subqueryPredicate) {
+            return this.subqueryPredicate;
+        }
 
-            const pattern = new Cypher.Pattern(queryASTContext.target)
-                .withoutLabels()
-                .related(relationship)
-                .withDirection(this.relationship.getCypherDirection())
-                .to(target);
+        const target = this.getTargetNode(queryASTContext);
+        const relationship = new Cypher.Relationship({
+            type: this.relationship.type,
+        });
 
-            const nestedContext = queryASTContext.push({ target, relationship });
+        const pattern = new Cypher.Pattern(queryASTContext.target)
+            .withoutLabels()
+            .related(relationship)
+            .withDirection(this.relationship.getCypherDirection())
+            .to(target);
 
-            const predicate = this.createRelationshipOperation(pattern, nestedContext);
-            if (!predicate) return undefined;
+        const nestedContext = queryASTContext.push({ target, relationship });
+
+        const predicate = this.createRelationshipOperation(pattern, nestedContext);
+        if (predicate) {
             return this.wrapInNotIfNeeded(predicate);
         }
     }
@@ -206,14 +208,15 @@ export class ConnectionFilter extends Filter {
             const nestedSubqueries = f
                 .getSubqueries(queryASTContext)
                 .map((sq) => new Cypher.Call(sq).innerWith(queryASTContext.target));
-
+            const selection = f.getSelection(queryASTContext);
             const predicate = f.getPredicate(queryASTContext);
+            const clauses = [...selection, ...nestedSubqueries];
             if (predicate) {
                 innerFiltersPredicates.push(predicate);
-                return nestedSubqueries;
+                return clauses;
             }
 
-            return nestedSubqueries;
+            return clauses;
         });
 
         if (subqueries.length === 0) return []; // Hack logic to change predicates logic

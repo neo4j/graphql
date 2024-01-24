@@ -26,7 +26,7 @@ jobs:
         ports:
           - 7687:7687
       rabbitmq:
-        image: rabbitmq@sha256:ff6380f9596a3875bcaa03836c2c39b0ade0e34d2148bca8b5bf407d23f908d5
+        image: rabbitmq@sha256:05af110901f0dd9c93d858f2e2910169dca1f179710081a99ec5e22291ff71a2
         env:
           RABBITMQ_DEFAULT_USER: guest
           RABBITMQ_DEFAULT_PASS: guest
@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
+      - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
           node-version: lts/*
           cache: yarn

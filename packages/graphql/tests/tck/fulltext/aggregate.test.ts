@@ -50,9 +50,12 @@ describe("Cypher -> fulltext -> Aggregate", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE $param1 IN labels(this)
-            RETURN { count: count(this) }"
+            "CALL {
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                WHERE $param1 IN labels(this0)
+                RETURN count(this0) AS var2
+            }
+            RETURN { count: var2 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

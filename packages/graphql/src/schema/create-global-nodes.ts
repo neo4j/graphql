@@ -38,7 +38,7 @@ export function addGlobalNodeFields(
     if (globalNodes.length === 0) return false;
 
     const fetchById = (id: string, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) => {
-        const resolver = globalNodeResolver({ nodes: globalNodes, entities: globalEntities });
+        const resolver = globalNodeResolver({ entities: globalEntities });
         return resolver.resolve(null, { id }, context, info);
     };
 

@@ -18,11 +18,11 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { validateSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 import { TestSubscriptionsEngine } from "../../../utils/TestSubscriptionsEngine";
-import { validateSchema } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
     test("Type definitions implementing multiple interfaces", async () => {
@@ -59,7 +59,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `;
 
         const subscriptionsEngine = new TestSubscriptionsEngine();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { subscriptions: subscriptionsEngine },
+            experimental: true,
+        });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -118,6 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Genre {
               name: String!
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
@@ -174,6 +179,16 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreEventPayload {
               name: String!
+            }
+
+            type GenreIProductProductAggregationSelection {
+              count: Int!
+              node: GenreIProductProductNodeAggregateSelection
+            }
+
+            type GenreIProductProductNodeAggregateSelection {
+              id: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input GenreOnCreateInput {
@@ -380,10 +395,59 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               id: String!
             }
 
+            type INodeAggregateSelection {
+              count: Int!
+              id: StringAggregateSelectionNonNullable!
+            }
+
+            enum INodeImplementation {
+              Movie
+              Series
+            }
+
+            input INodeOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more INodeSort objects to sort INodes by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [INodeSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort INodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one INodeSort object.
+            \\"\\"\\"
+            input INodeSort {
+              id: SortDirection
+            }
+
+            input INodeWhere {
+              AND: [INodeWhere!]
+              NOT: INodeWhere
+              OR: [INodeWhere!]
+              id: String
+              id_CONTAINS: String
+              id_ENDS_WITH: String
+              id_IN: [String!]
+              id_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: String
+              typename_IN: [INodeImplementation!]
+            }
+
             interface IProduct {
               genre: Genre!
               id: String!
               name: String!
+            }
+
+            type IProductAggregateSelection {
+              count: Int!
+              id: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input IProductConnectInput {
@@ -412,6 +476,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
+            enum IProductImplementation {
+              Movie
+              Series
+            }
+
             input IProductImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -427,19 +496,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: [SeriesDisconnectInput!]
             }
 
-            input IProductImplementationsSubscriptionWhere {
-              Movie: MovieSubscriptionWhere
-              Series: SeriesSubscriptionWhere
-            }
-
             input IProductImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input IProductImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input IProductOptions {
@@ -463,7 +522,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              _on: IProductImplementationsSubscriptionWhere
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -493,7 +551,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductWhere {
-              _on: IProductImplementationsWhere
+              AND: [IProductWhere!]
+              NOT: IProductWhere
+              OR: [IProductWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -514,6 +574,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             type Movie implements INode & IProduct {
@@ -880,6 +941,10 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
+              iNodes(options: INodeOptions, where: INodeWhere): [INode!]!
+              iNodesAggregate(where: INodeWhere): INodeAggregateSelection!
+              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
+              iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -1317,7 +1382,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `;
 
         const subscriptionsEngine = new TestSubscriptionsEngine();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { subscriptions: subscriptionsEngine },
+            experimental: true,
+        });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -1376,6 +1445,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Genre {
               name: String!
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
@@ -1432,6 +1502,16 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreEventPayload {
               name: String!
+            }
+
+            type GenreIProductProductAggregationSelection {
+              count: Int!
+              node: GenreIProductProductNodeAggregateSelection
+            }
+
+            type GenreIProductProductNodeAggregateSelection {
+              id: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input GenreOnCreateInput {
@@ -1640,6 +1720,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
+            type IProductAggregateSelection {
+              count: Int!
+              id: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+            }
+
             input IProductConnectInput {
               _on: IProductImplementationsConnectInput
             }
@@ -1741,6 +1827,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               where: IProductGenreConnectionWhere
             }
 
+            enum IProductImplementation {
+              Movie
+              Series
+            }
+
             input IProductImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -1756,19 +1847,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: [SeriesDisconnectInput!]
             }
 
-            input IProductImplementationsSubscriptionWhere {
-              Movie: MovieSubscriptionWhere
-              Series: SeriesSubscriptionWhere
-            }
-
             input IProductImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input IProductImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input IProductOptions {
@@ -1792,7 +1873,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              _on: IProductImplementationsSubscriptionWhere
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -1822,7 +1902,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductWhere {
-              _on: IProductImplementationsWhere
+              AND: [IProductWhere!]
+              NOT: IProductWhere
+              OR: [IProductWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -1843,6 +1925,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             type Movie implements IProduct {
@@ -2134,6 +2217,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
+              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
+              iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
@@ -2496,7 +2581,11 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
         `;
 
         const subscriptionsEngine = new TestSubscriptionsEngine();
-        const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: subscriptionsEngine } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { subscriptions: subscriptionsEngine },
+            experimental: true,
+        });
 
         const schema = await neoSchema.getSchema();
         const errors = validateSchema(schema);
@@ -2555,6 +2644,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             type Genre {
               name: String!
               product(directed: Boolean = true, options: IProductOptions, where: IProductWhere): [IProduct!]!
+              productAggregate(directed: Boolean = true, where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
@@ -2603,6 +2693,16 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             type GenreEventPayload {
               name: String!
+            }
+
+            type GenreIProductProductAggregationSelection {
+              count: Int!
+              node: GenreIProductProductNodeAggregateSelection
+            }
+
+            type GenreIProductProductNodeAggregateSelection {
+              id: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
             }
 
             input GenreOptions {
@@ -2800,6 +2900,12 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
+            type IProductAggregateSelection {
+              count: Int!
+              id: StringAggregateSelectionNonNullable!
+              name: StringAggregateSelectionNonNullable!
+            }
+
             input IProductConnectWhere {
               node: IProductWhere!
             }
@@ -2814,19 +2920,14 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: String!
             }
 
-            input IProductImplementationsSubscriptionWhere {
-              Movie: MovieSubscriptionWhere
-              Series: SeriesSubscriptionWhere
+            enum IProductImplementation {
+              Movie
+              Series
             }
 
             input IProductImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input IProductImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input IProductOptions {
@@ -2850,7 +2951,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               AND: [IProductSubscriptionWhere!]
               NOT: IProductSubscriptionWhere
               OR: [IProductSubscriptionWhere!]
-              _on: IProductImplementationsSubscriptionWhere
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -2880,7 +2980,9 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductWhere {
-              _on: IProductImplementationsWhere
+              AND: [IProductWhere!]
+              NOT: IProductWhere
+              OR: [IProductWhere!]
               id: String
               id_CONTAINS: String
               id_ENDS_WITH: String
@@ -2901,6 +3003,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              typename_IN: [IProductImplementation!]
             }
 
             type Movie implements IProduct {
@@ -3053,6 +3156,8 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
               genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort], where: GenreWhere): GenresConnection!
+              iProducts(options: IProductOptions, where: IProductWhere): [IProduct!]!
+              iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!

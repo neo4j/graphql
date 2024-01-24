@@ -115,12 +115,17 @@ describe("Label in Node directive", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WITH { node: { name: this1.name } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var2
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ node: { name: this1.name } }) AS var2
+                }
+                RETURN { edges: var2, totalCount: totalCount } AS var3
             }
-            RETURN this { .title, actorsConnection: var2 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -472,38 +477,24 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WHERE this1.name = $param1
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Person)
-            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
-            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
-            CALL {
-            	WITH this_actors0_to_delete
-            	UNWIND this_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"123\\",
-                \\"this_deleteMovies\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteMovies_args_delete_actors0_where_this_actors0param0\\": \\"Actor to delete\\"
+                \\"param1\\": \\"Actor to delete\\"
             }"
         `);
     });

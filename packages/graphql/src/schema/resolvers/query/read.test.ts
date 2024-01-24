@@ -17,20 +17,16 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { findResolver } from "./read";
 
 describe("Read resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-        }).instance();
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
-            annotations: [],
+            annotations: {},
             attributes: [],
             compositeEntities: [],
             description: undefined,
@@ -38,7 +34,7 @@ describe("Read resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = findResolver({ node, entityAdapter: concreteEntityAdapter });
+        const result = findResolver({ entityAdapter: concreteEntityAdapter });
         expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

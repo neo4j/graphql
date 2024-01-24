@@ -16,9 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { JWTPayloadAnnotation } from "../../annotation/JWTPayloadAnnotation";
 
-export function parseJWTPayloadAnnotation(_directive: DirectiveNode): JWTPayloadAnnotation {
-    return new JWTPayloadAnnotation();
+import type Cypher from "@neo4j/cypher-builder";
+import type { QueryASTContext } from "../QueryASTContext";
+import { QueryASTNode } from "../QueryASTNode";
+
+export type SelectionClause = Cypher.Match | Cypher.With | Cypher.Yield;
+
+export abstract class EntitySelection extends QueryASTNode {
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
+
+    /** Apply selection over the given context, returns the updated context and the selection clause
+     * TODO: Improve naming */
+    public abstract apply(context: QueryASTContext): {
+        nestedContext: QueryASTContext<Cypher.Node>;
+        selection: SelectionClause;
+    };
 }

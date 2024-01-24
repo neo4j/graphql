@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-export class LimitAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class LimitAnnotation implements Annotation {
+    readonly name = "limit";
     default?: number;
     max?: number;
 
-    constructor({ default: _default, max }: {
-        default?: number;
-        max?: number;
-    }) {
+    constructor({ default: _default, max }: { default?: number; max?: number }) {
         this.default = _default;
         this.max = max;
     }

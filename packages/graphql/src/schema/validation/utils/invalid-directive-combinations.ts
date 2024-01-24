@@ -17,8 +17,13 @@
  * limitations under the License.
  */
 
-import type { FieldDirective, InterfaceDirective, ObjectDirective, UnionDirective } from "../../../constants";
-import { FIELD_DIRECTIVES } from "../../../constants";
+import type {
+    FieldDirective,
+    InterfaceDirective,
+    ObjectDirective,
+    UnionDirective,
+} from "../../../schema-model/library-directives";
+import { FIELD_DIRECTIVES } from "../../../schema-model/library-directives";
 
 type InvalidFieldCombinations = Record<FieldDirective, ReadonlyArray<FieldDirective | "private">>;
 

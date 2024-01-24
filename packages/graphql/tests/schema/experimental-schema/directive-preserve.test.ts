@@ -1521,6 +1521,11 @@ describe("Directive-preserve", () => {
               _on: ProductionImplementationsDisconnectInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -1539,11 +1544,6 @@ describe("Directive-preserve", () => {
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -1568,7 +1568,9 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1579,6 +1581,7 @@ describe("Directive-preserve", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -2519,6 +2522,11 @@ describe("Directive-preserve", () => {
               _on: ProductionImplementationsDisconnectInput
             }
 
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
             input ProductionImplementationsConnectInput {
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
@@ -2537,11 +2545,6 @@ describe("Directive-preserve", () => {
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
-            }
-
-            input ProductionImplementationsWhere {
-              Movie: MovieWhere
-              Series: SeriesWhere
             }
 
             input ProductionOptions {
@@ -2566,7 +2569,9 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionWhere {
-              _on: ProductionImplementationsWhere
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -2577,6 +2582,7 @@ describe("Directive-preserve", () => {
               title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               title_STARTS_WITH: String
+              typename_IN: [ProductionImplementation!]
             }
 
             type Query {
@@ -3511,6 +3517,7 @@ describe("Directive-preserve", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              content: ContentWhere @deprecated(reason: \\"Use \`content_SOME\` instead.\\")
               contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
@@ -3529,6 +3536,15 @@ describe("Directive-preserve", () => {
               Return Users where some of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_SOME: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              content_ALL: ContentWhere
+              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              content_NONE: ContentWhere
+              content_NOT: ContentWhere @deprecated(reason: \\"Use \`content_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              content_SINGLE: ContentWhere
+              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              content_SOME: ContentWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

@@ -18,13 +18,12 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { CypherFieldReferenceMap, GraphQLWhereArg, RelationField } from "../types";
-import createProjectionAndParams from "./create-projection-and-params";
+import type { GraphQLWhereArg, RelationField } from "../types";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { META_CYPHER_VARIABLE } from "../constants";
+import { DEBUG_TRANSLATE, META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
@@ -37,6 +36,11 @@ import { filterMetaVariable } from "../translate/subscriptions/filter-meta-varia
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
+import Debug from "debug";
+import { QueryASTEnv, QueryASTContext } from "./queryAST/ast/QueryASTContext";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export default async function translateUpdate({
     node,
@@ -54,7 +58,6 @@ export default async function translateUpdate({
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-    const cypherFieldAliasMap: CypherFieldReferenceMap = {};
     const withVars = [varName];
 
     if (context.subscriptionsEnabled) {
@@ -67,7 +70,6 @@ export default async function translateUpdate({
     const disconnectStrs: string[] = [];
     const createStrs: string[] = [];
     let deleteStr = "";
-    let projAuth: Cypher.Clause | undefined = undefined;
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
 
     const labels = context.labelManager
@@ -83,10 +85,6 @@ export default async function translateUpdate({
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     let updateArgs = {};
-
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.update] || {};
-
-    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
 
     if (deleteInput) {
         const deleteAndParams = createDeleteAndParams({
@@ -442,36 +440,36 @@ export default async function translateUpdate({
             });
         });
     }
-
-    let projectionSubquery: Cypher.Clause | undefined;
-    let projStr: Cypher.Expr | undefined;
-    if (nodeProjection?.fieldsByTypeName) {
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: new Cypher.NamedNode(varName),
-            cypherFieldAliasMap,
-        });
-        projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
-        projStr = projection.projection;
-        cypherParams = { ...cypherParams, ...projection.params };
-        const predicates: Cypher.Predicate[] = [];
-
-        predicates.push(...projection.predicates);
-
-        if (predicates.length) {
-            projAuth = new Cypher.With("*").where(Cypher.and(...predicates));
-        }
+    const concreteEntityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!concreteEntityAdapter) {
+        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const returnStatement = generateUpdateReturnStatement(varName, projStr, context.subscriptionsEnabled);
+    const queryAST = new QueryASTFactory(context.schemaModel, false).createQueryAST(
+        resolveTree,
+        concreteEntityAdapter,
+        context
+    );
+    const queryASTEnv = new QueryASTEnv();
+
+    const queryASTContext = new QueryASTContext({
+        target: new Cypher.NamedNode(varName),
+        env: queryASTEnv,
+        neo4jGraphQLContext: context,
+        returnVariable: new Cypher.NamedVariable("data"),
+        shouldCollect: true,
+        shouldDistinct: true,
+    });
+    debug(queryAST.print());
+    const queryASTResult = queryAST.transpile(queryASTContext);
+
+    const projectionStatements = queryASTResult.clauses.length
+        ? Cypher.concat(...queryASTResult.clauses)
+        : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
     const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
 
-    const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const projectionSubqueryStr = projectionSubquery ? compileCypher(projectionSubquery, env) : "";
-
+    const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
             matchAndWhereStr,
@@ -484,13 +482,11 @@ export default async function translateUpdate({
             connectStrs.length ||
             disconnectStrs.length ||
             createStrs.length ||
-            projectionSubqueryStr
+            connectionStrs.length ||
+            isFollowedByASubquery(projectionStatements)
                 ? [`WITH *`]
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
-            projectionSubqueryStr,
-            ...(connectionStrs.length ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-            ...(projAuth ? [compileCypher(projAuth, env)] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
@@ -500,7 +496,8 @@ export default async function translateUpdate({
                       `UNWIND (CASE ${META_CYPHER_VARIABLE} WHEN [] then [null] else ${META_CYPHER_VARIABLE} end) AS m`,
                   ]
                 : []),
-            compileCypher(returnStatement, env),
+            compileCypher(projectionStatements, env),
+            ...(context.subscriptionsEnabled ? [`,\ncollect(DISTINCT m) as ${META_CYPHER_VARIABLE}`] : []),
         ]
             .filter(Boolean)
             .join("\n");
@@ -522,29 +519,18 @@ export default async function translateUpdate({
     return result;
 }
 
-function generateUpdateReturnStatement(
-    varName: string | undefined,
-    projStr: Cypher.Expr | undefined,
-    subscriptionsEnabled: boolean
-): Cypher.Clause {
-    let statements;
-    if (varName && projStr) {
-        statements = new Cypher.RawCypher(
-            (env) => `collect(DISTINCT ${varName} ${compileCypher(projStr, env)}) AS data`
-        );
+/**
+ * Temporary helper to keep consistency with the old code where if a subquery was present, it would be followed by a WITH *.
+ * The recursion is needed because the subquery can be wrapped inside a Cypher.Composite.
+ **/
+function isFollowedByASubquery(clause): boolean {
+    if (clause.children?.length) {
+        if (clause.children[0] instanceof Cypher.Call) {
+            return true;
+        }
+        if (clause.children[0]?.children?.length) {
+            return isFollowedByASubquery(clause.children[0]);
+        }
     }
-
-    if (subscriptionsEnabled) {
-        statements = Cypher.concat(
-            statements,
-            new Cypher.RawCypher(statements ? ", " : ""),
-            new Cypher.RawCypher(`collect(DISTINCT m) as ${META_CYPHER_VARIABLE}`)
-        );
-    }
-
-    if (!statements) {
-        statements = new Cypher.RawCypher("'Query cannot conclude with CALL'");
-    }
-
-    return new Cypher.Return(statements);
+    return false;
 }

@@ -2989,6 +2989,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3007,6 +3008,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -3497,6 +3507,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3515,6 +3526,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -4011,6 +4031,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -4029,6 +4050,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -4717,6 +4747,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
                   actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -4735,6 +4766,15 @@ describe("@settable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   actedInConnection_SOME: ActorActedInConnectionWhere
+                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  actedIn_ALL: ProductionWhere
+                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  actedIn_NONE: ProductionWhere
+                  actedIn_NOT: ProductionWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  actedIn_SINGLE: ProductionWhere
+                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  actedIn_SOME: ProductionWhere
                   name: String
                   name_CONTAINS: String
                   name_ENDS_WITH: String
@@ -5554,14 +5594,14 @@ describe("@settable", () => {
                   Series: SeriesCreateInput
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsUpdateInput {
                   Movie: MovieUpdateInput
                   Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
                 }
 
                 input ProductionOptions {
@@ -5588,7 +5628,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -5609,6 +5651,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -6078,9 +6121,9 @@ describe("@settable", () => {
                   Series: SeriesCreateInput
                 }
 
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
+                enum ProductionImplementation {
+                  Movie
+                  Series
                 }
 
                 input ProductionOptions {
@@ -6101,7 +6144,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   description: String
                   description_CONTAINS: String
                   description_ENDS_WITH: String
@@ -6122,6 +6167,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -6845,6 +6891,11 @@ describe("@settable", () => {
                   actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsConnectInput {
                   Movie: [MovieConnectInput!]
                   Series: [SeriesConnectInput!]
@@ -6858,11 +6909,6 @@ describe("@settable", () => {
                 input ProductionImplementationsDisconnectInput {
                   Movie: [MovieDisconnectInput!]
                   Series: [SeriesDisconnectInput!]
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
                 }
 
                 input ProductionOptions {
@@ -6883,7 +6929,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -6933,6 +6981,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {
@@ -7776,6 +7825,11 @@ describe("@settable", () => {
                   actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
+                enum ProductionImplementation {
+                  Movie
+                  Series
+                }
+
                 input ProductionImplementationsConnectInput {
                   Movie: [MovieConnectInput!]
                   Series: [SeriesConnectInput!]
@@ -7794,11 +7848,6 @@ describe("@settable", () => {
                 input ProductionImplementationsUpdateInput {
                   Movie: MovieUpdateInput
                   Series: SeriesUpdateInput
-                }
-
-                input ProductionImplementationsWhere {
-                  Movie: MovieWhere
-                  Series: SeriesWhere
                 }
 
                 input ProductionOptions {
@@ -7826,7 +7875,9 @@ describe("@settable", () => {
                 }
 
                 input ProductionWhere {
-                  _on: ProductionImplementationsWhere
+                  AND: [ProductionWhere!]
+                  NOT: ProductionWhere
+                  OR: [ProductionWhere!]
                   actors: ActorWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
@@ -7876,6 +7927,7 @@ describe("@settable", () => {
                   title_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
                   title_STARTS_WITH: String
+                  typename_IN: [ProductionImplementation!]
                 }
 
                 type Query {

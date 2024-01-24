@@ -17,16 +17,7 @@
  * limitations under the License.
  */
 
-export interface ExcludeConstructor {
-    operations: string[];
-}
-
-class Exclude {
-    public operations: string[];
-
-    constructor(input: ExcludeConstructor) {
-        this.operations = input.operations;
-    }
-}
-
-export default Exclude;
+/**
+ * Type matching the elements in object/array
+ */
+export type ValueOf<T extends ReadonlyArray<unknown> | Array<unknown>> = T[number];
