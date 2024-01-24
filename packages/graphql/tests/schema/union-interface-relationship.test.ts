@@ -1255,6 +1255,7 @@ describe("Union Interface Relationships", () => {
               actors_SINGLE: ActorWhere
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere
+              directors: DirectorWhere @deprecated(reason: \\"Use \`directors_SOME\` instead.\\")
               directorsConnection: MovieDirectorsConnectionWhere @deprecated(reason: \\"Use \`directorsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieDirectorsConnections match this filter
@@ -1273,6 +1274,15 @@ describe("Union Interface Relationships", () => {
               Return Movies where some of the related MovieDirectorsConnections match this filter
               \\"\\"\\"
               directorsConnection_SOME: MovieDirectorsConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
+              directors_ALL: DirectorWhere
+              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
+              directors_NONE: DirectorWhere
+              directors_NOT: DirectorWhere @deprecated(reason: \\"Use \`directors_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
+              directors_SINGLE: DirectorWhere
+              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
+              directors_SOME: DirectorWhere
               imdbId: Int
               imdbId_GT: Int
               imdbId_GTE: Int

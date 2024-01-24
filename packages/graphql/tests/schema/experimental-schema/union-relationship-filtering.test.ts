@@ -33,7 +33,7 @@ describe("Union Relationships Filtering", () => {
               isan: String! @unique
           }
           union Production = Movie | Series
-          interface ActedIn @relationshipProperties {
+          type ActedIn @relationshipProperties {
               screenTime: Int!
           }
           type Actor {
@@ -51,7 +51,7 @@ describe("Union Relationships Filtering", () => {
               mutation: Mutation
             }
 
-            interface ActedIn {
+            type ActedIn {
               screenTime: Int!
             }
 
@@ -193,10 +193,10 @@ describe("Union Relationships Filtering", () => {
               where: ActorActedInMovieConnectionWhere
             }
 
-            type ActorActedInRelationship implements ActedIn {
+            type ActorActedInRelationship {
               cursor: String!
               node: Production!
-              screenTime: Int!
+              properties: ActedIn!
             }
 
             input ActorActedInSeriesConnectFieldInput {

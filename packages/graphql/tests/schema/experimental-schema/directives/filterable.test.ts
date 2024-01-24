@@ -10320,6 +10320,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -10338,6 +10339,15 @@ describe("@filterable directive", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      actors_ALL: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      actors_NONE: PersonWhere
+                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      actors_SINGLE: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      actors_SOME: PersonWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -11552,6 +11562,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -11570,6 +11581,15 @@ describe("@filterable directive", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      actors_ALL: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      actors_NONE: PersonWhere
+                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      actors_SINGLE: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      actors_SOME: PersonWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -12784,6 +12804,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -12802,6 +12823,15 @@ describe("@filterable directive", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      actors_ALL: PersonWhere
+                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      actors_NONE: PersonWhere
+                      actors_NOT: PersonWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      actors_SINGLE: PersonWhere
+                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      actors_SOME: PersonWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
