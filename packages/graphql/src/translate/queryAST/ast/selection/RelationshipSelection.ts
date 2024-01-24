@@ -55,7 +55,10 @@ export class RelationshipSelection extends EntitySelection {
         this.optional = optional ?? false;
     }
 
-    public apply(context: QueryASTContext<Cypher.Node>): {
+    public apply(
+        context: QueryASTContext<Cypher.Node>,
+        matchByInterfaceOrUnion?: string
+    ): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
@@ -65,12 +68,13 @@ export class RelationshipSelection extends EntitySelection {
         const relationshipTarget = this.targetOverride ?? this.relationship.target;
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
-        const lowerToTargetType = READ_LOWER_TARGET_INTERFACE_ENABLED
-            ? context.neo4jGraphQLContext.labelManager?.getLowerTargetInterfaceIfSafeRelationship(
-                  this.relationship.source.name,
-                  this.relationship.name
-              )
-            : null;
+        const lowerToTargetType =
+            matchByInterfaceOrUnion ?? READ_LOWER_TARGET_INTERFACE_ENABLED
+                ? context.neo4jGraphQLContext.labelManager?.getLowerTargetInterfaceIfSafeRelationship(
+                      this.relationship.source.name,
+                      this.relationship.name
+                  )
+                : null;
 
         const targetNode =
             lowerToTargetType && context.neo4jGraphQLContext.labelManager

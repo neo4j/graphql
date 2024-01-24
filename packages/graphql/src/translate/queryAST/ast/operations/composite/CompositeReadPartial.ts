@@ -33,19 +33,13 @@ export class CompositeReadPartial extends ReadOperation {
         exclusionPredicates?: (matchNode: Cypher.Node) => Cypher.Predicate[]
     ) {
         if (this.relationship) {
-            return this.transpileNestedCompositeRelationship(
-                this.relationship,
-                context,
-                matchByInterfaceOrUnion,
-                exclusionPredicates
-            );
+            return this.transpileNestedCompositeRelationship(context, matchByInterfaceOrUnion, exclusionPredicates);
         } else {
             return this.transpileTopLevelCompositeEntity(context);
         }
     }
 
     private transpileNestedCompositeRelationship(
-        entity: RelationshipAdapter,
         context: QueryASTContext,
         matchByInterfaceOrUnion?: string,
         exclusionPredicates?: (matchNode: Cypher.Node) => Cypher.Predicate[]
@@ -53,7 +47,7 @@ export class CompositeReadPartial extends ReadOperation {
         if (!hasTarget(context)) throw new Error("No parent node found!");
 
         // eslint-disable-next-line prefer-const
-        let { selection: matchClause, nestedContext } = this.selection.apply(context);
+        let { selection: matchClause, nestedContext } = this.selection.apply(context, matchByInterfaceOrUnion);
 
         let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
             return f.getSelection(nestedContext);
@@ -71,7 +65,7 @@ export class CompositeReadPartial extends ReadOperation {
         const wherePredicate = Cypher.and(
             filterPredicates,
             ...authFiltersPredicate,
-            ...(exclusionPredicates?.(targetNode) ?? [])
+            ...(exclusionPredicates?.(nestedContext.target) ?? [])
         );
         if (wherePredicate) {
             // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`

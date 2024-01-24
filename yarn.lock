@@ -3568,8 +3568,8 @@ __metadata:
 
 "@neo4j/cypher-builder@file:../../../cypher-builder::locator=%40neo4j%2Fgraphql%40workspace%3Apackages%2Fgraphql":
   version: 1.7.4
-  resolution: "@neo4j/cypher-builder@file:../../../cypher-builder#../../../cypher-builder::hash=abed31&locator=%40neo4j%2Fgraphql%40workspace%3Apackages%2Fgraphql"
-  checksum: e416f3d75d9bffaecf03766e7551cde966b7ae6060b19c16318803d5c6adf5be19e65628d6a4187f5cdced7732924b3020188829015925627e7aa5f91097b351
+  resolution: "@neo4j/cypher-builder@file:../../../cypher-builder#../../../cypher-builder::hash=630c22&locator=%40neo4j%2Fgraphql%40workspace%3Apackages%2Fgraphql"
+  checksum: cd5bb11ac447ea45c200e1c9c747e12cba245ea0f780796398a91894bc66b4b0618e2edc485bd4bd7bc5b5193523147f91e63bdcbfdf0e623e552f7971c8fe62
   languageName: node
   linkType: hard
 
