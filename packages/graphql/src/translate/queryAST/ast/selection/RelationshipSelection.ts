@@ -69,12 +69,13 @@ export class RelationshipSelection extends EntitySelection {
         const relDirection = this.relationship.getCypherDirection(this.directed);
 
         const lowerToTargetType =
-            matchByInterfaceOrUnion ?? READ_LOWER_TARGET_INTERFACE_ENABLED
+            matchByInterfaceOrUnion ??
+            (READ_LOWER_TARGET_INTERFACE_ENABLED
                 ? context.neo4jGraphQLContext.labelManager?.getLowerTargetInterfaceIfSafeRelationship(
                       this.relationship.source.name,
                       this.relationship.name
                   )
-                : null;
+                : null);
 
         const targetNode =
             lowerToTargetType && context.neo4jGraphQLContext.labelManager

@@ -188,8 +188,6 @@ export default function createProjectionAndParams({
 
                 const parentNode = varName;
 
-                // TODO: why is it important if we match all children?
-                //       -> because otherwise we already need a partial exclusion predicate!
                 const matchByInterfaceOrUnion =
                     UNION_UNIFICATION_ENABLED && isSelectingAllChildren
                         ? relationField.interface?.typeMeta.name
@@ -205,7 +203,7 @@ export default function createProjectionAndParams({
                         for (const { child: refNode, unifyViaDataModelType, exclusionPredicates } of subs) {
                             const labels =
                                 unifyViaDataModelType && context.labelManager
-                                    ? context.labelManager.getLabelSelectorExpressionObject(matchByInterfaceOrUnion)
+                                    ? context.labelManager.getLabelSelectorExpressionObject(unifyViaDataModelType)
                                     : refNode.getLabels(context);
 
                             const targetNode = new Cypher.Node({ labels });

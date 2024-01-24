@@ -56,47 +56,6 @@ export class CompositeReadOperation extends Operation {
         return this.children;
     }
 
-    private transpileTopLevelCompositeRead(context: QueryASTContext): OperationTranspileResult {
-        //const nestedSubqueries = this.children.flatMap((c) => {
-        //    const result = c.transpile(context);
-        //    return result.clauses;
-        //});
-
-        const isSelectingAllChildren = this.entity.concreteEntities.length === this.children.length;
-        const matchByInterfaceOrUnion = isSelectingAllChildren ? this.entity.name : undefined;
-        const nestedSubqueries = uniqSubQueries(
-            context.neo4jGraphQLContext,
-            matchByInterfaceOrUnion,
-            this.children,
-            (child) => child.target,
-            (subs) =>
-                subs.map(({ child, unifyViaDataModelType, exclusionPredicates }) => {
-                    const result = child.transpile(context, unifyViaDataModelType, exclusionPredicates);
-                    return result.clauses;
-                })
-        ).flat();
-
-        const nestedSubquery = new Cypher.Call(new Cypher.Union(...nestedSubqueries)).return(context.returnVariable);
-        if (this.sortFields.length > 0) {
-            nestedSubquery.orderBy(...this.getSortFields(context, context.returnVariable));
-        }
-        if (this.pagination) {
-            const paginationField = this.pagination.getPagination();
-            if (paginationField) {
-                if (paginationField.skip) {
-                    nestedSubquery.skip(paginationField.skip);
-                }
-                if (paginationField.limit) {
-                    nestedSubquery.limit(paginationField.limit);
-                }
-            }
-        }
-        return {
-            clauses: [nestedSubquery],
-            projectionExpr: context.returnVariable,
-        };
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         const parentNode = context.target;
 
