@@ -33,7 +33,7 @@ describe("Update resolver", () => {
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
-            annotations: [],
+            annotations: {},
             attributes: [],
             compositeEntities: [],
             description: undefined,
@@ -70,7 +70,7 @@ describe("Update resolver", () => {
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
-            annotations: [],
+            annotations: {},
             attributes: [],
             compositeEntities: [],
             description: undefined,

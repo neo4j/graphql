@@ -23,7 +23,8 @@ import type {
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
 } from "graphql";
-import { FIELD_DIRECTIVES, INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES, PROPAGATED_DIRECTIVES } from "../../constants";
+import { PROPAGATED_DIRECTIVES } from "../../constants";
+import { FIELD_DIRECTIVES, INTERFACE_DIRECTIVES, OBJECT_DIRECTIVES } from "../../schema-model/library-directives";
 import { isInArray } from "../../utils/is-in-array";
 import type { DefinitionNodes } from "../get-definition-nodes";
 

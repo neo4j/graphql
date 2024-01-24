@@ -17,11 +17,14 @@
  * limitations under the License.
  */
 
-export class CypherAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class CypherAnnotation implements Annotation {
+    readonly name = "cypher";
     public statement: string;
     public columnName: string;
 
-    constructor({ statement, columnName }: { statement: string, columnName: string }) {
+    constructor({ statement, columnName }: { statement: string; columnName: string }) {
         this.statement = statement;
         this.columnName = columnName;
     }

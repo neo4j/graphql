@@ -26,11 +26,13 @@ import { EntitySelection, type SelectionClause } from "./EntitySelection";
 export class NodeSelection extends EntitySelection {
     private target: ConcreteEntityAdapter;
     private alias: string | undefined;
+    private optional: boolean;
 
-    constructor({ target, alias }: { target: ConcreteEntityAdapter; alias?: string }) {
+    constructor({ target, alias, optional }: { target: ConcreteEntityAdapter; alias?: string; optional?: boolean }) {
         super();
         this.target = target;
         this.alias = alias;
+        this.optional = optional ?? false;
     }
 
     public apply(context: QueryASTContext): {
@@ -38,9 +40,12 @@ export class NodeSelection extends EntitySelection {
         selection: SelectionClause;
     } {
         const node = createNodeFromEntity(this.target, context.neo4jGraphQLContext, this.alias);
-
+        const match = new Cypher.Match(node);
+        if (this.optional) {
+            match.optional();
+        }
         return {
-            selection: new Cypher.Match(node),
+            selection: match,
             nestedContext: new QueryASTContext({
                 target: node,
                 neo4jGraphQLContext: context.neo4jGraphQLContext,

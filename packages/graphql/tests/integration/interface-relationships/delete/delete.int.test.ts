@@ -69,6 +69,7 @@ describe("interface relationships", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            experimental: false,
         });
     });
 

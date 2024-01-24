@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export class JWTPayloadAnnotation {}
+import type { Annotation } from "./Annotation";
+
+export class JWTPayloadAnnotation implements Annotation {
+    readonly name = "jwt";
+}

@@ -37,12 +37,10 @@ import type {
 import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { upperFirst } from "../utils/upper-first";
-import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
 import type { LimitDirective } from "./LimitDirective";
-import type { SchemaConfiguration } from "../schema/schema-configuration";
 import { leadingUnderscores } from "../utils/leading-underscore";
 import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
 
@@ -64,8 +62,6 @@ export interface NodeConstructor extends GraphElementConstructor {
     pointFields: PointField[];
     plural?: string;
     fulltextDirective?: FullText;
-    exclude?: Exclude;
-    schemaConfiguration?: SchemaConfiguration;
     nodeDirective?: NodeDirective;
     description?: string;
     limitDirective?: LimitDirective;
@@ -129,8 +125,6 @@ class Node extends GraphElement {
     public interfaceFields: InterfaceField[];
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
-    public exclude?: Exclude;
-    public schemaConfiguration?: SchemaConfiguration;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
     public description?: string;
@@ -152,8 +146,6 @@ class Node extends GraphElement {
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
-        this.exclude = input.exclude;
-        this.schemaConfiguration = input.schemaConfiguration;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
         this.limit = input.limitDirective;

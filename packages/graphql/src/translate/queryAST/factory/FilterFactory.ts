@@ -189,10 +189,10 @@ export class FilterFactory {
     }
 
     private createRelationshipFilter(
-        where: GraphQLWhereArg,
         relationship: RelationshipAdapter,
+        where: GraphQLWhereArg,
         filterOps: { isNot: boolean; operator: RelationshipWhereOperator | undefined }
-    ): RelationshipFilter | undefined {
+    ): RelationshipFilter[] {
         /**
          * The logic below can be confusing, but it's to handle the following cases:
          * 1. where: { actors: null } -> in this case we want to return an Exists filter as showed by tests packages/graphql/tests/tck/null.test.ts
@@ -200,35 +200,60 @@ export class FilterFactory {
          **/
         const isNull = where === null;
         if (!isNull && Object.keys(where).length === 0) {
-            return;
+            return [];
         }
-        // this is because if isNull it's true we want to wrap the Exist subclause in a NOT, but if it's isNull it's true and isNot it's true they negate each other
+        // this is because if isNull is true we want to wrap the Exist subclause in a NOT, but if isNull is true and isNot is true they negate each other
         const isNot = isNull ? !filterOps.isNot : filterOps.isNot;
 
-        const relationshipFilter = this.createRelationshipFilterTreeNode({
-            relationship: relationship,
-            isNot,
-            operator: filterOps.operator || "SOME",
-        });
+        if (isInterfaceEntity(relationship.target) && !where.node?._on) {
+            const relationshipFilter = this.createRelationshipFilterTreeNode({
+                relationship,
+                target: relationship.target,
+                isNot,
+                operator: filterOps.operator || "SOME",
+            });
 
-        if (!isNull) {
-            const targetNode = relationship.target;
-            const targetNodeFilters = this.createNodeFilters(targetNode, where);
-            relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+            if (!isNull) {
+                const targetNode = relationship.target;
+                const targetNodeFilters = this.createNodeFilters(targetNode, where);
+                relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+            }
+
+            return [relationshipFilter];
+        } else {
+            const filteredEntities = this.filterConcreteEntities(relationship.target, where);
+            const relationshipFilters: RelationshipFilter[] = [];
+            for (const concreteEntity of filteredEntities) {
+                const relationshipFilter = this.createRelationshipFilterTreeNode({
+                    relationship,
+                    target: concreteEntity,
+                    isNot,
+                    operator: filterOps.operator || "SOME",
+                });
+
+                if (!isNull) {
+                    const entityWhere = where[concreteEntity.name] ?? where;
+                    const targetNodeFilters = this.createNodeFilters(concreteEntity, entityWhere);
+                    relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
+                }
+
+                relationshipFilters.push(relationshipFilter);
+            }
+            return relationshipFilters;
         }
-
-        return relationshipFilter;
     }
 
-    // This allow to override this creation in AuthorizationFilterFactory
+    // This allows to override this creation in AuthorizationFilterFactory
     protected createRelationshipFilterTreeNode(options: {
         relationship: RelationshipAdapter;
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         isNot: boolean;
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
         return new RelationshipFilter(options);
     }
-    // This allow to override this creation in AuthorizationFilterFactory
+
+    // This allows to override this creation in AuthorizationFilterFactory
     protected createConnectionFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
@@ -317,9 +342,8 @@ export class FilterFactory {
             return this.createExperimentalInterfaceFilters(entity, where);
         }
         const whereFields = this.getConcreteFiltersWhere(entity, where);
-
         const filters = filterTruthy(
-            Object.entries(whereFields).flatMap(([key, value]): Filter | undefined => {
+            Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = asArray(value).flatMap((nestedWhere) => {
                         return this.createNodeFilters(entity, nestedWhere);
@@ -329,6 +353,7 @@ export class FilterFactory {
                         filters: nestedFilters,
                     });
                 }
+
                 if (key === "_on" && isObject(value)) {
                     return this.getConcreteFilter(entity, value);
                 }
@@ -341,7 +366,9 @@ export class FilterFactory {
                 }
 
                 if (isConnection) {
-                    if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
+                    if (!relationship) {
+                        throw new Error(`Relationship not found for connection ${fieldName}`);
+                    }
                     if (operator && !isRelationshipOperator(operator)) {
                         throw new Error(`Invalid operator ${operator} for relationship`);
                     }
@@ -353,9 +380,11 @@ export class FilterFactory {
                     return this.wrapMultipleFiltersInLogical(connectionFilters)[0];
                 }
                 if (isAggregate) {
-                    if (!relationship) throw new Error(`Relationship not found for connection ${fieldName}`);
+                    if (!relationship) {
+                        throw new Error(`Relationship not found for connection ${fieldName}`);
+                    }
 
-                    return this.createAggregationFilter(value as AggregateWhereInput, relationship);
+                    return this.createAggregationFilter(relationship, value as AggregateWhereInput);
                 }
 
                 if (relationship) {
@@ -363,7 +392,7 @@ export class FilterFactory {
                         throw new Error(`Invalid operator ${operator} for relationship`);
                     }
 
-                    return this.createRelationshipFilter(value as GraphQLWhereArg, relationship, {
+                    return this.createRelationshipFilter(relationship, value as GraphQLWhereArg, {
                         isNot,
                         operator,
                     });
@@ -383,7 +412,9 @@ export class FilterFactory {
                                 throw new Error(`Cannot query Relay Id on "${entity.name}"`);
                             }
                             const idAttribute = entity.findAttribute(field);
-                            if (!idAttribute) throw new Error(`Attribute ${field} not found`);
+                            if (!idAttribute) {
+                                throw new Error(`Attribute ${field} not found`);
+                            }
 
                             if (idAttribute.typeHelper.isNumeric()) {
                                 id = Number(id);
@@ -401,7 +432,9 @@ export class FilterFactory {
                     }
                 }
 
-                if (!attr) throw new Error(`Attribute ${fieldName} not found`);
+                if (!attr) {
+                    throw new Error(`Attribute ${fieldName} not found`);
+                }
                 return this.createPropertyFilter({
                     attribute: attr,
                     comparisonValue: value,
@@ -488,7 +521,7 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(nestedFilters);
     }
 
-    private createAggregationFilter(where: AggregateWhereInput, relationship: RelationshipAdapter): AggregationFilter {
+    private createAggregationFilter(relationship: RelationshipAdapter, where: AggregateWhereInput): AggregationFilter {
         const aggregationFilter = new AggregationFilter(relationship);
         const nestedFilters = this.getAggregationNestedFilters(where, relationship);
         aggregationFilter.addFilters(...nestedFilters);

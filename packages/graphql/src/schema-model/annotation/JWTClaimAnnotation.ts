@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class JWTClaimAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class JWTClaimAnnotation implements Annotation {
+    readonly name = "jwtClaim";
     public readonly path: string;
 
     constructor({ path }: { path: string }) {

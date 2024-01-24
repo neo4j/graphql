@@ -33,28 +33,28 @@ describe("RelationshipAdapter", () => {
     beforeAll(() => {
         const userId = new Attribute({
             name: "id",
-            annotations: [new UniqueAnnotation({ constraintName: "User_id_unique" })],
+            annotations: { unique: new UniqueAnnotation({ constraintName: "User_id_unique" }) },
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
             args: [],
         });
 
         const userName = new Attribute({
             name: "name",
-            annotations: [],
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
             args: [],
         });
 
         const accountId = new Attribute({
             name: "id",
-            annotations: [new UniqueAnnotation({ constraintName: "User_id_unique" })],
+            annotations: { unique: new UniqueAnnotation({ constraintName: "User_id_unique" }) },
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
             args: [],
         });
 
         const accountUsername = new Attribute({
             name: "username",
-            annotations: [],
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
             args: [],
         });
@@ -73,7 +73,7 @@ describe("RelationshipAdapter", () => {
 
         const accountAlias = new Attribute({
             name: "accountAlias",
-            annotations: [],
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.String, true),
             args: [],
         });
@@ -93,7 +93,7 @@ describe("RelationshipAdapter", () => {
             nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "CONNECT_OR_CREATE"],
             aggregate: false,
             description: "",
-            annotations: [selectable],
+            annotations: { selectable },
             isNullable: false,
         });
         userEntity.addRelationship(relationship);

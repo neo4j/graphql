@@ -18,8 +18,10 @@
  */
 
 import type { MutationOperations } from "../../graphql/directives/mutation";
+import type { Annotation } from "./Annotation";
 
-export class MutationAnnotation {
+export class MutationAnnotation implements Annotation {
+    readonly name = "mutation";
     public readonly operations: Set<MutationOperations>;
 
     constructor({ operations }: { operations: Set<MutationOperations> }) {

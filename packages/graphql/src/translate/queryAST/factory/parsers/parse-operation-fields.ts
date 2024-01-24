@@ -25,6 +25,8 @@ export type OperationFieldMatch = {
     isConnection: boolean;
     isAggregation: boolean;
     isCreate: boolean;
+    isUpdate: boolean;
+    isDelete: boolean;
 };
 
 export function parseOperationField(field: string, entityAdapter: ConcreteEntityAdapter): OperationFieldMatch {
@@ -34,6 +36,8 @@ export function parseOperationField(field: string, entityAdapter: ConcreteEntity
         isConnection: field === rootTypeFieldNames.connection,
         isAggregation: field === rootTypeFieldNames.aggregate,
         isCreate: field === rootTypeFieldNames.create,
+        isUpdate: field === rootTypeFieldNames.update,
+        isDelete: field === rootTypeFieldNames.delete,
     };
 }
 
@@ -47,5 +51,7 @@ export function parseInterfaceOperationField(
         isConnection: false, //connection not supported as interface top-level operation
         isAggregation: field === rootTypeFieldNames.aggregate,
         isCreate: field === rootTypeFieldNames.create,
+        isUpdate: field === rootTypeFieldNames.update,
+        isDelete: false, //delete not supported as interface top-level operation
     };
 }

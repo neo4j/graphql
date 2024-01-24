@@ -61,6 +61,7 @@ export const SPATIAL_TYPES = ["Point", "CartesianPoint"];
 export function isTemporal(typeName: string) {
     return TEMPORAL_SCALAR_TYPES.includes(typeName);
 }
+
 export function isSpatial(typeName: string) {
     return SPATIAL_TYPES.includes(typeName);
 }
@@ -92,55 +93,6 @@ export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";
 export const DBMS_COMPONENTS_QUERY =
     "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
 
-export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = ["filterable", "selectable", "settable"];
-export const FIELD_DIRECTIVES = [
-    "alias",
-    "authentication",
-    "authorization",
-    "coalesce",
-    "customResolver",
-    "cypher",
-    "default",
-    "id",
-    "jwtClaim",
-    "populatedBy",
-    "relationship",
-    "declareRelationship",
-    "relayId",
-    "subscriptionsAuthorization",
-    "timestamp",
-    "unique",
-    ...SCHEMA_CONFIGURATION_FIELD_DIRECTIVES,
-] as const;
-
-export type FieldDirective = (typeof FIELD_DIRECTIVES)[number];
-
-export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = ["query", "mutation", "subscription"];
-export const OBJECT_DIRECTIVES = [
-    "authentication",
-    "authorization",
-    "subscriptionsAuthorization",
-    "plural",
-    "limit",
-    "fulltext",
-    "node",
-    "jwt",
-    "shareable",
-    "deprecated",
-    "relationshipProperties",
-    ...SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES,
-] as const;
-
-export type ObjectDirective = (typeof OBJECT_DIRECTIVES)[number];
-
-export const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const;
-
-export type InterfaceDirective = (typeof INTERFACE_DIRECTIVES)[number];
-
-const UNION_DIRECTIVES = ["query", "plural"] as const;
-
-export type UnionDirective = (typeof UNION_DIRECTIVES)[number];
-
 export const DEPRECATED = "deprecated";
-
-export const PROPAGATED_DIRECTIVES = ["shareable", DEPRECATED] as const;
+export const SHAREABLE = "shareable";
+export const PROPAGATED_DIRECTIVES = [SHAREABLE, DEPRECATED] as const;

@@ -105,7 +105,7 @@ describe("createDisconnectAndParams", () => {
                             new Attribute({
                                 name: "title",
                                 type: new ScalarType(GraphQLBuiltInScalarType.String, true),
-                                annotations: [],
+                                annotations: {},
                                 args: [],
                             }),
                         ],
@@ -113,7 +113,7 @@ describe("createDisconnectAndParams", () => {
                 ],
                 compositeEntities: [],
                 operations: {},
-                annotations: [],
+                annotations: {},
             }),
         }).instance();
 

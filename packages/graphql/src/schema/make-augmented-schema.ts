@@ -88,6 +88,7 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import { SHAREABLE } from "../constants";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -160,7 +161,7 @@ function makeAugmentedSchema({
 
     // TODO: ideally move these in getSubgraphSchema()
     if (subgraph) {
-        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+        const shareable = subgraph.getFullyQualifiedDirectiveName(SHAREABLE);
         [CreateInfo.name, UpdateInfo.name, DeleteInfo.name, PageInfo.name].forEach((typeName) => {
             const typeComposer = composer.getOTC(typeName);
             typeComposer.setDirectiveByName(shareable);

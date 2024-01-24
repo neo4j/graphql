@@ -22,8 +22,10 @@ import { parse } from "graphql";
 import { selectionSetToResolveTree } from "../../schema/get-custom-resolver-meta";
 import { getDefinitionNodes } from "../../schema/get-definition-nodes";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Annotation } from "./Annotation";
 
-export class CustomResolverAnnotation {
+export class CustomResolverAnnotation implements Annotation {
+    readonly name = "customResolver";
     public readonly requires: string | undefined;
     public parsedRequires: Record<string, ResolveTree> | undefined;
 
