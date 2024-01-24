@@ -1500,24 +1500,22 @@ subscription SubscriptionPerson {
                                                                 }
                                                               },
                                                               connect: {
-                                                                _on: {
-                                                                    ${typePerson.name}: [
+                                                                ${typePerson.name}: [
+                                                                {
+                                                                    movies: [
                                                                     {
-                                                                      movies: [
-                                                                        {
-                                                                          where: {
-                                                                            node: {
-                                                                              title: "Constantine"
-                                                                            }
-                                                                          },
-                                                                          edge: {
-                                                                            score: 8
-                                                                          }
+                                                                        where: {
+                                                                        node: {
+                                                                            title: "Constantine"
                                                                         }
-                                                                      ]
+                                                                        },
+                                                                        edge: {
+                                                                        score: 8
+                                                                        }
                                                                     }
-                                                                  ]
+                                                                    ]
                                                                 }
+                                                                ]
                                                               }
                                                             }
                                                           ]
@@ -1541,24 +1539,22 @@ subscription SubscriptionPerson {
                                               }
                                             },
                                             connect: {
-                                              _on: {
                                                 ${typePerson.name}: [
-                                                  {
+                                                    {
                                                     movies: [
-                                                      {
+                                                        {
                                                         where: {
-                                                          node: {
+                                                            node: {
                                                             title: "Constantine"
-                                                          }
+                                                            }
                                                         },
                                                         edge: {
-                                                          score: 9
+                                                            score: 9
                                                         }
-                                                      }
+                                                        }
                                                     ]
-                                                  }
+                                                    }
                                                 ]
-                                              }
                                             }
                                           }
                                         ]
@@ -1880,7 +1876,6 @@ subscription SubscriptionPerson {
                                               }
                                             },
                                             connect: {
-                                              _on: {
                                                 ${typePerson.name}: [
                                                   {
                                                     movies: [
@@ -1898,7 +1893,6 @@ subscription SubscriptionPerson {
                                                   }
                                                 ]
                                               }
-                                            }
                                           }
                                         ]
                                       }
@@ -2637,7 +2631,6 @@ subscription SubscriptionPerson {
                                                     score: 10
                                                   },
                                                   connect: {
-                                                    _on: {
                                                       ${typePerson.name}: [
                                                         {
                                                           movies: [
@@ -2654,7 +2647,6 @@ subscription SubscriptionPerson {
                                                           ]
                                                         }
                                                       ]
-                                                    }
                                                   },
                                                   where: {
                                                     node: {
@@ -3114,7 +3106,6 @@ subscription SubscriptionPerson {
                                                     }
                                                   },
                                                   connect: {
-                                                    _on: {
                                                       ${typePerson.name}: [
                                                         {
                                                           movies: [
@@ -3132,7 +3123,6 @@ subscription SubscriptionPerson {
                                                           ]
                                                         }
                                                       ]
-                                                    }
                                                   }
                                                 }
                                             ]
@@ -3581,24 +3571,22 @@ subscription SubscriptionPerson {
                                                                     }
                                                                   },
                                                                   connect: {
-                                                                    _on: {
-                                                                        ${typePerson.name}: [
+                                                                    ${typePerson.name}: [
+                                                                    {
+                                                                        movies: [
                                                                         {
-                                                                          movies: [
-                                                                            {
-                                                                              where: {
-                                                                                node: {
-                                                                                  title: "Constantine"
-                                                                                }
-                                                                              },
-                                                                              edge: {
-                                                                                score: 8
-                                                                              }
+                                                                            where: {
+                                                                            node: {
+                                                                                title: "Constantine"
                                                                             }
-                                                                          ]
+                                                                            },
+                                                                            edge: {
+                                                                            score: 8
+                                                                            }
                                                                         }
-                                                                      ]
+                                                                        ]
                                                                     }
+                                                                    ]
                                                                   }
                                                                 }
                                                               ]
