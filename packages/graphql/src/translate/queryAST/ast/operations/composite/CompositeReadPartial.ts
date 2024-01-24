@@ -24,11 +24,21 @@ import { createNodeFromEntity, createRelationshipFromEntity } from "../../../uti
 import { QueryASTContext } from "../../QueryASTContext";
 import { ReadOperation } from "../ReadOperation";
 import type { OperationTranspileResult } from "../operations";
+import { UNION_UNIFICATION_ENABLED } from "../optimizationSettings";
 
 export class CompositeReadPartial extends ReadOperation {
-    public transpile(context: QueryASTContext) {
+    public transpile(
+        context: QueryASTContext,
+        matchByInterfaceOrUnion?: string,
+        exclusionPredicates?: (matchNode: Cypher.Node) => Cypher.Predicate[]
+    ) {
         if (this.relationship) {
-            return this.transpileNestedCompositeRelationship(this.relationship, context);
+            return this.transpileNestedCompositeRelationship(
+                this.relationship,
+                context,
+                matchByInterfaceOrUnion,
+                exclusionPredicates
+            );
         } else {
             return this.transpileTopLevelCompositeEntity(context);
         }
@@ -36,12 +46,21 @@ export class CompositeReadPartial extends ReadOperation {
 
     private transpileNestedCompositeRelationship(
         entity: RelationshipAdapter,
-        context: QueryASTContext
+        context: QueryASTContext,
+        matchByInterfaceOrUnion?: string,
+        exclusionPredicates?: (matchNode: Cypher.Node) => Cypher.Predicate[]
     ): OperationTranspileResult {
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const parentNode = context.target;
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(this.target, context.neo4jGraphQLContext);
+        const targetNode =
+            matchByInterfaceOrUnion && context.neo4jGraphQLContext.labelManager
+                ? new Cypher.Node({
+                      labels: context.neo4jGraphQLContext.labelManager.getLabelSelectorExpressionObject(
+                          matchByInterfaceOrUnion
+                      ),
+                  })
+                : createNodeFromEntity(this.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(parentNode)
@@ -56,7 +75,11 @@ export class CompositeReadPartial extends ReadOperation {
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
 
-        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
+        const wherePredicate = Cypher.and(
+            filterPredicates,
+            ...authFiltersPredicate,
+            ...(exclusionPredicates?.(targetNode) ?? [])
+        );
         if (wherePredicate) {
             // NOTE: This is slightly different to ReadOperation for cypher compatibility, this could use `WITH *`
             matchClause.where(wherePredicate);
@@ -119,7 +142,10 @@ export class CompositeReadPartial extends ReadOperation {
 
         const targetNodeName = this.target.name;
         projection.set({
-            __resolveType: new Cypher.Literal(targetNodeName),
+            __resolveType:
+                UNION_UNIFICATION_ENABLED && context.neo4jGraphQLContext.labelManager?.hasMainType(targetNodeName)
+                    ? new Cypher.Property(context.target, "mainType")
+                    : new Cypher.Literal(targetNodeName),
             __id: Cypher.id(context.target),
         });
 

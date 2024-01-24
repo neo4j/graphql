@@ -35,6 +35,7 @@ import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
+import { READ_LOWER_TARGET_INTERFACE_ENABLED } from "./optimizationSettings";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
@@ -103,7 +104,22 @@ export class ReadOperation extends Operation {
         //TODO: dupe from transpile
         if (!hasTarget(context)) throw new Error("No parent node found!");
         const relVar = createRelationshipFromEntity(entity);
-        const targetNode = createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
+
+        const lowerToTargetType = READ_LOWER_TARGET_INTERFACE_ENABLED
+            ? context.neo4jGraphQLContext.labelManager?.getLowerTargetInterfaceIfSafeRelationship(
+                  entity.source.name,
+                  entity.name
+              )
+            : null;
+
+        const targetNode =
+            lowerToTargetType && context.neo4jGraphQLContext.labelManager
+                ? new Cypher.Node({
+                      labels: context.neo4jGraphQLContext.labelManager.getLabelSelectorExpressionObject(
+                          lowerToTargetType
+                      ),
+                  })
+                : createNodeFromEntity(entity.target, context.neo4jGraphQLContext);
         const relDirection = entity.getCypherDirection(this.directed);
 
         const pattern = new Cypher.Pattern(context.target)

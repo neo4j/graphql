@@ -29,6 +29,11 @@ interface LabelSelectorExpressionOptions {
 }
 
 export interface LabelManager {
+    getLowerTargetInterfaceIfSafeRelationship: (
+        dataModelType: DataModelType,
+        fieldName: string
+    ) => DataModelType | null;
+    hasMainType: (dataModelType: DataModelType) => boolean;
     getLabelSelectorExpressionObject: (
         dataModelType: DataModelType,
         options?: LabelSelectorExpressionOptions

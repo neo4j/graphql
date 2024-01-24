@@ -30,7 +30,13 @@ export function createNodeFromEntity(
     name?: string
 ): Cypher.Node {
     const nodeLabels = entity instanceof ConcreteEntityAdapter ? entity.getLabels() : [entity.name];
-    const labels = neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
+    const hasContextLabels = nodeLabels.some((l) => l.startsWith("$"));
+    const _labels = neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
+
+    const labels =
+        hasContextLabels || !neo4jGraphQLContext?.labelManager
+            ? _labels
+            : neo4jGraphQLContext.labelManager.getLabelSelectorExpressionObject(entity.name);
 
     if (name) {
         return new Cypher.NamedNode(name, { labels });
