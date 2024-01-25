@@ -429,7 +429,7 @@ function makeUpdateConnectionFieldInputTypeFields({
         // fields["node"] = updateInputType;
         fields["node"] = relationshipAdapter.target.operations.updateInputTypeName;
     }
-    if (relationshipAdapter.hasCreateInputFields) {
+    if (relationshipAdapter.hasUpdateInputFields) {
         fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;
     }
     return fields;

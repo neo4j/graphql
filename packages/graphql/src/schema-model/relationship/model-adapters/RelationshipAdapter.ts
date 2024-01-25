@@ -264,6 +264,9 @@ export class RelationshipAdapter {
     public get hasCreateInputFields(): boolean {
         return this.createInputFields.length > 0;
     }
+    public get hasUpdateInputFields(): boolean {
+        return this.updateInputFields.length > 0;
+    }
     public get hasAnyProperties(): boolean {
         return this.propertiesTypeName !== undefined;
     }

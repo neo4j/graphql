@@ -147,8 +147,14 @@ export class RelationshipDeclarationAdapter {
         return !!this.relationshipImplementations.find((relationshipImpl) => relationshipImpl.hasAnyProperties);
     }
 
-    public get hasNonGeneratedProperties(): boolean {
-        return !!this.relationshipImplementations.find((impl) => impl.hasNonGeneratedProperties);
+    public get hasCreateInputFields(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasCreateInputFields);
+    }
+    public get hasUpdateInputFields(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasUpdateInputFields);
+    }
+    public get hasNonNullCreateInputFields(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasNonNullCreateInputFields);
     }
 
     public isReadable(): boolean {

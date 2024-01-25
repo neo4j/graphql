@@ -709,13 +709,15 @@ function doForRelationshipDeclaration({
             composer,
         });
 
-        if (relationshipAdapter.hasNonGeneratedProperties) {
+        if (relationshipAdapter.hasCreateInputFields) {
             withEdgeWrapperType({
                 edgeTypeName: relationshipDeclarationAdapter.operations.createInputTypeName,
                 edgeFieldTypeName: relationshipAdapter.operations.edgeCreateInputTypeName,
                 edgeFieldAdapter: relationshipAdapter,
                 composer,
             });
+        }
+        if (relationshipAdapter.hasUpdateInputFields) {
             withEdgeWrapperType({
                 edgeTypeName: relationshipDeclarationAdapter.operations.edgeUpdateInputTypeName,
                 edgeFieldTypeName: relationshipAdapter.operations.edgeUpdateInputTypeName,
