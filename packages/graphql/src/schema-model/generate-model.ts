@@ -184,14 +184,7 @@ function generateInterfaceEntity(
         return parseAttribute(fieldDefinition, definitionCollection, definition.fields);
     });
 
-    // TODO: ALE CHECK THIS
-    const inheritedDirectives =
-        definition.interfaces?.flatMap((interfaceNamedNode) => {
-            const interfaceName = interfaceNamedNode.name.value;
-            return definitionCollection.interfaceTypes.get(interfaceName)?.directives || [];
-        }) || [];
-    const mergedDirectives = (definition.directives || []).concat(inheritedDirectives);
-    const annotations = parseAnnotations(mergedDirectives);
+    const annotations = parseAnnotations(definition.directives || []);
 
     return new InterfaceEntity({
         ...interfaceEntity,

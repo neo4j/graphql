@@ -575,7 +575,7 @@ describe("Top-level interface query fields", () => {
             expect(queryResult.errors).toHaveLength(1);
             expect(queryResult.errors?.[0]).toHaveProperty(
                 "message",
-                'Cannot query field "myInterfaces" on type "Query".'
+                'Cannot query field "myInterfaces" on type "Query". Did you mean "myOtherInterfaces"?'
             );
         });
     });
