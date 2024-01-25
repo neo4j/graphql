@@ -790,8 +790,10 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               originalTitle_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               originalTitle_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               originalTitle_STARTS_WITH: String
+              translatedTitle: BookTitleWhere
               translatedTitleConnection: BookTranslatedTitleConnectionWhere
               translatedTitleConnection_NOT: BookTranslatedTitleConnectionWhere
+              translatedTitle_NOT: BookTitleWhere
             }
 
             type BooksConnection {

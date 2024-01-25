@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, InputValueDefinitionNode } from "graphql";
+import type { DirectiveNode } from "graphql";
 import { GraphQLInt } from "graphql";
 import type {
     Directive,
@@ -34,26 +34,10 @@ import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapte
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import type { BaseField, InputField } from "../types";
+import type { InputField } from "../types";
 import { DEPRECATE_NOT } from "./constants";
-import getFieldTypeMeta from "./get-field-type-meta";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
-
-export function graphqlInputValueToCompose(args: InputValueDefinitionNode[]) {
-    return args.reduce((res, arg) => {
-        const meta = getFieldTypeMeta(arg.type);
-
-        return {
-            ...res,
-            [arg.name.value]: {
-                type: meta.pretty,
-                description: arg.description,
-                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue) } : {}),
-            },
-        };
-    }, {});
-}
 
 export function graphqlArgsToCompose(args: Argument[]) {
     return args.reduce((res, arg) => {
@@ -80,40 +64,6 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
         ),
         name: directive.name.value,
     }));
-}
-
-export function objectFieldsToComposeFields(fields: BaseField[]): {
-    [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
-} {
-    return fields.reduce((res, field) => {
-        if (field.writeonly || field.selectableOptions.onRead === false) {
-            return res;
-        }
-
-        const newField: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> = {
-            type: field.typeMeta.pretty,
-            args: {},
-            description: field.description,
-        };
-
-        if (field.otherDirectives.length) {
-            newField.directives = graphqlDirectivesToCompose(field.otherDirectives);
-        }
-
-        if (["Int", "Float"].includes(field.typeMeta.name)) {
-            newField.resolve = numericalResolver;
-        }
-
-        if (field.typeMeta.name === "ID") {
-            newField.resolve = idResolver;
-        }
-
-        if (field.arguments) {
-            newField.args = graphqlInputValueToCompose(field.arguments);
-        }
-
-        return { ...res, [field.fieldName]: newField };
-    }, {});
 }
 
 export function relationshipAdapterToComposeFields(
@@ -335,6 +285,7 @@ export function withMathOperators(): AdditionalFieldsCallback {
         return fields;
     };
 }
+
 export function withArrayOperators(): AdditionalFieldsCallback {
     return (attribute: AttributeAdapter): InputTypeComposerFieldConfigMapDefinition => {
         const fields: InputTypeComposerFieldConfigMapDefinition = {};

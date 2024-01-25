@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class SelectableAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class SelectableAnnotation implements Annotation {
+    readonly name = "selectable";
     public readonly onRead: boolean;
     public readonly onAggregate: boolean;
 

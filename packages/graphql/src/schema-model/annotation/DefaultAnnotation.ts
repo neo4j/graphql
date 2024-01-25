@@ -17,9 +17,13 @@
  * limitations under the License.
  */
 
+import type { Annotation } from "./Annotation";
+
 export type DefaultAnnotationValue = string | number | boolean;
 
-export class DefaultAnnotation {
+export class DefaultAnnotation implements Annotation {
+    readonly name = "default";
+
     public readonly value: DefaultAnnotationValue;
 
     constructor({ value }: { value: DefaultAnnotationValue }) {

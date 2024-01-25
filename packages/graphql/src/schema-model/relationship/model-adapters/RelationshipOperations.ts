@@ -236,7 +236,7 @@ export class RelationshipOperations {
 
     public get edgeCreateInputTypeName(): string {
         return `${this.relationship.propertiesTypeName}CreateInput${
-            this.relationship.hasNonNullNonGeneratedProperties ? `!` : ""
+            this.relationship.hasNonNullCreateInputFields ? `!` : ""
         }`;
     }
     public get createInputTypeName(): string {

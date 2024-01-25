@@ -93,6 +93,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               since: SortDirection
             }
 
+            input FOLLOWSUpdateInput {
+              since: DateTime
+            }
+
             input FOLLOWSWhere {
               AND: [FOLLOWSWhere!]
               NOT: FOLLOWSWhere
@@ -352,6 +356,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingUpdateConnectionInput {
+              edge: FOLLOWSUpdateInput
               node: ProfileUpdateInput
             }
 

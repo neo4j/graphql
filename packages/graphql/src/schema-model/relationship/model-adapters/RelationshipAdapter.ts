@@ -258,15 +258,14 @@ export class RelationshipAdapter {
         return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
     }
 
-    public get nonGeneratedProperties(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isNonGeneratedField());
+    public get hasNonNullCreateInputFields(): boolean {
+        return this.createInputFields.some((property) => property.typeHelper.isRequired());
     }
-    public get hasNonNullNonGeneratedProperties(): boolean {
-        return this.nonGeneratedProperties.some((property) => property.typeHelper.isRequired());
+    public get hasCreateInputFields(): boolean {
+        return this.createInputFields.length > 0;
     }
-
-    public get hasNonGeneratedProperties(): boolean {
-        return this.nonGeneratedProperties.length > 0;
+    public get hasUpdateInputFields(): boolean {
+        return this.updateInputFields.length > 0;
     }
     public get hasAnyProperties(): boolean {
         return this.propertiesTypeName !== undefined;

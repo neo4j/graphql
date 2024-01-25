@@ -464,7 +464,7 @@ describe("Create or Connect", () => {
                 type ActedIn @relationshipProperties {
                     id: ID! @id
                     createdAt: DateTime! @timestamp(operations: [CREATE])
-                    updatedAt: DateTime! @timestamp(operations: [UPDATE])
+                    updatedAt: DateTime @timestamp(operations: [UPDATE])
                     screentime: Int!
                 }
             `;

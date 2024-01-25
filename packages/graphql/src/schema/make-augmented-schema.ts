@@ -88,8 +88,9 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
-import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
+import { SHAREABLE } from "../constants";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -162,7 +163,7 @@ function makeAugmentedSchema({
 
     // TODO: ideally move these in getSubgraphSchema()
     if (subgraph) {
-        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+        const shareable = subgraph.getFullyQualifiedDirectiveName(SHAREABLE);
         [CreateInfo.name, UpdateInfo.name, DeleteInfo.name, PageInfo.name].forEach((typeName) => {
             const typeComposer = composer.getOTC(typeName);
             typeComposer.setDirectiveByName(shareable);
@@ -602,6 +603,21 @@ function makeAugmentedSchema({
                 __resolveType: (root) => root.__resolveType,
             };
         }
+        if (compositeEntity instanceof InterfaceEntity) {
+            for (const relationshipDeclaration of compositeEntity.relationshipDeclarations.values()) {
+                const relationshipDeclarationPropertiesType = new RelationshipDeclarationAdapter(
+                    relationshipDeclaration
+                ).operations.relationshipPropertiesFieldTypename;
+                const isPropertiesTypeInSchema = parsedDoc.definitions.some(
+                    (def): boolean => def["name"]?.value === relationshipDeclarationPropertiesType
+                );
+                if (isPropertiesTypeInSchema && !generatedResolvers[relationshipDeclarationPropertiesType]) {
+                    generatedResolvers[relationshipDeclarationPropertiesType] = {
+                        __resolveType: (root) => root.__resolveType,
+                    };
+                }
+            }
+        }
     });
 
     // do not propagate Neo4jGraphQL directives on schema extensions
@@ -675,6 +691,7 @@ function doForRelationshipDeclaration({
         if (!relationshipAdapter.propertiesTypeName) {
             continue;
         }
+
         composer
             .getOrCreateUTC(relationshipDeclarationAdapter.operations.relationshipPropertiesFieldTypename)
             .addType(relationshipAdapter.propertiesTypeName);
@@ -692,13 +709,15 @@ function doForRelationshipDeclaration({
             composer,
         });
 
-        if (relationshipAdapter.hasNonGeneratedProperties) {
+        if (relationshipAdapter.hasCreateInputFields) {
             withEdgeWrapperType({
                 edgeTypeName: relationshipDeclarationAdapter.operations.createInputTypeName,
                 edgeFieldTypeName: relationshipAdapter.operations.edgeCreateInputTypeName,
                 edgeFieldAdapter: relationshipAdapter,
                 composer,
             });
+        }
+        if (relationshipAdapter.hasUpdateInputFields) {
             withEdgeWrapperType({
                 edgeTypeName: relationshipDeclarationAdapter.operations.edgeUpdateInputTypeName,
                 edgeFieldTypeName: relationshipAdapter.operations.edgeUpdateInputTypeName,

@@ -18,7 +18,10 @@
  */
 
 // TODO: maybe this can be a field on the concrete entity
-export class PluralAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class PluralAnnotation implements Annotation {
+    readonly name = "plural";
     public readonly value: string;
 
     constructor({ value }: { value: string }) {

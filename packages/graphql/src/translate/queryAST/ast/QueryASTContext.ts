@@ -24,7 +24,8 @@ type Scope = Map<string, Cypher.Variable>;
 
 export class QueryASTEnv {
     private scopes = new Map<Cypher.Node | Cypher.Relationship, Scope>();
-    public topLevelOperationName: "READ" | "CREATE" = "READ";
+    public topLevelOperationName: "READ" | "CREATE" | "UPDATE" | "DELETE"= "READ";
+    
     public getScope(element: Cypher.Node | Cypher.Relationship): Scope {
         const scope = this.scopes.get(element);
         if (scope) {
@@ -45,7 +46,8 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
     public readonly direction?: ContextDirection;
     public readonly source?: Cypher.Node;
     public readonly returnVariable: Cypher.Variable;
-    public readonly shouldCollect: boolean; // temporary hack to describe if we should collect the return variable (used for unwind create)
+    public readonly shouldCollect: boolean; // temporary hack to describe if we should collect the return variable (used for mutation response)
+    public readonly shouldDistinct: boolean; // temporary hack to describe if we should distinct the return variable (used for mutation response)
 
     public env: QueryASTEnv;
     public neo4jGraphQLContext: Neo4jGraphQLTranslationContext;
@@ -59,6 +61,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
         neo4jGraphQLContext,
         returnVariable,
         shouldCollect,
+        shouldDistinct,
     }: {
         target: T;
         relationship?: Cypher.Relationship;
@@ -68,6 +71,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
         neo4jGraphQLContext: Neo4jGraphQLTranslationContext;
         returnVariable?: Cypher.Variable;
         shouldCollect?: boolean;
+        shouldDistinct?: boolean;
     }) {
         this.target = target;
         this.relationship = relationship;
@@ -76,6 +80,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
         this.neo4jGraphQLContext = neo4jGraphQLContext;
         this.returnVariable = returnVariable ?? new Cypher.Variable();
         this.shouldCollect = shouldCollect ?? false;
+        this.shouldDistinct = shouldDistinct ?? false;
         this.direction = direction;
     }
 

@@ -25,7 +25,7 @@ import type { Operation } from "./Operation";
 export class OperationAdapter {
     public readonly name: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor(entity: Operation) {
         this.name = entity.name;

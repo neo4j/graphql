@@ -477,38 +477,24 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WHERE this1.name = $param1
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Person)
-            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_this_actors0param0
-            WITH this_actors0_relationship, collect(DISTINCT this_actors0) AS this_actors0_to_delete
-            CALL {
-            	WITH this_actors0_to_delete
-            	UNWIND this_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"123\\",
-                \\"this_deleteMovies\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": \\"Actor to delete\\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteMovies_args_delete_actors0_where_this_actors0param0\\": \\"Actor to delete\\"
+                \\"param1\\": \\"Actor to delete\\"
             }"
         `);
     });

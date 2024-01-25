@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
-export class TimestampAnnotation {
+import type { Annotation } from "./Annotation";
+
+export class TimestampAnnotation implements Annotation {
+    readonly name = "timestamp";
     public readonly operations: string[];
 
     constructor({ operations }: { operations: string[] }) {

@@ -206,7 +206,12 @@ export class Executor {
         if (info) {
             const source = {
                 // We avoid using print here, when possible, as it is a heavy process
-                query: info.operation.loc?.source.body || print(info.operation),
+                query:
+                    info.operation.loc?.source.body ||
+                    // Print both fragments and operation, otherwise printed queries are invalid due to missing fragments
+                    [Object.values(info.fragments).map((fragment) => print(fragment)), print(info.operation)].join(
+                        "\n\n"
+                    ),
                 params: info.variableValues,
             };
 

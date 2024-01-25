@@ -143,7 +143,7 @@ describe("info", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.id = $param0
-            RETURN 'Query cannot conclude with CALL'"
+            RETURN \\"Query cannot conclude with CALL\\""
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

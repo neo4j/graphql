@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { Annotation } from "./Annotation";
+
 export type FullTextField = {
     name?: string;
     fields: string[];
@@ -24,7 +26,8 @@ export type FullTextField = {
     indexName: string;
 };
 
-export class FullTextAnnotation {
+export class FullTextAnnotation implements Annotation {
+    readonly name = "fulltext";
     public readonly indexes: FullTextField[];
 
     constructor({ indexes }: { indexes: FullTextField[] }) {

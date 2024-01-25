@@ -282,6 +282,7 @@ describe("Unions", () => {
               name_NOT_IN: [String!] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               name_STARTS_WITH: String
+              publications: PublicationWhere @deprecated(reason: \\"Use \`publications_SOME\` instead.\\")
               publicationsConnection: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Use \`publicationsConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Authors where all of the related AuthorPublicationsConnections match this filter
@@ -300,6 +301,19 @@ describe("Unions", () => {
               Return Authors where some of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
               publicationsConnection_SOME: AuthorPublicationsConnectionWhere
+              \\"\\"\\"Return Authors where all of the related Publications match this filter\\"\\"\\"
+              publications_ALL: PublicationWhere
+              \\"\\"\\"
+              Return Authors where none of the related Publications match this filter
+              \\"\\"\\"
+              publications_NONE: PublicationWhere
+              publications_NOT: PublicationWhere @deprecated(reason: \\"Use \`publications_NONE\` instead.\\")
+              \\"\\"\\"Return Authors where one of the related Publications match this filter\\"\\"\\"
+              publications_SINGLE: PublicationWhere
+              \\"\\"\\"
+              Return Authors where some of the related Publications match this filter
+              \\"\\"\\"
+              publications_SOME: PublicationWhere
             }
 
             type AuthorsConnection {

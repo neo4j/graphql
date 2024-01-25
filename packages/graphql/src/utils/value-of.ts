@@ -17,14 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
-
-/** Deprecated in favour of @populatedBy */
-export const CallbackOperationEnum = new GraphQLEnumType({
-    name: "CallbackOperation",
-    description: "*For use in the @callback directive only*",
-    values: {
-        CREATE: {},
-        UPDATE: {},
-    },
-});
+/**
+ * Type matching the elements in object/array
+ */
+export type ValueOf<T extends ReadonlyArray<unknown> | Array<unknown>> = T[number];

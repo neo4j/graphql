@@ -76,50 +76,35 @@ describe("Interface Relationships - Delete delete", () => {
             "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title STARTS WITH $param0
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL {
+                    WITH var2
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
             CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
+                WITH *
+                OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Series)
+                WHERE this5.title STARTS WITH $param1
+                WITH this4, collect(DISTINCT this5) AS var6
+                CALL {
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
             }
             WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Series0_relationship:ACTED_IN]->(this_actedIn_Series0:Series)
-            WHERE this_actedIn_Series0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0
-            WITH this_actedIn_Series0_relationship, collect(DISTINCT this_actedIn_Series0) AS this_actedIn_Series0_to_delete
-            CALL {
-            	WITH this_actedIn_Series0_to_delete
-            	UNWIND this_actedIn_Series0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0\\": \\"The \\",
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0\\": \\"The \\"
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"The \\"
             }"
         `);
     });
@@ -147,87 +132,61 @@ describe("Interface Relationships - Delete delete", () => {
             "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0
-            WITH *
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title STARTS WITH $param0
+                WITH *
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WHERE this3.name = $param1
+                    WITH this2, collect(DISTINCT this3) AS var4
+                    CALL {
+                        WITH var4
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
+                    }
+                }
+                WITH this0, collect(DISTINCT this1) AS var6
+                CALL {
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
+            }
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                WHERE this9.title STARTS WITH $param2
+                WITH *
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this9)<-[this10:ACTED_IN]-(this11:Actor)
+                    WHERE this11.name = $param3
+                    WITH this10, collect(DISTINCT this11) AS var12
+                    CALL {
+                        WITH var12
+                        UNWIND var12 AS var13
+                        DETACH DELETE var13
+                    }
+                }
+                WITH this8, collect(DISTINCT this9) AS var14
+                CALL {
+                    WITH var14
+                    UNWIND var14 AS var15
+                    DETACH DELETE var15
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this_actedIn_Movie0)<-[this_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_actedIn_Movie0_actors0:Actor)
-            WHERE this_actedIn_Movie0_actors0.name = $this_deleteActors_args_delete_actedIn0_delete_actors0_where_this_actedIn_Movie0_actors0param0
-            WITH this_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_actedIn_Movie0_actors0) AS this_actedIn_Movie0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_actors0_to_delete
-            	UNWIND this_actedIn_Movie0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Series0_relationship:ACTED_IN]->(this_actedIn_Series0:Series)
-            WHERE this_actedIn_Series0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this_actedIn_Series0)<-[this_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_actedIn_Series0_actors0:Actor)
-            WHERE this_actedIn_Series0_actors0.name = $this_deleteActors_args_delete_actedIn0_delete_actors0_where_this_actedIn_Series0_actors0param0
-            WITH this_actedIn_Series0_actors0_relationship, collect(DISTINCT this_actedIn_Series0_actors0) AS this_actedIn_Series0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn_Series0_actors0_to_delete
-            	UNWIND this_actedIn_Series0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_actedIn_Series0_relationship, collect(DISTINCT this_actedIn_Series0) AS this_actedIn_Series0_to_delete
-            CALL {
-            	WITH this_actedIn_Series0_to_delete
-            	UNWIND this_actedIn_Series0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
-                                    },
-                                    \\"delete\\": {
-                                        \\"actors\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0\\": \\"The \\",
-                \\"this_deleteActors_args_delete_actedIn0_delete_actors0_where_this_actedIn_Movie0_actors0param0\\": \\"Actor\\",
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0\\": \\"The \\",
-                \\"this_deleteActors_args_delete_actedIn0_delete_actors0_where_this_actedIn_Series0_actors0param0\\": \\"Actor\\"
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"Actor\\",
+                \\"param2\\": \\"The \\",
+                \\"param3\\": \\"Actor\\"
             }"
         `);
     });
@@ -255,80 +214,48 @@ describe("Interface Relationships - Delete delete", () => {
             "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0
-            WITH *
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title STARTS WITH $param0
+                WITH *
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WHERE this3.name = $param1
+                    WITH this2, collect(DISTINCT this3) AS var4
+                    CALL {
+                        WITH var4
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
+                    }
+                }
+                WITH this0, collect(DISTINCT this1) AS var6
+                CALL {
+                    WITH var6
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
+            }
             CALL {
-            WITH *
-            OPTIONAL MATCH (this_actedIn_Movie0)<-[this_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_actedIn_Movie0_actors0:Actor)
-            WHERE this_actedIn_Movie0_actors0.name = $this_deleteActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_actedIn_Movie0_actors0param0
-            WITH this_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_actedIn_Movie0_actors0) AS this_actedIn_Movie0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_actors0_to_delete
-            	UNWIND this_actedIn_Movie0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
+                WITH *
+                OPTIONAL MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                WHERE this9.title STARTS WITH $param2
+                WITH this8, collect(DISTINCT this9) AS var10
+                CALL {
+                    WITH var10
+                    UNWIND var10 AS var11
+                    DETACH DELETE var11
+                }
             }
             WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Series0_relationship:ACTED_IN]->(this_actedIn_Series0:Series)
-            WHERE this_actedIn_Series0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0
-            WITH this_actedIn_Series0_relationship, collect(DISTINCT this_actedIn_Series0) AS this_actedIn_Series0_to_delete
-            CALL {
-            	WITH this_actedIn_Series0_to_delete
-            	UNWIND this_actedIn_Series0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
-                                    },
-                                    \\"delete\\": {
-                                        \\"_on\\": {
-                                            \\"Movie\\": [
-                                                {
-                                                    \\"actors\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": \\"Actor\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0\\": \\"The \\",
-                \\"this_deleteActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_actedIn_Movie0_actors0param0\\": \\"Actor\\",
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0\\": \\"The \\"
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"Actor\\",
+                \\"param2\\": \\"The \\"
             }"
         `);
     });
@@ -359,102 +286,73 @@ describe("Interface Relationships - Delete delete", () => {
             "MATCH (this:Actor)
             WITH *
             CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Movie0_relationship:ACTED_IN]->(this_actedIn_Movie0:Movie)
-            WHERE this_actedIn_Movie0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0
-            WITH *
+                WITH *
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title STARTS WITH $param0
+                WITH *
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WHERE this3.name = $param1
+                    WITH this2, collect(DISTINCT this3) AS var4
+                    CALL {
+                        WITH var4
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
+                    }
+                }
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this1)<-[this6:ACTED_IN]-(this7:Actor)
+                    WHERE this7.name = $param2
+                    WITH this6, collect(DISTINCT this7) AS var8
+                    CALL {
+                        WITH var8
+                        UNWIND var8 AS var9
+                        DETACH DELETE var9
+                    }
+                }
+                WITH this0, collect(DISTINCT this1) AS var10
+                CALL {
+                    WITH var10
+                    UNWIND var10 AS var11
+                    DETACH DELETE var11
+                }
+            }
             CALL {
+                WITH *
+                OPTIONAL MATCH (this)-[this12:ACTED_IN]->(this13:Series)
+                WHERE this13.title STARTS WITH $param3
+                WITH *
+                CALL {
+                    WITH *
+                    OPTIONAL MATCH (this13)<-[this14:ACTED_IN]-(this15:Actor)
+                    WHERE this15.name = $param4
+                    WITH this14, collect(DISTINCT this15) AS var16
+                    CALL {
+                        WITH var16
+                        UNWIND var16 AS var17
+                        DETACH DELETE var17
+                    }
+                }
+                WITH this12, collect(DISTINCT this13) AS var18
+                CALL {
+                    WITH var18
+                    UNWIND var18 AS var19
+                    DETACH DELETE var19
+                }
+            }
             WITH *
-            OPTIONAL MATCH (this_actedIn_Movie0)<-[this_actedIn_Movie0_actors0_relationship:ACTED_IN]-(this_actedIn_Movie0_actors0:Actor)
-            WHERE this_actedIn_Movie0_actors0.name = $this_deleteActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_actedIn_Movie0_actors0param0
-            WITH this_actedIn_Movie0_actors0_relationship, collect(DISTINCT this_actedIn_Movie0_actors0) AS this_actedIn_Movie0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_actors0_to_delete
-            	UNWIND this_actedIn_Movie0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_actedIn_Movie0_relationship, collect(DISTINCT this_actedIn_Movie0) AS this_actedIn_Movie0_to_delete
-            CALL {
-            	WITH this_actedIn_Movie0_to_delete
-            	UNWIND this_actedIn_Movie0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this)-[this_actedIn_Series0_relationship:ACTED_IN]->(this_actedIn_Series0:Series)
-            WHERE this_actedIn_Series0.title STARTS WITH $this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0
-            WITH *
-            CALL {
-            WITH *
-            OPTIONAL MATCH (this_actedIn_Series0)<-[this_actedIn_Series0_actors0_relationship:ACTED_IN]-(this_actedIn_Series0_actors0:Actor)
-            WHERE this_actedIn_Series0_actors0.name = $this_deleteActors_args_delete_actedIn0_delete_actors0_where_this_actedIn_Series0_actors0param0
-            WITH this_actedIn_Series0_actors0_relationship, collect(DISTINCT this_actedIn_Series0_actors0) AS this_actedIn_Series0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn_Series0_actors0_to_delete
-            	UNWIND this_actedIn_Series0_actors0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
-            WITH this_actedIn_Series0_relationship, collect(DISTINCT this_actedIn_Series0) AS this_actedIn_Series0_to_delete
-            CALL {
-            	WITH this_actedIn_Series0_to_delete
-            	UNWIND this_actedIn_Series0_to_delete AS x
-            	DETACH DELETE x
-            }
-            }
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_deleteActors\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_STARTS_WITH\\": \\"The \\"
-                                        }
-                                    },
-                                    \\"delete\\": {
-                                        \\"_on\\": {
-                                            \\"Movie\\": [
-                                                {
-                                                    \\"actors\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": \\"Different Actor\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        \\"actors\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": \\"Actor\\"
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Movie0param0\\": \\"The \\",
-                \\"this_deleteActors_args_delete_actedIn0_delete__on_Movie0_actors0_where_this_actedIn_Movie0_actors0param0\\": \\"Different Actor\\",
-                \\"this_deleteActors_args_delete_actedIn0_where_this_actedIn_Series0param0\\": \\"The \\",
-                \\"this_deleteActors_args_delete_actedIn0_delete_actors0_where_this_actedIn_Series0_actors0param0\\": \\"Actor\\"
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"Different Actor\\",
+                \\"param2\\": \\"Actor\\",
+                \\"param3\\": \\"The \\",
+                \\"param4\\": \\"Actor\\"
             }"
         `);
     });

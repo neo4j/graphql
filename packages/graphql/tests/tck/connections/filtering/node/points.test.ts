@@ -99,7 +99,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { screenTime: this0.screenTime }, node: { name: this1.name, currentLocation: CASE
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, currentLocation: CASE
                         WHEN this1.currentLocation IS NOT NULL THEN { point: this1.currentLocation }
                         ELSE NULL
                     END } }) AS var2

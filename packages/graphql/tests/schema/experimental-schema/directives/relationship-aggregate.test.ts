@@ -2338,6 +2338,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2356,6 +2357,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      actors_ALL: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      actors_NONE: CastMemberWhere
+                      actors_NOT: CastMemberWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      actors_SINGLE: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      actors_SOME: CastMemberWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String
@@ -2861,6 +2871,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberWhere @deprecated(reason: \\"Use \`actors_SOME\` instead.\\")
                       actorsConnection: MovieActorsConnectionWhere @deprecated(reason: \\"Use \`actorsConnection_SOME\` instead.\\")
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2879,6 +2890,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
                       actorsConnection_SOME: MovieActorsConnectionWhere
+                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      actors_ALL: CastMemberWhere
+                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      actors_NONE: CastMemberWhere
+                      actors_NOT: CastMemberWhere @deprecated(reason: \\"Use \`actors_NONE\` instead.\\")
+                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      actors_SINGLE: CastMemberWhere
+                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      actors_SOME: CastMemberWhere
                       title: String
                       title_CONTAINS: String
                       title_ENDS_WITH: String

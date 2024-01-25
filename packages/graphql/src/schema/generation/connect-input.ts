@@ -222,7 +222,7 @@ function makeConnectFieldInputTypeFields({
     ifUnionMemberEntity?: ConcreteEntityAdapter;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
-    if (relationshipAdapter.hasNonGeneratedProperties) {
+    if (relationshipAdapter.hasCreateInputFields) {
         fields["edge"] = relationshipAdapter.operations.edgeCreateInputTypeName;
     }
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {

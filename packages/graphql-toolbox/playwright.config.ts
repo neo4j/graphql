@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { PlaywrightTestConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
     webServer: {
         command: "yarn start",
         url: "http://localhost:4242",
@@ -35,6 +35,7 @@ const config: PlaywrightTestConfig = {
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 6 : undefined,
+    maxFailures: process.env.CI ? 10 : undefined,
     projects: [
         {
             name: "chromium",
@@ -53,5 +54,4 @@ const config: PlaywrightTestConfig = {
         },
     ],
     outputDir: "tests/artifacts/",
-};
-export default config;
+});

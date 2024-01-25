@@ -106,41 +106,48 @@ export class ReadOperation extends Operation {
     ): OperationTranspileResult {
         const isCreateSelection = context.env.topLevelOperationName === "CREATE";
         //TODO: dupe from transpile
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
 
         // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
 
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         const filterPredicates = this.getPredicates(nestedContext);
+        const fieldSubqueries = this.getFieldsSubqueries(nestedContext);
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const subqueries = Cypher.concat(...fieldSubqueries, ...cypherFieldSubqueries);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
             new Cypher.Call(sq).innerWith(nestedContext.target)
         );
+
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+        const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
 
         let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
             return f.getSelection(nestedContext);
         });
-
         if (extraMatches.length > 0) {
             extraMatches = [matchClause, ...extraMatches];
             matchClause = new Cypher.With("*");
         }
 
-        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
-        let withWhere: Cypher.With | undefined;
-
         let filterSubqueryWith: Cypher.With | undefined;
-
+        let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
         // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFiltersPredicate.length > 0;
-        if (authFilterSubqueries.length > 0 || shouldAddWithForAuth) {
+        const shouldAddWithForAuth = authFilterSubqueries.length > 0 || authFiltersPredicate.length > 0;
+        if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
             if (!isCreateSelection || authFilterSubqueries.length) {
+                filterSubqueriesClause = Cypher.concat(...filterSubqueries);
                 // for creates auth filters sometimes use variables from the subquery
                 filterSubqueryWith = new Cypher.With("*");
             }
         }
 
+        const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
             if (filterSubqueryWith) {
                 filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
@@ -149,17 +156,12 @@ export class ReadOperation extends Operation {
             }
         }
 
-        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
-        const subqueries = Cypher.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
-        const ret = this.getProjectionClause(nestedContext, context.returnVariable, entity.isList);
-
         const clause = Cypher.concat(
             ...extraMatches,
             matchClause,
             ...authFilterSubqueries,
+            filterSubqueriesClause,
             filterSubqueryWith,
-            withWhere,
             subqueries,
             ...sortSubqueries,
             ret
@@ -201,47 +203,42 @@ export class ReadOperation extends Operation {
             return this.transpileNestedRelationship(this.relationship, context);
         }
 
+        // eslint-disable-next-line prefer-const
         let { selection: matchClause, nestedContext } = this.selection.apply(context);
+
         const isCreateSelection = nestedContext.env.topLevelOperationName === "CREATE";
-        if (isCreateSelection) {
+        const isUpdateSelection = nestedContext.env.topLevelOperationName === "UPDATE";
+        if (isCreateSelection || isUpdateSelection) {
             if (!context.hasTarget()) {
                 throw new Error("Invalid target for create operation");
             }
-            // Match is not applied on creation (last concat ignores the top level match) so we revert the context apply
+            // Match is not applied on mutations (last concat ignores the top level match) so we revert the context apply
             nestedContext = context;
         }
 
-        const preWith: Cypher.With | undefined =
-            isCreateSelection && context.target ? new Cypher.With([context.target, nestedContext.target]) : undefined;
-
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         const filterPredicates = this.getPredicates(nestedContext);
+        const fieldSubqueries = this.getFieldsSubqueries(nestedContext);
+        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
+        const subqueries = Cypher.concat(...fieldSubqueries);
+        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
             new Cypher.Call(sq).innerWith(nestedContext.target)
         );
-        const fieldSubqueries = this.getFieldsSubqueries(nestedContext);
-        const cypherFieldSubqueries = this.getCypherFieldsSubqueries(nestedContext);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.sortFields, [nestedContext.target]);
-        const subqueries = Cypher.concat(...fieldSubqueries);
 
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
         const ret: Cypher.Return = this.getReturnStatement(
-            isCreateSelection ? context : nestedContext,
+            isCreateSelection || isUpdateSelection ? context : nestedContext,
             nestedContext.returnVariable
         );
 
-        let extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
+        const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => {
             return f.getSelection(nestedContext);
         });
 
-        if (extraMatches.length > 0) {
-            extraMatches = [matchClause, ...extraMatches];
-            matchClause = new Cypher.With("*");
-        }
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined = undefined;
-
         // This weird condition is just for cypher compatibility
         const shouldAddWithForAuth = authFiltersPredicate.length > 0;
         if (filterSubqueries.length > 0 || shouldAddWithForAuth) {
@@ -254,9 +251,14 @@ export class ReadOperation extends Operation {
         const wherePredicate = isCreateSelection
             ? filterPredicates
             : Cypher.and(filterPredicates, ...authFiltersPredicate);
+
+        let extraMatchesWith: Cypher.With | undefined;
         if (wherePredicate) {
             if (filterSubqueryWith) {
                 filterSubqueryWith.where(wherePredicate); // TODO: should this only be for aggregation filters?
+            } else if (extraMatches.length) {
+                extraMatchesWith = new Cypher.With("*");
+                extraMatchesWith.where(wherePredicate);
             } else {
                 matchClause.where(wherePredicate);
             }
@@ -275,14 +277,25 @@ export class ReadOperation extends Operation {
             : Cypher.concat(sortBlock, ...cypherFieldSubqueries);
 
         let clause: Cypher.Clause;
-        // Top-level read part of a mutation does not contains the MATCH clause as is implicit in the mutation.
+        // Top-level read part of a mutation does not contain the MATCH clause as it's implicit in the mutation.
         if (isCreateSelection) {
             clause = Cypher.concat(filterSubqueriesClause, filterSubqueryWith, sortAndLimitBlock, subqueries, ret);
-        } else {
+        } else if (isUpdateSelection) {
+            const matchBlock = extraMatches.length > 0 ? [...extraMatches, extraMatchesWith] : [];
             clause = Cypher.concat(
-                preWith,
-                ...extraMatches,
-                matchClause,
+                ...matchBlock,
+                ...authFilterSubqueries,
+                filterSubqueriesClause,
+                filterSubqueryWith,
+                sortAndLimitBlock,
+                subqueries,
+                ret
+            );
+        } else {
+            const matchBlock =
+                extraMatches.length > 0 ? [matchClause, ...extraMatches, extraMatchesWith] : [matchClause];
+            clause = Cypher.concat(
+                ...matchBlock,
                 ...authFilterSubqueries,
                 filterSubqueriesClause,
                 filterSubqueryWith,
@@ -301,8 +314,13 @@ export class ReadOperation extends Operation {
     protected getReturnStatement(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
         const projection = this.getProjectionMap(context);
         if (context.shouldCollect) {
-            return new Cypher.Return([Cypher.collect(projection), returnVariable]);
+            const collectProj = Cypher.collect(projection);
+            if (context.shouldDistinct) {
+                collectProj.distinct();
+            }
+            return new Cypher.Return([collectProj, returnVariable]);
         }
+
         return new Cypher.Return([projection, returnVariable]);
     }
 

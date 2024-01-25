@@ -245,9 +245,7 @@ export class RelationshipDeclarationOperations {
     // }
 
     public get edgeCreateInputTypeName(): string {
-        const isRequired = this.relationshipDeclaration.relationshipImplementations.some(
-            (impl) => impl.hasNonNullNonGeneratedProperties
-        );
+        const isRequired = this.relationshipDeclaration.hasNonNullCreateInputFields;
         return `${upperFirst(this.relationshipDeclaration.source.name)}${upperFirst(
             this.relationshipDeclaration.name
         )}EdgeCreateInput${isRequired ? `!` : ""}`;

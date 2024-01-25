@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 import type {
-    DirectiveNode,
     DocumentNode,
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -25,7 +24,7 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
-import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "../constants";
+import { SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES } from "./library-directives";
 import {
     declareRelationshipDirective,
     nodeDirective,
@@ -37,13 +36,11 @@ import { filterTruthy } from "../utils/utils";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
 import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { Operation } from "./Operation";
-import type { Annotation } from "./annotation/Annotation";
 import type { Attribute } from "./attribute/Attribute";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import { InterfaceEntity } from "./entity/InterfaceEntity";
 import { UnionEntity } from "./entity/UnionEntity";
-import { parseKeyAnnotation } from "./parser/annotations-parser/key-annotation";
 import type { DefinitionCollection } from "./parser/definition-collection";
 import { getDefinitionCollection } from "./parser/definition-collection";
 import { parseAnnotations } from "./parser/parse-annotation";
@@ -52,6 +49,7 @@ import { parseAttribute, parseAttributeArguments } from "./parser/parse-attribut
 import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
+import { isInArray } from "../utils/is-in-array";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
 
 export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
@@ -101,7 +99,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         );
     });
 
-    const annotations = createSchemaModelAnnotations(definitionCollection.schemaDirectives);
+    const annotations = parseAnnotations(definitionCollection.schemaDirectives);
 
     const schema = new Neo4jGraphQLSchemaModel({
         compositeEntities: [...unionEntities, ...interfaceEntities],
@@ -156,7 +154,7 @@ function generateUnionEntity(
     concreteEntities: Map<string, ConcreteEntity>
 ): UnionEntity {
     const unionEntity = generateCompositeEntity(entityDefinitionName, entityImplementingTypeNames, concreteEntities);
-    const annotations = createEntityAnnotations(unionDefinition.directives || []);
+    const annotations = parseAnnotations(unionDefinition.directives || []);
     return new UnionEntity({ ...unionEntity, annotations });
 }
 
@@ -186,13 +184,14 @@ function generateInterfaceEntity(
         return parseAttribute(fieldDefinition, definitionCollection, definition.fields);
     });
 
+    // TODO: ALE CHECK THIS
     const inheritedDirectives =
         definition.interfaces?.flatMap((interfaceNamedNode) => {
             const interfaceName = interfaceNamedNode.name.value;
             return definitionCollection.interfaceTypes.get(interfaceName)?.directives || [];
         }) || [];
     const mergedDirectives = (definition.directives || []).concat(inheritedDirectives);
-    const annotations = createEntityAnnotations(mergedDirectives);
+    const annotations = parseAnnotations(mergedDirectives);
 
     return new InterfaceEntity({
         ...interfaceEntity,
@@ -214,9 +213,9 @@ function generateCompositeEntity(
         }
         return concreteEntity;
     });
-    /*  
+    /*
    // This is commented out because is currently possible to have leaf interfaces as demonstrated in the test
-   // packages/graphql/tests/integration/aggregations/where/node/string.int.test.ts 
+   // packages/graphql/tests/integration/aggregations/where/node/string.int.test.ts
    if (!compositeFields.length) {
         throw new Neo4jGraphQLSchemaValidationError(
             `Composite entity ${entityDefinitionName} has no concrete entities`
@@ -451,9 +450,9 @@ function generateConcreteEntity(
 
     // schema configuration directives are propagated onto concrete entities
     const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
-        SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES.includes(x.name.value)
+        isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
     );
-    const annotations = createEntityAnnotations((definition.directives || []).concat(schemaDirectives || []));
+    const annotations = parseAnnotations((definition.directives || []).concat(schemaDirectives || []));
 
     return new ConcreteEntity({
         name: definition.name.value,
@@ -475,29 +474,6 @@ function getLabels(entityDefinition: ObjectTypeDefinitionNode): string[] {
     return [entityDefinition.name.value];
 }
 
-function createEntityAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    const entityAnnotations: Annotation[] = [];
-
-    // TODO: I think this is done already with the map change and we do not have repeatable directives
-
-    // We only ever want to create one annotation even when an entity contains several key directives
-    const keyDirectives = directives.filter((directive) => directive.name.value === "key");
-    if (keyDirectives) {
-        entityAnnotations.push(parseKeyAnnotation(keyDirectives));
-    }
-    const annotations = parseAnnotations(directives);
-
-    return entityAnnotations.concat(annotations);
-}
-
-function createSchemaModelAnnotations(directives: readonly DirectiveNode[]): Annotation[] {
-    const schemaModelAnnotations: Annotation[] = [];
-
-    const annotations = parseAnnotations(directives);
-
-    return schemaModelAnnotations.concat(annotations);
-}
-
 function generateOperation(
     definition: ObjectTypeDefinitionNode,
     definitionCollection: DefinitionCollection
@@ -509,6 +485,6 @@ function generateOperation(
     return new Operation({
         name: definition.name.value,
         attributes,
-        annotations: createEntityAnnotations(definition.directives || []),
+        annotations: parseAnnotations(definition.directives || []),
     });
 }

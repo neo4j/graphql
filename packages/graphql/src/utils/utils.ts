@@ -30,6 +30,11 @@ export function isObject(value: unknown): value is object {
     return typeof value === "object" && !Array.isArray(value) && value !== null;
 }
 
+/** Checks if value is a Record (Array and other BuiltIn Object not included)  */
+export function isRecord(value: unknown): value is Record<string, any> {
+    return value !== undefined && value !== null && value.constructor.name === "Object";
+}
+
 /** Checks if two value have the same type */
 export function isSameType<T>(a: T, b: unknown): b is T {
     return typeof a === typeof b && isObject(a) === isObject(b) && Array.isArray(a) === Array.isArray(b);
