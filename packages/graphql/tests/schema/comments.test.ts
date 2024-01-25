@@ -735,6 +735,10 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
+                \\"\\"\\"
+                The edge properties for the following fields:
+                * Actor.actedIn
+                \\"\\"\\"
                 type ActedIn {
                   screenTime: Int!
                 }

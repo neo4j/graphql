@@ -21,12 +21,13 @@ import type { Directive } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { getDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
 export function augmentObjectOrInterfaceTypeWithRelationshipField(
-    relationshipAdapter: RelationshipAdapter,
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
     subgraph?: Subgraph | undefined
 ): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
@@ -57,9 +58,11 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField(
             where: whereTypeName,
             options: optionsTypeName,
         };
-        const directedArg = getDirectedArgument(relationshipAdapter);
-        if (directedArg) {
-            nodeFieldsArgs["directed"] = directedArg;
+        if (relationshipAdapter instanceof RelationshipAdapter) {
+            const directedArg = getDirectedArgument(relationshipAdapter);
+            if (directedArg) {
+                nodeFieldsArgs["directed"] = directedArg;
+            }
         }
         relationshipField.args = nodeFieldsArgs;
     }

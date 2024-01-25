@@ -54,17 +54,17 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
 
             interface Publication {
                 name: String
-                activity: [${Place}!]! @relationship(type: "ACTIVITY", direction: OUT)
+                activity: [${Place}!]! @declareRelationship
             }
 
             type ${Post} implements Publication {
                 name: String
-                activity: [${Place}!]!
+                activity: [${Place}!]! @relationship(type: "ACTIVITY", direction: OUT)
             }
 
             type ${Story} implements Publication {
                 name: String
-                activity: [${Place}!]!
+                activity: [${Place}!]! @relationship(type: "ACTIVITY", direction: OUT)
             }
         `;
 

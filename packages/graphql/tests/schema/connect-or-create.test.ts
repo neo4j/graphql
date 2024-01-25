@@ -536,6 +536,10 @@ describe("Connect Or Create", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            \\"\\"\\"
             type ActedIn {
               characterName: String
               screentime: Int!

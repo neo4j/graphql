@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
             interface ${Media.name} {
                 id: ID!
                 title: String!
-                likedBy: [${Person.name}!]! @relationship(type: "LIKES", direction: IN)
+                likedBy: [${Person.name}!]! @declareRelationship
                 similar: [${Media.name}!]!
 
             }
@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
             type ${Book.name} implements ${Media.name} @node(labels: ["${Book.name}", "${Media.name}"]) {
                 id: ID! @id
                 title: String!
-                likedBy: [${Person.name}!]!
+                likedBy: [${Person.name}!]! @relationship(type: "LIKES", direction: IN)
                 similar: [${Media.name}!]! @cypher(
                     statement: """
                     MATCH (this)<-[:LIKES]-(:${Person.name})-[:LIKES]->(other:${Media.name})
@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/1049", () => {
             type ${Film.name} implements ${Media.name} @node(labels: ["${Film.name}", "${Media.name}"]) {
                 id: ID! @id
                 title: String!
-                likedBy: [${Person.name}!]!
+                likedBy: [${Person.name}!]! @relationship(type: "LIKES", direction: IN)
                 similar: [${Media.name}!]! @cypher(
                     statement: """
                     MATCH (this)<-[:LIKES]-(:${Person.name})-[:LIKES]->(other:${Media.name})

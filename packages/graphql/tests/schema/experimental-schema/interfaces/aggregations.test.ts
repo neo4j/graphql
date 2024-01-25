@@ -321,6 +321,10 @@ describe("Interface Top Level Aggregations", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }

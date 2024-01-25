@@ -1085,6 +1085,10 @@ describe("generate", () => {
               Desc = \\"DESC\\",
             }
 
+            /**
+             * The edge properties for the following fields:
+             * * Movie.actors
+             */
             export type ActedIn = {
               __typename?: \\"ActedIn\\";
               screenTime: Scalars[\\"Int\\"][\\"output\\"];
@@ -2044,6 +2048,11 @@ describe("generate", () => {
               name: StringAggregateSelectionNonNullable;
             };
 
+            /**
+             * The edge properties for the following fields:
+             * * FAQ.entries
+             * * FAQEntry.inFAQs
+             */
             export type FaqEntryInFaq = {
               __typename?: \\"FaqEntryInFaq\\";
               position?: Maybe<Scalars[\\"Int\\"][\\"output\\"]>;

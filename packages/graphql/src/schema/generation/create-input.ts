@@ -28,6 +28,7 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { concreteEntityToCreateInputFields } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
 import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
@@ -79,7 +80,7 @@ export function augmentCreateInputTypeWithRelationshipsInput({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -125,7 +126,7 @@ function makeRelationshipsInputType({
     userDefinedFieldDirectives,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     deprecatedDirectives: Directive[];
@@ -148,7 +149,7 @@ function withUnionCreateInputType({
     deprecatedDirectives,
     userDefinedFieldDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
@@ -178,7 +179,7 @@ function makeUnionCreateInputTypeFields({
     deprecatedDirectives,
     userDefinedFieldDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
@@ -209,7 +210,7 @@ export function withFieldInputType({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
@@ -242,7 +243,7 @@ function makeFieldInputTypeFields({
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;

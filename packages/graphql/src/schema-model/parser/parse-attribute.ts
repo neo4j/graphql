@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
+import type { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import { aliasDirective } from "../../graphql/directives";
 import { Argument } from "../argument/Argument";
@@ -61,20 +61,17 @@ export function parseAttributeArguments(
 
 export function parseAttribute(
     field: FieldDefinitionNode,
-    inheritedField: FieldDefinitionNode[] | undefined,
     definitionCollection: DefinitionCollection,
     definitionFields?: ReadonlyArray<FieldDefinitionNode>
 ): Attribute {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
     const args = parseAttributeArguments(field.arguments || [], definitionCollection);
-    const inheritedDirectives = inheritedField?.flatMap((f) => f.directives || []) || [];
-
-    const annotations = parseAnnotations((field.directives || []).concat(inheritedDirectives));
+    const annotations = parseAnnotations(field.directives || []);
 
     annotations.customResolver?.parseRequire(definitionCollection.document, definitionFields);
 
-    const databaseName = getDatabaseName(field, inheritedField);
+    const databaseName = getDatabaseName(field);
     return new Attribute({
         name,
         annotations,
@@ -85,25 +82,10 @@ export function parseAttribute(
     });
 }
 
-function getDatabaseName(
-    fieldDefinitionNode: FieldDefinitionNode,
-    inheritedFields: FieldDefinitionNode[] | undefined
-): string | undefined {
+function getDatabaseName(fieldDefinitionNode: FieldDefinitionNode): string | undefined {
     const aliasUsage = findDirective(fieldDefinitionNode.directives, aliasDirective.name);
     if (aliasUsage) {
         const { property } = parseArguments<{ property: string }>(aliasDirective, aliasUsage);
-        return property;
-    }
-    const inheritedAliasUsage = inheritedFields?.reduce<DirectiveNode | undefined>((aliasUsage, field) => {
-        // TODO: takes the first one
-        // multiple interfaces can have this annotation - must constrain this flexibility by design
-        if (!aliasUsage) {
-            aliasUsage = findDirective(field.directives, aliasDirective.name);
-        }
-        return aliasUsage;
-    }, undefined);
-    if (inheritedAliasUsage) {
-        const { property } = parseArguments<{ property: string }>(aliasDirective, inheritedAliasUsage);
         return property;
     }
 }

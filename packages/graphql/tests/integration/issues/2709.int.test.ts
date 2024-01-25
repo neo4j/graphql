@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
 
             interface Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @declareRelationship
             }
 
             type MaleActor implements Actor {
@@ -234,7 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
 
             interface Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @declareRelationship
             }
 
             type MaleActor implements Actor {

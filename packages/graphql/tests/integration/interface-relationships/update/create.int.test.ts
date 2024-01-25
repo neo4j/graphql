@@ -42,7 +42,7 @@ describe("interface relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {

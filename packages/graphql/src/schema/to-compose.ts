@@ -33,6 +33,7 @@ import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapter
 import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { InputField } from "../types";
 import { DEPRECATE_NOT } from "./constants";
 import { idResolver } from "./resolvers/field/id";
@@ -66,7 +67,7 @@ export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directi
 }
 
 export function relationshipAdapterToComposeFields(
-    objectFields: RelationshipAdapter[],
+    objectFields: (RelationshipAdapter | RelationshipDeclarationAdapter)[],
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>
 ): Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> {
     const composeFields: Record<string, ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {};

@@ -27,7 +27,7 @@ describe("Interfaces", () => {
         const typeDefs = gql`
             interface MovieNode {
                 id: ID
-                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @declareRelationship
                 customQuery: [Movie]
             }
 
@@ -97,7 +97,7 @@ describe("Interfaces", () => {
             }
 
             input MovieConnectInput {
-              movies: [MovieNodeMoviesConnectFieldInput!]
+              movies: [MovieMoviesConnectFieldInput!]
             }
 
             input MovieConnectWhere {
@@ -106,7 +106,7 @@ describe("Interfaces", () => {
 
             input MovieCreateInput {
               id: ID
-              movies: MovieNodeMoviesFieldInput
+              movies: MovieMoviesFieldInput
             }
 
             input MovieDeleteInput {
@@ -143,11 +143,42 @@ describe("Interfaces", () => {
               node: MovieMoviesNodeAggregationWhereInput
             }
 
+            input MovieMoviesConnectFieldInput {
+              connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: MovieConnectWhere
+            }
+
+            input MovieMoviesCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input MovieMoviesFieldInput {
+              connect: [MovieMoviesConnectFieldInput!]
+              create: [MovieMoviesCreateFieldInput!]
+            }
+
             input MovieMoviesNodeAggregationWhereInput {
               AND: [MovieMoviesNodeAggregationWhereInput!]
               NOT: MovieMoviesNodeAggregationWhereInput
               OR: [MovieMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+            }
+
+            input MovieMoviesUpdateConnectionInput {
+              node: MovieUpdateInput
+            }
+
+            input MovieMoviesUpdateFieldInput {
+              connect: [MovieMoviesConnectFieldInput!]
+              create: [MovieMoviesCreateFieldInput!]
+              delete: [MovieNodeMoviesDeleteFieldInput!]
+              disconnect: [MovieNodeMoviesDisconnectFieldInput!]
+              update: MovieMoviesUpdateConnectionInput
+              where: MovieNodeMoviesConnectionWhere
             }
 
             interface MovieNode {
@@ -164,15 +195,6 @@ describe("Interfaces", () => {
 
             enum MovieNodeImplementation {
               Movie
-            }
-
-            input MovieNodeMoviesConnectFieldInput {
-              connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: MovieConnectWhere
             }
 
             type MovieNodeMoviesConnection {
@@ -193,10 +215,6 @@ describe("Interfaces", () => {
               node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input MovieNodeMoviesCreateFieldInput {
-              node: MovieCreateInput!
-            }
-
             input MovieNodeMoviesDeleteFieldInput {
               delete: MovieDeleteInput
               where: MovieNodeMoviesConnectionWhere
@@ -207,27 +225,9 @@ describe("Interfaces", () => {
               where: MovieNodeMoviesConnectionWhere
             }
 
-            input MovieNodeMoviesFieldInput {
-              connect: [MovieNodeMoviesConnectFieldInput!]
-              create: [MovieNodeMoviesCreateFieldInput!]
-            }
-
             type MovieNodeMoviesRelationship {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieNodeMoviesUpdateConnectionInput {
-              node: MovieUpdateInput
-            }
-
-            input MovieNodeMoviesUpdateFieldInput {
-              connect: [MovieNodeMoviesConnectFieldInput!]
-              create: [MovieNodeMoviesCreateFieldInput!]
-              delete: [MovieNodeMoviesDeleteFieldInput!]
-              disconnect: [MovieNodeMoviesDisconnectFieldInput!]
-              update: MovieNodeMoviesUpdateConnectionInput
-              where: MovieNodeMoviesConnectionWhere
             }
 
             input MovieNodeOptions {
@@ -273,7 +273,7 @@ describe("Interfaces", () => {
             }
 
             input MovieRelationInput {
-              movies: [MovieNodeMoviesCreateFieldInput!]
+              movies: [MovieMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -285,7 +285,7 @@ describe("Interfaces", () => {
 
             input MovieUpdateInput {
               id: ID
-              movies: [MovieNodeMoviesUpdateFieldInput!]
+              movies: [MovieMoviesUpdateFieldInput!]
             }
 
             input MovieWhere {
@@ -392,7 +392,7 @@ describe("Interfaces", () => {
 
             interface MovieNode @something(something: "test") {
                 id: ID
-                movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
+                movies: [Movie!]! @declareRelationship
                 customQuery: [Movie]
             }
 
@@ -464,7 +464,7 @@ describe("Interfaces", () => {
             }
 
             input MovieConnectInput {
-              movies: [MovieNodeMoviesConnectFieldInput!]
+              movies: [MovieMoviesConnectFieldInput!]
             }
 
             input MovieConnectWhere {
@@ -473,7 +473,7 @@ describe("Interfaces", () => {
 
             input MovieCreateInput {
               id: ID
-              movies: MovieNodeMoviesFieldInput
+              movies: MovieMoviesFieldInput
             }
 
             input MovieDeleteInput {
@@ -510,11 +510,42 @@ describe("Interfaces", () => {
               node: MovieMoviesNodeAggregationWhereInput
             }
 
+            input MovieMoviesConnectFieldInput {
+              connect: [MovieConnectInput!]
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true
+              where: MovieConnectWhere
+            }
+
+            input MovieMoviesCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input MovieMoviesFieldInput {
+              connect: [MovieMoviesConnectFieldInput!]
+              create: [MovieMoviesCreateFieldInput!]
+            }
+
             input MovieMoviesNodeAggregationWhereInput {
               AND: [MovieMoviesNodeAggregationWhereInput!]
               NOT: MovieMoviesNodeAggregationWhereInput
               OR: [MovieMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
+            }
+
+            input MovieMoviesUpdateConnectionInput {
+              node: MovieUpdateInput
+            }
+
+            input MovieMoviesUpdateFieldInput {
+              connect: [MovieMoviesConnectFieldInput!]
+              create: [MovieMoviesCreateFieldInput!]
+              delete: [MovieNodeMoviesDeleteFieldInput!]
+              disconnect: [MovieNodeMoviesDisconnectFieldInput!]
+              update: MovieMoviesUpdateConnectionInput
+              where: MovieNodeMoviesConnectionWhere
             }
 
             interface MovieNode @something(something: \\"test\\") {
@@ -531,15 +562,6 @@ describe("Interfaces", () => {
 
             enum MovieNodeImplementation {
               Movie
-            }
-
-            input MovieNodeMoviesConnectFieldInput {
-              connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true
-              where: MovieConnectWhere
             }
 
             type MovieNodeMoviesConnection {
@@ -560,10 +582,6 @@ describe("Interfaces", () => {
               node_NOT: MovieWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
-            input MovieNodeMoviesCreateFieldInput {
-              node: MovieCreateInput!
-            }
-
             input MovieNodeMoviesDeleteFieldInput {
               delete: MovieDeleteInput
               where: MovieNodeMoviesConnectionWhere
@@ -574,27 +592,9 @@ describe("Interfaces", () => {
               where: MovieNodeMoviesConnectionWhere
             }
 
-            input MovieNodeMoviesFieldInput {
-              connect: [MovieNodeMoviesConnectFieldInput!]
-              create: [MovieNodeMoviesCreateFieldInput!]
-            }
-
             type MovieNodeMoviesRelationship {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieNodeMoviesUpdateConnectionInput {
-              node: MovieUpdateInput
-            }
-
-            input MovieNodeMoviesUpdateFieldInput {
-              connect: [MovieNodeMoviesConnectFieldInput!]
-              create: [MovieNodeMoviesCreateFieldInput!]
-              delete: [MovieNodeMoviesDeleteFieldInput!]
-              disconnect: [MovieNodeMoviesDisconnectFieldInput!]
-              update: MovieNodeMoviesUpdateConnectionInput
-              where: MovieNodeMoviesConnectionWhere
             }
 
             input MovieNodeOptions {
@@ -640,7 +640,7 @@ describe("Interfaces", () => {
             }
 
             input MovieRelationInput {
-              movies: [MovieNodeMoviesCreateFieldInput!]
+              movies: [MovieMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -652,7 +652,7 @@ describe("Interfaces", () => {
 
             input MovieUpdateInput {
               id: ID
-              movies: [MovieNodeMoviesUpdateFieldInput!]
+              movies: [MovieMoviesUpdateFieldInput!]
             }
 
             input MovieWhere {

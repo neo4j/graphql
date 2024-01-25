@@ -263,6 +263,10 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * CrewMember.movies
+            \\"\\"\\"
             type CrewPosition {
               position: CrewPositionType
             }

@@ -36,42 +36,39 @@ import { DocumentValidationError, assertValid, createGraphQLError } from "../uti
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
-export function ValidDirectiveAtFieldLocation(experimental: boolean) {
-    return function (context: SDLValidationContext): ASTVisitor {
-        return {
-            Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
-                const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-                if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
-                    // this rule only checks field location
-                    return;
-                }
-                if (!parentOfTraversedDef) {
-                    console.error("No parent of last definition traversed");
-                    return;
-                }
-                const shouldRunThisRule = isDirectiveValidAtLocation({
-                    directiveNode,
-                    traversedDef,
-                    parentDef: parentOfTraversedDef,
-                    experimental,
-                });
+export function ValidDirectiveAtFieldLocation(context: SDLValidationContext): ASTVisitor {
+    return {
+        Directive(directiveNode: DirectiveNode, _key, _parent, path, ancestors) {
+            const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            if (!traversedDef || traversedDef.kind !== Kind.FIELD_DEFINITION) {
+                // this rule only checks field location
+                return;
+            }
+            if (!parentOfTraversedDef) {
+                console.error("No parent of last definition traversed");
+                return;
+            }
+            const shouldRunThisRule = isDirectiveValidAtLocation({
+                directiveNode,
+                traversedDef,
+                parentDef: parentOfTraversedDef,
+            });
 
-                if (!shouldRunThisRule) {
-                    return;
-                }
+            if (!shouldRunThisRule) {
+                return;
+            }
 
-                const { isValid, errorMsg, errorPath } = assertValid(shouldRunThisRule);
-                if (!isValid) {
-                    context.reportError(
-                        createGraphQLError({
-                            nodes: [traversedDef],
-                            path: [...pathToNode, ...errorPath],
-                            errorMsg,
-                        })
-                    );
-                }
-            },
-        };
+            const { isValid, errorMsg, errorPath } = assertValid(shouldRunThisRule);
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [traversedDef],
+                        path: [...pathToNode, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
     };
 }
 
@@ -79,12 +76,10 @@ function isDirectiveValidAtLocation({
     directiveNode,
     traversedDef,
     parentDef,
-    experimental,
 }: {
     directiveNode: DirectiveNode;
     traversedDef: FieldDefinitionNode;
     parentDef: ObjectOrInterfaceWithExtensions;
-    experimental: boolean;
 }) {
     if (isLocationFieldOfRootType(parentDef)) {
         return () =>
@@ -118,11 +113,9 @@ function isLocationFieldOfRootType(
 function isLocationFieldOfInterfaceType(
     parentDef: ObjectOrInterfaceWithExtensions
 ): parentDef is InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode {
-    // relationshipProperties interfaces are different bc they are "creatable"
     return (
         parentDef &&
-        (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION || parentDef.kind === Kind.INTERFACE_TYPE_EXTENSION) &&
-        !parentDef.directives?.some((d) => d.name.value === "relationshipProperties")
+        (parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION || parentDef.kind === Kind.INTERFACE_TYPE_EXTENSION)
     );
 }
 
@@ -194,11 +187,6 @@ function validFieldOfInterfaceTypeLocation({
     parentDef: InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode;
 }) {
     if (isInArray(SCHEMA_CONFIGURATION_FIELD_DIRECTIVES, directiveNode.name.value)) {
-        return;
-    }
-    // TODO: remove when declareRelationship schema generation is finished
-    if (directiveNode.name.value === "relationship") {
-        // allow @relationship until a different way of supporting relationship-like behavior on interfaces is implemented
         return;
     }
     if (directiveNode.name.value === "declareRelationship") {

@@ -50,6 +50,11 @@ describe("Arrays Methods", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               pay: [Float]
             }

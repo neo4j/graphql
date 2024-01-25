@@ -42,7 +42,7 @@ describe("interface relationships", () => {
 
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
@@ -106,7 +106,7 @@ describe("interface relationships", () => {
                                     edge: { screenTime: $screenTime }
                                     where: { node: { title: $title } }
                                     connect: {
-                                        actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
+                                        actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name: $name2 } } }
                                     }
                                 }
                             }
@@ -198,11 +198,11 @@ describe("interface relationships", () => {
                     input: [
                         {
                             name: $name1
-                            actedIn: {
-                                connect: {
-                                    edge: { screenTime: $screenTime }
-                                    where: { node: { title: $title } }
-                                    connect: {
+                            actedIn: {        # ActorActedInFieldInput
+                                connect: {    # ActorActedInConnectFieldInput
+                                    edge: { screenTime: $screenTime }  # ActedInCreateInput
+                                    where: { node: { title: $title } } 
+                                    connect: { # ProductionConnectInput
                                         _on: {
                                             Movie: {
                                                 actors: {

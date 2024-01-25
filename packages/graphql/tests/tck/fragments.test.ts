@@ -173,7 +173,7 @@ describe("Cypher Fragment", () => {
             }
 
             interface InterfaceA {
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Production!]! @declareRelationship
             }
 
             type Actor implements InterfaceA {

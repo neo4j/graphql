@@ -519,6 +519,10 @@ describe("Aggregations", () => {
               sum: Int
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Post.likes
+            \\"\\"\\"
             type Likes {
               someBigInt: BigInt
               someDateTime: DateTime

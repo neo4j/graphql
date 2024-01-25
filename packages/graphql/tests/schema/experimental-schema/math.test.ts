@@ -1795,6 +1795,11 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Person.actedInMovies
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               pay: Float
               roles: [String!]

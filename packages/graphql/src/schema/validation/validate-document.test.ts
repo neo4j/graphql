@@ -891,12 +891,12 @@ describe("validation 2.0", () => {
         test("@relationship.type property must be string inherited", () => {
             const interfaceDoc = gql`
                 interface Person {
-                    post: Post @relationship(type: 42, direction: IN)
+                    post: Post @declareRelationship
                 }
             `;
             const doc = gql`
                 type User implements Person {
-                    post: Post
+                    post: Post @relationship(type: 42, direction: IN)
                 }
                 type Post {
                     title: String
@@ -919,7 +919,7 @@ describe("validation 2.0", () => {
                 "message",
                 "Invalid argument: type, error: String cannot represent a non string value: 42"
             );
-            expect(errors[0]).toHaveProperty("path", ["Person", "post", "@relationship", "type"]);
+            expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "type"]);
         });
 
         test("@relationship.type property must be string inherited extension", () => {
@@ -928,13 +928,13 @@ describe("validation 2.0", () => {
                     id: ID
                 }
                 extend interface Person {
-                    post: Post @relationship(type: 42, direction: IN)
+                    post: Post @declareRelationship
                 }
             `;
             const doc = gql`
                 type User implements Person {
                     id: ID
-                    post: Post
+                    post: Post @relationship(type: 42, direction: IN)
                 }
                 type Post {
                     title: String
@@ -957,7 +957,7 @@ describe("validation 2.0", () => {
                 "message",
                 "Invalid argument: type, error: String cannot represent a non string value: 42"
             );
-            expect(errors[0]).toHaveProperty("path", ["Person", "post", "@relationship", "type"]);
+            expect(errors[0]).toHaveProperty("path", ["User", "post", "@relationship", "type"]);
         });
 
         test("@customResolver.required property must be string", () => {
@@ -2696,14 +2696,14 @@ describe("validation 2.0", () => {
             test("@relationship duplicate [type, direction, fieldType] combination on interface", () => {
                 const interfaceDoc = gql`
                     interface Site {
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                        posts: [Post!]! @declareRelationship
                     }
                 `;
                 const doc = gql`
                     ${interfaceDoc}
                     type SomeSite implements Site {
                         name: String
-                        posts: [Post!]!
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                         archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
                     type Post {
@@ -2735,14 +2735,14 @@ describe("validation 2.0", () => {
                         name: String
                     }
                     extend interface Site {
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                        posts: [Post!]! @declareRelationship
                     }
                 `;
                 const doc = gql`
                     ${interfaceDoc}
                     type SomeSite implements Site {
                         name: String
-                        posts: [Post!]!
+                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                         archivedPosts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
                     }
                     type Post {
@@ -2899,7 +2899,7 @@ describe("validation 2.0", () => {
             test("@relationship correct usage with interface", () => {
                 const interfaceDoc = gql`
                     interface Site {
-                        posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                        posts: [Post!]! @declareRelationship
                     }
                 `;
                 const doc = gql`
@@ -3467,7 +3467,7 @@ describe("validation 2.0", () => {
             test("@cypher with inherited @relationship on Field", () => {
                 const doc = gql`
                     interface Person {
-                        post: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                        post: [Post!]! @declareRelationship
                     }
                     type User implements Person {
                         id: ID
@@ -3478,6 +3478,7 @@ describe("validation 2.0", () => {
                                 """
                                 columnName: "p"
                             )
+                            @relationship(type: "HAS_POST", direction: OUT)
                     }
                     type Post {
                         title: String
@@ -3514,9 +3515,10 @@ describe("validation 2.0", () => {
                                 """
                                 columnName: "p"
                             )
+                            @relationship(type: "HAS_POST", direction: OUT)
                     }
                     interface Person {
-                        post: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                        post: [Post!]! @declareRelationship
                     }
                     type Post {
                         title: String
@@ -3537,9 +3539,9 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    "Invalid directive usage: Directive @relationship cannot be used in combination with @cypher"
+                    "Invalid directive usage: Directive @cypher cannot be used in combination with @relationship"
                 );
-                expect(errors[0]).toHaveProperty("path", ["Person", "post"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "post"]);
             });
 
             test("@cypher double", () => {
@@ -3983,7 +3985,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher"]);
         });
 
-        test("@relationship ok to be used on the field of an interface type", () => {
+        test("@relationship cannot be used on the field of an interface type", () => {
             const doc = gql`
                 interface Person {
                     actor: [Actor!]! @relationship(type: "IS_ACTOR", direction: IN)
@@ -4003,7 +4005,15 @@ describe("validation 2.0", () => {
                     experimental: true,
                 });
 
-            expect(executeValidate).not.toThrow();
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "Invalid directive usage: Directive @relationship is not supported on fields of the Person type."
+            );
+            expect(errors[0]).toHaveProperty("path", ["Person", "actor", "@relationship"]);
         });
 
         test("@private ok to be used on the field of an interface type", () => {

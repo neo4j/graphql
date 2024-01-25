@@ -107,32 +107,32 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 id: ID!
                 email: String!
                 name: String
-                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
-                group: Group! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: User! @declareRelationship
+                group: Group! @declareRelationship
                 status: InviteeStatus!
-                user: User @relationship(type: "IS_USER", direction: OUT)
+                user: User @declareRelationship
                 role: InviteeRole!
             }
 
             type Admin implements Invitee {
                 id: ID! @unique @id
-                group: Group!
-                creator: User!
+                group: Group! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
                 status: InviteeStatus! @default(value: INVITED)
-                user: User
+                user: User @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type Contributor implements Invitee {
                 id: ID! @unique @id
                 group: Group! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
-                creator: User!
+                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
                 status: InviteeStatus! @default(value: INVITED)
-                user: User
+                user: User @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }
 
@@ -234,7 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         WITH edges
                         UNWIND edges AS edge
                         WITH edge.node AS this13, edge.relationship AS this12
-                        RETURN collect({ properties: { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay }, node: { __resolveType: \\"Person\\", __id: id(this13) } }) AS var25
+                        RETURN collect({ properties: { active: this12.active, firstDay: this12.firstDay, lastDay: this12.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __resolveType: \\"Person\\", __id: id(this13) } }) AS var25
                     }
                     RETURN { edges: var25, totalCount: totalCount } AS var26
                 }

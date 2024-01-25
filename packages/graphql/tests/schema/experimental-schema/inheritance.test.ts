@@ -31,9 +31,7 @@ describe("inheritance", () => {
 
             interface Person @customDirectiveInter {
                 name: String @customDirectiveField
-                friends: [Person!]!
-                    @relationship(type: "FRIENDS_WITH", direction: OUT, properties: "FriendsWith")
-                    @customDirectiveField
+                friends: [Person!]! @declareRelationship @customDirectiveField
             }
 
             type Actor implements Person @customDirectiveObj {
@@ -61,10 +59,10 @@ describe("inheritance", () => {
             directive @customDirectiveObj on OBJECT
 
             type Actor implements Person @customDirectiveObj {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]!
               friendsAggregate(directed: Boolean = true, where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
-              name: String @customDirectiveField
+              name: String
             }
 
             type ActorAggregateSelection {
@@ -77,7 +75,7 @@ describe("inheritance", () => {
             }
 
             input ActorCreateInput {
-              friends: PersonFriendsFieldInput
+              friends: ActorFriendsFieldInput
               name: String
             }
 
@@ -113,6 +111,11 @@ describe("inheritance", () => {
             input ActorFriendsDisconnectFieldInput {
               disconnect: PersonDisconnectInput
               where: PersonFriendsConnectionWhere
+            }
+
+            input ActorFriendsFieldInput {
+              connect: [ActorFriendsConnectFieldInput!]
+              create: [ActorFriendsCreateFieldInput!]
             }
 
             input ActorFriendsUpdateConnectionInput {
@@ -231,6 +234,10 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.friends
+            \\"\\"\\"
             type FriendsWith {
               since: Int
             }
@@ -285,8 +292,8 @@ describe("inheritance", () => {
             }
 
             interface Person {
-              friends(directed: Boolean = true, options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
-              friendsConnection(after: String, directed: Boolean = true, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
+              friends(options: PersonOptions, where: PersonWhere): [Person!]! @customDirectiveField
+              friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String @customDirectiveField
             }
 
@@ -320,7 +327,7 @@ describe("inheritance", () => {
 
             input PersonFriendsConnectFieldInput {
               connect: PersonConnectInput
-              edge: FriendsWithCreateInput
+              edge: PersonFriendsEdgeCreateInput
               where: PersonConnectWhere
             }
 
@@ -331,7 +338,7 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsConnectionSort {
-              edge: FriendsWithSort
+              edge: PersonFriendsEdgeSort
               node: PersonSort
             }
 
@@ -339,14 +346,14 @@ describe("inheritance", () => {
               AND: [PersonFriendsConnectionWhere!]
               NOT: PersonFriendsConnectionWhere
               OR: [PersonFriendsConnectionWhere!]
-              edge: FriendsWithWhere
-              edge_NOT: FriendsWithWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              edge: PersonFriendsEdgeWhere
+              edge_NOT: PersonFriendsEdgeWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               node: PersonWhere
               node_NOT: PersonWhere @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
             }
 
             input PersonFriendsCreateFieldInput {
-              edge: FriendsWithCreateInput
+              edge: PersonFriendsEdgeCreateInput
               node: PersonCreateInput!
             }
 
@@ -360,19 +367,48 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
-            input PersonFriendsFieldInput {
-              connect: [PersonFriendsConnectFieldInput!]
-              create: [PersonFriendsCreateFieldInput!]
+            input PersonFriendsEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithCreateInput
+            }
+
+            input PersonFriendsEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithSort
+            }
+
+            input PersonFriendsEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithUpdateInput
+            }
+
+            input PersonFriendsEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Actor
+              \\"\\"\\"
+              FriendsWith: FriendsWithWhere
             }
 
             type PersonFriendsRelationship {
               cursor: String!
               node: Person!
-              properties: FriendsWith!
+              properties: PersonFriendsRelationshipProperties!
             }
 
+            union PersonFriendsRelationshipProperties = FriendsWith
+
             input PersonFriendsUpdateConnectionInput {
-              edge: FriendsWithUpdateInput
+              edge: PersonFriendsEdgeUpdateInput
               node: PersonUpdateInput
             }
 

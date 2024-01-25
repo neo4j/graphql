@@ -38,7 +38,7 @@ export type DefinitionCollection = {
     nodes: Map<string, ObjectTypeDefinitionNode>; // this does not include @jwtPayload type.
     scalarTypes: Map<string, ScalarTypeDefinitionNode>;
     enumTypes: Map<string, EnumTypeDefinitionNode>;
-    interfaceTypes: Map<string, InterfaceTypeDefinitionNode>; // this does not include @relationshipProperties interfaces.
+    interfaceTypes: Map<string, InterfaceTypeDefinitionNode>;
     unionTypes: Map<string, UnionTypeDefinitionNode>;
     directives: Map<string, DirectiveDefinitionNode>;
     relationshipProperties: Map<string, ObjectTypeDefinitionNode>;

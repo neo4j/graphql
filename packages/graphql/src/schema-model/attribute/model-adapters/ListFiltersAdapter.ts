@@ -19,11 +19,12 @@
 
 import pluralize from "pluralize";
 import type { RelationshipAdapter } from "../../relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export class ListFiltersAdapter {
-    readonly relationshipAdapter: RelationshipAdapter;
+    readonly relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
 
-    constructor(relationshipAdapter: RelationshipAdapter) {
+    constructor(relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter) {
         if (!relationshipAdapter.isList) {
             throw new Error("Relationship field is not a list");
         }

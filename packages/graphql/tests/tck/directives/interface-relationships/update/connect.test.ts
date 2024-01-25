@@ -30,19 +30,19 @@ describe("Interface Relationships - Update connect", () => {
         typeDefs = gql`
             interface Production {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
                 episodes: Int!
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type ActedIn @relationshipProperties {
@@ -143,7 +143,9 @@ describe("Interface Relationships - Update connect", () => {
                         actedIn: {
                             edge: { screenTime: 90 }
                             where: { node: { title_STARTS_WITH: "The " } }
-                            connect: { actors: { edge: { screenTime: 90 }, where: { node: { name: "Actor" } } } }
+                            connect: {
+                                actors: { edge: { ActedIn: { screenTime: 90 } }, where: { node: { name: "Actor" } } }
+                            }
                         }
                     }
                 ) {
@@ -379,7 +381,7 @@ describe("Interface Relationships - Update connect", () => {
                             edge: { screenTime: 90 }
                             where: { node: { title_STARTS_WITH: "The " } }
                             connect: {
-                                actors: { edge: { screenTime: 90 }, where: { node: { name: "Actor" } } }
+                                actors: { edge: { ActedIn: { screenTime: 90 } }, where: { node: { name: "Actor" } } }
                                 _on: {
                                     Movie: {
                                         actors: {

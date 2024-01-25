@@ -539,6 +539,11 @@ describe("String Comparators", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.actedIn
+            \\"\\"\\"
             type ActedIn {
               screenTime: String
             }

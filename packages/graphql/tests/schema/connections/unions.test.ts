@@ -1015,6 +1015,12 @@ describe("Unions", () => {
               journals: [Journal!]!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Author.publications
+            * Book.author
+            * Journal.author
+            \\"\\"\\"
             type Wrote {
               words: Int!
             }

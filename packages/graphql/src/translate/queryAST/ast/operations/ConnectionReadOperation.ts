@@ -238,6 +238,13 @@ export class ConnectionReadOperation extends Operation {
         if (context.relationship) {
             const propertiesProjectionMap = this.generateProjectionMapForFields(this.edgeFields, context.relationship);
             if (propertiesProjectionMap.size) {
+                if (this.relationship?.propertiesTypeName) {
+                    // should be true if getting here but just in case..
+                    propertiesProjectionMap.set(
+                        "__resolveType",
+                        new Cypher.Literal(this.relationship.propertiesTypeName)
+                    );
+                }
                 edgeProjectionMap.set("properties", propertiesProjectionMap);
             }
         }

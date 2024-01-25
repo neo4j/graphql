@@ -33,7 +33,7 @@ describe("Cypher Auth Where", () => {
             interface Content {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: User! @declareRelationship
             }
 
             type User {
@@ -45,7 +45,7 @@ describe("Cypher Auth Where", () => {
             type Comment implements Content {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Post implements Content
@@ -59,7 +59,7 @@ describe("Cypher Auth Where", () => {
                 ) {
                 id: ID
                 content: String
-                creator: User!
+                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             extend type User

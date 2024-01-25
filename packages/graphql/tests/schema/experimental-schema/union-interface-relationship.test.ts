@@ -80,6 +80,11 @@ describe("Union Interface Relationships", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actors
+            * Actor.movies
+            \\"\\"\\"
             type ActedIn {
               screenTime: Int!
             }
@@ -504,6 +509,10 @@ describe("Union Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.directors
+            \\"\\"\\"
             type Directed {
               year: Int!
             }
@@ -1761,6 +1770,11 @@ describe("Union Interface Relationships", () => {
               offset: Int
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.reviewers
+            * Person.movies
+            \\"\\"\\"
             type Review {
               score: Int!
             }

@@ -50,6 +50,11 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               leadRole: Boolean!
               screenTime: Int!
@@ -795,6 +800,11 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               id: ID!
               screenTime: Int!
@@ -1589,6 +1599,11 @@ describe("Relationship-properties", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               id: ID!
               timestamp: DateTime!

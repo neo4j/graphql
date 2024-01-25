@@ -36,13 +36,13 @@ describe("Cypher relationship", () => {
             interface MovieInterface {
                 id: ID
                 title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @declareRelationship
             }
 
             type Movie implements MovieInterface {
                 id: ID
                 title: String
-                actors: [Actor!]!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 topActor: Actor! @relationship(type: "TOP_ACTOR", direction: OUT)
             }
         `;

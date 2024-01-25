@@ -251,6 +251,10 @@ describe("Alias", () => {
               title_SHORTEST_LTE: Int @deprecated(reason: \\"Please use the explicit _LENGTH version for string aggregation.\\")
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.actedIn
+            \\"\\"\\"
             type ActorActedInProps {
               character: String!
               screenTime: Int

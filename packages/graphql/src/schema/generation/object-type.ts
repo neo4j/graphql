@@ -24,6 +24,22 @@ import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adap
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "../to-compose";
 
+export function getRelationshipPropertiesTypeDescription({
+    relationshipAdapter,
+    propertiesObjectType,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    propertiesObjectType?: ObjectTypeComposer;
+}): string {
+    if (propertiesObjectType) {
+        return [
+            propertiesObjectType.getDescription(),
+            `* ${relationshipAdapter.source.name}.${relationshipAdapter.name}`,
+        ].join("\n");
+    }
+    return `The edge properties for the following fields:\n* ${relationshipAdapter.source.name}.${relationshipAdapter.name}`;
+}
+
 export function withObjectType({
     entityAdapter,
     userDefinedFieldDirectives,
@@ -45,6 +61,7 @@ export function withObjectType({
             name: entityAdapter.propertiesTypeName as string, // this is checked one layer above in execution
             fields: objectComposeFields,
             directives: graphqlDirectivesToCompose(userDefinedObjectDirectives),
+            description: getRelationshipPropertiesTypeDescription({ relationshipAdapter: entityAdapter }),
         });
         return composeObject;
     }

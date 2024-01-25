@@ -28,23 +28,23 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
-                director: Creature!
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
             type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
-                director: Creature!
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
             }
             interface Production {
                 id: ID
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+                director: Creature! @declareRelationship
             }
             type Person implements Creature {
-                movies: Production!
+                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
             interface Creature {
-                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+                movies: Production! @declareRelationship
             }
         `;
 
@@ -88,8 +88,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             interface Creature {
-              movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
-              moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+              movies(options: ProductionOptions, where: ProductionWhere): Production!
+              moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             type CreatureAggregateSelection {
@@ -174,11 +174,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input CreatureMoviesDisconnectFieldInput {
               disconnect: ProductionDisconnectInput
               where: CreatureMoviesConnectionWhere
-            }
-
-            input CreatureMoviesFieldInput {
-              connect: CreatureMoviesConnectFieldInput
-              create: CreatureMoviesCreateFieldInput
             }
 
             type CreatureMoviesRelationship {
@@ -266,7 +261,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieCreateInput {
-              director: ProductionDirectorFieldInput
+              director: MovieDirectorFieldInput
               id: ID
               title: String!
             }
@@ -296,6 +291,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input MovieDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              connect: MovieDirectorConnectFieldInput
+              create: MovieDirectorCreateFieldInput
             }
 
             input MovieDirectorUpdateConnectionInput {
@@ -426,7 +426,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input PersonCreateInput {
-              movies: CreatureMoviesFieldInput
+              movies: PersonMoviesFieldInput
             }
 
             type PersonCreatedEvent {
@@ -473,6 +473,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input PersonMoviesDisconnectFieldInput {
               disconnect: ProductionDisconnectInput
               where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonMoviesFieldInput {
+              connect: PersonMoviesConnectFieldInput
+              create: PersonMoviesCreateFieldInput
             }
 
             input PersonMoviesRelationshipSubscriptionWhere {
@@ -558,8 +563,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             interface Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
-              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              director(options: CreatureOptions, where: CreatureWhere): Creature!
+              directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
 
@@ -618,11 +623,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input ProductionDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
-            }
-
-            input ProductionDirectorFieldInput {
-              connect: ProductionDirectorConnectFieldInput
-              create: ProductionDirectorCreateFieldInput
             }
 
             type ProductionDirectorRelationship {
@@ -777,7 +777,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesCreateInput {
-              director: ProductionDirectorFieldInput
+              director: SeriesDirectorFieldInput
               episode: Int!
               id: ID
               title: String!
@@ -820,6 +820,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input SeriesDirectorDisconnectFieldInput {
               disconnect: CreatureDisconnectInput
               where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDirectorFieldInput {
+              connect: SeriesDirectorConnectFieldInput
+              create: SeriesDirectorCreateFieldInput
             }
 
             input SeriesDirectorUpdateConnectionInput {

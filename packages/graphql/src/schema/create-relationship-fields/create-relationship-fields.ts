@@ -25,6 +25,8 @@ import { DEPRECATED } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { addDirectedArgument } from "../directed-argument";
 import { graphqlDirectivesToCompose } from "../to-compose";
@@ -37,22 +39,25 @@ export function createRelationshipFields({
     schemaComposer,
     // TODO: Ideally we come up with a solution where we don't have to pass the following into these kind of functions
     composeNode,
-    // relationshipPropertyFields,
     subgraph,
     userDefinedFieldDirectives,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
-    // relationshipPropertyFields: Map<string, ObjectFields>;
     subgraph?: Subgraph;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): void {
-    if (!entityAdapter.relationships.size) {
+    const relationships =
+        entityAdapter instanceof ConcreteEntityAdapter
+            ? entityAdapter.relationships
+            : entityAdapter.relationshipDeclarations;
+
+    if (!relationships.size) {
         return;
     }
 
-    entityAdapter.relationships.forEach((relationshipAdapter) => {
+    relationships.forEach((relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter) => {
         if (!relationshipAdapter) {
             return;
         }

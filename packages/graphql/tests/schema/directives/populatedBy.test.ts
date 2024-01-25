@@ -1183,6 +1183,10 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"
+                The edge properties for the following fields:
+                * Movie.genres
+                \\"\\"\\"
                 type RelProperties {
                   callback1: String!
                   callback2: String!
@@ -1763,6 +1767,10 @@ describe("@populatedBy tests", () => {
                   moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
                 }
 
+                \\"\\"\\"
+                The edge properties for the following fields:
+                * Movie.genres
+                \\"\\"\\"
                 type RelProperties {
                   callback1: Int!
                   callback2: Int!

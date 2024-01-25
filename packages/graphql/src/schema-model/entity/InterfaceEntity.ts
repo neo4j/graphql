@@ -20,7 +20,7 @@
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
-import type { Relationship } from "../relationship/Relationship";
+import type { RelationshipDeclaration } from "../relationship/RelationshipDeclaration";
 import type { CompositeEntity } from "./CompositeEntity";
 import type { ConcreteEntity } from "./ConcreteEntity";
 
@@ -30,7 +30,7 @@ export class InterfaceEntity implements CompositeEntity {
     // TODO: this is really (ConcreteEntity|InterfaceEntity)...
     public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
-    public readonly relationships: Map<string, Relationship> = new Map();
+    public readonly relationshipDeclarations: Map<string, RelationshipDeclaration> = new Map();
     public readonly annotations: Partial<Annotations>;
 
     constructor({
@@ -39,14 +39,14 @@ export class InterfaceEntity implements CompositeEntity {
         concreteEntities,
         attributes = [],
         annotations = {},
-        relationships = [],
+        relationshipDeclarations = [],
     }: {
         name: string;
         description?: string;
         concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
         annotations?: Partial<Annotations>;
-        relationships?: Relationship[];
+        relationshipDeclarations?: RelationshipDeclaration[];
     }) {
         this.name = name;
         this.description = description;
@@ -56,8 +56,8 @@ export class InterfaceEntity implements CompositeEntity {
             this.addAttribute(attribute);
         }
 
-        for (const relationship of relationships) {
-            this.addRelationship(relationship);
+        for (const relationshipDeclaration of relationshipDeclarations) {
+            this.addRelationshipDeclaration(relationshipDeclaration);
         }
     }
 
@@ -75,20 +75,16 @@ export class InterfaceEntity implements CompositeEntity {
         this.attributes.set(attribute.name, attribute);
     }
 
-    public addRelationship(relationship: Relationship): void {
-        if (this.relationships.has(relationship.name)) {
+    public addRelationshipDeclaration(relationshipDeclaration: RelationshipDeclaration): void {
+        if (this.relationshipDeclarations.has(relationshipDeclaration.name)) {
             throw new Neo4jGraphQLSchemaValidationError(
-                `Attribute ${relationship.name} already exists in ${this.name}`
+                `Attribute ${relationshipDeclaration.name} already exists in ${this.name}`
             );
         }
-        this.relationships.set(relationship.name, relationship);
+        this.relationshipDeclarations.set(relationshipDeclaration.name, relationshipDeclaration);
     }
 
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
-    }
-
-    public findRelationship(name: string): Relationship | undefined {
-        return this.relationships.get(name);
     }
 }

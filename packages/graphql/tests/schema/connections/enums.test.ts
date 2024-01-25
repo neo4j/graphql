@@ -53,6 +53,11 @@ describe("Enums", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Actor.movies
+            * Movie.actors
+            \\"\\"\\"
             type ActedIn {
               roleType: RoleType!
             }

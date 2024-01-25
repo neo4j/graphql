@@ -81,6 +81,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * User.following
+            \\"\\"\\"
             type FOLLOWS {
               since: DateTime!
             }
@@ -515,6 +519,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * User.following
+            \\"\\"\\"
             type FOLLOWS {
               since: DateTime!
             }

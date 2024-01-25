@@ -30,6 +30,7 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { DEPRECATE_NOT } from "../constants";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
@@ -59,13 +60,11 @@ export function withWhereInputType({
     userDefinedFieldDirectives,
     features,
     composer,
-    experimental,
 }: {
     entityAdapter: EntityAdapter | RelationshipAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     composer: SchemaComposer;
-    experimental: boolean;
 }): InputTypeComposer {
     if (composer.has(entityAdapter.operations.whereInputTypeName)) {
         return composer.getITC(entityAdapter.operations.whereInputTypeName);
@@ -145,7 +144,7 @@ export function withSourceWhereInputType({
     composer,
     deprecatedDirectives,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
 }): InputTypeComposer | undefined {
@@ -187,7 +186,7 @@ export function makeConnectionWhereInputType({
     memberEntity,
     composer,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     memberEntity: ConcreteEntityAdapter;
     composer: SchemaComposer;
 }): InputTypeComposer {
@@ -210,7 +209,7 @@ export function makeConnectionWhereInputType({
         OR: connectionWhereInputType.NonNull.List,
         NOT: connectionWhereInputType,
     });
-    if (relationshipAdapter.propertiesTypeName) {
+    if (relationshipAdapter.hasAnyProperties) {
         connectionWhereInputType.addFields({
             edge: relationshipAdapter.operations.whereInputTypeName,
             edge_NOT: {

@@ -20,7 +20,8 @@
 import type { DirectiveNode } from "graphql";
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { withCreateInputType } from "../generation/create-input";
 import { concreteEntityToCreateInputFields } from "../to-compose";
@@ -32,7 +33,7 @@ export function createOnCreateITC({
     userDefinedFieldDirectives,
 }: {
     schemaComposer: SchemaComposer;
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     targetEntityAdapter: ConcreteEntityAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }): InputTypeComposer {
@@ -51,7 +52,8 @@ export function createOnCreateITC({
         const onCreateFields: InputTypeComposerFieldConfigMapDefinition = {
             node: onCreateInput.NonNull,
         };
-        if (relationshipAdapter.createInputFields.length > 0) {
+        // TODO:
+        if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.createInputFields.length > 0) {
             const edgeFieldType = withCreateInputType({
                 entityAdapter: relationshipAdapter,
                 userDefinedFieldDirectives,

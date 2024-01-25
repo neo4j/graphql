@@ -21,6 +21,7 @@ import type { DirectiveNode } from "graphql";
 import type { Directive, InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
 import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
 import { withConnectOrCreateInputType } from "../generation/connect-or-create-input";
@@ -39,7 +40,7 @@ export function createRelationshipConcreteFields({
     deprecatedDirectives,
     subgraph,
 }: {
-    relationshipAdapter: RelationshipAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     schemaComposer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;

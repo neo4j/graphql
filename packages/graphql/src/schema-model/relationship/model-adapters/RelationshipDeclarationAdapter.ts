@@ -20,9 +20,6 @@
 import { RelationshipNestedOperationsOption } from "../../../constants";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
-import type { Attribute } from "../../attribute/Attribute";
-import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
-import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
 import type { Entity } from "../../entity/Entity";
 import type { EntityAdapter } from "../../entity/EntityAdapter";
@@ -32,56 +29,47 @@ import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntit
 import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import { plural, singular } from "../../utils/string-manipulation";
-import type { NestedOperation, QueryDirection, Relationship, RelationshipDirection } from "../Relationship";
-import { RelationshipOperations } from "./RelationshipOperations";
+import type { NestedOperation } from "../Relationship";
+import type { RelationshipDeclaration } from "../RelationshipDeclaration";
+import { RelationshipDeclarationOperations } from "./RelationshipDeclarationOperations";
+import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
+import { RelationshipAdapter } from "./RelationshipAdapter";
 
-export class RelationshipAdapter {
+export class RelationshipDeclarationAdapter {
     private _listFiltersModel: ListFiltersAdapter | undefined;
     public readonly name: string;
-    public readonly type: string;
-    public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly source: EntityAdapter;
     private rawEntity: Entity;
     private _target: EntityAdapter | undefined;
-    public readonly direction: RelationshipDirection;
-    public readonly queryDirection: QueryDirection;
     public readonly nestedOperations: Set<NestedOperation>;
     public readonly aggregate: boolean;
     public readonly isNullable: boolean;
     public readonly description?: string;
-    public readonly propertiesTypeName: string | undefined;
-    public readonly inheritedFrom: string | undefined;
     public readonly isList: boolean;
     public readonly annotations: Partial<Annotations>;
     public readonly args: Argument[];
+    public readonly relationshipImplementations: RelationshipAdapter[];
 
     private _singular: string | undefined;
     private _plural: string | undefined;
 
     // specialize models
-    private _operations: RelationshipOperations | undefined;
+    private _operations: RelationshipDeclarationOperations | undefined;
 
-    constructor(relationship: Relationship, sourceAdapter?: EntityAdapter) {
+    constructor(relationshipDeclaration: RelationshipDeclaration, sourceAdapter?: EntityAdapter) {
         const {
             name,
-            type,
             args,
-            attributes = new Map<string, Attribute>(),
             source,
             target,
-            direction,
             isList,
-            queryDirection,
             nestedOperations,
             aggregate,
             isNullable,
             description,
             annotations,
-            propertiesTypeName,
-            inheritedFrom,
-        } = relationship;
+        } = relationshipDeclaration;
         this.name = name;
-        this.type = type;
         this.args = args;
         if (sourceAdapter) {
             this.source = sourceAdapter;
@@ -96,26 +84,18 @@ export class RelationshipAdapter {
                 throw new Error("relationship source must be an Entity");
             }
         }
-        this.direction = direction;
         this.isList = isList;
-        this.queryDirection = queryDirection;
         this.nestedOperations = new Set(nestedOperations);
         this.aggregate = aggregate;
         this.isNullable = isNullable;
         this.rawEntity = target;
-        this.initAttributes(attributes);
         this.description = description;
         this.annotations = annotations;
-        this.propertiesTypeName = propertiesTypeName;
-        this.inheritedFrom = inheritedFrom;
+        this.relationshipImplementations = relationshipDeclaration.relationshipImplementations.map(
+            (r) => new RelationshipAdapter(r)
+        );
     }
 
-    public get operations(): RelationshipOperations {
-        if (!this._operations) {
-            return new RelationshipOperations(this);
-        }
-        return this._operations;
-    }
     public get listFiltersModel(): ListFiltersAdapter | undefined {
         if (!this._listFiltersModel) {
             if (!this.isList) {
@@ -124,6 +104,13 @@ export class RelationshipAdapter {
             this._listFiltersModel = new ListFiltersAdapter(this);
         }
         return this._listFiltersModel;
+    }
+
+    public get operations(): RelationshipDeclarationOperations {
+        if (!this._operations) {
+            return new RelationshipDeclarationOperations(this);
+        }
+        return this._operations;
     }
 
     public get singular(): string {
@@ -140,49 +127,6 @@ export class RelationshipAdapter {
         return this._plural;
     }
 
-    private initAttributes(attributes: Map<string, Attribute>) {
-        for (const [attributeName, attribute] of attributes.entries()) {
-            const attributeAdapter = new AttributeAdapter(attribute);
-            this.attributes.set(attributeName, attributeAdapter);
-        }
-    }
-
-    public findAttribute(name: string): AttributeAdapter | undefined {
-        return this.attributes.get(name);
-    }
-    /**
-     * translation-only
-     *
-     * @param directed the direction asked during the query, for instance "friends(directed: true)"
-     * @returns the direction to use in the CypherBuilder
-     **/
-    public getCypherDirection(directed?: boolean): "left" | "right" | "undirected" {
-        switch (this.queryDirection) {
-            case "DIRECTED_ONLY": {
-                return this.cypherDirectionFromRelDirection();
-            }
-            case "UNDIRECTED_ONLY": {
-                return "undirected";
-            }
-            case "DEFAULT_DIRECTED": {
-                if (directed === false) {
-                    return "undirected";
-                }
-                return this.cypherDirectionFromRelDirection();
-            }
-            case "DEFAULT_UNDIRECTED": {
-                if (directed === true) {
-                    return this.cypherDirectionFromRelDirection();
-                }
-                return "undirected";
-            }
-        }
-    }
-
-    private cypherDirectionFromRelDirection(): "left" | "right" {
-        return this.direction === "IN" ? "left" : "right";
-    }
-
     // construct the target entity only when requested
     public get target(): EntityAdapter {
         if (!this._target) {
@@ -197,6 +141,20 @@ export class RelationshipAdapter {
             }
         }
         return this._target;
+    }
+
+    public get hasAnyProperties(): boolean {
+        return !!this.relationshipImplementations.find((relationshipImpl) => relationshipImpl.hasAnyProperties);
+    }
+
+    public get hasCreateInputFields(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasCreateInputFields);
+    }
+    public get hasUpdateInputFields(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasUpdateInputFields);
+    }
+    public get hasNonNullCreateInputFields(): boolean {
+        return !!this.relationshipImplementations.find((impl) => impl.hasNonNullCreateInputFields);
     }
 
     public isReadable(): boolean {
@@ -256,58 +214,5 @@ export class RelationshipAdapter {
         }
         const onlyConnectOrCreateAndNoUniqueFields = onlyConnectOrCreate && !this.target.uniqueFields.length;
         return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
-    }
-
-    public get hasNonNullCreateInputFields(): boolean {
-        return this.createInputFields.some((property) => property.typeHelper.isRequired());
-    }
-    public get hasCreateInputFields(): boolean {
-        return this.createInputFields.length > 0;
-    }
-    public get hasUpdateInputFields(): boolean {
-        return this.updateInputFields.length > 0;
-    }
-    public get hasAnyProperties(): boolean {
-        return this.propertiesTypeName !== undefined;
-    }
-
-    /**
-     * Categories
-     * = a grouping of attributes
-     * used to generate different types for the Entity that contains these Attributes
-     */
-
-    public get aggregableFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
-    }
-
-    public get aggregationWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
-    }
-
-    public get createInputFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isCreateInputField());
-    }
-
-    public get updateInputFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isUpdateInputField());
-    }
-
-    public get sortableFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
-    }
-
-    public get whereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isWhereField());
-    }
-
-    public get subscriptionWhereFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) => attribute.isSubscriptionWhereField());
-    }
-
-    public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
-        return Array.from(this.attributes.values()).filter((attribute) =>
-            attribute.isSubscriptionConnectedRelationshipField()
-        );
     }
 }
