@@ -20,7 +20,7 @@
 import type { DirectiveNode } from "graphql";
 import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
 import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
 import { withConnectOrCreateInputType } from "../generation/connect-or-create-input";
