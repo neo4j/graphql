@@ -1613,7 +1613,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
               actors: [ProductionActorsConnectFieldInput!]
             }
 
@@ -1639,11 +1638,6 @@ describe("Interface Relationships", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {
@@ -3243,7 +3237,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
               actors: [ProductionActorsConnectFieldInput!]
             }
 
@@ -3269,11 +3262,6 @@ describe("Interface Relationships", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {
@@ -3973,7 +3961,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1ConnectInput {
-              _on: Interface1ImplementationsConnectInput
               interface2: [Interface1Interface2ConnectFieldInput!]
             }
 
@@ -3999,11 +3986,6 @@ describe("Interface Relationships", () => {
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsConnectInput {
-              Type1Interface1: [Type1Interface1ConnectInput!]
-              Type2Interface1: [Type2Interface1ConnectInput!]
             }
 
             input Interface1ImplementationsDeleteInput {
@@ -4987,7 +4969,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1ConnectInput {
-              _on: Interface1ImplementationsConnectInput
               interface2: [Interface1Interface2ConnectFieldInput!]
             }
 
@@ -5013,11 +4994,6 @@ describe("Interface Relationships", () => {
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsConnectInput {
-              Type1Interface1: [Type1Interface1ConnectInput!]
-              Type2Interface1: [Type2Interface1ConnectInput!]
             }
 
             input Interface1ImplementationsDeleteInput {
@@ -6105,7 +6081,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1ConnectInput {
-              _on: Interface1ImplementationsConnectInput
               interface2: [Interface1Interface2ConnectFieldInput!]
             }
 
@@ -6131,11 +6106,6 @@ describe("Interface Relationships", () => {
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsConnectInput {
-              Type1Interface1: [Type1Interface1ConnectInput!]
-              Type2Interface1: [Type2Interface1ConnectInput!]
             }
 
             input Interface1ImplementationsDeleteInput {
@@ -7552,7 +7522,6 @@ describe("Interface Relationships", () => {
             }
 
             input ContentConnectInput {
-              _on: ContentImplementationsConnectInput
               creator: ContentCreatorConnectFieldInput
             }
 
@@ -7691,11 +7660,6 @@ describe("Interface Relationships", () => {
             enum ContentImplementation {
               Comment
               Post
-            }
-
-            input ContentImplementationsConnectInput {
-              Comment: [CommentConnectInput!]
-              Post: [PostConnectInput!]
             }
 
             input ContentImplementationsDeleteInput {

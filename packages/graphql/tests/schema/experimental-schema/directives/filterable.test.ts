@@ -7060,7 +7060,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -7337,10 +7336,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelectionNonNullable!
                     }
 
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -7363,10 +7358,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonImplementationsDeleteInput {
@@ -7928,7 +7919,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -8205,10 +8195,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelectionNonNullable!
                     }
 
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -8231,10 +8217,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonImplementationsDeleteInput {
@@ -8796,7 +8778,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsConnectFieldInput {
-                      connect: PersonConnectInput
                       where: PersonConnectWhere
                     }
 
@@ -9073,10 +9054,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelectionNonNullable!
                     }
 
-                    input PersonConnectInput {
-                      _on: PersonImplementationsConnectInput
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -9099,10 +9076,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsConnectInput {
-                      Actor: [ActorConnectInput!]
                     }
 
                     input PersonImplementationsDeleteInput {

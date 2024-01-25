@@ -141,10 +141,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: StringAggregateSelectionNonNullable!
             }
 
-            input ProfileConnectInput {
-              _on: ProfileImplementationsConnectInput
-            }
-
             input ProfileConnectWhere {
               node: ProfileWhere!
             }
@@ -163,10 +159,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             enum ProfileImplementation {
               User
-            }
-
-            input ProfileImplementationsConnectInput {
-              User: [UserConnectInput!]
             }
 
             input ProfileImplementationsDeleteInput {
@@ -305,7 +297,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingConnectFieldInput {
-              connect: ProfileConnectInput
               where: ProfileConnectWhere
             }
 
