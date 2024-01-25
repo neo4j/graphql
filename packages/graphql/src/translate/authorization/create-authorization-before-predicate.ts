@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { AuthorizationOperation } from "../../types/authorization";
+import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { NodeMap } from "./types/node-map";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../../utils/get-entity-adapter-from-node";
@@ -57,14 +57,13 @@ export function createAuthorizationBeforePredicate({
             env: queryASTEnv,
             neo4jGraphQLContext: context,
         });
-        const authorizationFilters = factory.authorizationFactory.createEntityAuthFilters(entity, operations, context);
-        const authorizationValidate = factory.authorizationFactory.createEntityAuthValidate(
+
+        const authorizationRules = factory.authorizationFactory.getAuthFilters({
             entity,
             operations,
             context,
-            "BEFORE"
-        );
-        filterTruthy([authorizationFilters, authorizationValidate]).forEach((filter) => {
+        });
+        authorizationRules.forEach((filter) => {
             const nodeRawSubqueries = filter?.getSubqueries(queryASTContext);
             const nodeSubqueries = filterTruthy(asArray(nodeRawSubqueries)).map((sq) =>
                 wrapSubqueryInCall(sq, matchNode)
@@ -125,19 +124,19 @@ export function createAuthorizationBeforePredicateField({
             if (!attributeAdapter) {
                 throw new Error("Couldn't match attribute");
             }
-            const attributesFilters = factory.authorizationFactory.createAttributeAuthFilters(
-                attributeAdapter,
-                entity,
-                operations,
-                context
-            );
-            const attributesValidate = factory.authorizationFactory.createAttributeAuthValidate(
-                attributeAdapter,
+            const attributesFilters = factory.authorizationFactory.createAuthFilterRule({
+                authAnnotation: attributeAdapter.annotations.authorization,
                 entity,
                 operations,
                 context,
-                "BEFORE"
-            );
+            });
+            const attributesValidate = factory.authorizationFactory.createAuthValidateRule({
+                authAnnotation: attributeAdapter.annotations.authorization,
+                entity,
+                operations,
+                context,
+                when: "BEFORE",
+            });
             filterTruthy([attributesFilters, attributesValidate]).forEach((filter) => {
                 const fieldPredicate = filter.getPredicate(queryASTContext);
                 const fieldSelection = filter.getSelection(queryASTContext);
