@@ -35,6 +35,7 @@ import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort } from "../sort/Sort";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
+import { READ_LOWER_TARGET_INTERFACE_ENABLED } from "./optimizationSettings";
 
 export class ReadOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;

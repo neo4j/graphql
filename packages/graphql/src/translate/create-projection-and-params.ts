@@ -38,6 +38,8 @@ import { createAuthorizationBeforePredicateField } from "./authorization/create-
 import { checkAuthentication } from "./authorization/check-authentication";
 import { compileCypher } from "../utils/compile-cypher";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { uniqSubQueries } from "./queryAST/ast/operations/composite/optimization";
+import { UNION_UNIFICATION_ENABLED } from "./queryAST/ast/operations/optimizationSettings";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -141,7 +143,8 @@ export default function createProjectionAndParams({
 
             const subqueryReturnAlias = new Cypher.Variable();
             if (relationField.interface || relationField.union) {
-                let referenceNodes;
+                let isSelectingAllChildren = false;
+                let referenceNodes: Node[];
                 if (relationField.interface) {
                     const interfaceImplementations = context.nodes.filter((x) =>
                         relationField.interface?.implementations?.includes(x.name)
@@ -172,6 +175,9 @@ export default function createProjectionAndParams({
                             // where exists and has a filter on this implementation
                             Object.prototype.hasOwnProperty.call(field.args.where, x.name)
                     );
+
+                    isSelectingAllChildren =
+                        relationField.interface && interfaceImplementations.length === referenceNodes.length;
                 } else {
                     referenceNodes = context.nodes.filter(
                         (x) =>
@@ -182,54 +188,81 @@ export default function createProjectionAndParams({
 
                 const parentNode = varName;
 
-                const unionSubqueries: Cypher.Clause[] = [];
-                for (const refNode of referenceNodes) {
-                    const targetNode = new Cypher.Node({ labels: refNode.getLabels(context) });
-                    const recurse = createProjectionAndParams({
-                        resolveTree: field,
-                        node: refNode,
-                        context,
-                        varName: targetNode,
-                        cypherFieldAliasMap,
-                    });
-                    res.params = { ...res.params, ...recurse.params };
+                const matchByInterfaceOrUnion =
+                    UNION_UNIFICATION_ENABLED && isSelectingAllChildren
+                        ? relationField.interface?.typeMeta.name
+                        : undefined;
 
-                    const direction = getCypherRelationshipDirection(relationField, field.args);
+                const unionSubqueries = uniqSubQueries(
+                    context,
+                    matchByInterfaceOrUnion,
+                    referenceNodes,
+                    (node) => node,
+                    (subs) => {
+                        const unionSubqueries: Cypher.Clause[][] = [];
+                        for (const { child: refNode, unifyViaDataModelType, exclusionPredicates } of subs) {
+                            const labels =
+                                unifyViaDataModelType && context.labelManager
+                                    ? context.labelManager.getLabelSelectorExpressionObject(unifyViaDataModelType)
+                                    : refNode.getLabels(context);
 
-                    const nestedProjection = new Cypher.Raw((env) => {
-                        // The nested projection will be surrounded by brackets, so we want to remove
-                        // any linebreaks, and then the first opening and the last closing bracket of the line,
-                        // as well as any surrounding whitespace.
-                        const nestedProj = compileCypher(recurse.projection, env).replaceAll(
-                            /(^\s*{\s*)|(\s*}\s*$)/g,
-                            ""
-                        );
+                            const targetNode = new Cypher.Node({ labels });
+                            const recurse = createProjectionAndParams({
+                                resolveTree: field,
+                                node: refNode,
+                                context,
+                                varName: targetNode,
+                                cypherFieldAliasMap,
+                            });
 
-                        return `{ __resolveType: "${refNode.name}", __id: id(${compileCypher(varName, env)})${
-                            nestedProj && `, ${nestedProj}`
-                        } }`;
-                    });
+                            res.params = { ...res.params, ...recurse.params };
 
-                    const subquery = createProjectionSubquery({
-                        parentNode,
-                        whereInput: field.args.where ? field.args.where[refNode.name] : {},
-                        node: refNode,
-                        context,
-                        subqueryReturnAlias,
-                        nestedProjection,
-                        nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
-                        targetNode,
-                        relationField,
-                        relationshipDirection: direction,
-                        optionsInput,
-                        addSkipAndLimit: false,
-                        collect: false,
-                        nestedPredicates: recurse.predicates,
-                    });
+                            const combinedPredicates = [
+                                ...(recurse.predicates ?? []),
+                                ...(exclusionPredicates?.(targetNode) ?? []),
+                            ];
 
-                    const unionWith = new Cypher.With("*");
-                    unionSubqueries.push(Cypher.concat(unionWith, subquery));
-                }
+                            const direction = getCypherRelationshipDirection(relationField, field.args);
+
+                            const nestedProjection = new Cypher.Raw((env) => {
+                                // The nested projection will be surrounded by brackets, so we want to remove
+                                // any linebreaks, and then the first opening and the last closing bracket of the line,
+                                // as well as any surrounding whitespace.
+                                const nestedProj = compileCypher(recurse.projection, env).replaceAll(
+                                    /(^\s*{\s*)|(\s*}\s*$)/g,
+                                    ""
+                                );
+
+                                return `{ __resolveType: ${
+                                    UNION_UNIFICATION_ENABLED && context.labelManager?.hasMainType(refNode.name)
+                                        ? new Cypher.Property(targetNode, "mainType").getCypher(env)
+                                        : `"${refNode.name}"`
+                                }, __id: id(${compileCypher(varName, env)})${nestedProj && `, ${nestedProj}`} }`;
+                            });
+
+                            const subquery = createProjectionSubquery({
+                                parentNode,
+                                whereInput: field.args.where ? field.args.where[refNode.name] : {},
+                                node: refNode,
+                                context,
+                                subqueryReturnAlias,
+                                nestedProjection,
+                                nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
+                                targetNode,
+                                relationField,
+                                relationshipDirection: direction,
+                                optionsInput,
+                                addSkipAndLimit: false,
+                                collect: false,
+                                nestedPredicates: combinedPredicates,
+                            });
+
+                            const unionWith = new Cypher.With("*");
+                            unionSubqueries.push([Cypher.concat(unionWith, subquery)]);
+                        }
+                        return unionSubqueries;
+                    }
+                ).flat();
 
                 const unionClause = new Cypher.Union(...unionSubqueries);
 

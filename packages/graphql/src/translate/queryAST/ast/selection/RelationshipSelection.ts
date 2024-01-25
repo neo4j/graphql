@@ -24,6 +24,7 @@ import { hasTarget } from "../../utils/context-has-target";
 import { createNodeFromEntity, createRelationshipFromEntity } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
+import { READ_LOWER_TARGET_INTERFACE_ENABLED } from "../operations/optimizationSettings";
 
 export class RelationshipSelection extends EntitySelection {
     private relationship: RelationshipAdapter;
@@ -54,7 +55,10 @@ export class RelationshipSelection extends EntitySelection {
         this.optional = optional ?? false;
     }
 
-    public apply(context: QueryASTContext<Cypher.Node>): {
+    public apply(
+        context: QueryASTContext<Cypher.Node>,
+        matchByInterfaceOrUnion?: string
+    ): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
@@ -62,8 +66,25 @@ export class RelationshipSelection extends EntitySelection {
         const relVar = createRelationshipFromEntity(this.relationship);
 
         const relationshipTarget = this.targetOverride ?? this.relationship.target;
-        const targetNode = createNodeFromEntity(relationshipTarget, context.neo4jGraphQLContext, this.alias);
         const relDirection = this.relationship.getCypherDirection(this.directed);
+
+        const lowerToTargetType =
+            matchByInterfaceOrUnion ??
+            (READ_LOWER_TARGET_INTERFACE_ENABLED
+                ? context.neo4jGraphQLContext.labelManager?.getLowerTargetInterfaceIfSafeRelationship(
+                      this.relationship.source.name,
+                      this.relationship.name
+                  )
+                : null);
+
+        const targetNode =
+            lowerToTargetType && context.neo4jGraphQLContext.labelManager
+                ? new Cypher.Node({
+                      labels: context.neo4jGraphQLContext.labelManager.getLabelSelectorExpressionObject(
+                          lowerToTargetType
+                      ),
+                  })
+                : createNodeFromEntity(relationshipTarget, context.neo4jGraphQLContext, this.alias);
 
         const pattern = new Cypher.Pattern(context.target)
             .withoutLabels()

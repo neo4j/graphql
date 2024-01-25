@@ -28,6 +28,7 @@ import type { Sort, SortField } from "../../sort/Sort";
 import type { OperationTranspileResult } from "../operations";
 import { Operation } from "../operations";
 import type { CompositeReadPartial } from "./CompositeReadPartial";
+import { uniqSubQueries } from "./optimization";
 
 export class CompositeReadOperation extends Operation {
     private children: CompositeReadPartial[];
@@ -57,15 +58,25 @@ export class CompositeReadOperation extends Operation {
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
         const parentNode = context.target;
-        const nestedSubqueries = this.children.flatMap((c) => {
-            const result = c.transpile(context);
 
-            let clauses = result.clauses;
-            if (parentNode) {
-                clauses = clauses.map((sq) => Cypher.concat(new Cypher.With("*"), sq));
-            }
-            return clauses;
-        });
+        const isSelectingAllChildren = this.entity.concreteEntities.length === this.children.length;
+        const matchByInterfaceOrUnion = isSelectingAllChildren ? this.entity.name : undefined;
+        const nestedSubqueries = uniqSubQueries(
+            context.neo4jGraphQLContext,
+            matchByInterfaceOrUnion,
+            this.children,
+            (child) => child.target,
+            (subs) =>
+                subs.map(({ child, unifyViaDataModelType, exclusionPredicates }) => {
+                    const result = child.transpile(context, unifyViaDataModelType, exclusionPredicates);
+
+                    let clauses = result.clauses;
+                    if (parentNode) {
+                        clauses = clauses.map((sq) => Cypher.concat(new Cypher.With("*"), sq));
+                    }
+                    return clauses;
+                })
+        ).flat();
 
         let aggrExpr: Cypher.Expr = Cypher.collect(context.returnVariable);
         if (!this.relationship) {
