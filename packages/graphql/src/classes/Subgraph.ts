@@ -37,6 +37,7 @@ import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import { isInArray } from "../utils/is-in-array";
 import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import type { ValueOf } from "../utils/value-of";
 
 // TODO fetch the directive names from the spec
 const federationDirectiveNames = [
@@ -53,7 +54,7 @@ const federationDirectiveNames = [
     "interfaceObject",
 ] as const;
 
-type FederationDirectiveName = (typeof federationDirectiveNames)[number];
+type FederationDirectiveName = ValueOf<typeof federationDirectiveNames>;
 
 type ReferenceResolver = (
     reference,

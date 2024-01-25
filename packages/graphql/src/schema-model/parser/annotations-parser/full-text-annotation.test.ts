@@ -31,6 +31,7 @@ describe("parseFullTextAnnotation", () => {
         );
         const fullTextAnnotation = parseFullTextAnnotation(directive);
         expect(fullTextAnnotation).toEqual({
+            name: "fulltext",
             indexes: [
                 {
                     fields: ["name"],

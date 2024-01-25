@@ -20,7 +20,6 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { gql } from "graphql-tag";
 import type { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
-import { AnnotationsKey } from "./annotation/Annotation";
 import { AuthenticationAnnotation } from "./annotation/AuthenticationAnnotation";
 import {
     AuthorizationFilterOperationRule,
@@ -110,13 +109,13 @@ describe("ConcreteEntity generation", () => {
 
         test("creates the authorization annotation on User entity", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-            expect(userEntity?.annotations[AnnotationsKey.authorization]).toBeDefined();
+            expect(userEntity?.annotations.authorization).toBeDefined();
         });
 
         test("creates the authorization annotation on password field", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-            expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty(AnnotationsKey.authorization);
-            const authAnnotation = userEntity?.attributes.get("password")?.annotations[AnnotationsKey.authorization];
+            expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty("authorization");
+            const authAnnotation = userEntity?.attributes.get("password")?.annotations.authorization;
 
             expect(authAnnotation).toBeDefined();
             expect(authAnnotation?.filter).toHaveLength(1);
@@ -135,7 +134,7 @@ describe("ConcreteEntity generation", () => {
 
         test("authorization annotation is correct on User entity", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-            const authAnnotation = userEntity?.annotations[AnnotationsKey.authorization];
+            const authAnnotation = userEntity?.annotations.authorization;
             expect(authAnnotation).toBeDefined();
             expect(authAnnotation?.filter).toBeUndefined();
             expect(authAnnotation?.validate).toHaveLength(2);
@@ -196,16 +195,13 @@ describe("ConcreteEntity generation", () => {
 
         test("creates the subscriptionsAuthorization annotation on User entity", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-            expect(userEntity?.annotations[AnnotationsKey.subscriptionsAuthorization]).toBeDefined();
+            expect(userEntity?.annotations.subscriptionsAuthorization).toBeDefined();
         });
 
         test("creates the subscriptionsAuthorization annotation on password field", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-            expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty(
-                AnnotationsKey.subscriptionsAuthorization
-            );
-            const authAnnotation =
-                userEntity?.attributes.get("password")?.annotations[AnnotationsKey.subscriptionsAuthorization];
+            expect(userEntity?.attributes.get("password")?.annotations).toHaveProperty("subscriptionsAuthorization");
+            const authAnnotation = userEntity?.attributes.get("password")?.annotations.subscriptionsAuthorization;
 
             expect(authAnnotation).toBeDefined();
             expect(authAnnotation?.filter).toHaveLength(1);
@@ -223,7 +219,7 @@ describe("ConcreteEntity generation", () => {
 
         test("subscriptionsAuthorization annotation is correct on User entity", () => {
             const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
-            const authAnnotation = userEntity?.annotations[AnnotationsKey.subscriptionsAuthorization];
+            const authAnnotation = userEntity?.annotations.subscriptionsAuthorization;
             expect(authAnnotation).toBeDefined();
             expect(authAnnotation?.filter).toEqual([
                 {
@@ -489,50 +485,50 @@ describe("ConcreteEntity Annotations & Attributes", () => {
     });
 
     test("concrete entities should be generated with the correct annotations", () => {
-        const userQuery = userEntity?.annotations[AnnotationsKey.query];
+        const userQuery = userEntity?.annotations.query;
         expect(userQuery).toBeDefined();
         expect(userQuery?.read).toBe(true);
         expect(userQuery?.aggregate).toBe(false);
 
-        const userMutation = userEntity?.annotations[AnnotationsKey.mutation];
+        const userMutation = userEntity?.annotations.mutation;
         expect(userMutation).toBeDefined();
         expect(userMutation?.operations).toStrictEqual(new Set(["CREATE", "UPDATE", "DELETE"]));
 
-        const userSubscription = userEntity?.annotations[AnnotationsKey.subscription];
+        const userSubscription = userEntity?.annotations.subscription;
         expect(userSubscription).toBeDefined();
         expect(userSubscription?.events).toStrictEqual(
             new Set(["CREATED", "UPDATED", "DELETED", "RELATIONSHIP_CREATED", "RELATIONSHIP_DELETED"])
         );
 
-        const accountSubscription = accountEntity?.annotations[AnnotationsKey.subscription];
+        const accountSubscription = accountEntity?.annotations.subscription;
         expect(accountSubscription).toBeDefined();
         expect(accountSubscription?.events).toStrictEqual(new Set(["CREATED"]));
     });
 
     test("attributes should be generated with the correct annotations", () => {
         const userName = userEntity?.attributes.get("name");
-        expect(userName?.annotations[AnnotationsKey.selectable]).toBeDefined();
-        expect(userName?.annotations[AnnotationsKey.selectable]?.onRead).toBe(true);
-        expect(userName?.annotations[AnnotationsKey.selectable]?.onAggregate).toBe(true);
+        expect(userName?.annotations.selectable).toBeDefined();
+        expect(userName?.annotations.selectable?.onRead).toBe(true);
+        expect(userName?.annotations.selectable?.onAggregate).toBe(true);
 
         expect(userName?.databaseName).toBeDefined();
         expect(userName?.databaseName).toBe("dbName");
 
         const defaultName = userEntity?.attributes.get("defaultName");
         expect(defaultName).toBeDefined();
-        expect(defaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(defaultName?.annotations[AnnotationsKey.default]?.value).toBe("John");
+        expect(defaultName?.annotations.default).toBeDefined();
+        expect(defaultName?.annotations.default?.value).toBe("John");
 
         const age = userEntity?.attributes.get("age");
         expect(age).toBeDefined();
-        expect(age?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(age?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
-        expect(age?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(age?.annotations.populatedBy).toBeDefined();
+        expect(age?.annotations.populatedBy?.callback).toBe("thisCallback");
+        expect(age?.annotations.populatedBy?.operations).toStrictEqual(["CREATE"]);
 
         const accountName = accountEntity?.attributes.get("accountName");
-        expect(accountName?.annotations[AnnotationsKey.settable]).toBeDefined();
-        expect(accountName?.annotations[AnnotationsKey.settable]?.onCreate).toBe(false);
-        expect(accountName?.annotations[AnnotationsKey.settable]?.onUpdate).toBe(true);
+        expect(accountName?.annotations.settable).toBeDefined();
+        expect(accountName?.annotations.settable?.onCreate).toBe(false);
+        expect(accountName?.annotations.settable?.onUpdate).toBe(true);
 
         expect(accountName?.databaseName).toBeDefined();
         expect(accountName?.databaseName).toBe("accountName");
@@ -622,31 +618,31 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
 
         const productionYear = productionEntity?.attributes.get("year");
-        expect(productionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
-        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(productionYear?.annotations.populatedBy).toBeDefined();
+        expect(productionYear?.annotations.populatedBy?.callback).toBe("thisCallback");
+        expect(productionYear?.annotations.populatedBy?.operations).toStrictEqual(["CREATE"]);
 
         const movieYear = movieEntity?.attributes.get("year");
-        expect(movieYear?.annotations[AnnotationsKey.populatedBy]).toBeUndefined();
+        expect(movieYear?.annotations.populatedBy).toBeUndefined();
 
         const showYear = showEntity?.attributes.get("year");
-        expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisOtherCallback");
-        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(showYear?.annotations.populatedBy).toBeDefined();
+        expect(showYear?.annotations.populatedBy?.callback).toBe("thisOtherCallback");
+        expect(showYear?.annotations.populatedBy?.operations).toStrictEqual(["CREATE"]);
 
         const productionDefaultName = productionEntity?.attributes.get("defaultName");
         expect(productionDefaultName).toBeDefined();
-        expect(productionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(productionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+        expect(productionDefaultName?.annotations.default).toBeDefined();
+        expect(productionDefaultName?.annotations.default?.value).toBe("AwesomeProduction");
 
         const movieDefaultName = movieEntity?.attributes.get("defaultName");
         expect(movieDefaultName).toBeDefined();
-        expect(movieDefaultName?.annotations[AnnotationsKey.default]).toBeUndefined();
+        expect(movieDefaultName?.annotations.default).toBeUndefined();
 
         const showDefaultName = showEntity?.attributes.get("defaultName");
         expect(showDefaultName).toBeDefined();
-        expect(showDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(showDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeShow");
+        expect(showDefaultName?.annotations.default).toBeDefined();
+        expect(showDefaultName?.annotations.default?.value).toBe("AwesomeShow");
 
         const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
         const movieAliasedProp = movieEntity?.attributes.get("aliasedProp");
@@ -695,31 +691,31 @@ describe("ComposeEntity Annotations & Attributes and Inheritance", () => {
         const productionEntity = schemaModel.compositeEntities.find((e) => e.name === "Production") as InterfaceEntity;
 
         const productionYear = productionEntity?.attributes.get("year");
-        expect(productionYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisCallback");
-        expect(productionYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(productionYear?.annotations.populatedBy).toBeDefined();
+        expect(productionYear?.annotations.populatedBy?.callback).toBe("thisCallback");
+        expect(productionYear?.annotations.populatedBy?.operations).toStrictEqual(["CREATE"]);
 
         const tvProductionYear = tvProductionEntity?.attributes.get("year");
-        expect(tvProductionYear?.annotations[AnnotationsKey.populatedBy]).toBeUndefined();
+        expect(tvProductionYear?.annotations.populatedBy).toBeUndefined();
 
         const showYear = showEntity?.attributes.get("year");
-        expect(showYear?.annotations[AnnotationsKey.populatedBy]).toBeDefined();
-        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.callback).toBe("thisOtherCallback");
-        expect(showYear?.annotations[AnnotationsKey.populatedBy]?.operations).toStrictEqual(["CREATE"]);
+        expect(showYear?.annotations.populatedBy).toBeDefined();
+        expect(showYear?.annotations.populatedBy?.callback).toBe("thisOtherCallback");
+        expect(showYear?.annotations.populatedBy?.operations).toStrictEqual(["CREATE"]);
 
         const productionDefaultName = productionEntity?.attributes.get("defaultName");
         expect(productionDefaultName).toBeDefined();
-        expect(productionDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(productionDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeProduction");
+        expect(productionDefaultName?.annotations.default).toBeDefined();
+        expect(productionDefaultName?.annotations.default?.value).toBe("AwesomeProduction");
 
         const tvProductionDefaultName = tvProductionEntity?.attributes.get("defaultName");
         expect(tvProductionDefaultName).toBeDefined();
-        expect(tvProductionDefaultName?.annotations[AnnotationsKey.default]).toBeUndefined();
+        expect(tvProductionDefaultName?.annotations.default).toBeUndefined();
 
         const showDefaultName = showEntity?.attributes.get("defaultName");
         expect(showDefaultName).toBeDefined();
-        expect(showDefaultName?.annotations[AnnotationsKey.default]).toBeDefined();
-        expect(showDefaultName?.annotations[AnnotationsKey.default]?.value).toBe("AwesomeShow");
+        expect(showDefaultName?.annotations.default).toBeDefined();
+        expect(showDefaultName?.annotations.default?.value).toBe("AwesomeShow");
 
         const productionAliasedProp = productionEntity?.attributes.get("aliasedProp");
         const tvProductionAliasedProp = tvProductionEntity?.attributes.get("aliasedProp");

@@ -18,6 +18,7 @@
  */
 
 import type { GraphQLWhereArg } from "../../types";
+import type { Annotation } from "./Annotation";
 
 export type AuthenticationOperation =
     | "READ"
@@ -29,7 +30,9 @@ export type AuthenticationOperation =
     | "DELETE_RELATIONSHIP"
     | "SUBSCRIBE";
 
-export class AuthenticationAnnotation {
+export class AuthenticationAnnotation implements Annotation {
+    readonly name = "authentication";
+
     public readonly operations: Set<AuthenticationOperation>;
     public readonly jwt?: GraphQLWhereArg;
 

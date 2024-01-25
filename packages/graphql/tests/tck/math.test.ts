@@ -233,12 +233,17 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
-                WITH { properties: { pay: update_this3.pay } } AS edge
-                WITH collect(edge) AS edges
+                WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS update_var5
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS update_this4, edge.relationship AS update_this3
+                    RETURN collect({ properties: { pay: update_this3.pay }, node: { __resolveType: \\"Movie\\", __id: id(update_this4) } }) AS update_var5
+                }
+                RETURN { edges: update_var5, totalCount: totalCount } AS update_var6
             }
-            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var5 }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var6 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -313,7 +318,7 @@ describe("Math operators", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:Star)
-                    WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
+                    WITH update_this1 { .marriageLength, __resolveType: \\"Star\\", __id: id(update_this1) } AS update_this1
                     RETURN update_this1 AS update_var2
                 }
                 WITH update_var2
@@ -385,7 +390,7 @@ describe("Math operators", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[update_this0:MARRIED_WITH]->(update_this1:Star)
-                    WITH update_this1 { __resolveType: \\"Star\\", __id: id(this), .marriageLength } AS update_this1
+                    WITH update_this1 { .marriageLength, __resolveType: \\"Star\\", __id: id(update_this1) } AS update_this1
                     RETURN update_this1 AS update_var2
                 }
                 WITH update_var2

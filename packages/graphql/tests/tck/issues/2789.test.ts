@@ -61,14 +61,15 @@ describe("https://github.com/neo4j/graphql/issues/2789", () => {
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__after_param1 IS NOT NULL AND this.id = $authorization__after_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__after_param1 IS NOT NULL AND this.id = $authorization__after_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($update_param1 IS NOT NULL AND this.id = $update_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($update_param1 IS NOT NULL AND this.id = $update_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($update_param2 IS NOT NULL AND this.id = $update_param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN collect(DISTINCT this { .password }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"isAuthenticated\\": false,
-                \\"update_param1\\": \\"Bar\\",
+                \\"update_param1\\": \\"Foo\\",
+                \\"update_param2\\": \\"Bar\\",
                 \\"param1\\": \\"Foo\\",
                 \\"this_update_password\\": \\"123\\",
                 \\"authorization__before_param1\\": \\"Bar\\",

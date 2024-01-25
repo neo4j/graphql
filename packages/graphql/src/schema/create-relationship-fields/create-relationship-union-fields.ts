@@ -18,9 +18,9 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import type { ObjectTypeComposer, SchemaComposer, InterfaceTypeComposer } from "graphql-compose";
+import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
 import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
 import { withConnectOrCreateInputType } from "../generation/connect-or-create-input";
@@ -29,64 +29,69 @@ import { augmentDeleteInputTypeWithDeleteFieldInput } from "../generation/delete
 import { augmentDisconnectInputTypeWithDisconnectFieldInput } from "../generation/disconnect-input";
 import { withRelationInputType } from "../generation/relation-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput } from "../generation/update-input";
+import { withSourceWhereInputType } from "../generation/where-input";
 
 export function createRelationshipUnionFields({
-    relationship,
+    relationshipAdapter,
     composeNode,
     schemaComposer,
     userDefinedFieldDirectives,
 }: {
-    relationship: RelationshipAdapter | RelationshipDeclarationAdapter;
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composeNode: ObjectTypeComposer | InterfaceTypeComposer;
     schemaComposer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
 }) {
+    withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives: [] });
+
     // ======== only on relationships to concrete | unions:
     withConnectOrCreateInputType({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         userDefinedFieldDirectives,
         deprecatedDirectives: [],
     });
 
     // ======== all relationships:
-    composeNode.addFields(augmentObjectOrInterfaceTypeWithRelationshipField(relationship, userDefinedFieldDirectives));
+    composeNode.addFields(
+        augmentObjectOrInterfaceTypeWithRelationshipField(relationshipAdapter, userDefinedFieldDirectives)
+    );
 
     withRelationInputType({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         deprecatedDirectives: [],
         userDefinedFieldDirectives,
     });
 
     augmentCreateInputTypeWithRelationshipsInput({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         deprecatedDirectives: [],
         userDefinedFieldDirectives,
     });
 
     augmentUpdateInputTypeWithUpdateFieldInput({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         deprecatedDirectives: [],
         userDefinedFieldDirectives,
     });
 
     augmentConnectInputTypeWithConnectFieldInput({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         deprecatedDirectives: [],
     });
 
     augmentDeleteInputTypeWithDeleteFieldInput({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         deprecatedDirectives: [],
     });
 
     augmentDisconnectInputTypeWithDisconnectFieldInput({
-        relationshipAdapter: relationship,
+        relationshipAdapter,
         composer: schemaComposer,
         deprecatedDirectives: [],
     });

@@ -90,6 +90,7 @@ import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-d
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { withEdgeWrapperType } from "./generation/edge-wrapper-type";
+import { SHAREABLE } from "../constants";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -162,7 +163,7 @@ function makeAugmentedSchema({
 
     // TODO: ideally move these in getSubgraphSchema()
     if (subgraph) {
-        const shareable = subgraph.getFullyQualifiedDirectiveName("shareable");
+        const shareable = subgraph.getFullyQualifiedDirectiveName(SHAREABLE);
         [CreateInfo.name, UpdateInfo.name, DeleteInfo.name, PageInfo.name].forEach((typeName) => {
             const typeComposer = composer.getOTC(typeName);
             typeComposer.setDirectiveByName(shareable);

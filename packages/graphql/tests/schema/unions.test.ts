@@ -353,6 +353,7 @@ describe("Unions", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              search: SearchWhere @deprecated(reason: \\"Use \`search_SOME\` instead.\\")
               searchConnection: MovieSearchConnectionWhere @deprecated(reason: \\"Use \`searchConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Movies where all of the related MovieSearchConnections match this filter
@@ -371,6 +372,15 @@ describe("Unions", () => {
               Return Movies where some of the related MovieSearchConnections match this filter
               \\"\\"\\"
               searchConnection_SOME: MovieSearchConnectionWhere
+              \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+              search_ALL: SearchWhere
+              \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+              search_NONE: SearchWhere
+              search_NOT: SearchWhere @deprecated(reason: \\"Use \`search_NONE\` instead.\\")
+              \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+              search_SINGLE: SearchWhere
+              \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+              search_SOME: SearchWhere
             }
 
             type MoviesConnection {

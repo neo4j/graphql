@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export class IDAnnotation {}
+import type { Annotation } from "./Annotation";
+
+export class IDAnnotation implements Annotation {
+    readonly name = "id";
+}

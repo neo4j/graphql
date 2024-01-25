@@ -129,6 +129,7 @@ export function withConnectOrCreateInputType({
 
     return connectOrCreateInput;
 }
+
 function makeConnectOrCreateInputType({
     relationshipAdapter,
     composer,
@@ -205,6 +206,7 @@ function withRelationshipConnectOrCreateInputType({
     const connectOrCreateInput = composer.createInputTC({ name: typeName, fields });
     return connectOrCreateInput;
 }
+
 function makeUnionConnectOrCreateInputTypeFields({
     relationshipAdapter,
     composer,

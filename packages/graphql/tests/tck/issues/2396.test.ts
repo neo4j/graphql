@@ -157,7 +157,6 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
             WITH *, count(this0) AS valuationCount
             WITH *
-            WITH *
             WHERE ((valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param0 | 1] WHERE true)) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {
                 WITH this
@@ -223,7 +222,6 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             "MATCH (this:Mandate)
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
             WITH *, count(this0) AS valuationCount
-            WITH *
             WITH *
             WHERE ((this.price >= $param0 AND (valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param1 | 1] WHERE true))) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {

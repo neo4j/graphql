@@ -3597,6 +3597,7 @@ describe("Directive-preserve", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              content: ContentWhere @deprecated(reason: \\"Use \`content_SOME\` instead.\\")
               contentConnection: UserContentConnectionWhere @deprecated(reason: \\"Use \`contentConnection_SOME\` instead.\\")
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
@@ -3615,6 +3616,15 @@ describe("Directive-preserve", () => {
               Return Users where some of the related UserContentConnections match this filter
               \\"\\"\\"
               contentConnection_SOME: UserContentConnectionWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              content_ALL: ContentWhere
+              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              content_NONE: ContentWhere
+              content_NOT: ContentWhere @deprecated(reason: \\"Use \`content_NONE\` instead.\\")
+              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              content_SINGLE: ContentWhere
+              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              content_SOME: ContentWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

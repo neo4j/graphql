@@ -53,16 +53,13 @@ export function createOnCreateITC({
             node: onCreateInput.NonNull,
         };
         // TODO:
-        if (
-            relationshipAdapter instanceof RelationshipAdapter &&
-            relationshipAdapter.nonGeneratedProperties.length > 0
-        ) {
+        if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.createInputFields.length > 0) {
             const edgeFieldType = withCreateInputType({
                 entityAdapter: relationshipAdapter,
                 userDefinedFieldDirectives,
                 composer: schemaComposer,
             });
-            onCreateFields["edge"] = relationshipAdapter.hasNonNullNonGeneratedProperties
+            onCreateFields["edge"] = relationshipAdapter.hasNonNullCreateInputFields
                 ? edgeFieldType.NonNull
                 : edgeFieldType;
         }

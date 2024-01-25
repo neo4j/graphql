@@ -32,12 +32,12 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { concreteEntityToUpdateInputFields, withArrayOperators, withMathOperators } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
-import { withDisconnectFieldInputType } from "./disconnect-input";
-import { withDeleteFieldInputType } from "./delete-input";
-import { makeImplementationsUpdateInput } from "./implementation-inputs";
-import { makeConnectionWhereInputType } from "./where-input";
 import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
+import { withDeleteFieldInputType } from "./delete-input";
+import { withDisconnectFieldInputType } from "./disconnect-input";
+import { makeImplementationsUpdateInput } from "./implementation-inputs";
 import { withCreateFieldInputType } from "./relation-input";
+import { makeConnectionWhereInputType } from "./where-input";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export function withUpdateInputType({
@@ -429,7 +429,7 @@ function makeUpdateConnectionFieldInputTypeFields({
         // fields["node"] = updateInputType;
         fields["node"] = relationshipAdapter.target.operations.updateInputTypeName;
     }
-    if (relationshipAdapter.hasNonGeneratedProperties) {
+    if (relationshipAdapter.hasCreateInputFields) {
         fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;
     }
     return fields;

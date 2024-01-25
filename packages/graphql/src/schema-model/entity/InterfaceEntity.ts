@@ -18,8 +18,7 @@
  */
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
-import type { Annotation, Annotations } from "../annotation/Annotation";
-import { annotationToKey } from "../annotation/Annotation";
+import type { Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { RelationshipDeclaration } from "../relationship/RelationshipDeclaration";
 import type { CompositeEntity } from "./CompositeEntity";
@@ -32,32 +31,29 @@ export class InterfaceEntity implements CompositeEntity {
     public readonly concreteEntities: ConcreteEntity[];
     public readonly attributes: Map<string, Attribute> = new Map();
     public readonly relationshipDeclarations: Map<string, RelationshipDeclaration> = new Map();
-    public readonly annotations: Partial<Annotations> = {};
+    public readonly annotations: Partial<Annotations>;
 
     constructor({
         name,
         description,
         concreteEntities,
         attributes = [],
-        annotations = [],
+        annotations = {},
         relationshipDeclarations = [],
     }: {
         name: string;
         description?: string;
         concreteEntities: ConcreteEntity[];
         attributes?: Attribute[];
-        annotations?: Annotation[];
+        annotations?: Partial<Annotations>;
         relationshipDeclarations?: RelationshipDeclaration[];
     }) {
         this.name = name;
         this.description = description;
         this.concreteEntities = concreteEntities;
+        this.annotations = annotations;
         for (const attribute of attributes) {
             this.addAttribute(attribute);
-        }
-
-        for (const annotation of annotations) {
-            this.addAnnotation(annotation);
         }
 
         for (const relationshipDeclaration of relationshipDeclarations) {
@@ -77,19 +73,6 @@ export class InterfaceEntity implements CompositeEntity {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}`);
         }
         this.attributes.set(attribute.name, attribute);
-    }
-
-    private addAnnotation(annotation: Annotation): void {
-        const annotationKey = annotationToKey(annotation);
-        const existingAnnotation = this.annotations[annotationKey];
-
-        if (existingAnnotation) {
-            throw new Neo4jGraphQLSchemaValidationError(`Annotation ${annotationKey} already exists in ${this.name}`);
-        }
-
-        // We cast to any because we aren't narrowing the Annotation type here.
-        // There's no reason to narrow either, since we care more about performance.
-        this.annotations[annotationKey] = annotation as any;
     }
 
     public addRelationshipDeclaration(relationshipDeclaration: RelationshipDeclaration): void {

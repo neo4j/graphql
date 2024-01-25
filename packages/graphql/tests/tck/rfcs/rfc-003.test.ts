@@ -371,7 +371,7 @@ describe("tck/rfs/003", () => {
                         	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -423,7 +423,7 @@ describe("tck/rfs/003", () => {
                         	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -499,7 +499,7 @@ describe("tck/rfs/003", () => {
                             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
-                            RETURN 'Query cannot conclude with CALL'"
+                            RETURN \\"Query cannot conclude with CALL\\""
                         `);
 
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -574,7 +574,7 @@ describe("tck/rfs/003", () => {
                             	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
-                            RETURN 'Query cannot conclude with CALL'"
+                            RETURN \\"Query cannot conclude with CALL\\""
                         `);
 
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -646,7 +646,7 @@ describe("tck/rfs/003", () => {
                             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
-                            RETURN 'Query cannot conclude with CALL'"
+                            RETURN \\"Query cannot conclude with CALL\\""
                         `);
 
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -752,7 +752,7 @@ describe("tck/rfs/003", () => {
                             	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
                             	RETURN c AS this_coDirector_CoDirector_unique_ignored
                             }
-                            RETURN 'Query cannot conclude with CALL'"
+                            RETURN \\"Query cannot conclude with CALL\\""
                         `);
 
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -877,7 +877,7 @@ describe("tck/rfs/003", () => {
                             	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
                             	RETURN c AS this_coDirector_CoDirector_unique_ignored
                             }
-                            RETURN 'Query cannot conclude with CALL'"
+                            RETURN \\"Query cannot conclude with CALL\\""
                         `);
 
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1235,7 +1235,7 @@ describe("tck/rfs/003", () => {
                         	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN 'Query cannot conclude with CALL'"
+                        RETURN \\"Query cannot conclude with CALL\\""
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1338,12 +1338,6 @@ describe("tck/rfs/003", () => {
                         	RETURN count(*) AS connect_this_connect_director_Director0
                         }
                         WITH *
-                        CALL {
-                            WITH this
-                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:Director)
-                            WITH update_this1 { .id } AS update_this1
-                            RETURN head(collect(update_this1)) AS update_var2
-                        }
                         WITH *
                         CALL {
                         	WITH this
@@ -1351,6 +1345,12 @@ describe("tck/rfs/003", () => {
                         	WITH count(this_director_Director_unique) as c
                         	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required exactly once', [0])
                         	RETURN c AS this_director_Director_unique_ignored
+                        }
+                        CALL {
+                            WITH this
+                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:Director)
+                            WITH update_this1 { .id } AS update_this1
+                            RETURN head(collect(update_this1)) AS update_var2
                         }
                         RETURN collect(DISTINCT this { .id, director: update_var2 }) AS data"
                     `);
@@ -1454,12 +1454,6 @@ describe("tck/rfs/003", () => {
                         	RETURN count(*) AS connect_this_connect_director_Director0
                         }
                         WITH *
-                        CALL {
-                            WITH this
-                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:Director)
-                            WITH update_this1 { .id } AS update_this1
-                            RETURN head(collect(update_this1)) AS update_var2
-                        }
                         WITH *
                         CALL {
                         	WITH this
@@ -1467,6 +1461,12 @@ describe("tck/rfs/003", () => {
                         	WITH count(this_director_Director_unique) as c
                         	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
+                        }
+                        CALL {
+                            WITH this
+                            MATCH (this)<-[update_this0:DIRECTED]-(update_this1:Director)
+                            WITH update_this1 { .id } AS update_this1
+                            RETURN head(collect(update_this1)) AS update_var2
                         }
                         RETURN collect(DISTINCT this { .id, director: update_var2 }) AS data"
                     `);

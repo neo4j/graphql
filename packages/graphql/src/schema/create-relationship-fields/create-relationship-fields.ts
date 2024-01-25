@@ -29,16 +29,8 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
 import { addDirectedArgument } from "../directed-argument";
-import { augmentObjectOrInterfaceTypeWithRelationshipField } from "../generation/augment-object-or-interface";
-import { augmentConnectInputTypeWithConnectFieldInput } from "../generation/connect-input";
-import { withConnectOrCreateInputType } from "../generation/connect-or-create-input";
-import { augmentCreateInputTypeWithRelationshipsInput } from "../generation/create-input";
-import { augmentDeleteInputTypeWithDeleteFieldInput } from "../generation/delete-input";
-import { augmentDisconnectInputTypeWithDisconnectFieldInput } from "../generation/disconnect-input";
-import { withRelationInputType } from "../generation/relation-input";
-import { augmentUpdateInputTypeWithUpdateFieldInput } from "../generation/update-input";
-import { withSourceWhereInputType } from "../generation/where-input";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import { createRelationshipConcreteFields } from "./create-relationship-concrete-fields";
 import { createRelationshipInterfaceFields } from "./create-relationship-interface-fields";
 import { createRelationshipUnionFields } from "./create-relationship-union-fields";
 
@@ -73,7 +65,7 @@ export function createRelationshipFields({
 
         if (relationshipTarget instanceof UnionEntityAdapter) {
             createRelationshipUnionFields({
-                relationship: relationshipAdapter,
+                relationshipAdapter,
                 composeNode,
                 schemaComposer,
                 userDefinedFieldDirectives,
@@ -113,6 +105,7 @@ export function createRelationshipFields({
             }
         }
 
+        // NOTE: Experimental path for InterfaceEntityAdapter
         // Specifically placed the check for InterfaceEntityAdapter here
         // so that we exit the function at this point, after the aggregation fields have been added above
         if (relationshipTarget instanceof InterfaceEntityAdapter) {
@@ -126,60 +119,15 @@ export function createRelationshipFields({
             return;
         }
 
-        // ======== only on relationships to concrete entities:
-        withSourceWhereInputType({ relationshipAdapter, composer: schemaComposer, deprecatedDirectives });
-
-        // ======== only on relationships to concrete | unions:
-        // TODO: refactor
-        withConnectOrCreateInputType({
-            relationshipAdapter,
-            composer: schemaComposer,
-            userDefinedFieldDirectives,
-            deprecatedDirectives,
-        });
-
-        // ======== all relationships:
-        composeNode.addFields(
-            augmentObjectOrInterfaceTypeWithRelationshipField(relationshipAdapter, userDefinedFieldDirectives, subgraph)
-        );
-
-        withRelationInputType({
-            relationshipAdapter,
-            composer: schemaComposer,
-            deprecatedDirectives,
-            userDefinedFieldDirectives,
-        });
-
-        augmentCreateInputTypeWithRelationshipsInput({
-            relationshipAdapter,
-            composer: schemaComposer,
-            deprecatedDirectives,
-            userDefinedFieldDirectives,
-        });
-
-        augmentConnectInputTypeWithConnectFieldInput({
-            relationshipAdapter,
-            composer: schemaComposer,
-            deprecatedDirectives,
-        });
-
-        augmentUpdateInputTypeWithUpdateFieldInput({
-            relationshipAdapter,
-            composer: schemaComposer,
-            deprecatedDirectives,
-            userDefinedFieldDirectives,
-        });
-
-        augmentDeleteInputTypeWithDeleteFieldInput({
-            relationshipAdapter,
-            composer: schemaComposer,
-            deprecatedDirectives,
-        });
-
-        augmentDisconnectInputTypeWithDisconnectFieldInput({
-            relationshipAdapter,
-            composer: schemaComposer,
-            deprecatedDirectives,
-        });
+        if (relationshipTarget instanceof ConcreteEntityAdapter) {
+            createRelationshipConcreteFields({
+                relationshipAdapter,
+                composeNode,
+                schemaComposer,
+                userDefinedFieldDirectives,
+                deprecatedDirectives,
+                subgraph,
+            });
+        }
     });
 }
