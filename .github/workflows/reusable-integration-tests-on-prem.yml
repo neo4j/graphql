@@ -72,7 +72,7 @@ jobs:
           NEO_URL: bolt://localhost:7687
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.packages.package == 'graphql' }}
         name: Upload coverage to Codecov
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
+        uses: codecov/codecov-action@4fe8c5f003fae66aa5ebb77cfd3e7bfbbda0b6b0 # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}/
