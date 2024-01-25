@@ -3663,7 +3663,7 @@ __metadata:
     copy-webpack-plugin: 12.0.2
     cross-env: 7.0.3
     css-loader: 6.9.1
-    dotenv: 16.4.0
+    dotenv: 16.4.1
     dotenv-webpack: 8.0.1
     fork-ts-checker-webpack-plugin: 9.0.2
     graphiql-explorer: 0.9.0
@@ -12624,10 +12624,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.4.0":
-  version: 16.4.0
-  resolution: "dotenv@npm:16.4.0"
-  checksum: f39dccc0eb25345675045d91762b8c92fc853402a8b25ba02723a7e27da58cefe0593771bbea97781df09300514eedb393b6c8f7bfa547fd9f7b69f0c965cbdb
+"dotenv@npm:16.4.1":
+  version: 16.4.1
+  resolution: "dotenv@npm:16.4.1"
+  checksum: a343f0a1d156deef8c60034f797969867af4dbccfacedd4ac15fad04547e7ffe0553b58fc3b27a5837950f0d977e38e9234943fbcec4aeced4e3d044309a76ab
   languageName: node
   linkType: hard
 
@@ -19932,7 +19932,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 6.19.1
     "@typescript-eslint/parser": 6.19.1
     concurrently: 8.2.2
-    dotenv: 16.4.0
+    dotenv: 16.4.1
     eslint: 8.56.0
     eslint-config-prettier: 9.1.0
     eslint-formatter-summary: 1.1.0
