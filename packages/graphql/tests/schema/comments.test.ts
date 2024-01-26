@@ -1107,11 +1107,6 @@ describe("Comments", () => {
                   Series
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -1129,7 +1124,6 @@ describe("Comments", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   title: String
                 }
 

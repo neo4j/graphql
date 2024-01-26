@@ -422,10 +422,6 @@ describe("inheritance", () => {
               Actor
             }
 
-            input PersonImplementationsUpdateInput {
-              Actor: ActorUpdateInput
-            }
-
             input PersonOptions {
               limit: Int
               offset: Int
@@ -443,7 +439,6 @@ describe("inheritance", () => {
             }
 
             input PersonUpdateInput {
-              _on: PersonImplementationsUpdateInput
               friends: [PersonFriendsUpdateFieldInput!]
               name: String
             }

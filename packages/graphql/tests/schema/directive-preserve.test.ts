@@ -1517,11 +1517,6 @@ describe("Directive-preserve", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -1539,7 +1534,6 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               title: String
             }
 
@@ -2528,11 +2522,6 @@ describe("Directive-preserve", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -2550,7 +2539,6 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               title: String
             }
 

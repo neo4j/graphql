@@ -153,10 +153,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User
             }
 
-            input ProfileImplementationsUpdateInput {
-              User: UserUpdateInput
-            }
-
             input ProfileOptions {
               limit: Int
               offset: Int
@@ -175,7 +171,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileUpdateInput {
-              _on: ProfileImplementationsUpdateInput
               id: ID
               userName: String
             }
@@ -564,10 +559,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User
             }
 
-            input ProfileImplementationsUpdateInput {
-              User: UserUpdateInput
-            }
-
             input ProfileOptions {
               limit: Int
               offset: Int
@@ -586,7 +577,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileUpdateInput {
-              _on: ProfileImplementationsUpdateInput
               userName: String
             }
 

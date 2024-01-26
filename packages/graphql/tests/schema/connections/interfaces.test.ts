@@ -121,10 +121,6 @@ describe("Connection with interfaces", () => {
               Person
             }
 
-            input CreatureImplementationsUpdateInput {
-              Person: PersonUpdateInput
-            }
-
             input CreatureMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
@@ -197,7 +193,6 @@ describe("Connection with interfaces", () => {
             }
 
             input CreatureUpdateInput {
-              _on: CreatureImplementationsUpdateInput
               id: ID
               movies: CreatureMoviesUpdateFieldInput
             }
@@ -643,11 +638,6 @@ describe("Connection with interfaces", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -665,7 +655,6 @@ describe("Connection with interfaces", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               director: [ProductionDirectorUpdateFieldInput!]
               id: ID
             }

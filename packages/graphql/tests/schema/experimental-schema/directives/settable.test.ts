@@ -5599,11 +5599,6 @@ describe("@settable", () => {
                   Series
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -5622,7 +5617,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   description: String
                   title: String
                 }
@@ -7875,11 +7869,6 @@ describe("@settable", () => {
                   Series
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -7898,7 +7887,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   actors: [ProductionActorsUpdateFieldInput!]
                   description: String
                   title: String

@@ -3092,11 +3092,6 @@ describe("@selectable", () => {
                   Series
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -3115,7 +3110,6 @@ describe("@selectable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   description: String
                   title: String
                 }
@@ -3632,11 +3626,6 @@ describe("@selectable", () => {
                   Series
                 }
 
-                input ProductionImplementationsUpdateInput {
-                  Movie: MovieUpdateInput
-                  Series: SeriesUpdateInput
-                }
-
                 input ProductionOptions {
                   limit: Int
                   offset: Int
@@ -3655,7 +3644,6 @@ describe("@selectable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  _on: ProductionImplementationsUpdateInput
                   description: String
                   title: String
                 }

@@ -428,11 +428,6 @@ describe("Interface Relationships", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -450,7 +445,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               title: String
             }
 
@@ -1638,11 +1632,6 @@ describe("Interface Relationships", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -1660,7 +1649,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               actors: [ProductionActorsUpdateFieldInput!]
               title: String
             }
@@ -3250,11 +3238,6 @@ describe("Interface Relationships", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -3272,7 +3255,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               actors: [ProductionActorsUpdateFieldInput!]
               title: String
             }
@@ -3962,11 +3944,6 @@ describe("Interface Relationships", () => {
               Type2Interface1
             }
 
-            input Interface1ImplementationsUpdateInput {
-              Type1Interface1: Type1Interface1UpdateInput
-              Type2Interface1: Type2Interface1UpdateInput
-            }
-
             input Interface1Interface2ConnectFieldInput {
               where: Interface2ConnectWhere
             }
@@ -4036,7 +4013,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              _on: Interface1ImplementationsUpdateInput
               field1: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
@@ -4099,11 +4075,6 @@ describe("Interface Relationships", () => {
               Type2Interface2
             }
 
-            input Interface2ImplementationsUpdateInput {
-              Type1Interface2: Type1Interface2UpdateInput
-              Type2Interface2: Type2Interface2UpdateInput
-            }
-
             input Interface2Options {
               limit: Int
               offset: Int
@@ -4121,7 +4092,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              _on: Interface2ImplementationsUpdateInput
               field2: String
             }
 
@@ -4958,11 +4928,6 @@ describe("Interface Relationships", () => {
               Type2Interface1
             }
 
-            input Interface1ImplementationsUpdateInput {
-              Type1Interface1: Type1Interface1UpdateInput
-              Type2Interface1: Type2Interface1UpdateInput
-            }
-
             input Interface1Interface2ConnectFieldInput {
               edge: Interface1Interface2EdgeCreateInput!
               where: Interface2ConnectWhere
@@ -5077,7 +5042,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              _on: Interface1ImplementationsUpdateInput
               field1: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
@@ -5140,11 +5104,6 @@ describe("Interface Relationships", () => {
               Type2Interface2
             }
 
-            input Interface2ImplementationsUpdateInput {
-              Type1Interface2: Type1Interface2UpdateInput
-              Type2Interface2: Type2Interface2UpdateInput
-            }
-
             input Interface2Options {
               limit: Int
               offset: Int
@@ -5162,7 +5121,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              _on: Interface2ImplementationsUpdateInput
               field2: String
             }
 
@@ -6058,11 +6016,6 @@ describe("Interface Relationships", () => {
               Type2Interface1
             }
 
-            input Interface1ImplementationsUpdateInput {
-              Type1Interface1: Type1Interface1UpdateInput
-              Type2Interface1: Type2Interface1UpdateInput
-            }
-
             input Interface1Interface2ConnectFieldInput {
               edge: Interface1Interface2EdgeCreateInput!
               where: Interface2ConnectWhere
@@ -6193,7 +6146,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              _on: Interface1ImplementationsUpdateInput
               field1: String
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
@@ -6256,11 +6208,6 @@ describe("Interface Relationships", () => {
               Type2Interface2
             }
 
-            input Interface2ImplementationsUpdateInput {
-              Type1Interface2: Type1Interface2UpdateInput
-              Type2Interface2: Type2Interface2UpdateInput
-            }
-
             input Interface2Options {
               limit: Int
               offset: Int
@@ -6278,7 +6225,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              _on: Interface2ImplementationsUpdateInput
               field2: String
             }
 
@@ -7600,11 +7546,6 @@ describe("Interface Relationships", () => {
               Post
             }
 
-            input ContentImplementationsUpdateInput {
-              Comment: CommentUpdateInput
-              Post: PostUpdateInput
-            }
-
             input ContentOptions {
               limit: Int
               offset: Int
@@ -7623,7 +7564,6 @@ describe("Interface Relationships", () => {
             }
 
             input ContentUpdateInput {
-              _on: ContentImplementationsUpdateInput
               content: String
               creator: ContentCreatorUpdateFieldInput
               id: ID

@@ -719,11 +719,6 @@ describe("Interface Top Level Aggregations", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -742,7 +737,6 @@ describe("Interface Top Level Aggregations", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               cost: Float
               cost_ADD: Float
               cost_DIVIDE: Float
