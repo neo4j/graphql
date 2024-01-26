@@ -33,7 +33,6 @@ export enum ParserOptions {
 
 export const formatCode = (editorView: EditorView, parserOption: ParserOptions): void => {
     const selection = editorView.state.selection;
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     const value = editorView.state.doc.toString();
 
     let options = {};
@@ -67,12 +66,14 @@ export const formatCode = (editorView: EditorView, parserOption: ParserOptions):
 };
 
 export const handleEditorDisableState = (editorViewRef: HTMLDivElement | null, loading: boolean): void => {
-    if (!editorViewRef) return;
+    if (!editorViewRef) {
+        return;
+    }
 
     if (loading) {
-        editorViewRef?.classList.add("code-mirror-disabled-state");
+        editorViewRef.classList.add("code-mirror-disabled-state");
     } else {
-        editorViewRef?.classList.remove("code-mirror-disabled-state");
+        editorViewRef.classList.remove("code-mirror-disabled-state");
     }
 };
 
