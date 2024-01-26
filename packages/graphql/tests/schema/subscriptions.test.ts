@@ -5783,10 +5783,6 @@ describe("Subscriptions", () => {
               Person
             }
 
-            input CreatureImplementationsUpdateInput {
-              Person: PersonUpdateInput
-            }
-
             input CreatureMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
@@ -5848,7 +5844,6 @@ describe("Subscriptions", () => {
             }
 
             input CreatureUpdateInput {
-              _on: CreatureImplementationsUpdateInput
               movies: CreatureMoviesUpdateFieldInput
             }
 
@@ -6302,11 +6297,6 @@ describe("Subscriptions", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -6340,7 +6330,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               director: ProductionDirectorUpdateFieldInput
               id: ID
             }

@@ -439,11 +439,6 @@ describe("nested aggregation on interface", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -462,7 +457,6 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               cost: Float
               cost_ADD: Float
               cost_DIVIDE: Float
@@ -1063,11 +1057,6 @@ describe("nested aggregation on interface", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -1086,7 +1075,6 @@ describe("nested aggregation on interface", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               cost: Float
               cost_ADD: Float
               cost_DIVIDE: Float

@@ -405,11 +405,6 @@ describe("typename_IN", () => {
               Series
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -428,7 +423,6 @@ describe("typename_IN", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               cost: Float
               cost_ADD: Float
               cost_DIVIDE: Float

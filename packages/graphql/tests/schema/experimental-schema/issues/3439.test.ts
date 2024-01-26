@@ -465,11 +465,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series
             }
 
-            input IProductImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input IProductOptions {
               limit: Int
               offset: Int
@@ -514,7 +509,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductUpdateInput {
-              _on: IProductImplementationsUpdateInput
               id: String
               name: String
             }
@@ -1752,11 +1746,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series
             }
 
-            input IProductImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input IProductOptions {
               limit: Int
               offset: Int
@@ -1801,7 +1790,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductUpdateInput {
-              _on: IProductImplementationsUpdateInput
               id: String
               name: String
             }
@@ -2895,11 +2883,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series
             }
 
-            input IProductImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
-            }
-
             input IProductOptions {
               limit: Int
               offset: Int
@@ -2944,7 +2927,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input IProductUpdateInput {
-              _on: IProductImplementationsUpdateInput
               id: String
               name: String
             }

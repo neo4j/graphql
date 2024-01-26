@@ -1450,10 +1450,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -1472,7 +1468,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       password: String
                       username: String
                     }
@@ -1891,10 +1886,6 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -1913,7 +1904,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       password: String
                       username: String
                     }

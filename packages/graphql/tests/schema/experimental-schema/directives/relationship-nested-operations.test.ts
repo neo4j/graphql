@@ -10209,11 +10209,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo
                 }
 
-                input PersonImplementationsUpdateInput {
-                  PersonOne: PersonOneUpdateInput
-                  PersonTwo: PersonTwoUpdateInput
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -10360,7 +10355,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  _on: PersonImplementationsUpdateInput
                   name: String
                 }
 
@@ -11666,11 +11660,6 @@ describe("Relationship nested operations", () => {
                   PersonTwo
                 }
 
-                input PersonImplementationsUpdateInput {
-                  PersonOne: PersonOneUpdateInput
-                  PersonTwo: PersonTwoUpdateInput
-                }
-
                 type PersonOne implements Person {
                   name: String
                   someExtraProp: [Int!]!
@@ -11817,7 +11806,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  _on: PersonImplementationsUpdateInput
                   name: String
                 }
 

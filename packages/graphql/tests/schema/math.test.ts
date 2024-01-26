@@ -1653,10 +1653,6 @@ describe("Algebraic", () => {
               Movie
             }
 
-            input ProductionImplementationsUpdateInput {
-              Movie: MovieUpdateInput
-            }
-
             input ProductionOptions {
               limit: Int
               offset: Int
@@ -1674,7 +1670,6 @@ describe("Algebraic", () => {
             }
 
             input ProductionUpdateInput {
-              _on: ProductionImplementationsUpdateInput
               viewers: Int
               viewers_DECREMENT: Int
               viewers_INCREMENT: Int

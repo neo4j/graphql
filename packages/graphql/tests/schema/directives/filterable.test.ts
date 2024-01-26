@@ -7350,10 +7350,6 @@ describe("@filterable directive", () => {
                       Actor
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -7387,7 +7383,6 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
@@ -8191,10 +8186,6 @@ describe("@filterable directive", () => {
                       Actor
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -8228,7 +8219,6 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
@@ -9032,10 +9022,6 @@ describe("@filterable directive", () => {
                       Actor
                     }
 
-                    input PersonImplementationsUpdateInput {
-                      Actor: ActorUpdateInput
-                    }
-
                     input PersonOptions {
                       limit: Int
                       offset: Int
@@ -9069,7 +9055,6 @@ describe("@filterable directive", () => {
                     }
 
                     input PersonUpdateInput {
-                      _on: PersonImplementationsUpdateInput
                       username: String
                     }
 
