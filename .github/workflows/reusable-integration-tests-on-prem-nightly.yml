@@ -124,12 +124,22 @@ jobs:
           fail_ci_if_error: true
       - if: ${{ env.CODECOV_TOKEN != '' && !inputs.disable-code-cov-upload && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4
         with:
-          name: integration-nightly-coverage-${{ matrix.packages.package }}
+          name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.packages.shard }}
           path: packages/${{ matrix.packages.package }}/coverage/
       - name: Stop Neo4j container
         if: always()
         run: |
           docker ps -a
           docker stop test-dev-neo4j
+
+  merge-integration-tests-results:
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: integration-nightly-coverage
+          pattern: integration-nightly-coverage-*
