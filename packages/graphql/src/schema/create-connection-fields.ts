@@ -50,12 +50,9 @@ function addConnectionSortField({
     relationshipAdapter: RelationshipAdapter;
     composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition;
 }): InputTypeComposer | undefined {
-    // TODO: This probably just needs to be
-    // if (relationship.target.sortableFields.length) {}
-    // And not care about the type of entity
     const targetIsInterfaceWithSortableFields =
         relationshipAdapter.target instanceof InterfaceEntityAdapter &&
-        schemaComposer.has(relationshipAdapter.target.operations.sortInputTypeName);
+        relationshipAdapter.target.sortableFields.length;
 
     const targetIsConcreteWithSortableFields =
         relationshipAdapter.target instanceof ConcreteEntityAdapter && relationshipAdapter.target.sortableFields.length;
