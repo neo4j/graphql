@@ -5776,16 +5776,11 @@ describe("Subscriptions", () => {
             }
 
             input CreatureDisconnectInput {
-              _on: CreatureImplementationsDisconnectInput
               movies: CreatureMoviesDisconnectFieldInput
             }
 
             enum CreatureImplementation {
               Person
-            }
-
-            input CreatureImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
             }
 
             input CreatureImplementationsUpdateInput {
@@ -6295,7 +6290,6 @@ describe("Subscriptions", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               director: ProductionDirectorDisconnectFieldInput
             }
 
@@ -6306,11 +6300,6 @@ describe("Subscriptions", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input ProductionImplementationsUpdateInput {

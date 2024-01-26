@@ -1178,7 +1178,6 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieReviewersDisconnectFieldInput {
-              disconnect: ReviewerDisconnectInput
               where: MovieReviewersConnectionWhere
             }
 
@@ -1825,17 +1824,9 @@ describe("Union Interface Relationships", () => {
               Person: PersonCreateInput
             }
 
-            input ReviewerDisconnectInput {
-              _on: ReviewerImplementationsDisconnectInput
-            }
-
             enum ReviewerImplementation {
               Influencer
               Person
-            }
-
-            input ReviewerImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
             }
 
             input ReviewerImplementationsUpdateInput {

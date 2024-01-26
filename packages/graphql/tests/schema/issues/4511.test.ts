@@ -113,16 +113,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input CreatureDisconnectInput {
-              _on: CreatureImplementationsDisconnectInput
               movies: CreatureMoviesDisconnectFieldInput
             }
 
             enum CreatureImplementation {
               Person
-            }
-
-            input CreatureImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
             }
 
             input CreatureImplementationsUpdateInput {
@@ -632,7 +627,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               director: ProductionDirectorDisconnectFieldInput
             }
 
@@ -643,11 +637,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input ProductionImplementationsUpdateInput {

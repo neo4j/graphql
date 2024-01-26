@@ -7094,7 +7094,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -7343,20 +7342,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
                     }
 
                     input PersonImplementationsUpdateInput {
@@ -7944,7 +7935,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -8193,20 +8183,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
                     }
 
                     input PersonImplementationsUpdateInput {
@@ -8794,7 +8776,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDisconnectFieldInput {
-                      disconnect: PersonDisconnectInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -9043,20 +9024,12 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDisconnectInput {
-                      _on: PersonImplementationsDisconnectInput
-                    }
-
                     interface PersonEventPayload {
                       username: String!
                     }
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsDisconnectInput {
-                      Actor: [ActorDisconnectInput!]
                     }
 
                     input PersonImplementationsUpdateInput {

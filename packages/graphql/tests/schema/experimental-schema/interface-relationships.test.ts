@@ -1630,18 +1630,12 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input ProductionImplementationsUpdateInput {
@@ -3248,18 +3242,12 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input ProductionImplementationsUpdateInput {
@@ -3966,18 +3954,12 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DisconnectInput {
-              _on: Interface1ImplementationsDisconnectInput
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsDisconnectInput {
-              Type1Interface1: [Type1Interface1DisconnectInput!]
-              Type2Interface1: [Type2Interface1DisconnectInput!]
             }
 
             input Interface1ImplementationsUpdateInput {
@@ -4968,18 +4950,12 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DisconnectInput {
-              _on: Interface1ImplementationsDisconnectInput
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsDisconnectInput {
-              Type1Interface1: [Type1Interface1DisconnectInput!]
-              Type2Interface1: [Type2Interface1DisconnectInput!]
             }
 
             input Interface1ImplementationsUpdateInput {
@@ -6074,18 +6050,12 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DisconnectInput {
-              _on: Interface1ImplementationsDisconnectInput
               interface2: [Interface1Interface2DisconnectFieldInput!]
             }
 
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsDisconnectInput {
-              Type1Interface1: [Type1Interface1DisconnectInput!]
-              Type2Interface1: [Type2Interface1DisconnectInput!]
             }
 
             input Interface1ImplementationsUpdateInput {
@@ -7622,18 +7592,12 @@ describe("Interface Relationships", () => {
             }
 
             input ContentDisconnectInput {
-              _on: ContentImplementationsDisconnectInput
               creator: ContentCreatorDisconnectFieldInput
             }
 
             enum ContentImplementation {
               Comment
               Post
-            }
-
-            input ContentImplementationsDisconnectInput {
-              Comment: [CommentDisconnectInput!]
-              Post: [PostDisconnectInput!]
             }
 
             input ContentImplementationsUpdateInput {
