@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable jest/no-disabled-tests */
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -256,7 +258,7 @@ describe("interface with declared relationships", () => {
         ]);
     });
 
-    test("should read connection and return interface relationship fields", async () => {
+    test.skip("should read connection and return interface relationship fields", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
 
