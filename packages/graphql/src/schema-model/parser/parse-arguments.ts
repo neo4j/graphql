@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
+import type { Maybe } from "@graphql-tools/utils";
 import { inspect } from "@graphql-tools/utils";
-import type { Maybe } from "@graphql-tools/utils/typings/types";
 import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
 import { Kind, isNonNullType, print, valueFromAST } from "graphql";
 import type { ObjMap } from "graphql/jsutils/ObjMap";
