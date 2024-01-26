@@ -18,9 +18,6 @@
 The default branch for this repository is `dev`, which contains changes for the next
 release. This is what you should base your work on if you want to make changes.
 
-Want to check out the code from the last release? Checkout `master` instead, which
-is only ever merged into on releases.
-
 Want to contribute to `@neo4j/graphql`? See our [contributing guide](./CONTRIBUTING.md)
 and [development guide](./docs/contributing/DEVELOPING.md) to get started!
 

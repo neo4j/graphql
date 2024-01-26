@@ -19,13 +19,13 @@ GraphQL powered OGM for Neo4j and Javascript applications.
 ## Installation
 
 ```
-$ npm install @neo4j/graphql-ogm
+npm install @neo4j/graphql-ogm
 ```
 
 ⚠ `graphql` & `neo4j-driver` are **peerDependency**(s)
 
 ```
-$ npm install graphql neo4j-driver
+npm install graphql neo4j-driver
 ```
 
 ## Importing
@@ -64,4 +64,4 @@ async function main() {
 
 ## Licence
 
-[Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/ogm/LICENSE.txt)
+[Apache 2.0](https://github.com/neo4j/graphql/blob/dev/packages/ogm/LICENSE.txt)

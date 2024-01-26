@@ -51,16 +51,3 @@ jobs:
           project: Bug Triage
           column: Confirmed
           repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-  add_high_priority_comment:
-    if: ${{ github.event.label.name == 'high priority' }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Add comment
-        uses: peter-evans/create-or-update-comment@23ff15729ef2fc348714a3bb66d2f655ca9066f2 # v3.1.0
-        with:
-          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            This bug report has been assigned high priority to fix. If you wish to contribute a fix, please branch from `master` and submit your PR with the base set to `master`. Thanks!
