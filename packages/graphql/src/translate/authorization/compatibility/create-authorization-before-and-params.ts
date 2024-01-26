@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../types";
-import type { AuthorizationOperation } from "../../../types/authorization";
+import type { AuthorizationOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
 import {
     createAuthorizationBeforePredicateField,
     createAuthorizationBeforePredicate,

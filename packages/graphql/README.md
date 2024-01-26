@@ -19,13 +19,13 @@ A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL imple
 ## Installation
 
 ```
-$ npm install @neo4j/graphql
+npm install @neo4j/graphql
 ```
 
 ⚠ `graphql` & `neo4j-driver` are **peerDependency**(s)
 
 ```
-$ npm install graphql neo4j-driver
+npm install graphql neo4j-driver
 ```
 
 ## Importing
@@ -190,4 +190,4 @@ type Invoice @auth(rules: [{ operations: [READ], roles: ["read:invoice"] }]) {
 
 ## Licence
 
-[Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/graphql/LICENSE.txt)
+[Apache 2.0](https://github.com/neo4j/graphql/blob/dev/packages/graphql/LICENSE.txt)

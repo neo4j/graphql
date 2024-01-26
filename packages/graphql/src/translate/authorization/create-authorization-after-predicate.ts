@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { PredicateReturn } from "../../types";
-import type { AuthorizationOperation } from "../../types/authorization";
+import type { AuthorizationOperation } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { NodeMap } from "./types/node-map";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { asArray } from "@graphql-tools/utils";
@@ -58,12 +58,13 @@ export function createAuthorizationAfterPredicate({
             neo4jGraphQLContext: context,
         });
 
-        const authorizationFilters = factory.authorizationFactory.createEntityAuthValidate(
+        const authorizationFilters = factory.authorizationFactory.createAuthValidateRule({
+            authAnnotation: entity.annotations.authorization,
             entity,
             operations,
             context,
-            "AFTER"
-        );
+            when: "AFTER",
+        });
         const nodeRawSubqueries = authorizationFilters?.getSubqueries(queryASTContext);
         const nodeSubqueries = filterTruthy(asArray(nodeRawSubqueries)).map((sq) => wrapSubqueryInCall(sq, matchNode));
         const nodePredicate = authorizationFilters?.getPredicate(queryASTContext);
@@ -123,14 +124,14 @@ export function createAuthorizationAfterPredicateField({
             if (!attributeAdapter) {
                 throw new Error("Couldn't match attribute");
             }
-            const attributesFilters = factory.authorizationFactory.createAttributeAuthValidate(
-                attributeAdapter,
+            const attributesFilters = factory.authorizationFactory.createAuthValidateRule({
+                authAnnotation: attributeAdapter.annotations.authorization,
                 entity,
                 operations,
                 context,
-                "AFTER",
-                conditionForEvaluation
-            );
+                when: "AFTER",
+                conditionForEvaluation,
+            });
             if (attributesFilters) {
                 const fieldPredicate = attributesFilters.getPredicate(queryASTContext);
                 const fieldSelection = attributesFilters.getSelection(queryASTContext);

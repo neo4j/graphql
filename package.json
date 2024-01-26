@@ -21,7 +21,6 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky install",
         "changeset-version-dev": "changeset version --since dev && yarn",
-        "changeset-version-master": "changeset version --since master && yarn",
         "release": "yarn build && changeset publish",
         "changeset-version-5.0.0": "changeset version --since 5.0.0 && yarn"
     },
