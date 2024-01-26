@@ -306,7 +306,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this1.someDuration) = $param0 AS var2
+                RETURN (datetime() + avg(this1.someDuration)) = (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -347,7 +347,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this1.someDuration) > $param0 AS var2
+                RETURN (datetime() + avg(this1.someDuration)) > (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -388,7 +388,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this1.someDuration) >= $param0 AS var2
+                RETURN (datetime() + avg(this1.someDuration)) >= (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -429,7 +429,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this1.someDuration) < $param0 AS var2
+                RETURN (datetime() + avg(this1.someDuration)) < (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -470,7 +470,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this1.someDuration) <= $param0 AS var2
+                RETURN (datetime() + avg(this1.someDuration)) <= (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -511,7 +511,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDuration) = $param0 AS var2
+                RETURN (datetime() + min(this1.someDuration)) = (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -552,7 +552,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDuration) > $param0 AS var2
+                RETURN (datetime() + min(this1.someDuration)) > (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -593,7 +593,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDuration) >= $param0 AS var2
+                RETURN (datetime() + min(this1.someDuration)) >= (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -634,7 +634,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDuration) < $param0 AS var2
+                RETURN (datetime() + min(this1.someDuration)) < (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -675,7 +675,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDuration) <= $param0 AS var2
+                RETURN (datetime() + min(this1.someDuration)) <= (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -716,7 +716,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDuration) = $param0 AS var2
+                RETURN (datetime() + max(this1.someDuration)) = (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -757,7 +757,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDuration) > $param0 AS var2
+                RETURN (datetime() + max(this1.someDuration)) > (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -798,7 +798,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDuration) >= $param0 AS var2
+                RETURN (datetime() + max(this1.someDuration)) >= (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -839,7 +839,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDuration) < $param0 AS var2
+                RETURN (datetime() + max(this1.someDuration)) < (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -880,7 +880,7 @@ describe("Cypher Aggregations where node with Duration", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDuration) <= $param0 AS var2
+                RETURN (datetime() + max(this1.someDuration)) <= (datetime() + $param0) AS var2
             }
             WITH *
             WHERE var2 = true
