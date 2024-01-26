@@ -235,7 +235,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDisconnectFieldInput {
-              disconnect: IProductDisconnectInput
               where: GenreProductConnectionWhere
             }
 
@@ -453,10 +452,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDisconnectInput {
-              _on: IProductImplementationsDisconnectInput
-            }
-
             interface IProductEventPayload {
               id: String!
               name: String!
@@ -465,11 +460,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input IProductImplementationsUpdateInput {
@@ -1535,7 +1525,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDisconnectFieldInput {
-              disconnect: IProductDisconnectInput
               where: GenreProductConnectionWhere
             }
 
@@ -1706,10 +1695,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDisconnectInput {
-              _on: IProductImplementationsDisconnectInput
-            }
-
             interface IProductEventPayload {
               id: String!
               name: String!
@@ -1760,11 +1745,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input IProductImplementationsUpdateInput {

@@ -114,16 +114,11 @@ describe("Connection with interfaces", () => {
             }
 
             input CreatureDisconnectInput {
-              _on: CreatureImplementationsDisconnectInput
               movies: CreatureMoviesDisconnectFieldInput
             }
 
             enum CreatureImplementation {
               Person
-            }
-
-            input CreatureImplementationsDisconnectInput {
-              Person: [PersonDisconnectInput!]
             }
 
             input CreatureImplementationsUpdateInput {
@@ -640,18 +635,12 @@ describe("Connection with interfaces", () => {
             }
 
             input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
               director: [ProductionDirectorDisconnectFieldInput!]
             }
 
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
-              Series: [SeriesDisconnectInput!]
             }
 
             input ProductionImplementationsUpdateInput {

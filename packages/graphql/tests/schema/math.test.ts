@@ -1606,7 +1606,6 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionDisconnectFieldInput {
-              disconnect: ProductionDisconnectInput
               where: PersonWorksInProductionConnectionWhere
             }
 
@@ -1650,16 +1649,8 @@ describe("Algebraic", () => {
               Movie: MovieCreateInput
             }
 
-            input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
-            }
-
             enum ProductionImplementation {
               Movie
-            }
-
-            input ProductionImplementationsDisconnectInput {
-              Movie: [MovieDisconnectInput!]
             }
 
             input ProductionImplementationsUpdateInput {

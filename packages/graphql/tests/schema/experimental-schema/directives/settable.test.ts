@@ -6894,18 +6894,12 @@ describe("@settable", () => {
                 }
 
                 input ProductionDisconnectInput {
-                  _on: ProductionImplementationsDisconnectInput
                   actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsDisconnectInput {
-                  Movie: [MovieDisconnectInput!]
-                  Series: [SeriesDisconnectInput!]
                 }
 
                 input ProductionOptions {
@@ -7873,18 +7867,12 @@ describe("@settable", () => {
                 }
 
                 input ProductionDisconnectInput {
-                  _on: ProductionImplementationsDisconnectInput
                   actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsDisconnectInput {
-                  Movie: [MovieDisconnectInput!]
-                  Series: [SeriesDisconnectInput!]
                 }
 
                 input ProductionImplementationsUpdateInput {
