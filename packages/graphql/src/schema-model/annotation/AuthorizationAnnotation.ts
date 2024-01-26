@@ -46,7 +46,9 @@ type AuthorizationFilterOperation = ValueOf<typeof AuthorizationFilterOperationR
 
 type AuthorizationValidateOperation = ValueOf<typeof AuthorizationValidateOperationRule>;
 
-type ValidateWhen = "BEFORE" | "AFTER";
+export type AuthorizationOperation = AuthorizationFilterOperation | AuthorizationValidateOperation;
+
+export type ValidateWhen = "BEFORE" | "AFTER";
 
 type AuthorizationWhere = {
     AND?: AuthorizationWhere[];
@@ -68,41 +70,55 @@ export class AuthorizationAnnotation implements Annotation {
     }
 }
 
-export type AuthorizationFilterRuleConstructor = {
-    operations?: AuthorizationFilterOperation[];
+type BaseAuthorizationRuleConstructor = {
     requireAuthentication?: boolean;
     where: AuthorizationWhere;
 };
 
-export class AuthorizationFilterRule {
-    public operations: AuthorizationFilterOperation[];
-    public requireAuthentication: boolean;
-    public where: AuthorizationWhere;
+export abstract class BaseAuthorizationRule<T extends AuthorizationOperation> {
+    public readonly operations: T[];
+    public readonly requireAuthentication: boolean;
+    public readonly where: AuthorizationWhere;
 
-    constructor({ operations, requireAuthentication, where }: AuthorizationFilterRuleConstructor) {
-        this.operations = operations ?? [...AuthorizationFilterOperationRule];
-        this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
+    protected constructor({
+        operations,
+        requireAuthentication,
+        where,
+    }: BaseAuthorizationRuleConstructor & {
+        operations: T[];
+    }) {
+        this.operations = operations;
+        this.requireAuthentication = requireAuthentication ?? true;
         this.where = where;
     }
 }
 
-export type AuthorizationValidateRuleConstructor = {
+export type AuthorizationFilterRuleConstructor = BaseAuthorizationRuleConstructor & {
+    operations?: AuthorizationFilterOperation[];
+};
+
+export class AuthorizationFilterRule extends BaseAuthorizationRule<AuthorizationFilterOperation> {
+    constructor({ operations, ...rest }: AuthorizationFilterRuleConstructor) {
+        super({
+            operations: operations ?? [...AuthorizationFilterOperationRule],
+            ...rest,
+        });
+    }
+}
+
+export type AuthorizationValidateRuleConstructor = BaseAuthorizationRuleConstructor & {
     operations?: AuthorizationValidateOperation[];
-    requireAuthentication?: boolean;
-    where: AuthorizationWhere;
     when?: ValidateWhen[];
 };
 
-export class AuthorizationValidateRule {
-    public operations: AuthorizationValidateOperation[];
-    public requireAuthentication: boolean;
-    public where: AuthorizationWhere;
+export class AuthorizationValidateRule extends BaseAuthorizationRule<AuthorizationValidateOperation> {
     public when: ValidateWhen[];
 
-    constructor({ operations, requireAuthentication, where, when }: AuthorizationValidateRuleConstructor) {
-        this.operations = operations ?? [...AuthorizationValidateOperationRule];
-        this.requireAuthentication = requireAuthentication === undefined ? true : requireAuthentication;
-        this.where = where;
+    constructor({ operations, when, ...rest }: AuthorizationValidateRuleConstructor) {
+        super({
+            operations: operations ?? [...AuthorizationValidateOperationRule],
+            ...rest,
+        });
         this.when = when ?? ["BEFORE", "AFTER"];
     }
 }

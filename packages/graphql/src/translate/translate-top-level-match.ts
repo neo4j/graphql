@@ -23,7 +23,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { createWhereNodePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
-import type { AuthorizationOperation } from "../types/authorization";
+import type { AuthorizationOperation } from "../schema-model/annotation/AuthorizationAnnotation";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
 
