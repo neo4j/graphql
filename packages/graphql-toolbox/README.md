@@ -20,7 +20,7 @@ Experiment with your Neo4j GraphQL API.
 
 ## Link
 
-Access the Neo4j GraphQL Toolbox here: https://graphql-toolbox.neo4j.io/
+Access the Neo4j GraphQL Toolbox here: <https://graphql-toolbox.neo4j.io/>
 
 ## Usage
 
@@ -43,7 +43,7 @@ then `cd` into the graphql-toolbox package.
 cd packages/graphql-toolbox
 ```
 
-Run this command to start the development server. See the output in the console & navigate to the default webpack server at: http://localhost:4242
+Run this command to start the development server. See the output in the console & navigate to the default webpack server at: <http://localhost:4242>
 
 ```
 yarn start
@@ -69,4 +69,4 @@ Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%
 
 ## License
 
-[Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/toolbox/LICENSE.txt)
+[Apache 2.0](https://github.com/neo4j/graphql/blob/dev/packages/toolbox/LICENSE.txt)
