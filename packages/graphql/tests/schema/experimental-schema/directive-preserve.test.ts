@@ -955,7 +955,6 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInConnectFieldInput {
-              connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -1506,10 +1505,6 @@ describe("Directive-preserve", () => {
               title: StringAggregateSelectionNonNullable!
             }
 
-            input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
-            }
-
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -1530,11 +1525,6 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {
@@ -1996,7 +1986,6 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInConnectFieldInput {
-              connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -2547,10 +2536,6 @@ describe("Directive-preserve", () => {
               title: StringAggregateSelectionNonNullable!
             }
 
-            input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
-            }
-
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -2571,11 +2556,6 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {

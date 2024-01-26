@@ -6877,7 +6877,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionConnectInput {
-                  _on: ProductionImplementationsConnectInput
                   actors: [ProductionActorsConnectFieldInput!]
                 }
 
@@ -6903,11 +6902,6 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsConnectInput {
-                  Movie: [MovieConnectInput!]
-                  Series: [SeriesConnectInput!]
                 }
 
                 input ProductionImplementationsDeleteInput {
@@ -7868,7 +7862,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionConnectInput {
-                  _on: ProductionImplementationsConnectInput
                   actors: [ProductionActorsConnectFieldInput!]
                 }
 
@@ -7894,11 +7887,6 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsConnectInput {
-                  Movie: [MovieConnectInput!]
-                  Series: [SeriesConnectInput!]
                 }
 
                 input ProductionImplementationsDeleteInput {

@@ -204,7 +204,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductConnectFieldInput {
-              connect: IProductConnectInput
               where: IProductConnectWhere
             }
 
@@ -449,10 +448,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelectionNonNullable!
             }
 
-            input IProductConnectInput {
-              _on: IProductImplementationsConnectInput
-            }
-
             input IProductConnectWhere {
               node: IProductWhere!
             }
@@ -478,11 +473,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input IProductImplementationsDeleteInput {
@@ -1526,7 +1516,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductConnectFieldInput {
-              connect: IProductConnectInput
               where: IProductConnectWhere
             }
 
@@ -1724,10 +1713,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               name: StringAggregateSelectionNonNullable!
             }
 
-            input IProductConnectInput {
-              _on: IProductImplementationsConnectInput
-            }
-
             input IProductConnectWhere {
               node: IProductWhere!
             }
@@ -1795,11 +1780,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
             }
 
             input IProductImplementationsDeleteInput {

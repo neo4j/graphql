@@ -22,45 +22,44 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("https://github.com/neo4j/graphql/issues/4511", () => {
-    test("EventPayload does not generate related nodes Connections", async () => {
+describe("Connection with interfaces", () => {
+    test("Interface with connect mutation", async () => {
         const typeDefs = gql`
             type Movie implements Production @subscription(events: []) {
                 title: String!
                 id: ID @unique
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+                director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
+
             type Series implements Production {
                 title: String!
                 episode: Int!
                 id: ID @unique
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+                director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
+
             interface Production {
                 id: ID
-                director: Creature! @declareRelationship
+                director: [Creature!]! @declareRelationship
             }
+
             type Person implements Creature {
+                id: ID
                 movies: Production! @relationship(type: "DIRECTED", direction: OUT)
             }
+
             interface Creature {
+                id: ID
                 movies: Production! @declareRelationship
             }
         `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            features: {
-                subscriptions: true,
-            },
-        });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             \\"\\"\\"
@@ -88,12 +87,14 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             interface Creature {
+              id: ID
               movies(options: ProductionOptions, where: ProductionWhere): Production!
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             type CreatureAggregateSelection {
               count: Int!
+              id: IDAggregateSelectionNullable!
             }
 
             input CreatureConnectInput {
@@ -192,10 +193,22 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input CreatureOptions {
               limit: Int
               offset: Int
+              \\"\\"\\"
+              Specify one or more CreatureSort objects to sort Creatures by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [CreatureSort]
+            }
+
+            \\"\\"\\"
+            Fields to sort Creatures by. The order in which sorts are applied is not guaranteed when specifying many fields in one CreatureSort object.
+            \\"\\"\\"
+            input CreatureSort {
+              id: SortDirection
             }
 
             input CreatureUpdateInput {
               _on: CreatureImplementationsUpdateInput
+              id: ID
               movies: CreatureMoviesUpdateFieldInput
             }
 
@@ -203,6 +216,16 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
               typename_IN: [CreatureImplementation!]
@@ -215,14 +238,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               bookmark: String @deprecated(reason: \\"This field has been deprecated because bookmarks are now handled by the driver.\\")
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type IDAggregateSelectionNullable {
@@ -238,9 +253,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type Movie implements Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): [Creature!]!
               directorAggregate(directed: Boolean = true, where: CreatureWhere): MovieCreatureDirectorAggregationSelection
-              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              directorConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
             }
@@ -252,7 +267,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieConnectInput {
-              director: MovieDirectorConnectFieldInput
+              director: [MovieDirectorConnectFieldInput!]
             }
 
             input MovieCreateInput {
@@ -263,10 +278,15 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type MovieCreatureDirectorAggregationSelection {
               count: Int!
+              node: MovieCreatureDirectorNodeAggregateSelection
+            }
+
+            type MovieCreatureDirectorNodeAggregateSelection {
+              id: IDAggregateSelectionNullable!
             }
 
             input MovieDeleteInput {
-              director: MovieDirectorDeleteFieldInput
+              director: [MovieDirectorDeleteFieldInput!]
             }
 
             input MovieDirectorConnectFieldInput {
@@ -289,8 +309,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieDirectorFieldInput {
-              connect: MovieDirectorConnectFieldInput
-              create: MovieDirectorCreateFieldInput
+              connect: [MovieDirectorConnectFieldInput!]
+              create: [MovieDirectorCreateFieldInput!]
             }
 
             input MovieDirectorUpdateConnectionInput {
@@ -298,16 +318,16 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieDirectorUpdateFieldInput {
-              connect: MovieDirectorConnectFieldInput
-              create: MovieDirectorCreateFieldInput
-              delete: MovieDirectorDeleteFieldInput
-              disconnect: MovieDirectorDisconnectFieldInput
+              connect: [MovieDirectorConnectFieldInput!]
+              create: [MovieDirectorCreateFieldInput!]
+              delete: [MovieDirectorDeleteFieldInput!]
+              disconnect: [MovieDirectorDisconnectFieldInput!]
               update: MovieDirectorUpdateConnectionInput
               where: ProductionDirectorConnectionWhere
             }
 
             input MovieDisconnectInput {
-              director: MovieDirectorDisconnectFieldInput
+              director: [MovieDirectorDisconnectFieldInput!]
             }
 
             type MovieEdge {
@@ -325,7 +345,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieRelationInput {
-              director: MovieDirectorCreateFieldInput
+              director: [MovieDirectorCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -337,7 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieUpdateInput {
-              director: MovieDirectorUpdateFieldInput
+              director: [MovieDirectorUpdateFieldInput!]
               id: ID
               title: String
             }
@@ -346,8 +366,24 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere
+              directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Movies where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_ALL: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Movies where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_SOME: ProductionDirectorConnectionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -403,6 +439,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type Person implements Creature {
+              id: ID
               movies(directed: Boolean = true, options: ProductionOptions, where: ProductionWhere): Production!
               moviesAggregate(directed: Boolean = true, where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
@@ -410,32 +447,20 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type PersonAggregateSelection {
               count: Int!
+              id: IDAggregateSelectionNullable!
             }
 
             input PersonConnectInput {
               movies: PersonMoviesConnectFieldInput
             }
 
-            type PersonConnectedRelationships {
-              movies: PersonMoviesConnectedRelationship
-            }
-
             input PersonCreateInput {
+              id: ID
               movies: PersonMoviesFieldInput
-            }
-
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonDeleteInput {
               movies: PersonMoviesDeleteFieldInput
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonDisconnectInput {
@@ -450,10 +475,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input PersonMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
-            }
-
-            type PersonMoviesConnectedRelationship {
-              node: ProductionEventPayload!
             }
 
             input PersonMoviesCreateFieldInput {
@@ -475,10 +496,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               create: PersonMoviesCreateFieldInput
             }
 
-            input PersonMoviesRelationshipSubscriptionWhere {
-              node: ProductionSubscriptionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -495,6 +512,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             input PersonOptions {
               limit: Int
               offset: Int
+              \\"\\"\\"
+              Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [PersonSort!]
             }
 
             type PersonProductionMoviesAggregationSelection {
@@ -510,55 +531,38 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               movies: PersonMoviesCreateFieldInput
             }
 
-            type PersonRelationshipCreatedEvent {
-              createdRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipCreatedSubscriptionWhere {
-              AND: [PersonRelationshipCreatedSubscriptionWhere!]
-              NOT: PersonRelationshipCreatedSubscriptionWhere
-              OR: [PersonRelationshipCreatedSubscriptionWhere!]
-              createdRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            type PersonRelationshipDeletedEvent {
-              deletedRelationship: PersonConnectedRelationships!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonRelationshipDeletedSubscriptionWhere {
-              AND: [PersonRelationshipDeletedSubscriptionWhere!]
-              NOT: PersonRelationshipDeletedSubscriptionWhere
-              OR: [PersonRelationshipDeletedSubscriptionWhere!]
-              deletedRelationship: PersonRelationshipsSubscriptionWhere
-            }
-
-            input PersonRelationshipsSubscriptionWhere {
-              movies: PersonMoviesRelationshipSubscriptionWhere
+            \\"\\"\\"
+            Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
+            \\"\\"\\"
+            input PersonSort {
+              id: SortDirection
             }
 
             input PersonUpdateInput {
+              id: ID
               movies: PersonMoviesUpdateFieldInput
-            }
-
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonWhere {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
+              id_STARTS_WITH: ID
               moviesConnection: CreatureMoviesConnectionWhere
               moviesConnection_NOT: CreatureMoviesConnectionWhere
             }
 
             interface Production {
-              director(options: CreatureOptions, where: CreatureWhere): Creature!
+              director(options: CreatureOptions, where: CreatureWhere): [Creature!]!
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
@@ -569,7 +573,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input ProductionConnectInput {
-              director: ProductionDirectorConnectFieldInput
+              director: [ProductionDirectorConnectFieldInput!]
             }
 
             input ProductionConnectWhere {
@@ -583,7 +587,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input ProductionDeleteInput {
               _on: ProductionImplementationsDeleteInput
-              director: ProductionDirectorDeleteFieldInput
+              director: [ProductionDirectorDeleteFieldInput!]
             }
 
             input ProductionDirectorConnectFieldInput {
@@ -595,6 +599,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               edges: [ProductionDirectorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ProductionDirectorConnectionSort {
+              node: CreatureSort
             }
 
             input ProductionDirectorConnectionWhere {
@@ -629,21 +637,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input ProductionDirectorUpdateFieldInput {
-              connect: ProductionDirectorConnectFieldInput
-              create: ProductionDirectorCreateFieldInput
-              delete: ProductionDirectorDeleteFieldInput
-              disconnect: ProductionDirectorDisconnectFieldInput
+              connect: [ProductionDirectorConnectFieldInput!]
+              create: [ProductionDirectorCreateFieldInput!]
+              delete: [ProductionDirectorDeleteFieldInput!]
+              disconnect: [ProductionDirectorDisconnectFieldInput!]
               update: ProductionDirectorUpdateConnectionInput
               where: ProductionDirectorConnectionWhere
             }
 
             input ProductionDisconnectInput {
               _on: ProductionImplementationsDisconnectInput
-              director: ProductionDirectorDisconnectFieldInput
-            }
-
-            interface ProductionEventPayload {
-              id: ID
+              director: [ProductionDirectorDisconnectFieldInput!]
             }
 
             enum ProductionImplementation {
@@ -682,25 +686,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               id: SortDirection
             }
 
-            input ProductionSubscriptionWhere {
-              AND: [ProductionSubscriptionWhere!]
-              NOT: ProductionSubscriptionWhere
-              OR: [ProductionSubscriptionWhere!]
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-            }
-
             input ProductionUpdateInput {
               _on: ProductionImplementationsUpdateInput
-              director: ProductionDirectorUpdateFieldInput
+              director: [ProductionDirectorUpdateFieldInput!]
               id: ID
             }
 
@@ -708,8 +696,24 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere
+              directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Productions where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_ALL: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Productions where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_SOME: ProductionDirectorConnectionWhere
               id: ID
               id_CONTAINS: ID
               id_ENDS_WITH: ID
@@ -731,7 +735,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
               people(options: PersonOptions, where: PersonWhere): [Person!]!
               peopleAggregate(where: PersonWhere): PersonAggregateSelection!
-              peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
+              peopleConnection(after: String, first: Int, sort: [PersonSort], where: PersonWhere): PeopleConnection!
               productions(options: ProductionOptions, where: ProductionWhere): [Production!]!
               productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
@@ -740,9 +744,9 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type Series implements Production {
-              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): Creature!
+              director(directed: Boolean = true, options: CreatureOptions, where: CreatureWhere): [Creature!]!
               directorAggregate(directed: Boolean = true, where: CreatureWhere): SeriesCreatureDirectorAggregationSelection
-              directorConnection(after: String, directed: Boolean = true, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              directorConnection(after: String, directed: Boolean = true, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
               title: String!
@@ -756,7 +760,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesConnectInput {
-              director: SeriesDirectorConnectFieldInput
+              director: [SeriesDirectorConnectFieldInput!]
             }
 
             type SeriesConnection {
@@ -772,24 +776,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: String!
             }
 
-            type SeriesCreatedEvent {
-              createdSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type SeriesCreatureDirectorAggregationSelection {
               count: Int!
+              node: SeriesCreatureDirectorNodeAggregateSelection
+            }
+
+            type SeriesCreatureDirectorNodeAggregateSelection {
+              id: IDAggregateSelectionNullable!
             }
 
             input SeriesDeleteInput {
-              director: SeriesDirectorDeleteFieldInput
-            }
-
-            type SeriesDeletedEvent {
-              deletedSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
+              director: [SeriesDirectorDeleteFieldInput!]
             }
 
             input SeriesDirectorConnectFieldInput {
@@ -812,8 +809,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesDirectorFieldInput {
-              connect: SeriesDirectorConnectFieldInput
-              create: SeriesDirectorCreateFieldInput
+              connect: [SeriesDirectorConnectFieldInput!]
+              create: [SeriesDirectorCreateFieldInput!]
             }
 
             input SeriesDirectorUpdateConnectionInput {
@@ -821,27 +818,21 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesDirectorUpdateFieldInput {
-              connect: SeriesDirectorConnectFieldInput
-              create: SeriesDirectorCreateFieldInput
-              delete: SeriesDirectorDeleteFieldInput
-              disconnect: SeriesDirectorDisconnectFieldInput
+              connect: [SeriesDirectorConnectFieldInput!]
+              create: [SeriesDirectorCreateFieldInput!]
+              delete: [SeriesDirectorDeleteFieldInput!]
+              disconnect: [SeriesDirectorDisconnectFieldInput!]
               update: SeriesDirectorUpdateConnectionInput
               where: ProductionDirectorConnectionWhere
             }
 
             input SeriesDisconnectInput {
-              director: SeriesDirectorDisconnectFieldInput
+              director: [SeriesDirectorDisconnectFieldInput!]
             }
 
             type SeriesEdge {
               cursor: String!
               node: Series!
-            }
-
-            type SeriesEventPayload implements ProductionEventPayload {
-              episode: Int!
-              id: ID
-              title: String!
             }
 
             input SeriesOptions {
@@ -854,35 +845,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesRelationInput {
-              director: SeriesDirectorCreateFieldInput
-            }
-
-            type SeriesRelationshipCreatedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipCreatedSubscriptionWhere {
-              AND: [SeriesRelationshipCreatedSubscriptionWhere!]
-              NOT: SeriesRelationshipCreatedSubscriptionWhere
-              OR: [SeriesRelationshipCreatedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
-            }
-
-            type SeriesRelationshipDeletedEvent {
-              event: EventType!
-              relationshipFieldName: String!
-              series: SeriesEventPayload!
-              timestamp: Float!
-            }
-
-            input SeriesRelationshipDeletedSubscriptionWhere {
-              AND: [SeriesRelationshipDeletedSubscriptionWhere!]
-              NOT: SeriesRelationshipDeletedSubscriptionWhere
-              OR: [SeriesRelationshipDeletedSubscriptionWhere!]
-              series: SeriesSubscriptionWhere
+              director: [SeriesDirectorCreateFieldInput!]
             }
 
             \\"\\"\\"
@@ -894,42 +857,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: SortDirection
             }
 
-            input SeriesSubscriptionWhere {
-              AND: [SeriesSubscriptionWhere!]
-              NOT: SeriesSubscriptionWhere
-              OR: [SeriesSubscriptionWhere!]
-              episode: Int
-              episode_GT: Int
-              episode_GTE: Int
-              episode_IN: [Int]
-              episode_LT: Int
-              episode_LTE: Int
-              episode_NOT: Int @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              episode_NOT_IN: [Int] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_IN: [ID]
-              id_NOT: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_CONTAINS: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_ENDS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              id_STARTS_WITH: ID
-              title: String
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_IN: [String]
-              title_NOT: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_CONTAINS: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_ENDS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_IN: [String] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_NOT_STARTS_WITH: String @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
-              title_STARTS_WITH: String
-            }
-
             input SeriesUpdateInput {
-              director: SeriesDirectorUpdateFieldInput
+              director: [SeriesDirectorUpdateFieldInput!]
               episode: Int
               episode_DECREMENT: Int
               episode_INCREMENT: Int
@@ -937,19 +866,28 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: String
             }
 
-            type SeriesUpdatedEvent {
-              event: EventType!
-              previousState: SeriesEventPayload!
-              timestamp: Float!
-              updatedSeries: SeriesEventPayload!
-            }
-
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              directorConnection: ProductionDirectorConnectionWhere
-              directorConnection_NOT: ProductionDirectorConnectionWhere
+              directorConnection: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return Series where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_ALL: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NOT: ProductionDirectorConnectionWhere @deprecated(reason: \\"Use \`directorConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return Series where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              directorConnection_SOME: ProductionDirectorConnectionWhere
               episode: Int
               episode_GT: Int
               episode_GTE: Int
@@ -991,19 +929,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
-            }
-
-            type Subscription {
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personRelationshipCreated(where: PersonRelationshipCreatedSubscriptionWhere): PersonRelationshipCreatedEvent!
-              personRelationshipDeleted(where: PersonRelationshipDeletedSubscriptionWhere): PersonRelationshipDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
-              seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
-              seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
-              seriesRelationshipCreated(where: SeriesRelationshipCreatedSubscriptionWhere): SeriesRelationshipCreatedEvent!
-              seriesRelationshipDeleted(where: SeriesRelationshipDeletedSubscriptionWhere): SeriesRelationshipDeletedEvent!
-              seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 
             \\"\\"\\"

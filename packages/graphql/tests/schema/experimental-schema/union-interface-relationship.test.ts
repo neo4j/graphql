@@ -1143,7 +1143,6 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieReviewersConnectFieldInput {
-              connect: ReviewerConnectInput
               edge: ReviewCreateInput!
               where: ReviewerConnectWhere
             }
@@ -1818,10 +1817,6 @@ describe("Union Interface Relationships", () => {
               reviewerId: IntAggregateSelectionNullable!
             }
 
-            input ReviewerConnectInput {
-              _on: ReviewerImplementationsConnectInput
-            }
-
             input ReviewerConnectWhere {
               node: ReviewerWhere!
             }
@@ -1842,10 +1837,6 @@ describe("Union Interface Relationships", () => {
             enum ReviewerImplementation {
               Influencer
               Person
-            }
-
-            input ReviewerImplementationsConnectInput {
-              Person: [PersonConnectInput!]
             }
 
             input ReviewerImplementationsDeleteInput {

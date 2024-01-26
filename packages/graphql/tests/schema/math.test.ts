@@ -1576,7 +1576,6 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionConnectFieldInput {
-              connect: ProductionConnectInput
               where: ProductionConnectWhere
             }
 
@@ -1644,10 +1643,6 @@ describe("Algebraic", () => {
               viewers: IntAggregateSelectionNonNullable!
             }
 
-            input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
-            }
-
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -1666,10 +1661,6 @@ describe("Algebraic", () => {
 
             enum ProductionImplementation {
               Movie
-            }
-
-            input ProductionImplementationsConnectInput {
-              Movie: [MovieConnectInput!]
             }
 
             input ProductionImplementationsDeleteInput {
