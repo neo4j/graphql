@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-      - master
       - '*.*.*'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -83,62 +82,3 @@ jobs:
           payload: '{"version":"${{ matrix.package.version }}"}'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
-
-  # If a normal release off dev was done, we need to merge into master
-  merge-dev-into-master:
-    needs:
-      - release
-
-    if: ${{ github.ref_name == 'dev' && needs.release.outputs.published == 'true' }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-        with:
-          ref: master
-          fetch-depth: 0
-          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-
-      - name: Configure git
-        run: |
-          git config --global user.name 'Neo4j Team GraphQL'
-          git config --global user.email 'team-graphql@neotechnology.com'
-
-      - name: Merge into master if publish happens
-        if: needs.release.outputs.published == 'true'
-        run: |
-          git merge --no-ff origin/dev --strategy-option theirs
-          git push
-
-  # If a hotfix off master was done, we need to merge into dev
-  merge-master-into-dev:
-    needs:
-      - release
-
-    if: ${{ github.ref_name == 'master' && needs.release.outputs.published == 'true' }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-        with:
-          fetch-depth: 0
-
-      - name: Create release branch for merging into dev
-        if: needs.release.outputs.published == 'true'
-        uses: peterjgrainger/action-create-branch@08259812c8ebdbf1973747f9297e332fa078d3c1 # v2.4.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-        with:
-          branch: "release/${{ github.sha }}"
-
-      - name: pull-request
-        if: needs.release.outputs.published == 'true'
-        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5 # v2.12.1
-        with:
-          source_branch: "release/${{ github.sha }}"
-          destination_branch: "dev"
-          pr_title: "Merge ${{ github.ref_name }} into dev"
-          github_token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
