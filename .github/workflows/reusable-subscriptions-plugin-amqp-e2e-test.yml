@@ -58,5 +58,5 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4
         with:
-          name: e2e-coverage-graphql-amqp-subscriptions-engine
+          name: e2e-coverage-graphql-amqp-subscriptions-engine-${{ matrix.graphql-version }}
           path: packages/graphql-amqp-subscriptions-engine/coverage/
