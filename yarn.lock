@@ -3716,7 +3716,7 @@ __metadata:
     classnames: "npm:2.5.1"
     cm6-graphql: "npm:0.0.13"
     codemirror: "npm:6.0.1"
-    compression-webpack-plugin: "npm:10.0.0"
+    compression-webpack-plugin: "npm:11.0.0"
     copy-webpack-plugin: "npm:12.0.2"
     cross-env: "npm:7.0.3"
     css-loader: "npm:6.9.1"
@@ -11120,15 +11120,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compression-webpack-plugin@npm:10.0.0":
-  version: 10.0.0
-  resolution: "compression-webpack-plugin@npm:10.0.0"
+"compression-webpack-plugin@npm:11.0.0":
+  version: 11.0.0
+  resolution: "compression-webpack-plugin@npm:11.0.0"
   dependencies:
-    schema-utils: "npm:^4.0.0"
-    serialize-javascript: "npm:^6.0.0"
+    schema-utils: "npm:^4.2.0"
+    serialize-javascript: "npm:^6.0.2"
   peerDependencies:
     webpack: ^5.1.0
-  checksum: 9a804645dacb6f1b2e836434258cee374ecc6b589594177a3e3da5b0f8e09b0e2c2c7ca22f47d2214ee88d4e598c9754cd7e2a2081664e55ce6ad425464713e3
+  checksum: 02a9b286daae9e050ef20612f7fed10e3353f612fb6b13c3d287b5fe22000c9fb3154cf4988547354e9d5788a6a30f00d61c39e339a3907506e3d14ea2da1026
   languageName: node
   linkType: hard
 
@@ -23692,7 +23692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serialize-javascript@npm:^6.0.0, serialize-javascript@npm:^6.0.1":
+"serialize-javascript@npm:^6.0.1":
   version: 6.0.1
   resolution: "serialize-javascript@npm:6.0.1"
   dependencies:
