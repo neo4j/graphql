@@ -315,7 +315,6 @@ describe("inheritance", () => {
             }
 
             input PersonDeleteInput {
-              _on: PersonImplementationsDeleteInput
               friends: [PersonFriendsDeleteFieldInput!]
             }
 
@@ -422,10 +421,6 @@ describe("inheritance", () => {
 
             enum PersonImplementation {
               Actor
-            }
-
-            input PersonImplementationsDeleteInput {
-              Actor: [ActorDeleteInput!]
             }
 
             input PersonImplementationsDisconnectInput {

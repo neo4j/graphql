@@ -7090,7 +7090,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -7344,10 +7343,6 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
                     input PersonDisconnectInput {
                       _on: PersonImplementationsDisconnectInput
                     }
@@ -7358,10 +7353,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
                     }
 
                     input PersonImplementationsDisconnectInput {
@@ -7949,7 +7940,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -8203,10 +8193,6 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
                     input PersonDisconnectInput {
                       _on: PersonImplementationsDisconnectInput
                     }
@@ -8217,10 +8203,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
                     }
 
                     input PersonImplementationsDisconnectInput {
@@ -8808,7 +8790,6 @@ describe("@filterable directive", () => {
                     }
 
                     input MovieActorsDeleteFieldInput {
-                      delete: PersonDeleteInput
                       where: MovieActorsConnectionWhere
                     }
 
@@ -9062,10 +9043,6 @@ describe("@filterable directive", () => {
                       Actor: ActorCreateInput
                     }
 
-                    input PersonDeleteInput {
-                      _on: PersonImplementationsDeleteInput
-                    }
-
                     input PersonDisconnectInput {
                       _on: PersonImplementationsDisconnectInput
                     }
@@ -9076,10 +9053,6 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
-                    }
-
-                    input PersonImplementationsDeleteInput {
-                      Actor: [ActorDeleteInput!]
                     }
 
                     input PersonImplementationsDisconnectInput {

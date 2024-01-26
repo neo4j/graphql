@@ -234,7 +234,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
-              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
@@ -457,10 +456,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDeleteInput {
-              _on: IProductImplementationsDeleteInput
-            }
-
             input IProductDisconnectInput {
               _on: IProductImplementationsDisconnectInput
             }
@@ -473,11 +468,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input IProductImplementationsDisconnectInput {
@@ -1546,7 +1536,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
-              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
@@ -1722,10 +1711,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDeleteInput {
-              _on: IProductImplementationsDeleteInput
-            }
-
             input IProductDisconnectInput {
               _on: IProductImplementationsDisconnectInput
             }
@@ -1780,11 +1765,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input IProductImplementationsDisconnectInput {

@@ -986,7 +986,6 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInDeleteFieldInput {
-              delete: ProductionDeleteInput
               where: ActorActedInConnectionWhere
             }
 
@@ -1514,10 +1513,6 @@ describe("Directive-preserve", () => {
               Series: SeriesCreateInput
             }
 
-            input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
-            }
-
             input ProductionDisconnectInput {
               _on: ProductionImplementationsDisconnectInput
             }
@@ -1525,11 +1520,6 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input ProductionImplementationsDisconnectInput {
@@ -2017,7 +2007,6 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInDeleteFieldInput {
-              delete: ProductionDeleteInput
               where: ActorActedInConnectionWhere
             }
 
@@ -2545,10 +2534,6 @@ describe("Directive-preserve", () => {
               Series: SeriesCreateInput
             }
 
-            input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
-            }
-
             input ProductionDisconnectInput {
               _on: ProductionImplementationsDisconnectInput
             }
@@ -2556,11 +2541,6 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input ProductionImplementationsDisconnectInput {
