@@ -764,16 +764,6 @@ export class OperationsFactory {
         return filterTruthy(
             Object.entries(deleteArg).flatMap(([key, valueArr]) => {
                 return asArray(valueArr).flatMap((value) => {
-                    if (key === "_on") {
-                        const concreteDeleteArg = value[source.name];
-                        if (!concreteDeleteArg) {
-                            return;
-                        }
-
-                        return asArray(concreteDeleteArg).flatMap((v) => {
-                            return this.createNestedDeleteOperations(v, source, context);
-                        });
-                    }
                     const relationship = source.findRelationship(key);
                     if (!relationship) {
                         throw new Error(`Failed to find relationship ${key}`);

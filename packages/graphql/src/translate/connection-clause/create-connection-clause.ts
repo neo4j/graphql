@@ -17,18 +17,17 @@
  * limitations under the License.
  */
 
-import type { Integer } from "neo4j-driver";
-import type { ResolveTree } from "graphql-parse-resolve-info";
 import Cypher from "@neo4j/cypher-builder";
-import type { ConnectionField, ConnectionWhereArg, CypherFieldReferenceMap } from "../../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Integer } from "neo4j-driver";
 import type { Node } from "../../classes";
-import { filterTruthy } from "../../utils/utils";
-import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/create-connection-operation";
-import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
-import { createSortAndLimitProjection } from "./create-sort-and-limit";
-import { createEdgeSubquery } from "./create-edge-subquery";
-import { checkAuthentication } from "../authorization/check-authentication";
+import type { ConnectionField, ConnectionWhereArg, CypherFieldReferenceMap } from "../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
+import { filterTruthy } from "../../utils/utils";
+import { checkAuthentication } from "../authorization/check-authentication";
+import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
+import { createEdgeSubquery } from "./create-edge-subquery";
+import { createSortAndLimitProjection } from "./create-sort-and-limit";
 
 export function createConnectionClause({
     resolveTree,
@@ -218,13 +217,7 @@ function createConnectionSubquery({
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[relatedNode.name] : whereInput || {};
-    if (
-        unionInterfaceWhere &&
-        !hasExplicitNodeInInterfaceWhere({
-            whereInput: unionInterfaceWhere,
-            node: relatedNode,
-        })
-    ) {
+    if (unionInterfaceWhere) {
         return;
     }
 

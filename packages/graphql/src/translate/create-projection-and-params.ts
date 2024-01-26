@@ -17,27 +17,27 @@
  * limitations under the License.
  */
 
-import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import Cypher from "@neo4j/cypher-builder";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, GraphQLSortArg, CypherFieldReferenceMap } from "../types";
+import type { CypherFieldReferenceMap, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg } from "../types";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { compileCypher } from "../utils/compile-cypher";
+import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
+import { addGlobalIdField } from "../utils/global-node-projection";
+import mapToDbProperty from "../utils/map-to-db-property";
+import { filterTruthy, removeDuplicates } from "../utils/utils";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { createAuthorizationBeforePredicateField } from "./authorization/create-authorization-before-predicate";
+import { createConnectionClause } from "./connection-clause/create-connection-clause";
+import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { createDatetimeExpression } from "./projection/elements/create-datetime-element";
 import { createPointExpression } from "./projection/elements/create-point-element";
-import mapToDbProperty from "../utils/map-to-db-property";
-import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
-import { addGlobalIdField } from "../utils/global-node-projection";
-import { getCypherRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection, generateResolveTree } from "./utils/resolveTree";
-import { filterTruthy, removeDuplicates } from "../utils/utils";
-import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
-import { createConnectionClause } from "./connection-clause/create-connection-clause";
+import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
-import { createAuthorizationBeforePredicateField } from "./authorization/create-authorization-before-predicate";
-import { checkAuthentication } from "./authorization/check-authentication";
-import { compileCypher } from "../utils/compile-cypher";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { filterFieldsInSelection, generateMissingOrAliasedFields, generateResolveTree } from "./utils/resolveTree";
 
 interface Res {
     projection: Cypher.Expr[];
@@ -149,9 +149,7 @@ export default function createProjectionAndParams({
 
                     if (field.args.where) {
                         // Enrich concrete types with shared filters
-                        const interfaceSharedFilters = Object.fromEntries(
-                            Object.entries(field.args.where).filter(([key]) => key !== "_on")
-                        );
+                        const interfaceSharedFilters = Object.fromEntries(Object.entries(field.args.where));
                         if (Object.keys(interfaceSharedFilters).length > 0) {
                             field.args.where = getAugmentedImplementationFilters(
                                 field.args.where as GraphQLWhereArg,
@@ -159,7 +157,7 @@ export default function createProjectionAndParams({
                                 interfaceImplementations
                             );
                         } else {
-                            field.args.where = { ...(field.args.where["_on"] || {}) };
+                            field.args.where = {};
                         }
                     }
 
@@ -520,16 +518,7 @@ function getAugmentedImplementationFilters(
 ) {
     return Object.fromEntries(
         implementations.map((node) => {
-            if (!Object.prototype.hasOwnProperty.call(where, "_on")) {
-                return [node.name, { ...interfaceSharedFilters }];
-            }
-            return [
-                node.name,
-                {
-                    ...interfaceSharedFilters,
-                    ...where["_on"][node.name],
-                },
-            ];
+            return [node.name, { ...interfaceSharedFilters }];
         })
     );
 }

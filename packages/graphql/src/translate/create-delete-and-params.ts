@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import type { Node, Relationship } from "../classes";
-import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import { META_CYPHER_VARIABLE } from "../constants";
-import { createEventMetaObject } from "./subscriptions/create-event-meta";
-import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
-import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import Cypher from "@neo4j/cypher-builder";
-import { caseWhere } from "../utils/case-where";
-import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { checkAuthentication } from "./authorization/check-authentication";
+import type { Node, Relationship } from "../classes";
+import { META_CYPHER_VARIABLE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { caseWhere } from "../utils/case-where";
+import { checkAuthentication } from "./authorization/check-authentication";
+import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
+import { createEventMetaObject } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     strs: string[];
@@ -189,24 +189,10 @@ function createDeleteAndParams({
                     }
 
                     if (d.delete) {
-                        const nestedDeleteInput = Object.entries(d.delete)
-                            .filter(([k]) => {
-                                if (k === "_on") {
-                                    return false;
-                                }
-
-                                if (relationField.interface && d.delete?._on?.[refNode.name]) {
-                                    const onArray = Array.isArray(d.delete._on[refNode.name])
-                                        ? d.delete._on[refNode.name]
-                                        : [d.delete._on[refNode.name]];
-                                    if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
-                                        return false;
-                                    }
-                                }
-
-                                return true;
-                            })
-                            .reduce((d1, [k1, v1]) => ({ ...d1, [k1]: v1 }), {});
+                        const nestedDeleteInput = Object.entries(d.delete).reduce(
+                            (d1, [k1, v1]) => ({ ...d1, [k1]: v1 }),
+                            {}
+                        );
                         const innerWithVars = context.subscriptionsEnabled
                             ? [...withVars, variableName, relationshipVariable]
                             : [...withVars, variableName];
@@ -225,31 +211,6 @@ function createDeleteAndParams({
                         });
                         innerStrs.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
-
-                        if (relationField.interface && d.delete?._on?.[refNode.name]) {
-                            const onDeletes = Array.isArray(d.delete._on[refNode.name])
-                                ? d.delete._on[refNode.name]
-                                : [d.delete._on[refNode.name]];
-
-                            onDeletes.forEach((onDelete, onDeleteIndex) => {
-                                const onDeleteAndParams = createDeleteAndParams({
-                                    context,
-                                    node: refNode,
-                                    deleteInput: onDelete,
-                                    varName: variableName,
-                                    withVars: innerWithVars,
-                                    parentVar: variableName,
-                                    parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
-                                        relationField.union ? `.${refNode.name}` : ""
-                                    }${relationField.typeMeta.array ? `[${index}]` : ""}.delete._on.${
-                                        refNode.name
-                                    }[${onDeleteIndex}]`,
-                                    recursing: false,
-                                });
-                                innerStrs.push(onDeleteAndParams[0]);
-                                res.params = { ...res.params, ...onDeleteAndParams[1] };
-                            });
-                        }
                     }
 
                     if (context.subscriptionsEnabled) {
