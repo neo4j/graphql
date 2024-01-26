@@ -29,10 +29,9 @@ import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
-import { makeImplementationsDeleteInput } from "./implementation-inputs";
-import { makeConnectionWhereInputType } from "./where-input";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
+import { makeConnectionWhereInputType } from "./where-input";
 
 export function withDeleteInputType({
     entityAdapter,
@@ -44,18 +43,8 @@ export function withDeleteInputType({
     if (entityAdapter instanceof ConcreteEntityAdapter) {
         return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
     }
-    const implementationsUpdateInputType = makeImplementationsDeleteInput({
-        interfaceEntityAdapter: entityAdapter,
-        composer,
-    });
 
-    if (!implementationsUpdateInputType) {
-        return undefined;
-    }
-
-    const deleteInputType = composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
-    deleteInputType.setField("_on", implementationsUpdateInputType);
-    return deleteInputType;
+    return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
 }
 
 export function augmentDeleteInputTypeWithDeleteFieldInput({
@@ -234,9 +223,13 @@ function makeDeleteFieldInputTypeFields({
         }
     } else if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
         fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
-        const deleteInput = withDeleteInputType({ entityAdapter: relationshipAdapter.target, composer });
-        if (deleteInput) {
-            fields["delete"] = deleteInput;
+
+        const deleteTypename = relationshipAdapter.target.operations.updateMutationArgumentNames.delete;
+
+        const hasNestedRelationships = relationshipAdapter.target.relationshipDeclarations.size > 0;
+        if (composer.has(deleteTypename) || hasNestedRelationships) {
+            const deleteInputType = composer.getOrCreateITC(deleteTypename);
+            fields["delete"] = deleteInputType;
         }
     } else {
         if (!ifUnionMemberEntity) {

@@ -1174,7 +1174,6 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieReviewersDeleteFieldInput {
-              delete: ReviewerDeleteInput
               where: MovieReviewersConnectionWhere
             }
 
@@ -1826,10 +1825,6 @@ describe("Union Interface Relationships", () => {
               Person: PersonCreateInput
             }
 
-            input ReviewerDeleteInput {
-              _on: ReviewerImplementationsDeleteInput
-            }
-
             input ReviewerDisconnectInput {
               _on: ReviewerImplementationsDisconnectInput
             }
@@ -1837,10 +1832,6 @@ describe("Union Interface Relationships", () => {
             enum ReviewerImplementation {
               Influencer
               Person
-            }
-
-            input ReviewerImplementationsDeleteInput {
-              Person: [PersonDeleteInput!]
             }
 
             input ReviewerImplementationsDisconnectInput {

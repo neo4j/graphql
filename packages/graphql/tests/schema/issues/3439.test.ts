@@ -18,11 +18,11 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { validateSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestSubscriptionsEngine } from "../../utils/TestSubscriptionsEngine";
-import { validateSchema } from "graphql";
 
 describe("https://github.com/neo4j/graphql/issues/3439", () => {
     test("Type definitions implementing multiple interfaces", async () => {
@@ -231,7 +231,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
-              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
@@ -454,10 +453,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDeleteInput {
-              _on: IProductImplementationsDeleteInput
-            }
-
             input IProductDisconnectInput {
               _on: IProductImplementationsDisconnectInput
             }
@@ -470,11 +465,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input IProductImplementationsDisconnectInput {
@@ -1541,7 +1531,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             input GenreProductDeleteFieldInput {
-              delete: IProductDeleteInput
               where: GenreProductConnectionWhere
             }
 
@@ -1717,10 +1706,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               Series: SeriesCreateInput
             }
 
-            input IProductDeleteInput {
-              _on: IProductImplementationsDeleteInput
-            }
-
             input IProductDisconnectInput {
               _on: IProductImplementationsDisconnectInput
             }
@@ -1775,11 +1760,6 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             enum IProductImplementation {
               Movie
               Series
-            }
-
-            input IProductImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input IProductImplementationsDisconnectInput {

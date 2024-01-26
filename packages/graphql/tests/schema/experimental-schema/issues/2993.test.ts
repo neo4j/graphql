@@ -149,20 +149,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User: UserCreateInput
             }
 
-            input ProfileDeleteInput {
-              _on: ProfileImplementationsDeleteInput
-            }
-
             input ProfileDisconnectInput {
               _on: ProfileImplementationsDisconnectInput
             }
 
             enum ProfileImplementation {
               User
-            }
-
-            input ProfileImplementationsDeleteInput {
-              User: [UserDeleteInput!]
             }
 
             input ProfileImplementationsDisconnectInput {
@@ -326,7 +318,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingDeleteFieldInput {
-              delete: ProfileDeleteInput
               where: UserFollowingConnectionWhere
             }
 
@@ -578,20 +569,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User: UserCreateInput
             }
 
-            input ProfileDeleteInput {
-              _on: ProfileImplementationsDeleteInput
-            }
-
             input ProfileDisconnectInput {
               _on: ProfileImplementationsDisconnectInput
             }
 
             enum ProfileImplementation {
               User
-            }
-
-            input ProfileImplementationsDeleteInput {
-              User: [UserDeleteInput!]
             }
 
             input ProfileImplementationsDisconnectInput {
@@ -754,7 +737,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingDeleteFieldInput {
-              delete: ProfileDeleteInput
               where: UserFollowingConnectionWhere
             }
 

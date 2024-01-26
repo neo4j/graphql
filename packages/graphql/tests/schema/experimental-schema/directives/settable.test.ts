@@ -6890,7 +6890,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionDeleteInput {
-                  _on: ProductionImplementationsDeleteInput
                   actors: [ProductionActorsDeleteFieldInput!]
                 }
 
@@ -6902,11 +6901,6 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsDeleteInput {
-                  Movie: [MovieDeleteInput!]
-                  Series: [SeriesDeleteInput!]
                 }
 
                 input ProductionImplementationsDisconnectInput {
@@ -7875,7 +7869,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionDeleteInput {
-                  _on: ProductionImplementationsDeleteInput
                   actors: [ProductionActorsDeleteFieldInput!]
                 }
 
@@ -7887,11 +7880,6 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
-                }
-
-                input ProductionImplementationsDeleteInput {
-                  Movie: [MovieDeleteInput!]
-                  Series: [SeriesDeleteInput!]
                 }
 
                 input ProductionImplementationsDisconnectInput {

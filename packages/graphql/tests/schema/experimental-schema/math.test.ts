@@ -1602,7 +1602,6 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionDeleteFieldInput {
-              delete: ProductionDeleteInput
               where: PersonWorksInProductionConnectionWhere
             }
 
@@ -1651,20 +1650,12 @@ describe("Algebraic", () => {
               Movie: MovieCreateInput
             }
 
-            input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
-            }
-
             input ProductionDisconnectInput {
               _on: ProductionImplementationsDisconnectInput
             }
 
             enum ProductionImplementation {
               Movie
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
             }
 
             input ProductionImplementationsDisconnectInput {

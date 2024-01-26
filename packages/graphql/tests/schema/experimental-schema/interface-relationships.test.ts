@@ -1626,7 +1626,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
               actors: [ProductionActorsDeleteFieldInput!]
             }
 
@@ -1638,11 +1637,6 @@ describe("Interface Relationships", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input ProductionImplementationsDisconnectInput {
@@ -3250,7 +3244,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
               actors: [ProductionActorsDeleteFieldInput!]
             }
 
@@ -3262,11 +3255,6 @@ describe("Interface Relationships", () => {
             enum ProductionImplementation {
               Movie
               Series
-            }
-
-            input ProductionImplementationsDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
             }
 
             input ProductionImplementationsDisconnectInput {
@@ -3974,7 +3962,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DeleteInput {
-              _on: Interface1ImplementationsDeleteInput
               interface2: [Interface1Interface2DeleteFieldInput!]
             }
 
@@ -3986,11 +3973,6 @@ describe("Interface Relationships", () => {
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsDeleteInput {
-              Type1Interface1: [Type1Interface1DeleteInput!]
-              Type2Interface1: [Type2Interface1DeleteInput!]
             }
 
             input Interface1ImplementationsDisconnectInput {
@@ -4982,7 +4964,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DeleteInput {
-              _on: Interface1ImplementationsDeleteInput
               interface2: [Interface1Interface2DeleteFieldInput!]
             }
 
@@ -4994,11 +4975,6 @@ describe("Interface Relationships", () => {
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsDeleteInput {
-              Type1Interface1: [Type1Interface1DeleteInput!]
-              Type2Interface1: [Type2Interface1DeleteInput!]
             }
 
             input Interface1ImplementationsDisconnectInput {
@@ -6094,7 +6070,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1DeleteInput {
-              _on: Interface1ImplementationsDeleteInput
               interface2: [Interface1Interface2DeleteFieldInput!]
             }
 
@@ -6106,11 +6081,6 @@ describe("Interface Relationships", () => {
             enum Interface1Implementation {
               Type1Interface1
               Type2Interface1
-            }
-
-            input Interface1ImplementationsDeleteInput {
-              Type1Interface1: [Type1Interface1DeleteInput!]
-              Type2Interface1: [Type2Interface1DeleteInput!]
             }
 
             input Interface1ImplementationsDisconnectInput {
@@ -7648,7 +7618,6 @@ describe("Interface Relationships", () => {
             }
 
             input ContentDeleteInput {
-              _on: ContentImplementationsDeleteInput
               creator: ContentCreatorDeleteFieldInput
             }
 
@@ -7660,11 +7629,6 @@ describe("Interface Relationships", () => {
             enum ContentImplementation {
               Comment
               Post
-            }
-
-            input ContentImplementationsDeleteInput {
-              Comment: [CommentDeleteInput!]
-              Post: [PostDeleteInput!]
             }
 
             input ContentImplementationsDisconnectInput {
