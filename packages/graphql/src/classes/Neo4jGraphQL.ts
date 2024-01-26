@@ -400,7 +400,7 @@ class Neo4jGraphQL {
 
     private async generateSubgraphSchema(): Promise<GraphQLSchema> {
         // Import only when needed to avoid issues if GraphQL 15 being used
-        const { Subgraph } = await import("./Subgraph");
+        const { Subgraph } = await import("./Subgraph.js");
 
         const initialDocument = this.normalizeTypeDefinitions(this.typeDefs);
         const subgraph = new Subgraph(this.typeDefs);
