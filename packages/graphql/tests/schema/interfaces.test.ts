@@ -184,8 +184,8 @@ describe("Interfaces", () => {
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies: [Movie!]!
-              moviesConnection: MovieNodeMoviesConnection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
             type MovieNodeAggregateSelection {
@@ -195,6 +195,18 @@ describe("Interfaces", () => {
 
             enum MovieNodeImplementation {
               Movie
+            }
+
+            input MovieNodeMoviesAggregateInput {
+              AND: [MovieNodeMoviesAggregateInput!]
+              NOT: MovieNodeMoviesAggregateInput
+              OR: [MovieNodeMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieNodeMoviesNodeAggregationWhereInput
             }
 
             type MovieNodeMoviesConnection {
@@ -223,6 +235,13 @@ describe("Interfaces", () => {
             input MovieNodeMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeMoviesNodeAggregationWhereInput {
+              AND: [MovieNodeMoviesNodeAggregationWhereInput!]
+              NOT: MovieNodeMoviesNodeAggregationWhereInput
+              OR: [MovieNodeMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type MovieNodeMoviesRelationship {
@@ -260,6 +279,35 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
+              moviesAggregate: MovieNodeMoviesAggregateInput
+              moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
               typename_IN: [MovieNodeImplementation!]
             }
 
@@ -551,8 +599,8 @@ describe("Interfaces", () => {
             interface MovieNode @something(something: \\"test\\") {
               customQuery: [Movie]
               id: ID
-              movies: [Movie!]!
-              moviesConnection: MovieNodeMoviesConnection!
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
             type MovieNodeAggregateSelection {
@@ -562,6 +610,18 @@ describe("Interfaces", () => {
 
             enum MovieNodeImplementation {
               Movie
+            }
+
+            input MovieNodeMoviesAggregateInput {
+              AND: [MovieNodeMoviesAggregateInput!]
+              NOT: MovieNodeMoviesAggregateInput
+              OR: [MovieNodeMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieNodeMoviesNodeAggregationWhereInput
             }
 
             type MovieNodeMoviesConnection {
@@ -590,6 +650,13 @@ describe("Interfaces", () => {
             input MovieNodeMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeMoviesNodeAggregationWhereInput {
+              AND: [MovieNodeMoviesNodeAggregationWhereInput!]
+              NOT: MovieNodeMoviesNodeAggregationWhereInput
+              OR: [MovieNodeMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID @deprecated(reason: \\"Aggregation filters that are not relying on an aggregating function will be deprecated.\\")
             }
 
             type MovieNodeMoviesRelationship {
@@ -627,6 +694,35 @@ describe("Interfaces", () => {
               id_NOT_IN: [ID] @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_NOT_STARTS_WITH: ID @deprecated(reason: \\"Negation filters will be deprecated, use the NOT operator to achieve the same behavior\\")
               id_STARTS_WITH: ID
+              movies: MovieWhere @deprecated(reason: \\"Use \`movies_SOME\` instead.\\")
+              moviesAggregate: MovieNodeMoviesAggregateInput
+              moviesConnection: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_SOME\` instead.\\")
+              \\"\\"\\"
+              Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NOT: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Use \`moviesConnection_NONE\` instead.\\")
+              \\"\\"\\"
+              Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
+              movies_ALL: MovieWhere
+              \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
+              movies_NONE: MovieWhere
+              movies_NOT: MovieWhere @deprecated(reason: \\"Use \`movies_NONE\` instead.\\")
+              \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
+              movies_SINGLE: MovieWhere
+              \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
+              movies_SOME: MovieWhere
               typename_IN: [MovieNodeImplementation!]
             }
 

@@ -266,19 +266,18 @@ function makeAugmentedSchema({
     interfaceRelationships.forEach((interfaceRelationship) => {
         const interfaceEntity = schemaModel.getEntity(interfaceRelationship.name.value) as InterfaceEntity;
         const interfaceEntityAdapter = new InterfaceEntityAdapter(interfaceEntity);
-        const updatedRelationships = doForInterfacesThatAreTargetOfARelationship({
+        const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(interfaceEntity.name) || [];
+        const connectionFields = generateInterfaceObjectType({
             composer,
             interfaceEntityAdapter,
             subgraph,
-            relationships,
             relationshipFields,
             userDefinedFieldDirectivesForNode,
+            userDefinedInterfaceDirectives,
             propagatedDirectivesForNode,
             aggregationTypesMapper,
         });
-        if (updatedRelationships) {
-            relationships = updatedRelationships;
-        }
+        relationships = [...relationships, ...connectionFields];
         seenInterfaces.add(interfaceRelationship.name.value);
     });
 
@@ -453,52 +452,19 @@ function makeAugmentedSchema({
             return;
         }
         if (entity instanceof InterfaceEntity && !seenInterfaces.has(entity.name)) {
-            const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(entity.name) as Map<
-                string,
-                DirectiveNode[]
-            >;
-            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
-            const propagatedDirectives = propagatedDirectivesForNode.get(entity.name) || [];
             const interfaceEntityAdapter = new InterfaceEntityAdapter(entity);
-            withInterfaceType({
+            const userDefinedInterfaceDirectives = userDefinedDirectivesForInterface.get(entity.name) || [];
+            generateInterfaceObjectType({
+                composer,
                 interfaceEntityAdapter,
-                userDefinedFieldDirectives,
+                subgraph,
+                relationshipFields,
                 userDefinedInterfaceDirectives,
-                composer,
-                config: {
-                    includeRelationships: true,
-                },
+                userDefinedFieldDirectivesForNode,
+                propagatedDirectivesForNode,
+                aggregationTypesMapper,
             });
-            // TODO: mirror everything on interfaces target of relationships
-            withWhereInputType({
-                entityAdapter: interfaceEntityAdapter,
-                userDefinedFieldDirectives,
-                features,
-                composer,
-            });
-            withOptionsInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
-            if (interfaceEntityAdapter.isReadable) {
-                composer.Query.addFields({
-                    [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                        entityAdapter: interfaceEntityAdapter,
-                    }),
-                });
-                composer.Query.setFieldDirectives(
-                    interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-                    graphqlDirectivesToCompose(propagatedDirectives)
-                );
-            }
-            if (interfaceEntityAdapter.isAggregable) {
-                addInterfaceAggregateSelectionStuff({
-                    entityAdapter: interfaceEntityAdapter,
-                    aggregationTypesMapper,
-                    propagatedDirectives,
-                    composer,
-                });
-            }
-            return;
         }
-        return;
     });
 
     if (features?.subscriptions && nodes.length) {
@@ -773,14 +739,14 @@ function doForRelationshipPropertiesType({
     withCreateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
 }
 
-function doForInterfacesThatAreTargetOfARelationship({
+function generateInterfaceObjectType({
     composer,
     interfaceEntityAdapter,
     features,
     subgraph,
-    relationships,
     relationshipFields,
     userDefinedFieldDirectivesForNode,
+    userDefinedInterfaceDirectives,
     propagatedDirectivesForNode,
     aggregationTypesMapper,
 }: {
@@ -788,9 +754,9 @@ function doForInterfacesThatAreTargetOfARelationship({
     interfaceEntityAdapter: InterfaceEntityAdapter;
     features?: Neo4jFeaturesSettings;
     subgraph?: Subgraph;
-    relationships: Relationship[];
     relationshipFields: Map<string, ObjectFields>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
+    userDefinedInterfaceDirectives: DirectiveNode[];
     propagatedDirectivesForNode: Map<string, DirectiveNode[]>;
     aggregationTypesMapper: AggregationTypesMapper;
 }) {
@@ -811,7 +777,7 @@ function doForInterfacesThatAreTargetOfARelationship({
     const composeInterface = withInterfaceType({
         interfaceEntityAdapter,
         userDefinedFieldDirectives,
-        userDefinedInterfaceDirectives: [],
+        userDefinedInterfaceDirectives,
         composer,
     });
     createRelationshipFields({
@@ -821,16 +787,14 @@ function doForInterfacesThatAreTargetOfARelationship({
         subgraph,
         userDefinedFieldDirectives,
     });
-    relationships = [
-        ...relationships,
-        ...createConnectionFields({
-            entityAdapter: interfaceEntityAdapter,
-            schemaComposer: composer,
-            composeNode: composeInterface,
-            userDefinedFieldDirectives,
-            relationshipFields,
-        }),
-    ];
+
+    const connectionFields = createConnectionFields({
+        entityAdapter: interfaceEntityAdapter,
+        schemaComposer: composer,
+        composeNode: composeInterface,
+        userDefinedFieldDirectives,
+        relationshipFields,
+    });
 
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
     if (interfaceEntityAdapter.isReadable) {
@@ -854,7 +818,7 @@ function doForInterfacesThatAreTargetOfARelationship({
         );
     }
 
-    return relationships;
+    return connectionFields;
 }
 
 function addInterfaceAggregateSelectionStuff({

@@ -548,7 +548,7 @@ describe("Connection with interfaces", () => {
 
             interface Production {
               director(options: CreatureOptions, where: CreatureWhere): [Creature!]!
-              directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
 

@@ -16,21 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Annotations } from "./annotation/Annotation";
+import { annotationsParsers } from "./annotation/Annotation";
 import type { DEPRECATED } from "../constants";
 import { SHAREABLE } from "../constants";
 import type { ValueOf } from "../utils/value-of";
-import type { Annotations } from "./annotation/Annotation";
 
 const additionalDirectives = [
     "alias",
     "relationship",
-    "node",
-    "declareRelationship",
     "relationshipProperties",
+    "declareRelationship",
+    "node",
     SHAREABLE,
 ] as const;
 
 type LibraryDirectives = keyof Annotations | ValueOf<typeof additionalDirectives> | typeof DEPRECATED;
+export const LIBRARY_DIRECTIVES = [
+    ...(Object.keys(annotationsParsers) as Array<keyof Annotations>)
+        // fields from the @key directive is intentionally excluded as it is not in use by our schema model
+        .filter((key) => key !== "key"),
+    ...additionalDirectives,
+] as const satisfies readonly LibraryDirectives[];
 
 export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
