@@ -78,13 +78,16 @@ export class CustomCypherSelection extends EntitySelection {
             return [statement, extraParams];
         });
 
-        const statementSubquery = new Cypher.Call(statementCypherQuery).innerWith("*");
+        const statementSubquery = new Cypher.Call(statementCypherQuery);
         const res = new Cypher.NamedVariable("res");
-        let selection;
-        if (this.operationField.typeHelper.isList()) {
-            selection = statementSubquery.unwind([returnVariable, res]).with([res, new Cypher.NamedVariable("this")]);
+        const thisVariable = new Cypher.NamedVariable("this");
+
+        let selection: Cypher.With;
+        // TODO: Check if the UNWIND is needed not only for scalar but also Complex types
+        if (this.operationField.typeHelper.isList() && this.operationField.typeHelper.isScalar()) {
+            selection = statementSubquery.unwind([returnVariable, res]).with([res, thisVariable]);
         } else {
-            selection = statementSubquery.with([returnVariable, new Cypher.NamedVariable("this")]);
+            selection = statementSubquery.with([returnVariable, thisVariable]);
         }
         return {
             selection,

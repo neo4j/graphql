@@ -69,7 +69,7 @@ import { DeleteOperation } from "../ast/operations/DeleteOperation";
 import { UpdateOperation } from "../ast/operations/UpdateOperation";
 import { CypherOperation } from "../ast/operations/CypherOperation";
 import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
-import { CypherUnionOperation } from "../ast/operations/CypherUnionOperation";
+import { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { CypherFieldOperation } from "../ast/operations/CypherFieldOperation";
@@ -940,7 +940,7 @@ export class OperationsFactory {
         context: Neo4jGraphQLTranslationContext;
         entity?: EntityAdapter;
         varName?: string;
-    }): CypherOperation | CypherUnionOperation | CypherFieldOperation {
+    }): CypherOperation | CompositeCypherOperation | CypherFieldOperation {
         const operationAttribute =
             context.schemaModel.operations.Query?.findAttribute(resolveTree.name) ??
             context.schemaModel.operations.Mutation?.findAttribute(resolveTree.name);
@@ -990,7 +990,7 @@ export class OperationsFactory {
                     whereArgs: {},
                 });
             });
-            return new CypherUnionOperation({ target: entity, selection, partials: CypherUnionPartials });
+            return new CompositeCypherOperation({ target: entity, selection, partials: CypherUnionPartials });
         }
         // TODO test interface entity/
         throw new Error("long journey");

@@ -22,7 +22,6 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { EntitySelection } from "../selection/EntitySelection";
 import { Operation, type OperationTranspileResult } from "./operations";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
 export class CypherFieldOperation extends Operation {
     private selection: EntitySelection;

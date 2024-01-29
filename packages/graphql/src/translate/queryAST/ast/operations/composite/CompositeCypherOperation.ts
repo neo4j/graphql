@@ -18,16 +18,16 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import type { QueryASTContext } from "../QueryASTContext";
-import type { EntitySelection } from "../selection/EntitySelection";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
+import type { EntitySelection } from "../../selection/EntitySelection";
 
-import { Operation, type OperationTranspileResult } from "./operations";
-import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import type { QueryASTNode } from "../QueryASTNode";
-import type { CompositeReadPartial } from "./composite/CompositeReadPartial";
+import { Operation, type OperationTranspileResult } from "../operations";
+import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { QueryASTNode } from "../../QueryASTNode";
+import type { CompositeReadPartial } from "./CompositeReadPartial";
 
-export class CypherUnionOperation extends Operation {
+export class CompositeCypherOperation extends Operation {
     private selection: EntitySelection;
     private partials: CompositeReadPartial[];
     public nodeAlias: string | undefined;
