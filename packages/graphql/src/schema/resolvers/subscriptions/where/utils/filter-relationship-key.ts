@@ -203,7 +203,7 @@ function filterRelationshipInterfaceProperty({
     if (!nodeTo) {
         throw new Error(`${targetNodeTypename} not found as part of interface ${targetNode.name}`);
     }
-    // const targetNode = nodes.find((n) => n.name === targetNodeTypename) as Node;
+
     if (commonFields) {
         if (
             !filterByProperties({
